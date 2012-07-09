@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.service;
 
 import com.iplanet.am.sdk.AMStoreConnection;
@@ -82,6 +85,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -99,7 +104,7 @@ public class AuthD  {
      * Debug instance for error / message logging
      */
     public static Debug debug;
-    private static Map bundles = new HashMap();
+    private static Map bundles = new ConcurrentHashMap();
     private static AuthD authInstance;
     private static boolean authInitFailed = false;
     
@@ -136,7 +141,7 @@ public class AuthD  {
     /**
      * supported Auth Modules cache - lw
      */
-    public static Hashtable sAuth;
+    public static java.util.concurrent.ConcurrentHashMap sAuth;
 
     /**
      * Flag to force to use JAAS thread.
@@ -157,9 +162,9 @@ public class AuthD  {
      * Configured revisionNumber for auth service
      */
     public static int revisionNumber;
-    private static HashMap idRepoMap = new HashMap();
-    private static HashMap orgMap   = new HashMap();
-    private static HashMap orgValidDomains = new HashMap(); 
+    private static ConcurrentHashMap idRepoMap = new ConcurrentHashMap();
+    private static ConcurrentHashMap orgMap   = new ConcurrentHashMap();
+    private static ConcurrentHashMap orgValidDomains = new ConcurrentHashMap(); 
 
     /**
      * Configured bundle name for auth service
@@ -1254,9 +1259,9 @@ public class AuthD  {
             if (amIdentityRepository == null) {
                 amIdentityRepository =
                     new AMIdentityRepository(ssoAuthSession,orgDN);
-                synchronized (idRepoMap) {
+                //synchronized (idRepoMap) {
                     idRepoMap.put(orgDN,amIdentityRepository);
-                }
+                //}
             }
         } catch (Exception id) {
             if (debug.messageEnabled()) {
@@ -1278,13 +1283,13 @@ public class AuthD  {
             if ((orgMap != null) && (!orgMap.isEmpty())) {
                 orgConfigMgr = (OrganizationConfigManager) orgMap.get(orgDN);
             }
-            synchronized (orgMap) {
+            //synchronized (orgMap) {
                 if (orgConfigMgr == null) {
                     orgConfigMgr = new OrganizationConfigManager(
                         ssoAuthSession, orgDN);
                     orgMap.put(orgDN,orgConfigMgr);
                 }
-            }
+            //}
         } catch (Exception id) {
             if (debug.messageEnabled()) {
                 debug.message("Error getAMIdentityRepository",id);
@@ -1324,8 +1329,9 @@ public class AuthD  {
             amIdentity = IdUtils.getIdentity(
                 getSSOAuthSession(), idName, orgName);
             if ((amIdentity != null) && (amIdentity.isExists()) && 
-                (amIdentity.getType().equals(idType)) && 
-                (amIdentity.getAttributes() != null)) {
+                (amIdentity.getType().equals(idType)) //&& 
+                //(amIdentity.getAttributes() != null)
+                ) {
                 if (debug.messageEnabled()) {
                     debug.message("AuthD.getIdentity obtained identity" +
                         "using IdUtil.getIdentity: " + amIdentity);
@@ -1483,11 +1489,11 @@ public class AuthD  {
         	validGotoUrlDomains = (Set)orgValidDomains.get(orgDN);
         } else {
         	validGotoUrlDomains = getValidGotoUrlDomains(orgDN);
-            synchronized (orgValidDomains) {
+            //synchronized (orgValidDomains) {
                 if (!orgValidDomains.containsKey(orgDN)) {
                 	orgValidDomains.put(orgDN,validGotoUrlDomains);
                 }
-            }           
+            //}           
         }
         if (validGotoUrlDomains == null || validGotoUrlDomains.isEmpty()) {	 
             return true;	 

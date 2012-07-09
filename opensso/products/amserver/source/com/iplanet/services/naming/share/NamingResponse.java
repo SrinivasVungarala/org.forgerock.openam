@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.naming.share;
 
 import java.util.Enumeration;
@@ -69,7 +72,7 @@ public class NamingResponse {
 
     private String requestID = null;
 
-    private Hashtable namingTable = new Hashtable();
+    private java.util.concurrent.ConcurrentHashMap namingTable = new java.util.concurrent.ConcurrentHashMap();
 
     private String exception = null;
 
@@ -172,14 +175,14 @@ public class NamingResponse {
     /**
      * Gets the naming table.
      */
-    public Hashtable getNamingTable() {
+    public java.util.concurrent.ConcurrentHashMap getNamingTable() {
         return namingTable;
     }
 
     /**
      * Sets the naming table.
      */
-    public void setNamingTable(Hashtable table) {
+    public void setNamingTable(java.util.concurrent.ConcurrentHashMap table) {
         namingTable = table;
     }
 
@@ -206,7 +209,7 @@ public class NamingResponse {
      */
     public void replaceURI(String uri) {
         if ((namingTable != null) && !namingTable.isEmpty()) {
-            Hashtable newNamingTable = new Hashtable();
+        	java.util.concurrent.ConcurrentHashMap newNamingTable = new java.util.concurrent.ConcurrentHashMap();
             Enumeration e = namingTable.keys();
             while (e.hasMoreElements()) {
                 String name = e.nextElement().toString();

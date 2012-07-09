@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2010-2012 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session.service;
 
 import com.iplanet.am.util.SystemProperties;
@@ -125,6 +128,7 @@ import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -254,7 +258,7 @@ public class SessionService {
 
     static String sessionStorePassword = null;
 
-    static HashMap clusterMemberMap = new HashMap();
+    static ConcurrentHashMap clusterMemberMap = new ConcurrentHashMap();
 
     static int connectionMaxWaitTime = 5000; // in milli-second
 
@@ -350,14 +354,15 @@ public class SessionService {
 
     private SecureRandom secureRandom = null;
 
-    private Hashtable sessionTable = null;
+    private ConcurrentHashMap<SessionID, InternalSession> sessionTable = null;
     
     private Set remoteSessionSet = null;
 
-    private Hashtable sessionHandleTable = new Hashtable();
+    private ConcurrentHashMap<String, InternalSession> sessionHandleTable = new ConcurrentHashMap<String, InternalSession>(maxSessions);
 
-    private Map restrictedTokenMap = Collections.synchronizedMap(new HashMap());
-
+    //private Map restrictedTokenMap = Collections.synchronizedMap(new HashMap());
+    private ConcurrentHashMap<Object,SessionID> restrictedTokenMap = new ConcurrentHashMap<Object,SessionID>(maxSessions);
+    
     private String sessionServer;
 
     private String sessionServerPort;
@@ -448,14 +453,16 @@ public class SessionService {
      * 
      */
     public static SessionService getSessionService() {
-        if (!initialized) {
+        if (sessionService == null) {
             if (SystemProperties.isServerMode()) {
-                synchronized (SessionService.class) {
-                    if (sessionService == null) {
-                        sessionService = new SessionService();
-                        initialized = true;
-                    }
-                }
+            	if (sessionService == null) {
+	                synchronized (SessionService.class) {
+	                    if (sessionService == null) {
+	                        sessionService = new SessionService();
+	                        initialized = true;
+	                    }
+	                }
+            	}
             }
         }
 
@@ -1021,7 +1028,7 @@ public class SessionService {
      */
     private List<InternalSession> getValidInternalSessions() {
         List<InternalSession> sessions = new ArrayList<InternalSession>();
-        synchronized (sessionTable) {
+        //synchronized (sessionTable) {
             Enumeration enumerator = sessionTable.elements();
             while (enumerator.hasMoreElements()) {
                 InternalSession sess = (InternalSession) enumerator
@@ -1032,7 +1039,7 @@ public class SessionService {
                     }
                 }
             }
-        }
+        //}
         return sessions;
     }
 
@@ -1132,7 +1139,7 @@ public class SessionService {
     /**
      * Decrements number of active sessions
      */
-    public static synchronized void decrementActiveSessions() {
+    public static  void decrementActiveSessions() {
         // Fix for OPENAM-486: this is a sanity-check for sessioncount, so it
         // can't go below zero any more in case of erroneus behavior..
         if (numberOfActiveSessions > 0) {
@@ -1148,7 +1155,7 @@ public class SessionService {
     /**
      * Increments number of active sessions
      */
-    public static synchronized void incrementActiveSessions() {
+    public static  void incrementActiveSessions() {
         numberOfActiveSessions++;
         if (SystemProperties.isServerMode()) {
             if (MonitoringUtil.isRunning()) {
@@ -1162,7 +1169,7 @@ public class SessionService {
     /**
      * Returns number of active sessions
      */
-    public static synchronized int getActiveSessions() {
+    public static  int getActiveSessions() {
         return numberOfActiveSessions;
     }
 
@@ -1383,7 +1390,7 @@ public class SessionService {
      * @param sid
      */
     public void logout(SessionID sid) throws SessionException {
-        locateSession(sid);
+        //locateSession(sid);
         logoutInternalSession(sid);
     }
 
@@ -1588,7 +1595,8 @@ public class SessionService {
      * @param evttype Event Type.
      */
     public void sendEvent(InternalSession sess, int evttype) {
-        sessionDebug.message("Running sendEvent, type = " + evttype);
+    	if (sessionDebug.messageEnabled())
+    		sessionDebug.message("Running sendEvent, type = " + evttype);
         try {
             SessionNotificationSender sns = 
                 new SessionNotificationSender(this, sess, evttype);
@@ -1811,8 +1819,8 @@ public class SessionService {
                 secureRandom = SecureRandom.getInstance("SHA1PRNG");
             }
 
-            sessionTable = new Hashtable();
-            remoteSessionSet = Collections.synchronizedSet(new HashSet());
+            sessionTable = new ConcurrentHashMap<SessionID, InternalSession>(maxSessions);
+            remoteSessionSet = Collections.newSetFromMap(new ConcurrentHashMap());
             if (stats.isEnabled()) {
                 maxSessionStats = new SessionMaxStats(sessionTable);
                 stats.addStatsListener(maxSessionStats);
@@ -2386,7 +2394,7 @@ public class SessionService {
 
             // CHECK THE INDVIDUAL URL LIST
             if (!urls.isEmpty()) {
-                synchronized (urls) {
+                //synchronized (urls) {
 
                     Iterator iter = urls.entrySet().iterator();
                     while (iter.hasNext()) {
@@ -2413,7 +2421,7 @@ public class SessionService {
                         }
 
                     }
-                }
+                //}
             }
             return remoteURLExists;
         }
@@ -2454,7 +2462,7 @@ public class SessionService {
             }    
                 // CHECK THE INDIVIDUAL URLS LIST
             if(!urls.isEmpty()) {
-                synchronized (urls) {
+                //synchronized (urls) {
                     Iterator iter = urls.entrySet().iterator();
                     while (iter.hasNext()) {
                         Map.Entry entry = (Map.Entry) iter.next();
@@ -2479,7 +2487,7 @@ public class SessionService {
                                 "Remote Individual notification to " + url, e);
                         }
                     }
-                }
+                //}
             }
         }
     }
@@ -2992,7 +3000,7 @@ public class SessionService {
      */
     public void cleanUpRemoteSessions() {
         if (getUseInternalRequestRouting()) {
-            synchronized (remoteSessionSet) {
+            //synchronized (remoteSessionSet) {
                 for (Iterator iter = remoteSessionSet.iterator();
                     iter.hasNext();) {
                     SessionID sid = (SessionID) iter.next();
@@ -3008,7 +3016,7 @@ public class SessionService {
                         iter.remove();
                     }
                 }
-            }
+            //}
         }
     }
     

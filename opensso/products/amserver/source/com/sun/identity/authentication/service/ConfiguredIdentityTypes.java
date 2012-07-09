@@ -25,7 +25,9 @@
  * $Id: ConfiguredIdentityTypes.java,v 1.6 2008/06/25 05:42:04 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.authentication.service;
 
@@ -131,5 +133,5 @@ public class ConfiguredIdentityTypes extends ChoiceValues {
     }
     
     // Cache of choice values
-    private static Hashtable choiceValues = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap choiceValues = new java.util.concurrent.ConcurrentHashMap();
 }

@@ -28,6 +28,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.idm.server;
 
 import com.iplanet.am.sdk.remote.*;
@@ -42,6 +46,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.iplanet.services.comm.server.PLLServer;
 import com.iplanet.services.comm.server.SendNotificationException;
@@ -93,11 +99,11 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
     // Cache of modifications for last 30 minutes & notification URLs
     protected static int cacheSize = -1;
         
-    static LinkedList idrepoCacheIndices = new LinkedList();
+    static ConcurrentLinkedQueue idrepoCacheIndices = new ConcurrentLinkedQueue();
         
-    static HashMap idrepoCache = null;
+    static ConcurrentHashMap idrepoCache = null;
     
-    protected static HashMap idRepoNotificationURLs = new HashMap();
+    protected static ConcurrentHashMap idRepoNotificationURLs = new ConcurrentHashMap();
     
     protected static String serverURL ;
     protected static URL urlServer;
@@ -129,7 +135,7 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
     private static void initialize_cache() {
         initialize_cacheSize();
         if (idrepoCache == null && cacheSize > 0) {
-            idrepoCache = new HashMap(cacheSize);
+            idrepoCache = new ConcurrentHashMap(cacheSize);
         }
     }
 
@@ -659,9 +665,9 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
     public void deRegisterNotificationURL_idrepo(
         String notificationID)
     throws RemoteException {
-        synchronized (idRepoNotificationURLs) {
+        //synchronized (idRepoNotificationURLs) {
             idRepoNotificationURLs.remove(notificationID);
-        }
+        //}
     }
     
     public Set objectsChanged_idrepo(int time) throws RemoteException {
@@ -671,10 +677,10 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
         long cacheIndex = System.currentTimeMillis() / 60000;
         for (int i = 0; i < time + 3; i++) {
             Set modDNs = (Set)idrepoCache.get(Long.toString(cacheIndex));
-            synchronized(this){
+            //synchronized(this){
            	 if (modDNs != null)
                 	answer.addAll(modDNs);
-            }
+            //}
             cacheIndex--;
         }
         if (idRepoDebug.messageEnabled()) {
@@ -691,9 +697,9 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
         try {
             // Check URL is not the local server
             if (!isClientOnSameServer(url)) {
-                synchronized (idRepoNotificationURLs) {
+                //synchronized (idRepoNotificationURLs) {
                     idRepoNotificationURLs.put(id, new URL(url));
-                }
+                //}
                 if (idRepoDebug.messageEnabled()) {
                     idRepoDebug.message("IdRepoJAXRPCObjectImpl." 
                             + "registerNotificationURL_idrepo() - register " 
@@ -786,7 +792,7 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
                 modDNs = new HashSet();
                 idrepoCache.put(cacheIndex, modDNs);
                 // Maintain cacheIndex
-                idrepoCacheIndices.addFirst(cacheIndex);
+                idrepoCacheIndices.add(cacheIndex);
                 cleanupCache(idrepoCacheIndices, idrepoCache, currentTime);
             }
 
@@ -805,7 +811,8 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
                 " notificationURLS " + idRepoNotificationURLs.values());
         }
         NotificationSet ns = null;
-        synchronized (idRepoNotificationURLs) {
+        //synchronized (idRepoNotificationURLs) 
+        {
             for (Iterator entries = idRepoNotificationURLs.entrySet().iterator(); 
                 entries.hasNext();) {
                 Map.Entry entry = (Map.Entry) entries.next();
@@ -838,12 +845,12 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
         }
     }
     
-    protected static void cleanupCache(LinkedList cIndices, HashMap thisCache,
+    protected static void cleanupCache(ConcurrentLinkedQueue cIndices, ConcurrentHashMap thisCache,
             long currentTime) {
 
         // remove the last cache entries
         if (cIndices.size() > cacheSize) {
-            String removedIndex = (String)cIndices.removeLast();
+            String removedIndex = (String)cIndices.poll();
             thisCache.remove(removedIndex);
             if (idRepoDebug.messageEnabled()) {
                 idRepoDebug.message("IdRepoJAXRPCObjectImpl:cleanupCache last "
@@ -852,15 +859,15 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
         }
 
         // remove expired cache entries
-        long lastIndex = Long.parseLong((String)cIndices.getLast());
+        long lastIndex = Long.parseLong((String)cIndices.poll());
         while ((currentTime - cacheSize) > lastIndex) {
-            String removedIndex = (String)cIndices.removeLast();
+            String removedIndex = (String)cIndices.poll();
             thisCache.remove(removedIndex);
             if (idRepoDebug.messageEnabled()) {
                 idRepoDebug.message("IdRepoJAXRPCObjectImpl:cleanupCache expired "
                         + removedIndex);
             }
-            lastIndex = Long.parseLong((String)cIndices.getLast());
+            lastIndex = Long.parseLong((String)cIndices.peek());
         }
     }
  

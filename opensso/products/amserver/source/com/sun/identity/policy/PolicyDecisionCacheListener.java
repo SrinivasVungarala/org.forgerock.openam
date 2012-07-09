@@ -25,6 +25,9 @@
  * $Id: PolicyDecisionCacheListener.java,v 1.4 2009/03/18 17:51:31 dillidorai Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 
@@ -126,7 +129,7 @@ public class PolicyDecisionCacheListener
      * @param evt <code>PolicyEvent</code> indicating the resource
      *        names which got affected.
      */
-    public synchronized void policyChanged(PolicyEvent evt)
+    public  void policyChanged(PolicyEvent evt)
     {
         if (debug.messageEnabled()) {
             debug.message("PolicyDecisionCacheListener.policyChanged()");

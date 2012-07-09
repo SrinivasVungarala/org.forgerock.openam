@@ -25,6 +25,9 @@
  * $Id: ResourceResultCache.java,v 1.21 2010/01/21 22:18:01 dillidorai Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.policy.client;
@@ -50,6 +53,7 @@ import com.iplanet.services.comm.share.Response;
 import com.iplanet.services.naming.WebtopNaming;
 import com.iplanet.services.naming.URLNotFoundException;
 import com.sun.identity.common.HttpURLConnectionManager;
+import com.sun.identity.diagnostic.base.core.ui.gui.event.MessageListener;
 
 import com.sun.identity.idm.AMIdentity;
 import com.sun.identity.idm.IdUtils;
@@ -87,6 +91,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.policy.ResBundleUtils;
 
 
@@ -107,15 +113,14 @@ class ResourceResultCache implements SSOTokenListener {
     private static ResourceResultCache resourceResultCache;
 
     private PolicyProperties policyProperties;
-    private Set remotePolicyListeners 
-            = Collections.synchronizedSet(new HashSet(10));
+    private Set remotePolicyListeners =Collections.newSetFromMap(new ConcurrentHashMap(10));//Collections.synchronizedSet(new HashSet(10));
 
     //serviceName -> resourceName -> sessionId -> scope -> result
-    private Map resultCache = new HashMap(10); 
+    final private static Map<String,Cache<String,Cache<String,ConcurrentHashMap<String,Object[]>>>> resultCache 
+    	= new ConcurrentHashMap<String,Cache<String,Cache<String,ConcurrentHashMap<String,Object[]>>>>(10); 
 
     private PolicyNotificationHandler notificationHandler;
-    private Set tokenRegistry = 
-        Collections.synchronizedSet(new HashSet(10000));
+    final private Set tokenRegistry = Collections.newSetFromMap(new ConcurrentHashMap(10000));//Collections.synchronizedSet(new HashSet(10000));
     private int        cacheTtl;
     private Set        advicesHandleableByAM; 
 
@@ -431,53 +436,56 @@ class ResourceResultCache implements SSOTokenListener {
                     + ":entering ");
         }
 
-        Map resourceTokenIDsMap = null;
+        Cache<String,Cache<String,ConcurrentHashMap<String,Object[]>>> resourceTokenIDsMap = null;
         // resultCache -> serviceName -> resourceName -> sessionId -> scope -> result
-        synchronized(resultCache) {
+        //synchronized(resultCache) {
             // resourceName -> sessionId -> scope -> result
-            resourceTokenIDsMap = (Map)resultCache.get(serviceName);
+            resourceTokenIDsMap = resultCache.get(serviceName);
             if (resourceTokenIDsMap == null) {
                 // changed to fix 4295 Policy cache causes frequent 
                 // full gc or out of memory issues
-                resourceTokenIDsMap 
-                        = new Cache(policyProperties.getResultsCacheResourceCap());
-                resultCache.put(serviceName, resourceTokenIDsMap);
+            	synchronized (this) {
+            		if (resourceTokenIDsMap == null) {
+            			resourceTokenIDsMap = new Cache(getClass().getName()+"."+serviceName+".resourceTokenIDsMap",policyProperties.getResultsCacheResourceCap());
+                        resultCache.put(serviceName, resourceTokenIDsMap);
+            		}
+				}
             }
-        }
+        //}
 
-        Map tokenIDScopesMap = null;
+        Cache<String,ConcurrentHashMap<String,Object[]>> tokenIDScopesMap = null;
         // resourceTokenIDsMap -> resourceName -> sessionId -> scope -> result
-        synchronized(resourceTokenIDsMap) {
+        //synchronized(resourceTokenIDsMap) {
             // sessionId -> scope -> result
-            tokenIDScopesMap = (Map)resourceTokenIDsMap.get(resourceName);
+            tokenIDScopesMap = resourceTokenIDsMap.get(resourceName);
             if (tokenIDScopesMap == null) {
                 // changed to fix 4295 Policy cache causes frequent full 
                 // gc or out of memory issues
-                tokenIDScopesMap  
-                        = new Cache(policyProperties.getResultsCacheSessionCap());
+                tokenIDScopesMap = new Cache(getClass().getName()+"."+resourceName+".tokenIDScopesMap",policyProperties.getResultsCacheSessionCap());
                 resourceTokenIDsMap.put(resourceName, tokenIDScopesMap);
             }
-        }
+        //}
 
-        Map scopeResultsMap= null;
+        ConcurrentHashMap<String,Object[]> scopeResultsMap= null;
         String tokenID =  token.getTokenID().toString();
         // tokenIDScopesMap -> sessionId -> scope -> result
-        synchronized(tokenIDScopesMap) {
-            scopeResultsMap = (Map)tokenIDScopesMap.get(tokenID);
+        //synchronized(tokenIDScopesMap) {
+            scopeResultsMap = tokenIDScopesMap.get(tokenID);
             if (scopeResultsMap == null) {
-                scopeResultsMap = new HashMap();
+                scopeResultsMap = new ConcurrentHashMap();
                 tokenIDScopesMap.put(tokenID, scopeResultsMap);
                 if (!tokenRegistry.contains(tokenID)) {
                     token.addSSOTokenListener(this);
                     tokenRegistry.add(tokenID);
                 }
             }
-        }
+        //}
 
         Object[] results = null;
         boolean fetchResultsFromServer = false;
         // scopeResultsMap -> scope -> result
-        synchronized(scopeResultsMap) {
+        //synchronized(scopeResultsMap) 
+        {
             results = (Object[])scopeResultsMap.get(scope);
             if ( results == null) {
 
@@ -1222,19 +1230,20 @@ class ResourceResultCache implements SSOTokenListener {
         }
 
         try {
-            synchronized(resultCache) {
-                Set services = (Set)resultCache.keySet();
+            //synchronized(resultCache) 
+            {
+                Set services = resultCache.keySet();
                 Iterator serviceIter = services.iterator();
                 while (serviceIter.hasNext()) {
                     String serviceName = (String)serviceIter.next();
-                    Map resourceTokenIDsMap = (Map)resultCache.get(serviceName);
-                    synchronized(resourceTokenIDsMap) {
-                        Set resources = (Set)resourceTokenIDsMap.keySet();
-                        Iterator resourceIter = resources.iterator();
+                    Cache<String, Cache<String, ConcurrentHashMap<String, Object[]>>> resourceTokenIDsMap = resultCache.get(serviceName);
+                    //synchronized(resourceTokenIDsMap) 
+                    {
+                        //Set resources = resourceTokenIDsMap.get().getKeys().iterator();;
+                        Iterator resourceIter =resourceTokenIDsMap.get().getKeys().iterator();
                         while (resourceIter.hasNext()) {
                             String resource = (String)resourceIter.next();
-                            Map tokenIDScopesMap 
-                                    = (Map)resourceTokenIDsMap.get(resource);
+                            Cache<String, ConcurrentHashMap<String, Object[]>> tokenIDScopesMap = resourceTokenIDsMap.get(resource);
                             if (tokenIDScopesMap != null) {
                                 tokenIDScopesMap.remove(tokenID);
                             }
@@ -1297,7 +1306,8 @@ class ResourceResultCache implements SSOTokenListener {
                         + "clearCacheForResourceNames():"
                         + "affectedResourceName=" + affectedRN);
             }
-            synchronized (resourceTokenIDsMap) {
+            //synchronized (resourceTokenIDsMap) 
+            {
                 Set cachedResourceNames = resourceTokenIDsMap.keySet();
                 Iterator crIter = cachedResourceNames.iterator();
                 while (crIter.hasNext()) {
@@ -1558,9 +1568,9 @@ class ResourceResultCache implements SSOTokenListener {
                     + "clearCachedDecisionsForService():"
                     + "serviceName=" + serviceName);
         } 
-        synchronized(resultCache) {
+        //synchronized(resultCache) {
             resultCache.remove(serviceName);
-        }
+        //}
     }
 
     /**

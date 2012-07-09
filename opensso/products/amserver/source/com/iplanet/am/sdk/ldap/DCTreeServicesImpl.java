@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.ldap;
 
 import java.util.Collections;
@@ -37,6 +40,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.ldap.util.DN;
 
@@ -79,9 +83,9 @@ import com.sun.identity.shared.debug.Debug;
 public class DCTreeServicesImpl extends DCTreeServicesHelper implements
         AMConstants, IDCTreeServices {
 
-    private static Map domainMap = new HashMap();
+    private static Map domainMap = new ConcurrentHashMap();
 
-    private static Map canonicalDomainMap = new HashMap();
+    private static Map canonicalDomainMap = new ConcurrentHashMap();
 
     private static Debug debug = CommonUtils.debug;
 
@@ -485,12 +489,12 @@ public class DCTreeServicesImpl extends DCTreeServicesHelper implements
      *            organization DN
      */
     public void cleanDomainMap(String canonOrgDN) {
-        synchronized (canonicalDomainMap) {
+        //synchronized (canonicalDomainMap) {
             canonicalDomainMap.remove(canonOrgDN);
-        }
-        synchronized (domainMap) {
+        //}
+        //synchronized (domainMap) {
             domainMap.remove(canonOrgDN);
-        }
+        //}
     }
 
     /**

@@ -25,6 +25,9 @@
  * $Id: ProxyPolicyEvaluatorFactory.java,v 1.2 2008/06/25 05:43:44 qcheng Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.policy;
@@ -45,14 +48,14 @@ public class ProxyPolicyEvaluatorFactory {
 
     private static ProxyPolicyEvaluatorFactory proxyPolicyEvaluatorFactory;
 
-    private Cache evaluatorCache;
+    final private static Cache<String,ProxyPolicyEvaluator> evaluatorCache=new Cache<String,ProxyPolicyEvaluator>(ProxyPolicyEvaluatorFactory.class.getName(),CACHE_SIZE);
 
     /**
      * Private constructor, disables instances being created from outside
      * of this class 
      */
     private ProxyPolicyEvaluatorFactory() {
-        evaluatorCache = new Cache(CACHE_SIZE);
+        //evaluatorCache = new Cache(CACHE_SIZE);
     }
 
     /**
@@ -90,7 +93,7 @@ public class ProxyPolicyEvaluatorFactory {
      * @throws PolicyException any policy exception coming from policy frame 
      *                         work
      */
-    synchronized public ProxyPolicyEvaluator getProxyPolicyEvaluator(
+    public ProxyPolicyEvaluator getProxyPolicyEvaluator(
         SSOToken token, String serviceType) 
         throws NoPermissionException, NameNotFoundException, 
         PolicyException, SSOException 

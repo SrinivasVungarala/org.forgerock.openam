@@ -19,6 +19,9 @@
  *
  * Contributor(s): 
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.shared.ldap;
 
 import com.sun.identity.common.GeneralTaskRunnable;
@@ -115,13 +118,13 @@ public class LDAPCache implements Serializable {
     static final long serialVersionUID = 6275167993337814294L;
     
     /**
-     * A hashtable of search results. The key is created from the search
+     * A java.util.concurrent.ConcurrentHashMap of search results. The key is created from the search
      * request parameters (see createKey() method). The value is a Vector
      * where the first element is a Long integer representing the size
      * of all entries, followed by the actual search result entries (of type
      * LDAPEntry).
      */    
-    private Hashtable m_cache;
+    private java.util.concurrent.ConcurrentHashMap m_cache;
     
     /**
      * A list of cached entries ordered by time (augments m_cache). Each
@@ -567,7 +570,7 @@ public class LDAPCache implements Serializable {
     }
 
     /**
-     * Add the entry to the hashtable cache and to the vector respectively.
+     * Add the entry to the java.util.concurrent.ConcurrentHashMap cache and to the vector respectively.
      * The vector is used to keep track of the order of the entries being added.
      * @param key the key for the cache entry
      * @param value the cache entry being added to the cache for the specified
@@ -710,7 +713,7 @@ public class LDAPCache implements Serializable {
      */
     private void init(long ttl, long size)
     {
-        m_cache = new Hashtable();
+        m_cache = new java.util.concurrent.ConcurrentHashMap();
         m_timeToLive = ttl*1000;
         m_maxSize = size;
         m_remainingSize = size;

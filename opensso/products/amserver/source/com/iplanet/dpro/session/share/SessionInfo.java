@@ -29,10 +29,14 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session.share;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.xml.XMLUtils;
 
@@ -73,7 +77,7 @@ public class SessionInfo {
     /** <code>Session</code> state */
      public String state;
 
-    public Hashtable properties = new Hashtable();
+    public ConcurrentHashMap<String, String> properties = new ConcurrentHashMap<String, String>(10);
 
     static final String QUOTE = "\"";
 

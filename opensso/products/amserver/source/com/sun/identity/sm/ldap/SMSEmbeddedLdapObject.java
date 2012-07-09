@@ -27,6 +27,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm.ldap;
 
 import java.text.MessageFormat;
@@ -41,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -98,11 +103,9 @@ public class SMSEmbeddedLdapObject extends SMSObjectDB
     static int entriesPresentCacheSize = 1000;
     static boolean initializedNotification;
 
-    static Set entriesPresent = Collections.synchronizedSet(
-        new LinkedHashSet());
+    final static Set entriesPresent = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new LinkedHashSet());
 
-    static Set entriesNotPresent = Collections.synchronizedSet(
-        new LinkedHashSet());
+    final static Set entriesNotPresent = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new LinkedHashSet());
 
     // Other parameters
     static ResourceBundle bundle;
@@ -612,7 +615,8 @@ public class SMSEmbeddedLdapObject extends SMSObjectDB
             initializeNotification();
             entriesPresent.add(dn);
             if (entriesPresent.size() > entriesPresentCacheSize) {
-                synchronized (entriesPresent) {
+                //synchronized (entriesPresent) 
+            	{
                     Iterator items = entriesPresent.iterator();
                     if (items.hasNext()) {
                         items.next();
@@ -624,7 +628,8 @@ public class SMSEmbeddedLdapObject extends SMSObjectDB
             initializeNotification();
             entriesNotPresent.add(dn);
             if (entriesNotPresent.size() > entriesPresentCacheSize) {
-                synchronized (entriesNotPresent) {
+                //synchronized (entriesNotPresent) 
+            	{
                     Iterator items = entriesNotPresent.iterator();
                     if (items.hasNext()) {
                         items.next();

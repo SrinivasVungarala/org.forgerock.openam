@@ -24,6 +24,9 @@
  *
  * $Id: ReferredApplicationManager.java,v 1.2 2010/01/20 17:01:35 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.entitlement;
 
@@ -33,6 +36,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -43,8 +47,8 @@ public class ReferredApplicationManager {
     private static final ReferredApplicationManager instance = new
         ReferredApplicationManager();
     private Map<String, Set<ReferredApplication>> mapRealmToReferredAppls =
-        new HashMap<String, Set<ReferredApplication>>();
-    private ReadWriteLock rwlock = new ReentrantReadWriteLock();
+        new ConcurrentHashMap<String, Set<ReferredApplication>>();
+    //private ReadWriteLock rwlock = new ReentrantReadWriteLock();
 
     private ReferredApplicationManager() {
         clearCache();
@@ -57,38 +61,38 @@ public class ReferredApplicationManager {
 
     public Set<ReferredApplication> getReferredApplications(String realm)
         throws EntitlementException {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
         try {
             Set<ReferredApplication> set = mapRealmToReferredAppls.get(realm);
             if (set != null) {
                 return set;
             }
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
 
 
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
             constructApplications(realm);
             return mapRealmToReferredAppls.get(realm);
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
     void clearCache(String realm) {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
             mapRealmToReferredAppls.remove(realm);
             ApplicationManager.clearCache(realm);
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
     public void clearCache() {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
             if (mapRealmToReferredAppls.isEmpty()) {
                 mapRealmToReferredAppls.put("/", Collections.EMPTY_SET);
@@ -103,22 +107,22 @@ public class ReferredApplicationManager {
                 }
             }
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
     private void constructApplications(String realm)
         throws EntitlementException {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
         try {
             Set<ReferredApplication> set = mapRealmToReferredAppls.get(realm);
             if (set != null) {
                 return;
             }
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
             Set<ReferredApplication> set = mapRealmToReferredAppls.get(realm);
             if (set != null) {
@@ -140,7 +144,7 @@ public class ReferredApplicationManager {
                     mapRealmToReferralPrivileges.get(r), set, tmpMap);
             }
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 

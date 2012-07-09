@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2010-2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.sm;
 
@@ -42,6 +45,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The class <code>ServiceConfigImpl</code> provides interfaces to read the
@@ -532,7 +536,8 @@ class ServiceConfigImpl implements ServiceListener {
         }
 
         // Add to cache
-        synchronized (configImpls) {
+        //synchronized (configImpls) 
+        {
             // Check if already added by another thread
             ServiceConfigImpl tmp = getFromCache(cacheName, null);
             if (tmp == null) {
@@ -613,7 +618,7 @@ class ServiceConfigImpl implements ServiceListener {
         CachedSMSEntry answer = CachedSMSEntry.getInstance(t, dn);
         Set sudoPrincipals = (Set) userPrincipals.get(cacheName);
         if (sudoPrincipals == null) {
-            sudoPrincipals = Collections.synchronizedSet(new HashSet(2));
+            sudoPrincipals = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet(2));
             userPrincipals.put(cacheName, sudoPrincipals);
         }
         sudoPrincipals.add(t.getTokenID().toString());
@@ -622,7 +627,8 @@ class ServiceConfigImpl implements ServiceListener {
 
     // Clears the cache
     static void clearCache() {
-        synchronized (configImpls) {
+        //synchronized (configImpls) 
+        {
             for (Iterator items = configImpls.values().iterator();
                 items.hasNext();) {
                 ServiceConfigImpl sc = (ServiceConfigImpl) items.next();
@@ -784,10 +790,9 @@ class ServiceConfigImpl implements ServiceListener {
     }
 
     // Static variables
-    private static Map configImpls = Collections.synchronizedMap(new HashMap());
+    private static Map configImpls = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
-    private static Map userPrincipals = Collections.synchronizedMap(
-        new HashMap());
+    private static Map userPrincipals = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     private static Debug debug = SMSEntry.debug;
 }

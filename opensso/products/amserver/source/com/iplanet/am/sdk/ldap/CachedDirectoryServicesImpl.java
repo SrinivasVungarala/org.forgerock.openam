@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.ldap;
 
 import java.security.AccessController;
@@ -68,7 +71,7 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
     private static IDirectoryServices instance = null;
 
     // Class Private
-    private Cache sdkCache;
+    private Cache<String,CacheBlock> sdkCache;
 
     private CacheStats cacheStats;
 
@@ -107,7 +110,8 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
     }
 
     private void initializeCache() {
-        sdkCache = new Cache(maxSize);
+        //sdkCache = new Cache(maxSize);
+    	sdkCache =new Cache<String,CacheBlock>(getClass().getName(), maxSize);
     }
 
     /**
@@ -116,7 +120,8 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
      * @return the size of the SDK LRU cache
      */
     public int getSize() {
-        return sdkCache.size();
+        //return sdkCache.size();
+    	return maxSize;
     }
 
     protected static synchronized IDirectoryServices getInstance() {
@@ -154,17 +159,18 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n<<<<<<< BEGIN SDK CACHE CONTENTS >>>>>>>>");
-        if (!sdkCache.isEmpty()) { // Should never be null
-            Enumeration cacheKeys = sdkCache.keys();
-            while (cacheKeys.hasMoreElements()) {
-                String key = (String) cacheKeys.nextElement();
-                CacheBlock cb = (CacheBlock) sdkCache.get(key);
-                sb.append("\nSDK Cache Block: ").append(key);
-                sb.append(cb.toString());
-            }
-        } else {
-            sb.append("<empty>");
-        }
+        sb.append(sdkCache.get().toString());
+//        if (!sdkCache.isEmpty()) { // Should never be null
+//            Enumeration cacheKeys = sdkCache.keys();
+//            while (cacheKeys.hasMoreElements()) {
+//                String key = (String) cacheKeys.nextElement();
+//                CacheBlock cb = (CacheBlock) sdkCache.get(key);
+//                sb.append("\nSDK Cache Block: ").append(key);
+//                sb.append(cb.toString());
+//            }
+//        } else {
+//            sb.append("<empty>");
+//        }
         sb.append("\n<<<<<<< END SDK CACHE CONTENTS >>>>>>>>");
         return sb.toString();
     }
@@ -173,35 +179,41 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
     // Update/Dirty methods of this class.
     // *************************************************************************
     private void removeCachedAttributes(String affectDNs, Set attrNames) {
-        Enumeration cacheKeys = sdkCache.keys();
-        while (cacheKeys.hasMoreElements()) {
-            String key = (String) cacheKeys.nextElement();
-            int l1 = key.length();
-            int l2 = affectDNs.length();
-            if (key.regionMatches(true, (l1 - l2), affectDNs, 0, l2)) {
-                // key ends with 'affectDN' string
-                CacheBlock cb = (CacheBlock) sdkCache.get(key);
-                if (cb != null && !cb.hasExpiredAndUpdated() && cb.isExists()) {
-                    cb.removeAttributes(attrNames);
-                }
-            }
-        }
+    	CacheBlock cb = (CacheBlock) sdkCache.get(affectDNs);
+    	if (cb!=null)
+    		cb.removeAttributes(attrNames);
+    	else
+    		sdkCache.remove(affectDNs);
+//        Enumeration cacheKeys = sdkCache.keys();
+//        while (cacheKeys.hasMoreElements()) {
+//            String key = (String) cacheKeys.nextElement();
+//            int l1 = key.length();
+//            int l2 = affectDNs.length();
+//            if (key.regionMatches(true, (l1 - l2), affectDNs, 0, l2)) {
+//                // key ends with 'affectDN' string
+//                CacheBlock cb = (CacheBlock) sdkCache.get(key);
+//                if (cb != null && !cb.hasExpiredAndUpdated() && cb.isExists()) {
+//                    cb.removeAttributes(attrNames);
+//                }
+//            }
+//        }
     }
 
     private void clearCachedEntries(String affectDNs) {
-        Enumeration cacheKeys = sdkCache.keys();
-        while (cacheKeys.hasMoreElements()) {
-            String key = (String) cacheKeys.nextElement();
-            int l1 = key.length();
-            int l2 = affectDNs.length();
-            if (key.regionMatches(true, (l1 - l2), affectDNs, 0, l2)) {
-                // key ends with 'affectDN' string
-                CacheBlock cb = (CacheBlock) sdkCache.get(key);
-                if (cb != null) {
-                    cb.clear();
-                }
-            }
-        }
+    	removeCachedAttributes(affectDNs, null);
+//        Enumeration cacheKeys = sdkCache.keys();
+//        while (cacheKeys.hasMoreElements()) {
+//            String key = (String) cacheKeys.nextElement();
+//            int l1 = key.length();
+//            int l2 = affectDNs.length();
+//            if (key.regionMatches(true, (l1 - l2), affectDNs, 0, l2)) {
+//                // key ends with 'affectDN' string
+//                CacheBlock cb = (CacheBlock) sdkCache.get(key);
+//                if (cb != null) {
+//                    cb.clear();
+//                }
+//            }
+//        }
     }
 
     /**
@@ -242,24 +254,34 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
             }
             break;
         case AMEvent.OBJECT_REMOVED:
-            cb = (CacheBlock) sdkCache.remove(dn);
-            if (cb != null) {
-                cb.clear(); // Clear anyway & help the GC process
-            }
-            if (cosType) {
-                removeCachedAttributes(dn, attrNames);
-            }
+        	cb = sdkCache.get(dn);
+        	if (cb!=null){
+        		//cb.clear();
+        		sdkCache.remove(dn);
+        	}
+//            cb = (CacheBlock) sdkCache.remove(dn);
+//            if (cb != null) {
+//                cb.clear(); // Clear anyway & help the GC process
+//            }
+//            if (cosType) {
+//                removeCachedAttributes(dn, attrNames);
+//            }
             break;
         case AMEvent.OBJECT_RENAMED:
             // Better to remove the renamed entry, or else it will be just
             // hanging in the cache, until LRU kicks in.
-            cb = (CacheBlock) sdkCache.remove(dn);
-            if (cb != null) {
-                cb.clear(); // Clear anyway & help the GC process
-            }
-            if (cosType) {
-                removeCachedAttributes(dn, attrNames);
-            }
+        	cb = sdkCache.get(dn);
+        	if (cb!=null){
+        		//cb.clear();
+        		sdkCache.remove(dn);
+        	}
+//            cb = (CacheBlock) sdkCache.remove(dn);
+//            if (cb != null) {
+//                cb.clear(); // Clear anyway & help the GC process
+//            }
+//            if (cosType) {
+//                removeCachedAttributes(dn, attrNames);
+//            }
             break;
         case AMEvent.OBJECT_CHANGED:
             cb = (CacheBlock) sdkCache.get(dn);
@@ -288,12 +310,12 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
      * marked dirty).
      * 
      */
-    public synchronized void clearCache() {
+    public void clearCache() {
         sdkCache.clear();
-        initializeCache();
+        //initializeCache();
     }
 
-    private synchronized void removeFromCache(String dn) {
+    private void removeFromCache(String dn) {
         String key = CommonUtils.formatToRFC(dn);
         sdkCache.remove(key);
     }
@@ -940,9 +962,16 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
         // operation as the operation could have been performed by some other
         // process such as amadmin.
         String oldDN = CommonUtils.formatToRFC(entryDN);
-        CacheBlock cb = (CacheBlock) sdkCache.remove(oldDN);
-        newDN = CommonUtils.formatToRFC(newDN);
-        sdkCache.put(newDN, cb);
+        
+//        CacheBlock cb = (CacheBlock) sdkCache.remove(oldDN);
+//        newDN = CommonUtils.formatToRFC(newDN);
+//        sdkCache.put(newDN, cb);
+        CacheBlock cb = (CacheBlock) sdkCache.get(oldDN);
+        if (cb!=null){
+        	sdkCache.remove(oldDN);
+        	newDN = CommonUtils.formatToRFC(newDN);
+        	sdkCache.put(newDN, cb);
+        }
         return newDN;
     }
 

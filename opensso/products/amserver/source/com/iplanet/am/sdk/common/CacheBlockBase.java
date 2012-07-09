@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.common;
 
 import com.iplanet.am.sdk.AMHashMap;
@@ -40,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class represents the value part stored in the AMCacheManager's cache.
@@ -120,7 +124,7 @@ public abstract class CacheBlockBase {
         this.organizationDN = orgDN;
     }
 
-    public synchronized void setExists(boolean exists) {
+    public  void setExists(boolean exists) {
         if (exists) {
             cacheEntries = new AMHashMap();
             stringAttributes = new AMHashMap(false);
@@ -130,25 +134,25 @@ public abstract class CacheBlockBase {
         updateLastModifiedTime();
     }
 
-    private synchronized void setLastModifiedTime() {
+    private  void setLastModifiedTime() {
         if (isEntryExpirationEnabled()) { // First time setup
             lastModifiedTime = System.currentTimeMillis();
         }
     }
 
-    private synchronized void updateLastModifiedTime() {
+    private  void updateLastModifiedTime() {
         if (isEntryExpirationEnabled() && isExpired) {
             lastModifiedTime = System.currentTimeMillis();
             isExpired = false;
         }
     }
 
-    public synchronized void setObjectType(int type) {
+    public  void setObjectType(int type) {
         objectType = type;
         updateLastModifiedTime();
     }
 
-    public synchronized void setOrganizationDN(String orgDN) {
+    public  void setOrganizationDN(String orgDN) {
         organizationDN = orgDN;
         updateLastModifiedTime();
     }
@@ -182,13 +186,13 @@ public abstract class CacheBlockBase {
      * 
      * @return true if it represents a valid entry, false otherwise
      */
-    public synchronized boolean isExists() {
+    public  boolean isExists() {
         // We cannot call expiredAndUpdated() here as it will change the
         // behaviour of the method. Hence it needs to called externally.
         return isValidEntry;
     }
 
-    public synchronized boolean hasExpiredAndUpdated() {
+    public  boolean hasExpiredAndUpdated() {
         // We need to have the isExpired variable to make sure
         // the notifications are sent only once.
         if (isEntryExpirationEnabled() && !isExpired) { // Happens only if
@@ -219,12 +223,12 @@ public abstract class CacheBlockBase {
         return isExpired;
     }
 
-    public synchronized boolean hasCache(String principalDN) {
+    public  boolean hasCache(String principalDN) {
         CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
         return (ce != null && !hasExpiredAndUpdated());
     }
 
-    public synchronized boolean hasCompleteSet(String principalDN) {
+    public  boolean hasCompleteSet(String principalDN) {
         CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
         boolean completeSet = false;
         if (ce != null && !hasExpiredAndUpdated()) {
@@ -233,12 +237,12 @@ public abstract class CacheBlockBase {
         return completeSet;
     }
 
-    public synchronized Map getAttributes(String principalDN, 
+    public  Map getAttributes(String principalDN, 
             boolean byteValues) {
         return (getAttributes(principalDN, null, byteValues));
     }
 
-    public synchronized Map getAttributes(String principalDN, Set attrNames,
+    public  Map getAttributes(String principalDN, Set attrNames,
             boolean byteValues) {
         Map attributes = new AMHashMap(byteValues);
 
@@ -326,7 +330,7 @@ public abstract class CacheBlockBase {
         return attributes;
     }
 
-    public synchronized void putAttributes(String principalDN, Map attributes,
+    public  void putAttributes(String principalDN, Map attributes,
             Set inAccessibleAttrNames, boolean isCompleteSet, 
             boolean byteValues) {
         CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
@@ -350,14 +354,14 @@ public abstract class CacheBlockBase {
         updateLastModifiedTime();
     }
 
-    public synchronized void removeAttributes(String principalDN) {
+    public  void removeAttributes(String principalDN) {
         CacheEntry ce = (CacheEntry) cacheEntries.remove(principalDN);
         if (ce != null) {
             ce.clear(); // To remove all used references
         }
     }
 
-    public synchronized void removeAttributes(Set attrNames) {
+    public  void removeAttributes(Set attrNames) {
         if ((attrNames != null) && (!attrNames.isEmpty())) {
             stringAttributes.removeKeys(attrNames);
             byteAttributes.removeKeys(attrNames);
@@ -370,7 +374,7 @@ public abstract class CacheBlockBase {
         }
     }
 
-    private synchronized void removeAttributes(String principalDN, 
+    private  void removeAttributes(String principalDN, 
             Set attrNames) {
         CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
         if (ce != null) {
@@ -378,7 +382,7 @@ public abstract class CacheBlockBase {
         }
     }
 
-    public synchronized void replaceAttributes(String principalDN,
+    public  void replaceAttributes(String principalDN,
             Map sAttributes, Map bAttributes) {
 
         if (sAttributes != null && !sAttributes.isEmpty()) {
@@ -392,7 +396,7 @@ public abstract class CacheBlockBase {
      * Should be cleared, only if the entry is still valid only the data has
      * changed. If entry has been deleted then should be removed.
      */
-    public synchronized void clear() {
+    public  void clear() {
         if (isValidEntry) { // Clear only if it is a valid entry
             // If entry is not valid then all these maps will be null
             stringAttributes.clear();
@@ -451,8 +455,10 @@ public abstract class CacheBlockBase {
         private Set inAccessibleAttrNames;
 
         CacheEntry() {
-            readableAttrNames = new HashSet();
-            inAccessibleAttrNames = new HashSet();
+            //readableAttrNames = new HashSet();
+            //inAccessibleAttrNames = new HashSet();
+        	readableAttrNames =  Collections.newSetFromMap(new ConcurrentHashMap());
+            inAccessibleAttrNames = Collections.newSetFromMap(new ConcurrentHashMap());
         }
 
         /**

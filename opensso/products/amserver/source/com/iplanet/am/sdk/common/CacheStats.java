@@ -25,7 +25,9 @@
  * $Id: CacheStats.java,v 1.4 2008/06/25 05:41:24 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.common;
 
 import com.sun.identity.shared.debug.Debug;
@@ -92,29 +94,29 @@ public class CacheStats implements StatsListener {
 
     public void updateHitCount(int sizeOfCache) {
         if (stats.isEnabled()) {
-            synchronized (this) {
+            //synchronized (this) {
                 totalCacheHits++;
                 totalIntervalHits++;
                 cacheSize = sizeOfCache;
-            }
+            //}
         }
     }
 
     public void incrementRequestCount(int sizeOfCache) {
         if (stats.isEnabled()) {
-            synchronized (this) {
+            //synchronized (this) {
                 totalGetRequests++;
                 intervalCount++;
                 cacheSize = sizeOfCache;
-            }
+            //}
         }
     }
 
-    protected synchronized int getIntervalCount() {
+    protected  int getIntervalCount() {
         return intervalCount;
     }
 
-    public synchronized void printStats() {
+    public  void printStats() {
         // Print Stats information
         stats.record("SDK Cache Statistics" + "\n--------------------"
                 + "\nNumber of requests during this interval: " + intervalCount

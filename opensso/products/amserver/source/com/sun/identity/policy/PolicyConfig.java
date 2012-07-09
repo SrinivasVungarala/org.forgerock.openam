@@ -25,6 +25,9 @@
  * $Id: PolicyConfig.java,v 1.10 2009/01/28 05:35:01 ww203982 Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 
@@ -36,6 +39,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.sm.*;
 import com.iplanet.sso.*;
@@ -207,8 +211,8 @@ public class PolicyConfig implements com.sun.identity.sm.ServiceListener {
 
     private static ServiceConfigManager scm = null;
     private static ServiceSchemaManager ssm = null;
-    private static Map attrMap = new HashMap();
-    private static Map resourceCompMap = new HashMap();
+    private static Map attrMap = new ConcurrentHashMap();
+    private static Map resourceCompMap = new ConcurrentHashMap();
     private static PolicyCache policyCache;
 
     static boolean continueEvaluationOnDenyDecisionFlag = false;
@@ -273,9 +277,9 @@ public class PolicyConfig implements com.sun.identity.sm.ServiceListener {
             }
         }
         if (service != null)  {
-            synchronized(resourceCompMap) {
+            //synchronized(resourceCompMap) {
                 config = ((Map)resourceCompMap.get(service));
-            }
+            //}
         }
         return config;
     }
@@ -334,14 +338,14 @@ public class PolicyConfig implements com.sun.identity.sm.ServiceListener {
 
                 //Add organizationDN to the map
                 orgAttrMap.put(PolicyConfig.ORG_DN, org);
-                synchronized (attrMap) {
+                //synchronized (attrMap) {
                     attrMap.put(org, orgAttrMap);
-                }
+                //}
             }
         }
-        synchronized(attrMap) {
+        //synchronized(attrMap) {
             return((Map)attrMap.get(org));
-        }
+        //}
     }
 
     /**
@@ -421,9 +425,9 @@ public class PolicyConfig implements com.sun.identity.sm.ServiceListener {
         if (orgConfig != null) {
             orgAttrMap = processOrgAttrMap(orgConfig.getAttributes());
         }
-        synchronized (attrMap) {
+        //synchronized (attrMap) {
             attrMap.put(orgName, orgAttrMap);
-        }
+        //}
         if (policyCache != null) {
             policyCache.policyConfigChanged(orgName);
         }
@@ -571,9 +575,9 @@ public class PolicyConfig implements com.sun.identity.sm.ServiceListener {
                             "processResourceMap():configMap.toString()"+
                             configMap.toString());
                     }
-                    synchronized(resourceCompMap) {
+                    //synchronized(resourceCompMap) {
                         resourceCompMap.put(serviceType, configMap);
-                    }
+                    //}
                 }
             }
         }

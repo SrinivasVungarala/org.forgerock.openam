@@ -25,7 +25,9 @@
  * $Id: LDAPv3Repo.java,v 1.1 2009/08/10 17:35:43 superpat7 Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.idm.plugins.ldapv3;
 
 import java.util.ArrayList;
@@ -264,12 +266,12 @@ public class LDAPv3Repo extends IdRepo {
                 | LDAPPersistSearchControl.MODDN;
 
     // access to the _eventsMgr and _eventsMgr needs to be sync.
-    protected static Hashtable _eventsMgr = new Hashtable();
+    protected static java.util.concurrent.ConcurrentHashMap _eventsMgr = new java.util.concurrent.ConcurrentHashMap();
 
-    protected static Hashtable _numRequest = new Hashtable();
+    protected static java.util.concurrent.ConcurrentHashMap _numRequest = new java.util.concurrent.ConcurrentHashMap();
 
-    protected static Map listOfPS = 
-        Collections.synchronizedMap(new HashMap());
+    protected static java.util.concurrent.ConcurrentHashMap listOfPS = 
+    		java.util.concurrent.ConcurrentHashMap();
 
     private boolean hasListener = false;
 

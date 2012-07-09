@@ -28,6 +28,10 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.log;
 
 import java.io.IOException;
@@ -79,7 +83,7 @@ public class LogManager extends java.util.logging.LogManager {
      * A list to maintain strong references to all loggers that are added,
      * workaround for the file handle issue in OPENAM-184.
      */
-    private static Hashtable loggersTable = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap loggersTable = new java.util.concurrent.ConcurrentHashMap();
 
 
     /**

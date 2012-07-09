@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.cdm;
 
 import com.iplanet.services.cdm.clientschema.AMClientCapData;
@@ -43,6 +46,7 @@ import com.sun.identity.sm.SMSException;
 import com.sun.identity.sm.ServiceSchema;
 import com.sun.identity.sm.ServiceSchemaManager;
 import java.security.AccessController;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -50,6 +54,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class gives out instances of Client object so that it hides the
@@ -78,52 +83,52 @@ public class DefaultClientTypesManager implements ClientTypesManager,
     //
     // Holds all the instances from InternalDB
     //
-    private static Map internalClientData = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap internalClientData = new java.util.concurrent.ConcurrentHashMap();
 
     //
     // Holds all the instances from ExternalDB
     //
-    private static Map externalClientData = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap externalClientData = new java.util.concurrent.ConcurrentHashMap();
 
-    private static Map mergedClientData = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap mergedClientData = new java.util.concurrent.ConcurrentHashMap();
 
     //
     // indexed by userAgent
     //
-    private static Map userAgentMap = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap userAgentMap = new java.util.concurrent.ConcurrentHashMap();
 
     //
     // indexed by clientType - may not be "full" client
     //
-    private static Map clientTypeMap = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap clientTypeMap = new java.util.concurrent.ConcurrentHashMap();
 
     //
     // keep track of update clients.(for not re-creating client on
     // Event notification).
     //
-    private static Set updatedClients = new HashSet();
+    final private static Set updatedClients = Collections.newSetFromMap(new ConcurrentHashMap());//new HashSet();
 
     //
     // To keep track of partial matches. Key = <actual_user-agent>
     // Value = clientType String matched previously
     //
-    private static Map partialMatchMap = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap partialMatchMap = new java.util.concurrent.ConcurrentHashMap();
 
     //
     // To keep track of all the clients that have been completely loaded from
     // the both internal and external DB. Caches Client objects.
     //
-    private static Map loadedClientsMap = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap loadedClientsMap = new java.util.concurrent.ConcurrentHashMap();
 
     // To keep track of all the clients that have been loaded from
     // the internal DB. Caches Maps of client properties.
     //
-    private static Map loadedInternalClients = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap loadedInternalClients = new java.util.concurrent.ConcurrentHashMap();
 
     // To keep track of all the clients that have been loaded from
     // the external DB. Caches Maps of client properties.
     //
-    private static Map loadedExternalClients = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap loadedExternalClients = new java.util.concurrent.ConcurrentHashMap();
 
     //
     // Key = baseprofile clients;
@@ -182,7 +187,7 @@ public class DefaultClientTypesManager implements ClientTypesManager,
      * Do stuff that needs to get the Manager working.
      */
     public void initManager() {
-        synchronized (userAgentMap) // any static object to sync
+        //synchronized (userAgentMap) // any static object to sync
         {
             if (!isInitialized) {
                 isInitialized = true;
@@ -421,7 +426,7 @@ public class DefaultClientTypesManager implements ClientTypesManager,
     }
 
     private void mergeInternalWithExternal() {
-        mergedClientData = mergeMap(internalClientData, externalClientData);
+        mergedClientData = new java.util.concurrent.ConcurrentHashMap(mergeMap(internalClientData, externalClientData));
     }
 
     /**
@@ -695,7 +700,8 @@ public class DefaultClientTypesManager implements ClientTypesManager,
         }
 
         if (store) {
-            synchronized (internalClientData) {
+            //synchronized (internalClientData) 
+        	{
                 intCapInstance.addClient(token, cMap);
                 cMap = mergeWithParent(cMap);
                 internalClientData.put(clientType, cMap);
@@ -959,7 +965,8 @@ public class DefaultClientTypesManager implements ClientTypesManager,
                  * clients to external. Since modifyClientExternal sync's on
                  * updatedClients, we do the same here.
                  */
-                synchronized (updatedClients) {
+                //synchronized (updatedClients) 
+                {
                     if (!externalClientData.containsKey(clientType)) {
                         Map eMap = extCapInstance.loadMinimalClient(clientType);
                         Map oMap = (Map) mergedClientData.get(clientType);
@@ -979,7 +986,8 @@ public class DefaultClientTypesManager implements ClientTypesManager,
              * maps because the two minimal properties - clientType & UA cannot
              * be modified.
              */
-            synchronized (updatedClients) {
+            //synchronized (updatedClients) 
+            {
                 if (updatedClients.contains(clientType)) {
                     updatedClients.remove(clientType);
                 } else {
@@ -1055,7 +1063,8 @@ public class DefaultClientTypesManager implements ClientTypesManager,
      */
     public int addClientExternal(SSOToken token, Map props)
             throws AMClientCapException {
-        synchronized (externalClientData) {
+        //synchronized (externalClientData) 
+        {
             extCapInstance.addClient(token, props);
 
             String ct = getClientType(props);
@@ -1081,7 +1090,8 @@ public class DefaultClientTypesManager implements ClientTypesManager,
             return 0; // NO-OP
         }
 
-        synchronized (updatedClients) {
+        //synchronized (updatedClients) 
+        {
             extCapInstance.modifyClient(token, props);
 
             String ct = getClientType(props);
@@ -1119,7 +1129,8 @@ public class DefaultClientTypesManager implements ClientTypesManager,
      */
     public int removeClientExternal(SSOToken token, String clientType)
             throws AMClientCapException {
-        synchronized (externalClientData) {
+        //synchronized (externalClientData) 
+        {
             extCapInstance.removeClient(token, clientType);
             removeFromMaps(clientType);
         }

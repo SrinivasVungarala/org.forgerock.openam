@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.idm.plugins.ldapv3;
 
@@ -72,6 +75,7 @@ import com.iplanet.sso.SSOToken;
 import com.sun.identity.idm.IdRepoBundle;
 import com.sun.identity.idm.IdRepoException;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Event Service monitors changes on the server. Implemented with the persistant
@@ -301,7 +305,7 @@ public class LDAPv3EventService implements Runnable {
         _retryErrorCodes = getPropertyRetryErrorCodes(pluginConfig,
                 LDAPv3Config_LDAP_ERROR_CODES);
 
-        _requestList = Collections.synchronizedMap(new HashMap());        
+        _requestList = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());        
         
         LDAPConnection lc = null;
         try {

@@ -24,6 +24,9 @@
  *
  * $Id: SubjectAttributesManager.java,v 1.3 2009/09/24 22:37:43 hengming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.entitlement;
 
@@ -32,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -52,10 +56,10 @@ public class SubjectAttributesManager {
     private static final String DEFAULT_IMPL =
         "com.sun.identity.entitlement.opensso.OpenSSOSubjectAttributesCollector";
     private static Map<String, SubjectAttributesManager> instances =
-        new HashMap<String, SubjectAttributesManager>();
+        new ConcurrentHashMap<String, SubjectAttributesManager>();
     private Subject adminSubject;
 
-    private static ReadWriteLock instancesLock = new ReentrantReadWriteLock();
+    //private static ReadWriteLock instancesLock = new ReentrantReadWriteLock();
 
     private SubjectAttributesManager(Subject adminSubject, String realmName) {
         this.realmName = realmName;
@@ -139,17 +143,17 @@ public class SubjectAttributesManager {
         String realmName) {
         SubjectAttributesManager sam = null;
 
-        instancesLock.readLock().lock();
+        //instancesLock.readLock().lock();
         try {
             sam = instances.get(realmName);
         } finally {
-            instancesLock.readLock().unlock();
+            //instancesLock.readLock().unlock();
         }
 
         if (sam == null) {
             sam = new SubjectAttributesManager(adminSubject, realmName);
 
-            instancesLock.writeLock().lock();
+            //instancesLock.writeLock().lock();
             try {
                 SubjectAttributesManager temp = instances.get(realmName);
                 if(temp == null) {
@@ -158,7 +162,7 @@ public class SubjectAttributesManager {
                     sam = temp;
                 }
             } finally {
-                instancesLock.writeLock().unlock();
+                //instancesLock.writeLock().unlock();
             }
         }
 

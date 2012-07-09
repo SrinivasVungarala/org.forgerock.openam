@@ -28,6 +28,11 @@
 <!--
    Portions Copyrighted 2011-2012 ForgeRock Inc
 -->
+<!--
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+ -->
 
 <project name="openfed-war" default="all">
                 
@@ -137,7 +142,7 @@
         </copy>
 
         <copy todir="${war.package.dir}/WEB-INF/lib">
-            <fileset dir="${extlib.dir}" includes="FastInfoset.jar, jaxrpc-api.jar, jaxrpc-impl.jar, jaxrpc-spi.jar, jsr173_api.jar, mail.jar, relaxngDatatype.jar, webservices-rt.jar, xsdlib.jar" />
+            <fileset dir="${extlib.dir}" includes="slf4j-api.jar,ehcache-core.jar,FastInfoset.jar, jaxrpc-api.jar, jaxrpc-impl.jar, jaxrpc-spi.jar, jsr173_api.jar, mail.jar, relaxngDatatype.jar, webservices-rt.jar, xsdlib.jar" />
         </copy>
         
         <copy todir="${war.package.dir}/WEB-INF/classes" flatten="true">

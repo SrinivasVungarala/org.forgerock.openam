@@ -25,7 +25,9 @@
  * $Id: AMHashMap.java,v 1.7 2009/11/03 00:06:31 hengming Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk;
 
 import java.util.Collections;
@@ -88,15 +90,16 @@ public class AMHashMap extends CaseInsensitiveHashMap {
         byteValues = forByteValues;
     }
 
-    public AMHashMap(HashMap map) {
-        super();
-        if (map != null) {
-            Iterator it = map.keySet().iterator();
-            while (it.hasNext()) {
-                String n = (String) it.next();
-                put(n, map.get(n));
-            }
-        }
+    public AMHashMap(Map map) {
+        super(map);
+//        if (map != null) {
+//        	putAll(map);
+//            Iterator it = map.keySet().iterator();
+//            while (it.hasNext()) {
+//                String n = (String) it.next();
+//                put(n, map.get(n)); 
+//            }
+//        }
     }
 
     /*
@@ -122,14 +125,14 @@ public class AMHashMap extends CaseInsensitiveHashMap {
         }
     }
 
-    private void addNegativeByteAttr(String name) {
+    private void addNegativeByteAttr(Object name) {
         if (byteNegativeAttrs == Collections.EMPTY_SET) {
             byteNegativeAttrs = new CaseInsensitiveHashSet();
         }
         byteNegativeAttrs.add(name);
     }
 
-    private void removeNegativeByteAttr(String name) {
+    private void removeNegativeByteAttr(Object name) {
         if (byteNegativeAttrs != Collections.EMPTY_SET) {
             byteNegativeAttrs.remove(name);
         }
@@ -141,7 +144,7 @@ public class AMHashMap extends CaseInsensitiveHashMap {
         }
     }
 
-    private boolean isNegativeByteAttr(String name) {
+    private boolean isNegativeByteAttr(Object name) {
         // Collections.EMPTY_SET implements contains and returns false. So, we
         // are okay here.
         return byteNegativeAttrs.contains(name);
@@ -159,9 +162,10 @@ public class AMHashMap extends CaseInsensitiveHashMap {
             return Collections.EMPTY_SET;
         }
         Set res = new HashSet();
-        Iterator it = byteNegativeAttrs.iterator();
-        while (it.hasNext()) {
-            res.add(it.next());
+        //Iterator it = byteNegativeAttrs.iterator();
+        //while (it.hasNext()) {
+        for (Object value : byteNegativeAttrs) {
+            res.add(value);
         }
         return res;
     }
@@ -179,9 +183,10 @@ public class AMHashMap extends CaseInsensitiveHashMap {
      */
     public Set getMissingKeys(Set keys) {
         Set missAttrNames = new HashSet();
-        Iterator itr = keys.iterator();
-        while (itr.hasNext()) {
-            String name = (String) itr.next();
+        //Iterator itr = keys.iterator();
+        //while (itr.hasNext()) {
+        for (Object name : keys) {
+            //Object name = itr.next();
             if (get(name) == null) {
                 if (byteValues) {
                     if (!isNegativeByteAttr(name)) {
@@ -212,41 +217,64 @@ public class AMHashMap extends CaseInsensitiveHashMap {
      */
     public Set getMissingAndEmptyKeys(Set keys) {
         Set missAttrNames = new HashSet();
-        Iterator itr = keys.iterator();
+        
+        //Iterator itr = keys.iterator();
         if (!byteValues) { // String values
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                Set values = (Set) get(name);
-                if (values == null) {
-                    missAttrNames.add(name);
-                    put(name, new HashSet());
-                } else if (values.isEmpty()) {
-                    missAttrNames.add(name);
-                }
-            }
+        	for (Object name : keys) {
+        		Set values = (Set)get(name);
+        		if (values == null) {
+                  missAttrNames.add(name);
+                  put(name, new HashSet());
+              } else if (values.isEmpty()) {
+                  missAttrNames.add(name);
+              }
+	        }
+//            while (itr.hasNext()) {
+//                Object name = itr.next();
+//                Set values = (Set) get(name);
+//                if (values == null) {
+//                    missAttrNames.add(name);
+//                    put(name, new HashSet());
+//                } else if (values.isEmpty()) {
+//                    missAttrNames.add(name);
+//                }
+//            }
         } else { // byte values
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                byte[][] values = (byte[][]) get(name);
-                if (values == null) {
-                    missAttrNames.add(name);
-                    addNegativeByteAttr(name);
-                } else if (isNegativeByteAttr(name)) {
-                    missAttrNames.add(name);
-                }
-            }
+        	for (Object name : keys) {
+        		byte[][] values = (byte[][])get(name);
+        		if (values == null) {
+                  missAttrNames.add(name);
+                  addNegativeByteAttr(name);
+              } else if (isNegativeByteAttr(name)) {
+                  missAttrNames.add(name);
+              }
+	        }
+//            while (itr.hasNext()) {
+//            	Object name = itr.next();
+//                byte[][] values = (byte[][]) get(name);
+//                if (values == null) {
+//                    missAttrNames.add(name);
+//                    addNegativeByteAttr(name);
+//                } else if (isNegativeByteAttr(name)) {
+//                    missAttrNames.add(name);
+//                }
+//            }
         }
         return missAttrNames;
     }
 
     public void removeKeys(Set keys) {
         if ((keys != null) && (!keys.isEmpty())) {
-            Iterator itr = keys.iterator();
-            while (itr.hasNext()) {
-                String t = (String) itr.next();
-                remove(t);
-                removeNegativeByteAttr(t);
-            }
+        	for (Object key : keys) {
+        		remove(key);
+                removeNegativeByteAttr(key);
+        	}
+//            Iterator itr = keys.iterator();
+//            while (itr.hasNext()) {
+//                Object t = itr.next();
+//                remove(t);
+//                removeNegativeByteAttr(t);
+//            }
         }
     }
 
@@ -261,26 +289,40 @@ public class AMHashMap extends CaseInsensitiveHashMap {
         if (map == null || map.isEmpty()) {
             return;
         }
-        // Replicating to avoid comparison inside loop
-        Iterator itr = map.keySet().iterator();
         if (!byteValues) { // String values
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                Set values = (Set) map.get(name);
-                this.put(name, getSetCopy(values));
-            }
-        } else { // byte values
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                byte[][] values = (byte[][]) map.get(name);
-                this.put(name, values);
-                this.removeNegativeByteAttr(name);
-            }
-            if (map instanceof AMHashMap) {
+	        for (Map.Entry<Object,Set> element : (Set<Map.Entry<Object,Set>>)map.entrySet()) {
+	        	 this.put(element.getKey(), getSetCopy(element.getValue()));
+	        }
+        }else{
+        	for (Map.Entry<Object,byte[][]> element : (Set<Map.Entry<Object,byte[][]>>)map.entrySet()) {
+        		this.put(element.getKey(), element.getValue());
+                this.removeNegativeByteAttr(element.getKey());
+        	}
+        	if (map instanceof AMHashMap) {
                 this.setNegativeByteAttr(((AMHashMap) map)
                         .getNegativeByteAttrClone());
             }
         }
+        // Replicating to avoid comparison inside loop
+//        Iterator itr = map.keySet().iterator();
+//        if (!byteValues) { // String values
+//            while (itr.hasNext()) {
+//                Object name =  itr.next();
+//                Set values = (Set) map.get(name);
+//                this.put(name, getSetCopy(values));
+//            }
+//        } else { // byte values
+//            while (itr.hasNext()) {
+//            	Object name = itr.next();
+//                byte[][] values = (byte[][]) map.get(name);
+//                this.put(name, values);
+//                this.removeNegativeByteAttr(name);
+//            }
+//            if (map instanceof AMHashMap) {
+//                this.setNegativeByteAttr(((AMHashMap) map)
+//                        .getNegativeByteAttrClone());
+//            }
+//        }
     }
 
     /**
@@ -300,28 +342,45 @@ public class AMHashMap extends CaseInsensitiveHashMap {
             return null;
         }
         Set attrsWithValues = new HashSet();
-        // Replicating to avoid comparison inside loop
-        Iterator itr = map.keySet().iterator();
         if (!byteValues) { // String values
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                Set values = (Set) map.get(name);
-                if ((values == null) || (values.isEmpty())) {
-                    this.put(name, Collections.EMPTY_SET);
-                    attrsWithValues.add(name);
-                } else {
-                    this.put(name, getSetCopy(values));
-                    attrsWithValues.add(name);
-                }
-            }
-        } else { // byte values
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                byte[][] values = (byte[][]) map.get(name);
-                this.put(name, values);
-                attrsWithValues.add(name);
-            }
+	        for (Map.Entry<Object,Set> element : (Set<Map.Entry<Object,Set>>)map.entrySet()) {
+	        	Set values =element.getValue();
+	        	 if ((values == null) || (values.isEmpty())) {
+	                 this.put(element.getKey(), Collections.EMPTY_SET);
+	                 attrsWithValues.add(element.getKey());
+	             } else {
+	                 this.put(element.getKey(), getSetCopy(values));
+	                 attrsWithValues.add(element.getKey());
+	             }
+	        }
+        }else{
+        	for (Map.Entry<Object,byte[][]> element : (Set<Map.Entry<Object,byte[][]>>)map.entrySet()) {
+        		this.put(element.getKey(), element.getValue());
+                attrsWithValues.add(element.getKey());
+        	}
         }
+        // Replicating to avoid comparison inside loop
+//        Iterator itr = map.keySet().iterator();
+//        if (!byteValues) { // String values
+//            while (itr.hasNext()) {
+//                Object name = itr.next();
+//                Set values = (Set) map.get(name);
+//                if ((values == null) || (values.isEmpty())) {
+//                    this.put(name, Collections.EMPTY_SET);
+//                    attrsWithValues.add(name);
+//                } else {
+//                    this.put(name, getSetCopy(values));
+//                    attrsWithValues.add(name);
+//                }
+//            }
+//        } else { // byte values
+//            while (itr.hasNext()) {
+//            	Object name = itr.next();
+//                byte[][] values = (byte[][]) map.get(name);
+//                this.put(name, values);
+//                attrsWithValues.add(name);
+//            }
+//        }
         return attrsWithValues;
     }
 
@@ -340,21 +399,32 @@ public class AMHashMap extends CaseInsensitiveHashMap {
         if (map == null) {
             throw new NullPointerException();
         }
-
         if (!byteValues) { // For String values merge
-            Iterator itr = map.keySet().iterator();
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                Set values = (Set) this.get(name);
-                if (values != null) {
-                    values.addAll((Set) map.get(name));
-                } else {
-                    this.put(name, (Set) map.get(name));
-                }
-            }
+        	for (Map.Entry<Object,Set> element : (Set<Map.Entry<Object,Set>>)map.entrySet()) {
+        		Set values = (Set) this.get(element.getKey());
+        		 if (values != null) {
+                     values.addAll(element.getValue());
+                 } else {
+                     this.put(element.getKey(), element.getValue());
+                 }
+			}
         } else { // For byte values replace ??
             putAll(map);
         }
+//        if (!byteValues) { // For String values merge
+//            Iterator itr = map.keySet().iterator();
+//            while (itr.hasNext()) {
+//                Object name = itr.next();
+//                Set values = (Set) this.get(name);
+//                if (values != null) {
+//                    values.addAll((Set) map.get(name));
+//                } else {
+//                    this.put(name, (Set) map.get(name));
+//                }
+//            }
+//        } else { // For byte values replace ??
+//            putAll(map);
+//        }
     }
 
     /**
@@ -364,15 +434,22 @@ public class AMHashMap extends CaseInsensitiveHashMap {
      *            new entries to be added to the map
      */
     public void addEmptyValues(Set names) {
-        Iterator itr = names.iterator();
-        while (itr.hasNext()) {
-            String name = (String) itr.next();
-            if (!byteValues) {
+    	for (Object name : names) {
+    		if (!byteValues) {
                 put(name, new HashSet());
             } else {
                 addNegativeByteAttr(name);
             }
-        }
+		}
+//        Iterator itr = names.iterator();
+//        while (itr.hasNext()) {
+//            Object name = itr.next();
+//            if (!byteValues) {
+//                put(name, new HashSet());
+//            } else {
+//                addNegativeByteAttr(name);
+//            }
+//        }
     }
 
     /**
@@ -380,18 +457,23 @@ public class AMHashMap extends CaseInsensitiveHashMap {
      */
     public void removeEmptyValues() {
         // We are removing negative attributes here
-        Set emptyKeys = new HashSet();
-        if (!byteValues) {
-            Iterator itr = keySet().iterator();
-            while (itr.hasNext()) {
-                String name = (String) itr.next();
-                Set values = (Set) get(name);
-                if (values.isEmpty()) {
-                    emptyKeys.add(name);
-                }
-            }
-            removeKeys(emptyKeys);
-        }
+    	for (Map.Entry<Object,Set> element : (Set<Map.Entry<Object,Set>>)entrySet()) {
+    		if (element.getValue().isEmpty()){
+    			remove(element.getKey());
+    		}
+    	}
+//        Set emptyKeys = new HashSet();
+//        if (!byteValues) {
+//            Iterator itr = keySet().iterator();
+//            while (itr.hasNext()) {
+//                Object name = itr.next();
+//                Set values = (Set) get(name);
+//                if (values.isEmpty()) {
+//                    emptyKeys.add(name);
+//                }
+//            }
+//            removeKeys(emptyKeys);
+//        }
         // Remove the negative byte attrs
         clearNegativeByteAttrs();
     }
@@ -405,30 +487,38 @@ public class AMHashMap extends CaseInsensitiveHashMap {
      * @return a new AMHashMap that has a copy of all the elements in this map
      */
     public Map getCopy() {
-        if (!byteValues) { // String values
-            Map map = new AMHashMap(size(), false);
-            if (!isEmpty()) {
-                Iterator itr = keySet().iterator();
-                while (itr.hasNext()) {
-                    String name = (String) itr.next();
-                    Set values = (Set) get(name);
-                    map.put(name, getSetCopy(values));
-                }
-            }
-            return map;
-        } else { // byte values
-            Map map = new AMHashMap(size(), true);
-            if (!isEmpty()) {
-                Iterator itr = keySet().iterator();
-                while (itr.hasNext()) {
-                    String name = (String) itr.next();
-                    byte[][] values = (byte[][]) get(name);
-                    map.put(name, getByteArrayCopy(values));
-                }
-            }
-            ((AMHashMap) map).setNegativeByteAttr(getNegativeByteAttrClone());
-            return map;
-        }
+    	AMHashMap map=new AMHashMap(size(),byteValues);
+		for (Map.Entry<Object,Object> element : (Set<Map.Entry<Object,Object>>)entrySet()) 
+			map.put(
+					element.getKey(), 
+					(byteValues) ? getByteArrayCopy((byte[][])element.getValue()) : getSetCopy((Set)element.getValue()));
+		if (byteValues)
+			map.setNegativeByteAttr(getNegativeByteAttrClone());
+		return map;
+//        if (!byteValues) { // String values
+//            Map map = new AMHashMap(size(), false);
+//            if (!isEmpty()) {
+//                Iterator itr = keySet().iterator();
+//                while (itr.hasNext()) {
+//                    String name = (String) itr.next();
+//                    Set values = (Set) get(name);
+//                    map.put(name, getSetCopy(values));
+//                }
+//            }
+//            return map;
+//        } else { // byte values
+//            Map map = new AMHashMap(size(), true);
+//            if (!isEmpty()) {
+//                Iterator itr = keySet().iterator();
+//                while (itr.hasNext()) {
+//                    String name = (String) itr.next();
+//                    byte[][] values = (byte[][]) get(name);
+//                    map.put(name, getByteArrayCopy(values));
+//                }
+//            }
+//            ((AMHashMap) map).setNegativeByteAttr(getNegativeByteAttrClone());
+//            return map;
+//        }
     }
 
     /**
@@ -443,50 +533,70 @@ public class AMHashMap extends CaseInsensitiveHashMap {
      * @return a new AMHashMap that has a copy of all the elements in this map
      */
     public Map getCopy(Set names) {
-        if (!byteValues) { // String values
-            Map map = new AMHashMap(false);
-            if (!isEmpty() && !names.isEmpty()) {
-                Iterator itr = names.iterator();
-                while (itr.hasNext()) {
-                    String name = (String) itr.next();
-                    Set values = (Set) get(name);
-                    if (values != null) {
-                        map.put(name, getSetCopy(values));
-                    }
-                }
-            }
-            return map;
-        } else { // byte values
-            Map map = new AMHashMap(true);
-            if (!isEmpty() && !names.isEmpty()) {
-                Iterator itr = names.iterator();
-                while (itr.hasNext()) {
-                    String name = (String) itr.next();
-                    byte[][] values = (byte[][]) get(name);
-                    if (values != null) {
-                        map.put(name, getByteArrayCopy(values));
-                    }
-                }
-            }
-            ((AMHashMap) map).setNegativeByteAttr(getNegativeByteAttrClone());
-
-            return map;
-        }
+    	if (names==null||names.isEmpty())
+    		return new AMHashMap(0,byteValues);
+    	AMHashMap map=new AMHashMap(size(),byteValues);
+		for (Object key : new CaseInsensitiveHashSet(names)) {
+			Object values=get(key);
+			if (values!=null)
+				map.put(
+						key, 
+						(byteValues) ? getByteArrayCopy((byte[][])values) : getSetCopy((Set)values));
+		}
+		if (byteValues)
+			map.setNegativeByteAttr(getNegativeByteAttrClone());
+		return map;
+//        if (!byteValues) { // String values
+//            Map map = new AMHashMap(false);
+//            if (!isEmpty() && !names.isEmpty()) {
+//                Iterator itr = names.iterator();
+//                while (itr.hasNext()) {
+//                    String name = (String) itr.next();
+//                    Set values = (Set) get(name);
+//                    if (values != null) {
+//                        map.put(name, getSetCopy(values));
+//                    }
+//                }
+//            }
+//            Map map = new AMHashMap(false);
+//            if (!isEmpty() && !names.isEmpty()) {
+//            	for (String name : (Set<String>)names) {
+//            		Set values = (Set) get(name);
+//                    if (values != null) {
+//                        map.put(name, getSetCopy(values));
+//                    }
+//				}
+//            }
+//            return map;
+//        } else { // byte values
+//            Map map = new AMHashMap(true);
+//            if (!isEmpty() && !names.isEmpty()) {
+//                Iterator itr = names.iterator();
+//                while (itr.hasNext()) {
+//                    String name = (String) itr.next();
+//                    byte[][] values = (byte[][]) get(name);
+//                    if (values != null) {
+//                        map.put(name, getByteArrayCopy(values));
+//                    }
+//                }
+//            }
+//            ((AMHashMap) map).setNegativeByteAttr(getNegativeByteAttrClone());
     }
 
     private Set getSetCopy(Set values) {
         if (values == null) {
             return null;
         }
-        Set copyValues = new HashSet(values.size());
-        if (!values.isEmpty()) {
-            Iterator itr = values.iterator();
-            while (itr.hasNext()) {
-                String value = (String) itr.next();
-                copyValues.add(value);
-            }
-        }
-        return copyValues;
+//        Set copyValues = new HashSet(values.size());
+//        if (!values.isEmpty()) {
+//            Iterator itr = values.iterator();
+//            while (itr.hasNext()) {
+//                String value = (String) itr.next();
+//                copyValues.add(value);
+//            }
+//        }
+//        return copyValues;
+        return new HashSet(values);
     }
 
     private byte[][] getByteArrayCopy(byte[][] values) {

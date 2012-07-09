@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.ldap;
 
 import java.security.AccessController;
@@ -46,6 +49,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.ldap.LDAPDN;
 import com.sun.identity.shared.ldap.LDAPException;
@@ -161,7 +165,7 @@ public class DirectoryServicesImpl implements AMConstants, IDirectoryServices {
 
     private static EventManager eventManager;
 
-    private static Map listeners = new HashMap();
+    private static Map listeners = new ConcurrentHashMap();
 
     protected DCTreeServicesImpl dcTreeImpl;
 
@@ -3817,13 +3821,13 @@ public class DirectoryServicesImpl implements AMConstants, IDirectoryServices {
         }
 
         // Add to listeners
-        synchronized (listeners) {
+        //synchronized (listeners) {
             listeners.put(listener, configMap);
             // Check if event service has been started
             if (eventManager == null) {
                 eventManager = new EventManager();
                 eventManager.addListeners(listeners);
             }
-        }
+        //}
     }
 }

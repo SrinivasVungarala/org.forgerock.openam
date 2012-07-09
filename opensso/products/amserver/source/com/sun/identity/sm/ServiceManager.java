@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.sm;
 
@@ -84,7 +87,7 @@ public class ServiceManager {
     // For realms and co-existance support
     protected static final String COEXISTENCE_ATTR_NAME = "coexistenceMode";
 
-    protected static HashMap serviceNameDefaultVersion =
+    protected static Map serviceNameDefaultVersion =
         new CaseInsensitiveHashMap();
 
     protected static final String REALM_ATTR_NAME = "realmMode";
@@ -120,14 +123,14 @@ public class ServiceManager {
 
     private static final String ALL_SERVICES = "null";
 
-    private static Map serviceNameAndOCs = new CaseInsensitiveHashMap();
+    private static CaseInsensitiveHashMap serviceNameAndOCs = new CaseInsensitiveHashMap();
 
     // List of sub-services
     protected static SMSEntry smsEntry;
 
     protected static CachedSubEntries serviceNames;
 
-    protected static HashMap serviceVersions = new CaseInsensitiveHashMap();
+    protected static CaseInsensitiveHashMap serviceVersions = new CaseInsensitiveHashMap();
 
     protected static Set accessManagerServers;
 

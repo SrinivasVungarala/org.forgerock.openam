@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy;
 
 import java.util.Set;
@@ -68,6 +72,8 @@ import com.sun.identity.sm.DNMapper;
 import java.security.AccessController;
 import java.security.Principal;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.security.auth.Subject;
 
 /**
@@ -192,7 +198,8 @@ public class PolicyEvaluator {
      * requestscope1 ----> resourceresult1
      * requestscope2 ----> resourceresult2
      */
-    static Map policyResultsCache = new HashMap();
+    static ConcurrentHashMap<String,Cache<String,Cache<String,ConcurrentHashMap<String,ResourceResult>>>> policyResultsCache 
+    	= new ConcurrentHashMap<String,Cache<String,Cache<String,ConcurrentHashMap<String,ResourceResult>>>>();//;
 
     /*
      * The sso token listener registry for policy decision cache. 
@@ -206,8 +213,8 @@ public class PolicyEvaluator {
      *
      * Used to clean up cache on ssoToken notifications
      */
-    public static Map ssoListenerRegistry =
-              Collections.synchronizedMap(new HashMap());
+    public static ConcurrentHashMap<String,SSOTokenListener> ssoListenerRegistry =
+    		new ConcurrentHashMap<String,SSOTokenListener>();//Collections.synchronizedMap(new HashMap());
 
     /*
      * The policy change listener registry for policy decision cache.
@@ -221,8 +228,8 @@ public class PolicyEvaluator {
      *
      * Used to clean up the decision cache on policy change notification
      */
-    private static Map policyListenerRegistry =
-              Collections.synchronizedMap(new HashMap());
+    private static ConcurrentHashMap<String,PolicyDecisionCacheListener> policyListenerRegistry =
+    		new ConcurrentHashMap<String,PolicyDecisionCacheListener>();//Collections.synchronizedMap(new HashMap());
 
     /**
      * The user <code>nsRole</code> attribute cache.
@@ -235,8 +242,8 @@ public class PolicyEvaluator {
      * Key is tokenId and value is set of role DN(s)
      * ssoTokenIDString : set of role DN(s)
      */
-    static Map userNSRoleCache = 
-              Collections.synchronizedMap(new HashMap());
+    static ConcurrentHashMap<String,Object[]> userNSRoleCache = 
+    		new ConcurrentHashMap<String,Object[]>();//Collections.synchronizedMap(new HashMap());
 
     // TTL value for entries in the user's nsRole attribute values.
     private static long userNSRoleCacheTTL = 0;
@@ -259,7 +266,7 @@ public class PolicyEvaluator {
      *
      * serviceType: resourceName : resourceNames
      */
-    private static Map resourceNamesMap = new HashMap(); 
+    private static ConcurrentHashMap<String, Cache<String,Set>> resourceNamesMap = new ConcurrentHashMap<String, Cache<String,Set>>(); 
 
     /**
      * Constant key for passing organization name in the environment map during
@@ -301,7 +308,8 @@ public class PolicyEvaluator {
         /* Register a policy listener for updating policy decision 
          * cache if there is none already registered
          */
-        synchronized (lock) {
+        //synchronized (lock) 
+        {
             if (!(policyListenerRegistry.containsKey(serviceTypeName))) {
                 listener = new PolicyDecisionCacheListener(serviceTypeName);
                 try {
@@ -1708,16 +1716,17 @@ public class PolicyEvaluator {
         // check if we already have the result in the cache
         // policyResultsCache: 
         // serviceType -> resource -> sessionId -> scope -> result
-        synchronized(policyResultsCache) {
+        //synchronized(policyResultsCache) 
+        {
             // rscCACHE: resource -> sessionId -> scope -> result
-            Map rscCache = (Map)policyResultsCache.get(serviceTypeName);
+        	Cache<String,Cache<String,ConcurrentHashMap<String,ResourceResult>>> rscCache = policyResultsCache.get(serviceTypeName);
             if (rscCache != null) {
                 // resultCACHE: sessionId -> scope -> resourceResult
-                Map resultsCache = (Map)rscCache.get(resourceName);
+            	Cache<String,ConcurrentHashMap<String,ResourceResult>> resultsCache = rscCache.get(resourceName);
                 if (resultsCache != null) {
-                    Map results = (Map)resultsCache.get(userSSOTokenIDStr);
+                	ConcurrentHashMap<String,ResourceResult> results = resultsCache.get(userSSOTokenIDStr);
                     if (results != null) {
-                        resourceResult = (ResourceResult)results.get(scope);
+                        resourceResult = results.get(scope);
                         if (resourceResult != null) {
                             long currentTime = System.currentTimeMillis();
                             long ttlMinimal = resourceResult.getTimeToLive();
@@ -1779,13 +1788,12 @@ public class PolicyEvaluator {
 
         if (ResourceResult.SUBTREE_SCOPE.equals(scope)
                 || ResourceResult.STRICT_SUBTREE_SCOPE.equals(scope)) {
-            Map resourceNamesCache    
-                    = (Map)resourceNamesMap.get(serviceTypeName);
+            Cache<String, Set> resourceNamesCache = resourceNamesMap.get(serviceTypeName);
             if (resourceNamesCache == null) {
-                resourceNamesCache = new Cache(resultsCacheResourceCap);
+                resourceNamesCache = new Cache<String,Set>(getClass().getName()+"."+serviceTypeName+".resourceNamesCache",resultsCacheResourceCap);
                 resourceNamesMap.put(serviceTypeName, resourceNamesCache);
             }
-            Set resourceNames = (Set)resourceNamesCache.get(resourceName);
+            Set resourceNames = resourceNamesCache.get(resourceName);
             if (resourceNames == null) {
                 if (DEBUG.messageEnabled()) {
                     DEBUG.message("Computing subresources for:  "
@@ -1825,23 +1833,22 @@ public class PolicyEvaluator {
                     && !resourceResult.hasAdvices()) {
             resourceResult.setEnvMap(clientEnv);
             // add the evaluation result to the result cache
-            Map scopeElem = null;
+            ConcurrentHashMap<String, ResourceResult> scopeElem = null;
             //cacheElem: sessionId -> scope -> resourceResult
-            Map cacheElem = null;
-            Map rscElem = null;
+            Cache<String, ConcurrentHashMap<String, ResourceResult>> cacheElem = null;
+            Cache<String, Cache<String, ConcurrentHashMap<String, ResourceResult>>> rscElem = null;
             // serviceType -> resourceName -> sessionId -> scope -> resourceResult
-            synchronized(policyResultsCache) { 
+            //synchronized(policyResultsCache) 
+            { 
                 // rscElemCACHE: resourceName -> sessionId -> scope -> resourceResult
-                rscElem = (Map)policyResultsCache.get(
-                                                serviceTypeName);
+                rscElem = policyResultsCache.get(serviceTypeName);
                 if (rscElem != null) { // serviceType has been seen earlier
                     //CACHEElem: sessionId -> scope -> resourceResult
-                    cacheElem = (Map)rscElem.get(resourceName);
+                    cacheElem = rscElem.get(resourceName);
                     if (cacheElem != null) { // resource seen earlier
-                        scopeElem = (Map)cacheElem.get(
-                                                userSSOTokenIDStr);
+                        scopeElem = cacheElem.get(userSSOTokenIDStr);
                         if (scopeElem == null) { // seeing sessionId first time
-                            scopeElem = new HashMap();
+                            scopeElem = new ConcurrentHashMap<String, ResourceResult>();
                         }
                     } else { // seeing the resource first time
                         if (PolicyManager.debug.messageEnabled()) {
@@ -1852,12 +1859,12 @@ public class PolicyEvaluator {
                                 + ", sessionId=" + userSSOTokenIDStr
                                 + ", scope=" + scope);
                         }
-                        cacheElem = new Cache(resultsCacheSessionCap); 
-                        scopeElem = new HashMap();
+                        cacheElem = new Cache(getClass().getName()+"."+resourceName,resultsCacheSessionCap); 
+                        scopeElem = new ConcurrentHashMap<String, ResourceResult>();
                     }
                 } else { // seeing service for first time
                     // rscElemCACHE: resourceName -> sessionId -> scope -> resourceResult
-                    rscElem = new Cache(resultsCacheResourceCap);
+                    rscElem = new Cache(getClass().getName()+"."+serviceTypeName,resultsCacheResourceCap);
                     //CACHEElem: sessionId -> scope -> resourceResult
                     if (PolicyManager.debug.messageEnabled()) {
                             PolicyManager.debug.message(
@@ -1868,8 +1875,8 @@ public class PolicyEvaluator {
                                 + ", scope=" + scope
                                 + ", serviceType=" + serviceTypeName);
                     }
-                    cacheElem = new Cache(resultsCacheSessionCap);
-                    scopeElem = new HashMap();
+                    cacheElem = new Cache(getClass().getName()+"."+resourceName,resultsCacheSessionCap);
+                    scopeElem = new ConcurrentHashMap<String, ResourceResult>();
                 }
                 scopeElem.put(scope, resourceResult);
                 cacheElem.put(userSSOTokenIDStr, scopeElem);
@@ -1880,7 +1887,8 @@ public class PolicyEvaluator {
                             + ", resourceName=" + resourceName
                             + ", sessionId=" + userSSOTokenIDStr
                             + ", scope=" + scope
-                            + ", cacheSize=" + cacheElem.size());
+                            //+ ", cacheSize=" + cacheElem.size()
+                            );
                 }
                 rscElem.put(resourceName, cacheElem);
                 policyResultsCache.put(serviceTypeName, rscElem);
@@ -2295,9 +2303,10 @@ public class PolicyEvaluator {
         }
         resourceNamesMap.remove(serviceTypeName);
 
-        Cache resourceNamesCache    
-                = (Cache)resourceNamesMap.get(serviceTypeName);
-        if ((resourceNamesCache == null) || (resourceNamesCache.isEmpty())) {
+        Cache<String, Set> resourceNamesCache = resourceNamesMap.get(serviceTypeName);
+        if ((resourceNamesCache == null) 
+        		//|| (resourceNamesCache.isEmpty())
+        		) {
             return;
         }
         try {
@@ -2305,10 +2314,10 @@ public class PolicyEvaluator {
             ServiceTypeManager stm = ServiceTypeManager.getServiceTypeManager();
             ServiceType serviceType = stm.getServiceType(serviceTypeName);
             Set resourceNamesToRemove = new HashSet();
-            synchronized(resourceNamesCache) {
-                Enumeration resourceNames = resourceNamesCache.keys();
-                while (resourceNames.hasMoreElements()) {
-                    String resourceName = (String)resourceNames.nextElement();
+            //synchronized(resourceNamesCache) 
+            {
+                for (String resourceName : (List<String>)resourceNamesCache.get().getKeys()) {
+                    //String resourceName = (String)resourceNames.nextElement();
                     if (resourceNamesToRemove.contains(resourceName)) {
                         continue;
                     }
@@ -2434,7 +2443,8 @@ public class PolicyEvaluator {
      public static Set getUserNSRoleValues(SSOToken token)
         throws SSOException, PolicyException {
         if (userNSRoleCacheTTL == 0) {
-            synchronized(userNSRoleCache) {
+            //synchronized(userNSRoleCache) 
+            {
                 String orgName = ServiceManager.getBaseDN();
                 Map pConfigValues = PolicyConfig.getPolicyConfig(orgName);
                 userNSRoleCacheTTL = 
@@ -2533,9 +2543,9 @@ public class PolicyEvaluator {
 
 
         int resultsCacheSize = 0;
-        synchronized (policyResultsCache) {
+        //synchronized (policyResultsCache) {
             resultsCacheSize = policyResultsCache.size();
-        }
+        //}
         policyStats.record("PolicyEvaluator: Number of services in "
                 + " resultsCache: " + resultsCacheSize);
 

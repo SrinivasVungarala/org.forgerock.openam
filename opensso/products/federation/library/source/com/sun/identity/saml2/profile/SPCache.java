@@ -25,7 +25,9 @@
  * $Id: SPCache.java,v 1.17 2009/06/09 20:28:32 exu Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.saml2.profile;
 
@@ -116,7 +118,7 @@ public class SPCache {
      *                     - sp token id (String)                     
      * one key --- multiple SPFedSession's
      */
-    protected static Hashtable fedSessionListsByNameIDInfoKey = new Hashtable();
+    protected static java.util.concurrent.ConcurrentHashMap fedSessionListsByNameIDInfoKey = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * SP: used to map LogoutRequest ID and inResponseTo in LogoutResponse
@@ -140,7 +142,7 @@ public class SPCache {
      * Key: hostEntityID+realmName
      * Value: SPAuthnContextMapper
      */
-    public static Hashtable authCtxObjHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap authCtxObjHash = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Hashtable saves AuthnContext class name and the authLevel. 
@@ -148,7 +150,7 @@ public class SPCache {
      * Value: Map containing AuthContext Class Name as Key and value
      *              is authLevel.
      */
-    public static Hashtable authContextHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap authContextHash = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Hashtable saves the Request Parameters before redirecting
@@ -165,7 +167,7 @@ public class SPCache {
      * Key : sp account mapper class name
      * Value : sp account mapper object
      */
-    public static Hashtable spAccountMapperCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap spAccountMapperCache = new java.util.concurrent.ConcurrentHashMap();
     
     /**
      * Cache saves the sp adapter class instance.
@@ -173,7 +175,7 @@ public class SPCache {
      * Value : sp adapter class instance 
      * (<code>SAML2ServiceProviderAdapter</code>)
      */
-    public static Hashtable spAdapterClassCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap spAdapterClassCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves the fedlet adapter class instance.
@@ -181,14 +183,14 @@ public class SPCache {
      * Value : fedlet adapter class instance 
      * (<code>FedletAdapter</code>)
      */
-    public static Hashtable fedletAdapterClassCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap fedletAdapterClassCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves the ecp request IDP list finder.
      * Key : ecp request IDP list finder class name
      * Value : ecp request IDP list finder object
      */
-    public static Hashtable ecpRequestIDPListFinderCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap ecpRequestIDPListFinderCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves the assertion id.

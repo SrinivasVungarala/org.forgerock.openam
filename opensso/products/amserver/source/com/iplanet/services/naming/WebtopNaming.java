@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.naming;
 
 import java.net.MalformedURLException;
@@ -67,6 +70,7 @@ import java.io.File;
  *  build the monitoring stuff
  */
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import java.text.SimpleDateFormat;
 import com.sun.identity.monitoring.SSOServerInfo;
 
@@ -104,17 +108,17 @@ public class WebtopNaming {
 
     private static final String FAM_NAMING_PREFIX = "sun-naming-";
 
-    private static Hashtable namingTable = null;
+    private static java.util.concurrent.ConcurrentHashMap namingTable = null;
 
-    private static Hashtable serverIdTable = null;
+    private static java.util.concurrent.ConcurrentHashMap serverIdTable = null;
 
-    private static Hashtable siteIdTable = null;
+    private static java.util.concurrent.ConcurrentHashMap siteIdTable = null;
     
-    private static Map<String, String> siteNameToIdTable = null;
+    private static java.util.concurrent.ConcurrentHashMap<String, String> siteNameToIdTable = null;
 
     //This is created for storing server id and lbcookievalue mapping
     //key:serverid | value:lbcookievalue      
-    private static Hashtable lbCookieValuesTable = null;
+    private static java.util.concurrent.ConcurrentHashMap lbCookieValuesTable = null;
 
     private static Vector platformServers = new Vector();
 
@@ -147,7 +151,7 @@ public class WebtopNaming {
     private static String MAP_SITE_TO_SERVER =
         "com.iplanet.am.naming.map.site.to.server";
     
-    private static Map mapSiteToServer = new HashMap();
+    private static Map mapSiteToServer = new java.util.concurrent.ConcurrentHashMap();
 
     static {
         initialize();
@@ -565,7 +569,7 @@ public class WebtopNaming {
      * Returns key value from a hashtable, ignoring the case of the
      * key.
      */
-    private static String getValueFromTable(Hashtable table, String key) {
+    private static String getValueFromTable(java.util.concurrent.ConcurrentHashMap table, String key) {
         if (table.contains(key)) {
             return (String) table.get(key);
         }
@@ -784,7 +788,7 @@ public class WebtopNaming {
     }
 
     private static void updateLBCookieValueMappings() {
-        Hashtable lbcookieTbl = new Hashtable();
+    	java.util.concurrent.ConcurrentHashMap lbcookieTbl = new java.util.concurrent.ConcurrentHashMap();
         String serverSet = (String) namingTable.get(
                            Constants.SERVERID_LBCOOKIEVALUE_LIST);
 
@@ -1085,7 +1089,7 @@ public class WebtopNaming {
      * @throws URLNotFoundException if the Naming Service can not
      *     find a URL for a specified service
      */
-    public synchronized static URL getNotificationURL()
+    public  static URL getNotificationURL()
             throws URLNotFoundException {
         try {
             String url = System.getProperty(Constants.CLIENT_NOTIFICATION_URL,
@@ -1100,7 +1104,7 @@ public class WebtopNaming {
         }
     }
 
-    private synchronized static void getNamingProfile(boolean update)
+    private  static void getNamingProfile(boolean update)
             throws Exception {
         if (update || namingTable == null) {
             updateNamingTable();
@@ -1141,8 +1145,8 @@ public class WebtopNaming {
         }
     }
 
-    private static Hashtable getNamingTable(URL nameurl) throws Exception {
-        Hashtable nametbl = null;
+    private static java.util.concurrent.ConcurrentHashMap getNamingTable(URL nameurl) throws Exception {
+    	java.util.concurrent.ConcurrentHashMap nametbl = null;
         NamingRequest nrequest = new NamingRequest(NamingRequest.reqVersion);
         Request request = new Request(nrequest.toXMLString());
         RequestSet set = new RequestSet(NAMING_SERVICE);
@@ -1181,7 +1185,7 @@ public class WebtopNaming {
             // Try for the primary server first, if it fails and then
             // for the second server. We get connection refused error
             // if it doesn't succeed.
-            Hashtable namingtbl = null;
+            java.util.concurrent.ConcurrentHashMap namingtbl = null;
             URL tempNamingURL = null;
             for (int i = 0; ((namingtbl == null) && 
                     (i < namingServiceURL.length)); i++) {
@@ -1243,7 +1247,7 @@ public class WebtopNaming {
      * exclude each other entry which is there in.
      */
     private static void updateServerIdMappings() {
-        Hashtable serverIdTbl = new Hashtable();
+    	java.util.concurrent.ConcurrentHashMap serverIdTbl = new java.util.concurrent.ConcurrentHashMap();
         Enumeration e = namingTable.keys();
         while (e.hasMoreElements()) {
             String key = (String) e.nextElement();
@@ -1263,7 +1267,7 @@ public class WebtopNaming {
     }
 
     private static void updateSiteIdMappings() {
-        Hashtable siteIdTbl = new Hashtable();
+    	java.util.concurrent.ConcurrentHashMap siteIdTbl = new java.util.concurrent.ConcurrentHashMap();
         String serverSet = (String) namingTable.get(Constants.SITE_ID_LIST);
 
         if ((serverSet == null) || (serverSet.length() == 0)) {
@@ -1305,7 +1309,7 @@ public class WebtopNaming {
     }
     
     private static void updateSiteNameToIDMappings() {
-        Map siteNameToIdTbl = new HashMap();
+    	ConcurrentHashMap<String, String> siteNameToIdTbl = new ConcurrentHashMap<String, String>();
         String siteNameToIDs = (String) namingTable.get(Constants.SITE_NAMES_LIST);
 
         if ((siteNameToIDs == null) || (siteNameToIDs.length() == 0)) {
@@ -1384,7 +1388,9 @@ public class WebtopNaming {
      * @throws Exception if there is no configured url or there is an
      *     error when trying to get the urls
      */
-    public synchronized static String[] getNamingServiceURL() throws Exception {
+    public 
+    //synchronized 
+    static String[] getNamingServiceURL() throws Exception {
         if (!serverMode && (namingServiceURL == null)) {
             // Initilaize the list of naming URLs
             ArrayList urlList = new ArrayList();

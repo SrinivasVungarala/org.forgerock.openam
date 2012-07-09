@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.monitoring;
 
 import com.sun.identity.shared.debug.Debug;
@@ -83,8 +87,8 @@ public class SsoServerTopologyImpl extends SsoServerTopology {
          *  and add them to their corresponding tables.
          */
         
-        Hashtable<String, String> ntbl = Agent.getNamingTable();
-        Hashtable<String, String> sidtbl = Agent.getSiteIdTable();
+        java.util.concurrent.ConcurrentHashMap<String, String> ntbl = Agent.getNamingTable();
+        java.util.concurrent.ConcurrentHashMap<String, String> sidtbl = Agent.getSiteIdTable();
 
         for (Map.Entry<String, String> entry : sidtbl.entrySet()) {
             String svrId = entry.getKey();

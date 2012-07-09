@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2010-2012 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session;
 
 import com.iplanet.am.util.SystemProperties;
@@ -67,11 +69,14 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.security.AccessController;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -175,7 +180,7 @@ public class Session extends GeneralTaskRunnable {
      * All session related properties are stored as key-value pair in this
      * table.
      */
-    private Hashtable sessionProperties = new Hashtable();
+    private ConcurrentHashMap<String, String> sessionProperties = new ConcurrentHashMap<String, String>(20);
 
     /**
      * URL of the Session Server, where this session resides.
@@ -281,25 +286,29 @@ public class Session extends GeneralTaskRunnable {
     /**
      * The session table indexed by Session ID objects.
      */
-    private static Hashtable sessionTable = new Hashtable();
-
+    private static ConcurrentHashMap<SessionID, Session> sessionTable;
+    static{
+    	try{
+    		sessionTable= new ConcurrentHashMap<SessionID, Session>(Integer.parseInt(SystemProperties.get(Constants.AM_SESSION_MAX_SESSIONS))/2);
+    	}catch(Throwable e){
+    		sessionTable= new ConcurrentHashMap<SessionID, Session>(10000);
+    	}
+    }
     /**
      * The session service URL table indexed by server address contained in the
      * Session ID object.
      */
-    private static Hashtable sessionServiceURLTable = new Hashtable();
+    private static ConcurrentHashMap<String,URL> sessionServiceURLTable = new ConcurrentHashMap<String,URL>();
 
     /**
      * Set of session event listeners for THIS session only
      */
-    private Set<SessionListener> sessionEventListeners = 
-            new HashSet<SessionListener>();
+    final private Set<SessionListener> sessionEventListeners =Collections.newSetFromMap(new ConcurrentHashMap<SessionListener,Boolean>());
 
     /**
      * Set of session event listeners for ALL sessions
      */
-    private static Set<SessionListener> allSessionEventListeners = 
-            new HashSet<SessionListener>();
+    final private static Set<SessionListener> allSessionEventListeners =  Collections.newSetFromMap(new ConcurrentHashMap<SessionListener,Boolean>());
 
     /**
      * This is used only in polling mode to find the polling state of this
@@ -342,15 +351,14 @@ public class Session extends GeneralTaskRunnable {
         }        
     }
 
+    static String serverid = null;
     static private String getAMServerID() {
-        String serverid = null;
-        
-        try {
-            serverid = WebtopNaming.getAMServerID();
-        } catch (Exception le) {
-            serverid = null;
-        }
-        
+        if (serverid==null)
+	        try {
+	            serverid = WebtopNaming.getAMServerID();
+	        } catch (Exception le) {
+	            serverid = null;
+	        }
         return serverid;
     }
     
@@ -1481,7 +1489,7 @@ public class Session extends GeneralTaskRunnable {
      * 
      * @param info Session Information.
      */
-    synchronized void update(SessionInfo info) throws SessionException {
+    void update(SessionInfo info) throws SessionException {
         if (info.stype.equals("user"))
             sessionType = USER_SESSION;
         else if (info.stype.equals("application"))

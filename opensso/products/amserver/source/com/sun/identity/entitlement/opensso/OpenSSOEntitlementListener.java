@@ -24,6 +24,10 @@
  *
  * $Id: OpenSSOEntitlementListener.java,v 1.4 2009/12/15 00:44:19 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 
 package com.sun.identity.entitlement.opensso;
 
@@ -55,7 +59,7 @@ import org.json.JSONObject;
 public class OpenSSOEntitlementListener 
     implements IEntitlementListenerRegistry {
     private static final String ATTR_NAME = "listeners";
-    private ReadWriteLock rwlock = new ReentrantReadWriteLock();
+    //private ReadWriteLock rwlock = new ReentrantReadWriteLock();
 
     public void addListener(Subject adminSubject, EntitlementListener l)
         throws EntitlementException {
@@ -113,7 +117,7 @@ public class OpenSSOEntitlementListener
 
     private void storeListeners(List<EntitlementListener> listeners) 
         throws EntitlementException {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
             AttributeSchema as = getAttributeSchema();
             Set<String> values = new HashSet<String>();
@@ -130,7 +134,7 @@ public class OpenSSOEntitlementListener
         } catch (SSOException e) {
             throw new EntitlementException(427, e);
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
@@ -178,7 +182,7 @@ public class OpenSSOEntitlementListener
 
     public Set<EntitlementListener> getListeners(Subject adminSubject)
         throws EntitlementException {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
 
         try {
             Set<EntitlementListener> listeners =
@@ -186,7 +190,7 @@ public class OpenSSOEntitlementListener
             listeners.addAll(getListeners());
             return listeners;
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
     }
 }

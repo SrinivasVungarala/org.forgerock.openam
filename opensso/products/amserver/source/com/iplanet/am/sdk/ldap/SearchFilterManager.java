@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.ldap;
 
 import com.iplanet.am.sdk.AMConstants;
@@ -137,7 +140,7 @@ public class SearchFilterManager {
 
     public static Map searchtemplateMap = new HashMap();
 
-    private static Cache searchfilterMap = new Cache(1000);
+    private static Cache<String,String> searchfilterMap = new Cache<String,String>(SearchFilterManager.class.getName(),1000);//new Cache(1000);
 
     static String getSearchFilterFromTemplate(int objectType, String orgDN,
             String searchTemplateName) {

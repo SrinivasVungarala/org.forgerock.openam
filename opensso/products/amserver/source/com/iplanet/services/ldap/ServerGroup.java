@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.ldap;
 
 
@@ -45,6 +48,7 @@ import java.util.Vector;
 import com.sun.identity.shared.ldap.LDAPDN;
 import com.sun.identity.shared.ldap.util.DN;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerGroup implements ParseOutput {
     /**
@@ -108,7 +112,7 @@ public class ServerGroup implements ParseOutput {
                                 .get(DSConfigMgr.VALUE);
                         if (name != null && name.length() > 0) {
                             if (miscConfig == null) {
-                                miscConfig = new HashMap();
+                                miscConfig = new ConcurrentHashMap();
                             }
                             miscConfig.put(attrName, attrValue);
                         }
@@ -233,7 +237,7 @@ public class ServerGroup implements ParseOutput {
 
     List users = null;
 
-    HashMap miscConfig = null;
+    ConcurrentHashMap miscConfig = null;
 
     private String groupName;
 }

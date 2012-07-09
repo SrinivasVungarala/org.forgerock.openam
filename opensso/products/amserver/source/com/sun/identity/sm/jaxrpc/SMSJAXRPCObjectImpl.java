@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.sm.jaxrpc;
 
@@ -43,6 +46,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
@@ -80,7 +85,7 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
 
     static Debug debug = Debug.getInstance("amSMSServerImpl");
 
-    static Map notificationURLs = new HashMap();
+    static Map notificationURLs = new ConcurrentHashMap();
 
     static SSOTokenManager tokenMgr;
 
@@ -97,9 +102,9 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
     // Cache of modified DNs for the last 30 minutes
     static int cacheSize = 30;
 
-    static LinkedList cacheIndices = new LinkedList();
-
-    static HashMap cache = new HashMap(cacheSize);
+    //static LinkedList cacheIndices = new LinkedList();
+    static ConcurrentLinkedQueue cacheIndices=new ConcurrentLinkedQueue();
+    static ConcurrentHashMap cache = new ConcurrentHashMap(cacheSize);
 
     // Default constructor
     public SMSJAXRPCObjectImpl() {
@@ -478,7 +483,7 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
 
     // Implementation to receive requests from clients
     // Returns changes in the past <i>time</i> minutes
-    public synchronized Set objectsChanged(int time) throws RemoteException {
+    public  Set objectsChanged(int time) throws RemoteException {
         if (debug.messageEnabled()) {
             debug.message("SMSJAXRPCObjectImpl::objectsChanged: " + time);
         }
@@ -499,7 +504,7 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
     }
 
     // Implementation for SMSObjectListener
-    public synchronized void objectChanged(String name, int type) {
+    public  void objectChanged(String name, int type) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         String cacheIndex = calendarToString(calendar);
@@ -508,10 +513,11 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
             modDNs = new HashSet();
             cache.put(cacheIndex, modDNs);
             // Maintain cacheIndex
-            cacheIndices.addFirst(cacheIndex);
-            if (cacheIndices.size() > cacheSize) {
-                String index = (String) cacheIndices.removeLast();
-                cache.remove(index);
+            cacheIndices.add(cacheIndex);
+            while (cacheIndices.size() > cacheSize) {
+//                String index = (String) cacheIndices.removeLast();
+//                cache.remove(index);
+            	cacheIndices.poll();
             }
         }
         String modItem = null;
@@ -528,8 +534,9 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
         modDNs.add(modItem);
 
         // If notification URLs are present, send notifications
-        synchronized (notificationURLs) {
-            Map notifications = new HashMap(notificationURLs); // Make a copy
+        //synchronized (notificationURLs) 
+        {
+            Map notifications = new ConcurrentHashMap(notificationURLs); // Make a copy
             for (Iterator entries = notifications.entrySet().iterator(); 
                 entries.hasNext();) {
                 Map.Entry entry = (Map.Entry) entries.next();
@@ -571,7 +578,8 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
         try {
             // Check URL is not the local server
             if (!url.toLowerCase().startsWith(serverURL)) {
-                synchronized (notificationURLs) {
+                //synchronized (notificationURLs) 
+            	{
                     URL nURL = new URL(url);
                     if (!notificationURLs.containsValue(nURL)) {
                         notificationURLs.put(id, new URL(url));
@@ -607,9 +615,9 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
 
     public void deRegisterNotificationURL(String id)
             throws RemoteException {
-        synchronized (notificationURLs) {
+        //synchronized (notificationURLs) {
             notificationURLs.remove(id);
-        }
+        //}
     }
 
     /**

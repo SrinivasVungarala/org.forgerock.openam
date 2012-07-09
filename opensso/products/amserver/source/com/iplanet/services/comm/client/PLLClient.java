@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.comm.client;
 
 import com.iplanet.am.util.SystemProperties;
@@ -69,7 +72,7 @@ import javax.servlet.http.Cookie;
 public class PLLClient {
 
     /** notification handlers */
-    private static Hashtable notificationHandlers = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap notificationHandlers = new java.util.concurrent.ConcurrentHashMap();
 
     private static Debug debug = Debug.getInstance("PLLClient");
     

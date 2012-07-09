@@ -19,6 +19,9 @@
  *
  * Contributor(s): 
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.shared.ldap;
 
 import java.util.*;
@@ -66,8 +69,8 @@ class LDAPConnThread implements Runnable {
     transient private static int m_highMsgId;
     transient private InputStream m_serverInput, m_origServerInput;
     transient private OutputStream m_serverOutput, m_origServerOutput;
-    transient private Hashtable m_requests;
-    transient private Hashtable m_messages = null;
+    transient private java.util.concurrent.ConcurrentHashMap m_requests;
+    transient private java.util.concurrent.ConcurrentHashMap m_messages = null;
     transient private Set m_registered;       
     transient private LDAPCache m_cache = null;
     transient private Thread m_thread = null;
@@ -96,7 +99,7 @@ class LDAPConnThread implements Runnable {
      */
     public LDAPConnThread(LDAPConnSetupMgr connMgr, LDAPCache cache,
         Object traceOutput) {
-        m_requests = new Hashtable ();
+        m_requests = new java.util.concurrent.ConcurrentHashMap ();
         m_registered = Collections.synchronizedSet(new HashSet());
         m_connMgr = connMgr;
         setCache( cache );
@@ -232,7 +235,7 @@ class LDAPConnThread implements Runnable {
      */
     synchronized void setCache( LDAPCache cache ) {
         m_cache = cache;
-        m_messages = (m_cache != null) ? new Hashtable() : null;
+        m_messages = (m_cache != null) ? new java.util.concurrent.ConcurrentHashMap() : null;
     }
 
     /**
@@ -742,7 +745,7 @@ class LDAPConnThread implements Runnable {
     
     /**
      * Collect search results to be added to the LDAPCache. Search results are
-     * packaged in a vector and temporary stored into a hashtable m_messages
+     * packaged in a vector and temporary stored into a java.util.concurrent.ConcurrentHashMap m_messages
      * using the message id as the key. The vector first element (at index 0)
      * is a Long integer representing the total size of all LDAPEntries entries.
      * It is followed by the actual LDAPEntries.

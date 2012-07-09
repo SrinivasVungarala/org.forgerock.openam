@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.ldap;
 
 /**
@@ -60,7 +63,7 @@ public class ServerInstance {
      * @param serverStatus
      *            Status of the server.
      */
-    public synchronized void setActiveStatus(boolean serverStatus) {
+    public  void setActiveStatus(boolean serverStatus) {
         server.setActiveStatus(serverStatus);
     }
 
@@ -69,7 +72,7 @@ public class ServerInstance {
      * 
      * @return boolean the status of the server.
      */
-    public synchronized boolean getActiveStatus() {
+    public  boolean getActiveStatus() {
         return server.getActiveStatus();
     }
 
@@ -78,7 +81,7 @@ public class ServerInstance {
      * 
      * @return String Get the name of the server
      */
-    public synchronized String getServerName() {
+    public  String getServerName() {
         return server.getServerName();
     }
 
@@ -87,7 +90,7 @@ public class ServerInstance {
      * 
      * @return int The port number of the server instance.
      */
-    public synchronized int getPort() {
+    public  int getPort() {
         return server.getPort();
     }
 
@@ -97,7 +100,7 @@ public class ServerInstance {
      * 
      * @return String The server ID of the server.
      */
-    public synchronized String getServerID() {
+    public  String getServerID() {
         return server.getServerID();
     }
 
@@ -106,7 +109,7 @@ public class ServerInstance {
      * 
      * @return String The LDAP bind DN.
      */
-    public synchronized String getAuthID() {
+    public  String getAuthID() {
         return user.getAuthID();
     }
 
@@ -124,7 +127,7 @@ public class ServerInstance {
      * 
      * @return String The password corresponding to the authentication ID.
      */
-    public synchronized String getPasswd() {
+    public  String getPasswd() {
         return user.getPasswd();
     }
 
@@ -133,7 +136,7 @@ public class ServerInstance {
      * 
      * @return int the Authentication code.
      */
-    public synchronized LDAPUser.Type getAuthType() {
+    public  LDAPUser.Type getAuthType() {
         return user.getAuthType();
     }
 
@@ -142,7 +145,7 @@ public class ServerInstance {
      * 
      * @return int the Minimum # of connections
      */
-    public synchronized int getMinConnections() {
+    public  int getMinConnections() {
         return serverGroup.minConnPool;
     }
 
@@ -151,7 +154,7 @@ public class ServerInstance {
      * 
      * @return int the Maximum # of connections
      */
-    public synchronized int getMaxConnections() {
+    public  int getMaxConnections() {
         return serverGroup.maxConnPool;
     }
 
@@ -161,11 +164,11 @@ public class ServerInstance {
      * 
      * @return String The base dn value.
      */
-    public synchronized String getBaseDN() {
+    public  String getBaseDN() {
         return serverGroup.baseDN;
     }
 
-    public synchronized int getIntValue(String key, int defVal) {
+    public  int getIntValue(String key, int defVal) {
         if (serverGroup.miscConfig != null) {
             String attrVal = (String) serverGroup.miscConfig.get(key);
             if (attrVal == null)
@@ -181,7 +184,7 @@ public class ServerInstance {
         return defVal;
     }
 
-    public synchronized String getStringValue(String key, String defVal) {
+    public  String getStringValue(String key, String defVal) {
         if (serverGroup.miscConfig == null)
             return defVal;
 
@@ -193,7 +196,7 @@ public class ServerInstance {
             return retVal;
     }
 
-    public synchronized boolean getBooleanValue(String key, boolean defVal) {
+    public  boolean getBooleanValue(String key, boolean defVal) {
         if (serverGroup.miscConfig == null)
             return defVal;
         String attrVal = (String) serverGroup.miscConfig.get(key);

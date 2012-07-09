@@ -25,13 +25,16 @@
  * $Id: AuthThreadManager.java,v 1.4 2008/06/25 05:42:04 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.authentication.service;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.debug.Debug;
 
@@ -47,8 +50,8 @@ public class AuthThreadManager extends Thread   {
     long timeout = 60;
     static Debug debug = null;
     static int i=0;
-    Hashtable timeoutHash = new Hashtable();
-    Hashtable timedOutHash = new Hashtable();
+    ConcurrentHashMap timeoutHash = new ConcurrentHashMap();
+    ConcurrentHashMap timedOutHash = new ConcurrentHashMap();
     long lastCallbackSent;
     long defaultSleepTime = 300000;
 
@@ -189,7 +192,7 @@ public class AuthThreadManager extends Thread   {
         } 
     }
 
-    void removeHash(Hashtable hash,Thread thread) {
+    void removeHash(ConcurrentHashMap hash,Thread thread) {
         if ((hash == null) || hash.isEmpty()) {
             return;
         }

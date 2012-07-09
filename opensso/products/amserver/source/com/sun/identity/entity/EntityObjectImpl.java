@@ -25,6 +25,9 @@
  * $Id: EntityObjectImpl.java,v 1.3 2008/06/25 05:43:26 qcheng Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.entity;
 
@@ -34,6 +37,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.iplanet.am.sdk.AMConstants;
 import com.iplanet.am.sdk.AMEntity;
@@ -45,6 +49,7 @@ import com.iplanet.am.util.Cache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenManager;
+import com.sun.identity.entitlement.RegExResourceName;
 
 /**
  * Implementation class for the interface EntityObjectIF
@@ -52,7 +57,7 @@ import com.iplanet.sso.SSOTokenManager;
 
 public class EntityObjectImpl implements EntityObjectIF {
 
-    protected static Cache oCache;
+    protected static Cache<String,AMEntity> oCache;
 
     protected static Object lock = new Object();
 
@@ -258,7 +263,7 @@ public class EntityObjectImpl implements EntityObjectIF {
                 if (tokenManager == null) {
                     try {
                         tokenManager = SSOTokenManager.getInstance();
-                        oCache = new Cache(1000);
+                        oCache = new Cache<String,AMEntity>(EntityObjectImpl.class.getName(), 1000);//new Cache(1000);
                     } catch (SSOException ssoe) {
                         EntityUtils.debug.error(
                                 "EntityObjectImpl:checkInitialization() " +

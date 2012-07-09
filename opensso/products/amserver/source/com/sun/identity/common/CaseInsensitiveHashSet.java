@@ -25,7 +25,9 @@
  * $Id: CaseInsensitiveHashSet.java,v 1.4 2008/06/25 05:42:25 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.common;
 
 import java.util.Collection;
@@ -71,7 +73,11 @@ public class CaseInsensitiveHashSet extends HashSet {
     }
     
     public CaseInsensitiveHashSet(Collection c) {
-        super(c);
+        super((c==null)?0:c.size());
+        if (c!=null&&c.size()>0)
+	        for (Object o : c) 
+				add(o);
+		//this.addAll(c);
     }
 
     public CaseInsensitiveHashSet(int initialCapacity) {
@@ -83,34 +89,15 @@ public class CaseInsensitiveHashSet extends HashSet {
     }
 
     public boolean add(Object o) {
-        boolean retval;
-        if (o instanceof String) {
-            CaseInsensitiveKey ciKey = new CaseInsensitiveKey((String) o);
-            retval = super.add(ciKey);
-        } else {
-            retval = super.add(o);
-        }
-        return retval;
+        return super.add((o instanceof String)?new CaseInsensitiveKey((String) o):o);
     }
 
     public boolean contains(Object o) {
-        boolean retval;
-        if (o instanceof String) {
-            retval = super.contains(new CaseInsensitiveKey((String) o));
-        } else {
-            retval = super.contains(o);
-        }
-        return retval;
+        return super.contains((o instanceof String)?new CaseInsensitiveKey((String) o):o);
     }
 
     public boolean remove(Object o) {
-        boolean retval;
-        if (o instanceof String) {
-            retval = super.remove(new CaseInsensitiveKey((String) o));
-        } else {
-            retval = super.remove(o);
-        }
-        return retval;
+        return super.remove((o instanceof String)?new CaseInsensitiveKey((String) o):o);
     }
 
     /**

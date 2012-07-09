@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk;
 
 import com.iplanet.am.sdk.common.IDirectoryServices;
@@ -1614,7 +1617,7 @@ public final class AMStoreConnection implements AMConstants {
         Set associatedDomain = (Set) attributes.get("associateddomain");
         Set orgAlias = (Set) attributes.get("sunorganizationalias");
 
-        synchronized (orgMapCache) {
+        //synchronized (orgMapCache) {
             orgMapCache.put(rdn.toLowerCase(), rfcDN);
 
             if ((prefDomain != null) && (prefDomain.size() == 1)) {
@@ -1641,7 +1644,7 @@ public final class AMStoreConnection implements AMConstants {
                     orgMapCache.put(value, rfcDN);
                 }
             }
-        }
+        //}
     }
 
     /**
@@ -1726,16 +1729,16 @@ public final class AMStoreConnection implements AMConstants {
             return;
 
         case AMEvent.OBJECT_RENAMED:
-            synchronized (orgMapCache) {
+            //synchronized (orgMapCache) {
                 orgMapCache.clear();
-            }
+            //}
             return;
 
         case AMEvent.OBJECT_REMOVED:
         case AMEvent.OBJECT_CHANGED:
             // Go through the entire cache and check and delete
             // any entries with values matching this DN
-            synchronized (orgMapCache) {
+            //synchronized (orgMapCache) {
                 Iterator keys = orgMapCache.keySet().iterator();
 
                 // String removeKey = null;
@@ -1759,7 +1762,7 @@ public final class AMStoreConnection implements AMConstants {
                     }
                 }
                 // orgMapCache.clear();
-            }
+            //}
         }
     }
 

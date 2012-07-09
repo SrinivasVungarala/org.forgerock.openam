@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.policy.remote;
 
@@ -63,6 +66,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -87,13 +92,13 @@ public class PolicyRequestHandler implements RequestHandler {
     static Debug debug = PolicyService.debug;
 
     // serviceName: PolicyEvaluator
-    static Map policyEvaluators = Collections.synchronizedMap(new HashMap());
+    static Map policyEvaluators = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     /*
      * Cache to keep the policy change listener registration info
      * notificationUrl: PolicyListenerRequest 
      */
-    static Map listenerRegistry = Collections.synchronizedMap(new HashMap());
+    static Map listenerRegistry = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     // PolicyService revision number
     String policyServiceRevision;

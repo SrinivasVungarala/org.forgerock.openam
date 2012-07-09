@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm;
 
 import com.iplanet.services.util.AMEncryption;
@@ -46,6 +50,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -321,7 +327,7 @@ class ServiceSchemaManagerImpl implements SMSObjectListener {
      */
     synchronized String addListener(ServiceListener listener) {
         if (listenerObjects == null) {
-            listenerObjects = Collections.synchronizedMap(new HashMap());
+            listenerObjects = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
         }
         // Check for empty since elememts could have been removed from
         // listenerObjects objects.
@@ -367,9 +373,9 @@ class ServiceSchemaManagerImpl implements SMSObjectListener {
     public void allObjectsChanged() {
         if ((listenerObjects != null) && !listenerObjects.isEmpty()) {
             HashSet lObjects = new HashSet();
-            synchronized (listenerObjects) {
+            //synchronized (listenerObjects) {
                 lObjects.addAll(listenerObjects.values());
-            }
+            //}
             Iterator l = lObjects.iterator();
             while (l.hasNext()) {
                 ServiceListener listener = (ServiceListener) l.next();
@@ -582,7 +588,8 @@ class ServiceSchemaManagerImpl implements SMSObjectListener {
             return (ssmi);
         }
 
-        synchronized (schemaManagers) {
+        //synchronized (schemaManagers) 
+        {
             // Check again, since it is now in synchronized block
             ssmi = (ServiceSchemaManagerImpl) schemaManagers.get(cacheName);
             if (ssmi == null || !ssmi.isValid()) {
@@ -596,7 +603,8 @@ class ServiceSchemaManagerImpl implements SMSObjectListener {
 
     // Clears the cache
     static void clearCache() {
-        synchronized (schemaManagers) {
+        //synchronized (schemaManagers) 
+        {
             // Mark the entries as invalid and return
             for (Iterator items = schemaManagers.values().iterator();
                 items.hasNext();) {
@@ -612,8 +620,7 @@ class ServiceSchemaManagerImpl implements SMSObjectListener {
     private static Debug debug = SMSEntry.debug;
 
     // Pointers to ServiceSchemaManager instances
-    private static Map schemaManagers = Collections.synchronizedMap(
-        new HashMap());
+    private static Map schemaManagers = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     private static final int DEFAULT_REVISION = 10;
 

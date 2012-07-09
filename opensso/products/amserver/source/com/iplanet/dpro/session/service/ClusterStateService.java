@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session.service;
 
 import com.sun.identity.common.GeneralTaskRunnable;
@@ -52,6 +54,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
@@ -84,7 +88,7 @@ public class ClusterStateService extends GeneralTaskRunnable {
 
     /** Servers in the cluster environment*/
     private final Map<String, ServerInfo> servers = 
-            new HashMap<String, ServerInfo>();
+            new ConcurrentHashMap<String, ServerInfo>();
     
     /** Servers are down in the cluster environment*/
     private Set<String> downServers = new HashSet<String>();
@@ -288,7 +292,7 @@ public class ClusterStateService extends GeneralTaskRunnable {
     public void run() {
         try {
             boolean cleanRemoteSessions = false;
-            synchronized (servers) {
+            //synchronized (servers) {
                 for (Map.Entry<String, ServerInfo> server : servers.entrySet()) {
                     ServerInfo info = server.getValue();
                     info.isUp = checkServerUp(info);
@@ -302,7 +306,7 @@ public class ClusterStateService extends GeneralTaskRunnable {
                         }
                     }
                 }
-            }
+            //}
             if (cleanRemoteSessions) {
                 ss.cleanUpRemoteSessions();
             }

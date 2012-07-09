@@ -25,6 +25,10 @@
  * $Id: SMSNotificationManager.java,v 1.14 2009/11/10 21:49:44 hengming Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm;
 
 import com.iplanet.am.util.SystemProperties;
@@ -46,6 +50,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Handles all the notification events for SMS.
@@ -67,8 +72,7 @@ import java.util.StringTokenizer;
 public class SMSNotificationManager implements SMSObjectListener {
     
     private static SMSNotificationManager instance;
-    private static Map changeListeners = Collections.synchronizedMap(
-        new HashMap());
+    private static Map changeListeners = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     // SMS objects listener should be called first
     private static SMSEventListenerManager internalEventListener;
     private static Debug debug = Debug.getInstance("amSMSEvent");
@@ -265,7 +269,8 @@ public class SMSNotificationManager implements SMSObjectListener {
         // Iterate over changeListeners and send notifications
         Set listenerIds = (Set) changeListeners.keySet();
         Set nlists = new HashSet();
-        synchronized (changeListeners) {
+        //synchronized (changeListeners) 
+        {
             // Make a local copy of the change listeners
             for (Iterator items = listenerIds.iterator(); items.hasNext();) {
                 nlists.add(changeListeners.get(items.next()));
@@ -325,7 +330,8 @@ public class SMSNotificationManager implements SMSObjectListener {
         // Iterate over changeListeners and send notifications
         Set listenerIds = (Set) changeListeners.keySet();
         Set nlists = new HashSet();
-        synchronized (changeListeners) {
+        //synchronized (changeListeners) 
+        {
             // Make a local copy of the change listeners
             for (Iterator items = listenerIds.iterator(); items.hasNext();) {
                 nlists.add(changeListeners.get(items.next()));

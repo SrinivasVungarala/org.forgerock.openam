@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2010] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.common;
 
@@ -71,8 +74,8 @@ public final class SystemConfigurationUtil implements ConfigurationListener {
     private static List cookieDomains;
     private static List serverList;
     private static List siteList;
-    private static Hashtable serverToIdTable = null;
-    private static Hashtable idToServerTable = null;
+    private static java.util.concurrent.ConcurrentHashMap serverToIdTable = null;
+    private static java.util.concurrent.ConcurrentHashMap idToServerTable = null;
     private static boolean platformNamingInitialized = false;
 
     private SystemConfigurationUtil() {
@@ -406,8 +409,8 @@ public final class SystemConfigurationUtil implements ConfigurationListener {
 
         int serverSize = servers.size();
         serverList = new ArrayList(serverSize);
-        serverToIdTable = new Hashtable(serverSize);
-        idToServerTable = new Hashtable(serverSize);
+        serverToIdTable = new java.util.concurrent.ConcurrentHashMap(serverSize);
+        idToServerTable = new java.util.concurrent.ConcurrentHashMap(serverSize);
 
         Iterator iter = servers.iterator();
         while(iter.hasNext()) {

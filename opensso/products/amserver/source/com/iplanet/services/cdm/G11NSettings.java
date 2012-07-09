@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.cdm;
 
 import com.iplanet.am.util.QCharset;
@@ -55,6 +58,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * G11NSettings service identifies the list of valid charsets to be used for any
@@ -84,7 +88,7 @@ public class G11NSettings implements ServiceListener, ICDMConstants,
      * mechanism is computation intensive and needs to be cached. We will cache
      * the locale->charset mapping table with client type as index
      */
-    private Map charsetCache = new HashMap();
+    private Map charsetCache = new ConcurrentHashMap();
 
     //
     // Instances for Client Schema API
@@ -261,7 +265,8 @@ public class G11NSettings implements ServiceListener, ICDMConstants,
             return;
         }
 
-        synchronized (charsetCache) {
+        //synchronized (charsetCache) 
+        {
 
             switch (opType) {
             /*
@@ -477,7 +482,7 @@ public class G11NSettings implements ServiceListener, ICDMConstants,
      *         can't be found fills with default ISO8859-1 Locale names are
      *         CASE-INSENSITIVE
      */
-    private synchronized String fetchCharset(Client client, 
+    private String fetchCharset(Client client, 
             java.util.Locale loc) 
     {
 

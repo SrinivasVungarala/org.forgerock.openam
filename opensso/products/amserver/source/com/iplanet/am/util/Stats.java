@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.util;
 
 import com.sun.identity.shared.stats.StatsListener;
@@ -47,6 +50,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 // NOTE: Since JVM specs guarantee atomic access/updates to int variables
 // (actually all variables except double and long), the design consciously
@@ -122,7 +126,7 @@ public class Stats {
      * statsMap is a container of all active Stats objects. Log file name is the
      * key and Stats is the value of this map.
      */
-    private static Map statsMap = new HashMap();
+    private static Map statsMap = new ConcurrentHashMap();
 
     /** serviceInitialized indicates if the service is already initialized. */
     private static boolean serviceInitialized = false;
@@ -256,10 +260,10 @@ public class Stats {
         this.statsName = statsName;
         setStats(defaultStatsLevel);
 
-        synchronized (statsMap) {
+        //synchronized (statsMap) {
             // explicitly ignore any duplicate instances.
             statsMap.put(statsName, this);
-        }
+        //}
     }
 
     /**
@@ -493,9 +497,9 @@ public class Stats {
 
     /** Flushes and then closes the stats file. */
     protected void finalize() {
-        synchronized (statsMap) {
+        //synchronized (statsMap) {
             statsMap.remove(statsName);
-        }
+        //}
 
         synchronized (this) {
             if (statsFile == null) {

@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.naming;
 
 import java.io.IOException;
@@ -40,6 +43,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.common.HttpURLConnectionManager;
 import com.sun.identity.shared.debug.Debug;
@@ -69,7 +73,7 @@ public class SiteStatusCheckThreadImpl implements SiteStatusCheck {
     private static int urlCheckerRetryLimit = Long.valueOf(SystemProperties.
             get(Constants.URLCHECKER_RETRY_LIMIT, "3")).intValue();
 
-    private HashMap urlCheckers = null;
+    private ConcurrentHashMap urlCheckers = null;
     
     static {
         if (hcPath == null) {
@@ -88,7 +92,7 @@ public class SiteStatusCheckThreadImpl implements SiteStatusCheck {
      */
     public SiteStatusCheckThreadImpl() {
         super();
-        urlCheckers = new HashMap();
+        urlCheckers = new ConcurrentHashMap();
     }
     
     private String getThreadName(URL u) {
@@ -98,7 +102,7 @@ public class SiteStatusCheckThreadImpl implements SiteStatusCheck {
     private URLChecker getURLChecker(URL url) {
         URLChecker checker = (URLChecker)urlCheckers.get(getThreadName(url));
         if (checker == null) {
-            synchronized(urlCheckers) {
+            //synchronized(urlCheckers) {
                 checker = (URLChecker)urlCheckers.get(getThreadName(url));
                 if (checker != null) {
                      return checker;
@@ -106,7 +110,7 @@ public class SiteStatusCheckThreadImpl implements SiteStatusCheck {
                 checker = new URLChecker(url);
                 urlCheckers.put(getThreadName(url), checker);
                 checker.check();
-            }
+            //}
             SystemTimer.getTimer().schedule(checker, new Date(((
                 System.currentTimeMillis() + urlCheckerSleep) / 1000) * 1000));
             synchronized(checker) {
@@ -137,9 +141,9 @@ public class SiteStatusCheckThreadImpl implements SiteStatusCheck {
                 checker.cancel();
                 checker.notify();
             }
-            synchronized(urlCheckers) {
+            //synchronized(urlCheckers) {
                 urlCheckers.remove(getThreadName(url));
-            }
+            //}
             debug.error("SiteStatusCheckThreadImpl.doCheckSiteStatus() " 
                     + "Killing thread " + getThreadName(url));
             return false;

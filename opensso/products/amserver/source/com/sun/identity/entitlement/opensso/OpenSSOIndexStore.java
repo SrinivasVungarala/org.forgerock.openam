@@ -27,6 +27,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.entitlement.opensso;
 
 import com.iplanet.sso.SSOException;
@@ -77,9 +81,9 @@ import javax.security.auth.Subject;
 
 
 public class OpenSSOIndexStore extends PrivilegeIndexStore {
-    private static final int DEFAULT_CACHE_SIZE = 100000;
+    private static final int DEFAULT_CACHE_SIZE = 10000;
     private static final int DEFAULT_THREAD_SIZE = 1;
-    private static final int DEFAULT_IDX_CACHE_SIZE = 100000;
+    private static final int DEFAULT_IDX_CACHE_SIZE = 10000;
     private static final PolicyCache policyCache;
     private static final PolicyCache referralCache;
     private static final int policyCacheSize;
@@ -169,18 +173,20 @@ public class OpenSSOIndexStore extends PrivilegeIndexStore {
         // Get Index caches based on realm
         if (indexCacheSize > 0) {
 
-            synchronized (indexCaches) {
+            synchronized (indexCaches) 
+            {
                 indexCache = (IndexCache)indexCaches.get(realmDN);
                 if (indexCache == null) {
-                    indexCache = new IndexCache(indexCacheSize);
+                    indexCache = new IndexCache(realm+".direct",indexCacheSize);
                     indexCaches.put(realmDN, indexCache);
                 }
             }
-            synchronized (referralIndexCaches) {
+            synchronized (referralIndexCaches) 
+            {
                 referralIndexCache = (IndexCache)referralIndexCaches.get(
                     realmDN);
                 if (referralIndexCache == null) {
-                    referralIndexCache = new IndexCache(indexCacheSize);
+                    referralIndexCache = new IndexCache(realm+".referal",indexCacheSize);
                     referralIndexCaches.put(realmDN, referralIndexCache);
                 }
             }

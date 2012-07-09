@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2011-2012 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.modules.ldap;
 
 import com.iplanet.sso.SSOToken;
@@ -55,6 +57,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.net.ssl.SSLContext;
 import org.forgerock.opendj.ldap.Attribute;
@@ -277,8 +280,8 @@ public class LDAPAuthUtils {
     }
     
     private static ConnectionPool createConnectionPool(
-        HashMap<String, ConnectionPool> connectionPools,
-        HashMap<String, ServerStatus> aConnectionPoolsStatus,
+    		Map<String, ConnectionPool> connectionPools,
+    		Map<String, ServerStatus> aConnectionPoolsStatus,
         String hostName,
         int portNumber,
         boolean isSSL,

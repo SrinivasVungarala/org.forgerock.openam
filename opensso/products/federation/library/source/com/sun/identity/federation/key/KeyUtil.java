@@ -25,6 +25,9 @@
  * $Id: KeyUtil.java,v 1.5 2009/06/08 23:41:03 madan_ranganath Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.federation.key;
@@ -66,11 +69,11 @@ public class KeyUtil {
 
     // key is EntityID|Role
     // value is EncInfo
-    public static Hashtable encHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap encHash = new java.util.concurrent.ConcurrentHashMap();
 
     // key is EntityID|Role
     // value is X509Certificate
-    protected static Hashtable sigHash = new Hashtable();
+    protected static java.util.concurrent.ConcurrentHashMap sigHash = new java.util.concurrent.ConcurrentHashMap();
     
     static {
         try {

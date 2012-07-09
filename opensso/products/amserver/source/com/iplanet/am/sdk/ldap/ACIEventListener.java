@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.ldap;
 
 import com.iplanet.am.sdk.AMObjectListener;
@@ -42,6 +45,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.shared.ldap.controls.LDAPPersistSearchControl;
 
 /**
@@ -61,7 +66,7 @@ public class ACIEventListener implements IDSEventListener {
     // Instance variables
     private Debug debug = EventManager.getDebug();
 
-    private Map listeners = new HashMap();
+    private Map listeners = new ConcurrentHashMap();
 
     public ACIEventListener() {
     }
@@ -102,7 +107,7 @@ public class ACIEventListener implements IDSEventListener {
         }
 
         // Call Listeners
-        synchronized (listeners) {
+        //synchronized (listeners) {
             Set keys = listeners.keySet();
             for (Iterator items = keys.iterator(); items.hasNext();) {
                 AMObjectListener listener = (AMObjectListener) items.next();
@@ -114,7 +119,7 @@ public class ACIEventListener implements IDSEventListener {
                         (Map) listeners.get(listener));
                 }
             }
-        }
+        //}
     }
 
     /**

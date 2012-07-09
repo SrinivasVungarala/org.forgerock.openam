@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm;
 
 import com.iplanet.sso.SSOException;
@@ -40,6 +44,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -337,7 +343,8 @@ class PluginSchemaImpl extends ServiceSchemaImpl {
             return (answer);
         }
 
-        synchronized (pluginSchemas) {
+        //synchronized (pluginSchemas) 
+        {
             // Try the cache again, in case another thread added it
             if ((answer = (PluginSchemaImpl)
                 pluginSchemas.get(cName)) == null) {
@@ -351,7 +358,8 @@ class PluginSchemaImpl extends ServiceSchemaImpl {
 
     // Clears the cache
     static void clearCache() {
-        synchronized (pluginSchemas) {
+        //synchronized (pluginSchemas) 
+        {
             Iterator items = pluginSchemas.values().iterator();
             while (items.hasNext()) {
                 PluginSchemaImpl psi = (PluginSchemaImpl) items.next();
@@ -361,6 +369,5 @@ class PluginSchemaImpl extends ServiceSchemaImpl {
         }
     }
 
-    private static Map pluginSchemas = Collections.synchronizedMap(
-        new HashMap());
+    private static Map pluginSchemas = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 }

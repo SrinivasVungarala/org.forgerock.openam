@@ -19,6 +19,9 @@
  *
  * Contributor(s): 
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.shared.ldap;
 
 import java.util.*;
@@ -240,7 +243,7 @@ public class LDAPConnection
     private transient LDAPConnThread m_thread = null;
 
     /* To manage received server controls on a per-thread basis */
-    private Hashtable m_responseControlTable = new Hashtable();
+    private java.util.concurrent.ConcurrentHashMap m_responseControlTable = new java.util.concurrent.ConcurrentHashMap();
     private LDAPCache m_cache = null;
 
     // A flag set if startTLS() called successfully
@@ -252,7 +255,7 @@ public class LDAPConnection
     private Object m_security = null;
     private LDAPSaslBind m_saslBinder = null;
     private Properties m_securityProperties;
-    private Hashtable m_properties = new Hashtable();
+    private java.util.concurrent.ConcurrentHashMap m_properties = new java.util.concurrent.ConcurrentHashMap();
     private LDAPConnection m_referralConnection;
 
     /**
@@ -1349,7 +1352,7 @@ public class LDAPConnection
      * obtain additional required information
      * @exception LDAPException Failed to authenticate to the LDAP server.
      * @see com.sun.identity.shared.ldap.LDAPConnection#authenticate(java.lang.String,
-     * java.util.Hashtable, java.lang.Object)
+     * java.util.java.util.concurrent.ConcurrentHashMap, java.lang.Object)
      */
     public void authenticate(String dn, String[] mechanisms,
                              Hashtable props, /*CallbackHandler*/ Object cbh)
@@ -1684,7 +1687,7 @@ public class LDAPConnection
      * obtain additional required information
      * @exception LDAPException Failed to authenticate to the LDAP server.
      * @see com.sun.identity.shared.ldap.LDAPConnection#bind(java.lang.String,
-     * java.util.Hashtable, java.lang.Object)
+     * java.util.java.util.concurrent.ConcurrentHashMap, java.lang.Object)
      */
     public void bind(String dn, String[] mechanisms,
                      Hashtable props, /*CallbackHandler*/ Object cbh)
@@ -5974,8 +5977,8 @@ public class LDAPConnection
                 (LDAPSearchConstraints)m_defaultConstraints.clone();
             c.m_responseListeners = null;
             c.m_searchListeners = null;            
-            c.m_properties = (Hashtable)m_properties.clone();
-            c.m_responseControlTable = new Hashtable();
+            c.m_properties = new java.util.concurrent.ConcurrentHashMap(m_properties);
+            c.m_responseControlTable = new java.util.concurrent.ConcurrentHashMap();
 
             if (c.m_cache != null) {
                 c.m_cache.addReference();

@@ -25,7 +25,10 @@
  * $Id: PWResetAccountLockout.java,v 1.4 2009/03/06 22:37:07 hengming Exp $
  *
  */
-  
+ /**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+ 
 package com.sun.identity.password.ui.model;
 
 import com.sun.identity.common.AccountLockoutInfo;
@@ -34,6 +37,7 @@ import com.sun.identity.idm.AMIdentity;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>PWResetAccountLockout</code> defines a set for methods to lock and 
@@ -41,8 +45,7 @@ import java.util.Map;
  * unsuccessful after n of tries.
  */
 public class PWResetAccountLockout {
-    private static Map pwResetFailHash = 
-        Collections.synchronizedMap(new HashMap());
+    private static Map pwResetFailHash =new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     private int userWarningCount = 0;
     private PWResetModelImpl model = null;
     private ISAccountLockout isAccountLockout ;

@@ -25,6 +25,9 @@
  * $Id: FMEncProvider.java,v 1.5 2008/06/25 05:48:03 qcheng Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.saml2.xmlenc;
@@ -71,7 +74,7 @@ public final class FMEncProvider implements EncProvider {
      * same key for each recipient is provided as an option
      * here.
      */ 
-    static Hashtable cachedKeys = new Hashtable();
+    static java.util.concurrent.ConcurrentHashMap cachedKeys = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * A hidden property to switch between two encryption formats.

@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session.service;
 
 import com.iplanet.am.util.SystemProperties;
@@ -60,6 +63,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -129,7 +134,7 @@ public class InternalSession implements TaskRunnable, Serializable {
      * repository in the SFO case. - These object are not session properties
      * since they are not meant to exposed to any client.
      */
-    transient private Map internalObjects = new HashMap();
+    transient private Map internalObjects = new ConcurrentHashMap();
 
     /** holds session creation time */
     private long creationTime; // in seconds
@@ -145,12 +150,11 @@ public class InternalSession implements TaskRunnable, Serializable {
 
     private String cookieStr;
 
-    private Map restrictedTokensBySid = Collections
-            .synchronizedMap(new HashMap());
-
-    private Map restrictedTokensByRestriction = Collections
-            .synchronizedMap(new HashMap());
-
+   // private Map restrictedTokensBySid = Collections.synchronizedMap(new HashMap());
+    private ConcurrentHashMap restrictedTokensBySid = new ConcurrentHashMap();
+    //private Map restrictedTokensByRestriction = Collections.synchronizedMap(new HashMap());
+    private ConcurrentHashMap restrictedTokensByRestriction = new ConcurrentHashMap();
+    
     private static String superUserDN;
 
     private static boolean isEnableHostLookUp = Boolean.valueOf(
@@ -332,8 +336,8 @@ public class InternalSession implements TaskRunnable, Serializable {
      * map is associated with token id (master or restricted) which should be
      * used in notification
      */
-    private Map sessionEventURLs = Collections.synchronizedMap(new HashMap());
-
+    //private Map sessionEventURLs = Collections.synchronizedMap(new HashMap());
+    private ConcurrentHashMap sessionEventURLs = new ConcurrentHashMap();
     /**
      * Creates a new InternalSession with the invalid state 
      * @ param sid SessionID
@@ -802,7 +806,7 @@ public class InternalSession implements TaskRunnable, Serializable {
 
     private Map getInternalObjectMap() {
         if (internalObjects == null) {
-            internalObjects = new HashMap();
+            internalObjects = new ConcurrentHashMap();
         }
         return internalObjects;
     }
@@ -1241,7 +1245,7 @@ public class InternalSession implements TaskRunnable, Serializable {
             info.state = "destroyed";
         }
 
-        info.properties = (Properties) sessionProperties.clone();
+        info.properties = new ConcurrentHashMap<String, String>((Map)sessionProperties);
         return info;
     }
 

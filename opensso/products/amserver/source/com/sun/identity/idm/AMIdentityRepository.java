@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.idm;
 
 import java.util.ArrayList;
@@ -529,10 +533,10 @@ public final class AMIdentityRepository {
         if (listOfListeners == null) {
             listOfListeners = new ArrayList();
         }
-        synchronized (listeners) {
+        //synchronized (listeners) {
             listOfListeners.add(listener);
             listeners.put(organizationDN, listOfListeners);
-        }
+        //}
         return (listOfListeners.size() - 1);
     }
 
@@ -548,9 +552,9 @@ public final class AMIdentityRepository {
     public void removeEventListener(int identifier) {
         ArrayList listOfListeners = (ArrayList) listeners.get(organizationDN);
         if (listOfListeners != null) {
-            synchronized (listeners) {
+            //synchronized (listeners) {
                 listOfListeners.remove(identifier);
-            }
+            //}
         }
     }
 

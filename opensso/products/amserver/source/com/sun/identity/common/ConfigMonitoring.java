@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.common;
 
 import com.iplanet.dpro.session.service.SessionService;
@@ -67,6 +70,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -144,8 +148,8 @@ public class ConfigMonitoring {
             return;
         }
 
-        HashMap<String, String> puMap = new HashMap<String, String>(); // sitename -> primary URL
-        HashMap<String, String> siteMap = new HashMap<String, String>(); // primary URL -> sitename
+        ConcurrentHashMap<String, String> puMap = new ConcurrentHashMap<String, String>(); // sitename -> primary URL
+        ConcurrentHashMap<String, String> siteMap = new ConcurrentHashMap<String, String>(); // primary URL -> sitename
         try {
             Set<String> siteNames = SiteConfiguration.getSites(ssoToken);
             // get primary url for each site

@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.ldap.event;
 
 import java.security.AccessController;
@@ -43,6 +45,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.ldap.LDAPConnection;
 import com.sun.identity.shared.ldap.LDAPControl;
@@ -171,7 +174,7 @@ public class EventService implements Runnable {
 
     protected static String[] listeners;
 
-    protected static Hashtable _ideListenersMap = new Hashtable();   
+    protected static java.util.concurrent.ConcurrentHashMap _ideListenersMap = new java.util.concurrent.ConcurrentHashMap();   
     
     protected static volatile boolean _isThreadStarted = false;
     
@@ -334,7 +337,8 @@ public class EventService implements Runnable {
      */
     protected EventService() throws EventException {
         getConfigManager();
-        _requestList = Collections.synchronizedMap(new HashMap());
+        //_requestList = Collections.synchronizedMap(new HashMap());
+        _requestList=new ConcurrentHashMap();
     }
 
     /**

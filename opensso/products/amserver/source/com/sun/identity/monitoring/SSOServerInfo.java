@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.monitoring;
 
 import java.util.Hashtable;
@@ -41,9 +45,9 @@ public class SSOServerInfo {
     String serverURI;
     String serverPort;
     boolean isEmbeddedDS;
-    Hashtable<String, String> siteIDTable;
-    Hashtable<String, String> serverIDTable;
-    Hashtable<String, String> namingTable;
+    java.util.concurrent.ConcurrentHashMap<String, String> siteIDTable;
+    java.util.concurrent.ConcurrentHashMap<String, String> serverIDTable;
+    java.util.concurrent.ConcurrentHashMap<String, String> namingTable;
     String startDate;
 
     public SSOServerInfo() {
@@ -71,9 +75,9 @@ public class SSOServerInfo {
         String serverURI;
         String serverPort;
         boolean isEmbeddedDS;
-        Hashtable<String, String> siteIDTable;
-        Hashtable<String, String> serverIDTable;
-        Hashtable<String, String> namingTable;
+        java.util.concurrent.ConcurrentHashMap<String, String> siteIDTable;
+        java.util.concurrent.ConcurrentHashMap<String, String> serverIDTable;
+        java.util.concurrent.ConcurrentHashMap<String, String> namingTable;
         String startDate;
 
         public SSOServerInfoBuilder(String svrId, String siteId) {
@@ -106,17 +110,17 @@ public class SSOServerInfo {
             return this;
         }
 
-        public SSOServerInfoBuilder siteIdTable (Hashtable<String, String> siteIdTab) {
+        public SSOServerInfoBuilder siteIdTable (java.util.concurrent.ConcurrentHashMap<String, String> siteIdTab) {
             siteIDTable = siteIdTab;
             return this;
         }
 
-        public SSOServerInfoBuilder svrIdTable (Hashtable<String, String> svrIdTab) {
+        public SSOServerInfoBuilder svrIdTable (java.util.concurrent.ConcurrentHashMap<String, String> svrIdTab) {
             serverIDTable = svrIdTab;
             return this;
         }
 
-        public SSOServerInfoBuilder namingTable (Hashtable<String, String> namingTab) {
+        public SSOServerInfoBuilder namingTable (java.util.concurrent.ConcurrentHashMap<String, String> namingTab) {
             namingTable = namingTab;
             return this;
         }

@@ -19,6 +19,9 @@
  *
  * Contributor(s): 
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.shared.ldap;
 
 import java.io.*;
@@ -349,7 +352,7 @@ public class LDAPControl implements Cloneable, java.io.Serializable {
 
         // 3. check if the hash table exists
         if (m_controlClassHash == null) {
-            m_controlClassHash = new Hashtable();
+            m_controlClassHash = new java.util.concurrent.ConcurrentHashMap();
 	}
 
 	// 4. add the controlClass
@@ -561,7 +564,7 @@ public class LDAPControl implements Cloneable, java.io.Serializable {
     private String m_oid;
     protected boolean m_critical = false;
     protected byte[] m_value = null;
-    static private Hashtable m_controlClassHash = null;
+    static private java.util.concurrent.ConcurrentHashMap m_controlClassHash = null;
     static {
         try {
             LDAPControl.register( LDAPPasswordExpiringControl.EXPIRING,

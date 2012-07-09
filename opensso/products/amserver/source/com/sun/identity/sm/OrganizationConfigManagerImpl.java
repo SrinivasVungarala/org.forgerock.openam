@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm;
 
 import com.iplanet.sso.SSOException;
@@ -41,7 +45,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.naming.event.NamingEvent;
+
 import com.sun.identity.shared.ldap.LDAPDN;
 import com.sun.identity.shared.ldap.util.DN;
 
@@ -62,8 +69,7 @@ class OrganizationConfigManagerImpl implements SMSObjectListener {
     private CachedSMSEntry smsEntry;
 
     // Pointer to schema changes listeners
-    private Map listenerObjects = Collections.synchronizedMap(
-        new HashMap());
+    private Map listenerObjects = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     private String listenerId;
 
     // Notification search string
@@ -193,7 +199,7 @@ class OrganizationConfigManagerImpl implements SMSObjectListener {
      * @return an ID of the registered listener.
      */
 
-    synchronized String addListener(ServiceListener listener) {
+    String addListener(ServiceListener listener) {
         String id = SMSUtils.getUniqueID();
         listenerObjects.put(id, listener);
         return (id);
@@ -335,7 +341,8 @@ class OrganizationConfigManagerImpl implements SMSObjectListener {
 
     void notifyOrgConfigChange(String serviceName, String version,
         String orgName, String groupName, String comp, int type) {
-        synchronized (listenerObjects) {
+        //synchronized (listenerObjects) 
+        {
             Iterator items = listenerObjects.values().iterator();
             while (items.hasNext()) {
                 ServiceListener sl = (ServiceListener) items.next();
@@ -414,7 +421,8 @@ class OrganizationConfigManagerImpl implements SMSObjectListener {
             }
         } else {
             // Not in cache, construct the object and validate
-            synchronized (configMgrImpls) {
+            //synchronized (configMgrImpls) 
+            {
                 // Check the cache again, maybe added by another thread
                 if ((answer = getFromCache(orgDN, null)) == null) {
                     CachedSMSEntry cEntry =
@@ -467,7 +475,7 @@ class OrganizationConfigManagerImpl implements SMSObjectListener {
         CachedSMSEntry answer = CachedSMSEntry.getInstance(t, cacheName);
         Set sudoPrincipals = (Set) userPrincipals.get(cacheName);
         if (sudoPrincipals == null) {
-            sudoPrincipals = Collections.synchronizedSet(new HashSet(2));
+            sudoPrincipals = Collections.newSetFromMap(new ConcurrentHashMap(2));//Collections.synchronizedSet(new HashSet(2));
             userPrincipals.put(cacheName, sudoPrincipals);
         }
         sudoPrincipals.add(t.getTokenID().toString());
@@ -475,7 +483,8 @@ class OrganizationConfigManagerImpl implements SMSObjectListener {
     }
     
     static void clearCache() {
-        synchronized (configMgrImpls) {
+        //synchronized (configMgrImpls) 
+    	{
             for (Iterator items = configMgrImpls.values().iterator();
                 items.hasNext();) {
                 OrganizationConfigManagerImpl ocm =
@@ -486,11 +495,9 @@ class OrganizationConfigManagerImpl implements SMSObjectListener {
         }
     }
 
-    private static Map configMgrImpls = Collections.synchronizedMap(
-        new HashMap());
+    private static Map configMgrImpls = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
-    private static Map userPrincipals = Collections.synchronizedMap(
-        new HashMap());
+    private static Map userPrincipals = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     private static Debug debug = SMSEntry.debug;
 }

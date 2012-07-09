@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.sm;
 
@@ -38,6 +41,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.common.CaseInsensitiveHashMap;
 
@@ -227,9 +231,9 @@ public class SMSUtils {
         if (attributes == null) {
             return new HashMap();
         }
-        HashMap answer = attributes instanceof CaseInsensitiveHashMap ? 
+        Map answer = attributes instanceof CaseInsensitiveHashMap ? 
                 new CaseInsensitiveHashMap()
-                : new HashMap();
+                : new ConcurrentHashMap();
 
         if (attributes.isEmpty()) {
             return (answer);

@@ -29,9 +29,15 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.idm.server;
 
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,6 +66,7 @@ import com.sun.identity.sm.ServiceManager;
 
 import com.iplanet.am.sdk.AMEvent;
 import com.iplanet.am.sdk.AMHashMap;
+import com.iplanet.am.sdk.common.CacheBlock;
 import com.iplanet.am.util.Cache;
 import com.sun.identity.monitoring.MonitoringUtil;
 
@@ -80,7 +87,7 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
     private static IdServices instance;
 
     // Class Private
-    private Cache idRepoCache;
+    private Cache<String,IdCacheBlock> idRepoCache;
 
     private IdCacheStats cacheStats;
 
@@ -130,7 +137,7 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
     }
 
     private void initializeCache() {
-        idRepoCache = new Cache(maxSize);
+        idRepoCache = new Cache<String,IdCacheBlock>(getClass().getName(), maxSize);//new Cache(maxSize);
     }
 
     /**
@@ -139,7 +146,7 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
      * @return the size of the SDK LRU cache
      */
     public int getSize() {
-        return idRepoCache.size();
+        return maxSize;//idRepoCache.size();
     }
 
     protected static synchronized IdServices getInstance() {
@@ -182,17 +189,18 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n<<<<<<< BEGIN SDK CACHE CONTENTS >>>>>>>>");
-        if (!idRepoCache.isEmpty()) { // Should never be null
-            Enumeration cacheKeys = idRepoCache.keys();
-            while (cacheKeys.hasMoreElements()) {
-                String key = (String) cacheKeys.nextElement();
-                IdCacheBlock cb = (IdCacheBlock) idRepoCache.get(key);
-                sb.append("\nSDK Cache Block: ").append(key);
-                sb.append(cb.toString());
-            }
-        } else {
-            sb.append("<empty>");
-        }
+        sb.append(idRepoCache.get().toString());
+//        if (!idRepoCache.isEmpty()) { // Should never be null
+//            Enumeration cacheKeys = idRepoCache.keys();
+//            while (cacheKeys.hasMoreElements()) {
+//                String key = (String) cacheKeys.nextElement();
+//                IdCacheBlock cb = (IdCacheBlock) idRepoCache.get(key);
+//                sb.append("\nSDK Cache Block: ").append(key);
+//                sb.append(cb.toString());
+//            }
+//        } else {
+//            sb.append("<empty>");
+//        }
         sb.append("\n<<<<<<< END SDK CACHE CONTENTS >>>>>>>>");
         return sb.toString();
     }
@@ -201,26 +209,31 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
     // Update/Dirty methods of this class.
     // *************************************************************************
     private void removeCachedAttributes(String affectDNs, Set attrNames) {
-        Enumeration cacheKeys = idRepoCache.keys();
-        while (cacheKeys.hasMoreElements()) {
-            String key = DNUtils.normalizeDN(
-                cacheKeys.nextElement().toString());
-            int l1 = key.length();
-            int l2 = affectDNs.length();
-            if (key.regionMatches(true, (l1 - l2), affectDNs, 0, l2)) {
-                // key ends with 'affectDN' string
-                IdCacheBlock cb = (IdCacheBlock) idRepoCache.get(key);
-                if (cb != null) {
-                    // key ends with 'affectDN' string
-                    if ((attrNames != null) &&
-                        !cb.hasExpiredAndUpdated() && cb.isExists()) {
-                        cb.removeAttributes(attrNames);
-                    } else {
-                        cb.clear();
-                    }
-                }
-            }
-        }
+    	IdCacheBlock cb = (IdCacheBlock) idRepoCache.get(affectDNs);
+    	if (cb!=null)
+    		cb.removeAttributes(attrNames);
+    	else
+    		cb.clear();
+//        Enumeration cacheKeys = idRepoCache.keys();
+//        while (cacheKeys.hasMoreElements()) {
+//            String key = DNUtils.normalizeDN(
+//                cacheKeys.nextElement().toString());
+//            int l1 = key.length();
+//            int l2 = affectDNs.length();
+//            if (key.regionMatches(true, (l1 - l2), affectDNs, 0, l2)) {
+//                // key ends with 'affectDN' string
+//                IdCacheBlock cb = (IdCacheBlock) idRepoCache.get(key);
+//                if (cb != null) {
+//                    // key ends with 'affectDN' string
+//                    if ((attrNames != null) &&
+//                        !cb.hasExpiredAndUpdated() && cb.isExists()) {
+//                        cb.removeAttributes(attrNames);
+//                    } else {
+//                        cb.clear();
+//                    }
+//                }
+//            }
+//        }
     }
 
     private void clearCachedEntries(String affectDNs) {
@@ -234,7 +247,7 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
      */
     public synchronized void clearCache() {
         idRepoCache.clear();
-        initializeCache();
+        //initializeCache();
     }
 
     /**
@@ -276,24 +289,32 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
             }
             break;
         case AMEvent.OBJECT_REMOVED:
-            cb = (IdCacheBlock) idRepoCache.remove(cachedID);
-            if (cb != null) {
-                cb.clear(); // Clear anyway & help the GC process
-            }
-            if (cosType) {
-                removeCachedAttributes(cachedID, attrNames);
-            }
+            cb = getFromCache(dn);
+        	if (cb!=null){
+        		//cb.clear();
+        		idRepoCache.remove(cachedID);
+        	}
+//            if (cb != null) {
+//                cb.clear(); // Clear anyway & help the GC process
+//            }
+//            if (cosType) {
+//                removeCachedAttributes(cachedID, attrNames);
+//            }
             break;
         case AMEvent.OBJECT_RENAMED:
             // Better to remove the renamed entry, or else it will be just
             // hanging in the cache, until LRU kicks in.
-            cb = (IdCacheBlock) idRepoCache.remove(cachedID);
-            if (cb != null) {
-                cb.clear(); // Clear anyway & help the GC process
-            }
-            if (cosType) {
-                removeCachedAttributes(cachedID, attrNames);
-            }
+        	cb = getFromCache(dn);
+        	if (cb!=null){
+        		//cb.clear();
+        		idRepoCache.remove(cachedID);
+        	}
+//            if (cb != null) {
+//                cb.clear(); // Clear anyway & help the GC process
+//            }
+//            if (cosType) {
+//                removeCachedAttributes(cachedID, attrNames);
+//            }
             break;
         case AMEvent.OBJECT_CHANGED:
             cb = getFromCache(dn);
@@ -619,6 +640,8 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
                             orgName, null);
                     } else {
                         Set attrNames = ctrl.getReturnAttributes();
+                        if ((attrNames==null)||attrNames.isEmpty())
+                        	attrNames=new HashSet<String>(Arrays.asList(new String[]{"uid"}));
                         attributes = getAttributes(token, type, pattern,
                             attrNames, orgName, null, true);
                     }

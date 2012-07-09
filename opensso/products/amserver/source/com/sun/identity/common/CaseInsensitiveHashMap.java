@@ -29,20 +29,25 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.common;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A case insensitive hash map with case preservation. If key is a String, a
  * case insensitive hash code is used for hashing but original case of the key
  * is preserved.
  */
-public class CaseInsensitiveHashMap extends HashMap {
+public class CaseInsensitiveHashMap extends ConcurrentHashMap {
     public CaseInsensitiveHashMap() {
         super();
     }
@@ -56,39 +61,28 @@ public class CaseInsensitiveHashMap extends HashMap {
     }
 
     public CaseInsensitiveHashMap(Map t) {
-        putAll(t);
+    	super((t==null)?0:t.size());
+    	if (t!=null&&t.size()>0)
+    		putAll(t);
     }
 
     public boolean containsKey(Object key) {
-        boolean retval;
-        if (key instanceof String) {
-            CaseInsensitiveKey ciKey = new CaseInsensitiveKey((String) key);
-            retval = super.containsKey(ciKey);
-        } else {
-            retval = super.containsKey(key);
-        }
-        return retval;
+        return super.containsKey((key instanceof String)?new CaseInsensitiveKey((String) key):key);
     }
 
     public Object get(Object key) {
-        Object retval;
-        if (key instanceof String) {
-            CaseInsensitiveKey ciKey = new CaseInsensitiveKey((String) key);
-            retval = super.get(ciKey);
-        } else {
-            retval = super.get(key);
-        }
-        return retval;
+        return super.get((key instanceof String)?new CaseInsensitiveKey((String) key):key);
     }
 
     /**
      * @return a <code>Set</Code> of keys.
      */
     public Set keySet() {
-        Set keys = super.keySet();
-        Set set = new CaseInsensitiveHashSet();
-        set.addAll(keys);
-        return set;
+////        Set keys = super.keySet();
+////        Set set = new CaseInsensitiveHashSet();
+////        set.addAll(keys);
+////        return set;
+        return new CaseInsensitiveHashSet(super.keySet());
     }
 
     /**
@@ -97,48 +91,37 @@ public class CaseInsensitiveHashMap extends HashMap {
      * @return a <code>Set</Code> of map entries
      */
     public Set entrySet() {
-        Set entries = super.entrySet();
-        HashSet set = new HashSet();
-        Iterator iter = entries.iterator();
-        while (iter.hasNext()) {
-            // keys are CaseInsensitiveKey's,
-            // hence needs to switched to String
-            Map.Entry entry = (Map.Entry) iter.next();
-            set.add(new Entry(entry));
-        }
-        return set;
+    	HashSet set = new HashSet(super.size());
+    	for (Map.Entry<Object,Set> entry : (Set<Map.Entry<Object,Set>>)super.entrySet()) {
+    		set.add(new Entry(entry));
+    	}
+    	return set;
+//        Set entries = super.entrySet();
+//        HashSet set = new HashSet();
+//        Iterator iter = entries.iterator();
+//        while (iter.hasNext()) {
+//            // keys are CaseInsensitiveKey's,
+//            // hence needs to switched to String
+//            Map.Entry entry = (Map.Entry) iter.next();
+//            set.add(new Entry(entry));
+//        }
+//        return set;
     }
 
     public Object put(Object key, Object value) {
-        Object retval;
-        if (key instanceof String) {
-            CaseInsensitiveKey ciKey = new CaseInsensitiveKey((String) key);
-            retval = super.put(ciKey, value);
-        } else {
-            retval = super.put(key, value);
-        }
-        return retval;
+        return super.put(
+        		(key instanceof String)?new CaseInsensitiveKey((String) key):key,
+        		(value==null)?new HashSet<String>(0):value);
     }
 
     public void putAll(Map map) {
-        if (map == null || map.isEmpty()) {
-            return;
-        }
-        for (Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            put(entry.getKey(), entry.getValue());
-        }
+        if (map!= null || !map.isEmpty()) 
+        	for (Map.Entry<Object,Set> entry : (Set<Map.Entry<Object,Set>>)map.entrySet()) 
+        		put(entry.getKey(), entry.getValue());
     }
 
     public Object remove(Object key) {
-        Object retval;
-        if (key instanceof String) {
-            CaseInsensitiveKey ciKey = new CaseInsensitiveKey((String) key);
-            retval = super.remove(ciKey);
-        } else {
-            retval = super.remove(key);
-        }
-        return retval;
+        return super.remove((key instanceof String)?new CaseInsensitiveKey((String) key):key);
     }
 
     static private class Entry implements Map.Entry {

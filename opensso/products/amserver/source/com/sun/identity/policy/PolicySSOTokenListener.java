@@ -25,6 +25,9 @@
  * $Id: PolicySSOTokenListener.java,v 1.4 2008/06/25 05:43:44 qcheng Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 
@@ -81,7 +84,8 @@ public class PolicySSOTokenListener
             }
         
             // update the policy decision cache
-            synchronized(PolicyEvaluator.policyResultsCache) {
+            //synchronized(PolicyEvaluator.policyResultsCache) 
+            {
                 if (!(resultsCache.isEmpty())) {
                     Set svcInCache = resultsCache.keySet(); 
                     Iterator svcInCacheIter = svcInCache.iterator();

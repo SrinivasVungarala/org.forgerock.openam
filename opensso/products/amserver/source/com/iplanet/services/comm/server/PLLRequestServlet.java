@@ -25,7 +25,9 @@
  * $Id: PLLRequestServlet.java,v 1.9 2009/02/12 17:24:13 bina Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.comm.server;
 
 import com.iplanet.am.util.SystemProperties;
@@ -61,7 +63,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PLLRequestServlet extends HttpServlet {
 
     /* service handlers */
-    private static Hashtable requestHandlers = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap requestHandlers = new java.util.concurrent.ConcurrentHashMap();
 
     private static final String PROPERTY_MAX_CONTENT_LENGTH = 
         Constants.SERVICES_COMM_SERVER_PLLREQUEST_MAX_CONTENT_LENGTH;

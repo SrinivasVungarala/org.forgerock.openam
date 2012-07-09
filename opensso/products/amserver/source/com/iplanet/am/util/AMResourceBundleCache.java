@@ -25,7 +25,9 @@
  * $Id: AMResourceBundleCache.java,v 1.3 2008/06/25 05:41:27 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.util;
 
 import java.util.HashMap;
@@ -33,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A singleton class that cache resource bundle object
@@ -43,7 +46,7 @@ import java.util.ResourceBundle;
 public class AMResourceBundleCache {
     private static AMResourceBundleCache instance;
 
-    private HashMap mapBundles = new HashMap(30);
+    private ConcurrentHashMap mapBundles = new ConcurrentHashMap(30);
 
     private Debug debug = null;
 
@@ -86,13 +89,13 @@ public class AMResourceBundleCache {
                 debug.error("AMResourceBundleCache.getResBundle", mre);
             }
 
-            synchronized (mapBundles) {
+            //synchronized (mapBundles) {
                 if (map == null) {
                     map = new HashMap(5);
                     mapBundles.put(name, map);
                 }
                 map.put(locale, resBundle);
-            }
+            //}
         }
 
         return resBundle;
@@ -100,8 +103,8 @@ public class AMResourceBundleCache {
 
     /** clears all resource bundle objects */
     public void clear() {
-        synchronized (mapBundles) {
+        //synchronized (mapBundles) {
             mapBundles.clear();
-        }
+        //}
     }
 }

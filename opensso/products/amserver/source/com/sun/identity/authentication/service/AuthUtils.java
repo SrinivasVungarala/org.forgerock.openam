@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.service;
 
 import java.net.URL;
@@ -125,7 +128,7 @@ public class AuthUtils extends AuthClientUtils {
     
     private static ArrayList pureJAASModuleClasses = new ArrayList();
     private static ArrayList ISModuleClasses = new ArrayList();
-    private static Hashtable moduleService = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap moduleService = new java.util.concurrent.ConcurrentHashMap();
     private static ResourceBundle bundle;
     static Debug utilDebug = Debug.getInstance("amAuthUtils");    
     private static String serviceURI = SystemProperties.get(

@@ -25,6 +25,9 @@
  * $Id: ISPermission.java,v 1.5 2008/08/19 19:09:17 veiming Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.policy.jaas;
 
@@ -33,6 +36,7 @@ import com.iplanet.sso.SSOTokenManager;
 import com.iplanet.sso.SSOException;
 
 import com.sun.identity.authentication.service.SSOTokenPrincipal;
+import com.sun.identity.diagnostic.base.core.ui.gui.event.MessageListener;
 import com.sun.identity.policy.client.PolicyEvaluator;
 import com.sun.identity.policy.client.PolicyEvaluatorFactory;
 import com.sun.identity.shared.debug.Debug;
@@ -43,6 +47,7 @@ import java.security.ProtectionDomain;
 import java.security.PermissionCollection;
 
 import javax.security.auth.Subject;
+
 import java.security.Principal;
 
 import java.util.Set;
@@ -50,6 +55,7 @@ import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.Map;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class provides the support for JAAS Authorization service 
@@ -94,7 +100,7 @@ public class ISPermission extends Permission {
     private String resourceName;
     private String actions;
     private Set actionSet;
-    private Map envParams = Collections.synchronizedMap(Collections.EMPTY_MAP);
+    private Map envParams = new ConcurrentHashMap();//Collections.synchronizedMap(Collections.EMPTY_MAP);
     private PolicyEvaluatorFactory policyEvalFactory;
     static Debug debug = Debug.getInstance("amPolicy");
 
@@ -269,8 +275,8 @@ public class ISPermission extends Permission {
      * @return true if two comma separated strings are equal.
      */
     private boolean actionEquals(String actions1, String actions2) {
-            Set actionSet1 = Collections.synchronizedSet(new HashSet());
-            Set actionSet2 = Collections.synchronizedSet(new HashSet());
+            Set actionSet1 = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
+            Set actionSet2 = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
         if (actions1 != null) {
                StringTokenizer st = new StringTokenizer(actions1,",");
             while (st.hasMoreTokens()) {
@@ -296,7 +302,7 @@ public class ISPermission extends Permission {
      */
     private Set actionsInSet(String actions) {
         if (actionSet == null) {
-                actionSet = Collections.synchronizedSet(new HashSet());
+                actionSet = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
         } else {
             return actionSet;
         }

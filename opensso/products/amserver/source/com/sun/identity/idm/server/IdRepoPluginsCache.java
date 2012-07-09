@@ -24,6 +24,9 @@
 *
 * $Id: IdRepoPluginsCache.java,v 1.8 2009/11/10 01:52:37 hengming Exp $
 */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.idm.server;
 
@@ -73,9 +76,9 @@ public class IdRepoPluginsCache implements ServiceListener {
     
     // Cache of IdRepo Plugins
     // The Map contains <orgName, MAP<name, IdRepo object>>
-    private Map idrepoPlugins = new HashMap();
+    private java.util.concurrent.ConcurrentHashMap idrepoPlugins = new java.util.concurrent.ConcurrentHashMap();
     // Needs to synchronized for get(), put() and clear()
-    private Map readonlyPlugins = new Hashtable();
+    private java.util.concurrent.ConcurrentHashMap readonlyPlugins = new java.util.concurrent.ConcurrentHashMap();
     
     protected IdRepoPluginsCache() {
         // Initialize listeners
@@ -98,55 +101,61 @@ public class IdRepoPluginsCache implements ServiceListener {
         if ((readOrgRepos != null) && !readOrgRepos.isEmpty()) {
             return (readOrgRepos);
         }
-        synchronized (idrepoPlugins) {
+        //synchronized (idrepoPlugins) 
+        {
             orgRepos = (Map) idrepoPlugins.get(orgName);
             if (orgRepos == null) {
-                try {
-                    if (debug.messageEnabled()) {
-                        debug.message("IdRepoPluginsCache.getIdRepoPlugins " +
-                            "Not in cache for: " + orgName);
-                    }
-                    // Initialize the plugins
-                    orgRepos = new LinkedHashMap();
-                    ServiceConfig sc = idRepoServiceConfigManager
-                        .getOrganizationConfig(orgName, null);
-                    if (sc == null) {
-                        // Organization does not exist. Error condition
-                        debug.error("IdRepoPluginsCache.getIdRepoPlugins " +
-                            "Org does not exisit: " + orgName);
-                        Object[] args = { orgName };
-                        throw new IdRepoException(
-                            IdRepoBundle.BUNDLE_NAME, "312", args);
-                    }
-                    Set subConfigNames = sc.getSubConfigNames();
-                    if (debug.messageEnabled()) {
-                        debug.message("IdRepoPluginsCache.getIdRepoPlugins " +
-                            "Loading plugins: " + subConfigNames);
-                    }
-                    if (subConfigNames != null && !subConfigNames.isEmpty()) {
-                        for (Iterator items = subConfigNames.iterator();
-                            items.hasNext();) {
-                            String idRepoName = (String) items.next();
-                            ServiceConfig reposc = sc.getSubConfig(idRepoName);
-                            if (reposc == null) {
-                                debug.error("IdRepoPluginsCache." +
-                                    "getIdRepoPlugins SubConfig is null for" +
-                                    " orgName: " + orgName +
-                                    " subConfig Name: " + idRepoName);
-                            }
-                            IdRepo repo = constructIdRepoPlugin(orgName,
-                                reposc.getAttributesForRead(), idRepoName);
-                            // Add to cache
-                            orgRepos.put(idRepoName, repo);
-                        }
-                    }
-                    // Add internal repos
-                    addInternalRepo(orgRepos, orgName);
-                    idrepoPlugins.put(orgName, orgRepos);
-                } catch (SMSException ex) {
-                    debug.error("IdRepoPluginsCache.getIdRepoPlugins " +
-                            "SMS Exception for orgName: " + orgName, ex);
-                }
+            	synchronized (idrepoPlugins){
+            		orgRepos = (Map) idrepoPlugins.get(orgName);
+            		if (orgRepos == null) {
+		                try {
+		                    if (debug.messageEnabled()) {
+		                        debug.message("IdRepoPluginsCache.getIdRepoPlugins " +
+		                            "Not in cache for: " + orgName);
+		                    }
+		                    // Initialize the plugins
+		                    orgRepos = new LinkedHashMap();
+		                    ServiceConfig sc = idRepoServiceConfigManager
+		                        .getOrganizationConfig(orgName, null);
+		                    if (sc == null) {
+		                        // Organization does not exist. Error condition
+		                        debug.error("IdRepoPluginsCache.getIdRepoPlugins " +
+		                            "Org does not exisit: " + orgName);
+		                        Object[] args = { orgName };
+		                        throw new IdRepoException(
+		                            IdRepoBundle.BUNDLE_NAME, "312", args);
+		                    }
+		                    Set subConfigNames = sc.getSubConfigNames();
+		                    if (debug.messageEnabled()) {
+		                        debug.message("IdRepoPluginsCache.getIdRepoPlugins " +
+		                            "Loading plugins: " + subConfigNames);
+		                    }
+		                    if (subConfigNames != null && !subConfigNames.isEmpty()) {
+		                        for (Iterator items = subConfigNames.iterator();
+		                            items.hasNext();) {
+		                            String idRepoName = (String) items.next();
+		                            ServiceConfig reposc = sc.getSubConfig(idRepoName);
+		                            if (reposc == null) {
+		                                debug.error("IdRepoPluginsCache." +
+		                                    "getIdRepoPlugins SubConfig is null for" +
+		                                    " orgName: " + orgName +
+		                                    " subConfig Name: " + idRepoName);
+		                            }
+		                            IdRepo repo = constructIdRepoPlugin(orgName,
+		                                reposc.getAttributesForRead(), idRepoName);
+		                            // Add to cache
+		                            orgRepos.put(idRepoName, repo);
+		                        }
+		                    }
+		                    // Add internal repos
+		                    addInternalRepo(orgRepos, orgName);
+		                    idrepoPlugins.put(orgName, orgRepos);
+		                } catch (SMSException ex) {
+		                    debug.error("IdRepoPluginsCache.getIdRepoPlugins " +
+		                            "SMS Exception for orgName: " + orgName, ex);
+		                }
+            		}
+            	}
             }
             // Cache a readonly copy
             if (orgRepos != null) {
@@ -201,7 +210,8 @@ public class IdRepoPluginsCache implements ServiceListener {
                 " OrgName: " + orgName + " Op: " + op + " Type: " + type +
                 " Plugins: " + ps);
         }
-        synchronized (idrepoPlugins) {
+        //synchronized (idrepoPlugins) 
+        {
             if (answer != null) {
                 readonlyPlugins.put(cacheName, answer);
             }
@@ -215,7 +225,8 @@ public class IdRepoPluginsCache implements ServiceListener {
     private void removeIdRepo(String orgName, String name,
         boolean reinitialize) throws IdRepoException, SSOException {
         orgName = DNUtils.normalizeDN(orgName);
-        synchronized (idrepoPlugins) {
+        //synchronized (idrepoPlugins) 
+        {
             // Clear IdRepo plugins first since other threads should
             // not access it during shutdown
             clearReadOnlyPlugins(orgName);
@@ -271,7 +282,8 @@ public class IdRepoPluginsCache implements ServiceListener {
     private void removeIdRepo(String orgName) {
         orgName = DNUtils.normalizeDN(orgName);
         Map idrepos = null;
-        synchronized (idrepoPlugins) {
+        //synchronized (idrepoPlugins) 
+        {
             // Clear IdRepo plugins first
             clearReadOnlyPlugins(orgName);
             idrepos = (Map) idrepoPlugins.remove(orgName);
@@ -291,7 +303,8 @@ public class IdRepoPluginsCache implements ServiceListener {
      */
     public void clearIdRepoPluginsCache() {
         Map cache = null;
-        synchronized (idrepoPlugins) {
+        //synchronized (idrepoPlugins) 
+        {
             // Clear readonly cache first.
             // Don't want other theads to get plugins that are
             // shutdown.
@@ -353,7 +366,8 @@ public class IdRepoPluginsCache implements ServiceListener {
         IdRepo repo = constructIdRepoPlugin(orgName, configMap, name);
         // Add to cache
         orgName = DNUtils.normalizeDN(orgName);
-        synchronized (idrepoPlugins) {
+        //synchronized (idrepoPlugins) 
+        {
             // Clear the readonly plugins first.
             // Other threads have to wait for the initialization to complete
             // Will get updated when getPlugins gets called

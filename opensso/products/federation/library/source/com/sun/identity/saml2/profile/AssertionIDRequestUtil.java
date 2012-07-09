@@ -25,6 +25,9 @@
  * $Id: AssertionIDRequestUtil.java,v 1.8 2009/06/12 22:21:40 mallas Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.saml2.profile;
@@ -97,7 +100,7 @@ public class AssertionIDRequestUtil {
 
     static KeyProvider keyProvider = KeyUtil.getKeyProviderInstance(); 
     static SAML2MetaManager metaManager = SAML2Utils.getSAML2MetaManager();
-    static Hashtable assertionIDRequestMapperCache = new Hashtable(); 
+    static java.util.concurrent.ConcurrentHashMap assertionIDRequestMapperCache = new java.util.concurrent.ConcurrentHashMap(); 
     static final String MIME_TYPE_ASSERTION = "application/samlassertion+xml";
 
     private AssertionIDRequestUtil() {

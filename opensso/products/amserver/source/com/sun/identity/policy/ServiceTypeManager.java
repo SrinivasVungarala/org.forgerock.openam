@@ -29,11 +29,15 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.policy;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.security.AccessController;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.sso.SSOException;
@@ -58,7 +62,7 @@ public class ServiceTypeManager {
     private static ServiceTypeManager svtm = null;
 
     private SSOToken token;
-    private Map serviceTypes = Collections.synchronizedMap(new HashMap());
+    private Map serviceTypes = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     // static variables
     private static Random random = new Random();

@@ -24,6 +24,10 @@
  *
  * $Id: ApplicationManager.java,v 1.11 2010/01/13 23:41:57 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.entitlement;
 
 import com.sun.identity.entitlement.interfaces.ResourceName;
@@ -38,6 +42,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
 import javax.security.auth.Subject;
@@ -49,9 +54,9 @@ import javax.security.auth.Subject;
 public final class ApplicationManager {
     private final static Object lock = new Object();
     private static Map<String, Set<Application>> applications =
-        new HashMap<String, Set<Application>>();
-    private static final ReentrantReadWriteLock readWriteLock =
-        new ReentrantReadWriteLock();
+        new ConcurrentHashMap<String, Set<Application>>();
+//    private static final ReentrantReadWriteLock readWriteLock =
+//        new ReentrantReadWriteLock();
 
     private ApplicationManager() {
     }
@@ -230,17 +235,17 @@ public final class ApplicationManager {
             PrivilegeManager.superAdminSubject, realm);
         realm = ec.getRealmName(realm);
 
-        readWriteLock.readLock().lock();
+        //readWriteLock.readLock().lock();
         try {
             Set<Application> appls = applications.get(realm);
             if (appls != null) {
                 return appls;
             }
         } finally {
-            readWriteLock.readLock().unlock();
+            //readWriteLock.readLock().unlock();
         }
 
-        readWriteLock.writeLock().lock();
+        //readWriteLock.writeLock().lock();
         try {
             Set<Application> appls = applications.get(realm);
             if (appls == null) {
@@ -253,7 +258,7 @@ public final class ApplicationManager {
             appls.addAll(mgr.getReferredApplications(realm));
             return appls;
         } finally {
-            readWriteLock.writeLock().unlock();
+            //readWriteLock.writeLock().unlock();
         }
     }
 
@@ -571,7 +576,7 @@ public final class ApplicationManager {
      * received for changes to applications.
      */
     public static void clearCache(String realm) {
-        readWriteLock.writeLock().lock();
+        //readWriteLock.writeLock().lock();
         try {
             for (Iterator<String> i = applications.keySet().iterator();
                 i.hasNext(); ) {
@@ -582,7 +587,7 @@ public final class ApplicationManager {
                 }
             }
         } finally {
-            readWriteLock.writeLock().unlock();
+            //readWriteLock.writeLock().unlock();
         }
     }
 

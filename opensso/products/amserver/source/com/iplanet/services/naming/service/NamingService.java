@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.naming.service;
 
 import com.iplanet.am.util.SystemProperties;
@@ -88,7 +90,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 
     public static final String NAMING_SERVICE = "com.iplanet.am.naming";
 
-    private static Hashtable namingTable = null;
+    private static java.util.concurrent.ConcurrentHashMap namingTable = null;
 
     private static Properties platformProperties = null;
 
@@ -177,12 +179,12 @@ public class NamingService implements RequestHandler, ServiceListener {
      * instance needs to be updated in the platform server list to reflect that
      * server in the naming table
      */
-    public static Hashtable getNamingTable(boolean forClient)
+    public static java.util.concurrent.ConcurrentHashMap getNamingTable(boolean forClient)
             throws SMSException {
         return updateNamingTable(forClient);
     }
 
-    public static Hashtable getNamingTable() throws SMSException {
+    public static java.util.concurrent.ConcurrentHashMap getNamingTable() throws SMSException {
         try {
             if (namingTable != null) {
                 return namingTable;
@@ -206,9 +208,9 @@ public class NamingService implements RequestHandler, ServiceListener {
      * This method updates the naming table especially whenever a new server
      * added/deleted into platform server list
      */
-    private static Hashtable updateNamingTable(boolean forClient)
+    private static java.util.concurrent.ConcurrentHashMap updateNamingTable(boolean forClient)
             throws SMSException {
-        Hashtable nametable = null;
+    	java.util.concurrent.ConcurrentHashMap nametable = null;
 
         try {
             ServiceSchema sc = ssmNaming.getGlobalSchema();
@@ -258,8 +260,8 @@ public class NamingService implements RequestHandler, ServiceListener {
     /**
      * This will convert updated naming attributes map into naming hashtable
      */
-    static Hashtable convertToHash(Map m) {
-        Hashtable retHash = new Hashtable();
+    static java.util.concurrent.ConcurrentHashMap convertToHash(Map m) {
+    	java.util.concurrent.ConcurrentHashMap retHash = new java.util.concurrent.ConcurrentHashMap();
         Set s = m.keySet();
         Iterator iter = s.iterator();
         while (iter.hasNext()) {
@@ -383,10 +385,10 @@ public class NamingService implements RequestHandler, ServiceListener {
                 nres.setNamingTable(NamingService
                         .getNamingTable(limitNametable));
             } else {
-                Hashtable tempHash = new Hashtable();
+            	java.util.concurrent.ConcurrentHashMap tempHash = new java.util.concurrent.ConcurrentHashMap();
                 tempHash = transferTable(NamingService
                         .getNamingTable(limitNametable));
-                Hashtable replacedTable = null;
+                java.util.concurrent.ConcurrentHashMap replacedTable = null;
                 URL url = usePreferredNamingURL(nreq, reqVersion);
                 if (url != null) {
                     String uri = (reqVersion < 3.0) ?
@@ -478,7 +480,7 @@ public class NamingService implements RequestHandler, ServiceListener {
         return preferredURL;
     }
 
-    private Hashtable replaceTable(Hashtable namingTable, String sessionID) {
+    private java.util.concurrent.ConcurrentHashMap replaceTable(java.util.concurrent.ConcurrentHashMap namingTable, String sessionID) {
         SessionID sessID = new SessionID(sessionID);
         namingDebug.message("SessionId received is --" + sessionID);
          
@@ -489,7 +491,7 @@ public class NamingService implements RequestHandler, ServiceListener {
                        sessID.getSessionServerURI());
     }
 
-    private Hashtable replaceTable(Hashtable namingTable,
+    private java.util.concurrent.ConcurrentHashMap replaceTable(java.util.concurrent.ConcurrentHashMap namingTable,
         String protocol, String host, String port, String uri) {
         if (protocol.equalsIgnoreCase("") || host.equalsIgnoreCase("")
                 || port.equalsIgnoreCase("")) {
@@ -505,7 +507,7 @@ public class NamingService implements RequestHandler, ServiceListener {
                 return null;
             }
         }
-        Hashtable tempNamingTable = namingTable;
+        java.util.concurrent.ConcurrentHashMap tempNamingTable = namingTable;
         // replace all percent here
         for (Enumeration e = tempNamingTable.keys(); e.hasMoreElements();) {
             Object obj = e.nextElement();
@@ -520,10 +522,10 @@ public class NamingService implements RequestHandler, ServiceListener {
         return tempNamingTable;
     }
 
-    private Hashtable transferTable(Hashtable hashTab) {
+    private java.util.concurrent.ConcurrentHashMap transferTable(java.util.concurrent.ConcurrentHashMap hashTab) {
         if (hashTab == null)
             return null;
-        Hashtable newTab = new Hashtable();
+        java.util.concurrent.ConcurrentHashMap newTab = new java.util.concurrent.ConcurrentHashMap();
         for (Enumeration e = hashTab.keys(); e.hasMoreElements();) {
             Object obj = e.nextElement();
             String key = obj.toString();
@@ -723,8 +725,8 @@ public class NamingService implements RequestHandler, ServiceListener {
         return servers.isEmpty() ? null : servers;
     }
 
-    private static Hashtable getClusterInfo(Set sites) throws Exception {
-        Hashtable clustertbl = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap getClusterInfo(Set sites) throws Exception {
+    	java.util.concurrent.ConcurrentHashMap clustertbl = new java.util.concurrent.ConcurrentHashMap();
         Iterator iter = sites.iterator();
 
         while (iter.hasNext()) {
@@ -742,7 +744,7 @@ public class NamingService implements RequestHandler, ServiceListener {
         return clustertbl;
     }
 
-    private static void insertLBCookieValues(Hashtable nametable)
+    private static void insertLBCookieValues(java.util.concurrent.ConcurrentHashMap nametable)
             throws Exception {
         Map lbCookieMappings = null;
 

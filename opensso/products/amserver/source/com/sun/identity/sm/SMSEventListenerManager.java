@@ -25,6 +25,10 @@
  * $Id: SMSEventListenerManager.java,v 1.12 2009/01/28 05:35:03 ww203982 Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm;
 
 import java.lang.reflect.Method;
@@ -40,6 +44,7 @@ import com.sun.identity.shared.ldap.util.DN;
 import com.sun.identity.shared.debug.Debug;
 import com.iplanet.sso.SSOToken;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Receives notifications for all SMS object changes from
@@ -51,15 +56,15 @@ class SMSEventListenerManager implements SMSObjectListener {
 
     // All Notification Objects list
     protected static Map notificationObjects =
-        Collections.synchronizedMap(new HashMap());
+    		new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     
     // CachedSMSEntry objects
     protected static Map nodeChanges =
-        Collections.synchronizedMap(new HashMap());
+    		new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     
     // CachedSubEntries objects
     protected static Map subNodeChanges =
-        Collections.synchronizedMap(new HashMap());
+    		new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     
     // Static Initialization variables
     private static Debug debug = SMSEntry.eventDebug; 
@@ -115,7 +120,8 @@ class SMSEventListenerManager implements SMSObjectListener {
             // have an entry in "nodeChanges", hence donot have to
             // iterate throught it
             Set childDNs = new HashSet();
-            synchronized (nodeChanges) {
+            //synchronized (nodeChanges) 
+            {
                 Iterator keyitems = nodeChanges.keySet().iterator();
                 while (keyitems.hasNext()) {
                     String cdn = (String) keyitems.next();
@@ -163,7 +169,8 @@ class SMSEventListenerManager implements SMSObjectListener {
         }
         // Collect all the DNs from "nodeChanges" and send notifications
         Set dns = new HashSet();
-        synchronized (nodeChanges) {
+        //synchronized (nodeChanges) 
+        {
             for (Iterator items = nodeChanges.keySet().iterator();
                 items.hasNext();) {
                 dns.add(items.next());
@@ -213,13 +220,13 @@ class SMSEventListenerManager implements SMSObjectListener {
     private static String addNotificationObject(Map nChangesMap, String dn,
         Method method, Object object, Object[] args) {
         Set nObjects = null;
-        synchronized (nChangesMap) {
+        //synchronized (nChangesMap) {
             nObjects = (Set) nChangesMap.get(dn);
             if (nObjects == null) {
-                nObjects = Collections.synchronizedSet(new HashSet());
+                nObjects = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
                 nChangesMap.put(dn, nObjects);
             }
-        }
+        //}
         NotificationObject no = new NotificationObject(method, object, args,
             nObjects);
         nObjects.add(no);
@@ -235,9 +242,9 @@ class SMSEventListenerManager implements SMSObjectListener {
             return;
         }
         HashSet nobjs = new HashSet(2);
-        synchronized (nObjects) {
+        //synchronized (nObjects) {
             nobjs.addAll(nObjects);
-        }
+        //}
         Iterator items = nobjs.iterator();
 
         while (items.hasNext()) {

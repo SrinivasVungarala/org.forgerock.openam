@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.diagnostic.base.core.log.impl;
 
 import java.text.MessageFormat;
@@ -36,6 +39,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.diagnostic.base.core.log.IToolOutput;
 import com.sun.identity.diagnostic.base.core.service.ServiceResponse;
@@ -51,8 +55,7 @@ public class ToolGUIWriter implements IToolOutput {
     
     private ServiceResponse sResponse = null;
     private ResourceBundle rb = null;
-    private static Set<MessageListener> listeners =
-        Collections.synchronizedSet(new HashSet<MessageListener>());
+    final private static Set<MessageListener> listeners =Collections.newSetFromMap(new ConcurrentHashMap<MessageListener,Boolean>());//Collections.synchronizedSet(new HashSet<MessageListener>());
     
     ToolGUIWriter() {
         System.out.println("Invoking GUI");
@@ -340,11 +343,11 @@ public class ToolGUIWriter implements IToolOutput {
     }
     
     private void fireMessageEvent(MessageEvent e) {
-        synchronized (listeners) {
+        //synchronized (listeners) {
             for (MessageListener l : listeners) {
                 l.messagePublished(e);
             }
-        }
+        //}
     }
     
     /**

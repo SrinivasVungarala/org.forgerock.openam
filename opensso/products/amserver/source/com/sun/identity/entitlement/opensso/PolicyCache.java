@@ -24,13 +24,18 @@
  *
  * $Id: PolicyCache.java,v 1.3 2009/12/12 00:03:13 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.entitlement.opensso;
 
+import com.sun.identity.entitlement.IPrivilege;
 import com.sun.identity.entitlement.Privilege;
 import java.util.HashMap;
 import com.sun.identity.entitlement.ReferralPrivilege;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -38,13 +43,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Policy Cache
  */
 class PolicyCache {
-    private Cache cache;
-    private HashMap<String, Integer> countByRealm;
-    private ReadWriteLock rwlock = new ReentrantReadWriteLock();
+    private Cache<String,IPrivilege> cache;
+    private ConcurrentHashMap<String, Integer> countByRealm;
+    //private ReadWriteLock rwlock = new ReentrantReadWriteLock();
 
     PolicyCache(String name, int size) {
-        cache = new Cache(name, size);
-        countByRealm = new HashMap<String, Integer>();
+        cache = new Cache<String,IPrivilege>(this.getClass().getName()+"."+name, size);
+        countByRealm = new ConcurrentHashMap<String, Integer>();
     }
 
     /**
@@ -54,17 +59,18 @@ class PolicyCache {
      * @param p Privilege.
      */
     public void cache(String dn, Privilege p, String realm) {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
-            Object e = cache.put(dn, p);
-            if (e == null) {
-                // Update count only if added, not if replaced
-                Integer i = countByRealm.get(realm);
-                int count = (i == null) ? 1 : i.intValue() + 1;
-                countByRealm.put(realm, count);
-            }
+            //Object e = 
+            cache.put(dn, p);
+//            if (e == null) {
+//                // Update count only if added, not if replaced
+//                Integer i = countByRealm.get(realm);
+//                int count = (i == null) ? 1 : i.intValue() + 1;
+//                countByRealm.put(realm, count);
+//            }
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
@@ -75,16 +81,16 @@ class PolicyCache {
      * @param p Referral privilege.
      */
     public void cache(String dn, ReferralPrivilege p, String realm) {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
             cache.put(dn, p);
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
     public void cache(Map<String, Privilege> privileges, boolean force) {
-        rwlock.writeLock().lock();
+        //wlock.writeLock().lock();
         try {
             for (String dn : privileges.keySet()) {
                 if (force) {
@@ -97,32 +103,33 @@ class PolicyCache {
                 }
             }
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
     public void decache(String dn, String realm) {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
-            Object p = cache.remove(dn);
-            if (p != null) {
-                // Update cache only if entry removed from cache
-                Integer i = countByRealm.get(realm);
-                if (i != null) {
-                    countByRealm.put(realm, i.intValue() - 1);
-                }
-            }
+            //Object p = 
+            cache.remove(dn);
+//            if (p != null) {
+//                // Update cache only if entry removed from cache
+//                Integer i = countByRealm.get(realm);
+//                if (i != null) {
+//                    countByRealm.put(realm, i.intValue() - 1);
+//                }
+//            }
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
     public Privilege getPolicy(String dn) {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
         try {
             return (Privilege)cache.get(dn);
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
     }
     
@@ -134,12 +141,12 @@ class PolicyCache {
      * @return cached policies for the realm
      */
     public int getCount(String realm) {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
         try {
             Integer integer = countByRealm.get(realm);
             return (integer != null) ? integer : 0;
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
     }
 
@@ -148,7 +155,7 @@ class PolicyCache {
      * @return cached policies.
      */
     public int getCount() {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
         try {
             int total = 0;
             for (Integer i : countByRealm.values()) {
@@ -156,16 +163,16 @@ class PolicyCache {
             }
             return total;
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
     }
 
     public ReferralPrivilege getReferral(String dn) {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
         try {
             return (ReferralPrivilege)cache.get(dn);
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
     }
 }

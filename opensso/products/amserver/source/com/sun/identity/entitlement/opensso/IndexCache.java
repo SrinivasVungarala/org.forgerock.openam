@@ -24,6 +24,10 @@
  *
  * $Id: IndexCache.java,v 1.3 2009/12/12 00:03:13 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.entitlement.opensso;
 
 import com.sun.identity.entitlement.ResourceSaveIndexes;
@@ -44,21 +48,25 @@ public class IndexCache {
 
     private static final int CACHE_BUCKET_LIMIT = 25;
 
-    private int size = 1000000;
-    private Cache subjectIndexCache;
-    private Cache hostIndexCache;
-    private Cache pathIndexCache;
-    private Cache parentPathIndexCache;
-    private ReadWriteLock rwlock = new ReentrantReadWriteLock();
+    private int size = 20000;
+    private Cache<String,Set<String>> subjectIndexCache;
+    private Cache<String,Set<String>> hostIndexCache;
+    private Cache<String,Set<String>> pathIndexCache;
+    private Cache<String,Set<String>> parentPathIndexCache;
+    //private ReadWriteLock rwlock = new ReentrantReadWriteLock();
 
     /**
      * Constructs
      *
      * @param size Size of cache.
      */
-    public IndexCache(int size) {
+    public IndexCache(String name,int size) {
         this.size = size;
-        clearCaches();
+        //clearCaches();
+        subjectIndexCache = new Cache(this.getClass().getName()+"."+name+"."+SUBJECT_ID, size);
+        hostIndexCache = new Cache(this.getClass().getName()+"."+name+"."+HOST_ID, size);
+        pathIndexCache = new Cache(this.getClass().getName()+"."+name+"."+PATH_ID, size);
+        parentPathIndexCache = new Cache(this.getClass().getName()+"."+name+"."+PARENTPATH_ID, size);
     }
 
     /**
@@ -81,7 +89,7 @@ public class IndexCache {
     }
 
     private void cache(String dn, Set<String> indexes, Cache cache) {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
 
         try {
             for (String s : indexes) {
@@ -92,19 +100,19 @@ public class IndexCache {
                     cache.put(lc, setDNs);
                     setDNs.add(dn);
                 } else {
-                    String cacheName = cache.getName();
-                    if (!CacheTaboo.isTaboo(cacheName, lc)) {
-                        if (setDNs.size() >= CACHE_BUCKET_LIMIT) {
-                            CacheTaboo.taboo(cacheName, lc);
-                            cache.remove(lc);
-                        } else {
-                            setDNs.add(dn);
-                        }
-                    }
+//                    String cacheName = "";//cache.getName();
+//                    if (!CacheTaboo.isTaboo(cacheName, lc)) {
+//                        if (setDNs.size() >= CACHE_BUCKET_LIMIT) {
+//                            CacheTaboo.taboo(cacheName, lc);
+//                            cache.remove(lc);
+//                        } else {
+//                            setDNs.add(dn);
+//                        }
+//                    }
                 }
             }
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
@@ -123,7 +131,7 @@ public class IndexCache {
     }
 
     private void clear(String dn, Set<String> indexes, Cache cache) {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
             for (String s : indexes) {
                 Set<String> setDNs = (Set<String>)cache.get(s);
@@ -132,19 +140,16 @@ public class IndexCache {
                 }
             }
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
     private synchronized void clearCaches() {
-        rwlock.writeLock().lock();
+        //rwlock.writeLock().lock();
         try {
-            subjectIndexCache = new Cache(SUBJECT_ID, size);
-            hostIndexCache = new Cache(HOST_ID, size);
-            pathIndexCache = new Cache(PATH_ID, size);
-            parentPathIndexCache = new Cache(PARENTPATH_ID, size);
+            
         } finally {
-            rwlock.writeLock().unlock();
+            //rwlock.writeLock().unlock();
         }
     }
 
@@ -161,7 +166,7 @@ public class IndexCache {
         Set<String> subjectIndexes,
         boolean bSubTree
     ) {
-        rwlock.readLock().lock();
+        //rwlock.readLock().lock();
         try {
             Set<String> results = new HashSet<String>();
 
@@ -188,7 +193,7 @@ public class IndexCache {
 
             return results;
         } finally {
-            rwlock.readLock().unlock();
+            //rwlock.readLock().unlock();
         }
     }
 

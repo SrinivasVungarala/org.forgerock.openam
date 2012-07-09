@@ -25,7 +25,9 @@
  * $Id: CMListener.java,v 1.4 2008/06/25 05:41:44 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.ums;
 
 import com.sun.identity.shared.debug.Debug;
@@ -122,11 +124,11 @@ public class CMListener implements ServiceListener {
                         + " for Org:" + org);
 
             if (service.equals(ConfigManagerUMS.UMS_SRVC)) {
-                synchronized (ConfigManagerUMS._cch) {
+                //synchronized (ConfigManagerUMS._cch) {
                     cm.deleteOrgFromCache(org);
                     // cm.updateCache(org); Update cache for this org only
                     // when it is needed.
-                }
+                //}
             }
         } catch (Exception e) {
             _debug.error("CMListener-> Caught exception: ", e);

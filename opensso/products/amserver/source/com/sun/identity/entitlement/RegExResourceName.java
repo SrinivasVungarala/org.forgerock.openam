@@ -24,6 +24,9 @@
  *
  * $Id: RegExResourceName.java,v 1.1 2009/12/07 19:53:02 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.entitlement;
 
@@ -43,11 +46,11 @@ import java.util.regex.Pattern;
  */
 public class RegExResourceName implements ResourceName {
     private String delimiter = "/";
-    private static final ReadWriteLock patternCacheLock =
-        new ReentrantReadWriteLock();
+//    private static final ReadWriteLock patternCacheLock =
+//        new ReentrantReadWriteLock();
 
     private static final int MAX_CACHE_SIZE = 1000;
-    private static Cache patternCache = new Cache(MAX_CACHE_SIZE);
+    final private static Cache<String,Pattern> patternCache = new Cache<String,Pattern>(RegExResourceName.class.getName(), MAX_CACHE_SIZE);//new Cache(MAX_CACHE_SIZE);
 
     public Set getServiceTypeNames() {
         return null;
@@ -168,7 +171,7 @@ public class RegExResourceName implements ResourceName {
     }
 
     private static Pattern getPatternFromCache(String strPattern) {
-        patternCacheLock.writeLock().lock();
+        //patternCacheLock.writeLock().lock();
         try {
             Pattern pattern = (Pattern)patternCache.get(strPattern);
             if (pattern != null) {
@@ -198,7 +201,7 @@ public class RegExResourceName implements ResourceName {
             patternCache.put(strPattern, pattern);
             return pattern;
         } finally {
-            patternCacheLock.writeLock().unlock();
+            //patternCacheLock.writeLock().unlock();
         }
     }
 }

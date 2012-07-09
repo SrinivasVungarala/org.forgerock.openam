@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm;
 
 import com.iplanet.sso.SSOException;
@@ -40,6 +44,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The class <code>PluginConfigImpl</code> provides interfaces to read the
@@ -214,7 +219,8 @@ class PluginConfigImpl {
         }
 
         // Construct the PluginConfigImpl object
-        synchronized (configImpls) {
+        //synchronized (configImpls) 
+        {
             // Check the cache again, in case it was added by another thread
             if ((answer = getFromCache(cacheName, dn, token)) == null) {
                 CachedSMSEntry entry = checkAndUpdatePermission(cacheName, dn,
@@ -232,7 +238,8 @@ class PluginConfigImpl {
 
     // Clears the cache
     static void clearCache() {
-        synchronized (configImpls) {
+        //synchronized (configImpls) 
+        {
             for (Iterator items = configImpls.values().iterator();
                 items.hasNext();) {
                 PluginConfigImpl pci = (PluginConfigImpl) items.next();
@@ -268,24 +275,22 @@ class PluginConfigImpl {
         return (answer);
     }
 
-    static synchronized CachedSMSEntry checkAndUpdatePermission(
+    static  CachedSMSEntry checkAndUpdatePermission(
             String cacheName, String dn, SSOToken token) throws SMSException,
             SSOException {
         CachedSMSEntry answer = CachedSMSEntry.getInstance(token, dn);
         Set sudoPrincipals = (Set) userPrincipals.get(cacheName);
         if (sudoPrincipals == null) {
-            sudoPrincipals = Collections.synchronizedSet(new HashSet());
+            sudoPrincipals = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
             userPrincipals.put(cacheName, sudoPrincipals);
         }
         sudoPrincipals.add(token.getTokenID().toString());
         return (answer);
     }
 
-    private static Map configImpls = Collections.synchronizedMap(
-        new HashMap());
+    private static Map configImpls = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
-    private static Map userPrincipals = Collections.synchronizedMap(
-        new HashMap());
+    private static Map userPrincipals = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     private static Debug debug = SMSEntry.debug;
 }

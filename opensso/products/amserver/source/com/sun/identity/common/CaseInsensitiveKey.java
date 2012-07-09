@@ -25,8 +25,12 @@
  * $Id: CaseInsensitiveKey.java,v 1.2 2008/06/25 05:42:25 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.common;
+
+import java.util.Locale;
 
 /**
  * String wrapper that returns a case insensitive hash code useful for case
@@ -34,32 +38,43 @@ package com.sun.identity.common;
  */
 public class CaseInsensitiveKey {
     String mKey;
-
+    int hash;
     public CaseInsensitiveKey(String key) {
-        mKey = key;
+    	if (key==null)
+    		throw new IllegalArgumentException("CaseInsensitiveKey is null"); 
+    	this.mKey=key;
+    	this.hash=mKey.toLowerCase().hashCode();
     }
 
     public boolean equals(Object o) {
         if (o instanceof CaseInsensitiveKey) {
             return mKey.equalsIgnoreCase(((CaseInsensitiveKey) o).toString());
-        } else {
+        }else if (o instanceof String) {
+        	return mKey.equalsIgnoreCase(((String) o));
+        }
+        else {
             return false;
         }
     }
 
     public int hashCode() {
-        return mKey.toLowerCase().hashCode();
+        return hash;
     }
 
     public String toString() {
         return mKey;
     }
 
-    /*
-     * public static void main(String[] args) { CaseInsensitiveKey a = new
-     * CaseInsensitiveKey("one"); CaseInsensitiveKey b = new
-     * CaseInsensitiveKey("ONE"); System.out.println(a.hashCode());
-     * System.out.println(b.hashCode()); System.out.println(a.equals(b));
-     * System.out.println(b.equals(a)); }
-     */
+    
+	public static void main(String[] args) {
+		CaseInsensitiveKey a = new CaseInsensitiveKey("one");
+		CaseInsensitiveKey b = new CaseInsensitiveKey("ONE");
+		System.out.println(a.hashCode());
+		System.out.println(b.hashCode());
+		System.out.println(a.equals(b));
+		System.out.println(b.equals(a));
+		System.out.println( new CaseInsensitiveKey("").equals(new CaseInsensitiveKey("")));
+		System.out.println(a.equals(a));
+	}
+
 }

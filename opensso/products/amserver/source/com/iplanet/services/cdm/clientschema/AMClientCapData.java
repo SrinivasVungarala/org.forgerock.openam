@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2010-2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.services.cdm.clientschema;
 
 import com.iplanet.am.sdk.AMEntity;
@@ -56,6 +59,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.shared.ldap.LDAPConnection;
 import com.sun.identity.shared.ldap.controls.LDAPPersistSearchControl;
 import com.sun.identity.shared.ldap.util.DN;
@@ -936,7 +941,7 @@ public class AMClientCapData implements IDSEventListener {
      * 
      * @return a Set of "defined" property names.
      */
-    public synchronized static Set getSchemaElements() {
+    public  static Set getSchemaElements() {
         Map map = getSchemaMap();
         Set set = map.keySet();
 
@@ -962,10 +967,10 @@ public class AMClientCapData implements IDSEventListener {
     /**
      * Cache for the attribute schemas.
      */
-    private synchronized static Map getSchemaMap() {
+    private  static Map getSchemaMap() {
         if (schemaMap == null) {
             Set set = clientSchema.getAttributeSchemas();
-            schemaMap = new HashMap();
+            schemaMap = new ConcurrentHashMap();
             Iterator itr = set.iterator();
             while (itr.hasNext()) {
                 AttributeSchema prop = (AttributeSchema) itr.next();

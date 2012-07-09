@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session;
 
 import com.iplanet.dpro.session.share.SessionInfo;
@@ -38,6 +41,7 @@ import com.iplanet.services.comm.share.Notification;
 import com.sun.identity.shared.debug.Debug;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>SessionNotificationHandler</code> implements
@@ -47,7 +51,7 @@ import java.util.Vector;
  */
 public class SessionNotificationHandler implements NotificationHandler {
 
-    private Hashtable sessionTable;
+    private ConcurrentHashMap<SessionID, Session> sessionTable;
 
     public static SessionNotificationHandler handler = null;
 
@@ -61,7 +65,7 @@ public class SessionNotificationHandler implements NotificationHandler {
      * Constructs <code>SessionNotificationHandler</code>
      * @param table Session table
      */
-    public SessionNotificationHandler(Hashtable table) {
+    public SessionNotificationHandler(ConcurrentHashMap<SessionID, Session> table) {
         sessionTable = table;
 
     }

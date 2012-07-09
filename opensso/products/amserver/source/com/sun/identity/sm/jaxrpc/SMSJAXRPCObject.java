@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.sm.jaxrpc;
 
@@ -70,6 +73,7 @@ import com.sun.identity.sm.SMSNotificationManager;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SMSJAXRPCObject extends SMSObject implements SMSObjectListener {
 
@@ -400,7 +404,8 @@ public class SMSJAXRPCObject extends SMSObject implements SMSObjectListener {
             entriesPresent.add(dn);
             if (entriesPresent.size() > entriesPresentCacheSize) {
                 // Remove the first entry
-                synchronized (entriesPresent) {
+                //synchronized (entriesPresent) 
+                {
                     Iterator items = entriesPresent.iterator();
                     if (items.hasNext()) {
                         items.remove();
@@ -412,7 +417,8 @@ public class SMSJAXRPCObject extends SMSObject implements SMSObjectListener {
             entriesNotPresent.add(dn);
             if (entriesNotPresent.size() > entriesPresentCacheSize) {
                 // Remove the first entry
-                synchronized (entriesNotPresent) {
+                //synchronized (entriesNotPresent) 
+                {
                     Iterator items = entriesNotPresent.iterator();
                     if (items.hasNext()) {
                         items.remove();
@@ -661,11 +667,9 @@ public class SMSJAXRPCObject extends SMSObject implements SMSObjectListener {
     
     private static int entriesPresentCacheSize = 1000;
 
-    private static Set entriesPresent = Collections.synchronizedSet(
-        new LinkedHashSet(entriesPresentCacheSize));
+    final private static Set entriesPresent = Collections.newSetFromMap(new ConcurrentHashMap(entriesPresentCacheSize));//Collections.synchronizedSet(new LinkedHashSet(entriesPresentCacheSize));
 
-    private static Set entriesNotPresent = Collections.synchronizedSet(
-        new LinkedHashSet(entriesPresentCacheSize));
+    final private static Set entriesNotPresent = Collections.newSetFromMap(new ConcurrentHashMap(entriesPresentCacheSize));//Collections.synchronizedSet(new LinkedHashSet(entriesPresentCacheSize));
     
     // Used to update entriesPresent & entriesNotPresent
     private static boolean initializedNotification;

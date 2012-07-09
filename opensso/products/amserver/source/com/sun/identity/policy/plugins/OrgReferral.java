@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy.plugins;
 
 import com.sun.identity.policy.*;
@@ -52,7 +56,7 @@ abstract public class OrgReferral implements Referral {
     private Set _values;
     protected Map _configurationMap;
     protected String _orgName;
-    protected Cache cachedPolicyEvaluators = new Cache(50);
+    final protected static Cache<String,PolicyEvaluator> cachedPolicyEvaluators = new Cache<String,PolicyEvaluator>(OrgReferral.class.getName(),150);
 
     /** No argument constructor */
     public OrgReferral() {

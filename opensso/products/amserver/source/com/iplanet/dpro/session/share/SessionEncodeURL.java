@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session.share;
 
 import com.iplanet.am.util.SystemProperties;
@@ -89,7 +92,7 @@ public class SessionEncodeURL {
 
     public final String delimiter = "_";
 
-    public static Hashtable sidHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap sidHash = new java.util.concurrent.ConcurrentHashMap();
 
     public static final String SESS_DELIMITER = ";"; // semicolon - &#059;
 

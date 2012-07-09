@@ -25,6 +25,9 @@
  * $Id: SubjectTypeManager.java,v 1.5 2009/01/28 05:35:01 ww203982 Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 
@@ -32,6 +35,7 @@
 package com.sun.identity.policy;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOException;
@@ -59,7 +63,7 @@ public class SubjectTypeManager {
 
     private ResourceBundle rb;
     private Subjects realmSubjects = null;
-    private Map sharedSubjects = Collections.synchronizedMap(new HashMap());
+    private Map sharedSubjects = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     private static AMResourceBundleCache amCache = 
             AMResourceBundleCache.getInstance();
     private String pmRealmName;
@@ -481,7 +485,7 @@ public class SubjectTypeManager {
         return (Subject)realmSubjects.getSubject(subjectName).clone();
     }
 
-    synchronized Subject getCachedSubjectByName(String subjectName) 
+     Subject getCachedSubjectByName(String subjectName) 
             throws  PolicyException {
         if (debug.messageEnabled()) {
             debug.message("Getting cached subject by name from realm: " 

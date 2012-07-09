@@ -29,6 +29,9 @@
  /*
  * Portions Copyrighted [2010] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.saml2.meta;
 
@@ -49,8 +52,8 @@ class SAML2MetaCache
 {
     private static Debug debug = SAML2MetaUtils.debug;
 
-    private static Hashtable descriptorCache = new Hashtable();
-    private static Hashtable configCache = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap descriptorCache = new java.util.concurrent.ConcurrentHashMap();
+    private static java.util.concurrent.ConcurrentHashMap configCache = new java.util.concurrent.ConcurrentHashMap();
 
     private SAML2MetaCache() {
     }

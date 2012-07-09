@@ -29,7 +29,10 @@
 /*
  * Portions Copyrighted 2010-2011 ForgeRock AS
  */
- 
+ /**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.ha.jmqdb.client;
 
 import java.io.BufferedReader;
@@ -44,6 +47,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import java.io.PrintWriter;
 
@@ -125,7 +129,7 @@ public class FAMHaDB implements Runnable {
     private static long localStartTime;
     private static boolean isMasterNode = false;
     private static long localNodeID;
-    private static Map serverStatusMap = new HashMap();
+    private static Map serverStatusMap = new ConcurrentHashMap();
     private Thread nodeStatusSender;
     private Thread nodeStatusReceiver;
     private static long nodeUpdateInterval 
@@ -1397,7 +1401,8 @@ public class FAMHaDB implements Runnable {
     // Check if the local daemon process is the master (longest-lived) 
     // BDB node
     static private void determineMasterDBNode() {
-        synchronized (serverStatusMap) {                        
+        //synchronized (serverStatusMap) 
+        {                        
             Set s = serverStatusMap.keySet();
             Iterator iter = s.iterator();
             
@@ -1507,7 +1512,8 @@ public class FAMHaDB implements Runnable {
         // Remove the outdated NodeInfo from the serverStatusMap map 
         // if the information is obsolete.
         void RemoveOutdatedNodeInfo() {            
-            synchronized (serverStatusMap) {
+            //synchronized (serverStatusMap) 
+        	{
                 Set s = serverStatusMap.keySet();
                 Iterator iter = s.iterator();
                 while (iter.hasNext()) {
@@ -1550,7 +1556,8 @@ public class FAMHaDB implements Runnable {
                         info.nodeID = nodeID;
                         info.startTime = startTime;
                         info.lastUpdateTime = System.currentTimeMillis();
-                        synchronized (serverStatusMap) {
+                        //synchronized (serverStatusMap) 
+                        {
                             serverStatusMap.put(String.valueOf(nodeID), info);
                         }
                     } else {

@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy;
 import com.sun.identity.policy.interfaces.PolicyListener;
 import com.sun.identity.sm.ServiceConfigManager;
@@ -40,6 +44,7 @@ import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.stats.Stats;
 import com.sun.identity.shared.stats.StatsListener;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.ldap.util.DN;
 
@@ -61,12 +66,12 @@ public class PolicyCache implements ServiceListener {
     /**
      *  orgName+policyName:Policy 
      */
-    private Map policies = Collections.synchronizedMap(new HashMap());
+    private Map policies = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     /**
      * orgName:PolicyManager 
      */
-    private Map policyManagers = Collections.synchronizedMap(new HashMap());
+    private Map policyManagers = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     /**
      * serviceTypeName:<code>Set</code> of <code>PolicyListener</code>(s) 
@@ -77,7 +82,7 @@ public class PolicyCache implements ServiceListener {
      * @see com.sun.identity.policy.PolicyDecisionCacheListener
      * @see com.sun.identity.policy.remote.PolicyListenerRequest
      */
-    private Map policyListenersMap = Collections.synchronizedMap(new HashMap());
+    private Map policyListenersMap = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     private ServiceConfigManager scm;
     private SSOToken token;
@@ -649,7 +654,8 @@ public class PolicyCache implements ServiceListener {
             if ((policyConfig != null) && (!policyConfig.isEmpty())) {
                 Set cacheKeys = policies.keySet();
                 String[] clonedCacheKeys = {};
-                synchronized(policies) {
+                //synchronized(policies) 
+                {
                     clonedCacheKeys = new String[cacheKeys.size()];
                     int i = 0;
                     Iterator cacheIter = cacheKeys.iterator();

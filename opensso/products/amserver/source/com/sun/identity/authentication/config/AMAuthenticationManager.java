@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.config;
 
 import com.iplanet.sso.SSOException;
@@ -74,7 +77,7 @@ public class AMAuthenticationManager {
     private SSOToken token;
     private String realm;
     private ServiceConfig orgServiceConfig;
-    private static Hashtable moduleInstanceTable;
+    private static java.util.concurrent.ConcurrentHashMap moduleInstanceTable;
     private static SSOToken adminToken;
 
     static {
@@ -84,7 +87,7 @@ public class AMAuthenticationManager {
         moduleServiceNames = new HashMap();
         bundleName = "amAuthConfig";
         debug = Debug.getInstance(bundleName);
-        moduleInstanceTable = new Hashtable();
+        moduleInstanceTable = new java.util.concurrent.ConcurrentHashMap();
         globalModuleNames = Collections.EMPTY_SET;
         initAuthenticationService(adminToken);
     }
@@ -289,7 +292,8 @@ public class AMAuthenticationManager {
                     }
                 }
                 realm = com.sun.identity.sm.DNMapper.orgNameToDN(realm);
-                synchronized (moduleInstanceTable) {
+                //synchronized (moduleInstanceTable) 
+                {
                     Map moduleMap = (Map)moduleInstanceTable.remove(realm);
                     if (moduleMap != null) {
                     /*

@@ -29,9 +29,15 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy.plugins;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.shared.ldap.*;
 import com.sun.identity.shared.ldap.util.*;
 
@@ -81,7 +87,7 @@ public class LDAPRoles implements Subject {
     *               ....
     */                     
     public static Map userLDAPRoleCache = 
-              Collections.synchronizedMap(new HashMap());
+    		new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     // Variables
     private boolean initialized = false;
@@ -669,7 +675,7 @@ public class LDAPRoles implements Subject {
             if ((serverRoleMap = (Map)userLDAPRoleCache.get(tokenIDStr)) 
                 == null) 
             {
-                serverRoleMap = Collections.synchronizedMap(new HashMap());
+                serverRoleMap = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
                 serverRoleMap.put(ldapServer,elem);
                 userLDAPRoleCache.put(tokenIDStr, serverRoleMap);
             } else {

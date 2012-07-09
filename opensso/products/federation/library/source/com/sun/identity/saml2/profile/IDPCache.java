@@ -29,6 +29,9 @@
  /*
  * Portions Copyrighted [2010] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.saml2.profile;
 
@@ -78,7 +81,7 @@ public class IDPCache {
      * Key : user ID String
      * Value : list of assertion objects
      */
-    public static Hashtable assertionCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap assertionCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves the assertion objects.
@@ -104,7 +107,7 @@ public class IDPCache {
      * IDP: used in SingleSignOnService and SingleLogoutService
      *      to invalidate a specific session
      */
-    public static Hashtable idpSessionsByIndices = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap idpSessionsByIndices = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves Responses to be used by ArtifactResolutionService.
@@ -130,42 +133,42 @@ public class IDPCache {
      * Key : idp attribute mapper class name
      * Value : idp attribute mapper object
      */
-    public static Hashtable idpAttributeMapperCache = new Hashtable(); 
+    public static java.util.concurrent.ConcurrentHashMap idpAttributeMapperCache = new java.util.concurrent.ConcurrentHashMap(); 
 
     /**
      * Cache saves the idp account mapper.
      * Key : idp account mapper class name
      * Value : idp account mapper object
      */
-    public static Hashtable idpAccountMapperCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap idpAccountMapperCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves the idp authn context mapper.
      * Key : idp authn context mapper class name
      * Value : idp authn context mapper object
      */
-    public static Hashtable idpAuthnContextMapperCache = new Hashtable(); 
+    public static java.util.concurrent.ConcurrentHashMap idpAuthnContextMapperCache = new java.util.concurrent.ConcurrentHashMap(); 
 
     /**
      * Cache saves the idp ecp session mapper.
      * Key : idp ecp session mapper class name
      * Value : idp ecp session mapper object
      */
-    public static Hashtable idpECPSessionMapperCache = new Hashtable(); 
+    public static java.util.concurrent.ConcurrentHashMap idpECPSessionMapperCache = new java.util.concurrent.ConcurrentHashMap(); 
 
      /**
      * Cache saves the IDP Proxy Finder.
      * Key : IDP Proxy Finder class name
      * Value : IDP Proxy Finder mapper object
      */
-    public static Hashtable idpProxyFinderCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap idpProxyFinderCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves the IDP Adapter.
      * Key : IDP Adapter class name
      * Value : IDP Adapter mapper object
      */
-    public static Hashtable idpAdapterCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap idpAdapterCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves information needed after coming back from COT cookie setting.
@@ -182,7 +185,7 @@ public class IDPCache {
      * key   : sessionIndex (String)
      * value : the AuthnContext object
      */
-    public static Hashtable authnContextCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap authnContextCache = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Cache saves information to determine if the request was
@@ -198,7 +201,7 @@ public class IDPCache {
      * key    : requestID (String)
      * value  : IDPSession object.
      */
-    public static Hashtable oldIDPSessionCache = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap oldIDPSessionCache = new java.util.concurrent.ConcurrentHashMap();
     
     /**
       * Cache saves the SP descriptor coming to proxy IDP 
@@ -223,14 +226,14 @@ public class IDPCache {
       * key   : sessionId (String) 
       * value : SAML2SessionPartner
       */
-    public static Hashtable idpSessionsBySessionID = new Hashtable(); 
+    public static java.util.concurrent.ConcurrentHashMap idpSessionsBySessionID = new java.util.concurrent.ConcurrentHashMap(); 
     
     /** 
       * Cache saves user ID for transient NameID 
       * key   : NameID value (String) 
       * value : user ID 
       */
-    public static Hashtable userIDByTransientNameIDValue = new Hashtable(); 
+    public static java.util.concurrent.ConcurrentHashMap userIDByTransientNameIDValue = new java.util.concurrent.ConcurrentHashMap(); 
 
     /** 
       * Cache saves the original LogoutRequest coming from SP to IDP proxy
@@ -255,7 +258,7 @@ public class IDPCache {
       * key   : sessionId (String)
       * value : SAML2 SessionPartner's provider id 
       */
-    public static Hashtable spSessionPartnerBySessionID = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap spSessionPartnerBySessionID = new java.util.concurrent.ConcurrentHashMap();
     
      /** 
       * Cache saves the original LogoutResponse generated by IDP proxy 
@@ -273,7 +276,7 @@ public class IDPCache {
      * value: Map containing AuthnContext class ref as Key and 
      *            Set of auth schemes as value.
      */
-    public static Hashtable classRefSchemesHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap classRefSchemesHash = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Hashtable saves AuthnContextClassRef to AuthLevel mapping
@@ -281,14 +284,14 @@ public class IDPCache {
      * value: Map containing AuthnContext class ref as Key and 
      *            authLevel as value.
      */
-    public static Hashtable classRefLevelHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap classRefLevelHash = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Hashtable saves AuthLevel to AuthnContextClassRef mapping
      * key  : hostEntityID + "|" + realmName
      * value: String default AuthnContext Class Ref.
      */
-    public static Hashtable defaultClassRefHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap defaultClassRefHash = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Hashtable saves NameID format to user profile attribute mapping
@@ -296,7 +299,7 @@ public class IDPCache {
      * value: Map containing NameNameID format as Key and user profile
      *     attribute name as Value.
      */
-    public static Hashtable formatAttributeHash = new Hashtable();
+    public static java.util.concurrent.ConcurrentHashMap formatAttributeHash = new java.util.concurrent.ConcurrentHashMap();
 
     /**
      * Clears the authn context mapping hash tables.

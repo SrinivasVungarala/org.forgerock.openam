@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.internal;
 
 import java.net.InetAddress;
@@ -39,6 +41,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.login.LoginException;
 
@@ -52,8 +55,8 @@ import com.sun.identity.authentication.util.ISAuthConstants;
 public class AuthSSOToken implements SSOToken {
 
     // %%% this should finally reside in HttpSession
-    protected static Map allSSOTokens = Collections
-            .synchronizedMap(new HashMap());
+    protected static Map allSSOTokens = new ConcurrentHashMap();
+    		//Collections.synchronizedMap(new HashMap());
 
     // Variables to generate Keys
     protected static Random random = new Random();

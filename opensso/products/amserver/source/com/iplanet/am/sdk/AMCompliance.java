@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk;
 
 import com.iplanet.am.sdk.common.IComplianceServices;
@@ -43,6 +46,8 @@ import java.security.AccessController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.shared.ldap.util.DN;
 
 /**
@@ -65,7 +70,7 @@ class AMCompliance implements AMConstants {
     private static IComplianceServices complianceServices = 
         AMDirectoryAccessFactory.getComplianceServices();
 
-    static private Map deletedOrg = new HashMap();
+    static private Map deletedOrg = new ConcurrentHashMap();
 
     protected static final String ADMIN_GROUPS_ENABLED_ATTR = 
         "iplanet-am-admin-console-compliance-admin-groups";
@@ -120,11 +125,11 @@ class AMCompliance implements AMConstants {
         while (!tdn.equalsIgnoreCase(rootSuffix)) {
             // check to see if this dn is in the deletedOrg cache.
             // delete this entry if it is
-            if (deletedOrg.containsKey(tdn)) {
-                synchronized (deletedOrg) {
+            //if (deletedOrg.containsKey(tdn)) {
+                //synchronized (deletedOrg) {
                     deletedOrg.remove(tdn);
-                }
-            }
+                //}
+            //}
             // Get the parent DN..
             tdn = (new DN(tdn)).getParent().toRFCString().toLowerCase();
         }

@@ -25,6 +25,9 @@
  * $Id: IDFFMetaCache.java,v 1.4 2008/11/10 22:56:57 veiming Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.federation.meta;
 
@@ -43,11 +46,11 @@ public class IDFFMetaCache {
     
     private static Debug debug = IDFFMetaUtils.debug;
 
-    private static Hashtable entityDescriptorCache = new Hashtable();
-    private static Hashtable entityConfigCache = new Hashtable();
-    private static Hashtable metaAliasEntityCache = new Hashtable();
-    private static Hashtable metaAliasRoleCache = new Hashtable();
-    private static Hashtable entitySuccinctIDCache = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap entityDescriptorCache = new java.util.concurrent.ConcurrentHashMap();
+    private static java.util.concurrent.ConcurrentHashMap entityConfigCache = new java.util.concurrent.ConcurrentHashMap();
+    private static java.util.concurrent.ConcurrentHashMap metaAliasEntityCache = new java.util.concurrent.ConcurrentHashMap();
+    private static java.util.concurrent.ConcurrentHashMap metaAliasRoleCache = new java.util.concurrent.ConcurrentHashMap();
+    private static java.util.concurrent.ConcurrentHashMap entitySuccinctIDCache = new java.util.concurrent.ConcurrentHashMap();
     
     /** 
      * Default Constructor.

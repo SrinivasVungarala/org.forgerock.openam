@@ -29,9 +29,14 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.config;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.security.auth.login.*;
 import com.sun.identity.authentication.service.*;
 import com.sun.identity.authentication.util.ISAuthConstants;
@@ -56,23 +61,23 @@ public class AMAuthLevelManager implements ServiceListener {
      * value is a List which contain the <code>ServiceSchemaManager</code>,
      * listener ID, <code>ServiceConfigmanager</code> and listener ID.
      */
-    private Map listenerMap = new HashMap();
+    private Map listenerMap = new ConcurrentHashMap();
 
     /**
      * Map to hold authentication level for all organizations. Map of
      * organization DN to a map of authentication module odule name (String) to
      * module authentication level(Integer).
      */
-    private static Map authLevelMap = new HashMap();
+    private static Map authLevelMap = new ConcurrentHashMap();
 
     /**
      * Map to hold all supported modules for organizations. Map of
      * organization DN to a set of all supported modules for the organization.
      */
-    private static Map supportedModulesMap = new HashMap();
+    private static Map supportedModulesMap = new ConcurrentHashMap();
 
-    private static Map moduleServiceMap = new HashMap();
-    private static Map globalAuthLevelMap = new HashMap();
+    private static Map moduleServiceMap = new ConcurrentHashMap();
+    private static Map globalAuthLevelMap = new ConcurrentHashMap();
 
     /**
      * Map of service name to authentication config name. This is the map to
@@ -80,7 +85,7 @@ public class AMAuthLevelManager implements ServiceListener {
      * changes. Upon notification on the service change, the listened
      * authentication configuration need to be checked.
      */
-    private static Map authConfigListenerMap = new HashMap();
+    private static Map authConfigListenerMap = new ConcurrentHashMap();
 
     private static String CORE_AUTH = "iPlanetAMAuthService";
 
@@ -119,9 +124,9 @@ public class AMAuthLevelManager implements ServiceListener {
             }
             newMap.put(serviceName, list);
             // remove from original map
-            synchronized (listenerMap) {
+            //synchronized (listenerMap) {
                 listenerMap.remove(serviceName);
-            }
+            //}
         } else {
             // create new listener
             try {
@@ -167,9 +172,9 @@ public class AMAuthLevelManager implements ServiceListener {
                     }
                     newMap.put(moduleName, list);
                     // remove from original map
-                    synchronized (listenerMap) {
+                    //synchronized (listenerMap) {
                         listenerMap.remove(moduleName);
-                    }
+                    //}
                 } else {
                     // create new listener
                     try {
@@ -216,9 +221,9 @@ public class AMAuthLevelManager implements ServiceListener {
         }
 
         // reassign map
-        synchronized (listenerMap) {
+        //synchronized (listenerMap) {
             listenerMap = newMap;
-        }
+        //}
     }
 
     private List addServiceListener(String service)
@@ -300,9 +305,9 @@ public class AMAuthLevelManager implements ServiceListener {
                 AuthD.getAuth().getSSOAuthSession(), orgDN);
             allowedModules = manager.getAllowedModuleNames();
             // put the allowed modules into the map
-            synchronized (supportedModulesMap) {
+            //synchronized (supportedModulesMap) {
                 supportedModulesMap.put(orgDN, allowedModules);
-            }
+            //}
         } catch (Exception e) {
             debug.error("initOrgAuthLevel " + orgDN, e);
             return map;
@@ -349,9 +354,9 @@ public class AMAuthLevelManager implements ServiceListener {
         }
 
         // add to the authLevelMap
-        synchronized (authLevelMap) {
+        //synchronized (authLevelMap) {
             authLevelMap.put(orgDN, map);
-        }
+        //}
 
         return map;
     }
@@ -419,16 +424,16 @@ public class AMAuthLevelManager implements ServiceListener {
         }
 
         // update auth level map for the org
-        synchronized (authLevelMap) {
+        //synchronized (authLevelMap) {
             authLevelMap.remove(orgName);
-        }
+        //}
         // updated supported authentication modules for this org 
         // this is needed for 6.3 and earlier releases.
         if (AuthD.revisionNumber < ISAuthConstants.AUTHSERVICE_REVISION7_0 &&
             serviceName.equals(CORE_AUTH)) {
-            synchronized (supportedModulesMap) {
+            //synchronized (supportedModulesMap) {
                 supportedModulesMap.remove(orgName);
-            }
+            //}
         }
            // this listener event should be conditioned only for ADDED and
         // REMOVED. SM will provide special MODIFIED type for removal of all
@@ -538,13 +543,13 @@ public class AMAuthLevelManager implements ServiceListener {
         if (set == null) {
             set = new HashSet();
             set.add(name);
-            synchronized(authConfigListenerMap) {
+            //synchronized(authConfigListenerMap) {
                 authConfigListenerMap.put(service, set);
-            }
+            //}
         } else {
-            synchronized (set) {
+            //synchronized (set) {
                 set.add(name);
-            }
+            //}
         }
     }
 
@@ -702,7 +707,7 @@ public class AMAuthLevelManager implements ServiceListener {
                 String attrName = 
                     AMAuthConfigUtils.getAuthLevelAttribute(attrs, module);
                 String authLevel = CollectionHelper.getMapAttr(attrs, attrName);
-                Integer level = null;
+                Integer level = 0;
                 if ((authLevel != null) && (authLevel.length() > 0)) {
                         level = Integer.valueOf(authLevel);
                 }

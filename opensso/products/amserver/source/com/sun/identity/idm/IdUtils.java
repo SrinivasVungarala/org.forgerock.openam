@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.idm;
 
 import com.iplanet.am.sdk.AMDirectoryAccessFactory;
@@ -63,6 +67,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.ldap.LDAPDN;
 import com.sun.identity.shared.ldap.util.DN;
@@ -90,10 +95,8 @@ public final class IdUtils {
     protected static Map typesCanAddMembers = new CaseInsensitiveHashMap();
 
     // Static map to cache "orgIdentifier" and organization DN
-    private static Map orgIdentifierToOrgName = Collections.synchronizedMap(
-        new CaseInsensitiveHashMap());
-    private static Map orgStatusCache = Collections.synchronizedMap(
-        new CaseInsensitiveHashMap());
+    private static Map orgIdentifierToOrgName = new ConcurrentHashMap();//Collections.synchronizedMap(new CaseInsensitiveHashMap());
+    private static Map orgStatusCache = new ConcurrentHashMap();//Collections.synchronizedMap(new CaseInsensitiveHashMap());
 
     // ServiceConfigManager for sunidentityrepository service
     private static String notificationId;

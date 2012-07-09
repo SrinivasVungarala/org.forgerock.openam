@@ -29,9 +29,14 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.w3c.dom.*;
 
@@ -51,11 +56,11 @@ import com.sun.identity.policy.interfaces.Subject;
  */
 public class Subjects {
 
-    private final int SUBJECTS_RESULT_CACHE_SIZE = 1000;
+    private final static int SUBJECTS_RESULT_CACHE_SIZE = 1000;
     private String name;
     private String description;
-    private Map users = new HashMap();
-    private Cache resultCache = new Cache(SUBJECTS_RESULT_CACHE_SIZE);
+    private Map users = new ConcurrentHashMap();
+    final private static Cache<String,long[]> resultCache = new Cache<String,long[]>(Subjects.class.getName(),SUBJECTS_RESULT_CACHE_SIZE);
     private long resultTtl;
 
     /**
@@ -753,7 +758,7 @@ public class Subjects {
     }
 
     void setPolicyConfig(Map policyConfig) throws PolicyException {
-        resultCache = new Cache(SUBJECTS_RESULT_CACHE_SIZE);
+        //resultCache = new Cache(SUBJECTS_RESULT_CACHE_SIZE);
         Iterator sIter = users.keySet().iterator();
         while ( sIter.hasNext() ) {
             QualifiedSubject qualifiedSubject 

@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2010-2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.sm;
 
@@ -100,7 +103,7 @@ public class SMSEntry implements Cloneable {
     public static SSOTokenManager tm;
 
     // Variable for caching parse organization names
-    private static Cache cache = new Cache(500);
+    final private static Cache<String,String[]> cache = new Cache<String,String[]>(SMSEntry.class.getName(),1000);
 
     /**
      * Flat File Configuration Data Store

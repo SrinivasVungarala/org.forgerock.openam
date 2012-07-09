@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm;
 
 import com.iplanet.sso.SSOException;
@@ -41,6 +45,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The class <code>ServiceInstanceImpl</code> provides methods to get
@@ -161,7 +166,8 @@ class ServiceInstanceImpl {
         }
 
         // Construct the service instance
-        synchronized (serviceInstances) {
+        //synchronized (serviceInstances) 
+        {
             // Check cache again, in case it was added by another thread
             if ((answer = getFromCache(cName, serviceName, version, iName,
                 token)) == null) {
@@ -181,7 +187,8 @@ class ServiceInstanceImpl {
 
     // Clears the cache
     static void clearCache() {
-        synchronized (serviceInstances) {
+        //synchronized (serviceInstances) 
+        {
             for (Iterator items = serviceInstances.values().iterator();
                 items.hasNext();) {
                 ServiceInstanceImpl impl = (ServiceInstanceImpl) items.next();
@@ -218,7 +225,7 @@ class ServiceInstanceImpl {
         return (answer);
     }
 
-    static synchronized CachedSMSEntry checkAndUpdatePermission(
+    static  CachedSMSEntry checkAndUpdatePermission(
             String cacheName, String serviceName, String version, String iName,
             SSOToken t) throws SMSException, SSOException {
         // Construct the DN
@@ -235,18 +242,16 @@ class ServiceInstanceImpl {
         }
         Set sudoPrincipals = (Set) userPrincipals.get(cacheName);
         if (sudoPrincipals == null) {
-            sudoPrincipals = Collections.synchronizedSet(new HashSet());
+            sudoPrincipals = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
         }
         sudoPrincipals.add(t.getTokenID().toString());
         userPrincipals.put(cacheName, sudoPrincipals);
         return (entry);
     }
 
-    private static Map serviceInstances = Collections.synchronizedMap(
-        new HashMap());
+    private static Map serviceInstances = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
-    private static Map userPrincipals = Collections.synchronizedMap(
-        new HashMap());
+    private static Map userPrincipals = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
 
     private static Debug debug = SMSEntry.debug;
     

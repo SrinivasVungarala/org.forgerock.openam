@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.ldap;
 
 import java.util.HashMap;
@@ -36,6 +39,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.ldap.util.DN;
 import com.sun.identity.shared.ldap.util.RDN;
@@ -87,7 +91,7 @@ public class ComplianceServicesImpl implements AMConstants, IComplianceServices
 
     static private Map groupToRoleMap = new HashMap();
 
-    static private Map deletedOrg = new HashMap();
+    static private Map deletedOrg = new ConcurrentHashMap();
 
     static private String USER_STATUS_ATTRIBUTE = "inetuserstatus";
 
@@ -620,9 +624,9 @@ public class ComplianceServicesImpl implements AMConstants, IComplianceServices
                         debug.message("isAncestorOrgDeleted: caching org: "
                                 + tdn + " as deleted");
                     }
-                    synchronized (deletedOrg) {
+                    //synchronized (deletedOrg) {
                         deletedOrg.put(tdn, Boolean.TRUE);
-                    }
+                    //}
                     // we have encountered at least one ancestor
                     // who is deleted so return true.
                     return true;
@@ -631,9 +635,9 @@ public class ComplianceServicesImpl implements AMConstants, IComplianceServices
                         debug.message("isAncestorOrgDeleted: caching org: "
                                 + tdn + " as active");
                     }
-                    synchronized (deletedOrg) {
+                    //synchronized (deletedOrg) {
                         deletedOrg.put(tdn, Boolean.FALSE);
-                    }
+                    //}
                 }
             } catch (UMSException umse) {
                 debug.error("Compliance.isAncestorOrgDeleted-> "
@@ -662,9 +666,9 @@ public class ComplianceServicesImpl implements AMConstants, IComplianceServices
             // check to see if this dn is in the deletedOrg cache.
             // delete this entry if it is
             if (deletedOrg.containsKey(tdn)) {
-                synchronized (deletedOrg) {
+                //synchronized (deletedOrg) {
                     deletedOrg.remove(tdn);
-                }
+                //}
             }
             // Get the parent DN..
             tdn = (new DN(tdn)).getParent().toRFCString().toLowerCase();

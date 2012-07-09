@@ -25,6 +25,10 @@
  * $Id: CachedSMSEntry.java,v 1.16 2009/10/08 20:33:54 hengming Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 
 package com.sun.identity.sm;
 
@@ -45,6 +49,7 @@ import com.iplanet.sso.SSOToken;
 import com.sun.identity.shared.Constants;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The class <code>CachedSchemaManagerImpl</code> provides interfaces to
@@ -57,19 +62,16 @@ public class CachedSMSEntry {
     protected static final String UPDATE_METHOD = "update";
 
     // Cache of CachedSMSEntries (static)
-    protected static Map smsEntries = Collections.synchronizedMap(
-        new HashMap(1000));
+    protected static Map smsEntries = new ConcurrentHashMap(1000);//Collections.synchronizedMap(new HashMap(1000));
 
     // Instance variables
     
     // Set of ServiceSchemaManagerImpls and ServiceConfigImpls
     // that must be updated where entry changes
-    protected Set serviceObjects = Collections.synchronizedSet(
-        new HashSet());
+    final protected Set serviceObjects = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
     protected String notificationID;
 
-    protected Set principals = Collections.synchronizedSet(
-        new HashSet(10)); // Principals who have read access
+    final protected Set principals = Collections.newSetFromMap(new ConcurrentHashMap(10));//Collections.synchronizedSet(new HashSet(10)); // Principals who have read access
 
     protected SSOToken token; // Valid SSOToken used for read
 
@@ -241,7 +243,8 @@ public class CachedSMSEntry {
         // Check if the cached SSOToken is valid
         if (!SMSEntry.tm.isValidToken(token)) {
             // Get a valid ssoToken from cached TokenIDs
-            synchronized (principals) {
+            //synchronized (principals) 
+            {
                 for (Iterator items = principals.iterator(); items.hasNext();) {
                     String tokenID = (String) items.next();
                     try {
@@ -278,7 +281,8 @@ public class CachedSMSEntry {
         }
         // Inform the ServiceSchemaManager's of changes to attributes
         ArrayList tmpServiceObjects = new ArrayList();
-        synchronized (serviceObjects) {
+        //synchronized (serviceObjects) 
+        {
             for(Iterator objs = serviceObjects.iterator(); objs.hasNext();) {
                 tmpServiceObjects.add(objs.next());
             }
@@ -315,7 +319,7 @@ public class CachedSMSEntry {
         }
     }
 
-    synchronized void addPrincipal(SSOToken t) {
+     void addPrincipal(SSOToken t) {
         // Making a local copy to avoid synchronization problems
         principals.add(t.getTokenID().toString());
     }
@@ -380,7 +384,8 @@ public class CachedSMSEntry {
             // block since SMSEntry call delegation which in turn calls
             // policy, idrepo, special repo and SMS again
             CachedSMSEntry tmp = new CachedSMSEntry(new SMSEntry(t, dn));
-            synchronized (smsEntries) {
+            //synchronized (smsEntries) 
+            {
                 if (((answer = (CachedSMSEntry) smsEntries.get(cacheEntry))
                     == null) || !answer.isValid()) {
                     // Add it to cache
@@ -430,7 +435,8 @@ public class CachedSMSEntry {
 
     // Clears the cache
     static void clearCache() {
-        synchronized (smsEntries) {
+        //synchronized (smsEntries) 
+        {
             for (Iterator items = smsEntries.values().iterator();
                 items.hasNext();) {
                 CachedSMSEntry cEntry = (CachedSMSEntry) items.next();

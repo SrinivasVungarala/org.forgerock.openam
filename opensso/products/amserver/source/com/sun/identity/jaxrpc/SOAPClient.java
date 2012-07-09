@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.jaxrpc;
 
 import java.io.BufferedReader;
@@ -269,7 +273,7 @@ public class SOAPClient {
      * Returns an object on success, else throws an <code>Exception
      * </code>.
      */
-    public synchronized Object send(String functionName, Object params[],
+    public  Object send(String functionName, Object params[],
         String cookies) throws Exception {
         return (send(encodeMessage(functionName, params), cookies));
     }
@@ -281,7 +285,7 @@ public class SOAPClient {
      * Returns an object on success, else throws an <code>Exception
      * </code>.
      */
-    public synchronized Object send(String functionName, Object param,
+    public  Object send(String functionName, Object param,
         String cookies) throws Exception {
         return (send(encodeMessage(functionName, param), cookies));
     }
@@ -294,7 +298,7 @@ public class SOAPClient {
      * an <code>Exception
      * </code>.
      */
-    public synchronized Object send(String message, String cookies)
+    public  Object send(String message, String cookies)
     throws Exception {
         // Initialize variables
         exceptionClassName = exceptionMessage = null;
@@ -502,7 +506,7 @@ public class SOAPClient {
      * name <code>function</code> that takes the parameters
      * <code>params</code> as its arguments.
      */
-    public synchronized String encodeMessage(String function, Object[] params) {
+    public  String encodeMessage(String function, Object[] params) {
         int index = 1;
         StringBuilder sb = new StringBuilder(1000);
         sb.append(ENVELOPE).append(HEADSTART).append(HEADEND).append(ENV_BODY);

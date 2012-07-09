@@ -25,7 +25,9 @@
  * $Id: AMDCTree.java,v 1.5 2008/06/25 05:41:19 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk;
 
 
@@ -45,6 +47,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class <code>AMDCTree</code> contains the functionality to support a DC
@@ -83,8 +86,8 @@ class AMDCTree implements AMConstants {
         AMDirectoryAccessFactory.getDCTreeServices();
 
     static {
-        domainMap = new HashMap();
-        canonicalDomainMap = new HashMap();
+        domainMap = new ConcurrentHashMap();
+        canonicalDomainMap = new ConcurrentHashMap();
     }
 
     /**
@@ -173,12 +176,12 @@ class AMDCTree implements AMConstants {
      *            organization DN
      */
     protected static void cleanDomainMap(String canonOrgDN) {
-        synchronized (canonicalDomainMap) {
+        //synchronized (canonicalDomainMap) {
             canonicalDomainMap.remove(canonOrgDN);
-        }
-        synchronized (domainMap) {
+        //}
+        //synchronized (domainMap) {
             domainMap.remove(canonOrgDN);
-        }
+        //}
     }
 
     private static Set dcNodeAttributes() throws AMException {

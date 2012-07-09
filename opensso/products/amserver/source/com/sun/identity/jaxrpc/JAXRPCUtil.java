@@ -29,12 +29,18 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.jaxrpc;
 
 import com.sun.identity.shared.jaxrpc.JAXRPCHelper;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.xml.rpc.Stub;
 
 /**
@@ -52,7 +58,7 @@ import javax.xml.rpc.Stub;
  */
 public class JAXRPCUtil extends JAXRPCHelper {
 
-    private static HashMap remoteStubs = new HashMap();
+    private static ConcurrentHashMap remoteStubs = new ConcurrentHashMap();
 
     /**
      * Returns a valid JAXRPC end point for the given service name. If no valid
@@ -80,7 +86,7 @@ public class JAXRPCUtil extends JAXRPCHelper {
         }
     }
 
-    protected synchronized static Object getValidStub(String serviceName)
+    protected  static Object getValidStub(String serviceName)
             throws RemoteException {
         Object stub = getServiceEndPoint(getValidURL(serviceName));
         // Add to cache

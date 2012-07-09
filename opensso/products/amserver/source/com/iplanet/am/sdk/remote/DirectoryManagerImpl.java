@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.remote;
 
 import java.net.MalformedURLException;
@@ -43,6 +46,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.iplanet.am.sdk.AMDirectoryAccessFactory;
 import com.iplanet.am.sdk.AMException;
@@ -83,11 +88,11 @@ public class DirectoryManagerImpl extends IdRepoJAXRPCObjectImpl implements
     protected static IComplianceServices complianceServices;
     
     // Cache of modifications for last 30 minutes & notification URLs    
-    static LinkedList cacheIndices = new LinkedList();
+    static ConcurrentLinkedQueue cacheIndices = new ConcurrentLinkedQueue();
         
-    static HashMap cache = null;
+    static ConcurrentHashMap cache = null;
         
-    static HashMap notificationURLs = new HashMap();
+    static ConcurrentHashMap notificationURLs = new ConcurrentHashMap();
     
     public DirectoryManagerImpl() {
         // Empty constructor
@@ -99,7 +104,7 @@ public class DirectoryManagerImpl extends IdRepoJAXRPCObjectImpl implements
             if (debug.messageEnabled()) {
                 debug.message("DirectoryManagerImpl::initialize_cache EventNotification cache size is set to " + cacheSize);
             }
-            cache = new HashMap(cacheSize);
+            cache = new ConcurrentHashMap(cacheSize);
         }
     }
 
@@ -979,9 +984,9 @@ public class DirectoryManagerImpl extends IdRepoJAXRPCObjectImpl implements
         try {
             // Check URL is not the local server
             if (!isClientOnSameServer(url)) {
-                synchronized (notificationURLs) {
+                //synchronized (notificationURLs) {
                     notificationURLs.put(id, new URL(url));
-                }
+                //}
                 if (debug.messageEnabled()) {
                     debug.message("DirectoryManagerImpl: " 
                             + "registerNotificationURL register for " 
@@ -1010,13 +1015,13 @@ public class DirectoryManagerImpl extends IdRepoJAXRPCObjectImpl implements
         // Since clients tend to register & deregister for AMSDK and IdRepo
         // donot initialize which might thrown an excpetion
         // initialize();
-        synchronized (notificationURLs) {
+        //synchronized (notificationURLs) {
             notificationURLs.remove(notificationID);
-        }
+        //}
     }
     
     // Implementation to process entry changed events
-    protected static synchronized void processEntryChanged(String method,
+    protected static  void processEntryChanged(String method,
         String name, int type, Set attrNames) {
         
         debug.message("DirectoryManagerImpl.processEntryChaged method "
@@ -1031,7 +1036,7 @@ public class DirectoryManagerImpl extends IdRepoJAXRPCObjectImpl implements
             modDNs = new HashSet();
             cache.put(cacheIndex, modDNs);
             // Maintain cacheIndex
-            cacheIndices.addFirst(cacheIndex);
+            cacheIndices.add(cacheIndex);
             cleanupCache(cacheIndices, cache, currentTime);
         }
         
@@ -1072,7 +1077,7 @@ public class DirectoryManagerImpl extends IdRepoJAXRPCObjectImpl implements
         // If notification URLs are present, send notifications
         Map notifications = new HashMap(notificationURLs); // Make a copy
         NotificationSet ns = null;
-        synchronized (notificationURLs) {
+        //synchronized (notificationURLs) {
             for (Iterator entries = notifications.entrySet().iterator(); 
                 entries.hasNext();) {
                 Map.Entry entry = (Map.Entry) entries.next();
@@ -1104,7 +1109,7 @@ public class DirectoryManagerImpl extends IdRepoJAXRPCObjectImpl implements
                     notificationURLs.remove(id);
                 }
             }
-        }
+        //}
     }
 
     // Implementation for AMObjectListener

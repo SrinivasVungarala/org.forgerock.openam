@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2010-2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.util;
 
 import com.iplanet.sso.SSOToken;
@@ -53,6 +56,7 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -77,9 +81,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SystemProperties {
     private static String instanceName;
-    private static ReentrantReadWriteLock rwLock = new
-        ReentrantReadWriteLock();
-    private static Map attributeMap = new HashMap();
+//    private static ReentrantReadWriteLock rwLock = new
+//        ReentrantReadWriteLock();
+    private static Map attributeMap = new ConcurrentHashMap();
     private static boolean sitemonitorDisabled = false;
     private final static String TRUE = "true";
     
@@ -251,7 +255,7 @@ public class SystemProperties {
      * @return the value if the key exists; otherwise returns <code>null</code>
      */
     public static String get(String key) {
-        rwLock.readLock().lock();
+        //rwLock.readLock().lock();
 
         try {
             String answer = null;
@@ -302,7 +306,7 @@ public class SystemProperties {
 
             return (answer);
         } finally {
-            rwLock.readLock().unlock();
+            //rwLock.readLock().unlock();
         }
     }
 
@@ -353,13 +357,13 @@ public class SystemProperties {
      * @return Properties object with all the key value pairs.
      */
     public static Properties getProperties() {
-        rwLock.readLock().lock();
+        //rwLock.readLock().lock();
         try {
             Properties properties = new Properties();
             properties.putAll(props);
             return properties;
         } finally {
-            rwLock.readLock().unlock();
+            //rwLock.readLock().unlock();
         }
     }
     
@@ -372,7 +376,7 @@ public class SystemProperties {
      * 
      */
     public static Properties getAll() {
-        rwLock.readLock().lock();
+        //rwLock.readLock().lock();
 
         try {
             Properties properties = new Properties();
@@ -389,7 +393,7 @@ public class SystemProperties {
             }
             return properties;
         } finally {
-            rwLock.readLock().unlock();
+            //rwLock.readLock().unlock();
         }
     }
 
@@ -427,7 +431,7 @@ public class SystemProperties {
      */
     public static void initializeProperties(String file)
         throws MissingResourceException {
-        rwLock.writeLock().lock();
+        //rwLock.writeLock().lock();
         try {
             ResourceBundle bundle = ResourceBundle.getBundle(file);
             // Copy the properties to props
@@ -443,7 +447,7 @@ public class SystemProperties {
             updateTagswapMap(props);
             lastModified = System.currentTimeMillis();
         } finally {
-            rwLock.writeLock().unlock();
+            //rwLock.writeLock().unlock();
         }
     }
 
@@ -490,7 +494,7 @@ public class SystemProperties {
             defaultProp = ServerConfiguration.getDefaults(appToken);
         }
 
-        rwLock.writeLock().lock();
+        //rwLock.writeLock().lock();
 
         try {
             Properties newProps = new Properties();
@@ -508,7 +512,7 @@ public class SystemProperties {
             updateTagswapMap(props);
             lastModified = System.currentTimeMillis();
         } finally {
-            rwLock.writeLock().unlock();
+            //rwLock.writeLock().unlock();
         }
     }
 
@@ -526,7 +530,7 @@ public class SystemProperties {
         String propertyName,
         String propertyValue
     ) {
-        rwLock.writeLock().lock();
+        //rwLock.writeLock().lock();
 
         try {
             Properties newProps = new Properties();
@@ -536,7 +540,7 @@ public class SystemProperties {
             updateTagswapMap(props);
             lastModified = System.currentTimeMillis();
         } finally {
-            rwLock.writeLock().unlock();
+            //rwLock.writeLock().unlock();
         }
     }
 
@@ -608,11 +612,11 @@ public class SystemProperties {
      * @return Property name to service attribute schema name mapping.
      */
     public static Map getAttributeMap() {
-        rwLock.readLock().lock();
+        //rwLock.readLock().lock();
         try {
             return attributeMap;
         } finally {
-            rwLock.readLock().unlock();
+            //rwLock.readLock().unlock();
         }
     }
 }

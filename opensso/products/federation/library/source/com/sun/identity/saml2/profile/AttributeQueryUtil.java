@@ -29,6 +29,9 @@
  /*
  * Portions Copyrighted [2010] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.saml2.profile;
 
@@ -104,7 +107,7 @@ import java.io.IOException;
 public class AttributeQueryUtil {
 
     static KeyProvider keyProvider = KeyUtil.getKeyProviderInstance(); 
-    static Hashtable attrAuthorityMapperCache = new Hashtable(); 
+    static java.util.concurrent.ConcurrentHashMap attrAuthorityMapperCache = new java.util.concurrent.ConcurrentHashMap(); 
     static DataStoreProvider dsProvider = null;
     static SAML2MetaManager metaManager = SAML2Utils.getSAML2MetaManager();
 

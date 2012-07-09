@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.sm.ldap;
 
 import java.security.Principal;
@@ -81,6 +85,7 @@ import com.sun.identity.sm.SMSObjectListener;
 import java.security.AccessController;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This object represents an LDAP entry in the directory server. The UMS have an
@@ -117,11 +122,9 @@ public class SMSLdapObject extends SMSObjectDB implements SMSObjectListener {
     
     static boolean initializedNotification;
 
-    static Set entriesPresent = Collections.synchronizedSet(
-        new LinkedHashSet());
+    final static Set entriesPresent = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new LinkedHashSet());
 
-    static Set entriesNotPresent = Collections.synchronizedSet(
-        new LinkedHashSet());
+    final static Set entriesNotPresent = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new LinkedHashSet());
 
     // Other parameters
     static ResourceBundle bundle;
@@ -942,7 +945,8 @@ public class SMSLdapObject extends SMSObjectDB implements SMSObjectListener {
             initializeNotification();
             entriesPresent.add(dn);
             if (entriesPresent.size() > entriesPresentCacheSize) {
-                synchronized (entriesPresent) {
+                //synchronized (entriesPresent) 
+            	{
                     Iterator items = entriesPresent.iterator();
                     if (items.hasNext()) {
                         items.next();
@@ -954,7 +958,8 @@ public class SMSLdapObject extends SMSObjectDB implements SMSObjectListener {
             initializeNotification();
             entriesNotPresent.add(dn);
             if (entriesNotPresent.size() > entriesPresentCacheSize) {
-                synchronized (entriesNotPresent) {
+                //synchronized (entriesNotPresent) 
+            	{
                     Iterator items = entriesNotPresent.iterator();
                     if (items.hasNext()) {
                         items.next();

@@ -28,6 +28,9 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.delegation.plugins;
 
 import java.util.Set;
@@ -38,6 +41,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 import java.security.AccessController;
 import com.sun.identity.shared.ldap.util.DN;
 
@@ -45,6 +49,7 @@ import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenID;
 import com.iplanet.sso.SSOException;
 
+import com.iplanet.am.sdk.common.CacheBlock;
 import com.iplanet.am.util.Cache;
 import com.iplanet.am.util.SystemProperties;
 
@@ -128,9 +133,9 @@ public class DelegationPolicyImpl implements DelegationInterface,
      *  The cache is a LRU one and is updated based on subject change 
      *  notification and policy change notification.
      */
-    private static Cache delegationCache;
+    private static Cache<String,Map> delegationCache;
     private static int maxCacheSize = DEFAULT_CACHE_SIZE;
-    private static Map idRepoListeners = new HashMap();
+    private static Map idRepoListeners = new ConcurrentHashMap();
     private static ServiceConfigManager scm;
 
     private SSOToken appToken;
@@ -171,7 +176,12 @@ public class DelegationPolicyImpl implements DelegationInterface,
                      maxCacheSize = DEFAULT_CACHE_SIZE;
                  }
             }
-            delegationCache = new Cache(maxCacheSize);
+            if (delegationCache==null)
+	            synchronized (getClass().getName()) {
+	            	if (delegationCache==null)
+	            		delegationCache = new Cache<String,Map>(getClass().getName(), maxCacheSize);//new Cache(maxCacheSize);
+				}
+            
             if (DelegationManager.debug.messageEnabled()) {
                 DelegationManager.debug.message(
                 "DelegationPolicyImpl.initialize(): cache size="
@@ -660,7 +670,7 @@ public class DelegationPolicyImpl implements DelegationInterface,
             al.add(1, pd);
             Map items = (Map)delegationCache.get(tokenIdStr);
             if (items == null) {
-                items = new HashMap();
+                items = new ConcurrentHashMap();
             }
             items.put(resource, al);
             delegationCache.put(tokenIdStr, items);
@@ -674,13 +684,14 @@ public class DelegationPolicyImpl implements DelegationInterface,
      * when any identity gets changed in the repository.
      */
     private static void cleanupCache() {
-        if (delegationCache.size() > 0) {
-            delegationCache = new Cache(maxCacheSize);
-            if (DelegationManager.debug.messageEnabled()) {
-               DelegationManager.debug.message(
-                "DelegationPolicyImpl.cleanupCache(): cache cleared");
-            }
-        }
+    	delegationCache.clear();
+//        if (delegationCache.size() > 0) {
+//            delegationCache = new Cache(maxCacheSize);
+//            if (DelegationManager.debug.messageEnabled()) {
+//               DelegationManager.debug.message(
+//                "DelegationPolicyImpl.cleanupCache(): cache cleared");
+//            }
+//        }
 
     }
 
@@ -810,7 +821,7 @@ public class DelegationPolicyImpl implements DelegationInterface,
                     DelegationPermission perm =
                         (DelegationPermission)pmit.next();
                     String resourceName = getResourceName(perm);
-                    Map actions = new HashMap();
+                    Map actions = new ConcurrentHashMap();
                     Set permActions = perm.getActions();
                     if (permActions != null) {
                         Set values = new HashSet();
@@ -1056,7 +1067,8 @@ public class DelegationPolicyImpl implements DelegationInterface,
             DelegationManager.debug.message(
                "DelegationPolicyImpl: org config changed: " + orgName);
         }
-        synchronized(idRepoListeners) {
+        //synchronized(idRepoListeners) 
+        {
             if (type == ServiceListener.ADDED) {
                 if (idRepoListeners.get(orgName) == null) {
                     try {
@@ -1099,7 +1111,8 @@ public class DelegationPolicyImpl implements DelegationInterface,
            DelegationManager.debug.message(
            "DelegationPolicyImpl: changed universalId=" + universalId);
         }
-        cleanupCache();
+        //cleanupCache();
+        delegationCache.remove(universalId);
     }
       
     /**
@@ -1113,7 +1126,8 @@ public class DelegationPolicyImpl implements DelegationInterface,
            DelegationManager.debug.message(
            "DelegationPolicyImpl: deleted universalId=" + universalId);
         }
-        cleanupCache();
+        //cleanupCache();
+        delegationCache.remove(universalId);
     }
     
     /**
@@ -1127,7 +1141,8 @@ public class DelegationPolicyImpl implements DelegationInterface,
            DelegationManager.debug.message(
            "DelegationPolicyImpl: renamed universalId=" + universalId);
         }
-        cleanupCache();
+        //cleanupCache();
+        delegationCache.remove(universalId);
     }
  
    /**

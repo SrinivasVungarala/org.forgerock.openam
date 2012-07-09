@@ -25,6 +25,9 @@
  * $Id: PolicyEvaluatorFactory.java,v 1.2 2008/06/25 05:43:44 qcheng Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 
@@ -42,14 +45,14 @@ class PolicyEvaluatorFactory {
 
     private static PolicyEvaluatorFactory policyEvaluatorFactory;
 
-    private Cache evaluatorCache;
+    final private static Cache<String, PolicyEvaluator> evaluatorCache= new Cache<String, PolicyEvaluator>(PolicyEvaluatorFactory.class.getName(),CACHE_SIZE);
 
     /**
      * Private constructor, disables instances being created from outside
      * of this class 
      */
     private PolicyEvaluatorFactory() {
-        evaluatorCache = new Cache(CACHE_SIZE);
+        //evaluatorCache = new Cache(CACHE_SIZE);
     }
 
     /**
@@ -82,7 +85,7 @@ class PolicyEvaluatorFactory {
      * @exception PolicyException any policy exception coming from policy frame 
      *            work
      */
-    synchronized public PolicyEvaluator getPolicyEvaluator(
+    public PolicyEvaluator getPolicyEvaluator(
         SSOToken token, String serviceType) 
         throws NameNotFoundException, 
         PolicyException, SSOException 

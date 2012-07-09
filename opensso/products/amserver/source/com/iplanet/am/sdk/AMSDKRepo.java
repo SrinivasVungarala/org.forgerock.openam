@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk;
 
 import com.iplanet.am.sdk.common.IDirectoryServices;
@@ -72,9 +74,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
+
 import com.sun.identity.shared.ldap.LDAPDN;
 import com.sun.identity.shared.ldap.LDAPException;
 import com.sun.identity.shared.ldap.util.DN;
@@ -82,7 +87,7 @@ import com.sun.identity.shared.ldap.util.LDAPUtilException;
 
 public class AMSDKRepo extends IdRepo {
 
-    protected static Set listeners = new HashSet();
+    final protected static Set listeners = Collections.newSetFromMap(new ConcurrentHashMap());//new HashSet();
 
     private Map supportedOps = new HashMap();
 
@@ -127,9 +132,9 @@ public class AMSDKRepo extends IdRepo {
     public int addListener(SSOToken token, IdRepoListener listnr)
             throws IdRepoException, SSOException {
         // TODO Auto-generated method stub
-        synchronized (listeners) {
+        //synchronized (listeners) {
             listeners.add(listnr);
-        }
+        //}
         myListener = listnr;
         return 0;
     }
@@ -140,9 +145,9 @@ public class AMSDKRepo extends IdRepo {
      * @see com.sun.identity.idm.IdRepo#removeListener()
      */
     public void removeListener() {
-        synchronized (listeners) {
+        //synchronized (listeners) {
             listeners.remove(myListener);
-        }
+        //}
     }
 
     /*
@@ -1716,7 +1721,7 @@ public class AMSDKRepo extends IdRepo {
             break;
         }
 
-        synchronized (listeners) {
+        //synchronized (listeners) {
             Iterator it = listeners.iterator();
             while (it.hasNext()) {
                 IdRepoListener l = (IdRepoListener) it.next();
@@ -1734,7 +1739,7 @@ public class AMSDKRepo extends IdRepo {
                     l.objectChanged(normalizedDN, eventType, configMap);
                 }
             }
-        }
+        //}
     }
 
     public static void notifyAllObjectsChangedEvent() {
@@ -1744,13 +1749,13 @@ public class AMSDKRepo extends IdRepo {
                     + "event to listeners.");
         }
         
-        synchronized (listeners) {
+        //synchronized (listeners) {
             Iterator it = listeners.iterator();
             while (it.hasNext()) {
                IdRepoListener l = (IdRepoListener) it.next();
                 l.allObjectsChanged();
             }
-        }
+        //}
     }
 
     private void loadSupportedOps() {

@@ -28,6 +28,9 @@
 /**
  * Portions Copyrighted 2011-2012 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session.service;
 
 import com.iplanet.am.util.SystemProperties;
@@ -38,6 +41,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.debug.Debug;
 import com.iplanet.dpro.session.Session;
@@ -73,9 +77,9 @@ import com.sun.identity.shared.Constants;
 public class SessionCount {
 
     // SessionInfoMap: uuid -> Set (list of sids)
-    private static Map uuidSessionMap = Collections
-            .synchronizedMap(new HashMap());
-
+//    private static Map uuidSessionMap = Collections
+//            .synchronizedMap(new HashMap());
+	private static ConcurrentHashMap uuidSessionMap=new ConcurrentHashMap(); 
     /* Single server mode*/
     static final int SINGLE_SERVER_MODE = 1;
 
@@ -205,14 +209,14 @@ public class SessionCount {
         Map<String, Long> retSessions = new HashMap<String, Long>();
 
         if (sessions != null) {
-            synchronized (sessions) {
+//            synchronized (sessions) {
                 for (SessionID sid : sessions) {
                     InternalSession is = getSS().getInternalSession(sid);
                     
                     if (is != null) {
                         retSessions.put(sid.toString(), new Long(is.getExpirationTime()));
                     }
-                }
+ //              }
             }
         }
         
@@ -287,7 +291,7 @@ public class SessionCount {
             if (sessions != null) {
                 sessions.add(is.getID());
             } else {
-                sessions = Collections.synchronizedSet(new HashSet());
+                sessions = Collections.newSetFromMap(new ConcurrentHashMap());//Collections.synchronizedSet(new HashSet());
                 sessions.add(is.getID());
                 uuidSessionMap.put((caseSensitiveUUID) ? is.getUUID() : is.getUUID().toLowerCase(), sessions);
             }

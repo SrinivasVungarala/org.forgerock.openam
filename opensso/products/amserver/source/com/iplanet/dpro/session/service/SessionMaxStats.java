@@ -29,10 +29,15 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.dpro.session.service;
 
 import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
+import com.iplanet.dpro.session.SessionID;
 import com.sun.identity.shared.stats.StatsListener;
 
 /** 
@@ -42,7 +47,7 @@ import com.sun.identity.shared.stats.StatsListener;
  */
 public class SessionMaxStats implements StatsListener {
 
-    private Hashtable sessionTable;
+    private ConcurrentHashMap<SessionID, InternalSession> sessionTable;
     private int peakSessions = 0;
     private int peakActiveSessions = 0;
     private int peakNotificationQueue = 0;
@@ -52,7 +57,7 @@ public class SessionMaxStats implements StatsListener {
     * Creates a new SessionMaxStats
     * @param table session table
     */
-   public SessionMaxStats(Hashtable table) {
+   public SessionMaxStats(ConcurrentHashMap<SessionID, InternalSession> table) {
         sessionTable = table;
     }
 

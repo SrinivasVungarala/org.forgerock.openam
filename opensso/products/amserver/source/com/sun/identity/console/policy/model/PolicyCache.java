@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.console.policy.model;
 
 import com.sun.identity.console.base.model.AMConsoleException;
@@ -42,6 +45,7 @@ import com.sun.identity.shared.encode.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 /* - NEED NOT LOG - */
 
@@ -53,7 +57,7 @@ public class PolicyCache
     implements SSOTokenListener
 {        
     private static PolicyCache instance = new PolicyCache();
-    private Map mapTokenIDs = new HashMap(100);
+    private Map mapTokenIDs = new ConcurrentHashMap(100);
 
     /**
      * The generated random string is used to cache policy object when
@@ -87,7 +91,7 @@ public class PolicyCache
             try {
                 String key = token.getTokenID().toString();
 
-                synchronized(mapTokenIDs) {
+                //synchronized(mapTokenIDs) {
                     Map map = (Map) mapTokenIDs.get(key);
 
                     if (map == null) {
@@ -98,7 +102,7 @@ public class PolicyCache
                     randomStr = getRandomString();
                     map.put(randomStr, policy);
                     mapTokenIDs.put(key, map);
-                }
+                //}
             } catch (SSOException ssoe) {
                 AMModelBase.debug.warning("PolicyCache.cachePolicy", ssoe);
                 randomStr = "";
@@ -120,7 +124,7 @@ public class PolicyCache
             try {
                 String key = token.getTokenID().toString();
 
-                synchronized(mapTokenIDs) {
+                //synchronized(mapTokenIDs) {
                     Map map = (Map)mapTokenIDs.get(key);
 
                     if (map == null) {
@@ -130,7 +134,7 @@ public class PolicyCache
 
                     map.put(cachedID, policy);
                     mapTokenIDs.put(key, map);
-                }
+                //}
             } catch (SSOException ssoe) {
                 AMModelBase.debug.warning("PolicyCache.replacePolicy", ssoe);
             }
@@ -195,9 +199,9 @@ public class PolicyCache
         boolean removed = false;
         String key = tokenID.toString();
 
-        synchronized(mapTokenIDs) {
+        //synchronized(mapTokenIDs) {
             removed = (mapTokenIDs.remove(key) != null);
-        }
+        //}
 
         if (removed && AMModelBase.debug.messageEnabled()) {
             AMModelBase.debug.warning("PolicyCache.clearAllPolicies," + key);

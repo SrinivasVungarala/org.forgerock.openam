@@ -25,6 +25,9 @@
  * $Id: SubjectEvaluationCache.java,v 1.4 2008/06/25 05:43:45 qcheng Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 
@@ -33,6 +36,7 @@ package com.sun.identity.policy;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.sm.ServiceManager;
 import com.sun.identity.shared.debug.Debug;
@@ -68,7 +72,7 @@ public class SubjectEvaluationCache {
     *                ....
     */
 
-    public static Map subjectEvaluationCache = new HashMap();
+    public static Map subjectEvaluationCache = new ConcurrentHashMap();
     public  static long subjectEvalCacheTTL = 0; // milliseconds
 
     //in milliseconds
@@ -134,7 +138,8 @@ public class SubjectEvaluationCache {
         String subjectId = ldapServer+":"+valueDN;
         Map subjectEntries = null;
         long[] elem = new long[2];
-        synchronized (subjectEvaluationCache) {
+        //synchronized (subjectEvaluationCache) 
+        {
             elem[0] = System.currentTimeMillis() + getSubjectEvalTTL();
             elem[1] = (member == true) ? 1:0;
             if ((subjectEntries = (Map)subjectEvaluationCache.get(tokenID))
@@ -142,7 +147,7 @@ public class SubjectEvaluationCache {
             {
                 subjectEntries.put(subjectId, elem);
             } else {
-                subjectEntries = Collections.synchronizedMap(new HashMap());
+                subjectEntries = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
                 subjectEntries.put(subjectId, elem);
                 subjectEvaluationCache.put(tokenID,subjectEntries);
             }
@@ -194,9 +199,9 @@ public class SubjectEvaluationCache {
         /* record stats for subjectEvaluationCache */
 
         int cacheSize = 0;
-        synchronized(subjectEvaluationCache) {
+        //synchronized(subjectEvaluationCache) {
             cacheSize = subjectEvaluationCache.size();
-        }
+        //}
         policyStats.record("SubjectEvaluationCache: Number of entries in"
                 + " cache : " + cacheSize);
     }

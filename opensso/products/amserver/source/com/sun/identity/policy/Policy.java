@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy;
 
 import com.sun.identity.policy.interfaces.Subject;
@@ -37,6 +41,8 @@ import com.sun.identity.policy.interfaces.ResponseProvider;
 import com.sun.identity.policy.interfaces.Referral;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.shared.ldap.util.DN;
 
 import org.w3c.dom.*;
@@ -111,8 +117,8 @@ public class Policy implements Cloneable {
     private String organizationName;
     private final static int MATCHED_RULE_RESULTS_CACHE_SIZE = 1000;
     private final static int MATCHED_REFERRAL_RULES_CACHE_SIZE = 100;
-    private Cache matchRulesResultsCache 
-            = new Cache(MATCHED_RULE_RESULTS_CACHE_SIZE);
+    final private static Cache<String,ConcurrentHashMap<String, Set>> matchRulesResultsCache 
+    	= new Cache<String,ConcurrentHashMap<String, Set>>(Policy.class.getName(),MATCHED_RULE_RESULTS_CACHE_SIZE);
     private String subjectRealm;
 
     /**
@@ -1681,13 +1687,13 @@ public class Policy implements Cloneable {
     private Map getMatchedRuleResults(ServiceType resourceType,
             String resourceName, Set actionNames) throws NameNotFoundException {
         String resourceTypeName = resourceType.getName();
-        Map answer = null;
+        ConcurrentHashMap<String, Set> answer = null;
         StringBuilder cacheKeyBuffer = new StringBuilder(100);
         String cacheKey = cacheKeyBuffer.append(resourceTypeName)
                 .append(resourceName).append(actionNames).toString();
-        answer = (Map) matchRulesResultsCache.get(cacheKey);
+        answer = matchRulesResultsCache.get(cacheKey);
         if ( answer == null ) {
-            answer = new HashMap();
+            answer = new ConcurrentHashMap<String, Set>();
 
             //Process rules
             Iterator ruleIterator = rules.values().iterator();

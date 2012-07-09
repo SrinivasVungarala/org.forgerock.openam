@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.remote;
 
 import java.net.URL;
@@ -39,7 +42,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.iplanet.am.sdk.AMEvent;
 import com.iplanet.am.sdk.AMEventManagerException;
@@ -74,7 +77,7 @@ class EventListener {
     
     private static SOAPClient client;
 
-    private static Set listeners = new HashSet();
+    final private static Set listeners = Collections.newSetFromMap(new ConcurrentHashMap());//new HashSet();
     
     private static EventListener instance = null;
     
@@ -199,9 +202,9 @@ class EventListener {
         }
 
         // Add to listeners
-        synchronized (listeners) {
+        //synchronized (listeners) {
             listeners.add(listener);
-        }
+        //}
     }
 
     /**
@@ -276,7 +279,7 @@ class EventListener {
                     ((ICachedDirectoryServices) dsServices).dirtyCache(entryDN,
                             eventType, false, false, Collections.EMPTY_SET);
                 }
-                synchronized (listeners) {
+                //synchronized (listeners) {
                     for (Iterator items = listeners.iterator(); 
                         items.hasNext();) 
                     {
@@ -284,7 +287,7 @@ class EventListener {
                                 .next();
                         listener.objectChanged(entityName, eventType, null);
                     }
-                }
+                //}
             } else if (method.equalsIgnoreCase(OBJECTS_CHANGED)) {
                 int eventType = getEventType((Set) attrs.get(EVENT_TYPE));
                 Set attributes = (Set) attrs.get(attrs.get(ATTR_NAMES));
@@ -293,7 +296,7 @@ class EventListener {
                             eventType, true, false, attributes);
                 }
                 // Call objectsChanged method on the listeners
-                synchronized (listeners) {
+                //synchronized (listeners) {
                     for (Iterator items = listeners.iterator(); 
                         items.hasNext();) 
                     {
@@ -302,7 +305,7 @@ class EventListener {
                         listener.objectsChanged(entityName, eventType,
                                 attributes, null);
                     }
-                }
+                //}
             } else if (method.equalsIgnoreCase(PERMISSIONS_CHANGED)) {
                 if (RemoteServicesFactory.isCachingEnabled()) {
                     ((ICachedDirectoryServices) dsServices).dirtyCache(entryDN,
@@ -310,7 +313,7 @@ class EventListener {
                             Collections.EMPTY_SET);
                 }
                 // Call permissionChanged method on the listeners
-                synchronized (listeners) {
+                //synchronized (listeners) {
                     for (Iterator items = listeners.iterator(); 
                         items.hasNext();) 
                     {
@@ -318,13 +321,13 @@ class EventListener {
                                 .next();
                         listener.permissionsChanged(entityName, null);
                     }
-                }
+                //}
             } else if (method.equalsIgnoreCase(ALL_OBJECTS_CHANGED)) {
                 if (RemoteServicesFactory.isCachingEnabled()) {
                     ((ICachedDirectoryServices) dsServices).clearCache();
                 }
                 // Call allObjectsChanged method on listeners
-                synchronized (listeners) {
+                //synchronized (listeners) {
                     for (Iterator items = listeners.iterator(); 
                         items.hasNext();) 
                     {
@@ -332,7 +335,7 @@ class EventListener {
                                 .next();
                         listener.allObjectsChanged();
                     }
-                }
+                //}
             } else {
                 // Invalid method name
                 handleError("invalid method name: " + method);

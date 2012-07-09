@@ -25,7 +25,9 @@
  * $Id: ResourceLookup.java,v 1.7 2009/05/02 22:12:04 kevinserwin Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.common;
 
 import com.sun.identity.shared.debug.Debug;
@@ -44,7 +46,7 @@ import javax.servlet.ServletContext;
 
 public class ResourceLookup {
 
-    private static Hashtable resourceNameCache = null;
+    private static java.util.concurrent.ConcurrentHashMap resourceNameCache = null;
 
     private static Debug debug = Debug.getInstance("amResourceLookup");
 
@@ -118,7 +120,7 @@ public class ResourceLookup {
         if (resourceUrl != null) {
             if (enableCache) {
                 if (resourceNameCache == null) {
-                    resourceNameCache = new Hashtable();
+                    resourceNameCache = new java.util.concurrent.ConcurrentHashMap();
                 }
                 resourceNameCache.put(cacheKey, resourceName);
             }

@@ -24,6 +24,10 @@
  *
  * $Id: IdRepoAttributeValidatorManager.java,v 1.2 2010/01/26 00:04:38 hengming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.idm.server;
 
 import java.security.AccessController;
@@ -31,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.idm.IdConstants;
@@ -54,7 +60,7 @@ public class IdRepoAttributeValidatorManager implements ServiceListener {
     static Debug debug = Debug.getInstance("amIdm");
     static boolean initializedListeners;
     static ServiceConfigManager idRepoServiceConfigManager;
-    static Map<String, IdRepoAttributeValidator> validatorCache = new HashMap();
+    static Map<String, IdRepoAttributeValidator> validatorCache = new ConcurrentHashMap<String, IdRepoAttributeValidator>();
 
     private IdRepoAttributeValidatorManager() {
         // Initialize listeners
@@ -96,7 +102,8 @@ public class IdRepoAttributeValidatorManager implements ServiceListener {
         }
 
         Map<String, Set<String>> configParams = new HashMap();
-        synchronized (validatorCache) {
+        //synchronized (validatorCache) 
+        {
             try {
                 ServiceConfig orgConfig =
                     idRepoServiceConfigManager.getOrganizationConfig(realm,
@@ -189,8 +196,8 @@ public class IdRepoAttributeValidatorManager implements ServiceListener {
             debug.message("IdRepoAttributeValidatorManager.schemaChanged: " +
                 "Service name = " + serviceName);
         }
-        synchronized(validatorCache) {
+        //synchronized(validatorCache) {
             validatorCache.clear();
-        }
+        //}
     }
 }

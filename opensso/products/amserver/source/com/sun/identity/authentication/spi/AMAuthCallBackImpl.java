@@ -25,7 +25,9 @@
  * $Id: AMAuthCallBackImpl.java,v 1.3 2008/06/25 05:42:06 qcheng Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.authentication.spi;
@@ -44,6 +46,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class should be instantiated by components in the authentication
@@ -101,7 +104,7 @@ public class AMAuthCallBackImpl {
      * a separate set of plugin classes. We'll go thru the map of
      * callback implementations to invoke the plug-in classes.
      */
-    private static Map theCallBackInst = new HashMap();
+    private static Map theCallBackInst = new ConcurrentHashMap();
     
     /**
      * The list of callback class names for each instance of this class; when a 
@@ -167,11 +170,11 @@ public class AMAuthCallBackImpl {
         if (debug.messageEnabled()) {
             debug.message("AMAuthCallBackImpl : getting instance.");
         }
-        synchronized (theCallBackInst) {
+        //synchronized (theCallBackInst) {
             if (theCallBackInst.get(aRealm) == null) {
                 theCallBackInst.put(aRealm, new AMAuthCallBackImpl(aRealm));
             }
-        }
+        //}
         return (AMAuthCallBackImpl) theCallBackInst.get(aRealm);
     }
     

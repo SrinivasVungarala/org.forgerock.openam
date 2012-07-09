@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.common;
 
 import com.iplanet.am.util.AMSendMail;
@@ -49,6 +52,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ISAccountLockout {
     private static final String USER_STATUS_ATTR="inetuserstatus";
@@ -96,7 +100,7 @@ public class ISAccountLockout {
     private boolean needToSetInvalidAttemptsObjectClass = true;
     static Debug debug = Debug.getInstance("amAccountLockout");
     private AMAuthCallBackImpl callbackImpl = null;
-    static Map loginFailHash = Collections.synchronizedMap(new HashMap());
+    static Map loginFailHash = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     
     
     /**

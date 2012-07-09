@@ -29,6 +29,9 @@
 /*
  * Portions Copyrighted [2010] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.ha.jmqdb;
 
@@ -100,7 +103,7 @@ public class FAMRecordJMQPersister implements FAMRecordPersister,
 
     TopicSubscriber resSub = null;
 
-    Hashtable processedMsgs = new Hashtable();
+    java.util.concurrent.ConcurrentHashMap processedMsgs = new java.util.concurrent.ConcurrentHashMap();
 
     Random rdmGen = new Random();
 

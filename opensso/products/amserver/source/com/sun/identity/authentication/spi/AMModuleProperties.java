@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2011 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.spi;
 
 import java.io.InputStream;
@@ -38,6 +40,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.ChoiceCallback;
@@ -71,7 +74,7 @@ class AMModuleProperties {
     private List<String> infoText;
     private Hashtable rtable = new Hashtable();
     private Callback[] callbacks = null;
-    private static Map moduleProps = new HashMap();
+    private static Map moduleProps = new ConcurrentHashMap();
     private static final String amAuth = "amAuth";
     private static Debug debug = Debug.getInstance(amAuth);
 
@@ -155,9 +158,9 @@ class AMModuleProperties {
                     debug.message(fileName + " is empty");
                 }
                 list = new ArrayList();
-                synchronized(moduleProps) {
+                //synchronized(moduleProps) {
                     moduleProps.put(fileName, list);
-                }
+                //}
                 return list;
             }
         } catch (Exception e) {
@@ -174,9 +177,9 @@ class AMModuleProperties {
                                             servletContext);
         list = prop.getCallbacks();
         if (list != null && !list.isEmpty()) {
-           synchronized(moduleProps) {
+           //synchronized(moduleProps) {
                 moduleProps.put(fileName, list);
-           }
+           //}
         }
         return list;
     }

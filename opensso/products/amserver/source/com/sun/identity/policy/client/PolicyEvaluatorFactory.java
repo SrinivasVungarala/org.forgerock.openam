@@ -29,11 +29,17 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy.client;
 
 import com.sun.identity.shared.debug.Debug;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.policy.PolicyException;
 import com.sun.identity.security.AppSSOTokenProvider;
 import com.iplanet.sso.SSOException;
@@ -54,7 +60,7 @@ public class PolicyEvaluatorFactory {
      * Constructs a policy evaluator factory
      */
     private PolicyEvaluatorFactory() {
-	evaluatorsCache = new HashMap(10);
+	evaluatorsCache = new ConcurrentHashMap(10);
         if (debug.messageEnabled()) {
             debug.message("PolicyEvaluatorFactory():"
                     + "created singleton instance");
@@ -104,7 +110,7 @@ public class PolicyEvaluatorFactory {
      * @throws PolicyException if creation of evaluator fails.
      * @throws SSOException if application single sign on token is invalid.
      */
-    synchronized public PolicyEvaluator getPolicyEvaluator(
+     public PolicyEvaluator getPolicyEvaluator(
 	String serviceName,
 	AppSSOTokenProvider appSSOTokenProvider)
 	throws PolicyException, SSOException
@@ -120,7 +126,7 @@ public class PolicyEvaluatorFactory {
 
         Map appTokenEvaluatorsMap = (Map)evaluatorsCache.get(serviceName);
         if (appTokenEvaluatorsMap == null) {
-            appTokenEvaluatorsMap = new HashMap(5);
+            appTokenEvaluatorsMap = new ConcurrentHashMap(5);
             evaluatorsCache.put(serviceName, appTokenEvaluatorsMap);
         }
         pe = (PolicyEvaluator)appTokenEvaluatorsMap.get(appSSOTokenProvider);

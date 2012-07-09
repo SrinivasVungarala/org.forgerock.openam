@@ -25,6 +25,9 @@
  * $Id: CachedSubEntries.java,v 1.10 2008/07/11 01:46:21 arviranga Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.sm;
 
@@ -39,16 +42,16 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CachedSubEntries {
     // Cache of CachedSubEntries based on lowercased DN to obtain sub entries
-    protected static Map smsEntries = Collections.synchronizedMap(
-        new HashMap(100));
+    protected static Map smsEntries = new ConcurrentHashMap(100);//Collections.synchronizedMap(new HashMap(100));
 
     // Instance variables
     // Cache of SubEntries for the given SSOToken
     // Limited cache so that it does not grow in size
-    protected Map ssoTokenToSubEntries = new Cache(100);
+    protected  Cache<String,Set> ssoTokenToSubEntries; 
     private long lastUpdated;
 
     protected CachedSMSEntry cachedEntry;
@@ -60,6 +63,7 @@ public class CachedSubEntries {
 
     // Private constructor, can be instantiated only via getInstance
     private CachedSubEntries(SSOToken t, String dn) throws SMSException {
+    	ssoTokenToSubEntries = new Cache<String,Set>(CachedSubEntries.class.getName()+"."+dn,100);
         try {
             cachedEntry = CachedSMSEntry.getInstance(t, dn);
             // Register for notifications to clear instance cache
@@ -261,7 +265,8 @@ public class CachedSubEntries {
             return (answer);
         }
         // Not in cache, synchronize and add to cache
-        synchronized (smsEntries) {
+        //synchronized (smsEntries) 
+        {
             answer = (CachedSubEntries) smsEntries.get(entry);
             if (answer == null) {
                 // Create and add to cache
@@ -277,7 +282,8 @@ public class CachedSubEntries {
     }
 
     static void clearCache() {
-        synchronized (smsEntries) {
+        //synchronized (smsEntries) 
+        {
             // Clear the individual cached entries
             for (Iterator items = smsEntries.values().iterator();
                 items.hasNext();) {

@@ -22,6 +22,10 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package org.forgerock.openam.session.service;
 
 import com.iplanet.dpro.session.Session;
@@ -49,7 +53,8 @@ public class DestroyAllAction implements QuotaExhaustionAction {
     public boolean action(InternalSession is, Map sessions) {
         Set<String> sids = sessions.keySet();
         debug.message("there are " + sids.size() + " sessions");
-        synchronized (sessions) {
+        //synchronized (sessions) 
+        {
             for (String sid : sids) {
                 SessionID sessID = new SessionID(sid);
 

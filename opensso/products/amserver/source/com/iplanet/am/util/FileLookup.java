@@ -29,6 +29,9 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.util;
 
 import com.sun.identity.common.HttpURLConnectionManager;
@@ -43,6 +46,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class provides a generic file path generation utility for all portal
@@ -342,7 +346,7 @@ public class FileLookup {
         return orderedPaths;
     }
 
-    private static Map fileTable = new HashMap();
+    private static Map fileTable = new ConcurrentHashMap();
 
     /**
      * Return the first existing file in the ordered search paths.
@@ -424,14 +428,14 @@ public class FileLookup {
                     debug.message("returning file=" + file.toString());
                 }
                 if (enableCache) {
-                    synchronized (fileTable) {
+                    //synchronized (fileTable) {
                         File temp1 = (File) fileTable.get(tempFile);
                         if (temp1 == null) {
                             fileTable.put(tempFile, file);
                         } else {
                             file = temp1;
                         }
-                    }
+                    //}
                 }
                 return file;
             }

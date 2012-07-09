@@ -29,7 +29,9 @@
 /*
  * Portions Copyrighted 2010-2012 ForgeRock AS
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.authentication.modules.ldap;
 
 import com.iplanet.am.util.SystemProperties;
@@ -58,6 +60,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.net.ssl.SSLContext;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -75,7 +79,7 @@ import org.forgerock.opendj.ldap.TrustManagers;
 
 public class LDAP extends AMLoginModule {
     // static variables
-    private static HashMap orgMap = new HashMap();
+    private static ConcurrentHashMap orgMap = new ConcurrentHashMap();
     private static final long DEFAULT_SERVER_CHECK_INTERVAL = 15;
     private static final String USER_CREATION_ATTR =
         "iplanet-am-ldap-user-creation-attr-list";

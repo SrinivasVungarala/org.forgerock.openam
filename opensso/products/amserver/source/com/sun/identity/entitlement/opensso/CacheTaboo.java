@@ -24,6 +24,9 @@
  *
  * $Id: CacheTaboo.java,v 1.2 2009/12/12 00:03:13 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.entitlement.opensso;
 
@@ -31,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -41,40 +45,40 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public final class CacheTaboo {
     private static Map<String, Set<String>> tabooed = new
-        HashMap<String, Set<String>>();
-    private static final ReadWriteLock rwlock = new ReentrantReadWriteLock();
+        ConcurrentHashMap<String, Set<String>>();
+    //private static final ReadWriteLock rwlock = new ReentrantReadWriteLock();
 
     private CacheTaboo() {
     }
 
     public static boolean isEmpty() {
-        Lock lock = rwlock.readLock();
+        //Lock lock = rwlock.readLock();
         try {
-            lock.lock();
+            //lock.lock();
             return tabooed.isEmpty();
         } finally {
-            lock.unlock();
+            //lock.unlock();
         }
     }
 
     public static boolean isTaboo(String cache, String key) {
-        Lock lock = rwlock.readLock();
+        //Lock lock = rwlock.readLock();
         try {
-            lock.lock();
+            //lock.lock();
             Set<String> set = tabooed.get(cache);
             if (set == null) {
                 return false;
             }
             return set.contains(key);
         } finally {
-            lock.unlock();
+            //lock.unlock();
         }
     }
 
     public static void taboo(String cache, String key) {
-        Lock lock = rwlock.writeLock();
+        //Lock lock = rwlock.writeLock();
         try {
-            lock.lock();
+            //lock.lock();
             Set<String> set = tabooed.get(cache);
             if (set == null) {
                 set = new HashSet<String>();
@@ -82,7 +86,7 @@ public final class CacheTaboo {
             }
             set.add(key);
         } finally {
-            lock.unlock();
+            //lock.unlock();
         }
     }
 

@@ -25,9 +25,11 @@
  * $Id: AMObjectImpl.java,v 1.14 2009/11/20 23:52:51 ww203982 Exp $
  *
  */
-
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
+ */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
  */
 package com.iplanet.am.sdk;
 
@@ -40,6 +42,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.identity.shared.ldap.LDAPUrl;
 import com.sun.identity.shared.ldap.util.DN;
@@ -108,14 +111,14 @@ class AMObjectImpl implements AMObject {
      * key and value is a Set of *Impl instances interested in receiving
      * notifications for that DN.
      */
-    private static Map objImplListeners = new HashMap();
+    private static Map objImplListeners = new ConcurrentHashMap();
 
     /**
      * Hash table used to keep track of elements that need to be removed from
      * objImplListeners table when a SSOToken is no longer valid. The key is
      * SSOTokenId & the value is a Set of DN's.
      */
-    protected static Hashtable profileNameTable = new Hashtable();
+    protected static ConcurrentHashMap profileNameTable = new ConcurrentHashMap();
 
     protected static Debug debug = AMCommonUtils.debug;
 
@@ -143,7 +146,7 @@ class AMObjectImpl implements AMObject {
      * listeners. thread saftety, 'listeners' should be enclosed in a
      * synchronized block.
      */
-    private Set listeners = new HashSet();
+    final private Set listeners = Collections.newSetFromMap(new ConcurrentHashMap());//new HashSet();
 
     private String organizationDN = null;
 
@@ -770,7 +773,7 @@ class AMObjectImpl implements AMObject {
                 throw se;
             }
 
-            synchronized (objImplListeners) {
+            //synchronized (objImplListeners) {
                 Set destObjs = (Set) objImplListeners.get(
 		    entryDN.toLowerCase());
 
@@ -783,14 +786,14 @@ class AMObjectImpl implements AMObject {
 
                 // Since, this AMObjectImpl is registered, set isRegistered:true
                 this.isRegistered = true;
-            }
+            //}
         }
 
         // Add the listener to this AMObjectImpl's list of registered listener
         // that need to be notifed.
-        synchronized (listeners) {
+        //synchronized (listeners) {
             listeners.add(listener);
-        }
+        //}
     }
 
     // TODO: deprecated remove next release
@@ -1633,9 +1636,9 @@ class AMObjectImpl implements AMObject {
         // Remove the listener from the AMObjectImpl's private listener list
         boolean removed = false;
 
-        synchronized (listeners) {
+        //synchronized (listeners) {
             removed = listeners.remove(listener);
-        }
+        //}
 
         // Remove this AMObjectImpl from the objImplListeners table if
         // it does not have any private listeners
@@ -1645,7 +1648,7 @@ class AMObjectImpl implements AMObject {
                         + "private listener table empty for this instance");
             }
 
-            synchronized (objImplListeners) {
+            //synchronized (objImplListeners) {
                 Set destObjs = (Set) objImplListeners.get(
 		    entryDN.toLowerCase());
 
@@ -1660,7 +1663,7 @@ class AMObjectImpl implements AMObject {
                 // Since, this AMObjectImpl does'nt have any private listeners
                 // set isRegistered:false
                 this.isRegistered = false;
-            }
+            //}
 
             // Remove the (SSOToken,dn) for this AMObjectImpl from the
             // Profile Name table.
@@ -2061,7 +2064,7 @@ class AMObjectImpl implements AMObject {
             debug.message("In AMObjectImpl.notifyACIChangeEvent(..): " + dn);
         }
 
-        synchronized (objImplListeners) {
+        //synchronized (objImplListeners) {
             if (objImplListeners.isEmpty()) {
                 return;
             }
@@ -2101,7 +2104,7 @@ class AMObjectImpl implements AMObject {
             default:
                 ; // This should not occur. Ignore if they occur
             }
-        }
+        //}
         // End synchronized
     }
 
@@ -2119,7 +2122,7 @@ class AMObjectImpl implements AMObject {
      */
     protected static void notifyEntryEvent(String dn, int eventType,
             boolean cosType) {
-        synchronized (objImplListeners) {
+        //synchronized (objImplListeners) {
             if (objImplListeners.isEmpty()) {
                 return;
             }
@@ -2180,7 +2183,7 @@ class AMObjectImpl implements AMObject {
             default:
                 ; // This should not occur.
             }
-        }
+        //}
         // End synchronized
     }
 
@@ -2191,7 +2194,7 @@ class AMObjectImpl implements AMObject {
 
         Set objectImplSet = (Set) objImplListeners.get(sourceDN.toLowerCase());
         if (objectImplSet != null) {
-            synchronized (objectImplSet) { // Lock, so that no more objects
+            //synchronized (objectImplSet) { // Lock, so that no more objects
                 // get added/removed here
                 Iterator itr = objectImplSet.iterator();
                 // Note: This is a hack, we can't create a DSEvent object, so we
@@ -2202,7 +2205,7 @@ class AMObjectImpl implements AMObject {
                     AMObjectImpl amObjectImpl = (AMObjectImpl) itr.next();
                     amObjectImpl.sendEvents(amEvent);
                 }
-            }
+            //}
         }
     }
 
@@ -2217,7 +2220,7 @@ class AMObjectImpl implements AMObject {
      * 
      */
     protected static Set removeFromProfileNameTable(SSOToken ssoToken) {
-        Hashtable pTable = profileNameTable;
+    	ConcurrentHashMap pTable = profileNameTable;
 
         if ((pTable == null) || (pTable.isEmpty())) {
             return null;
@@ -2230,7 +2233,7 @@ class AMObjectImpl implements AMObject {
 
         Set dnList = null;
 
-        synchronized (pTable) {
+        //synchronized (pTable) {
             String principal;
 
             // Check if the entry exists corresponding to this session
@@ -2244,7 +2247,7 @@ class AMObjectImpl implements AMObject {
             }
 
             dnList = (Set) pTable.remove(principal);
-        }
+        //}
 
         // Note dnList could be null if there was no key with ssoTokenID
         return dnList;
@@ -2265,7 +2268,7 @@ class AMObjectImpl implements AMObject {
             debug.message("In AMObjectImpl.removeObjImplListeners(..): ");
         }
 
-        synchronized (objImplListeners) {
+        //synchronized (objImplListeners) {
             Iterator dnItr = dnSet.iterator();
 
             while (dnItr.hasNext()) { // Iterate through the dn set.
@@ -2292,7 +2295,7 @@ class AMObjectImpl implements AMObject {
                     objImplListeners.remove(dn);
                 }
             }
-        }
+        //}
         // End Synchronized
     }
 
@@ -3297,9 +3300,9 @@ class AMObjectImpl implements AMObject {
                     + "addToProfileNameTable(SSOToken,dn)..");
         }
 
-        Hashtable pTable = profileNameTable;
+        ConcurrentHashMap pTable = profileNameTable;
 
-        synchronized (pTable) {
+        //synchronized (pTable) {
             // Check if the entry exists corresponding to this session
             Set dnList = (Set) pTable.get(ssoToken.getPrincipal().getName());
 
@@ -3314,7 +3317,7 @@ class AMObjectImpl implements AMObject {
             }
 
             dnList.add(dn);
-        }
+        //}
     }
 
     private String mapToString(Map map) {
@@ -3364,7 +3367,7 @@ class AMObjectImpl implements AMObject {
             debug.message("In AMObjectImpl.notifyAffectedDNs(..): ");
         }
 
-        synchronized (objImplListeners) { // To double check (synchronized)
+        //synchronized (objImplListeners) { // To double check (synchronized)
 
             Iterator mapItr = objImplListeners.entrySet().iterator();
 
@@ -3381,7 +3384,7 @@ class AMObjectImpl implements AMObject {
                     }
                 }
             }
-        }
+        //}
     }
 
     /**
@@ -3402,13 +3405,13 @@ class AMObjectImpl implements AMObject {
                     + "removeFromProfileNameTable(SSOToken,dn)..");
         }
 
-        Hashtable pTable = profileNameTable;
+        ConcurrentHashMap pTable = profileNameTable;
 
         if ((pTable == null) || pTable.isEmpty()) {
             return; // Silent return;
         }
 
-        synchronized (pTable) {
+        //synchronized (pTable) {
             String principal;
 
             // Check if the entry exists corresponding to this session
@@ -3432,7 +3435,7 @@ class AMObjectImpl implements AMObject {
                     pTable.remove(principal);
                 }
             }
-        }
+        //}
     }
 
     /**
@@ -3442,7 +3445,7 @@ class AMObjectImpl implements AMObject {
      *            a AMEvent generated
      */
     private void sendEvents(AMEvent dpEvent) {
-        synchronized (listeners) {
+        //synchronized (listeners) {
             Iterator iterator = listeners.iterator();
 
             while (iterator.hasNext()) {
@@ -3471,7 +3474,7 @@ class AMObjectImpl implements AMObject {
                     // not crash; just ignore the bad listener
                 }
             }
-        }
+        //}
     }
 
     private AMHashMap integrateLocale() throws AMException, SSOException {

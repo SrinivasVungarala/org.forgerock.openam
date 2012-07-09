@@ -25,7 +25,9 @@
  * $Id: WebServiceAuthenticatorImpl.java,v 1.4 2008/08/06 17:29:25 exu Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.liberty.ws.soapbinding; 
 
@@ -79,7 +81,7 @@ class WebServiceAuthenticatorImpl implements WebServiceAuthenticator {
     private static final int DEFAULT_MAX_SESSION_TIME = 120;
     private static final int DEFAULT_IDLE_TIME = 30;
     private static final int DEFAULT_CACHE_TIME = 3;
-    private static Cache ssoTokenCache = new Cache(1000);
+    final private static Cache<String,SSOToken> ssoTokenCache = new Cache<String,SSOToken>(WebServiceAuthenticatorImpl.class.getName(),1000);
     private static SSOTokenManager ssoTokenManager = null;
     private static ServiceSchema sessionSchema = null;
     private static String rootSuffix =

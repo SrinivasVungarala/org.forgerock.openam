@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package  com.sun.identity.policy;
 
 import java.util.Set;
@@ -37,6 +41,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.w3c.dom.*;
 import com.sun.identity.shared.xml.XMLUtils;
 import com.sun.identity.shared.debug.Debug;
@@ -76,7 +82,7 @@ class ResourceIndexManager {
 
     static final int POLICY_NAMES_CACHE_CAP = 10000;
 
-    private Map resourceIndices = Collections.synchronizedMap(new HashMap());
+    private Map resourceIndices = new ConcurrentHashMap();//Collections.synchronizedMap(new HashMap());
     private ResourceManager resourceManager;
 
     /**
@@ -594,10 +600,12 @@ class ResourceIndexManager {
         private ServiceType resourceType;
         private ResourceManager resourceManager;
         private Set topLevelEntries = new HashSet();
-        private Map policyNamesCache 
-                = Collections.synchronizedMap(new Cache(POLICY_NAMES_CACHE_CAP));
-        private Map policyNamesCacheFp 
-                = Collections.synchronizedMap(new Cache(POLICY_NAMES_CACHE_CAP));
+        final private Cache<String,Set> policyNamesCache 
+        	=new Cache<String,Set>(ResourceIndex.class.getName()+".policyNamesCache",POLICY_NAMES_CACHE_CAP);
+                //= Collections.synchronizedMap(new Cache(POLICY_NAMES_CACHE_CAP));
+        final private Cache<String,Set> policyNamesCacheFp
+        	=new Cache<String,Set>(ResourceIndex.class.getName()+".policyNamesCache",POLICY_NAMES_CACHE_CAP);
+                //= Collections.synchronizedMap(new Cache(POLICY_NAMES_CACHE_CAP));
 
         /**
          * Constructs ResourceIndex

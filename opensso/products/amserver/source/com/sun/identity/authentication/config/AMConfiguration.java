@@ -25,7 +25,9 @@
  * $Id: AMConfiguration.java,v 1.9 2009/12/23 20:03:04 mrudul_uchil Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 package com.sun.identity.authentication.config;
@@ -49,6 +51,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 
@@ -62,7 +66,7 @@ public class AMConfiguration extends Configuration {
      * array of <code>AppConfigurationEntry</code>.
      * TODO : make this a bounded map
      */
-    private static Map jaasConfig = new HashMap();
+    private static Map jaasConfig = new ConcurrentHashMap();
     
     /**
      * Map to hold listeners for a configuration, maps configuration name
@@ -70,7 +74,7 @@ public class AMConfiguration extends Configuration {
      * when config entry is removed from <code>jaasConfig</code>
      * TODO : make this a bounded map.
      */
-    private static Map listenersMap = new HashMap();
+    private static Map listenersMap = new ConcurrentHashMap();
     
     private static ConfigFile configFile = null;
     
@@ -101,10 +105,10 @@ public class AMConfiguration extends Configuration {
         // initialize config map, this could also be called to
         // refresh the config map
         synchronized (jaasConfig) {
-            jaasConfig = new HashMap();
+            jaasConfig = new ConcurrentHashMap();
         }
         synchronized (listenersMap) {
-            listenersMap = new HashMap();
+            listenersMap = new ConcurrentHashMap();
         }
     }
     
@@ -254,9 +258,9 @@ public class AMConfiguration extends Configuration {
         }
         
         // add the configuration to the jaas config map
-        synchronized (jaasConfig) {
+        //synchronized (jaasConfig) {
             jaasConfig.put(name, entries);
-        }
+        //}
         
         return cloneConfigurationEntry(entries, type.getOrganization());
     }
@@ -316,10 +320,10 @@ public class AMConfiguration extends Configuration {
         }
         try {
             if (scm == null) {
-                synchronized(jaasConfig) {
+                //synchronized(jaasConfig) {
                     scm = new ServiceConfigManager(
                     ISAuthConstants.AUTH_SERVICE_NAME, getAdminToken());
-                }
+                //}
             }
             ServiceConfig service = scm.getOrganizationConfig(orgDN, null);
             Map attrs = service.getAttributes();
@@ -711,12 +715,12 @@ public class AMConfiguration extends Configuration {
      * @param name Configuration name.
      */
     public void processListenerEvent(String name) {
-        synchronized (jaasConfig) {
+        //synchronized (jaasConfig) {
             if (debug.messageEnabled()) {
                 debug.message("pLE, remove config " + name);
             }
             jaasConfig.remove(name);
-        }
+        //}
         
         // TODO IdRepo does not have listener support yet.
         //removeListenersMap(name);
@@ -728,7 +732,7 @@ public class AMConfiguration extends Configuration {
      * @param name Configuration name.
      */
     private void removeListenersMap(String name) {
-        synchronized (listenersMap) {
+        //synchronized (listenersMap) {
             Set set = (Set) listenersMap.get(name);
             if (set == null) {
                 if (debug.messageEnabled()) {
@@ -752,7 +756,7 @@ public class AMConfiguration extends Configuration {
                 // remove entry from listeners map
                 listenersMap.remove(name);
             } //else
-        }
+        //}
         
         // remove this auth config entry from all the listened services
         AMAuthLevelManager.getInstance().removeAuthConfigListener(name);
@@ -782,7 +786,7 @@ public class AMConfiguration extends Configuration {
      */
     public void addToListenersMap(String name, Object listener) {
         // put into the sdk listener map
-        synchronized (listenersMap) {
+        //synchronized (listenersMap) {
             Set set = (Set) listenersMap.get(name);
             if (set == null) {
                 set = new HashSet();
@@ -791,6 +795,6 @@ public class AMConfiguration extends Configuration {
             } else {
                 set.add(listener);
             }
-        }
+        //}
     }
 }

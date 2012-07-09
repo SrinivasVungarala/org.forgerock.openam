@@ -25,6 +25,9 @@
  * $Id: SuffixResourceName.java,v 1.2 2008/06/25 05:43:52 qcheng Exp $
  *
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 
 
@@ -276,7 +279,8 @@ public class SuffixResourceName implements ResourceName {
         for (int i = 0; i < strlen; i++) {
             chars[i] = str.charAt(strlen - i -1);
         }
-        return (new String(chars));
+        //return (new String(chars));
+        return (String.valueOf(chars));
     }
 
 

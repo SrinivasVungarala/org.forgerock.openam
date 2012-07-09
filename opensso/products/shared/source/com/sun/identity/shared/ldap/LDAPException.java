@@ -19,6 +19,9 @@
  *
  * Contributor(s): 
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.sun.identity.shared.ldap;
 
 import java.util.*;
@@ -570,7 +573,7 @@ public class LDAPException extends java.lang.Exception
     private String extraMessage = null;
     private String matchedDN = null;
     private Locale m_locale = Locale.getDefault();
-    private static Hashtable cacheResource = new Hashtable();
+    private static java.util.concurrent.ConcurrentHashMap cacheResource = new java.util.concurrent.ConcurrentHashMap();
     private static final String baseName = "com/sun/identity/shared/ldap/errors/ErrorCodes";
 
     /**

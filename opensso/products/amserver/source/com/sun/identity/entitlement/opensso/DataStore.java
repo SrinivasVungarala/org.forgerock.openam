@@ -24,6 +24,9 @@
  *
  * $Id: DataStore.java,v 1.13 2010/01/20 17:01:35 veiming Exp $
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 
 package com.sun.identity.entitlement.opensso;
 
@@ -59,6 +62,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.persistence.EntityExistsException;
@@ -106,11 +110,11 @@ public class DataStore {
         "o=sunamhiddenrealmdelegationservicepermissions,ou=services,";
     
     // count of number of policies per realm
-    private static ReadWriteLock countRWLock = new ReentrantReadWriteLock();
+    //private static ReadWriteLock countRWLock = new ReentrantReadWriteLock();
     private static Map<String, Integer> policiesPerRealm =
-        new HashMap<String, Integer>();
+        new ConcurrentHashMap<String, Integer>();
     private static Map<String, Integer> referralsPerRealm =
-        new HashMap<String, Integer>();
+        new ConcurrentHashMap<String, Integer>();
     private static SSOToken adminToken = (SSOToken)
         AccessController.doPrivileged(AdminTokenAction.getInstance());
 
@@ -189,7 +193,7 @@ public class DataStore {
     }
 
     void clearIndexCount(String realm, boolean referral) {
-        countRWLock.writeLock().lock();
+        //countRWLock.writeLock().lock();
         try {
             if (referral) {
                 referralsPerRealm.remove(DNMapper.orgNameToDN(realm));
@@ -197,12 +201,12 @@ public class DataStore {
                 policiesPerRealm.remove(DNMapper.orgNameToDN(realm));
             }
         } finally {
-            countRWLock.writeLock().unlock();
+            //countRWLock.writeLock().unlock();
         }
     }
 
     private void updateIndexCount(String realm, int num, boolean referral) {
-        countRWLock.writeLock().lock();
+        //countRWLock.writeLock().lock();
 
         try {
             String key = (referral) ? REFERRAL_INDEX_COUNT : INDEX_COUNT;
@@ -236,7 +240,7 @@ public class DataStore {
         } catch (SSOException ex) {
             PrivilegeManager.debug.error("DataStore.updateIndexCount", ex);
         } finally {
-            countRWLock.writeLock().unlock();
+            //countRWLock.writeLock().unlock();
         }
     }
 
@@ -276,7 +280,7 @@ public class DataStore {
     }
 
     private static int getCountInMap(Map<String, Integer> map) {
-        countRWLock.readLock().lock();
+        //countRWLock.readLock().lock();
         try {
             int total = 0;
             for (Integer cnt : map.values()) {
@@ -284,12 +288,12 @@ public class DataStore {
             }
             return total;
         } finally {
-            countRWLock.readLock().unlock();
+            //countRWLock.readLock().unlock();
         }
     }
 
     public static int getNumberOfPolicies(String realm) {
-        countRWLock.readLock().lock();
+        //countRWLock.readLock().lock();
         try {
             int totalPolicies = 0;
             String dnRealm = DNMapper.orgNameToDN(realm);
@@ -302,12 +306,12 @@ public class DataStore {
             }
             return (totalPolicies);
         } finally {
-            countRWLock.readLock().unlock();
+            //countRWLock.readLock().unlock();
         }
     }
 
     public static int getNumberOfReferrals(String realm) {
-        countRWLock.readLock().lock();
+        //countRWLock.readLock().lock();
         try {
             int referralCnt = 0;
             String dnRealm = DNMapper.orgNameToDN(realm);
@@ -321,7 +325,7 @@ public class DataStore {
 
             return (referralCnt);
         } finally {
-            countRWLock.readLock().unlock();
+            //countRWLock.readLock().unlock();
         }
     }
 

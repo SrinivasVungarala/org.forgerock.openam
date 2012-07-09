@@ -29,8 +29,12 @@
 /**
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.ums;
 
+import com.iplanet.am.sdk.AMSearchFilterManager;
 import com.iplanet.am.util.Cache;
 import com.iplanet.services.ldap.Attr;
 import com.iplanet.services.ldap.AttrSet;
@@ -59,6 +63,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.shared.ldap.util.DN;
 
 /**
@@ -520,12 +526,12 @@ public class ConfigManagerUMS implements java.io.Serializable {
             // "updateCache" will get the info from the DS and update
             // both the cache (_cch) and _checkListCache.
             //
-            checkedDS = _checkListCache.containsKey(fdn.toLowerCase());
+            checkedDS = _checkListCache.get(fdn.toLowerCase())!=null;
             if (!checkedDS) {
                 if (_debug.messageEnabled())
                     _debug.message("ConfigManager->getConfigData: updating " +
                             "cache for " + dn);
-                synchronized (lock_cch) {
+                synchronized (fdn) {
                     updateCache(fdn);
                 }
                 if (_cch.containsKey(cacheKey))
@@ -603,12 +609,12 @@ public class ConfigManagerUMS implements java.io.Serializable {
             // "updateCache" will get the info from the DS and update
             // both the cache (_cch) and _checkListCache.
             //
-            checkedDS = _checkListCache.containsKey(fdn.toLowerCase());
+            checkedDS = _checkListCache.get(fdn.toLowerCase())!=null;
             if (!checkedDS) {
                 if (_debug.messageEnabled())
                     _debug.message("ConfigManager->getConfigTemplateNames: " +
                             "updating " + dn);
-                synchronized (lock_cch) {
+                synchronized (fdn) {
                     updateCache(fdn);
                 }
                 if (_cch.containsKey(cacheKey))
@@ -897,8 +903,8 @@ public class ConfigManagerUMS implements java.io.Serializable {
      * Construct configuration.
      */
     private ConfigManagerUMS() throws ConfigManagerException {
-        _cch = new Hashtable();
-        _checkListCache = new Cache(10000);
+        _cch = new ConcurrentHashMap();
+        _checkListCache = new Cache<String,String>(getClass().getName(),10000);//new Cache(10000);
         String[] args = new String[1];
 
         try {
@@ -971,7 +977,7 @@ public class ConfigManagerUMS implements java.io.Serializable {
 
     private static ConfigManagerUMS _instance = null;
 
-    static Hashtable _cch = null;
+    static ConcurrentHashMap _cch = null;
 
     private static final Object lock_cch = new Object();
 

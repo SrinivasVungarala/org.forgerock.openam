@@ -25,7 +25,9 @@
  * $Id: EntryEventListener.java,v 1.4 2009/01/28 05:34:48 ww203982 Exp $
  *
  */
-
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
 package com.iplanet.am.sdk.ldap;
 
 import com.iplanet.am.sdk.AMObjectListener;
@@ -47,6 +49,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.sun.identity.shared.ldap.controls.LDAPPersistSearchControl;
 import com.sun.identity.shared.ldap.util.DN;
 
@@ -73,7 +77,7 @@ public class EntryEventListener implements IDSEventListener {
 
     private SSOToken internalToken;
 
-    private Map listeners = new HashMap();
+    private Map listeners = new ConcurrentHashMap();
 
     public EntryEventListener() {
         try {
@@ -176,7 +180,7 @@ public class EntryEventListener implements IDSEventListener {
 
         IDirectoryServices dsServices = DirectoryServicesFactory.getInstance();
         // Call the listeners
-        synchronized (listeners) {
+        //synchronized (listeners) {
             Set keys = listeners.keySet();
             for (Iterator items = keys.iterator(); items.hasNext();) {
                 AMObjectListener listener = (AMObjectListener) items.next();
@@ -207,7 +211,7 @@ public class EntryEventListener implements IDSEventListener {
                             configMap);
                 }
             }
-        }
+        //}
     }
 
     /**
@@ -229,13 +233,13 @@ public class EntryEventListener implements IDSEventListener {
             ((ICachedDirectoryServices) dsServices).clearCache();
         }
         // Call the listeners
-        synchronized (listeners) {
+        //synchronized (listeners) {
             Set keys = listeners.keySet();
             for (Iterator items = keys.iterator(); items.hasNext();) {
                 AMObjectListener listener = (AMObjectListener) items.next();
                 listener.allObjectsChanged();
             }
-        }
+        //}
     }
 
     public String getBase() {

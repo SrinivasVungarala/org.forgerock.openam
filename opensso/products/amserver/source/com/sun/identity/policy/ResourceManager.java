@@ -29,6 +29,10 @@
 /*
  * Portions Copyrighted [2011] [ForgeRock AS]
  */
+/**
+ * Portions Copyrighted [2012] [vharseko@openam.org.ru]
+ */
+
 package com.sun.identity.policy;
 
 import java.util.*;
@@ -89,7 +93,7 @@ public class ResourceManager {
     static final String COUNT = "count";
 
     // Cache to store the policy names
-    Cache policyNames = new Cache(1000);
+    final static Cache<String,Set> policyNames = new Cache<String,Set>(ResourceManager.class.getName(),1000);
 
     /**
      * this constructor is called by PolicyManager
