@@ -84,6 +84,9 @@
             <fileset dir="${openfm.res.i18n.dir}">
                 <includesfile name="${openfm.clientsdkbase.dir}/ClientSDKProperties"/>
             </fileset>
+		 <fileset dir="${amserver.classes.dir}/../resources">
+		<filename name="ehcache.xml"/>
+            </fileset>
             <fileset dir="${amserver.classes.dir}">
                 <filename name="com/sun/identity/log/messageid/*.*"/>
                 <not>
