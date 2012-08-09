@@ -52,12 +52,14 @@
     <if>
         <isset property="isMacOS" />
         <then>
-            <property name="tools.path" value="${java.home}/../../../../../Frameworks/JavaVM.framework/Classes" />
-            <property name="tools.filename" value="classes.jar" />
+		<!--<property name="tools.path" value="${java.home}/../../../../../Frameworks/JavaVM.framework/Classes" />-->
+            <!--<property name="tools.filename" value="classes.jar" />-->
+		<property name="tools.path" value="${java.home}/../lib" />
+		<property name="tools.filename" value="tools.jar" />
         </then>
         <else>
             <property name="tools.path" value="${java.home}/../lib" />
-            <property name="tools.filename" value="tools.jar" />
+		<property name="tools.filename" value="tools.jar" />
         </else>
     </if>
 

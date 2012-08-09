@@ -113,7 +113,8 @@ public class InternalSession implements TaskRunnable, Serializable {
     private int sessionState;
 
     /** session properties LoginURL,Timeout, Host */
-    private Properties sessionProperties;
+    //private Properties sessionProperties;
+    private ConcurrentHashMap<String, String> sessionProperties;
 
     /** Flag indicates for session to expire at max timeout */
     private boolean willExpireFlag;
@@ -349,7 +350,8 @@ public class InternalSession implements TaskRunnable, Serializable {
         sessionID = sid;
         sessionState = Session.INVALID;
         timerPool = SystemTimerPool.getTimerPool();
-        sessionProperties = new Properties();
+        //sessionProperties = new Properties();
+        sessionProperties = new ConcurrentHashMap<String, String>(16);
         willExpireFlag = true;
     }
 
@@ -820,7 +822,8 @@ public class InternalSession implements TaskRunnable, Serializable {
      * @return string value for the key from Internal Session table.
      */
     public String getProperty(String key) {
-        return sessionProperties.getProperty(key);
+        //return sessionProperties.getProperty(key);
+	return sessionProperties.get(key);
     }
 
     /**
@@ -829,7 +832,8 @@ public class InternalSession implements TaskRunnable, Serializable {
      * @return list of properties in the Internal session table.
      */
     public Enumeration getPropertyNames() {
-        return sessionProperties.propertyNames();
+        //return sessionProperties.propertyNames();
+	return  Collections.enumeration(sessionProperties.keySet());
     }
 
     /**
@@ -1245,7 +1249,7 @@ public class InternalSession implements TaskRunnable, Serializable {
             info.state = "destroyed";
         }
 
-        info.properties = new ConcurrentHashMap<String, String>((Map)sessionProperties);
+        info.properties = new ConcurrentHashMap<String, String>(sessionProperties);
         return info;
     }
 
@@ -1568,7 +1572,8 @@ public class InternalSession implements TaskRunnable, Serializable {
         clientDomain = null;
         cookieStr = null;
         // Clean Session Properties
-        Properties newProperties = new Properties();
+        //Properties newProperties = new Properties();
+        ConcurrentHashMap<String, String> newProperties = new ConcurrentHashMap<String, String>();
         String loginURL = getProperty(LOGIN_URL);
         String sessionTimedOut = getProperty(SESSION_TIMED_OUT);
         String  idpSessionIndex = getProperty(SAML2_IDP_SESSION_INDEX);

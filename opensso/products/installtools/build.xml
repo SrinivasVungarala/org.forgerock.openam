@@ -87,7 +87,7 @@
     </target>
 
     <target name="build" depends="preparebuild">
-        <javac destdir="${installtools.classes.dir}"
+        <javac destdir="${installtools.classes.dir}" fork="true"
             source="${target.jdk.set}" target="${target.jdk.set}"
             debug="${build.debug}" debuglevel="${build.debuglevel}">
             <src path="${installtools.source.dir}"/>

@@ -412,7 +412,7 @@
     
     <target name="am-xacml" unless="amserver.xacml.done">
         <java classname="com.sun.tools.internal.xjc.Driver"
-            classpath="${env.JAVA_HOME}/lib/tools.jar"
+            classpath="${java.home}/../lib/tools.jar"
             maxmemory="256m" failonerror="true" fork="true">
             <arg line="-b &quot;${amserver.built.xsd.dir}/xacml-core-v3.xjb&quot; -extension -d &quot;${amserver.built.src.dir}&quot; &quot;${amserver.built.xsd.dir}/xacml-core-v3-schema-cd-1.xsd&quot;"/>
         </java>
