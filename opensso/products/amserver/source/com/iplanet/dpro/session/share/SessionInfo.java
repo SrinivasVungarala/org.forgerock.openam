@@ -77,7 +77,7 @@ public class SessionInfo {
     /** <code>Session</code> state */
      public String state;
 
-    public ConcurrentHashMap<String, String> properties = new ConcurrentHashMap<String, String>(10);
+    public ConcurrentHashMap<String, String> properties = new ConcurrentHashMap<String, String>(16);
 
     static final String QUOTE = "\"";
 

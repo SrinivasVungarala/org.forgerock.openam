@@ -914,6 +914,8 @@ public class InternalSession implements TaskRunnable, Serializable {
      *            Property value for the key
      */
     protected void internalPutProperty(String key, String value) {
+	if (value==null)
+		return;
         if (key.equals(HOST_NAME) || key.equals(HOST)) {
             if (value == null || value.length() == 0) {
                 return;
@@ -1249,7 +1251,7 @@ public class InternalSession implements TaskRunnable, Serializable {
             info.state = "destroyed";
         }
 
-        info.properties = new ConcurrentHashMap<String, String>(sessionProperties);
+        info.properties.putAll(sessionProperties);
         return info;
     }
 
