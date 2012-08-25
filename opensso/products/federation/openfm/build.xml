@@ -220,7 +220,7 @@
     
     <target name="doc" depends="preparebuild">
         <javadoc maxmemory="1024m" destdir="${openfm.built.apidocs.dir}" 
-            windowtitle="OpenAM API" failonerror="true">
+            windowtitle="OpenAM API" failonerror="true" encoding="${file.encoding}">
             <classpath refid="build.class.path"/>
             <packageset dir="${openfm.src.dir}">
 <!--
@@ -263,7 +263,7 @@
 
     <target name="publicdoc" depends="preparebuild">
         <javadoc maxmemory="1024m" destdir="${openfm.built.publicapidocs.dir}"
-                 windowtitle="OpenAM Public API" failonerror="true">
+                 windowtitle="OpenAM Public API" failonerror="true" encoding="${file.encoding}">
             <classpath refid="build.class.path"/>
             <packageset dir="${amserver.src.dir}">
                 <include name="com/iplanet/am/sdk/**"/>

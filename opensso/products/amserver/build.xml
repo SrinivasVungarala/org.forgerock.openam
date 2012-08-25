@@ -117,7 +117,7 @@
 
 	<antcall target="am-xacml" />
 
-        <javac memoryInitialSize="256m" memoryMaximumSize="512m" fork="true"
+        <javac memoryInitialSize="256m" memoryMaximumSize="512m" fork="true" encoding="${file.encoding}"
             destdir="${amserver.classes.dir}"
             source="${target.jdk.set}" target="${target.jdk.set}"
             debug="${build.debug}" debuglevel="${build.debuglevel}"

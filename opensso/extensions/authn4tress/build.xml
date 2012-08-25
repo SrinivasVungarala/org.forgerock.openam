@@ -65,7 +65,7 @@
 
     <!-- compile classes into the target package -->
     <javac memoryInitialSize="256m" memoryMaximumSize="512m" fork="true"
-     destdir="${classes.dir}" source="1.4" target="1.4" 
+     destdir="${classes.dir}" source="1.4" target="1.4" encoding="UTF-8"
      debug="${build.debug}" debuglevel="${build.debuglevel}">
       <compilerarg value="-Xlint:unchecked"/>
       <src path="${source.dir}"/>
