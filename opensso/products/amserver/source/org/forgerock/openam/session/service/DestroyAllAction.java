@@ -70,7 +70,7 @@ public class DestroyAllAction implements QuotaExhaustionAction {
 
                     // deny the session activation request
                     // in this case
-                    return true;
+                    return false;
                 }
             }
         }
