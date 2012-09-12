@@ -121,6 +121,10 @@ public class WSDLParser {
         factory.setValidating(false);
         factory.setNamespaceAware(true);
         try {
+		try{
+			factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		}catch (ParserConfigurationException ex) {}
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setErrorHandler(new ValidationErrorHandler());
             builder.setEntityResolver(new XMLHandler());

@@ -119,6 +119,11 @@ public class WSPRedirectHandlerServlet extends HttpServlet {
 
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setValidating(false);
+            try{
+	            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }catch (ParserConfigurationException ex) {}
             dbf.setNamespaceAware(true);
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(htmlStyleSheetLocation));
@@ -425,6 +430,11 @@ public class WSPRedirectHandlerServlet extends HttpServlet {
                     "com.sun.identity.liberty.ws.interaction.jaxb");
             Marshaller marshaller = jaxbContext.createMarshaller();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setValidating(false);
+            try{
+	            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }catch (ParserConfigurationException ex) {}
             dbf.setNamespaceAware(true);
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.newDocument();

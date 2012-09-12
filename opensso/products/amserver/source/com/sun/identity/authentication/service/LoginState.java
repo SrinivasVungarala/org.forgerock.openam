@@ -1451,10 +1451,10 @@ public class LoginState {
                 session.setMaxSessionTime(maxSession);
                 session.setMaxIdleTime(idleTime);
                 session.setMaxCachingTime(cacheTime);
+                session.setType(Session.USER_SESSION);
             }
             
             session.setClientDomain(getOrgDN());
-            session.setType(Session.USER_SESSION);
             if ((client = getClient()) != null) {
                 session.putProperty(ISAuthConstants.HOST, client);
             }

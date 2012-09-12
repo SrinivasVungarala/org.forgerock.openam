@@ -113,6 +113,8 @@ import com.sun.identity.federation.common.FSUtils;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.ByteArrayInputStream;
 import com.sun.org.apache.xml.internal.security.c14n.Canonicalizer;
 //import com.sun.org.apache.xml.internal.security.Init;
@@ -1730,6 +1732,11 @@ public class SAMLUtils  extends SAMLUtilsCommon {
               DocumentBuilderFactory dfactory =
                   DocumentBuilderFactory.newInstance();
               dfactory.setNamespaceAware(true);
+              dfactory.setValidating(false);
+              try{
+	              dfactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	              dfactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+              }catch (ParserConfigurationException ex) {}
               DocumentBuilder documentBuilder = 
                  dfactory.newDocumentBuilder();              
               Document doc = documentBuilder.parse(

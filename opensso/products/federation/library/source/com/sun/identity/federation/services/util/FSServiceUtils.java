@@ -51,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPMessage;
@@ -426,6 +427,11 @@ public class FSServiceUtils {
                     + xml);
             }
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setValidating(false);
+            try{
+	            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }catch (ParserConfigurationException ex) {}
             dbf.setNamespaceAware(true);
             DocumentBuilder db = dbf.newDocumentBuilder ();
             Document doc = db.parse(new ByteArrayInputStream(xml.getBytes()));

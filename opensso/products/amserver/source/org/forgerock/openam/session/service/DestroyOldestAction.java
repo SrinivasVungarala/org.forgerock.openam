@@ -59,7 +59,7 @@ public class DestroyOldestAction implements QuotaExhaustionAction {
                 }
                 // deny the session activation request
                 // in this case
-                return true;
+                return false;
             }
         }
 
@@ -74,7 +74,7 @@ public class DestroyOldestAction implements QuotaExhaustionAction {
                 }
                 // deny the session activation request
                 // in this case
-                return true;
+                return false;
             }
         }
         return false;

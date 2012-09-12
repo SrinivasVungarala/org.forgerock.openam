@@ -57,6 +57,7 @@ import com.sun.identity.saml.common.SAMLUtils;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBContext;
@@ -87,6 +88,11 @@ public class IDPPUtils {
         try {
             dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
+            dbf.setValidating(false);
+            try{
+	            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }catch (ParserConfigurationException ex) {}
             documentBuilder = dbf.newDocumentBuilder();
             JAXBContext jc = JAXBContext.newInstance(
                 IDPPConstants.IDPP_JAXB_PKG + ":" + 

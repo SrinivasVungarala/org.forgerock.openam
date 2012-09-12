@@ -143,7 +143,11 @@ public class XMLUtils {
         try {
             // Assign new debug object
             dbFactory = DocumentBuilderFactory.newInstance();
-            dbFactory.setValidating(validating);
+            dbFactory.setValidating(false);
+            try{
+	            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }catch (ParserConfigurationException ex) {}
             dbFactory.setNamespaceAware(true);
         } catch (Exception e) {
             if (debug != null) {
@@ -327,7 +331,11 @@ public class XMLUtils {
     public static Document newDocument() throws ParserConfigurationException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         dbFactory.setNamespaceAware(true);
-        dbFactory.setValidating(validating);
+        dbFactory.setValidating(false);
+        try{
+	        dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	        dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        }catch (ParserConfigurationException ex) {}
         return dbFactory.newDocumentBuilder().newDocument();
     }
 
@@ -335,7 +343,11 @@ public class XMLUtils {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory
                     .newInstance();
-            factory.setValidating(validating);
+            factory.setValidating(false);
+            try{
+	            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }catch (ParserConfigurationException ex) {}
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(in);
             return (doc);

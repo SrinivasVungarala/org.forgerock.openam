@@ -80,6 +80,10 @@ public class XMLUtils {
                         try {
                             dbFactory = DocumentBuilderFactory.newInstance();
                             dbFactory.setValidating(false);
+                            try{
+	                            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	                            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                            }catch (ParserConfigurationException ex) {}
                             dbFactory.setNamespaceAware(true);
                         } catch (Exception e) {
                             if (debug != null) {
@@ -145,6 +149,10 @@ public class XMLUtils {
             DocumentBuilderFactory factory = DocumentBuilderFactory
                     .newInstance();
             factory.setValidating(false);
+            try{
+	            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }catch (ParserConfigurationException ex) {}
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(in);
             return (doc);

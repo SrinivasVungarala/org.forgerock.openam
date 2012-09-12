@@ -35,6 +35,7 @@
 package com.sun.identity.authentication.service;
 
 import com.iplanet.am.sdk.AMStoreConnection;
+import com.iplanet.am.util.Cache;
 import com.iplanet.am.util.Misc;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.dpro.session.Session;
@@ -1480,8 +1481,28 @@ public class AuthD  {
      * @param url a String representing a URL to be validated	 
      * @param orgDN organization DN.	 
      * @return true if input URL is valid, else false.	 
-     */	 
+     */
+    final static ConcurrentHashMap<String, Cache<String, Boolean>> orgToisGotoUrlValidCache=new ConcurrentHashMap<String, Cache<String, Boolean>>(1);
     public boolean isGotoUrlValid(String url, String orgDN) {
+	Cache<String, Boolean> isGotoUrlValidCache=orgToisGotoUrlValidCache.get(orgDN.toLowerCase());
+	if (isGotoUrlValidCache==null){
+		synchronized (orgToisGotoUrlValidCache) {
+			if (isGotoUrlValidCache==null) {
+				isGotoUrlValidCache=new Cache<String, Boolean>("isGotoUrlValidCache."+orgDN.toLowerCase(), 2048);
+				orgToisGotoUrlValidCache.put(orgDN.toLowerCase(), isGotoUrlValidCache);
+			}
+			}
+	}
+	Boolean res=isGotoUrlValidCache.get(url);
+	if (res==null){
+		res=isGotoUrlValidOld(url, orgDN);
+		if (res)
+			isGotoUrlValidCache.put(url, res);
+	}
+	return res;
+    }
+
+    public boolean isGotoUrlValidOld(String url, String orgDN) {
     	
     	Set validGotoUrlDomains = null;
         if ((!orgValidDomains.isEmpty()) && 

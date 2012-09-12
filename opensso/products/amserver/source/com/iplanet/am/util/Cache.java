@@ -44,9 +44,13 @@ import net.sf.ehcache.Element;
 public class Cache<K, V>   {
 	final static Logger logger = LoggerFactory.getLogger(Cache.class);
 	static boolean debug=logger.isDebugEnabled();
-	static CacheManager cacheManager=new CacheManager();
+	//static CacheManager cacheManager=new CacheManager();
+	static CacheManager cacheManager=CacheManager.getCacheManager(null);
 	String cacheName;
-	
+	static{
+		if (cacheManager==null)
+			cacheManager=CacheManager.getInstance();
+	}
 	static Stat stat=new Stat(); 
 	static class Stat extends Thread{
 		

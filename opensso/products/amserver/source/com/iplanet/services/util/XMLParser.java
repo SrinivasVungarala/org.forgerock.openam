@@ -171,9 +171,13 @@ public class XMLParser {
     public Object parse(InputStream xmlin) throws XMLException {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
         DocumentBuilder db = null;
         try {
+		dbf.setValidating(false);
+		try{
+	            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		}catch (ParserConfigurationException ex) {}
             db = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new XMLException("DBG:Got ParserConfigurationException:"
