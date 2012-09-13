@@ -217,7 +217,7 @@ used with JMX monitors.
          FD_SOCK:VERIFY_SUSPECT(timeout=1500):
          pbcast.NAKACK(gc_lag=10;retransmit_timeout=3000):
          UNICAST(timeout=5000):
-         pbcast.STABLE(desired_avg_gossip=32000):
+         pbcast.STABLE(desired_avg_gossip=64000):
          FRAG:
          pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=false)"
          propertySeparator="^"
@@ -288,7 +288,7 @@ used with JMX monitors.
         properties="hostName=fully_qualified_hostname_or_ip,
                     port=40001,
                     remoteObjectPort=40002,
-                    socketTimeoutMillis=132000"
+                    socketTimeoutMillis=164000"
                     propertySeparator="," />
 
     All properties are optional. They are:
@@ -301,7 +301,7 @@ used with JMX monitors.
                          This defaults to a free port if not specified.
     * socketTimeoutMillis - the number of ms client sockets will stay open when sending
       messages to the listener. This should be long enough for the slowest message.
-      If not specified it defaults to 132000ms.
+      If not specified it defaults to 164000ms.
 
     -->
 <!--     <cacheManagerPeerListenerFactory -->
@@ -394,7 +394,7 @@ used with JMX monitors.
     statistics:
     Whether to collect statistics. Note that this should be turned on if you are using
     the Ehcache Monitor. By default statistics is turned off to favour raw performance.
-    To enable set statistics="true"
+    To enable set statistics="false"
 
     memoryStoreEvictionPolicy:
     Policy would be enforced upon reaching the maxElementsInMemory limit. Default
@@ -851,47 +851,47 @@ used with JMX monitors.
             diskPersistent="false"
             overflowToDisk="false"
             memoryStoreEvictionPolicy="LRU"
-            statistics="true"
+            statistics="false"
             />
 
 	<cache name="com.iplanet.am.sdk.ldap.CachedDirectoryServicesImpl"
-           maxElementsInMemory="32000"
+           maxElementsInMemory="64000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
            timeToIdleSeconds="30"
            timeToLiveSeconds="60"
            memoryStoreEvictionPolicy="LRU"
-           statistics="true"
+           statistics="false"
             />
 	<cache name="com.iplanet.am.sdk.remote.CachedRemoteServicesImpl"
-           maxElementsInMemory="32000"
+           maxElementsInMemory="64000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
            timeToIdleSeconds="30"
            timeToLiveSeconds="60"
            memoryStoreEvictionPolicy="LRU"
-           statistics="true"
+           statistics="false"
             />
     <cache name="com.sun.identity.idm.remote.IdRemoteCachedServicesImpl"
-           maxElementsInMemory="32000"
+           maxElementsInMemory="64000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
            timeToIdleSeconds="30"
            timeToLiveSeconds="60"
            memoryStoreEvictionPolicy="LRU"
-           statistics="true"
+           statistics="false"
             />
     <cache name="com.sun.identity.idm.server.IdCachedServicesImpl"
-           maxElementsInMemory="32000"
+           maxElementsInMemory="64000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
            timeToIdleSeconds="30"
            timeToLiveSeconds="60"
            memoryStoreEvictionPolicy="LRU"
-           statistics="true"
+           statistics="false"
             />
 </ehcache>

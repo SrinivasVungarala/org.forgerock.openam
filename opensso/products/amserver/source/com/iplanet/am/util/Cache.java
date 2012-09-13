@@ -98,7 +98,7 @@ public class Cache<K, V>   {
 	
 	public Cache(String name,int maxEntriesInMemory) {
 		this(name);
-		cacheManager.getCache(cacheName).getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory>32000 ? 32000 :maxEntriesInMemory);
+		cacheManager.getCache(cacheName);//.getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
     }
 
     @SuppressWarnings("unchecked")
