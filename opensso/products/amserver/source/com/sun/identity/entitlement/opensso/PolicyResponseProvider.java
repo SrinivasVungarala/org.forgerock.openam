@@ -25,6 +25,7 @@
 
 package com.sun.identity.entitlement.opensso;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.entitlement.EntitlementException;
@@ -141,7 +142,7 @@ public class PolicyResponseProvider implements ResourceAttribute {
         try {
             com.sun.identity.policy.interfaces.ResponseProvider rp =
                 (com.sun.identity.policy.interfaces.ResponseProvider)
-                Class.forName(className).newInstance();
+                ClassCache.forName(className).newInstance();
             Map<String, Set<String>> properties = new HashMap<String, Set<String>>();
             properties.put(propertyName, propertyValues);
             rp.setProperties(properties);

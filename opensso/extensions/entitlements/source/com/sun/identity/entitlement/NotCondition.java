@@ -33,6 +33,8 @@ import javax.security.auth.Subject;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * This class wrapped on an Entitlement Condition object to provide boolean
  * NOT.
@@ -89,7 +91,7 @@ public class NotCondition extends EntitlementConditionAdaptor {
             JSONObject memberCondition = jo.optJSONObject("memberECondition");
             if (memberCondition != null) {
                 String className = memberCondition.getString("className");
-                Class cl = Class.forName(className);
+                Class cl = ClassCache.forName(className);
                 eCondition = (EntitlementCondition)cl.newInstance();
                 eCondition.setState(memberCondition.getString("state"));
             }

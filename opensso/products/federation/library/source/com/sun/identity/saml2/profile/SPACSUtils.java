@@ -55,6 +55,8 @@ import javax.xml.soap.SOAPMessage;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.liberty.ws.soapbinding.Message;
 import com.sun.identity.liberty.ws.soapbinding.SOAPBindingException;
@@ -1503,7 +1505,7 @@ public class SPACSUtils {
         if (acctMapperList != null) {
             try {
                 acctMapper = (SPAccountMapper)
-                    (Class.forName((String)acctMapperList.get(0)).
+                    (ClassCache.forName((String)acctMapperList.get(0)).
                      newInstance());
                 if (SAML2Utils.debug.messageEnabled()) {
                     SAML2Utils.debug.message(
@@ -1541,7 +1543,7 @@ public class SPACSUtils {
         if (attrMapperList != null) {
             try {
                 attrMapper = (SPAttributeMapper)
-                    (Class.forName((String)attrMapperList.get(0)).
+                    (ClassCache.forName((String)attrMapperList.get(0)).
                      newInstance());
             } catch (ClassNotFoundException cfe) {
                 throw new SAML2Exception(cfe);

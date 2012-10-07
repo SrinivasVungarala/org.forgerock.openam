@@ -33,6 +33,7 @@ import java.util.List;
 
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.common.SystemConfigurationUtil;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenManager;
@@ -454,7 +455,7 @@ public abstract class TrustAuthorityConfig {
                 WSS_DISCOVERY_CONFIG_PLUGIN, 
                 "com.sun.identity.wss.provider.plugins.DiscoveryAgent");
             try {
-                discoveryConfigClass = Class.forName(adapterName);
+                discoveryConfigClass = ClassCache.forName(adapterName);
             }  catch (Exception ex) {
                 debug.error("TrustAuthorityConfig.getDiscoveryConfig: " +
                     " Failed in creating the discovery config class.");
@@ -476,7 +477,7 @@ public abstract class TrustAuthorityConfig {
                 WSS_STS_CONFIG_PLUGIN, 
                 "com.sun.identity.wss.provider.plugins.STSAgent");
             try {
-                stsConfigClass = Class.forName(adapterName);
+                stsConfigClass = ClassCache.forName(adapterName);
             }  catch (Exception ex) {
                 debug.error("TrustAuthorityConfig.getSTSConfig: " +
                     " Failed in creating the STS config class.");

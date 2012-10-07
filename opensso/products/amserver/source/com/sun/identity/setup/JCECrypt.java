@@ -31,6 +31,7 @@
  */
 package com.sun.identity.setup;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.services.util.AMEncryption;
 import com.iplanet.services.util.ConfigurableKey;
 import com.iplanet.services.util.JCEEncryption;
@@ -73,7 +74,7 @@ public class JCECrypt {
         String encClass = DEFAULT_ENCRYPTOR_CLASS;
         
         try {
-            instance = (AMEncryption) Class.forName(encClass).newInstance();
+            instance = (AMEncryption) ClassCache.forName(encClass).newInstance();
         } catch (Exception e) {
             Debug debug = Debug.getInstance("amSDK");
             debug.error(

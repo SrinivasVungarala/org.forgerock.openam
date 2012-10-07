@@ -34,6 +34,8 @@
 package com.sun.identity.policy;
 
 import java.util.*;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.policy.interfaces.PolicyListener;
 import com.sun.identity.policy.interfaces.ResourceName;
 import com.sun.identity.shared.debug.Debug;
@@ -86,7 +88,7 @@ public class PolicyDecisionCacheListener
                      resourceCase);
             }
             if (className != null) {
-                Class resourceClass = Class.forName(className);
+                Class resourceClass = ClassCache.forName(className);
                 resourceNameUtil = (ResourceName) resourceClass.newInstance();
                 resourceNameUtil.initialize(resourceMap);
             }

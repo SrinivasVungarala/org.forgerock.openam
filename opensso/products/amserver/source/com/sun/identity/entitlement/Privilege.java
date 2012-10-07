@@ -31,6 +31,7 @@
 
 package com.sun.identity.entitlement;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.JSONUtils;
 import java.util.Collections;
 import java.util.HashMap;
@@ -351,7 +352,7 @@ public abstract class Privilege implements IPrivilege {
     public static Privilege getInstance(JSONObject jo) {
         String className = jo.optString("className");
         try {
-            Class clazz = Class.forName(className);
+            Class clazz = ClassCache.forName(className);
             Privilege privilege = (Privilege)clazz.newInstance();
             privilege.name = jo.optString("name");
             privilege.active = Boolean.parseBoolean(jo.optString("active"));
@@ -395,7 +396,7 @@ public abstract class Privilege implements IPrivilege {
         for (int i = 0; i < array.length(); i++) {
             JSONObject json = (JSONObject)array.get(i);
             try {
-                Class clazz = Class.forName(json.getString("className"));
+                Class clazz = ClassCache.forName(json.getString("className"));
                 ResourceAttribute ra = (ResourceAttribute)clazz.newInstance();
                 ra.setState(json.getString("state"));
                 results.add(ra);
@@ -422,7 +423,7 @@ public abstract class Privilege implements IPrivilege {
         }
         JSONObject sbj = jo.getJSONObject("eSubject");
         try {
-            Class clazz = Class.forName(sbj.getString("className"));
+            Class clazz = ClassCache.forName(sbj.getString("className"));
             EntitlementSubject eSubject = (EntitlementSubject)
                 clazz.newInstance();
             eSubject.setState(sbj.getString("state"));
@@ -446,7 +447,7 @@ public abstract class Privilege implements IPrivilege {
         
         JSONObject sbj = jo.getJSONObject("eCondition");
         try {
-            Class clazz = Class.forName(sbj.getString("className"));
+            Class clazz = ClassCache.forName(sbj.getString("className"));
             EntitlementCondition eCondition = (EntitlementCondition)
                 clazz.newInstance();
             eCondition.setState(sbj.getString("state"));

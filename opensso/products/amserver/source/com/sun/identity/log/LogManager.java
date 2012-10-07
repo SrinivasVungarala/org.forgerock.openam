@@ -46,6 +46,7 @@ import java.util.logging.Handler;
 import java.util.HashSet;
 import java.util.logging.Formatter;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.log.messageid.LogMessageProviderBase;
@@ -434,7 +435,7 @@ public class LogManager extends java.util.logging.LogManager {
                         Constructor cons = null;
                         Handler h = null;
                         try {
-                            clz = Class.forName(handlerClass);
+                            clz = ClassCache.forName(handlerClass);
                         } catch (Exception e) {
                             Debug.error(
                                 "LogManager.readConfiguration:could not load " +
@@ -457,7 +458,7 @@ public class LogManager extends java.util.logging.LogManager {
                         String formatterClass = LogManager.FORMATTER;
                         Formatter f = null;
                         try {
-                            f = (Formatter) Class.forName(formatterClass).
+                            f = (Formatter) ClassCache.forName(formatterClass).
                                     newInstance();
                         } catch (Exception e) {
                             Debug.error(

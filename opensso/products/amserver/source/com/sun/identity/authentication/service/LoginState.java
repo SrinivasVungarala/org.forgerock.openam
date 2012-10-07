@@ -36,6 +36,7 @@ package com.sun.identity.authentication.service;
 import com.iplanet.am.sdk.AMException;
 import com.iplanet.am.sdk.AMObject;
 import com.iplanet.am.sdk.AMStoreConnection;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.Misc;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.dpro.session.Session;
@@ -441,8 +442,7 @@ public class LoginState {
         String upgraderClass = SystemProperties.get(Constants.SESSION_UPGRADER_IMPL,
                 Constants.DEFAULT_SESSION_UPGRADER_IMPL);
         try {
-            propertyUpgrader = Class.forName(upgraderClass).
-                    asSubclass(SessionPropertyUpgrader.class).newInstance();
+            propertyUpgrader =(SessionPropertyUpgrader) ClassCache.forName(upgraderClass).asSubclass(SessionPropertyUpgrader.class).newInstance();
             if (debug.messageEnabled()) {
                 debug.message("SessionUpgrader implementation ('" + upgraderClass
                         + ") successfully loaded.");

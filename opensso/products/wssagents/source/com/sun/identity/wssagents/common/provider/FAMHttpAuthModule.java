@@ -51,6 +51,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.wssagents.classloader.FAMClassLoader;
 
 /**
@@ -106,15 +107,15 @@ public class FAMHttpAuthModule implements ServerAuthModule {
                     "com.sun.identity.wss.security.handler.HTTPRequestHandler");
                 // Get the methods
                 Class clsa[] = new Class[1];
-                clsa[0] = Class.forName("java.util.Map");
+                clsa[0] = ClassCache.forName("java.util.Map");
                 init = _handler.getDeclaredMethod("init", clsa);
                 clsa[0] = 
-                    Class.forName("javax.servlet.http.HttpServletRequest");
+				ClassCache.forName("javax.servlet.http.HttpServletRequest");
                 getLoginURL = _handler.getDeclaredMethod("getLoginURL", clsa);
                 clsa = new Class[2];
-                clsa[0] = Class.forName("javax.security.auth.Subject");
+                clsa[0] = ClassCache.forName("javax.security.auth.Subject");
                 clsa[1] = 
-                    Class.forName("javax.servlet.http.HttpServletRequest");
+				ClassCache.forName("javax.servlet.http.HttpServletRequest");
                 shouldAuthenticate = _handler.getDeclaredMethod(
                     "shouldAuthenticate", clsa);
             }

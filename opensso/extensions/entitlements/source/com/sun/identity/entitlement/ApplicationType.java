@@ -26,6 +26,7 @@
  */
 package com.sun.identity.entitlement;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.entitlement.interfaces.ISaveIndex;
 import com.sun.identity.entitlement.interfaces.ISearchIndex;
 import com.sun.identity.entitlement.interfaces.ResourceName;
@@ -102,7 +103,7 @@ public final class ApplicationType {
             return Application.class;
         }
         try {
-            return Class.forName(applicationClassName);
+            return ClassCache.forName(applicationClassName);
         } catch (ClassNotFoundException ex) {
             throw new EntitlementException(6, ex);
         }

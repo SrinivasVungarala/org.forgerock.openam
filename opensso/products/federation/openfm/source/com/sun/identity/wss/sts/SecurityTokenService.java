@@ -33,6 +33,8 @@ import java.net.URLClassLoader;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.classloader.FAMClassLoader;
 import java.lang.reflect.Method;
 
@@ -57,14 +59,14 @@ public class SecurityTokenService extends HttpServlet {
                         "com.sun.xml.ws.transport.http.servlet.WSServlet");
            
                 Class clsa[] = new Class[2];
-                clsa[0] = Class.forName(
+                clsa[0] = ClassCache.forName(
                         "javax.servlet.http.HttpServletRequest");
-                clsa[1] = Class.forName(
+                clsa[1] = ClassCache.forName(
                         "javax.servlet.http.HttpServletResponse");
                 doGetMethod = jaxwsServlet.getDeclaredMethod("doGet", clsa);
                 doPostMethod = jaxwsServlet.getDeclaredMethod("doPost", clsa);
                 clsa = new Class[1];
-                clsa[0] = Class.forName("javax.servlet.ServletConfig");                
+                clsa[0] = ClassCache.forName("javax.servlet.ServletConfig");
                 initMethod = jaxwsServlet.getDeclaredMethod("init", clsa);
                 wsServlet = jaxwsServlet.newInstance();
              }

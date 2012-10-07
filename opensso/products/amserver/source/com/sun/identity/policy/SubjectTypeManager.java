@@ -37,6 +37,7 @@ package com.sun.identity.policy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOException;
 import com.sun.identity.sm.*;
@@ -235,7 +236,7 @@ public class SubjectTypeManager {
         Subject answer = null;
         try {
             String className = ps.getClassName();
-            answer = (Subject) Class.forName(className).newInstance();
+            answer = (Subject) ClassCache.forName(className).newInstance();
         } catch (Exception e) {
             throw (new PolicyException(e));
         }

@@ -28,6 +28,7 @@
 
 package com.sun.identity.wsfederation.servlet;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.plugin.session.SessionException;
 import com.sun.identity.plugin.session.SessionProvider;
 import com.sun.identity.multiprotocol.MultiProtocolUtils;
@@ -489,7 +490,7 @@ public class IPSigninRequest extends WSFederationAction {
         if (accountMapperList != null) {
             try {
                 accountMapper = (IDPAccountMapper)
-                    (Class.forName((String)accountMapperList.get(0)).
+                    (ClassCache.forName((String)accountMapperList.get(0)).
                      newInstance());
             } catch (ClassNotFoundException cfe) {
                 throw new WSFederationException(cfe);
@@ -515,7 +516,7 @@ public class IPSigninRequest extends WSFederationAction {
         if (attrMapperList != null) {
             try {
                 attrMapper = (IDPAttributeMapper)
-                    (Class.forName((String)attrMapperList.get(0)).
+                    (ClassCache.forName((String)attrMapperList.get(0)).
                      newInstance());
             } catch (ClassNotFoundException cfe) {
                 throw new WSFederationException(cfe);

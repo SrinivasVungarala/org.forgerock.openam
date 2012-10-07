@@ -38,6 +38,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.sun.identity.common.SystemConfigurationUtil;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.services.util.Crypt;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOException;
@@ -1144,7 +1145,7 @@ public abstract class ProviderConfig {
                 WSS_PROVIDER_CONFIG_PLUGIN, 
                 "com.sun.identity.wss.provider.plugins.AgentProvider");
             try {
-                adapterClass = Class.forName(adapterName);
+                adapterClass = ClassCache.forName(adapterName);
             } catch (Exception ex) {
                  ProviderUtils.debug.error("ProviderConfig.getConfigAdapter: " +
                      "Failed in obtaining class", ex);

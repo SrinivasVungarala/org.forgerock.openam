@@ -32,6 +32,7 @@
 
 package com.sun.identity.sm;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.security.DecodeAction;
 import com.sun.identity.shared.xml.XMLUtils;
 import java.security.AccessController;
@@ -558,7 +559,7 @@ public class AttributeSchemaImpl {
                     String className = XMLUtils.getNodeAttributeValue(
                             cvClassName, SMSUtils.CLASS_NAME);
                     try {
-                        Class c = Class.forName(className);
+                        Class c = ClassCache.forName(className);
                         choiceObject = (ChoiceValues) c.newInstance();
                         choiceObject.setAttributeSchema(this);
                         choiceObject.setKeyValues(cvClassName);
@@ -597,7 +598,7 @@ public class AttributeSchemaImpl {
                 String className = XMLUtils.getNodeAttributeValue(dvClassName,
                         SMSUtils.CLASS_NAME);
                 try {
-                    Class c = Class.forName(className);
+                    Class c = ClassCache.forName(className);
                     defaultsObject = (DefaultValues) c.newInstance();
                     defaultsObject.setAttributeSchema(this);
                     defaultsObject.setKeyValues(dvClassName);

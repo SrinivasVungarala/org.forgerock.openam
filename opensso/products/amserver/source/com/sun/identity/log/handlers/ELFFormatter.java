@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.log.LogConstants;
 import com.sun.identity.log.LogManager;
 import com.sun.identity.log.LogManagerUtil;
@@ -65,7 +66,7 @@ public class ELFFormatter extends Formatter {
         String timestampGeneratorClass = 
             lmanager.getProperty(LogConstants.SECURE_TIMESTAMP_GENERATOR);
         try {
-            Class clz = Class.forName(timestampGeneratorClass);
+            Class clz = ClassCache.forName(timestampGeneratorClass);
             secureTimestampGenerator = (ITimestampGenerator)clz.newInstance();
         } catch (ClassNotFoundException cnfe) {
             Debug.error("ELFFormatter: TimeStamp Generator Class " +

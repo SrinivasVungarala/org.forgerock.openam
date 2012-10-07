@@ -26,6 +26,7 @@
  */
 package com.sun.identity.entitlement.opensso;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOException;
 import com.sun.identity.entitlement.Entitlement;
@@ -475,7 +476,7 @@ public class PrivilegeUtils {
                 String className = val.substring(0, idx);
                 String state = val.substring(idx+1);
                 EntitlementSubject es =
-                    (EntitlementSubject)Class.forName(className).newInstance();
+                    (EntitlementSubject)ClassCache.forName(className).newInstance();
                 es.setState(state);
                 return es;
             } else {
@@ -507,7 +508,7 @@ public class PrivilegeUtils {
                 Map<String, Set<String>> props = pipc.getProperties();
                 String className = props.keySet().iterator().next();
                 EntitlementCondition ec =
-                    (EntitlementCondition)Class.forName(className).newInstance();
+                    (EntitlementCondition)ClassCache.forName(className).newInstance();
                 Set<String> setValues = props.get(className);
                 ec.setState(setValues.iterator().next());
                 return ec;

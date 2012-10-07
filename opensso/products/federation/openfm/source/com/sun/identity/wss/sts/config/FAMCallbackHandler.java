@@ -30,6 +30,8 @@ package com.sun.identity.wss.sts.config;
 
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.Callback;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.xml.wss.impl.callback.EncryptionKeyCallback;
 import com.sun.xml.wss.impl.callback.SignatureKeyCallback;
 //import java.security.KeyStore;
@@ -62,7 +64,7 @@ public class FAMCallbackHandler implements CallbackHandler {
             String kprovider = SystemConfigurationUtil.getProperty(
                 SAMLConstants.KEY_PROVIDER_IMPL_CLASS,
                 SAMLConstants.JKS_KEY_PROVIDER);
-            keystore= (KeyProvider) Class.forName(kprovider).newInstance();
+            keystore= (KeyProvider) ClassCache.forName(kprovider).newInstance();
         } catch (Exception e) {
             STSUtils.debug.error("FAMCallbackHandler: " +
                 "get keystore error", e);

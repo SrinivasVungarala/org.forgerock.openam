@@ -66,6 +66,7 @@ import com.sun.identity.common.ShutdownListener;
 import com.sun.identity.common.ShutdownManager;
 import com.sun.identity.common.SystemTimer;
 import com.sun.identity.shared.debug.Debug;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.services.ldap.DSConfigMgr;
 import com.iplanet.services.ldap.LDAPServiceException;
@@ -927,7 +928,7 @@ public class EventService implements Runnable {
             for (Iterator iter = newListenerList.iterator(); iter.hasNext();) {
                 String listnerClass = (String) iter.next();
                 try {
-                    Class thisClass = Class.forName(listnerClass);
+                    Class thisClass = ClassCache.forName(listnerClass);
                     IDSEventListener listener = (IDSEventListener)
                         thisClass.newInstance();
                     _ideListenersMap.put(listnerClass, listener);

@@ -27,6 +27,7 @@
 
 package com.sun.identity.entitlement;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.entitlement.interfaces.ISaveIndex;
 import com.sun.identity.entitlement.interfaces.ISearchIndex;
 import com.sun.identity.entitlement.interfaces.ResourceName;
@@ -131,7 +132,7 @@ public final class ApplicationTypeManager {
             return null;
         }
         try {
-            Class clazz = Class.forName(className);
+            Class clazz = ClassCache.forName(className);
             Object o = clazz.newInstance();
             if (o instanceof ISearchIndex) {
                 return clazz;
@@ -160,7 +161,7 @@ public final class ApplicationTypeManager {
             return null;
         }
         try {
-            Class clazz = Class.forName(className);
+            Class clazz = ClassCache.forName(className);
             Object o = clazz.newInstance();
             if (o instanceof ISaveIndex) {
                 return clazz;
@@ -189,7 +190,7 @@ public final class ApplicationTypeManager {
             return null;
         }
         try {
-            Class clazz = Class.forName(className);
+            Class clazz = ClassCache.forName(className);
             Object o = clazz.newInstance();
             if (o instanceof ResourceName) {
                 return clazz;

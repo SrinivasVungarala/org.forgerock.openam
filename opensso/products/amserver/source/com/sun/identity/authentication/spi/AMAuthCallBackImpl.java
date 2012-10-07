@@ -32,6 +32,7 @@
 
 package com.sun.identity.authentication.spi;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.authentication.util.ISAuthConstants;
@@ -320,7 +321,7 @@ public class AMAuthCallBackImpl {
                 debug.message("AMAuthCallBackImpl : instantiateClass. " +
                         "Class name is : " + className);
             }
-            return ((AMAuthCallBack) Class.forName(className).newInstance());
+            return ((AMAuthCallBack) ClassCache.forName(className).newInstance());
         } catch (ClassNotFoundException cnfe) {
             debug.error("AuthCallBackImpl.instantiateClass(): Unable to " +
                     "locate class " + className, cnfe);

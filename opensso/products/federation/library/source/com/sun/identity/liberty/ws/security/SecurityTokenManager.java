@@ -29,6 +29,7 @@
 
 package com.sun.identity.liberty.ws.security;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.locale.Locale;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
@@ -92,7 +93,7 @@ public final class SecurityTokenManager {
         // get provider class instance
         try {
             provider = (SecurityTokenProvider)
-            Class.forName(providerClass).newInstance();
+			ClassCache.forName(providerClass).newInstance();
         } catch (Exception e) {
             debug.message("Con: Unable to get instance of Token Provider", e);
             throw new SecurityTokenException(
@@ -141,7 +142,7 @@ public final class SecurityTokenManager {
         // get provider class instance
         try {
             provider = (SecurityTokenProvider)
-            Class.forName(providerClass).newInstance();
+			ClassCache.forName(providerClass).newInstance();
         } catch (Exception e) {
             debug.message("Con2: Unable to get instance of Token Provider", e);
             throw new SecurityTokenException(

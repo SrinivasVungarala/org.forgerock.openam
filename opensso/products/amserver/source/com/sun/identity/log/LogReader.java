@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.log.spi.Debug;
 
 /**LogReader class provides mechanism to read a log file to the caller.
@@ -752,12 +753,12 @@ public class LogReader {
         try {
             /* check type of log backend and instantiate appropriate object */
             if (logStorageType.compareToIgnoreCase(FILE_SOURCE) == 0 ) {
-                Class clz = Class.forName(fileHandlerClass);
+                Class clz = ClassCache.forName(fileHandlerClass);
                 currentHandler =(com.sun.identity.log.handlers.LogReadHandler)
                 clz.newInstance();
             } else if (logStorageType.compareToIgnoreCase("DB") == 0 ) {
                 /*  FOR DB Handler */
-                Class clz = Class.forName(dbHandlerClass);
+                Class clz = ClassCache.forName(dbHandlerClass);
                 // Following type casting has to be changed for DB support
                 currentDBHandler =
                     (com.sun.identity.log.handlers.LogReadDBHandler)

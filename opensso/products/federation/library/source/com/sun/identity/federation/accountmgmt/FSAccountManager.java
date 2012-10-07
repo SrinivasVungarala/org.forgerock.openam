@@ -28,6 +28,7 @@
 
 package com.sun.identity.federation.accountmgmt;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.federation.services.util.FSServiceUtils;
 import com.sun.identity.federation.common.FSUtils;
 import com.sun.identity.federation.common.IFSConstants;
@@ -106,7 +107,7 @@ public class FSAccountManager {
                 userPClass = IFSConstants.FS_USER_PROVIDER_DEFAULT;
             }
             userProvider = (FSUserProvider)
-                Class.forName(userPClass).newInstance();
+                ClassCache.forName(userPClass).newInstance();
             userProvider.init(hostedEntityID);
         } catch (Exception de) {
             FSUtils.debug.error(

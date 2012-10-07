@@ -51,7 +51,7 @@ public class SSLSocketFactoryManager {
                 socketFactory = new com.sun.identity.shared.ldap.factory.JSSESocketFactory(
                         null);
             } else {
-                socketFactory = (LDAPSocketFactory) Class.forName(
+                socketFactory = (LDAPSocketFactory) ClassCache.forName(
                         socketFactoryImplClass).newInstance();
             }
         }

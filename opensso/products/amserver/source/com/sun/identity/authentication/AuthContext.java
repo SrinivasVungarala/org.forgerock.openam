@@ -31,6 +31,7 @@
  */
 package com.sun.identity.authentication;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.dpro.session.Session;
 import com.iplanet.dpro.session.SessionID;
@@ -1715,14 +1716,14 @@ public class AuthContext extends Object implements java.io.Serializable {
     public static void setCertDBPassword(String password) {
         try {
             if (usingJSSEHandler) {
-                Class pcbClass = (Class) Class.forName(JSSE_PASSWORD_CALLBACK);
+                Class pcbClass = (Class) ClassCache.forName(JSSE_PASSWORD_CALLBACK);
                 Object passwdCallback = (Object) pcbClass.newInstance();
                 Method method =
                 pcbClass.getMethod("setPassword", new Class[] { String.class });
                 KeyStore keystore = (KeyStore)method.invoke(
                     passwdCallback, new Object[] { password });
             } else {
-                Class initializer = Class.forName(JSS_PASSWORD_UTIL);
+                Class initializer = ClassCache.forName(JSS_PASSWORD_UTIL);
                 Constructor initializerConstructor = initializer.getConstructor(
                     new Class[] { String.class });
                 initializerConstructor.newInstance(new Object[] { password });
@@ -1996,7 +1997,7 @@ public class AuthContext extends Object implements java.io.Serializable {
                 Object[] param = {nickName};
                 String protHandler = protHandlerPkg + ".https.Handler";
                 Constructor construct =
-                    Class.forName(protHandler).getConstructor(paramtype);
+                    ClassCache.forName(protHandler).getConstructor(paramtype);
                 URLStreamHandler handler =
                     (URLStreamHandler)construct.newInstance(param);
                 url = new URL(url.getProtocol(), url.getHost(), url.getPort(),

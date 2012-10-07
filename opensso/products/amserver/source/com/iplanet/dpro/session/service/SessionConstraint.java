@@ -31,6 +31,7 @@
  */
 package com.iplanet.dpro.session.service;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.datastruct.CollectionHelper;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.idm.AMIdentity;
@@ -101,7 +102,7 @@ public class SessionConstraint {
             return quotaExhaustionAction;
         } else {
             try {
-                quotaExhaustionAction = Class.forName(clazzName).asSubclass(
+                quotaExhaustionAction = (QuotaExhaustionAction)ClassCache.forName(clazzName).asSubclass(
                         QuotaExhaustionAction.class).newInstance();
             } catch (Exception ex) {
                 debug.error("Unable to load the Session Quota Exhaustion Action "

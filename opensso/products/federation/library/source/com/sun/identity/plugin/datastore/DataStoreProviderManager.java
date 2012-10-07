@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.locale.Locale;
 import com.sun.identity.common.SystemConfigurationUtil;
@@ -118,7 +119,7 @@ public final class DataStoreProviderManager {
             if ((className != null) && (className.length() > 0)) {
                 try {
                     provider = (DataStoreProvider)
-                        Class.forName(className).newInstance();
+                        ClassCache.forName(className).newInstance();
                 } catch (Exception e) {
                     debug.error("DataStoreProviderManage"
                         + "r.getDataStoreProvider: exception while "
@@ -152,7 +153,7 @@ public final class DataStoreProviderManager {
                 bundle.getString("defaultProviderNotDefined"));
         }
         try {
-            return ((DataStoreProvider)Class.forName(
+            return ((DataStoreProvider)ClassCache.forName(
                 className).newInstance());
         } catch (Exception e) {
             throw new DataStoreProviderException(e);

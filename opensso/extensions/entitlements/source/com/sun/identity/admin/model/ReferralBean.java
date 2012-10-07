@@ -26,6 +26,7 @@
  */
 package com.sun.identity.admin.model;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.admin.ListFormatter;
 import com.sun.identity.admin.ManagedBeanResolver;
 import com.sun.identity.entitlement.EntitlementException;
@@ -195,7 +196,7 @@ public class ReferralBean {
             String resourceClassName = rr.getViewEntitlement().getViewApplication().getViewApplicationType().getResourceClassName();
             Class resourceClass;
             try {
-                resourceClass = Class.forName(resourceClassName);
+                resourceClass = ClassCache.forName(resourceClassName);
             } catch (ClassNotFoundException cnfe) {
                 throw new RuntimeException(cnfe);
             }

@@ -28,6 +28,7 @@
 
 package com.sun.identity.liberty.ws.interaction;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import java.util.HashMap;
@@ -172,7 +173,7 @@ class InteractionConfig {
                 interactionConfig = new InteractionConfig();
             } else {
                 try {
-                    interactionConfig = (InteractionConfig)Class.forName(
+                    interactionConfig = (InteractionConfig)ClassCache.forName(
                         interactionConfigClassName)
                         .newInstance();
                 } catch (InstantiationException ie) {

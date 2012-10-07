@@ -79,6 +79,7 @@ import com.iplanet.am.sdk.AMUserEntryProcessed;
 import com.iplanet.am.sdk.common.IComplianceServices;
 import com.iplanet.am.sdk.common.IDCTreeServices;
 import com.iplanet.am.sdk.common.IDirectoryServices;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.services.ldap.Attr;
 import com.iplanet.services.ldap.AttrSet;
@@ -425,7 +426,7 @@ public class DirectoryServicesImpl implements AMConstants, IDirectoryServices {
                     .get(USER_ENTRY_PROCESSING_IMPL);
             if ((implClassName != null) && (implClassName.length() != 0)) {
                 try {
-                    userEntry = (AMUserEntryProcessed) Class.forName(
+                    userEntry = (AMUserEntryProcessed) ClassCache.forName(
                             implClassName).newInstance();
                     if (debug.messageEnabled()) {
                         debug.message("DirectoryServicesImpl." 

@@ -33,6 +33,7 @@ package com.sun.identity.log.spi;
 
 import java.util.logging.LogManager;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.log.LogConstants;
 import com.sun.identity.log.LogManagerUtil;
 
@@ -54,7 +55,7 @@ public class Debug {
         }
         try {
             debugInst =
-                (IDebug)Class.forName(debugImplClassName).newInstance();
+                (IDebug)ClassCache.forName(debugImplClassName).newInstance();
         } catch (Exception e) {
             // can't do anything because our debug system is not up yet
         }

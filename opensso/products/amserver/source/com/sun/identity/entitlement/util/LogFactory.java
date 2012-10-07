@@ -27,6 +27,7 @@
 
 package com.sun.identity.entitlement.util;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.entitlement.PrivilegeManager;
 
 /**
@@ -40,7 +41,7 @@ public class LogFactory {
     private LogFactory() {
         try {
             //RFE: load different log provider.
-            Class clazz = Class.forName(
+            Class clazz = ClassCache.forName(
                 "com.sun.identity.entitlement.opensso.LogProvider");
             impl = (ILogProvider)clazz.newInstance();
         } catch (InstantiationException e) {

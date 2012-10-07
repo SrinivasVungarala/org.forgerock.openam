@@ -35,6 +35,7 @@
 
 package com.sun.identity.jaxrpc;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.jaxrpc.JAXRPCHelper;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
@@ -104,7 +105,7 @@ public class JAXRPCUtil extends JAXRPCHelper {
         try {
             // Due to compilation errors, this function has been
             // made to use reflections
-            Class imsClass = Class.forName(
+            Class imsClass = ClassCache.forName(
                 "com.sun.identity.jaxrpc.IdentityManagementServices_Impl");
             Object imsImpl = imsClass.newInstance();
             Method method = null;

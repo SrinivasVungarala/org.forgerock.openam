@@ -33,6 +33,8 @@
 package com.sun.identity.saml2.profile;
 
 import java.util.logging.Level;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.saml2.logging.LogUtil;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.common.SystemConfigurationUtil;
@@ -1071,7 +1073,7 @@ public class IDPProxyUtil {
                                            idpProxyFinderName);
             if (idpProxyFinder == null) {
                 idpProxyFinder = (SAML2IDPFinder)
-                    Class.forName(idpProxyFinderName).newInstance();
+				ClassCache.forName(idpProxyFinderName).newInstance();
                 IDPCache.idpProxyFinderCache.put(
                     idpProxyFinderName, idpProxyFinder);
             } else {

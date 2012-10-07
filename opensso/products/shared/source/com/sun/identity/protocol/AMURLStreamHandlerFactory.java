@@ -31,6 +31,8 @@ package com.sun.identity.protocol;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.shared.Constants;
 import com.sun.identity.shared.debug.Debug;
@@ -68,7 +70,7 @@ public class AMURLStreamHandlerFactory implements URLStreamHandlerFactory {
         if (protocol.equalsIgnoreCase("https") && 
                 (prot_handler_string != null)) {
             try {
-                prot_handler = (URLStreamHandler) Class.forName(
+                prot_handler = (URLStreamHandler) ClassCache.forName(
                         prot_handler_string).newInstance();
             } catch (ClassNotFoundException e) {
                 debug.error(method + 

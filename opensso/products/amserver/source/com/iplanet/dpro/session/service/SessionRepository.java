@@ -54,12 +54,13 @@ public class SessionRepository {
      * @return the instance of AMSessionRepository
      * @throws Exception
      */
-    public static synchronized AMSessionRepository getInstance()
+    public static AMSessionRepository getInstance()
             throws Exception {
-        if (sessionRepository == null) {
-            sessionRepository = (AMSessionRepository) Class.forName(
-                    REPOSITORY_CLASS).newInstance();
-        }
+        if (sessionRepository == null)
+		synchronized (REPOSITORY_CLASS) {
+			 if (sessionRepository == null)
+				 sessionRepository = (AMSessionRepository) Class.forName(REPOSITORY_CLASS).newInstance();
+			}
         return sessionRepository;
     }
 }

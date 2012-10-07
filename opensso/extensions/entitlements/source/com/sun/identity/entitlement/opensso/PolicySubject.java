@@ -27,6 +27,7 @@
 
 package com.sun.identity.entitlement.opensso;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.entitlement.EntitlementException;
@@ -211,7 +212,7 @@ public class PolicySubject implements EntitlementSubject {
             PolicyManager pm = new PolicyManager(adminToken, realm);
             com.sun.identity.policy.interfaces.Subject sbj =
                 (com.sun.identity.policy.interfaces.Subject)
-                Class.forName(className).newInstance();
+                ClassCache.forName(className).newInstance();
             sbj.initialize(pm.getPolicyConfig());
             sbj.setValues(values);
             SSOToken token = getSSOToken(subject);

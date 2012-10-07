@@ -32,6 +32,7 @@
 
 package com.sun.identity.saml2.profile;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.encode.URLEncDec;
 import com.sun.identity.shared.DateUtils;
 import com.sun.identity.shared.xml.XMLUtils;
@@ -1180,7 +1181,7 @@ public class IDPSSOUtil {
                                            idpAttributeMapperName);
             if (idpAttributeMapper == null) {
                 idpAttributeMapper = (IDPAttributeMapper)
-                    Class.forName(idpAttributeMapperName).newInstance();
+				ClassCache.forName(idpAttributeMapperName).newInstance();
                 IDPCache.idpAttributeMapperCache.put(
                     idpAttributeMapperName, idpAttributeMapper);
             } else {
@@ -1231,7 +1232,7 @@ public class IDPSSOUtil {
                                            idpAuthnContextMapperName);
             if (idpAuthnContextMapper == null) {
                 idpAuthnContextMapper = (IDPAuthnContextMapper)
-                    Class.forName(idpAuthnContextMapperName).newInstance();
+				ClassCache.forName(idpAuthnContextMapperName).newInstance();
                 IDPCache.idpAuthnContextMapperCache.put(
                     idpAuthnContextMapperName, idpAuthnContextMapper);
             } else {
@@ -1280,7 +1281,7 @@ public class IDPSSOUtil {
                 idpECPSessionMapperName);
             if (idpECPSessionMapper == null) {
                 idpECPSessionMapper = (IDPECPSessionMapper)
-                    Class.forName(idpECPSessionMapperName).newInstance();
+				ClassCache.forName(idpECPSessionMapperName).newInstance();
                 IDPCache.idpECPSessionMapperCache.put(
                     idpECPSessionMapperName, idpECPSessionMapper);
             } else {
@@ -2955,7 +2956,7 @@ public class IDPSSOUtil {
                                            idpAdapterName);
             if (idpAdapter == null) {
                 idpAdapter = (SAML2IdentityProviderAdapter)
-                    Class.forName(idpAdapterName).newInstance();
+				ClassCache.forName(idpAdapterName).newInstance();
                 IDPCache.idpAdapterCache.put(
                     idpAdapterName, idpAdapter);
             } else {

@@ -31,10 +31,11 @@ package com.sun.identity.sae.api;
 
 import java.util.*;
 import java.io.*;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import sun.misc.CharacterEncoder;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.encode.Base64;
 import com.sun.identity.security.DataEncryptor;
 import java.security.*;
@@ -696,7 +697,7 @@ public class SecureAttrs
 
         String clzName = properties.getProperty(SAE_CONFIG_CERT_CLASS);
         if (clzName != null)
-            certs = (Certs) Class.forName(clzName).newInstance();
+            certs = (Certs) ClassCache.forName(clzName).newInstance();
             //"com.sun.identity.sae.api.FMCerts").newInstance();
         else
             certs = new DefaultCerts();

@@ -28,6 +28,7 @@
 
 package com.sun.identity.saml.common;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.saml.xmlsig.PasswordDecoder;
 import com.sun.identity.shared.encode.Base64;
@@ -236,7 +237,7 @@ public class SAMLUtilsCommon {
         String decoPasswd;
         try { 
             PasswordDecoder pwdDecoder = (PasswordDecoder) 
-                Class.forName(decodePwdSpi).newInstance(); 
+			ClassCache.forName(decodePwdSpi).newInstance();
             decoPasswd = pwdDecoder.getDecodedPassword(password);
         } catch (Throwable t) {
             decoPasswd = password;

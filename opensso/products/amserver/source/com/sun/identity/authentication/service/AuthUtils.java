@@ -66,6 +66,7 @@ import com.iplanet.dpro.session.SessionID;
 
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.Misc;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.sso.SSOTokenManager;
@@ -1534,7 +1535,7 @@ public class AuthUtils extends AuthClientUtils {
             }
             
             try {
-                Object classObject = Class.forName(className,true,
+                Object classObject = ClassCache.forName(className,true,
                     Thread.currentThread().getContextClassLoader()
                     ).newInstance();
                 if (classObject instanceof AMLoginModule) {

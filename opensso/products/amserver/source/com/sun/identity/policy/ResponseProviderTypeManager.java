@@ -32,6 +32,7 @@ package com.sun.identity.policy;
 
 import java.util.*;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOException;
 import com.sun.identity.sm.*;
@@ -261,7 +262,7 @@ public class ResponseProviderTypeManager {
 	ResponseProvider respProvider = null;
 	try {
 	    String className = ps.getClassName();
-	    respProvider = (ResponseProvider) Class.forName(className).
+	    respProvider = (ResponseProvider) ClassCache.forName(className).
 		newInstance();
 	} catch (Exception e) {
 	    throw (new PolicyException(e));

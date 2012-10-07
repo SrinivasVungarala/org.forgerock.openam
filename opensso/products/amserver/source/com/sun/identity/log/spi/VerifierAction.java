@@ -30,6 +30,7 @@
 
 package com.sun.identity.log.spi;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.log.LogConstants;
 import com.sun.identity.log.LogManager;
 import com.sun.identity.log.LogManagerUtil;
@@ -47,7 +48,7 @@ public class VerifierAction {
             lmanager.getProperty(LogConstants.VERIFIER_ACTION_CLASS);
         try{
             
-            Class c = Class.forName(voutClass);
+            Class c = ClassCache.forName(voutClass);
             vout = (IVerifierOutput)c.newInstance();
         } catch(Exception e) {
             Debug.error("Authorizer : Exception : ", e);

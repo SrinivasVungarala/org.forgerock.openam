@@ -28,6 +28,7 @@
 
 package com.sun.identity.wsfederation.servlet;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.plugin.session.SessionException;
 import com.sun.identity.plugin.session.SessionManager;
 import com.sun.identity.plugin.session.SessionProvider;
@@ -268,7 +269,7 @@ public class RPSigninResponse extends WSFederationAction {
         if (acctMapperList != null) {
             try {
                 acctMapper = (SPAccountMapper)
-                    (Class.forName((String)acctMapperList.get(0)).
+                    (ClassCache.forName((String)acctMapperList.get(0)).
                      newInstance());
                 if (debug.messageEnabled()) {
                     debug.message(
@@ -298,7 +299,7 @@ public class RPSigninResponse extends WSFederationAction {
         if (attrMapperList != null) {
             try {
                 attrMapper = (SPAttributeMapper)
-                    (Class.forName((String)attrMapperList.get(0)).
+                    (ClassCache.forName((String)attrMapperList.get(0)).
                      newInstance());
             } catch (ClassNotFoundException cfe) {
                 throw new WSFederationException(cfe);

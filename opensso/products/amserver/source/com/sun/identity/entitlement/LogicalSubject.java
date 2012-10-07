@@ -34,6 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * Base class for <code>OrSubejct</code> and <code>AndSubejct</code>.
  */
@@ -86,7 +88,7 @@ public abstract class LogicalSubject implements EntitlementSubject {
                 for (int i = 0; i < len; i++) {
                     JSONObject memberSubject = memberSubjects.getJSONObject(i);
                     String className = memberSubject.getString("className");
-                    Class cl = Class.forName(className);
+                    Class cl = ClassCache.forName(className);
                     EntitlementSubject es = (EntitlementSubject)cl.newInstance();
                     es.setState(memberSubject.getString("state"));
                     eSubjects.add(es);

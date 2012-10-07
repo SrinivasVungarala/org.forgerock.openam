@@ -34,6 +34,7 @@ import java.util.Enumeration;
 import java.util.Set;
 import java.util.Vector;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.services.ldap.Attr;
 import com.iplanet.services.ldap.AttrSet;
 import com.iplanet.services.util.I18n;
@@ -507,7 +508,7 @@ public class TemplateManager implements java.io.Serializable {
         try {
             if (classNames != null) {
                 for (int i = 0; i < classNames.length; i++) {
-                    Class cls = Class.forName(classNames[i]);
+                    Class cls = ClassCache.forName(classNames[i]);
                     classes.add(cls);
                 }
             }

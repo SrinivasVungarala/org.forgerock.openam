@@ -28,6 +28,7 @@
 
 package com.sun.identity.plugin.log;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.shared.debug.Debug;
 
@@ -60,7 +61,7 @@ public final class LogManager {
         try {
             if (pluginName != null && pluginName.length() > 0) {
                 Class logProviderClass =
-                        Class.forName(pluginName.trim());
+                        ClassCache.forName(pluginName.trim());
                 logProvider = (Logger) logProviderClass.newInstance();
                 logProvider.init(componentName);
             }

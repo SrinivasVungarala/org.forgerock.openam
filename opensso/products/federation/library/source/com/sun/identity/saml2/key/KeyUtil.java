@@ -42,6 +42,7 @@ import java.security.PublicKey;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.org.apache.xml.internal.security.encryption.XMLCipher;
 
 import com.sun.identity.common.SystemConfigurationUtil;
@@ -80,7 +81,7 @@ public class KeyUtil {
     
     static {
         try {
-            kp = (KeyProvider)Class.forName(SystemConfigurationUtil.getProperty(
+            kp = (KeyProvider)ClassCache.forName(SystemConfigurationUtil.getProperty(
                 SAMLConstants.KEY_PROVIDER_IMPL_CLASS,
                 SAMLConstants.JKS_KEY_PROVIDER)).newInstance();
         } catch (ClassNotFoundException cnfe) {

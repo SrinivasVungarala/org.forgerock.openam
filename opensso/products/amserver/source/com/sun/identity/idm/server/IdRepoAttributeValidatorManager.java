@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.idm.IdConstants;
@@ -77,7 +78,7 @@ public class IdRepoAttributeValidatorManager implements ServiceListener {
      */
     public static IdRepoAttributeValidatorManager getInstance() {
         if (instance == null) {
-            synchronized (debug) {
+            synchronized (IdRepoAttributeValidatorManager.class.getName()) {
                 if (instance == null) {
                     instance = new IdRepoAttributeValidatorManager();
                 }
@@ -100,10 +101,13 @@ public class IdRepoAttributeValidatorManager implements ServiceListener {
         if (validator != null) {
             return validator;
         }
-
-        Map<String, Set<String>> configParams = new HashMap();
-        //synchronized (validatorCache) 
+        synchronized (IdRepoAttributeValidatorManager.class.getName()+realm)
         {
+		validator = validatorCache.get(realm);
+            if (validator != null) {
+                return validator;
+            }
+            Map<String, Set<String>> configParams = new HashMap();
             try {
                 ServiceConfig orgConfig =
                     idRepoServiceConfigManager.getOrganizationConfig(realm,
@@ -131,9 +135,8 @@ public class IdRepoAttributeValidatorManager implements ServiceListener {
                         }
                     }
                 }
-                Class validatorClass = Class.forName(className);
-                validator = (IdRepoAttributeValidator)
-                    validatorClass.newInstance();
+                Class validatorClass = ClassCache.forName(className);
+                validator = (IdRepoAttributeValidator)validatorClass.newInstance();
             } catch (Exception ex) {
                 if (debug.warningEnabled()) {
                     debug.warning("IdRepoAttributeValidatorManager." +
@@ -145,8 +148,8 @@ public class IdRepoAttributeValidatorManager implements ServiceListener {
                 validator = new IdRepoAttributeValidatorImpl();
             }
             validator.initialize(configParams);
+            validatorCache.put(realm,validator);
         }
-
         return validator;
     }
 

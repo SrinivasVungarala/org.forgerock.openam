@@ -33,6 +33,8 @@ import java.io.*;
 import java.util.*;
 import java.net.URL;
 import javax.servlet.http.*;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.common.SystemConfigurationException;
 import com.sun.identity.plugin.session.SessionException;
@@ -320,7 +322,7 @@ public class SAMLClient {
              // Preload class SAMLSOAPReceiver since it wouldn't be included 
              // in the remote sdk. If the class SAMLSOAPReceiver isn't 
              // presented, we consider it is client application. 
-             Class.forName("com.sun.identity.saml.servlet.SAMLSOAPReceiver");
+		ClassCache.forName("com.sun.identity.saml.servlet.SAMLSOAPReceiver");
              if (SAMLUtils.debug.messageEnabled()) {
                 SAMLUtils.debug.message("in setLocalFlag(), url : " + 
                                         url.toString());

@@ -31,6 +31,8 @@ package com.sun.identity.saml.xmlsig;
 import java.util.Date; 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.saml.common.*;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.common.TaskRunnable;
@@ -71,7 +73,7 @@ public class XMLSignatureManager {
            String sprovider = SystemConfigurationUtil.getProperty(
                 SAMLConstants.SIGNATURE_PROVIDER_IMPL_CLASS,
                 SAMLConstants.AM_SIGNATURE_PROVIDER);
-           sp= (SignatureProvider) Class.forName(sprovider).newInstance();
+           sp= (SignatureProvider) ClassCache.forName(sprovider).newInstance();
         } catch (Exception e) {
             SAMLUtilsCommon.debug.error("XMLSignatureManager: " +
                 "constructor error"); 

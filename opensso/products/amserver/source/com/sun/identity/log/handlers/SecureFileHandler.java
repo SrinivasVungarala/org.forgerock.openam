@@ -54,6 +54,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.log.NullLocationException;
 import com.sun.identity.common.GeneralTaskRunnable;
 import com.sun.identity.common.SystemTimer;
@@ -667,7 +668,7 @@ public class SecureFileHandler extends java.util.logging.Handler {
         }
         
         try {
-            helper = (SecureLogHelper) Class.forName(helperClass).newInstance();
+            helper = (SecureLogHelper) ClassCache.forName(helperClass).newInstance();
         } catch (Exception e) {
             Debug.error("Could not instantiate class " + helperClass, e);
         }
@@ -736,7 +737,7 @@ public class SecureFileHandler extends java.util.logging.Handler {
         try {
             if(getArchiver(logName) == null) {
                 archiver = 
-                    (Archiver) Class.forName(archiverClass).newInstance();
+                    (Archiver) ClassCache.forName(archiverClass).newInstance();
                 setArchiver(logName, archiver);
             }
         } catch (Exception e) {

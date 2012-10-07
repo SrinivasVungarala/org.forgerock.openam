@@ -40,6 +40,7 @@ import org.mozilla.jss.crypto.CryptoToken;
 import org.mozilla.jss.KeyDatabaseException;
 import org.mozilla.jss.util.Password;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.JSSPasswordCallback;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.shared.debug.Debug;
@@ -236,10 +237,10 @@ public class JSSInit {
                 if (donotInstallJSSProviderAt0) {
                      Provider provider = null;
                      try {
-                         provider = (Provider) Class.forName(
+                         provider = (Provider) ClassCache.forName(
                              "org.mozilla.jss.JSSProvider").newInstance();
                      } catch (ClassNotFoundException e) {
-                         provider = (Provider) Class.forName(
+                         provider = (Provider) ClassCache.forName(
                              "org.mozilla.jss.provider.Provider").newInstance();
                      }
                      Security.addProvider(provider);

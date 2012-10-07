@@ -39,6 +39,8 @@ import javax.xml.parsers.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * XMLParser provides a way for applications to handle a hook into
  * applications and applications and its server.
@@ -103,7 +105,7 @@ public class WebtopParser {
             }
         } else {
             try {
-                po = (ParseOutput) Class.forName(po_name).newInstance();
+                po = (ParseOutput) ClassCache.forName(po_name).newInstance();
             } catch(Exception ex) {
                 StringBuilder buf = new StringBuilder();
                 buf.append("Got Exception while creating class instance of ");

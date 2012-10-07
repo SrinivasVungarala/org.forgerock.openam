@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.log.AMLogException;
 import com.sun.identity.log.LogConstants;
 import com.sun.identity.log.LogQuery;
@@ -1327,7 +1328,7 @@ public class LogReadDBHandler implements ReadDBHandler  {
         throws SQLException, ClassNotFoundException
     {
         try {
-            Class.forName(dbDriver);
+            ClassCache.forName(dbDriver);
             this.conn = 
                 DriverManager.getConnection(databaseURL, userName, password);
         }

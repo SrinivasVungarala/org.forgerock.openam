@@ -38,6 +38,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.saml.xmlsig.KeyProvider;
  
@@ -56,7 +57,7 @@ public class SAMLCertUtils {
                 "Start loading certs from key store");
         }
         try {
-            kp = (KeyProvider)Class.forName(SystemConfigurationUtil.getProperty(
+            kp = (KeyProvider)ClassCache.forName(SystemConfigurationUtil.getProperty(
                 SAMLConstants.KEY_PROVIDER_IMPL_CLASS,
                 SAMLConstants.JKS_KEY_PROVIDER)).newInstance();
         } catch (ClassNotFoundException cnfe) {

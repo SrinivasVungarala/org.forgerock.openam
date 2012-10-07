@@ -58,6 +58,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.services.comm.server.PLLServer;
 import com.iplanet.services.comm.server.SendNotificationException;
@@ -467,7 +468,7 @@ public class SMSJAXRPCObjectImpl implements SMSObjectIF, SMSObjectListener {
                 validatorClass + " Values: " + values);
         }
         try {
-            Class clazz = Class.forName(validatorClass);
+            Class clazz = ClassCache.forName(validatorClass);
             ServiceAttributeValidator v = (ServiceAttributeValidator)
                 clazz.newInstance();
             return v.validate(values);

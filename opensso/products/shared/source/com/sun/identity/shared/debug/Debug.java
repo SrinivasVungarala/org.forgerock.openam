@@ -28,6 +28,7 @@
 
 package com.sun.identity.shared.debug;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.shared.debug.impl.DebugProviderImpl;
 import java.util.Collection;
@@ -254,7 +255,7 @@ public class Debug {
             boolean providerLoadFailed = false;
             if (providerName != null && providerName.trim().length() > 0) {
                 try {
-                    provider = (IDebugProvider) Class.forName(providerName)
+                    provider = (IDebugProvider) ClassCache.forName(providerName)
                             .newInstance();
                 } catch (ClassNotFoundException cnex) {
                     providerLoadFailed = true;

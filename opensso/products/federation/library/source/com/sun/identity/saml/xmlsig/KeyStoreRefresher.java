@@ -34,6 +34,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.GeneralTaskRunnable;
 import com.sun.identity.saml.common.SAMLUtils;
 import com.sun.identity.saml.common.SAMLConstants;
@@ -83,7 +85,7 @@ public class KeyStoreRefresher extends GeneralTaskRunnable {
                  SAMLConstants.KEY_PROVIDER_IMPL_CLASS,
                  SAMLConstants.JKS_KEY_PROVIDER);
              KeyProvider newKeyStore= (KeyProvider)
-                 Class.forName(kprovider).newInstance(); 
+			 ClassCache.forName(kprovider).newInstance();
              XMLSignatureManager.getInstance().getSignatureProvider().
                  initialize(newKeyStore); 
              SAMLUtils.debug.message(classMethod + "Updating Key Store...");     

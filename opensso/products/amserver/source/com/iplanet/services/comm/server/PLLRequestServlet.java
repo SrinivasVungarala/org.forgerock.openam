@@ -204,21 +204,26 @@ public class PLLRequestServlet extends HttpServlet {
         RequestHandler handler = (RequestHandler) requestHandlers.get(svcid);
         if (handler == null) {
             try {
-                if (svcid.equals(WebtopNaming.NAMING_SERVICE))
-                    handler = new NamingService();
-                else {
-                    String svcclass = WebtopNaming.getServiceClass(svcid);
-                    if (svcclass != null) {
-                        Class cl = Class.forName(svcclass);
-                        handler = (RequestHandler) cl.newInstance();
-                    } else if (PLLServer.pllDebug.messageEnabled()) {
-                        PLLServer.pllDebug.message("Service handler for :"
-                                + svcid + " not found");
-                    }
-                }
-                if (handler != null) {
-                    requestHandlers.put(svcid, handler);
-                }
+		synchronized (svcid) {
+			handler = (RequestHandler) requestHandlers.get(svcid);
+			if (handler == null) {
+				if (svcid.equals(WebtopNaming.NAMING_SERVICE))
+                            handler = new NamingService();
+                        else {
+                            String svcclass = WebtopNaming.getServiceClass(svcid);
+                            if (svcclass != null) {
+                                Class cl = Class.forName(svcclass);
+                                handler = (RequestHandler) cl.newInstance();
+                            } else if (PLLServer.pllDebug.messageEnabled()) {
+                                PLLServer.pllDebug.message("Service handler for :"
+                                        + svcid + " not found");
+                            }
+                        }
+                        if (handler != null) {
+                            requestHandlers.put(svcid, handler);
+                        }
+			}
+				}
             } catch (Exception e) {
                 PLLServer.pllDebug.message("Cannot get service handler for "
                         + svcid + " :", e);

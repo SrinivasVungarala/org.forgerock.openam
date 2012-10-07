@@ -33,6 +33,7 @@
 package com.sun.identity.ha;
 
 import com.sun.identity.shared.debug.Debug;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.dpro.session.service.SessionService;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 
@@ -59,14 +60,17 @@ public class FAMPersisterManager {
     }
 
     private FAMPersisterManager() throws Exception {
-        recordPesister = (FAMRecordPersister) Class.forName(
+        recordPesister = (FAMRecordPersister) ClassCache.forName(
             famRecordPersisterImpl).newInstance();        
     } 
     
-    public synchronized static FAMPersisterManager getInstance() 
+    public static FAMPersisterManager getInstance()
         throws Exception{
         if (instance == null) {
-            instance = new FAMPersisterManager();           
+            synchronized (FAMPersisterManager.class) {
+		if (instance == null)
+			instance = new FAMPersisterManager();
+			}
         }
         return instance; 
     }

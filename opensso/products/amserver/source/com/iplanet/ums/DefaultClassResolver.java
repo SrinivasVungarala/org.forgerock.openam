@@ -29,6 +29,7 @@
 package com.iplanet.ums;
 
 import com.sun.identity.shared.debug.Debug;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.services.ldap.Attr;
 import com.iplanet.services.ldap.AttrSet;
 
@@ -91,7 +92,7 @@ public class DefaultClassResolver implements java.io.Serializable,
                 for (int i = 0; i < ocLength; i++) {
                     if (objectClasses[i].equalsIgnoreCase(OC_JC_MAP[k][0])) {
                         try {
-                            javaClass = Class.forName(OC_JC_MAP[k][1]);
+                            javaClass = ClassCache.forName(OC_JC_MAP[k][1]);
                         } catch (Exception e) {
                             debug.error(
                                     "Exception while trying Class.forName for: "

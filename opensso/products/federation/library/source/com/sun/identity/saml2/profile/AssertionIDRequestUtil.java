@@ -54,6 +54,7 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import org.w3c.dom.Element;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.plugin.session.SessionException;
 import com.sun.identity.plugin.session.SessionManager;
 import com.sun.identity.saml.xmlsig.KeyProvider;
@@ -780,7 +781,7 @@ public class AssertionIDRequestUtil {
                 assertionIDRequestMapperCache.get(aidReqMapperName);
             if (aidReqMapper == null) {
                 aidReqMapper = (AssertionIDRequestMapper)
-                    Class.forName(aidReqMapperName).newInstance();
+				ClassCache.forName(aidReqMapperName).newInstance();
                 assertionIDRequestMapperCache.put(aidReqMapperName,
                     aidReqMapper);
             } else {

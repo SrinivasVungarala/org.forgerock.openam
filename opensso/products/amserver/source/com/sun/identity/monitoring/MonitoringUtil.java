@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
@@ -288,7 +289,7 @@ public class MonitoringUtil {
     public static boolean isRunning() {
         if (!initialized) {
             try {
-                Class.forName("com.sun.identity.monitoring.Agent");
+                ClassCache.forName("com.sun.identity.monitoring.Agent");
             } catch (ClassNotFoundException cnfe) {
                 isMonAvailable = false;
             } catch (NoClassDefFoundError ncdfe) {

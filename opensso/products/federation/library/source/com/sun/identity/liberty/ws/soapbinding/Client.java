@@ -28,6 +28,7 @@
 
 package com.sun.identity.liberty.ws.soapbinding;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.HttpURLConnectionManager;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
@@ -348,7 +349,7 @@ public class Client {
                     && trustManagerDefinition.length() > 0) {
                 tms = new TrustManager[defaultTrustManagers.length + 1];
                 tms[0] = (TrustManager)
-                Class.forName(trustManagerDefinition).newInstance();
+                ClassCache.forName(trustManagerDefinition).newInstance();
                 for(int i = 0; i < defaultTrustManagers.length; i++) {
                     tms[i + 1 ] = defaultTrustManagers[i];
                 }

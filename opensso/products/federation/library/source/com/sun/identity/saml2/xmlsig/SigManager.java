@@ -29,6 +29,7 @@
 
 package com.sun.identity.saml2.xmlsig;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.saml2.common.SAML2SDKUtils;
 import com.sun.identity.saml2.common.SAML2Constants;
@@ -49,7 +50,7 @@ public final class SigManager {
 		"com.sun.identity.saml2.xmlsig.FMSigProvider"
 	    );
             sp = (SigProvider)
-		Class.forName(sigClass).newInstance();
+			ClassCache.forName(sigClass).newInstance();
 	    
         } catch (Exception e) {
             SAML2SDKUtils.debug.error(

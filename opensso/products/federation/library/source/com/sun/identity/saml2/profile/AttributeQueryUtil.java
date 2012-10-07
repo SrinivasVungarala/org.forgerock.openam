@@ -54,6 +54,7 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import org.w3c.dom.Element;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.plugin.datastore.DataStoreProviderException;
 import com.sun.identity.plugin.datastore.DataStoreProvider;
 import com.sun.identity.plugin.session.SessionException;
@@ -1252,7 +1253,7 @@ public class AttributeQueryUtil {
                 attrAuthorityMapperCache.get(attrAuthorityMapperName);
             if (attrAuthorityMapper == null) {
                 attrAuthorityMapper = (AttributeAuthorityMapper)
-                    Class.forName(attrAuthorityMapperName).newInstance();
+				ClassCache.forName(attrAuthorityMapperName).newInstance();
                 attrAuthorityMapperCache.put(attrAuthorityMapperName,
                        attrAuthorityMapper);
             } else {

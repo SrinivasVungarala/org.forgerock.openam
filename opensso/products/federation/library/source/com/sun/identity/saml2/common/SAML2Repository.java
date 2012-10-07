@@ -27,6 +27,7 @@
 
 package com.sun.identity.saml2.common;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil; 
 import com.sun.identity.saml2.plugins.JMQSAML2Repository; 
 
@@ -50,7 +51,7 @@ public class SAML2Repository {
 
     static {
         try {
-            saml2Repository = (JMQSAML2Repository) Class.forName(
+            saml2Repository = (JMQSAML2Repository) ClassCache.forName(
                 REPOSITORY_CLASS).newInstance();
         } catch (Exception e) {
             SAML2Utils.debug.error("Failed to instantiate " +

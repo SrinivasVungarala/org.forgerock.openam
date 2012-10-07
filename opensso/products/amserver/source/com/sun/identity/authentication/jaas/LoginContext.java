@@ -32,6 +32,7 @@
 
 package com.sun.identity.authentication.jaas;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -168,7 +169,7 @@ public class LoginContext {
                 } else {
 
                     // instantiate the LoginModule
-                    Class c = Class.forName(
+                    Class c = ClassCache.forName(
                         moduleStack[i].entry.getLoginModuleName(), true,
                         Thread.currentThread().getContextClassLoader());
 

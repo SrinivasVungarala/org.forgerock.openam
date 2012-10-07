@@ -31,6 +31,7 @@
  */
 package com.iplanet.services.util;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.xml.XMLUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -110,7 +111,7 @@ public class XMLParser {
                         + nd.getNodeName());
         } else {
             try {
-                po = (ParseOutput) Class.forName(po_name).newInstance();
+                po = (ParseOutput) ClassCache.forName(po_name).newInstance();
             } catch (Exception ex) {
                 StringBuilder buf = new StringBuilder();
                 buf.append("Got Exception while creating class instance of ");

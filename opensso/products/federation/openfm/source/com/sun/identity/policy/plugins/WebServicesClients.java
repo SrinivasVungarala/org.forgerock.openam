@@ -43,6 +43,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOTokenManager;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOException;
@@ -134,7 +135,7 @@ public class WebServicesClients implements Subject {
         try {
 	    KeyProvider kp = null;
             try {
-                kp = (KeyProvider)Class.forName(SystemConfigurationUtil.getProperty(
+                kp = (KeyProvider)ClassCache.forName(SystemConfigurationUtil.getProperty(
                     SAMLConstants.KEY_PROVIDER_IMPL_CLASS,
                     SAMLConstants.JKS_KEY_PROVIDER)).newInstance();
             } catch (ClassNotFoundException cnfe) {

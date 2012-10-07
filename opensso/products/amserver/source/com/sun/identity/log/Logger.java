@@ -43,6 +43,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
@@ -185,7 +186,7 @@ public class Logger extends java.util.logging.Logger {
             return;
         }
         try {
-            clz = Class.forName(handlerClass);
+            clz = ClassCache.forName(handlerClass);
         } catch (Exception e) {
             Debug.error("Logger:processNewLoggerObject:" +
                 "HandlerClass not in classpath: " + handlerClass, e);
@@ -243,7 +244,7 @@ public class Logger extends java.util.logging.Logger {
         try {
             if (filterClassName != null) {
                 Filter filter =
-                    (Filter)Class.forName(filterClassName).newInstance();
+                    (Filter)ClassCache.forName(filterClassName).newInstance();
                 result.setFilter(filter);
             }
         } catch (Exception e) {

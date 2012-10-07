@@ -32,6 +32,7 @@ package com.sun.identity.policy;
 
 import java.util.*;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOException;
 import com.sun.identity.sm.*;
@@ -232,7 +233,7 @@ public class ConditionTypeManager {
         Condition condition = null;
         try {
             String className = ps.getClassName();
-            condition = (Condition) Class.forName(className).newInstance();
+            condition = (Condition) ClassCache.forName(className).newInstance();
         } catch (Exception e) {
             throw (new PolicyException(e));
         }

@@ -29,6 +29,7 @@
 
 package com.sun.identity.saml2.xmlenc;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.saml2.common.SAML2SDKUtils;
 import com.sun.identity.saml2.common.SAML2Constants;
@@ -49,7 +50,7 @@ public final class EncManager {
 		"com.sun.identity.saml2.xmlenc.FMEncProvider"
 	    );
             ep = (EncProvider)
-		Class.forName(encryptClass).newInstance();
+			ClassCache.forName(encryptClass).newInstance();
 	    
         } catch (Exception e) {
             SAML2SDKUtils.debug.error(

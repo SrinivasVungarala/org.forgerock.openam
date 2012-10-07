@@ -29,6 +29,7 @@
  */
 package com.sun.identity.entitlement.xacml3;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.entitlement.Entitlement;
 import com.sun.identity.entitlement.EntitlementCondition;
 import com.sun.identity.entitlement.EntitlementException;
@@ -1328,7 +1329,7 @@ public class XACMLPrivilegeUtils {
         }
         Object ob = null;
         try {
-            Class cla = Class.forName(className.trim());
+            Class cla = ClassCache.forName(className.trim());
             ob =  cla.newInstance();
         } catch (ClassNotFoundException e) {
             PrivilegeManager.debug.error("XACMLPrivilegeUtils.createDefaultObject(),"

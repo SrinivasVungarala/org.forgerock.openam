@@ -64,6 +64,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationException;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.federation.accountmgmt.FSAccountFedInfo;
@@ -1144,7 +1145,7 @@ public class FSServiceUtils {
             String realm = IDFFMetaUtils.getRealmByMetaAlias(
                 hostSPConfig.getMetaAlias());
             if (adapterName != null && adapterName.length() != 0) {
-                Class adapterClass = Class.forName(adapterName.trim());
+                Class adapterClass = ClassCache.forName(adapterName.trim());
                 FederationSPAdapter adapterInstance = 
                     (FederationSPAdapter) adapterClass.newInstance();
                 Set newEnv = new HashSet();

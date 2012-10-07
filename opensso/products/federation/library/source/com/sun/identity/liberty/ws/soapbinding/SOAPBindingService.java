@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.locale.Locale;
 
 import com.sun.identity.plugin.configuration.ConfigurationActionEvent;
@@ -174,7 +176,7 @@ public class SOAPBindingService implements ConfigurationListener {
             }
             if (key != null && class_ != null) {
                 try {
-                    handlers.put(key, Class.forName(class_).newInstance());
+                    handlers.put(key, ClassCache.forName(class_).newInstance());
                     if (soapActions != null) {
                         StringTokenizer stz2 =new StringTokenizer(soapActions);
                         List list  = null;
@@ -206,7 +208,7 @@ public class SOAPBindingService implements ConfigurationListener {
             String class_ = (String)values.iterator().next();
             try {
                 wsAuthenticator =
-                  (WebServiceAuthenticator)Class.forName(class_).newInstance();
+                  (WebServiceAuthenticator)ClassCache.forName(class_).newInstance();
             } catch (Exception ex) {
                 if (Utils.debug.warningEnabled()) {
                     Utils.debug.warning("Utils.setValues: Unable to " +

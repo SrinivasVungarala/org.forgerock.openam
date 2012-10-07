@@ -34,6 +34,7 @@
  */
 package com.iplanet.dpro.session.service;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.am.util.ThreadPool;
 import com.iplanet.am.util.ThreadPoolException;
@@ -886,7 +887,8 @@ public class SessionService {
                 && localURL.getProtocol().equalsIgnoreCase(url.getProtocol())
                 && localURL.getHost().equalsIgnoreCase(url.getHost())
                 && localURL.getPort() == url.getPort()
-		&& url.getPath().startsWith(localURL.getPath());
+		//&& url.getPath().startsWith(localURL.getPath()) sessionservice not is notificationservice !!!
+		;
     }
 
     /**
@@ -2253,7 +2255,7 @@ public class SessionService {
                         public void run() {
                             try {
                                 SessionTimeoutHandler handler =
-                                        Class.forName(clazz).asSubclass(
+                                        (SessionTimeoutHandler)ClassCache.forName(clazz).asSubclass(
                                         SessionTimeoutHandler.class).newInstance();
                                 switch (changeType) {
                                     case SessionEvent.IDLE_TIMEOUT:

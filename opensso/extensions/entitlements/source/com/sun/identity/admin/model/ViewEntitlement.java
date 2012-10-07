@@ -26,6 +26,7 @@
  */
 package com.sun.identity.admin.model;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.admin.DeepCloneableArrayList;
 import com.sun.identity.admin.ListFormatter;
 import com.sun.identity.admin.ManagedBeanResolver;
@@ -76,7 +77,7 @@ public class ViewEntitlement implements Serializable {
             String resourceClassName = viewApplication.getViewApplicationType().getResourceClassName();
             Resource r;
             try {
-                r = (Resource) Class.forName(resourceClassName).newInstance();
+                r = (Resource) ClassCache.forName(resourceClassName).newInstance();
             } catch (ClassNotFoundException cnfe) {
                 throw new RuntimeException(cnfe);
             } catch (InstantiationException ie) {
@@ -102,7 +103,7 @@ public class ViewEntitlement implements Serializable {
             String resourceClassName = viewApplication.getViewApplicationType().getResourceClassName();
             Resource r;
             try {
-                r = (Resource) Class.forName(resourceClassName).newInstance();
+                r = (Resource) ClassCache.forName(resourceClassName).newInstance();
             } catch (ClassNotFoundException cnfe) {
                 throw new RuntimeException(cnfe);
             } catch (InstantiationException ie) {

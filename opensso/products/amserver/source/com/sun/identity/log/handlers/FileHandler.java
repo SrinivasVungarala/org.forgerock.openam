@@ -47,6 +47,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.ThreadPoolException;
 import com.iplanet.log.NullLocationException;
 import com.sun.identity.common.GeneralTaskRunnable;
@@ -287,7 +288,7 @@ public class FileHandler extends java.util.logging.Handler {
         }
         String strFormatter = lmanager.getProperty(LogConstants.ELF_FORMATTER);
         try {
-            Class clz = Class.forName(strFormatter);
+            Class clz = ClassCache.forName(strFormatter);
             formatter = (Formatter) clz.newInstance();
         } catch (Exception e) {
             throw new FormatterInitException(

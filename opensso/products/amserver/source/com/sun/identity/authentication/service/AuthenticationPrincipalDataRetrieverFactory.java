@@ -29,6 +29,7 @@
 
 package com.sun.identity.authentication.service;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 
 /**
@@ -69,7 +70,7 @@ public class AuthenticationPrincipalDataRetrieverFactory {
             
         try {
             principalDataRetriever = 
-                (AuthenticationPrincipalDataRetriever)Class.forName(className)
+                (AuthenticationPrincipalDataRetriever)ClassCache.forName(className)
                 .newInstance();
         } catch (Exception e) {
             if (AuthD.debug.messageEnabled()) {

@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.datastruct.CollectionHelper;
 import com.sun.identity.liberty.ws.idpp.common.*;
 import com.sun.identity.liberty.ws.idpp.plugin.*;
@@ -182,22 +184,22 @@ public class IDPPServiceManager implements ConfigurationListener {
             storePPDSMap(config); 
             String param = CollectionHelper.getMapAttr(
                 config, authorizerKey, defaultAuthorizer);
-            Class authClass = Class.forName(param);
+            Class authClass = ClassCache.forName(param);
             authorizer = (Authorizer)authClass.newInstance();
              
             param = CollectionHelper.getMapAttr(
                 config, resourceMapperKey, defaultResourceIDMapper);
-            Class rMapper = Class.forName(param);
+            Class rMapper = ClassCache.forName(param);
             resourceIDMapper = (ResourceIDMapper)rMapper.newInstance();
             
             param = CollectionHelper.getMapAttr(
                 config, attributeMapperKey, defaultAttributeMapper);
-            Class aMapper = Class.forName(param);
+            Class aMapper = ClassCache.forName(param);
             attributeMapper = (AttributeMapper)aMapper.newInstance(); 
 
             param = CollectionHelper.getMapAttr(
                 config, siuClass, defaultSiuClass);
-            Class siUpdateClass = Class.forName(param);
+            Class siUpdateClass = ClassCache.forName(param);
             serviceInstanceUpdate =
                 (ServiceInstanceUpdate)siUpdateClass.newInstance();
 
@@ -326,7 +328,7 @@ public class IDPPServiceManager implements ConfigurationListener {
                 tokenizer.nextToken();
                 try {
                     String ext = (String)tokenizer.nextToken();
-                    Class extClass = Class.forName(ext);
+                    Class extClass = ClassCache.forName(ext);
                     IDPPExtension containerExtension = 
                               (IDPPExtension)extClass.newInstance();
                     containerExtensions.put(container, containerExtension);
@@ -342,7 +344,7 @@ public class IDPPServiceManager implements ConfigurationListener {
                 tokenizer.nextToken();
                 try {
                     String plugin = (String)tokenizer.nextToken();
-                    Class pluginClass = Class.forName(plugin);
+                    Class pluginClass = ClassCache.forName(plugin);
                     IDPPContainer containerClass = 
                               (IDPPContainer)pluginClass.newInstance();
                     containerClasses.put(container, containerClass);

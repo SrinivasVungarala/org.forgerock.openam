@@ -31,6 +31,7 @@
  */
 package com.sun.identity.log.spi;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.log.LogManager;
 import com.sun.identity.log.LogConstants;
 import com.sun.identity.log.LogManagerUtil;
@@ -49,7 +50,7 @@ public class Token {
     static {
         String tokenClass = lmanager.getProperty(LogConstants.TOKEN_PROVIDER);
         try {
-            Class c = Class.forName(tokenClass);
+            Class c = ClassCache.forName(tokenClass);
             tokenProvider = (ITokenProvider)c.newInstance();
             if (Debug.messageEnabled()) {
                 Debug.message("Succeeded in instantiating TokenProvider");

@@ -28,6 +28,7 @@
 
 package com.sun.identity.shared.jaxrpc;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.HttpURLConnectionManager;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.datastruct.OrderedSet;
@@ -796,7 +797,7 @@ public class SOAPClient {
             if (isException) {
                 exception = null;
                 try {
-                    Class clazz = Class.forName(exceptionClassName);
+                    Class clazz = ClassCache.forName(exceptionClassName);
                     if (clazz != null) {
                         exception = createResourceBasedException(clazz);
                         if (exception == null) {

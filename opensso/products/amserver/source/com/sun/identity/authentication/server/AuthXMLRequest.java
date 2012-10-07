@@ -39,6 +39,7 @@ import javax.security.auth.callback.Callback;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.authentication.AuthContext;
 import com.sun.identity.authentication.service.AuthException;
 import com.sun.identity.authentication.util.ISAuthConstants;
@@ -280,7 +281,7 @@ public class AuthXMLRequest {
      */
     public void setPrincipal(String className,String principalValue) {
         try {
-            Class clName = Class.forName(className);
+            Class clName = ClassCache.forName(className);
             principal = (Principal) clName.newInstance();
         } catch (ClassNotFoundException ce) {
             //debug.error("Error creating class instance " , e); 

@@ -27,6 +27,7 @@
  */
 package com.sun.identity.console.service;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.jato.model.ModelControlException;
 import com.iplanet.jato.RequestManager;
 import com.iplanet.jato.view.View;
@@ -275,7 +276,7 @@ public class SecurityTokenServiceViewBean
             String name = (String) getPageSessionAttribute(
                     AMAdminConstants.SAVE_VB_NAME);
             SCConfigViewBean vb = (SCConfigViewBean) getViewBean(
-                    Class.forName(name));
+			ClassCache.forName(name));
             passPgSessionMap(vb);
             vb.forwardTo(getRequestContext());
         } catch (ClassNotFoundException e) {

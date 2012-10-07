@@ -39,6 +39,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.encode.Base64;
 import com.sun.identity.shared.xml.XMLUtils;
 import com.sun.identity.common.SystemConfigurationUtil;
@@ -98,7 +99,7 @@ public class AMSignatureProvider implements SignatureProvider {
             String kprovider = SystemConfigurationUtil.getProperty(
                 SAMLConstants.KEY_PROVIDER_IMPL_CLASS,
                 SAMLConstants.JKS_KEY_PROVIDER);
-            keystore= (KeyProvider) Class.forName(kprovider).newInstance();
+            keystore= (KeyProvider) ClassCache.forName(kprovider).newInstance();
             if (keystore instanceof JKSKeyProvider) {
                 isJKSKeyStore=true;
             }

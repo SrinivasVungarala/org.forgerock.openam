@@ -28,6 +28,7 @@
 
 package com.sun.identity.plugin.configuration;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 
 /**
@@ -64,7 +65,7 @@ public final class ConfigurationManager {
     ) throws ConfigurationException {
         try {
             ConfigurationInstance config = (ConfigurationInstance)
-                Class.forName(configClass).newInstance();
+                ClassCache.forName(configClass).newInstance();
             config.init(componentName, callerToken);
             return config;
         } catch (IllegalAccessException iae) {

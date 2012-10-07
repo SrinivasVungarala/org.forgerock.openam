@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.ThreadPoolException;
 import com.iplanet.log.ConnectionException;
 import com.iplanet.log.DriverLoadException;
@@ -218,7 +219,7 @@ public class DBHandler extends Handler {
         }
 
         try {
-            Class clz = Class.forName(strFormatter);
+            Class clz = ClassCache.forName(strFormatter);
             formatter = (Formatter) clz.newInstance();
             setFormatter(formatter);
         } catch (Exception e) {    // should be Invalid Formatter Exception
@@ -246,7 +247,7 @@ public class DBHandler extends Handler {
         }
         //Monit end
         try {
-            Class.forName(driver);
+            ClassCache.forName(driver);
             this.conn = 
                 DriverManager.getConnection(databaseURL, userName, password);
         } catch (ClassNotFoundException e) {
@@ -299,7 +300,7 @@ public class DBHandler extends Handler {
         //Monit end
 
         try {
-            Class.forName(driver);
+            ClassCache.forName(driver);
             this.conn = DriverManager.getConnection(databaseURL,
                 userName, password);
         } catch (ClassNotFoundException e) {

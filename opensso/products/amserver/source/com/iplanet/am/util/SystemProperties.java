@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -101,7 +102,7 @@ public class SystemProperties {
     }
     
 
-    private static Properties props;
+    final private static ConcurrentHashMap<String, String> props=new ConcurrentHashMap<String, String>();
 
     private static long lastModified;
 
@@ -150,7 +151,7 @@ public class SystemProperties {
         
         try {
             // Initialize properties
-            props = new Properties();
+            //props = new Properties();
 
             // Load properties from file
             String serverName = System.getProperty(SERVER_NAME_PROPERTY);
@@ -170,27 +171,30 @@ public class SystemProperties {
             // of single war deployment
             try {
                 String newConfigFileLoc = props
-                        .getProperty(Constants.AM_NEW_CONFIGFILE_PATH);
+                        .get(Constants.AM_NEW_CONFIGFILE_PATH);
                 if ((newConfigFileLoc != null) &&
                     (newConfigFileLoc.length() > 0) && 
                     !newConfigFileLoc.equals(NEWCONFDIR)
                 ) {
                     String hostName = InetAddress.getLocalHost().getHostName()
                             .toLowerCase();
-                    String serverURI = props.getProperty(
+                    String serverURI = props.get(
                             Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR);
                     serverURI = serverURI.replace('/', '_').toLowerCase();
                     StringBuilder fileName = new StringBuilder();
                     fileName.append(newConfigFileLoc).append("/").append(
                             AMCONFIG_FILE_NAME).append(serverURI).append(
                             hostName).append(
-                            props.getProperty(Constants.AM_SERVER_PORT))
+                            props.get(Constants.AM_SERVER_PORT))
                             .append(".").append(PROPERTIES);
                     Properties modProp = new Properties();
                     try {
                         fis = new FileInputStream(fileName.toString());
                         modProp.load(fis);
-                        props.putAll(modProp);
+                        for (Entry row : modProp.entrySet())
+				if (row.getKey()!=null&&row.getValue()!=null)
+					props.put((String)row.getKey(), (String)row.getValue());
+                        //props.putAll(modProp);
                     } catch (IOException ioe) {
                         StringBuilder fileNameOrig = new StringBuilder();
                         fileNameOrig.append(newConfigFileLoc).append("/")
@@ -199,7 +203,10 @@ public class SystemProperties {
                         try {
                             fis = new FileInputStream(fileNameOrig.toString());
                             modProp.load(fis);
-                            props.putAll(modProp);
+                            for (Entry row : modProp.entrySet())
+				if (row.getKey()!=null&&row.getValue()!=null)
+					props.put((String)row.getKey(), (String)row.getValue());
+                            //props.putAll(modProp);
                         } catch (IOException ioexp) {
                             saveException(ioexp);
                         }
@@ -318,7 +325,7 @@ public class SystemProperties {
     private static String getProp(String key) {
         String answer = System.getProperty(key);
         if (answer == null) {
-            answer = props.getProperty(key);
+            answer = props.get(key);
         }
         return answer;
     }
@@ -409,7 +416,7 @@ public class SystemProperties {
         return getAll();
     }
 
-    private static void updateTagswapMap(Properties properties) {
+    private static void updateTagswapMap(ConcurrentHashMap<String, String> properties) {
         tagswapValues = new HashMap();
         for (Iterator i = mapTagswap.keySet().iterator(); i.hasNext(); ) {
             String key = (String)i.next();
@@ -436,14 +443,12 @@ public class SystemProperties {
             ResourceBundle bundle = ResourceBundle.getBundle(file);
             // Copy the properties to props
             Enumeration e = bundle.getKeys();
-            Properties newProps = new Properties();
-            newProps.putAll(props);
             while (e.hasMoreElements()) {
                 String key = (String) e.nextElement();
-                newProps.put(key, bundle.getString(key));
+                if (key!=null&&bundle.getString(key)!=null)
+			props.put(key, bundle.getString(key));
             }
             // Reset the last modified time
-            props = newProps;
             updateTagswapMap(props);
             lastModified = System.currentTimeMillis();
         } finally {
@@ -497,18 +502,18 @@ public class SystemProperties {
         //rwLock.writeLock().lock();
 
         try {
-            Properties newProps = new Properties();
+            if (reset) {
+		props.clear();
+            }
             if (defaultProp != null) {
-                newProps.putAll(defaultProp);
+                for (Entry row : defaultProp.entrySet())
+			if (reset||!props.contains(row.getKey()))
+				if (row.getKey()!=null&&row.getValue()!=null)
+					props.put((String)row.getKey(), (String)row.getValue());
             }
-
-
-            if (!reset) {
-                newProps.putAll(props);
-            }
-
-            newProps.putAll(properties);
-            props = newProps;
+            for (Entry row : properties.entrySet())
+		if (row.getKey()!=null&&row.getValue()!=null)
+			props.put((String)row.getKey(), (String)row.getValue());
             updateTagswapMap(props);
             lastModified = System.currentTimeMillis();
         } finally {
@@ -533,10 +538,12 @@ public class SystemProperties {
         //rwLock.writeLock().lock();
 
         try {
-            Properties newProps = new Properties();
-            newProps.putAll(props);
-            newProps.put(propertyName, propertyValue);
-            props = newProps;
+           // Properties newProps = new Properties();
+            //newProps.putAll(props);
+            //newProps.put(propertyName, propertyValue);
+            //props = newProps;
+            if (propertyName!=null&&propertyValue!=null)
+		props.put(propertyName, propertyValue);
             updateTagswapMap(props);
             lastModified = System.currentTimeMillis();
         } finally {

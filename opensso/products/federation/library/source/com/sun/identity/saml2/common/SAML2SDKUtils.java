@@ -29,6 +29,7 @@
 
 package com.sun.identity.saml2.common;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.liberty.ws.disco.ResourceOffering;
 import com.sun.identity.liberty.ws.security.SecurityAssertion;
 import com.sun.identity.plugin.session.SessionManager;
@@ -203,7 +204,7 @@ public class SAML2SDKUtils {
                         debug.message("SAML2SDKUtils.init: mapper for " + iName
                             + "=" + implClass);
                     }
-                    classMapping.put(iName, Class.forName(implClass.trim()));
+                    classMapping.put(iName, ClassCache.forName(implClass.trim()));
                 }
             } catch (ClassNotFoundException cnfe) {
                 debug.error("SAML2SDKUtils.init: " + iName, cnfe);

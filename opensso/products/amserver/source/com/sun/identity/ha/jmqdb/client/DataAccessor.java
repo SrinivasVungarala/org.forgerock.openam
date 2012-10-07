@@ -31,6 +31,7 @@
  */
 package com.sun.identity.ha.jmqdb.client;
 
+import com.iplanet.am.util.ClassCache;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.persist.EntityStore;
 import com.sleepycat.persist.PrimaryIndex;
@@ -63,7 +64,7 @@ public class DataAccessor {
             }
             String svcid = svcp.substring("persist_".length());
             String className = prop.getProperty(svcp);
-            Class cl = Class.forName(className);
+            Class cl = ClassCache.forName(className);
             classes.put(svcid, cl);
 
             // Primary Index 

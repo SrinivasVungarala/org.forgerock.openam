@@ -41,6 +41,8 @@ import javax.security.auth.message.MessagePolicy;
 import javax.security.auth.message.MessageInfo;
 import javax.security.auth.message.AuthException;
 import javax.security.auth.message.AuthStatus;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.SOAPVersion;
 import com.sun.xml.ws.api.addressing.AddressingVersion;
@@ -125,19 +127,19 @@ public class FAMClientAuthModule implements ClientAuthModule {
                     "com.sun.identity.wss.security.handler.SOAPRequestHandler");
                 // Initialize the methods
                 Class clsa[] = new Class[1];
-                clsa[0] = Class.forName("java.util.Map");
+                clsa[0] = ClassCache.forName("java.util.Map");
                 init = _handler.getDeclaredMethod("init", clsa);
-                clsa[0] = Class.forName("org.w3c.dom.Node");
+                clsa[0] = ClassCache.forName("org.w3c.dom.Node");
                 print = _handler.getDeclaredMethod("print", clsa);
                 clsa = new Class[3];
-                clsa[0] = Class.forName("javax.xml.soap.SOAPMessage", true, cls);
-                clsa[1] = Class.forName("javax.security.auth.Subject");
-                clsa[2] = Class.forName("java.util.Map");
+                clsa[0] = ClassCache.forName("javax.xml.soap.SOAPMessage", true, cls);
+                clsa[1] = ClassCache.forName("javax.security.auth.Subject");
+                clsa[2] = ClassCache.forName("java.util.Map");
                 secureRequest = _handler.getDeclaredMethod(
                     "secureRequest", clsa);
                 clsa = new Class[2];
-                clsa[0] = Class.forName("javax.xml.soap.SOAPMessage", true, cls);
-                clsa[1] = Class.forName("java.util.Map");
+                clsa[0] = ClassCache.forName("javax.xml.soap.SOAPMessage", true, cls);
+                clsa[1] = ClassCache.forName("java.util.Map");
                 validateResponse = _handler.getDeclaredMethod(
                     "validateResponse", clsa);
             }

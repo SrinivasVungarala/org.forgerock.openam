@@ -31,6 +31,7 @@
  */
 package com.sun.identity.sm;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.sun.identity.common.CaseInsensitiveHashMap;
 import com.sun.identity.common.CaseInsensitiveHashSet;
@@ -570,7 +571,7 @@ class ServiceSchemaImpl {
         String javaClass
     ) throws SMSException {
         try {
-            Class clazz = Class.forName(javaClass);
+            Class clazz = ClassCache.forName(javaClass);
             ServiceAttributeValidator validator = (ServiceAttributeValidator)
                 clazz.newInstance();
             validatePlugin(validator, as, attrName, values);

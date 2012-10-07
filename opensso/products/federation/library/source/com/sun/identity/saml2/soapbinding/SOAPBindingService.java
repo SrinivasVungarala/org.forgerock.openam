@@ -44,7 +44,7 @@ import com.sun.identity.plugin.configuration.ConfigurationException;
 import com.sun.identity.plugin.configuration.ConfigurationInstance;
 import com.sun.identity.plugin.configuration.ConfigurationListener;
 import com.sun.identity.plugin.configuration.ConfigurationManager;
-
+import com.iplanet.am.util.ClassCache;
 
 /**
  * This class provides methods to retrieve SOAP configuration
@@ -120,7 +120,7 @@ public class SOAPBindingService implements ConfigurationListener {
             }
             if (key != null && handlerClass != null) {
                 try {
-                    handlers.put(key,Class.forName(handlerClass).newInstance());
+                    handlers.put(key,ClassCache.forName(handlerClass).newInstance());
                 } catch (Throwable t) {
                     debug.error(classMethod+ "class="+handlerClass,t);
                 }

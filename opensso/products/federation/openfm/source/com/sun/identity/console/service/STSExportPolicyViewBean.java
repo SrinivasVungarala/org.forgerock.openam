@@ -26,6 +26,7 @@
  */
 package com.sun.identity.console.service;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.jato.model.ModelControlException;
 import com.iplanet.jato.view.View;
 import com.iplanet.jato.view.event.DisplayEvent;
@@ -155,7 +156,7 @@ public class STSExportPolicyViewBean extends AMPrimaryMastHeadViewBean {
         try {
             AMViewBeanBase vb =
                     (AMViewBeanBase) getViewBean(
-                    Class.forName((String) getPageSessionAttribute(
+				ClassCache.forName((String) getPageSessionAttribute(
                     PG_ATTR_CONFIG_PAGE)));
             removePageSessionAttribute(PG_ATTR_CONFIG_PAGE);
             passPgSessionMap(vb);

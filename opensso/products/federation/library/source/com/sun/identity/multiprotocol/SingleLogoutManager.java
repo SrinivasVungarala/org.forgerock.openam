@@ -28,6 +28,7 @@
 
 package com.sun.identity.multiprotocol;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.federation.common.FSUtils;
 import com.sun.identity.federation.common.IFSConstants;
 import com.sun.identity.federation.jaxb.entityconfig.BaseConfigType;
@@ -246,7 +247,7 @@ public class SingleLogoutManager {
                             continue;
                         }
                         SingleLogoutHandler handler = (SingleLogoutHandler) 
-                            Class.forName(className).newInstance();
+                            ClassCache.forName(className).newInstance();
                         protocolList.add(key);
                         handlerMap.put(key, handler);
                     } catch (ClassNotFoundException c) {

@@ -35,6 +35,7 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.encode.Base64;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
@@ -116,7 +117,7 @@ public class Crypt {
                 DEFAULT_ENCRYPTOR_CLASS);
         
         try {
-            instance = (AMEncryption) Class.forName(encClass).newInstance();
+            instance = (AMEncryption) ClassCache.forName(encClass).newInstance();
         } catch (Exception e) {
             Debug debug = Debug.getInstance("amSDK");
             debug.error("Crypt:: Unable to get class instance: " + encClass, e);

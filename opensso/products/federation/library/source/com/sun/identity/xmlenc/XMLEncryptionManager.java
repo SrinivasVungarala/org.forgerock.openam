@@ -33,6 +33,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.security.Key;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.saml.xmlsig.KeyProvider;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.saml.common.SAMLConstants;
@@ -51,11 +52,11 @@ public class XMLEncryptionManager {
             String encryptClass = SystemPropertiesManager.get(
             EncryptionConstants.XML_ENCRYPTION_PROVIDER_KEY,
             "com.sun.identity.xmlenc.AMEncryptionProvider");
-            ep = (EncryptionProvider) Class.forName(encryptClass).newInstance();
+            ep = (EncryptionProvider) ClassCache.forName(encryptClass).newInstance();
             String kprovider = SystemPropertiesManager.get(
                 SAMLConstants.KEY_PROVIDER_IMPL_CLASS,
                 SAMLConstants.JKS_KEY_PROVIDER);
-            ep.initialize((KeyProvider) Class.forName(kprovider).newInstance());
+            ep.initialize((KeyProvider) ClassCache.forName(kprovider).newInstance());
         } catch (Exception e) {
             EncryptionUtils.debug.error("XMLEncryptionManager:constructor" +
             " Exception in constructing xml encryption manager", e);

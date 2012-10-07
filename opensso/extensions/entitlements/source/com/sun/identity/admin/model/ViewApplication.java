@@ -27,6 +27,7 @@
 
 package com.sun.identity.admin.model;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.admin.ListFormatter;
 import com.sun.identity.admin.ManagedBeanResolver;
 import com.sun.identity.admin.Resources;
@@ -76,7 +77,7 @@ public class ViewApplication implements Serializable {
         for (String resourceString : a.getResources()) {
             Resource r;
             try {
-                r = (Resource) Class.forName(viewApplicationType.getResourceClassName()).newInstance();
+                r = (Resource) ClassCache.forName(viewApplicationType.getResourceClassName()).newInstance();
             } catch (ClassNotFoundException cnfe) {
                 throw new RuntimeException(cnfe);
             } catch (InstantiationException ie) {

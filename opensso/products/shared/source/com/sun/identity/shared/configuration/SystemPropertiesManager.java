@@ -30,6 +30,8 @@ package com.sun.identity.shared.configuration;
 
 import java.util.Properties;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * This manages the system configuration class. The order for locating
  * the implementation class for ISystemProperties is
@@ -76,7 +78,7 @@ public final class SystemPropertiesManager {
         String param = System.getProperty(PARAM_SYS_CONFIG);
         if (param != null) {
             try {
-                Class clazz = Class.forName(param);
+                Class clazz = ClassCache.forName(param);
                 systemProperties = (ISystemProperties)clazz.newInstance();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -98,7 +100,7 @@ public final class SystemPropertiesManager {
     private static boolean instantiateProvider(String providerClassName) {
         boolean succeeded = false;
         try {
-            Class clazz = Class.forName(providerClassName);
+            Class clazz = ClassCache.forName(providerClassName);
             systemProperties = (ISystemProperties)clazz.newInstance();
             succeeded = true;
         } catch (ClassNotFoundException e) {

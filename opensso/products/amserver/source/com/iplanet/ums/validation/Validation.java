@@ -32,6 +32,7 @@ import java.util.Enumeration;
 
 import com.sun.identity.shared.ldap.LDAPModification;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.services.ldap.Attr;
 import com.iplanet.services.ldap.AttrSet;
 import com.iplanet.services.ldap.ModSet;
@@ -83,7 +84,7 @@ public class Validation {
 
                     IValidator validator = null;
                     try {
-                        Class theClass = Class.forName(validatorClass);
+                        Class theClass = ClassCache.forName(validatorClass);
                         validator = (IValidator) theClass.newInstance();
                     } catch (Exception e) {
                         throw new UMSException(i18n

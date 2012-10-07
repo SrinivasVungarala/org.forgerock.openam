@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import com.sun.identity.shared.debug.Debug;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.services.naming.WebtopNaming;
 import com.iplanet.services.naming.URLNotFoundException;
@@ -890,7 +891,7 @@ class PolicyProperties {
         } else {
             try {
                 if (className != null) {
-                    Class resourceClass = Class.forName(className);
+                    Class resourceClass = ClassCache.forName(className);
                     resourceComparator 
                             = (ResourceName) resourceClass.newInstance();
                     resourceComparator.initialize(configMap);

@@ -26,6 +26,7 @@
  */
 package com.sun.identity.entitlement;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.entitlement.util.DebugFactory;
 import com.sun.identity.entitlement.util.PrivilegeSearchFilter;
 import com.sun.identity.shared.debug.IDebug;
@@ -66,7 +67,7 @@ public abstract class PrivilegeManager {
         PrivilegeManager pm = null;
         try {
             //TODO: read the class name from configuration
-            Class clazz = Class.forName(
+            Class clazz = ClassCache.forName(
                 "com.sun.identity.entitlement.opensso.PolicyPrivilegeManager");
             pm = (PrivilegeManager)clazz.newInstance();
             pm.initialize(realm, subject);

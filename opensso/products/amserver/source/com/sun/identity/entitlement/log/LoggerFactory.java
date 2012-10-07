@@ -28,6 +28,7 @@
 package com.sun.identity.entitlement.log;
 
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.entitlement.PrivilegeManager;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -61,7 +62,7 @@ public class LoggerFactory {
     private ILoggerProvider getLoggerProvider(String className) {
         try {
             className = className.trim();
-            Class clazz = Class.forName(className);
+            Class clazz = ClassCache.forName(className);
             return (ILoggerProvider) clazz.newInstance();
         } catch (InstantiationException ex) {
             PrivilegeManager.debug.error("LoggerFactory.<init>", ex);

@@ -31,6 +31,8 @@ package com.sun.identity.idsvcs;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * Factory object to maintain multiple implementations of
  * Identity Services.
@@ -77,7 +79,7 @@ public class IdentityServicesFactory {
         if (ret == null) {
             try {
                 boolean found = false;
-                Class clazz = Class.forName(provider);
+                Class clazz = ClassCache.forName(provider);
                 Class[] infs = clazz.getInterfaces();
                 for (int i = 0; i < infs.length; i++) {
                     Class tst = infs[i];

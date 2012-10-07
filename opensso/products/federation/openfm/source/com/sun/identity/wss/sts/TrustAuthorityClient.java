@@ -50,6 +50,7 @@ import javax.xml.namespace.QName;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.xml.XMLUtils;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.wss.security.SecurityToken;
@@ -426,13 +427,13 @@ public class TrustAuthorityClient {
             Object stsClient = taClientCon.newInstance();
 
             Class clsa[] = new Class[7];
-            clsa[0] = Class.forName("java.lang.String");
-            clsa[1] = Class.forName("java.lang.String");
-            clsa[2] = Class.forName("java.lang.String");
-            clsa[3] = Class.forName("java.lang.Object");
-            clsa[4] = Class.forName("java.lang.String");
-            clsa[5] = Class.forName("java.lang.String");
-            clsa[6] = Class.forName("java.lang.String");
+            clsa[0] = ClassCache.forName("java.lang.String");
+            clsa[1] = ClassCache.forName("java.lang.String");
+            clsa[2] = ClassCache.forName("java.lang.String");
+            clsa[3] = ClassCache.forName("java.lang.Object");
+            clsa[4] = ClassCache.forName("java.lang.String");
+            clsa[5] = ClassCache.forName("java.lang.String");
+            clsa[6] = ClassCache.forName("java.lang.String");
 
             Method getSTSTokenElement = 
                       stsClient.getClass().getDeclaredMethod(

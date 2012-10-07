@@ -35,6 +35,8 @@ import javax.security.auth.Subject;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * This class wrapped on an Entitlement Subject object to provide boolean
  * NOT.
@@ -81,7 +83,7 @@ public class NotSubject implements EntitlementSubject {
             JSONObject memberSubject = jo.optJSONObject("memberESubject");
             if (memberSubject != null) {
                 String className = memberSubject.getString("className");
-                Class cl = Class.forName(className);
+                Class cl = ClassCache.forName(className);
                 eSubject = (EntitlementSubject) cl.newInstance();
                 eSubject.setState(memberSubject.getString("state"));
 

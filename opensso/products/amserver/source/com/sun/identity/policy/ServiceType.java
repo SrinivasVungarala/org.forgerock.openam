@@ -35,6 +35,7 @@ import java.util.*;
 
 import org.w3c.dom.*;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.sm.*;
 import com.sun.identity.shared.xml.XMLUtils;
 import com.sun.identity.policy.interfaces.*;
@@ -119,7 +120,7 @@ public class ServiceType {
                     resourceOneLevelWildcard);
             }
             if (className != null) {
-                Class resourceClass = Class.forName(className);
+                Class resourceClass = ClassCache.forName(className);
                 resourceNameUtil = (ResourceName) resourceClass.newInstance();
                 // we pass all the resource compare parameters to Resourcename
                 // implementation. Alterntively we could also pass these 

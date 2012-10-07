@@ -37,6 +37,7 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.LoginException;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.sun.identity.authentication.util.ISAuthConstants;
 
@@ -187,12 +188,12 @@ public class LoginContext {
                 answer = new LoginModule[st.countTokens()];
             } else {
                 answer = new LoginModule[st.countTokens() + 1];
-                answer[answer.length - 1] = (LoginModule) Class.forName(
+                answer[answer.length - 1] = (LoginModule) ClassCache.forName(
                         SMS_LOGIN_MODULE).newInstance();
             }
             for (int i = 0; st.hasMoreTokens(); i++) {
                 String moduleClass = st.nextToken();
-                answer[i] = (LoginModule) Class.forName(moduleClass)
+                answer[i] = (LoginModule) ClassCache.forName(moduleClass)
                         .newInstance();
                 if (AuthContext.authDebug.messageEnabled()) {
                     AuthContext.authDebug
@@ -206,8 +207,8 @@ public class LoginContext {
 
     protected LoginModule[] getDefaultLoginModules() throws Exception {
         LoginModule[] answer = new LoginModule[2];
-        answer[0] = (LoginModule) Class.forName(SMS_LOGIN_MODULE).newInstance();
-        answer[1] = (LoginModule) Class.forName(LDAP_LOGIN_MODULE)
+        answer[0] = (LoginModule) ClassCache.forName(SMS_LOGIN_MODULE).newInstance();
+        answer[1] = (LoginModule) ClassCache.forName(LDAP_LOGIN_MODULE)
                 .newInstance();
         return (answer);
     }

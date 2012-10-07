@@ -35,6 +35,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.liberty.ws.authnsvc.mechanism.MechanismHandler;
 import com.sun.identity.plugin.configuration.ConfigurationActionEvent;
 import com.sun.identity.plugin.configuration.ConfigurationException;
@@ -155,7 +157,7 @@ public class AuthnSvcService implements ConfigurationListener
             if (key != null && class_ != null) {
                 try {
                     handlers.put(key, (MechanismHandler)
-                                      Class.forName(class_).newInstance());
+                                      ClassCache.forName(class_).newInstance());
                 } catch (Throwable t) {
                     AuthnSvcUtils.debug.error(
                             "AuthnSvcService.setValues class = " + class_, t);

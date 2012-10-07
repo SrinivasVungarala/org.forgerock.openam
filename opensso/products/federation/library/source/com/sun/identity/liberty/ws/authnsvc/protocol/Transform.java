@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.xml.XMLUtils;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.liberty.ws.authnsvc.AuthnSvcConstants;
@@ -124,7 +125,7 @@ public abstract class Transform {
         String className = (String)transformClasses.get(name);
         if (className != null) {
             try {
-                tf = (Transform)Class.forName(className).newInstance();
+                tf = (Transform)ClassCache.forName(className).newInstance();
             } catch (Throwable t) {
                 if (AuthnSvcUtils.debug.warningEnabled()) {
                     AuthnSvcUtils.debug.warning(

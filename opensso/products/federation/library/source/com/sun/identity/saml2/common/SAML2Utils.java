@@ -32,6 +32,7 @@
 
 package com.sun.identity.saml2.common;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.HttpURLConnectionManager;
 import com.sun.identity.common.SystemConfigurationException;
 import com.sun.identity.common.SystemConfigurationUtil;
@@ -2822,7 +2823,7 @@ public class SAML2Utils extends SAML2SDKUtils {
             try {
                 spAuthnCtx =
                         (SPAuthnContextMapper)
-                        Class.forName(authnCtxClassName).newInstance();
+                        ClassCache.forName(authnCtxClassName).newInstance();
                 SPCache.authCtxObjHash.put(hostEntityID+"|"+realm,spAuthnCtx);
             } catch (ClassNotFoundException ce) {
                 if (SAML2Utils.debug.messageEnabled()) {
@@ -3090,7 +3091,7 @@ public class SAML2Utils extends SAML2SDKUtils {
                     idpAccountMapperName);
             if (idpAccountMapper == null) {
                 idpAccountMapper = (IDPAccountMapper)
-                Class.forName(idpAccountMapperName).newInstance();
+				ClassCache.forName(idpAccountMapperName).newInstance();
                 IDPCache.idpAccountMapperCache.put(
                         idpAccountMapperName, idpAccountMapper);
             } else {
@@ -3142,7 +3143,7 @@ public class SAML2Utils extends SAML2SDKUtils {
                     spAdapterClassName);
                 if (spAdapterClass == null) {
                     spAdapterClass = (SAML2ServiceProviderAdapter)
-                        Class.forName(spAdapterClassName).newInstance();
+				ClassCache.forName(spAdapterClassName).newInstance();
                     List env = getAllAttributeValueFromSSOConfig(
                         realm, spEntityID, SAML2Constants.SP_ROLE,
                         SAML2Constants.SP_ADAPTER_ENV);
@@ -3218,7 +3219,7 @@ public class SAML2Utils extends SAML2SDKUtils {
                     fedletAdapterClassName);
                 if (fedletAdapterClass == null) {
                     fedletAdapterClass = (FedletAdapter)
-                        Class.forName(fedletAdapterClassName).newInstance();
+				ClassCache.forName(fedletAdapterClassName).newInstance();
                     List env = getAllAttributeValueFromSSOConfig(
                         realm, spEntityID, SAML2Constants.SP_ROLE,
                         SAML2Constants.FEDLET_ADAPTER_ENV);
@@ -3322,7 +3323,7 @@ public class SAML2Utils extends SAML2SDKUtils {
             SPCache.spAccountMapperCache.get(spAccountMapperName);
             if (spAccountMapper == null) {
                 spAccountMapper = (SPAccountMapper)
-                Class.forName(spAccountMapperName).newInstance();
+				ClassCache.forName(spAccountMapperName).newInstance();
                 SPCache.spAccountMapperCache.put(
                         spAccountMapperName, spAccountMapper);
             } else {
@@ -3371,7 +3372,7 @@ public class SAML2Utils extends SAML2SDKUtils {
                 SPCache.ecpRequestIDPListFinderCache.get(implClassName);
             if (ecpRequestIDPListFinder == null) {
                 ecpRequestIDPListFinder = (SAML2IDPFinder)
-                    Class.forName(implClassName).newInstance();
+				ClassCache.forName(implClassName).newInstance();
                 SPCache.ecpRequestIDPListFinderCache.put(
                         implClassName, ecpRequestIDPListFinder);
             } else {

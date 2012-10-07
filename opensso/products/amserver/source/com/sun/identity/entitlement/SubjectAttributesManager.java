@@ -42,6 +42,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.security.auth.Subject;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * Manages multiple instances of <class>SubjectAttributesCollector</class>,
  * and to be called by <class>Evaluator</class> and <class>
@@ -92,7 +94,7 @@ public class SubjectAttributesManager {
         }
 
         try {
-            attrCollector = (SubjectAttributesCollector)Class.forName(
+            attrCollector = (SubjectAttributesCollector)ClassCache.forName(
                 implClass).newInstance();
             attrCollector.init(realmName, configMap);
         } catch (ClassNotFoundException ex) {

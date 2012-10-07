@@ -39,6 +39,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.datastruct.CollectionHelper;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.plugin.datastore.DataStoreProvider;
@@ -1031,7 +1033,7 @@ public class SAMLServiceManager implements ConfigurationListener {
                                              SAMLConstants.ACCOUNTMAPPER))
                             {  
                                 try {
-                                    Object temp = Class.forName(
+                                    Object temp = ClassCache.forName(
                                       element.substring(nextpos)).newInstance();
                                     if (temp instanceof 
                                          PartnerAccountMapper) {
@@ -1082,7 +1084,7 @@ public class SAMLServiceManager implements ConfigurationListener {
                             } else if (key.equalsIgnoreCase(
                                            SAMLConstants.SITEATTRIBUTEMAPPER)) {
                                 try {
-                                    Object temp = Class.forName(
+                                    Object temp = ClassCache.forName(
                                       element.substring(nextpos)).newInstance();
                                     if (temp instanceof SiteAttributeMapper) {
                                         _siteAttributeMapper = 
@@ -1114,7 +1116,7 @@ public class SAMLServiceManager implements ConfigurationListener {
                             } else if (key.equalsIgnoreCase(
                                    SAMLConstants.PARTNERSITEATTRIBUTEMAPPER)) {
                                 try {
-                                    Object temp = Class.forName(
+                                    Object temp = ClassCache.forName(
                                       element.substring(nextpos)).newInstance();
                                     if (temp instanceof 
                                          PartnerSiteAttributeMapper) {
@@ -1144,7 +1146,7 @@ public class SAMLServiceManager implements ConfigurationListener {
                                 SAMLConstants.NAMEIDENTIFIERMAPPER)) {
                                 try {
                                     niMapper = (NameIdentifierMapper)
-                                         Class.forName(element.substring(
+						ClassCache.forName(element.substring(
                                          nextpos)).newInstance();
                                 } catch (Exception ex) {
                                     SAMLUtilsCommon.debug.error("SAMLSManager:",
@@ -1231,7 +1233,7 @@ public class SAMLServiceManager implements ConfigurationListener {
                         if (_partnerAccountMapper == null) {
                             try {
                                 _partnerAccountMapper = (PartnerAccountMapper)
-                                  Class.forName(
+						ClassCache.forName(
                                   DEFAULT_PARTNER_ACCOUNT_MAPPER).newInstance();
                             } catch (Exception ex0) {
                                 // ignore

@@ -34,6 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.iplanet.am.util.ClassCache;
+
 public abstract class LogicalCondition extends EntitlementConditionAdaptor {
     private Set<EntitlementCondition> eConditions;
     private String pConditionName;
@@ -88,7 +90,7 @@ public abstract class LogicalCondition extends EntitlementConditionAdaptor {
                     JSONObject memberCondition =
                         memberConditions.getJSONObject(i);
                     String className = memberCondition.getString("className");
-                    Class cl = Class.forName(className);
+                    Class cl = ClassCache.forName(className);
                     EntitlementCondition ec =
                         (EntitlementCondition) cl.newInstance();
                     ec.setState(memberCondition.getString("state"));

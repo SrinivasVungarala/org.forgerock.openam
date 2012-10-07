@@ -30,6 +30,7 @@ package com.sun.identity.plugin.session;
 
 import java.util.ResourceBundle;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.locale.Locale;
 import com.sun.identity.common.SystemConfigurationUtil;
@@ -56,7 +57,7 @@ public final class SessionManager {
         } else {
             try {
                 sp = (SessionProvider)
-                    Class.forName(sessionClass).newInstance();
+				ClassCache.forName(sessionClass).newInstance();
             } catch (IllegalAccessException iae) {
                 debug.error("SessionManager static block: "+
                             "Failed creating SessionProvider "+

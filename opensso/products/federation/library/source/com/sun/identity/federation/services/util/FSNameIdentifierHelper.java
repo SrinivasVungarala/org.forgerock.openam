@@ -28,6 +28,7 @@
 
 package com.sun.identity.federation.services.util;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.liberty.INameIdentifier;
 import com.sun.identity.federation.common.FSUtils;
 import com.sun.identity.federation.common.IFSConstants;
@@ -55,7 +56,7 @@ public class FSNameIdentifierHelper {
             String className = IDFFMetaUtils.getFirstAttributeValueFromConfig(
                 hostedConfig, IFSConstants.NAMEID_IMPL_CLASS);
             generator = (INameIdentifier)
-                (Class.forName(className).newInstance());
+                (ClassCache.forName(className).newInstance());
         } catch (ClassNotFoundException exp) {
             FSUtils.debug.error("FSNameIdentifierGeneratorHelper constructor."
                 + "Not able to create instance of Generator Impl", exp);

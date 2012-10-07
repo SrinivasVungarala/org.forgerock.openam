@@ -27,6 +27,7 @@
 
 package com.sun.identity.cli.entitlement;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.cli.AuthenticatedCommand;
 import com.sun.identity.cli.CLIException;
 import com.sun.identity.cli.ExitCodes;
@@ -233,7 +234,7 @@ public class ApplicationImpl extends AuthenticatedCommand {
             return null;
         }
         try {
-            Class clazz = Class.forName(comb);
+            Class clazz = ClassCache.forName(comb);
             Class superClasses = clazz.getSuperclass();
             boolean found = false;
             while ((superClasses != null) && !found) {
@@ -272,7 +273,7 @@ public class ApplicationImpl extends AuthenticatedCommand {
             return null;
         }
         try {
-            Class clazz = Class.forName(comp);
+            Class clazz = ClassCache.forName(comp);
             Object obj = clazz.newInstance();
 
             if (obj instanceof ResourceName) {
@@ -303,7 +304,7 @@ public class ApplicationImpl extends AuthenticatedCommand {
             return null;
         }
         try {
-            Class clazz = Class.forName(saveIndex);
+            Class clazz = ClassCache.forName(saveIndex);
             Object obj = clazz.newInstance();
 
             if (obj instanceof ISaveIndex) {
@@ -334,7 +335,7 @@ public class ApplicationImpl extends AuthenticatedCommand {
             return null;
         }
         try {
-            Class clazz = Class.forName(searchIndex);
+            Class clazz = ClassCache.forName(searchIndex);
             Object obj = clazz.newInstance();
 
             if (obj instanceof ISearchIndex) {

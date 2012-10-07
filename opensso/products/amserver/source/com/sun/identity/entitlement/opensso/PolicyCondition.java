@@ -31,6 +31,7 @@
 
 package com.sun.identity.entitlement.opensso;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.entitlement.ConditionDecision;
@@ -175,7 +176,7 @@ public class PolicyCondition extends  EntitlementConditionAdaptor {
         try {
             com.sun.identity.policy.interfaces.Condition cond =
                 (com.sun.identity.policy.interfaces.Condition)
-                Class.forName(className).newInstance();
+                ClassCache.forName(className).newInstance();
             cond.setProperties(properties);
             SSOToken token = (subject != null) ? getSSOToken(subject) : null;
             com.sun.identity.policy.ConditionDecision dec =

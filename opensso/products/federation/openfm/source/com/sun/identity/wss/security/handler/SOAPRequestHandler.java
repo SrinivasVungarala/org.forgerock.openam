@@ -65,6 +65,7 @@ import com.iplanet.sso.SSOException;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.Constants;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 
 import com.sun.identity.liberty.ws.authnsvc.AuthnSvcClient;
@@ -1424,7 +1425,7 @@ public class SOAPRequestHandler implements SOAPRequestHandlerInterface {
                 WSS_AUTHENTICATOR,
                 "com.sun.identity.wss.security.handler.DefaultAuthenticator");
         try {
-            Class authnClass = Class.forName(classImpl);
+            Class authnClass = ClassCache.forName(classImpl);
             authenticator = (MessageAuthenticator)authnClass.newInstance();
         } catch (Exception ex) {
             debug.error("SOAPRequestHandler.getAuthenticator:: Unable to " +
@@ -1448,7 +1449,7 @@ public class SOAPRequestHandler implements SOAPRequestHandlerInterface {
                 WSS_AUTHORIZER,
                 "com.sun.identity.wss.security.handler.DefaultAuthorizer");
         try {
-            Class authnClass = Class.forName(classImpl);
+            Class authnClass = ClassCache.forName(classImpl);
             authorizer = (MessageAuthorizer)authnClass.newInstance();
         } catch (Exception ex) {
             debug.error("SOAPRequestHandler.getAuthenticator:: Unable to " +

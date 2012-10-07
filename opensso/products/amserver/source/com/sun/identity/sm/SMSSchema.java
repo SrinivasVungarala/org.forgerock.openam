@@ -32,6 +32,7 @@
 
 package com.sun.identity.sm;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.ums.IUMSConstants;
 import com.sun.identity.shared.xml.XMLHandler;
 import com.sun.identity.shared.xml.XMLUtils;
@@ -403,7 +404,7 @@ public class SMSSchema {
                    in this case our AM classloader for this
                    DocumentBuilderFactory class.
                 */
-                    docBuildFactoryClass = Class.forName(
+                    docBuildFactoryClass = ClassCache.forName(
           "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
                 } catch (ClassNotFoundException cfe) {
                     if (SMSEntry.debug.warningEnabled()) {

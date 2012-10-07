@@ -32,6 +32,7 @@
 
 package com.sun.identity.authentication.share;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.xml.XMLUtils;
 import com.sun.identity.shared.encode.Base64;
@@ -1461,7 +1462,7 @@ public class AuthXMLUtils {
             
             if (callback == null) {
                 if ((className != null) && (className.length() != 0)) {
-                    Class xmlClass = Class.forName(className);
+                    Class xmlClass = ClassCache.forName(className);
                     callback = (DSAMECallbackInterface) xmlClass.newInstance();
                 }
             }

@@ -33,6 +33,7 @@
 package com.sun.identity.setup;
 
 import com.iplanet.am.util.AdminUtils;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.services.ldap.DSConfigMgr;
 import com.iplanet.services.naming.WebtopNaming;
 import com.iplanet.services.util.Crypt;
@@ -1179,7 +1180,7 @@ public class AMSetupServlet extends HttpServlet {
                 StringTokenizer st = new StringTokenizer(strPlugins);
                 while (st.hasMoreTokens()) {
                     String className = st.nextToken();
-                    Class clazz = Class.forName(className);
+                    Class clazz = ClassCache.forName(className);
                     plugins.add((ConfiguratorPlugin)clazz.newInstance());
                 }
             }

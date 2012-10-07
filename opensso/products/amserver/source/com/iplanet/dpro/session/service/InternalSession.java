@@ -114,7 +114,7 @@ public class InternalSession implements TaskRunnable, Serializable {
 
     /** session properties LoginURL,Timeout, Host */
     //private Properties sessionProperties;
-    private ConcurrentHashMap<String, String> sessionProperties;
+    public ConcurrentHashMap<String, String> sessionProperties;
 
     /** Flag indicates for session to expire at max timeout */
     private boolean willExpireFlag;
@@ -1547,7 +1547,7 @@ public class InternalSession implements TaskRunnable, Serializable {
      * Update for the session failover
      *
      */
-    protected void updateForFailover() {
+    public void updateForFailover() {
         if (SessionService.getSessionService().isSessionFailoverEnabled()
                 && isISStored) {
             if (sessionState != Session.VALID) {
@@ -1611,7 +1611,7 @@ public class InternalSession implements TaskRunnable, Serializable {
     void setSessionHandle(String sessionHandle) {
         this.sessionHandle = sessionHandle;
         putProperty(Session.SESSION_HANDLE_PROP, sessionHandle);
-        updateForFailover();
+        //updateForFailover();
     }
 
     String getSessionHandle() {

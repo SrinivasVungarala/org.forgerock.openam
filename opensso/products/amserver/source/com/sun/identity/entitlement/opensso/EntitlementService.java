@@ -31,6 +31,7 @@
 
 package com.sun.identity.entitlement.opensso;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.entitlement.Application;
@@ -546,7 +547,7 @@ public class EntitlementService extends EntitlementConfiguration {
             return null;
         }
         try {
-            return Class.forName(className);
+            return ClassCache.forName(className);
         } catch (ClassNotFoundException ex) {
             PrivilegeManager.debug.error(
                 "EntitlementService.getEntitlementCombiner", ex);

@@ -28,6 +28,7 @@
 
 package com.sun.identity.liberty.ws.security;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.DateUtils;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.shared.debug.Debug;
@@ -887,7 +888,7 @@ public class LibSecurityTokenProvider implements SecurityTokenProvider {
         }
         
         try {
-            Class pluginClass = Class.forName(pluginName);
+            Class pluginClass = ClassCache.forName(pluginName);
             attributePlugin =
                     (SecurityAttributePlugin)pluginClass.newInstance();
         } catch (Exception ex) {

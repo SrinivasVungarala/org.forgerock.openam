@@ -50,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.security.SecurityDebug;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
@@ -119,7 +120,7 @@ public class AMCertPath {
             final CertPath cp= (CertPath) cf.generateCertPath(certList);
 
             // init PKIXParameters
-            Class<?> trustMgrClass = Class.forName(
+            Class<?> trustMgrClass = ClassCache.forName(
                   "com.sun.identity.security.keystore.AMX509TrustManager");
             Object trustMgr = (Object) trustMgrClass.newInstance();
             Method method = trustMgrClass.getMethod("getKeyStore");

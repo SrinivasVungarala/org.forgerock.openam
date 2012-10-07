@@ -28,6 +28,7 @@
 
 package com.sun.identity.plugin.monitoring;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.shared.debug.Debug;
 
@@ -79,7 +80,7 @@ public final class MonitorManager {
         try {
             if (pluginName != null && pluginName.length() > 0) {
                 Class agtProviderClass =
-                        Class.forName(pluginName.trim());
+				ClassCache.forName(pluginName.trim());
                 agentProvider = (FedMonAgent)agtProviderClass.newInstance();
                 agentProvider.init();
             }
@@ -99,7 +100,7 @@ public final class MonitorManager {
         try {
             if (pluginName != null && pluginName.length() > 0) {
                 Class samlProviderClass =
-                        Class.forName(pluginName.trim());
+				ClassCache.forName(pluginName.trim());
                 saml1SvcProvider =
                     (FedMonSAML1Svc)samlProviderClass.newInstance();
                 saml1SvcProvider.init();
@@ -120,7 +121,7 @@ public final class MonitorManager {
         try {
             if (pluginName != null && pluginName.length() > 0) {
                 Class samlProviderClass =
-                        Class.forName(pluginName.trim());
+				ClassCache.forName(pluginName.trim());
                 saml2SvcProvider =
                     (FedMonSAML2Svc)samlProviderClass.newInstance();
                 saml2SvcProvider.init();
@@ -141,7 +142,7 @@ public final class MonitorManager {
         try {
             if (pluginName != null && pluginName.length() > 0) {
                 Class idffProviderClass =
-                        Class.forName(pluginName.trim());
+				ClassCache.forName(pluginName.trim());
                 idffSvcProvider =
                     (FedMonIDFFSvc)idffProviderClass.newInstance();
                 idffSvcProvider.init();

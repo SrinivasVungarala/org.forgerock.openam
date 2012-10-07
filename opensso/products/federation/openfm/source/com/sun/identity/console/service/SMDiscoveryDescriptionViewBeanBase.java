@@ -28,6 +28,7 @@
  
 package com.sun.identity.console.service;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.jato.RequestManager;
 import com.iplanet.jato.model.ModelControlException;
 import com.iplanet.jato.view.View;
@@ -247,7 +248,7 @@ public abstract class SMDiscoveryDescriptionViewBeanBase
 	    PG_SESSION_RETURN_VIEW_BEAN_CLASSNAME);
 	try {
 	    return (AMViewBeanBase)getViewBean(
-		Class.forName(viewBeanClassName));
+			ClassCache.forName(viewBeanClassName));
 	} catch (ClassNotFoundException e) {
 	    return (SMDiscoveryBootstrapRefOffViewBeanBase)getViewBean(
 		SMDiscoveryBootstrapRefOffAddViewBean.class);

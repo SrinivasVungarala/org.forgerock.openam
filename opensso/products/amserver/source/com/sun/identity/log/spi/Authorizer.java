@@ -28,6 +28,7 @@
 
 package com.sun.identity.log.spi;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.log.LogConstants;
 import com.sun.identity.log.LogManager;
 import com.sun.identity.log.LogManagerUtil;
@@ -46,7 +47,7 @@ public class Authorizer {
     static {
         String authzClass = lmanager.getProperty(LogConstants.AUTHZ);
         try {
-            Class c = Class.forName(authzClass);
+            Class c = ClassCache.forName(authzClass);
             authorizer = (IAuthorizer)c.newInstance();
         } catch(Exception e) {
             Debug.error("Authorizer ", e);

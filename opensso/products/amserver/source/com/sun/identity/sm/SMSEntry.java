@@ -36,6 +36,7 @@
 package com.sun.identity.sm;
 
 import com.iplanet.am.util.Cache;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
@@ -291,7 +292,7 @@ public class SMSEntry implements Cloneable {
         String smsClassName = SystemProperties.get(SMS_OBJECT_PROPERTY,
                 DEFAULT_SMS_CLASS_NAME);
         try {
-            Class smsEntryClass = Class.forName(smsClassName);
+            Class smsEntryClass = ClassCache.forName(smsClassName);
             smsObject = (SMSObject) smsEntryClass.newInstance();
             if (smsClassName.equals(JAXRPC_SMS_CLASS_NAME)) {
                 SMSJAXRPCObjectFlg = true;
@@ -343,7 +344,7 @@ public class SMSEntry implements Cloneable {
                         debug.message("SMSEntry: Using default LDAP "
                             + "implementation");
                     }
-                    smsObject = (SMSObject) Class.forName(
+                    smsObject = (SMSObject) ClassCache.forName(
                             DEFAULT_SMS_CLASS_NAME).newInstance();
                 }
                 initializationException = null;

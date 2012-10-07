@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sun.identity.shared.debug.Debug;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenManager;
@@ -419,7 +420,7 @@ public final class DelegationManager {
                     if (debug.messageEnabled()) {
                         debug.message("Plugin class name:" + className);
                     }
-                    pluginInstance = (DelegationInterface) Class.forName(
+                    pluginInstance = (DelegationInterface) ClassCache.forName(
                         className).newInstance();
                     pluginInstance.initialize(privilegedToken, null);
                     if (debug.messageEnabled()) {

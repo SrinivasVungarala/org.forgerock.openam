@@ -38,6 +38,8 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.encode.URLEncDec;
 import com.sun.identity.shared.locale.Locale;
 
@@ -79,7 +81,7 @@ public class CookieUtils {
         IDPDiscoveryConstants.ERROR_URL_PARAM_NAME);
     static {
         try {
-            Class.forName("com.sun.identity.saml2.common.SAML2ConfigService",
+		ClassCache.forName("com.sun.identity.saml2.common.SAML2ConfigService",
                 false, Thread.currentThread().getContextClassLoader());
         } catch (ClassNotFoundException cnfe) {
             debug.message("CookieUtils.init: This is an IDP discovery WAR only",

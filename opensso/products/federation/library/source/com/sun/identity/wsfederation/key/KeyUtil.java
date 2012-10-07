@@ -40,6 +40,7 @@ import java.security.cert.CertificateFactory;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.saml2.common.SAML2Constants;
 
@@ -70,7 +71,7 @@ public class KeyUtil {
     
     static {
         try {
-            kp = (KeyProvider)Class.forName(SystemConfigurationUtil.getProperty(
+            kp = (KeyProvider)ClassCache.forName(SystemConfigurationUtil.getProperty(
                 SAMLConstants.KEY_PROVIDER_IMPL_CLASS)).newInstance();
         } catch (ClassNotFoundException cnfe) {
             WSFederationUtils.debug.error(

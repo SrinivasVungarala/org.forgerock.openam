@@ -29,6 +29,7 @@
 
 package com.sun.identity.authentication.share;
 
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 
 /**
@@ -66,7 +67,7 @@ public class AuthenticationCallbackXMLHelperFactory {
             
         try {
             callbackXMLHelper = 
-                (AuthenticationCallbackXMLHelper)Class.forName(className)
+                (AuthenticationCallbackXMLHelper)ClassCache.forName(className)
                 .newInstance();
         } catch (Exception e) {
             if (AuthXMLUtils.debug.messageEnabled()) {

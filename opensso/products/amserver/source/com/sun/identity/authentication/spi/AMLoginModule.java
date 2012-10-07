@@ -60,6 +60,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.iplanet.am.sdk.AMException;
 import com.iplanet.am.sdk.AMUser;
 import com.iplanet.am.sdk.AMUserPasswordValidation;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.Misc;
 import com.sun.identity.shared.locale.AMResourceBundleCache;
 import com.sun.identity.shared.debug.Debug;
@@ -1718,7 +1719,7 @@ public abstract class AMLoginModule implements LoginModule {
         UserIDGenerator idGenerator = null;
         try {
             // instantiate the Java class
-            Class theClass = Class.forName(className);
+            Class theClass = ClassCache.forName(className);
             idGenerator = (UserIDGenerator)theClass.newInstance();
             
         } catch (Exception e) {
@@ -2196,7 +2197,7 @@ public abstract class AMLoginModule implements LoginModule {
             
             AMUserPasswordValidation userPasswordInstance =
             (AMUserPasswordValidation)
-            (Class.forName(className).newInstance());
+            (ClassCache.forName(className).newInstance());
             return userPasswordInstance;
         } catch (ClassNotFoundException ce) {
             if (debug.messageEnabled()) {

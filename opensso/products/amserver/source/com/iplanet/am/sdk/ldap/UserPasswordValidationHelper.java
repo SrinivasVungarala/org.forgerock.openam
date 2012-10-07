@@ -34,6 +34,7 @@ import com.iplanet.am.sdk.AMObject;
 import com.iplanet.am.sdk.AMSDKBundle;
 import com.iplanet.am.sdk.AMServiceUtils;
 import com.iplanet.am.sdk.AMUserPasswordValidation;
+import com.iplanet.am.util.ClassCache;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.shared.Constants;
 import com.sun.identity.shared.debug.Debug;
@@ -188,7 +189,7 @@ public class UserPasswordValidationHelper implements AMConstants {
     private AMUserPasswordValidation instantiateClass(SSOToken token,
             String className) throws AMException {
         try {
-            return ((AMUserPasswordValidation) Class.forName(className)
+            return ((AMUserPasswordValidation) ClassCache.forName(className)
                     .newInstance());
         } catch (InstantiationException e1) {
             debug.error("AMUserPasswordValidationImpl.instantiateClass(): "

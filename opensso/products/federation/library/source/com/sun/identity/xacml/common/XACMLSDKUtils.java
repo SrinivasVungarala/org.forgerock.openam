@@ -29,6 +29,7 @@
 
 package com.sun.identity.xacml.common;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.locale.Locale;
@@ -105,7 +106,7 @@ public class XACMLSDKUtils extends SAML2SDKUtils {
                         debug.message("XACMLSDKUtils.init: mapper for " + iName
                             + "=" + implClass);
                     }
-                    classMapping.put(iName, Class.forName(implClass.trim()));
+                    classMapping.put(iName, ClassCache.forName(implClass.trim()));
                 }
             } catch (ClassNotFoundException cnfe) {
                 debug.error("XACMLSDKUtils.init: " + iName, cnfe);
