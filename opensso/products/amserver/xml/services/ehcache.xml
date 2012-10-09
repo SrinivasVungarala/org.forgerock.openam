@@ -855,7 +855,7 @@ used with JMX monitors.
             />
 
 	<cache name="com.iplanet.am.sdk.ldap.CachedDirectoryServicesImpl"
-           maxElementsInMemory="64000"
+           maxElementsInMemory="10000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
@@ -865,7 +865,7 @@ used with JMX monitors.
            statistics="false"
             />
 	<cache name="com.iplanet.am.sdk.remote.CachedRemoteServicesImpl"
-           maxElementsInMemory="64000"
+           maxElementsInMemory="10000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
@@ -875,7 +875,7 @@ used with JMX monitors.
            statistics="false"
             />
     <cache name="com.sun.identity.idm.remote.IdRemoteCachedServicesImpl"
-           maxElementsInMemory="64000"
+           maxElementsInMemory="10000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
@@ -885,7 +885,7 @@ used with JMX monitors.
            statistics="false"
             />
     <cache name="com.sun.identity.idm.server.IdCachedServicesImpl"
-           maxElementsInMemory="64000"
+           maxElementsInMemory="10000"
            eternal="false"
            diskPersistent="false"
            overflowToDisk="false"
