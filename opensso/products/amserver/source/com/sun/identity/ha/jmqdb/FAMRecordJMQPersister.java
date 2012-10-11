@@ -52,6 +52,8 @@ import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicLong;
+
 import com.iplanet.dpro.session.service.SessionService;
 import com.sun.identity.ha.FAMRecord;
 import com.sun.identity.ha.FAMRecordPersister;
@@ -105,8 +107,8 @@ public class FAMRecordJMQPersister implements FAMRecordPersister,
 
     java.util.concurrent.ConcurrentHashMap processedMsgs = new java.util.concurrent.ConcurrentHashMap();
 
-    Random rdmGen = new Random();
-
+    //Random rdmGen = new Random();
+    AtomicLong idGen=new AtomicLong(System.nanoTime());
     /* Config data */
     int msgcount = 0;
 
@@ -361,110 +363,118 @@ public class FAMRecordJMQPersister implements FAMRecordPersister,
            return null; 
        } else if (op.equals(FAMRecord.READ)) {
            // Allocate a random string for onMessage to find us.
-           Long random = new Long(rdmGen.nextLong());
+           Long random = idGen.incrementAndGet();//new Long(rdmGen.nextLong());
            processedMsgs.put(random, random);
-           msg.writeLong(random.longValue());
-           // onMessage thread will wake us up when data is ready
-           synchronized (random) {
-               reqPub.publish(msg);
-               random.wait(readTimeOut);
-          }
-          // TODO : process timeout
-          Object object = processedMsgs.remove(random);
-          if(object instanceof Long) {
-               //timeout
-               return null;
-          }
-          else {
-          	BytesMessage message1 = (BytesMessage) object;
-          	String opStatus = message1.getStringProperty(OP_STATUS);
-          	if (opStatus != null && opStatus.equals(NOT_FOUND)) {
-              		throw new Exception(FAMRecordUtils.bundle.getString(
-                  		"notFoundSession"));
-          	}
-          
-          	// Fill in the return value in FAMRecord 
-          	// Data is in blob field 
-          	long len = message1.readLong();
-          	byte[] bytes = new byte[(int) len];
-          	message1.readBytes(bytes);
-          	FAMRecord ret = new FAMRecord(service,
-              		op, pKey, 0, null, 0, null, bytes); 
-          	return ret; 
-         }
+           try{
+	           msg.writeLong(random.longValue());
+	           // onMessage thread will wake us up when data is ready
+	           synchronized (random) {
+	               reqPub.publish(msg);
+	               random.wait(readTimeOut);
+	          }
+           }finally{
+	          // TODO : process timeout
+	          Object object = processedMsgs.remove(random);
+	          if(object instanceof Long) {
+	               //timeout
+	               return null;
+	          }
+	          else {
+			BytesMessage message1 = (BytesMessage) object;
+			String opStatus = message1.getStringProperty(OP_STATUS);
+			if (opStatus != null && opStatus.equals(NOT_FOUND)) {
+				throw new Exception(FAMRecordUtils.bundle.getString(
+					"notFoundSession"));
+			}
+
+			// Fill in the return value in FAMRecord
+			// Data is in blob field
+			long len = message1.readLong();
+			byte[] bytes = new byte[(int) len];
+			message1.readBytes(bytes);
+			FAMRecord ret = new FAMRecord(service,
+				op, pKey, 0, null, 0, null, bytes);
+			return ret;
+	         }
+           }
        } else if (op.equals(FAMRecord.GET_RECORD_COUNT)){
            // Allocate a random string for onMessage to find us
-           Long random = new Long(rdmGen.nextLong());
+           Long random = idGen.incrementAndGet();//new Long(rdmGen.nextLong());
            processedMsgs.put(random, random);
-           msg.writeLong(random.longValue());
-           // onMessage thread will wake us up when data is ready
-           synchronized (random) {
-               reqPub.publish(msg);
-               random.wait(readTimeOutForConstraint);
+           try{
+	           msg.writeLong(random.longValue());
+	           // onMessage thread will wake us up when data is ready
+	           synchronized (random) {
+	               reqPub.publish(msg);
+	               random.wait(readTimeOutForConstraint);
+	           }
+           }finally{
+	           Object retMsg = processedMsgs.remove(random);
+	           BytesMessage message1;
+	           if (retMsg instanceof Long) {
+	               // timeout
+	               return null;
+	           } else {
+	                message1 = (BytesMessage) retMsg;
+	           }
+	           //Fill in the return value in FAMRecord
+	           int retCount = 0;
+	           HashMap aMap = new HashMap();
+	           if (message1 != null) {
+	               retCount = message1.readInt();
+	               String hKey = null;
+	               for (int i = 0; i < retCount; i++) {
+	                   int len = message1.readInt();
+	                   byte[] bytes = new byte[len];
+	                   message1.readBytes(bytes);
+	                   hKey = new String(bytes);
+	                   Long expireTime = new Long(message1.readLong());
+	                   aMap.put(hKey, expireTime);
+	               }
+	            }
+	            FAMRecord ret = new FAMRecord(service,
+	                op, pKey, 0, null, 0, null, null);
+	            ret.setStringAttrs(aMap);
+	            return ret;
            }
-           Object retMsg = processedMsgs.remove(random);
-           BytesMessage message1; 
-           if (retMsg instanceof Long) {
-               // timeout
-               return null;
-           } else {
-                message1 = (BytesMessage) retMsg;
-           }
-           //Fill in the return value in FAMRecord 
-           int retCount = 0; 
-           HashMap aMap = new HashMap(); 
-           if (message1 != null) {
-               retCount = message1.readInt();
-               String hKey = null;
-               for (int i = 0; i < retCount; i++) {
-                   int len = message1.readInt();
-                   byte[] bytes = new byte[len];
-                   message1.readBytes(bytes);
-                   hKey = new String(bytes);
-                   Long expireTime = new Long(message1.readLong());
-                   aMap.put(hKey, expireTime);
-               }
-            }
-            FAMRecord ret = new FAMRecord(service,
-                op, pKey, 0, null, 0, null, null);
-            ret.setStringAttrs(aMap);
-            return ret; 
-           
        } else if (op.equals(FAMRecord.READ_WITH_SEC_KEY)){
            // Allocate a random string for onMessage to find us
-           Long random = new Long(rdmGen.nextLong());
+           Long random = idGen.incrementAndGet();//new Long(rdmGen.nextLong());
            processedMsgs.put(random, random);
-           msg.writeLong(random.longValue());
-           // onMessage thread will wake us up when data is ready
-           synchronized (random) {
-               reqPub.publish(msg);
-               random.wait(readTimeOutForConstraint);
+           try{
+	           msg.writeLong(random.longValue());
+	           // onMessage thread will wake us up when data is ready
+	           synchronized (random) {
+	               reqPub.publish(msg);
+	               random.wait(readTimeOutForConstraint);
+	           }
+           }finally{
+	           Object retMsg = processedMsgs.remove(random);
+	           BytesMessage message1;
+	           if (retMsg instanceof Long) {
+	               // timeout
+	               return null;
+	           } else {
+	                message1 = (BytesMessage) retMsg;
+	           }
+	           //Fill in the return value in FAMRecord
+	          Vector blobs = new Vector();
+	           if (message1 != null) {
+	               int retCount = message1.readInt();
+	               for (int i = 0; i < retCount; i++) {
+	                   int len = message1.readInt();
+	                   byte[] bytes = new byte[len];
+	                   message1.readBytes(bytes);
+	                   blobs.add(bytes);
+	               }
+	            }
+	            HashMap aMap = new HashMap();
+	            aMap.put("blobs", blobs);
+	            FAMRecord ret = new FAMRecord(service,
+	                op, pKey, 0, null, 0, null, null);
+	            ret.setStringAttrs(aMap);
+	            return ret;
            }
-           Object retMsg = processedMsgs.remove(random);
-           BytesMessage message1; 
-           if (retMsg instanceof Long) {
-               // timeout
-               return null;
-           } else {
-                message1 = (BytesMessage) retMsg;
-           }
-           //Fill in the return value in FAMRecord 
-          Vector blobs = new Vector();
-           if (message1 != null) {
-               int retCount = message1.readInt();
-               for (int i = 0; i < retCount; i++) {
-                   int len = message1.readInt();
-                   byte[] bytes = new byte[len];
-                   message1.readBytes(bytes);
-                   blobs.add(bytes);
-               }
-            }
-            HashMap aMap = new HashMap(); 
-            aMap.put("blobs", blobs);
-            FAMRecord ret = new FAMRecord(service,
-                op, pKey, 0, null, 0, null, null);
-            ret.setStringAttrs(aMap);
-            return ret; 
        }  
        return null;   
    }

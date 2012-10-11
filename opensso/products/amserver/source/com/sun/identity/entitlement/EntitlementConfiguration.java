@@ -31,11 +31,14 @@
 
 package com.sun.identity.entitlement;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.entitlement.util.SearchFilter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.security.auth.Subject;
 
 /**
@@ -48,15 +51,16 @@ public abstract class EntitlementConfiguration {
     public static final String INDEX_CACHE_SIZE = "indexCacheSize";
     public static final String RESOURCE_COMPARATOR = "resourceComparator";
     
-    private static Class clazz;
+    //private static Class clazz;
     private Subject adminSubject;
-
+    private static Constructor constructor;
     static {
         try {
             //RFE: load different configuration plugin
-            clazz = Class.forName(
+		Class clazz = ClassCache.forName(
                 "com.sun.identity.entitlement.opensso.EntitlementService");
-        } catch (ClassNotFoundException e) {
+            constructor = clazz.getConstructor(new Class[]{String.class});
+        } catch (Exception e) {
             PrivilegeManager.debug.error("EntitlementConfiguration.<init>", e);
         }
     }
@@ -69,19 +73,27 @@ public abstract class EntitlementConfiguration {
      * @param realm Realm name.
      * @return an instance of entitlement configuration.
      */
+    static final ConcurrentHashMap<String, EntitlementConfiguration> EntitlementServices=new ConcurrentHashMap<String, EntitlementConfiguration>();
     public static EntitlementConfiguration getInstance(
         Subject adminSubject, String realm) {
-        if (clazz == null) {
-            return null;
-        }
-        Class[] parameterTypes = {String.class};
+//        if (clazz == null) {
+//            return null;
+//        }
         try {
-            Constructor constructor = clazz.getConstructor(parameterTypes);
-            Object[] args = {realm};
-            EntitlementConfiguration impl = (EntitlementConfiguration)
-                constructor.newInstance(args);
-            impl.adminSubject = adminSubject;
-            return impl;
+//            Constructor constructor = clazz.getConstructor(parameterTypes);
+//            Object[] args = {realm};
+//            EntitlementConfiguration impl = (EntitlementConfiguration)constructor.newInstance(args);
+		EntitlementConfiguration impl=EntitlementServices.get(realm);
+		if (impl==null)
+			synchronized (EntitlementConfiguration.class.getName()+"."+realm) {
+				impl=EntitlementServices.get(realm);
+			if (impl==null){
+					impl=(EntitlementConfiguration)constructor.newInstance(new Object[]{realm});
+					impl.adminSubject = adminSubject;
+					EntitlementServices.put(realm, impl);
+			}
+				}
+		return impl;
         } catch (InstantiationException ex) {
             PrivilegeManager.debug.error("PrivilegeIndexStore.getInstance",
                 ex);
@@ -94,9 +106,9 @@ public abstract class EntitlementConfiguration {
         } catch (InvocationTargetException ex) {
             PrivilegeManager.debug.error("PrivilegeIndexStore.getInstance",
                 ex);
-        } catch (NoSuchMethodException ex) {
-            PrivilegeManager.debug.error("PrivilegeIndexStore.getInstance",
-                ex);
+//        } catch (NoSuchMethodException ex) {
+//            PrivilegeManager.debug.error("PrivilegeIndexStore.getInstance",
+//                ex);
         } catch (SecurityException ex) {
             PrivilegeManager.debug.error("PrivilegeIndexStore.getInstance",
                 ex);
