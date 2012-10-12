@@ -134,8 +134,8 @@ public class SystemProperties {
 
     public static final String NEWCONFDIR = "NEW_CONF_DIR";
 
-    private static Map mapTagswap = new HashMap();
-    private static Map tagswapValues;
+    private static ConcurrentHashMap<String, String> mapTagswap = new ConcurrentHashMap<String, String>();
+    private static ConcurrentHashMap<String, String> tagswapValues;
 
     /**
      * Initialization to load the properties file for config information before
@@ -417,7 +417,7 @@ public class SystemProperties {
     }
 
     private static void updateTagswapMap(ConcurrentHashMap<String, String> properties) {
-        tagswapValues = new HashMap();
+        tagswapValues = new ConcurrentHashMap<String, String>();
         for (Iterator i = mapTagswap.keySet().iterator(); i.hasNext(); ) {
             String key = (String)i.next();
             String rgKey = (String)mapTagswap.get(key);
@@ -425,7 +425,8 @@ public class SystemProperties {
             if (val == null) {
                 val = (String)properties.get(rgKey);
             }
-            tagswapValues.put(key, val);
+            if (key!=null&&val!=null)
+		tagswapValues.put(key, val);
         }
     }
 
