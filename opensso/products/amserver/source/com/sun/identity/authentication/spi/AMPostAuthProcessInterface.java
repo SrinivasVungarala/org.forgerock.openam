@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.iplanet.sso.SSOToken;
+import com.sun.identity.authentication.service.AMLoginContext;
 
 /**
  * The <code>AMPostAuthProcessInterface</code> interface needs to

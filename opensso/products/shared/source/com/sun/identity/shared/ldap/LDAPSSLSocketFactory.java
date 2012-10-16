@@ -25,6 +25,8 @@ import java.io.*;
 import java.net.*;
 import java.lang.reflect.InvocationTargetException;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * Creates an SSL socket connection to an LDAP Server.  This class
  * implements the <CODE>LDAPSSLSocketFactoryExt</CODE> interface.
@@ -273,7 +275,7 @@ public class LDAPSSLSocketFactory implements LDAPSSLSocketFactoryExt,
 
             /* Instantiate the SSLSocketFactory implementation, and
                find the right constructor */
-            Class c = Class.forName(m_packageName);
+            Class c = ClassCache.forName(m_packageName);
             java.lang.reflect.Constructor[] m = c.getConstructors();
             for (int i = 0; i < m.length; i++) {
                 /* Check if the signature is right: String, int */

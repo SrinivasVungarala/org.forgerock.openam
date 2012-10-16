@@ -2020,7 +2020,7 @@ public class AMLoginContext {
                 debug.message("postProcessOnFail ");
             }
             //setErrorMsgAndTemplate();
-            loginState.postProcess(indexType,indexName,
+            loginState.postProcess(this,indexType,indexName,
                     LoginState.POSTPROCESS_FAILURE);            
             loginState.setFailureLoginURL(indexType,indexName);
             processDone = true;
@@ -2037,7 +2037,7 @@ public class AMLoginContext {
             if (debug.messageEnabled()) {
                 debug.message("postProcessOnSuccess ");
             }
-            loginState.postProcess(indexType,indexName,
+            loginState.postProcess(this,indexType,indexName,
                     LoginState.POSTPROCESS_SUCCESS);
             processDone = true;
         }

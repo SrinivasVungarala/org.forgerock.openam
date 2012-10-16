@@ -53,6 +53,7 @@ import com.sun.identity.authentication.config.AMAuthenticationManager;
 import com.sun.identity.authentication.config.AMAuthenticationInstance;
 import com.sun.identity.authentication.config.AMConfigurationException;
 import com.sun.identity.authentication.server.AuthContextLocal;
+import com.sun.identity.authentication.spi.AMPostAuthProcess;
 import com.sun.identity.authentication.spi.AMPostAuthProcessInterface;
 import com.sun.identity.authentication.spi.AuthenticationException;
 import com.sun.identity.authentication.util.ISAuthConstants;
@@ -3917,7 +3918,7 @@ public class LoginState {
         try {
             AMPostAuthProcessInterface loginPostProcessInstance =
                 (AMPostAuthProcessInterface)
-                    (Class.forName(className).newInstance());
+                    (ClassCache.forName(className).newInstance());
             return loginPostProcessInstance;
         } catch (ClassNotFoundException ce) {
             if (messageEnabled) {
@@ -5304,6 +5305,31 @@ public class LoginState {
         }
     }
     
+    void postProcess(AMLoginContext amlc,AuthContext.IndexType indexType,String indexName, int type) {
+        setPostLoginInstances(indexType,indexName);
+        if ((postProcessInSession) && ((postLoginInstanceSet != null) &&
+            (!postLoginInstanceSet.isEmpty()))) {
+            if (messageEnabled) {
+                debug.message("LoginState.setPostLoginInstances : "
+                    + "Setting post process class in session "
+                    + postLoginInstanceSet);
+            }
+            session.setObject(ISAuthConstants.POSTPROCESS_INSTANCE_SET,
+                postLoginInstanceSet);
+        }
+        AMPostAuthProcessInterface postLoginInstance=null;
+        if ((postLoginInstanceSet != null) &&
+            (!postLoginInstanceSet.isEmpty())) {
+            for(Iterator iter = postLoginInstanceSet.iterator();
+            iter.hasNext();) {
+                postLoginInstance =
+                (AMPostAuthProcessInterface) iter.next();
+                if (postLoginInstance instanceof AMPostAuthProcess)
+			((AMPostAuthProcess)postLoginInstance).amlc=amlc;
+                executePostProcessSPI(postLoginInstance,type);
+            }
+        }
+    }
     
     /**
      * Returns an instance of the spi and execute it based on whether

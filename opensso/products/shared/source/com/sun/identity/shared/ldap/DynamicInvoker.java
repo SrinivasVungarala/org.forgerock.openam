@@ -24,6 +24,8 @@ package com.sun.identity.shared.ldap;
 import java.lang.reflect.*;
 import java.util.Hashtable;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * Utility class to dynamically find methods of a class and to invoke
  * them
@@ -60,7 +62,7 @@ class DynamicInvoker {
               != null)
                 return method;
 
-            Class c = Class.forName(packageName);
+            Class c = ClassCache.forName(packageName);
             java.lang.reflect.Method[] m = c.getMethods();
             for (int i = 0; i < m.length; i++ ) {
                 Class[] params = m[i].getParameterTypes();

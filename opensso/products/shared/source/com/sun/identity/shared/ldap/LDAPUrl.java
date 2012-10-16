@@ -25,6 +25,8 @@ import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * Represents an LDAP URL. The complete specification for LDAP URLs is in
  * <A HREF="http://ds.internic.net/rfc/rfc1959.txt"
@@ -590,7 +592,7 @@ public class LDAPUrl implements java.io.Serializable {
             // the default one.
             try {
                 //  First try Mozilla JSSSocketFactory
-                Class c = Class.forName("com.sun.identity.shared.ldap.factory.JSSSocketFactory");                
+                Class c = ClassCache.forName("com.sun.identity.shared.ldap.factory.JSSSocketFactory");
                 m_factory = (LDAPSocketFactory) c.newInstance();                
             }
             catch (Throwable e) {
@@ -602,7 +604,7 @@ public class LDAPUrl implements java.io.Serializable {
 
             try {
                 // then try Sun JSSESocketFactory
-                Class c = Class.forName("com.sun.identity.shared.ldap.factory.JSSESocketFactory");                
+                Class c = ClassCache.forName("com.sun.identity.shared.ldap.factory.JSSESocketFactory");
                 m_factory = (LDAPSocketFactory) c.newInstance();                
             }
             catch (Throwable e) {

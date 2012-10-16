@@ -21,6 +21,7 @@
  */
 package com.sun.identity.shared.ldap;
 
+import com.iplanet.am.util.ClassCache;
 import com.sun.identity.shared.ldap.*;
 import java.io.*;
 import java.net.*;
@@ -163,7 +164,7 @@ class LDAPSSLSocket extends Socket {
         try {
             // instantiate the SSLSocketFactory implementation, and
             // find the right constructor
-            Class c = Class.forName(m_packageName);
+            Class c = ClassCache.forName(m_packageName);
             java.lang.reflect.Constructor[] m = c.getConstructors();
 
             for (int i = 0; i < m.length; i++) {
@@ -202,7 +203,7 @@ class LDAPSSLSocket extends Socket {
         try {
             // instantiate the SSLSocketFactory implementation, and
             // find the right constructor
-            Class c = Class.forName(m_packageName);
+            Class c = ClassCache.forName(m_packageName);
             java.lang.reflect.Constructor[] m = c.getConstructors();
 
             for (int i = 0; i < m.length; i++) {
@@ -331,7 +332,7 @@ class LDAPSSLSocket extends Socket {
               != null)
                 return method;
 
-            Class c = Class.forName(m_packageName);
+            Class c = ClassCache.forName(m_packageName);
             java.lang.reflect.Method[] m = c.getMethods();
             for (int i = 0; i < m.length; i++ ) {
                 if (m[i].getName().equals(name)) {

@@ -21,6 +21,8 @@
  */
 package com.sun.identity.shared.ldap;
 
+import com.iplanet.am.util.ClassCache;
+
 /**
  * This static class checks if the caller is an applet running in
  * Netscape Communicator. If so, it returns the appropriate method.
@@ -49,7 +51,7 @@ class LDAPCheckComm {
         } else if (sec.toString().startsWith("com.sun.identity.shared.security.AppletSecurity")) {
             /* Running as applet. Is PrivilegeManager around? */
             try {
-                Class c = Class.forName(classPackage);
+                Class c = ClassCache.forName(classPackage);
                 java.lang.reflect.Method[] m = c.getMethods();
                 for( int i = 0; i < m.length; i++ ) {
                     if ( m[i].getName().equals(name) ) {
