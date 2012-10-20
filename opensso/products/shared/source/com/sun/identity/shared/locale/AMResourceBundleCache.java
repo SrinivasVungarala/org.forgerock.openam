@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A singleton class that cache resource bundle object.
@@ -41,7 +42,7 @@ import java.util.ResourceBundle;
 public class AMResourceBundleCache {
     private static AMResourceBundleCache instance;
 
-    private Map mapBundles = new HashMap(30);
+    private Map mapBundles = new ConcurrentHashMap<String, Map>(128);
 
     private Debug debug = null;
 
@@ -82,13 +83,13 @@ public class AMResourceBundleCache {
                 debug.error("AMResourceBundleCache.getResBundle", mre);
             }
 
-            synchronized (mapBundles) {
+//            synchronized (mapBundles) {
                 if (map == null) {
                     map = new HashMap(5);
                     mapBundles.put(name, map);
                 }
                 map.put(locale, resBundle);
-            }
+ //           }
         }
 
         return resBundle;
@@ -98,8 +99,8 @@ public class AMResourceBundleCache {
      * Clears all resource bundle objects
      */
     public void clear() {
-        synchronized (mapBundles) {
+        //synchronized (mapBundles) {
             mapBundles.clear();
-        }
+        //}
     }
 }

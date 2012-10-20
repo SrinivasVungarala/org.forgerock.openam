@@ -70,13 +70,16 @@ import org.w3c.dom.Text;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * This class contains utilities to parse XML documents
  */
 public class XMLUtils {
+	final static Logger logger = LoggerFactory.getLogger(XMLUtils.class);
+
     private static final Map EMPTY_MAP = Collections
             .unmodifiableMap(new HashMap());
 
@@ -158,8 +161,10 @@ public class XMLUtils {
 	             try{
 			     DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
 		             documentBuilder.setEntityResolver(new XMLHandler());
+		             logger.info("new {} in {}",new Object[]{documentBuilder,Thread.currentThread().getName()});
 		             return documentBuilder;
 	             }catch (ParserConfigurationException ex) {
+			 logger.error("error",ex);
 			 throw new RuntimeException(ex);
 	             }
 	        }

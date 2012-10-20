@@ -86,22 +86,27 @@ public class AuthThreadManager extends Thread   {
                     while (timeoutElem.hasMoreElements()) {
                         Object key = timeoutElem.nextElement();
                         Thread thread = (Thread) key;
-                        Hashtable s = (Hashtable) timeoutHash.get(key);
-                        long timeout = ((Long)s.get("PageTimeout")).longValue();
-                        long lastCallbackSent = 
-                            ((Long) s.get("LastCallbackSent")).longValue();
+                        try {
+	                        Hashtable s = (Hashtable) timeoutHash.get(key);
+	                        long timeout = ((Long)s.get("PageTimeout")).longValue();
+	                        long lastCallbackSent =
+	                            ((Long) s.get("LastCallbackSent")).longValue();
 
-                        if (isLoginTimeout(lastCallbackSent , timeout)) {
-                            if (debug.messageEnabled()) {
-                                debug.message("Interrupting thread" + thread);
-                            }
-                            thread.interrupt();
-                            timeoutHash.remove(key);
-                            timedOutHash.put(thread, Boolean.TRUE);
+	                        if (isLoginTimeout(lastCallbackSent , timeout)) {
+	                            if (debug.messageEnabled()) {
+	                                debug.message("Interrupting thread" + thread);
+	                            }
+	                            thread.interrupt();
+	                            timeoutHash.remove(key);
+	                            timedOutHash.put(thread, Boolean.TRUE);
+	                        }
+                        } catch (Throwable e) {
+				timeoutHash.remove(key);
+				thread.interrupt();
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 debug.message("Error run : " , e);
             }
         }
