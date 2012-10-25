@@ -30,6 +30,7 @@
  */
 package com.sun.identity.common;
 
+import com.iplanet.am.util.Cache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.search.FileLookup;
 import com.sun.identity.shared.search.FileLookupException;
@@ -46,7 +47,8 @@ import javax.servlet.ServletContext;
 
 public class ResourceLookup {
 
-    private static java.util.concurrent.ConcurrentHashMap resourceNameCache = null;
+    final private static java.util.concurrent.ConcurrentHashMap<String,String> resourceNameCache = new java.util.concurrent.ConcurrentHashMap<String,String>(1024);
+	final private static Cache<String, Boolean> resourceNameCacheNotExists=new Cache<String, Boolean>(ResourceLookup.class.getName()+".NotExists", 1024);
 
     private static Debug debug = Debug.getInstance("amResourceLookup");
 
@@ -78,17 +80,21 @@ public class ResourceLookup {
                 .append(":").append(filename).append(":").append(resourceDir)
                 .toString();
 
-        if (enableCache) {
+        //if (enableCache) {
             if ((resourceNameCache != null) && (!resourceNameCache.isEmpty())) {
                 resourceName = (String) resourceNameCache.get(cacheKey);
                 if (resourceName != null
-                        && getResourceURL(context, resourceName) != null) {
+                        //&& getResourceURL(context, resourceName) != null
+                        ) {
                     return resourceName;
-                } else {
-                    resourceNameCache.remove(cacheKey);
+//                } else {
+//                    resourceNameCache.remove(cacheKey);
                 }
             }
-        }
+        //}
+
+        if (resourceNameCacheNotExists.get(cacheKey)!=null)
+		return null;
 
         URL resourceUrl = null;
 
@@ -118,13 +124,14 @@ public class ResourceLookup {
             debug.message("amResourceLookup: resourceName:" + resourceName);
         }
         if (resourceUrl != null) {
-            if (enableCache) {
-                if (resourceNameCache == null) {
-                    resourceNameCache = new java.util.concurrent.ConcurrentHashMap();
-                }
+//            if (enableCache) {
+//                if (resourceNameCache == null) {
+//                    resourceNameCache = new java.util.concurrent.ConcurrentHashMap();
+//                }
                 resourceNameCache.put(cacheKey, resourceName);
-            }
+//            }
         } else {
+		resourceNameCacheNotExists.put(cacheKey, true);
             resourceName = null;
         }
 

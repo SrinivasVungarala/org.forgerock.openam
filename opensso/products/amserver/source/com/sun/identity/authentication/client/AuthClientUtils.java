@@ -1402,6 +1402,8 @@ public class AuthClientUtils {
      * @return a set of the cookie domains
      */
     public static Set getCookieDomainsForReq(HttpServletRequest request) {
+	if (request==null)
+		return new HashSet<String>();
         String host = request.getServerName();
         Set allDomains = getCookieDomains();
         if (setCookieToAllDomains) {
