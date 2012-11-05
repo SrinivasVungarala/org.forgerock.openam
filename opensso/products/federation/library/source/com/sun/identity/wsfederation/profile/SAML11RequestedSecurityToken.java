@@ -70,7 +70,7 @@ import org.w3c.dom.Node;
 public class SAML11RequestedSecurityToken implements RequestedSecurityToken {
     // Just get this system property once - it should never change!
     private static boolean removeCarriageReturns = 
-        System.getProperty("line.separator").equals("\r\n");
+        com.iplanet.am.util.SystemCache.getProperty("line.separator").equals("\r\n");
     private static Debug debug = WSFederationUtils.debug;
     protected Assertion assertion = null;
     protected String xmlString = null;

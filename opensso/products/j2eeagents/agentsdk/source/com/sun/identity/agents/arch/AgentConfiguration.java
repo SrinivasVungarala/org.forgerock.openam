@@ -456,13 +456,13 @@ public class AgentConfiguration implements
      */
     private static synchronized void setConfigurationFilePath() {
         if (!isInitialized()) {
-            String bootstrapDir = System.getProperty(CONFIG_JVM_OPTION_NAME);
+            String bootstrapDir = com.iplanet.am.util.SystemCache.getProperty(CONFIG_JVM_OPTION_NAME);
 
             // try to load the bootstrap from the JVM option
             if (bootstrapDir != null) {
-                String configFile = bootstrapDir + System.getProperty("file.separator") +
+                String configFile = bootstrapDir + com.iplanet.am.util.SystemCache.getProperty("file.separator") +
                         CONFIG_FILE_NAME;
-                String localConfigFile = bootstrapDir + System.getProperty("file.separator") +
+                String localConfigFile = bootstrapDir + com.iplanet.am.util.SystemCache.getProperty("file.separator") +
                         LOCAL_CONFIG_FILE_NAME;
 
                 if (isFileValid(configFile) && isFileValid(localConfigFile)) {
@@ -490,7 +490,7 @@ public class AgentConfiguration implements
             }
             result = resUrl.getPath();
             try {
-                if (System.getProperty("file.separator").equals("\\") &&
+                if (com.iplanet.am.util.SystemCache.getProperty("file.separator").equals("\\") &&
                         result.startsWith("/")) {
                     result = resUrl.toURI().getPath().substring(1);
                 }
@@ -1165,11 +1165,11 @@ public class AgentConfiguration implements
     private static void logAgentEnv() {  
         if (isLogMessageEnabled()) {
             logMessage("Agent Env information:");
-            logMessage("Java version=" + System.getProperty("java.version"));
-            logMessage("Java vendor=" + System.getProperty("java.vendor"));
-            logMessage("OS arch info=" + System.getProperty("os.arch"));
-            logMessage("OS name=" + System.getProperty("os.name"));
-            logMessage("OS version=" + System.getProperty("os.version"));
+            logMessage("Java version=" + com.iplanet.am.util.SystemCache.getProperty("java.version"));
+            logMessage("Java vendor=" + com.iplanet.am.util.SystemCache.getProperty("java.vendor"));
+            logMessage("OS arch info=" + com.iplanet.am.util.SystemCache.getProperty("os.arch"));
+            logMessage("OS name=" + com.iplanet.am.util.SystemCache.getProperty("os.name"));
+            logMessage("OS version=" + com.iplanet.am.util.SystemCache.getProperty("os.version"));
         }
     }
     

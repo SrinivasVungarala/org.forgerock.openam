@@ -243,9 +243,9 @@ public class ServerConfigMgr {
     throws Exception {
         String path = SystemProperties.get(SystemProperties.CONFIG_PATH);
         if (path == null) { // For Backward compatibility obtain from runtime
-            path = System.getProperty(RUN_TIME_CONFIG_PATH);
+            path = com.iplanet.am.util.SystemCache.getProperty(RUN_TIME_CONFIG_PATH);
         }
-        String fileLoc = path + System.getProperty("file.separator")
+        String fileLoc = path + com.iplanet.am.util.SystemCache.getProperty("file.separator")
         + SystemProperties.CONFIG_FILE_NAME;
         File file = new File(fileLoc);
         if (!file.exists() || !file.canRead() || !file.canWrite()) {

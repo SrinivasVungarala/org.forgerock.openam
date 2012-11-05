@@ -78,9 +78,9 @@ public class FAMSFOPassword {
     private void setFilePermission(String filename, String perm) 
         throws IOException {        
         System.out.println("os.name="+
-                           System.getProperty("os.name"));
+                           com.iplanet.am.util.SystemCache.getProperty("os.name"));
         // Do "chmod" only if it is on UNIX/Linux platform
-        if (System.getProperty("path.separator").equals(":")) {        
+        if (com.iplanet.am.util.SystemCache.getProperty("path.separator").equals(":")) {
             Runtime.getRuntime().exec("chmod "+perm+" "+filename);
         }
     }

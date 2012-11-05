@@ -57,12 +57,12 @@ public class MetaDataParser {
     String fedletHomeDir;
     public MetaDataParser() {
     
-        fedletHomeDir = System.getProperty("com.sun.identity.fedlet.home");
+        fedletHomeDir = com.iplanet.am.util.SystemCache.getProperty("com.sun.identity.fedlet.home");
         if ((fedletHomeDir == null) || (fedletHomeDir.trim().length() == 0)) {
-            if (System.getProperty("user.home").equals(File.separator)) {
+            if (com.iplanet.am.util.SystemCache.getProperty("user.home").equals(File.separator)) {
                 fedletHomeDir = File.separator + "fedlet";
             } else {
-                fedletHomeDir = System.getProperty("user.home") +
+                fedletHomeDir = com.iplanet.am.util.SystemCache.getProperty("user.home") +
                     File.separator + "fedlet";
             }
         }

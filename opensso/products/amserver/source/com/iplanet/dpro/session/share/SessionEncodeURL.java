@@ -171,7 +171,7 @@ public class SessionEncodeURL {
     }
 
     private static String getCookieName() {
-        String name = System.getProperty("com.iplanet.am.cookie.name");
+        String name = com.iplanet.am.util.SystemCache.getProperty("com.iplanet.am.cookie.name");
         if (name == null) {
             name = SystemProperties.get("com.iplanet.am.cookie.name");
         }

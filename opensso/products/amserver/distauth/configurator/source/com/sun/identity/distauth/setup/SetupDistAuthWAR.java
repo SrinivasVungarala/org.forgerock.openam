@@ -71,12 +71,12 @@ public class SetupDistAuthWAR {
     public SetupDistAuthWAR(ServletContext context)
         throws ServletException {
         servletContext = context;
-        configFile = System.getProperty("user.home") + File.separator
+        configFile = com.iplanet.am.util.SystemCache.getProperty("user.home") + File.separator
                      + Constants.CONFIG_VAR_DISTAUTH_BOOTSTRAP_BASE_DIR 
                      + File.separator
                      + getNormalizedRealPath(servletContext) + 
                      "AMDistAuthConfig.properties";
-        configFileDir = System.getProperty("user.home") + File.separator
+        configFileDir = com.iplanet.am.util.SystemCache.getProperty("user.home") + File.separator
                      + Constants.CONFIG_VAR_DISTAUTH_BOOTSTRAP_BASE_DIR;         
     }
 

@@ -52,8 +52,8 @@ public class TextFieldJPanel extends javax.swing.JPanel {
         }
         
         datejTextField.setText(new Date().toString());
-        OSjTextField.setText(System.getProperty("os.name"));
-        userNamejTextField.setText(System.getProperty("user.name"));
+        OSjTextField.setText(com.iplanet.am.util.SystemCache.getProperty("os.name"));
+        userNamejTextField.setText(com.iplanet.am.util.SystemCache.getProperty("user.name"));
     }
     
     private void initComponents(ResourceBundle rb) {

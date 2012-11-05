@@ -41,16 +41,16 @@ public class SessionMain implements SetupConstants{
         String currentOS = null;
         Properties configProp=new Properties();
         
-        ResourceBundle bundle = ResourceBundle.getBundle(System.getProperty(
+        ResourceBundle bundle = ResourceBundle.getBundle(com.iplanet.am.util.SystemCache.getProperty(
             SETUP_PROPERTIES_FILE, DEFAULT_SESSION_PROPERTIES_FILE));
-        if (System.getProperty(PRINT_HELP) != null) {
-            if (System.getProperty(PRINT_HELP).equals(YES)) {
+        if (com.iplanet.am.util.SystemCache.getProperty(PRINT_HELP) != null) {
+            if (com.iplanet.am.util.SystemCache.getProperty(PRINT_HELP).equals(YES)) {
                 SetupUtils.printUsage(bundle);
                 System.exit(0);
             }
         }
         currentOS = SetupUtils.determineOS();
-        destPath = System.getProperty(PATH_DEST);
+        destPath = com.iplanet.am.util.SystemCache.getProperty(PATH_DEST);
         try {
             if ((destPath != null) && (destPath.trim().length() > 0)) {
                 if ((destPath.indexOf("/") > -1) || 

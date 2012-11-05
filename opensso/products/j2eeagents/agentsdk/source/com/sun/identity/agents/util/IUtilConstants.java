@@ -32,7 +32,7 @@ package com.sun.identity.agents.util;
 public interface IUtilConstants {
 
     /** Field NEW_LINE **/
-    public static final String NEW_LINE = System.getProperty("line.separator",
+    public static final String NEW_LINE = com.iplanet.am.util.SystemCache.getProperty("line.separator",
                                               "\n");
 
     /** Field SEPARATOR **/

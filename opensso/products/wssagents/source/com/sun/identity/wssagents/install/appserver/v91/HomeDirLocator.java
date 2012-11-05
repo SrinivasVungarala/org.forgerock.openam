@@ -67,7 +67,7 @@ public class HomeDirLocator implements IServerHomeDirLocator,
             //Figure out the AS install directory; go back three levels from
             //the config directory.
             String delimiter = null;
-            String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+            String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
             if (osName.toLowerCase().startsWith(STR_WINDOWS)) {
                 delimiter = "\\";
             } else {

@@ -1109,7 +1109,7 @@ public class LDAPConnection
         // If the property does not have a value, send the trace to the System.err,
         // otherwise use the value as the output file name
         try {
-            traceOut = System.getProperty(TRACE_PROPERTY);
+            traceOut = com.iplanet.am.util.SystemCache.getProperty(TRACE_PROPERTY);
             if (traceOut != null) {
                 return createTraceOutput(traceOut);
             }

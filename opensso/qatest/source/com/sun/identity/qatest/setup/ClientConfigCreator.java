@@ -63,7 +63,7 @@ import java.util.PropertyResourceBundle;
  */
 public class ClientConfigCreator { 
 
-    private String fileseparator = System.getProperty("file.separator");
+    private String fileseparator = com.iplanet.am.util.SystemCache.getProperty("file.separator");
     private String uriseparator = "/";
     private String hostname;
     private Map properties_ss = new HashMap();

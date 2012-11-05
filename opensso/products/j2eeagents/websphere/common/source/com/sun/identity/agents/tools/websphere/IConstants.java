@@ -39,7 +39,7 @@ public interface IConstants {
     
     public static final String STR_SERVER_XML_FILE = "server.xml";
     
-    public static final String STR_CLASSPATH_SEP = System.getProperty(
+    public static final String STR_CLASSPATH_SEP = com.iplanet.am.util.SystemCache.getProperty(
             "path.separator");
     
     public static final String STR_OPENSSOCLIENTSDK_JAR = "openssoclientsdk.jar";

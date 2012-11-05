@@ -48,8 +48,8 @@ import com.sun.identity.security.SecurityDebug;
  */
 public class AMX509TrustManager implements X509TrustManager {
     static final String bundleName = "amSecurity";
-    static final String javahome = System.getProperty("java.home");
-    static final String seperator = System.getProperty("file.separator", "/");
+    static final String javahome = com.iplanet.am.util.SystemCache.getProperty("java.home");
+    static final String seperator = com.iplanet.am.util.SystemCache.getProperty("file.separator", "/");
     static StringBuffer defTrustStore = null; 
     static X509TrustManager sunX509TrustManager;
     static TrustManagerFactory tmf = null;
@@ -72,9 +72,9 @@ public class AMX509TrustManager implements X509TrustManager {
             defTrustStore.append(seperator);
             defTrustStore.append("cacerts");
  
-            trustStoreType = System.getProperty("javax.net.ssl.trustStoreType",
+            trustStoreType = com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.trustStoreType",
                 KeyStore.getDefaultType());
-            trustStore = System.getProperty("javax.net.ssl.trustStore",
+            trustStore = com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.trustStore",
                 defTrustStore.toString());
             trustAllServerCerts = Boolean.valueOf(SystemPropertiesManager.get(
                 "com.iplanet.am.jssproxy.trustAllServerCerts", "false"))

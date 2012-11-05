@@ -49,7 +49,7 @@ public abstract class UnitTestBase {
         try {
             logger = Logger.getLogger("com.sun.identity.test");
             logger.addHandler(new FileHandler("logs/unittest"));
-            String logLevel = System.getProperty("log.level");
+            String logLevel = com.iplanet.am.util.SystemCache.getProperty("log.level");
             if ((logLevel != null)) {
                 logger.setLevel(Level.parse(logLevel));
             }

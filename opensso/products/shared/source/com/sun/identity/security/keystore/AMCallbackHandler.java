@@ -66,9 +66,9 @@ public class AMCallbackHandler implements CallbackHandler {
     
     public AMCallbackHandler(String prompt) {
         super();
-        String passWDFile = System.getProperty(
+        String passWDFile = com.iplanet.am.util.SystemCache.getProperty(
                        "com.sun.identity.security.keyStorePasswordFile", null);
-        String keystorePW = System.getProperty(
+        String keystorePW = com.iplanet.am.util.SystemCache.getProperty(
                        "javax.net.ssl.keyStorePassword", null);
             
         if (prompt == null) {

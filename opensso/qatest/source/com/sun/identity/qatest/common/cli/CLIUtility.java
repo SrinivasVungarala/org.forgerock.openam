@@ -56,11 +56,11 @@ public class CLIUtility extends TestCommon {
             timeout = rbCLI.getString("command-timeout"); 
             localeValue = rbCLI.getString("locale");
             cliPath = rbCLI.getString("cli-path");
-            passwdFile = System.getProperty("user.dir") + 
-                    System.getProperty("file.separator") + serverName +
-                    System.getProperty("file.separator") + "built" + 
-                    System.getProperty("file.separator") + "classes" + 
-                    System.getProperty("file.separator") + "cli.pass";
+            passwdFile = com.iplanet.am.util.SystemCache.getProperty("user.dir") +
+                    com.iplanet.am.util.SystemCache.getProperty("file.separator") + serverName +
+                    com.iplanet.am.util.SystemCache.getProperty("file.separator") + "built" +
+                    com.iplanet.am.util.SystemCache.getProperty("file.separator") + "classes" +
+                    com.iplanet.am.util.SystemCache.getProperty("file.separator") + "cli.pass";
         } catch (Exception e) {
             e.printStackTrace();
         }

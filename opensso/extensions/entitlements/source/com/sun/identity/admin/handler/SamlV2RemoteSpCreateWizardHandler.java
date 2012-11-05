@@ -215,7 +215,7 @@ public class SamlV2RemoteSpCreateWizardHandler
 
                 // repeat until all lines is read
                 while ((text = reader.readLine()) != null) {
-                    contents.append(text).append(System.getProperty(
+                    contents.append(text).append(com.iplanet.am.util.SystemCache.getProperty(
                             "line.separator"));
                 }
             } catch (FileNotFoundException e) {

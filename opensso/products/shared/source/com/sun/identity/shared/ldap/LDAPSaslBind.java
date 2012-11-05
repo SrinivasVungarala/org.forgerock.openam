@@ -93,7 +93,7 @@ public class LDAPSaslBind implements LDAPBind, java.io.Serializable {
             _props = new Hashtable();
         }
         if ( (!_props.containsKey( CLIENTPKGS )) &&
-             (System.getProperty( CLIENTPKGS ) == null) ) {
+             (com.iplanet.am.util.SystemCache.getProperty( CLIENTPKGS ) == null) ) {
             _props.put( CLIENTPKGS, ldc.DEFAULT_SASL_PACKAGE );
         }
         _saslClient = getClient( ldc, _packageName );

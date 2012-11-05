@@ -162,7 +162,7 @@ public class LDAPCache implements Serializable {
     private static boolean m_debug = false;
     static {
         try {
-            String traceProp = System.getProperty("debug.cache");
+            String traceProp = com.iplanet.am.util.SystemCache.getProperty("debug.cache");
             m_debug = (traceProp != null);
         }
         catch (Exception e) {

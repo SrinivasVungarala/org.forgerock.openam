@@ -64,18 +64,18 @@ public class Config {
     }
     
     private static void initialize() {
-        osName = System.getProperty(OS_NAME);
-        osVersion = System.getProperty(OS_VERSION);
-        osArch = System.getProperty(OS_ARCH);
-        javaVersion = System.getProperty(JAVA_VERSION);
-        javaHome = System.getProperty(JAVA_HOME);
-        javaRuntimeName = System.getProperty(JAVA_RUNTIME_NAME);
-        javaVMName = System.getProperty(JAVA_VM_NAME);
-        javaVMVersion = System.getProperty(JAVA_VM_VERSION);
-        jvmDataModel = System.getProperty(JVM_DATA_MODEL);
-        locale = System.getProperty(LOCALE);
-        classpath = System.getProperty(CLASSPATH);
-        jvmSpecVendor = System.getProperty(JVM_SPEC_VENDOR);
+        osName = com.iplanet.am.util.SystemCache.getProperty(OS_NAME);
+        osVersion = com.iplanet.am.util.SystemCache.getProperty(OS_VERSION);
+        osArch = com.iplanet.am.util.SystemCache.getProperty(OS_ARCH);
+        javaVersion = com.iplanet.am.util.SystemCache.getProperty(JAVA_VERSION);
+        javaHome = com.iplanet.am.util.SystemCache.getProperty(JAVA_HOME);
+        javaRuntimeName = com.iplanet.am.util.SystemCache.getProperty(JAVA_RUNTIME_NAME);
+        javaVMName = com.iplanet.am.util.SystemCache.getProperty(JAVA_VM_NAME);
+        javaVMVersion = com.iplanet.am.util.SystemCache.getProperty(JAVA_VM_VERSION);
+        jvmDataModel = com.iplanet.am.util.SystemCache.getProperty(JVM_DATA_MODEL);
+        locale = com.iplanet.am.util.SystemCache.getProperty(LOCALE);
+        classpath = com.iplanet.am.util.SystemCache.getProperty(CLASSPATH);
+        jvmSpecVendor = com.iplanet.am.util.SystemCache.getProperty(JVM_SPEC_VENDOR);
         dbImpl = SystemProperties.get(Constants.PROPERTIES_FILE, "");
     }
     

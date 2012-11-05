@@ -82,11 +82,11 @@ public class IdSvcsSOAP extends TestCommon {
         admintoken = getToken(adminUser, adminPassword, basedn);
         idmc = new IDMCommon();
         pc = new PolicyCommon();
-        baseDir = getBaseDir() + System.getProperty("file.separator")
+        baseDir = getBaseDir() + com.iplanet.am.util.SystemCache.getProperty("file.separator")
             + rb_amconfig.getString(TestConstants.KEY_ATT_SERVER_NAME)
-            + System.getProperty("file.separator") + "built"
-            + System.getProperty("file.separator") + "classes"
-            + System.getProperty("file.separator");
+            + com.iplanet.am.util.SystemCache.getProperty("file.separator") + "built"
+            + com.iplanet.am.util.SystemCache.getProperty("file.separator") + "classes"
+            + com.iplanet.am.util.SystemCache.getProperty("file.separator");
     }
     
     /**

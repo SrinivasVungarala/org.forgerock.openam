@@ -57,7 +57,7 @@ public class ConfigFinder implements IDefaultValueFinder {
 
     private String getDefaultConfigDirectoryPath() {
         String result = null;
-        String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+        String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
 
         if (osName.toLowerCase()
                       .startsWith(STR_WINDOWS)) {

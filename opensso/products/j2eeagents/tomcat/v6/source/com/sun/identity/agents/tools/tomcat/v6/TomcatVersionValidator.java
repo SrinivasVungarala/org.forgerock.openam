@@ -146,7 +146,7 @@ public class TomcatVersionValidator extends ValidatorBase
                     STR_CATALINA_JAR_PATH);
             StringBuffer output = new StringBuffer();
 
-            String JAVA_EXE = System.getProperty("java.home")
+            String JAVA_EXE = com.iplanet.am.util.SystemCache.getProperty("java.home")
                 + "/bin/java";
 
             Debug.log(

@@ -119,7 +119,7 @@ public class TestInstaller {
         int portnum = Integer.parseInt(res.getString("port"));
         String protocol = res.getString("protocol");
         String deployuri = res.getString("deploy.uri");
-        String basedir = System.getProperty("java.io.tmpdir") + 
+        String basedir = com.iplanet.am.util.SystemCache.getProperty("java.io.tmpdir") +
             "/openssounittest";
         String cookieDomain = res.getString("cookie.domain");
         String adminPwd = res.getString("admin.password");

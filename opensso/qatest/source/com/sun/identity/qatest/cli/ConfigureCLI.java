@@ -46,13 +46,13 @@ public class ConfigureCLI extends CLIUtility {
     
     ResourceBundle rb_amconfig = ResourceBundle.getBundle(
                     TestConstants.TEST_PROPERTY_AMCONFIG);
-    private static String osName = System.getProperty("os.name").toLowerCase();
+    private static String osName = com.iplanet.am.util.SystemCache.getProperty("os.name").toLowerCase();
     private boolean removeTools = false;
     private File cliDir;
     
     /** Creates a new instance of ConfigureCLI */
     public ConfigureCLI() {
-        super(cliPath + System.getProperty("file.separator") + "setup");
+        super(cliPath + com.iplanet.am.util.SystemCache.getProperty("file.separator") + "setup");
     }
        
     /**
@@ -129,7 +129,7 @@ public class ConfigureCLI extends CLIUtility {
                             setupPerms = "+r";
                         }
                         changePermissions(setupPerms, cliPath +
-                                System.getProperty("file.separator") + "setup");
+                                com.iplanet.am.util.SystemCache.getProperty("file.separator") + "setup");
                         configureTools();
                         log(Level.FINE, "configureCLI", 
                                 "Sleeping for 30 seconds to create utilities");
@@ -205,7 +205,7 @@ public class ConfigureCLI extends CLIUtility {
     throws Exception {
         clearArguments(2);
         setArgument(0,
-                cliPath + System.getProperty("file.separator") + "setup");
+                cliPath + com.iplanet.am.util.SystemCache.getProperty("file.separator") + "setup");
         setArgument(1, "-p");
         setArgument(2, rb_amconfig.getString(TestConstants.KEY_ATT_CONFIG_DIR));
         setWorkingDir(new File(cliPath));

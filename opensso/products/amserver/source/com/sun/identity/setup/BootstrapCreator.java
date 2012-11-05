@@ -58,7 +58,7 @@ import java.util.Iterator;
 public class BootstrapCreator {
     private static BootstrapCreator instance = new BootstrapCreator();
     private static boolean isUnix = 
-        System.getProperty("path.separator").equals(":");
+        com.iplanet.am.util.SystemCache.getProperty("path.separator").equals(":");
     
     static final String template =
         "@DS_PROTO@://@DS_HOST@/@INSTANCE_NAME@" +

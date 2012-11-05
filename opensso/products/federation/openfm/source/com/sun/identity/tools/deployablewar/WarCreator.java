@@ -164,7 +164,7 @@ public class WarCreator {
             // get the contents for individual specialized WAR
             fileList = getTargetedList(type, type);
             for (String f : fileList) {
-                f = f.replaceAll("\\" + System.getProperty("file.separator"), "/");
+                f = f.replaceAll("\\" + com.iplanet.am.util.SystemCache.getProperty("file.separator"), "/");
                 out.putNextEntry(new JarEntry(f));
                 FileInputStream in = new FileInputStream(type + "/" + f);
 

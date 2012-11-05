@@ -1692,7 +1692,7 @@ public class PolicyCommon extends TestCommon {
             String url = protocol + ":" + "//" + host + ":"
                     + port + uri ;
             log(Level.FINEST, "createPolicy - URL", url);
-            String fileSeparator = System.getProperty("file.separator");
+            String fileSeparator = com.iplanet.am.util.SystemCache.getProperty("file.separator");
             consoleLogin(webClient, url, adminUser, adminPassword);
             String createPolicyXMLFile = scenarioname + ".xml";
             log(Level.FINEST, "createPolicy", createPolicyXMLFile);

@@ -42,7 +42,7 @@ public class SetupProgress {
     static private String bundleName = "amsessiondbsetup";
 
     static private OutputStream out = null;
-    static private String encoding = System.getProperty("file.encoding");
+    static private String encoding = com.iplanet.am.util.SystemCache.getProperty("file.encoding");
     static private ResourceBundle bundle = ResourceBundle.getBundle(
         bundleName, Locale.getDefault());
 

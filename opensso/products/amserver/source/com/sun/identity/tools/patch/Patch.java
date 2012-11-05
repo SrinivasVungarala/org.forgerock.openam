@@ -86,7 +86,7 @@ public class Patch implements PatchGeneratorConstants{
     }
 
     private void getProperties() {
-        String propFilePath = System.getProperty(PROPERTIES_FILE);
+        String propFilePath = com.iplanet.am.util.SystemCache.getProperty(PROPERTIES_FILE);
         Properties sysProp = new Properties();
         if (propFilePath != null) {
             File propFile = new File(propFilePath);
@@ -115,7 +115,7 @@ public class Patch implements PatchGeneratorConstants{
         destFilePath = (String)options.get(OPTION_DEST_FILE_PATH);    
         src2FilePath = (String)options.get(OPTION_SRC2_FILE_PATH);
         stagingFilePath = (String)options.get(OPTION_STAGING_FILE_PATH);
-        wildCard = System.getProperty(WILDCARD_CHAR,
+        wildCard = com.iplanet.am.util.SystemCache.getProperty(WILDCARD_CHAR,
             sysProp.getProperty(WILDCARD_CHAR,DEFAULT_WILDCARD_CHAR)).charAt(0);
    
         if (srcFilePath == null) {

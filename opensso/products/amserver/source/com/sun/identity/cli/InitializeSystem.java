@@ -57,7 +57,7 @@ public class InitializeSystem {
     public InitializeSystem() 
         throws FileNotFoundException, IOException, UnsupportedEncodingException,
         LDAPServiceException {
-        String basedir = System.getProperty(Bootstrap.JVM_OPT_BOOTSTRAP);
+        String basedir = com.iplanet.am.util.SystemCache.getProperty(Bootstrap.JVM_OPT_BOOTSTRAP);
         load(basedir);
     }
 

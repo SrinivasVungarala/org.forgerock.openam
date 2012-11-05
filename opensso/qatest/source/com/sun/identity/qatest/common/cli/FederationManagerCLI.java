@@ -75,9 +75,9 @@ public class FederationManagerCLI extends CLIUtility
             boolean useLongOpts)
     throws Exception {
         super(new StringBuffer(cliPath).
-                append(System.getProperty("file.separator")).append(uri).
-                append(System.getProperty("file.separator")).append("bin").
-                append(System.getProperty("file.separator")).append("ssoadm").
+                append(com.iplanet.am.util.SystemCache.getProperty("file.separator")).append(uri).
+                append(com.iplanet.am.util.SystemCache.getProperty("file.separator")).append("bin").
+                append(com.iplanet.am.util.SystemCache.getProperty("file.separator")).append("ssoadm").
                 toString());    
         useLongOptions = useLongOpts;
         try {
@@ -1246,9 +1246,9 @@ public class FederationManagerCLI extends CLIUtility
      */
     public String getCliPath() {
         return(new StringBuffer(cliPath).
-                append(System.getProperty("file.separator")).append(uri).
-                append(System.getProperty("file.separator")).append("bin").
-                append(System.getProperty("file.separator")).append("ssoadm").
+                append(com.iplanet.am.util.SystemCache.getProperty("file.separator")).append(uri).
+                append(com.iplanet.am.util.SystemCache.getProperty("file.separator")).append("bin").
+                append(com.iplanet.am.util.SystemCache.getProperty("file.separator")).append("ssoadm").
                 toString());
     }
     

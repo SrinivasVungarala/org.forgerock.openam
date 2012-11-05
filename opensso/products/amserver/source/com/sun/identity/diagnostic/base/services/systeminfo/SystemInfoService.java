@@ -200,7 +200,7 @@ public class SystemInfoService implements SystemInfoConstants, ToolService {
      *         false otherwise
      */
     private  static boolean isSolaris() {
-        String OSName = System.getProperty("os.name");
+        String OSName = com.iplanet.am.util.SystemCache.getProperty("os.name");
         if ((OSName.indexOf("SunOS")) != -1) {
             return true;
         } else {
@@ -215,7 +215,7 @@ public class SystemInfoService implements SystemInfoConstants, ToolService {
      *         false otherwise
      */
     private static boolean isHPUX() {
-        String OSName = System.getProperty("os.name");
+        String OSName = com.iplanet.am.util.SystemCache.getProperty("os.name");
         if ((OSName.indexOf("HP-UX")) != -1) {
             return true;
         } else {
@@ -230,7 +230,7 @@ public class SystemInfoService implements SystemInfoConstants, ToolService {
      *         false otherwise
      */
     private  static boolean isWindows() {
-        String OSName = System.getProperty("os.name");
+        String OSName = com.iplanet.am.util.SystemCache.getProperty("os.name");
         if ((OSName.indexOf("Windows")) != -1) {
             return true;
         } else {
@@ -245,7 +245,7 @@ public class SystemInfoService implements SystemInfoConstants, ToolService {
      *         false otherwise
      */
     private  static boolean isLinux() {
-        String OSName = System.getProperty("os.name");
+        String OSName = com.iplanet.am.util.SystemCache.getProperty("os.name");
         if ((OSName.indexOf("Linux")) != -1) {
             return true;
         } else {

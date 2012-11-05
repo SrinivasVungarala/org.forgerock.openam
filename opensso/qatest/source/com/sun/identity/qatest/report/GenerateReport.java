@@ -55,7 +55,7 @@ public class GenerateReport extends TestCommon {
     private String container;
     private String jdkversion;
     private String osVersion;
-    private String fileseperator = System.getProperty("file.separator");
+    private String fileseperator = com.iplanet.am.util.SystemCache.getProperty("file.separator");
 
     /**
      *  Constructor for the Generating QATest Report

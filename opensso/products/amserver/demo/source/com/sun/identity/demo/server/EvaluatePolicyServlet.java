@@ -55,7 +55,7 @@ public class EvaluatePolicyServlet extends HttpServlet {
     private static Debug debug = Debug.getInstance("amEvaluatePolicyServlet");
     static final String WEB_AGENT_SERVICE = "iPlanetAMWebAgentService";
     public static final String NEWLINE = 
-         System.getProperty("line.separator", "\n");
+         com.iplanet.am.util.SystemCache.getProperty("line.separator", "\n");
     static String serverUrl = SystemProperties.get(Constants.AM_SERVER_PROTOCOL)
         + "://" + SystemProperties.get(Constants.AM_SERVER_HOST)
         + ":" + SystemProperties.get(Constants.AM_SERVER_PORT) 

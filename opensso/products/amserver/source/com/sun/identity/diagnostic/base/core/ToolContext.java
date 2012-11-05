@@ -76,7 +76,7 @@ public class ToolContext implements ToolConstants {
      */
     public void configure() {
         try {
-            appHome = (String) System.getProperty(TOOL_BASE_DIR);
+            appHome = (String) com.iplanet.am.util.SystemCache.getProperty(TOOL_BASE_DIR);
             if (appHome == null || appHome.length() == 0) {
                 appHome = new File(".").getCanonicalPath();
             }

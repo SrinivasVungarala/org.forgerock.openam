@@ -62,12 +62,12 @@ public class AMX509KeyManagerImpl implements AMX509KeyManager {
     static AMResourceBundleCache amCache = AMResourceBundleCache.getInstance(); 
     public static Debug debug = SecurityDebug.debug;
     private String keyStoreType = 
-                     System.getProperty("javax.net.ssl.keyStoreType", "JKS");
+                     com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.keyStoreType", "JKS");
     private String keyStoreFile = 
-                     System.getProperty("javax.net.ssl.keyStore", null);
+                     com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.keyStore", null);
     private String keyStoreProvider = 
-                     System.getProperty("javax.net.ssl.keyStoreProvider", null);
-    static private String certAlias = System.getProperty(
+                     com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.keyStoreProvider", null);
+    static private String certAlias = com.iplanet.am.util.SystemCache.getProperty(
                      Constants.CLIENT_CERTIFICATE_ALIAS, null);
     private X509KeyManager sunX509KeyManager = null;
     private KeyStore keyStore = null;

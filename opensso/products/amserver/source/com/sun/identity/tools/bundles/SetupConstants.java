@@ -42,9 +42,9 @@ public interface SetupConstants {
         "amsessiontoolssetup";
     String SETUP_PROPERTIES_FILE = "file.setup";
     String AMCONFIG_PATH = "path.AMConfig";
-    String FILE_SEPARATOR = System.getProperty("file.separator");
-    String OS_NAME = System.getProperty("os.name");
-    String OS_ARCH = System.getProperty("os.arch");
+    String FILE_SEPARATOR = com.iplanet.am.util.SystemCache.getProperty("file.separator");
+    String OS_NAME = com.iplanet.am.util.SystemCache.getProperty("os.name");
+    String OS_ARCH = com.iplanet.am.util.SystemCache.getProperty("os.arch");
     String FROM_DIR = ".fromdir";
     String TO_DIR = ".todir";
     String FROM_FILE = ".fromfile";

@@ -355,7 +355,7 @@ public class Stats {
         // know for sure that the minimum header size is about 35. Hence, to
         // avoid reallocation allocate at least 160 chars.
 
-        String serverInstance = System.getProperty("server.name");
+        String serverInstance = com.iplanet.am.util.SystemCache.getProperty("server.name");
         StringWriter swriter = new StringWriter(160);
         PrintWriter buf = new PrintWriter(swriter, true);
         synchronized (dateFormat) {

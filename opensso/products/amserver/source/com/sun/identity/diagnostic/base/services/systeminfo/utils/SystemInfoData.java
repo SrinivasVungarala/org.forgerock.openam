@@ -239,7 +239,7 @@ public class SystemInfoData extends Object implements SystemInfoConstants,
      */
     public String toString(){
         StringBuilder result = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
+        String newLine = com.iplanet.am.util.SystemCache.getProperty("line.separator");
         result.append(newLine);
         result.append("\n**** System Information Begin ****");
         result.append("\n----------------------------------");

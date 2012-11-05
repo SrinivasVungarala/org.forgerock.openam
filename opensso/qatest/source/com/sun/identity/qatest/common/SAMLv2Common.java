@@ -40,7 +40,7 @@ import java.util.logging.Level;
 public class SAMLv2Common extends TestCommon {
     
     public static String fileseparator =
-            System.getProperty("file.separator");
+            com.iplanet.am.util.SystemCache.getProperty("file.separator");
 
     /** Creates a new instance of SAMLv2Common */
     public SAMLv2Common() {

@@ -55,7 +55,7 @@ public class JSSInit {
      * Default directory of security databases (current dir).
      */
     public static final String defaultDBdir = 
-            System.getProperty("java.io.tmpdir"); 
+            com.iplanet.am.util.SystemCache.getProperty("java.io.tmpdir");
     private static Debug debug = Debug.getInstance("amJSS");
 
     private static boolean initialized = false;

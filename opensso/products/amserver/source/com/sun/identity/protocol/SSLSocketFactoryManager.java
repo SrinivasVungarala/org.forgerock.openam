@@ -51,12 +51,12 @@ public class SSLSocketFactoryManager {
     static private KeyManager[] keyMgr = null;
     static private TrustManager[] amTrustMgr = null;
     static private SSLContext ctx = null;
-	
-    static {
-        keyStore = System.getProperty("javax.net.ssl.keyStore", null);
 
-    	try {
-    	    if (keyStore != null) {
+    static {
+        keyStore = com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.keyStore", null);
+
+	try {
+	    if (keyStore != null) {
                 amKeyMgr = AMX509KeyManagerFactory.createAMX509KeyManager();
         	keyMgr = new KeyManager[] { amKeyMgr };
     	    }

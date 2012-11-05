@@ -88,7 +88,7 @@ public class MultiProtocolSmokeTest extends TestCommon {
         ArrayList list;
         entering("setup", null);
         try {
-            fileseparator = System.getProperty("file.separator");
+            fileseparator = com.iplanet.am.util.SystemCache.getProperty("file.separator");
             //Upload global properties file in configMap
             ResourceBundle rb_amconfig = ResourceBundle.getBundle(
                     TestConstants.TEST_PROPERTY_AMCONFIG);

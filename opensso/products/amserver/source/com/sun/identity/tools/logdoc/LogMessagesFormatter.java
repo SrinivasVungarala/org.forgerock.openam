@@ -57,7 +57,7 @@ import org.xml.sax.SAXException;
  */
 public class LogMessagesFormatter {
     private static FilenameFilter xmlFilter;
-    static String htmlDir = System.getProperty("opensso.log.html.dir");
+    static String htmlDir = com.iplanet.am.util.SystemCache.getProperty("opensso.log.html.dir");
     private List<LogMessages> logMessages = new ArrayList<LogMessages>();
 
     static {

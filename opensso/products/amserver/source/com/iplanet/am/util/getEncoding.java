@@ -73,7 +73,7 @@ public class getEncoding {
 
     public static void main(String args[]) {
 
-        String enc = System.getProperty("file.encoding");
+        String enc = com.iplanet.am.util.SystemCache.getProperty("file.encoding");
 
         String test = "ABC";
         try {

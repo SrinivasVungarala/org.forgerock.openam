@@ -82,7 +82,7 @@ public class CreateTestXML extends TestCommon {
         out.write("<url href=\"" + testURL + "?service=" +
                 loginService);
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         StringTokenizer testUsers = new StringTokenizer(users,"|");
         List<String> testUserList = new ArrayList<String>();
 
@@ -103,25 +103,25 @@ public class CreateTestXML extends TestCommon {
                  tpass = tpass + "fail";
             }
             out.write("<form name=\"Login\" buttonName=\"IDButton\">");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken1\" value=\"" + tuser + "\"/>");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken2\" value=\"" + tpass + "\"/>");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             if (formcount == totalforms) {
                 if (!testNegative) {
                     out.write("<result text=\"" + successMsg + "\"/>");
                 } else {
                     out.write("<result text=\"" + successMsg + "\"/>");
                 }
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
                 out.write("</form>");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
                 out.write("</url>");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             } else {
                 out.write("</form>");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             }
         }
         out.flush();
@@ -149,7 +149,7 @@ public class CreateTestXML extends TestCommon {
                 new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
         out.write("<url href=\"" + redirectURL);
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         String[] testUsers = users.split("\\|");
         int formCount = 0;
         for (String testUser: testUsers) {
@@ -159,21 +159,21 @@ public class CreateTestXML extends TestCommon {
             String password = testUser.substring(tokenIndex + 1,
                     testUser.length());
             out.write("<form name=\"Login\" IDButton=\"\">");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken1\" value=\"" + userName + "\"/>");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken2\" value=\"" + password + "\"/>");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             if (formCount == testUsers.length) {
                 out.write("<result text=\"" + successMsg + "\"/>");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
                 out.write("</form>");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
                 out.write("</url>");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             } else {
                 out.write("</form>");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             }
         }
 
@@ -210,27 +210,27 @@ public class CreateTestXML extends TestCommon {
                 (new FileWriter(fileName)));
         out.write("<url href=\"" + loginurl);
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         int formcount = 0;
         for (int i=0; i < ilockattempts ; i ++) {
             formcount = formcount + 1;
             out.write("<form name=\"Login\" IDButton=\"\" >");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken1\" value=\"" + userName + "\" />");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken2\" value=\"" + password + "\" />");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             if(formcount == ilockattempts){
                 out.write("<result text=\"" + Passmsg + "\" />");
-                out.write(System.getProperty("line.separator"));
+                out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             }
             out.write("</form>");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write(" <form anchorpattern=\"/UI/Login?\" />");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         }
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.flush();
         out.close();
         

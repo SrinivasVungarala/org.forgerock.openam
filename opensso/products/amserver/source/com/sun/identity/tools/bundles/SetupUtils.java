@@ -189,7 +189,7 @@ public class SetupUtils implements SetupConstants{
                         } catch (IOException ignored) {
                         }
                     } else {
-                        realValue = System.getProperty(key);
+                        realValue = com.iplanet.am.util.SystemCache.getProperty(key);
                     }
                 }
                 if (realValue != null) {

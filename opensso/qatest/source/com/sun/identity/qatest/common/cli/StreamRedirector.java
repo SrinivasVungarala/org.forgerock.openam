@@ -82,7 +82,7 @@ public class StreamRedirector extends Thread {
             String line = buff.readLine();
             while (line != null) {
                 if (buffer != null) {
-                    buffer.append(line + System.getProperty("line.separator"));
+                    buffer.append(line + com.iplanet.am.util.SystemCache.getProperty("line.separator"));
                 }
                 line = buff.readLine();
             }

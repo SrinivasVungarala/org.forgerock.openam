@@ -125,7 +125,7 @@ public class EncryptionHandler implements IToolsOptionHandler, ICommonToolsConst
         // Try the AM 70 method, if failed try the AM 63 method
         String cryptUtil = null;
     	String cryptUtilError = null;
-        String encryptionKey = System.getProperty(STR_ENCRYPTION_KEY_PROP_KEY);
+        String encryptionKey = com.iplanet.am.util.SystemCache.getProperty(STR_ENCRYPTION_KEY_PROP_KEY);
 
         try {
             if (OSChecker.isWindows()) {

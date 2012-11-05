@@ -52,7 +52,7 @@ public final class AMSetupFilter implements Filter {
             configData.put(key, val);
         }
         EmbeddedOpenSSO embOpenSSO = new EmbeddedOpenSSO(
-            cxt, System.getProperty("user.home") + "/" + cxt.getContextPath(),
+            cxt, com.iplanet.am.util.SystemCache.getProperty("user.home") + "/" + cxt.getContextPath(),
             configData);
         initialized = embOpenSSO.isConfigured();
         if (!initialized) {

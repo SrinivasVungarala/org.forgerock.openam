@@ -51,7 +51,7 @@ public class ProcessExecutor {
     private boolean canDeleteOutputFile = true;
     private boolean canDeleteErrorFile = true;
     private static final long DEFAULT_TIMEOUT_SEC = 600;
-    private static final String NEWLINE = System.getProperty("line.separator");
+    private static final String NEWLINE = com.iplanet.am.util.SystemCache.getProperty("line.separator");
     private long mTimeoutMilliseconds = 0;
     private String[] mCmdStrings = null;
     private File mOutFile = null;
@@ -154,7 +154,7 @@ public class ProcessExecutor {
     }
     
     private boolean isWindows(){
-        String oSName =  System.getProperty("os.name");
+        String oSName =  com.iplanet.am.util.SystemCache.getProperty("os.name");
         String oSNameLower = oSName.toLowerCase();
         int indx = oSNameLower.indexOf("windows");
         if (indx == -1) {

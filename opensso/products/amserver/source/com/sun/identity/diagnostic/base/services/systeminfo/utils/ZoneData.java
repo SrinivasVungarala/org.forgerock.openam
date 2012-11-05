@@ -121,7 +121,7 @@ public class ZoneData extends Object implements SystemInfoConstants,
      */
      public String toString() {
          StringBuilder result = new StringBuilder();
-         String newLine = System.getProperty("line.separator");
+         String newLine = com.iplanet.am.util.SystemCache.getProperty("line.separator");
 
          result.append("ID\tNAME\tSTATUS\tPATH ");
          result.append(newLine);

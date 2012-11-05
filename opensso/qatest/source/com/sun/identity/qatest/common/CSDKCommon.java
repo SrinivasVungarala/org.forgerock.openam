@@ -34,9 +34,9 @@ import java.util.logging.Level;
  */
 public class CSDKCommon extends TestCommon {
 
-    private static String osName = System.getProperty("os.name").toLowerCase();
-    private static String osArch = System.getProperty("os.arch").toLowerCase();
-    private static String cpuList = System.getProperty("sun.cpu.isalist").
+    private static String osName = com.iplanet.am.util.SystemCache.getProperty("os.name").toLowerCase();
+    private static String osArch = com.iplanet.am.util.SystemCache.getProperty("os.arch").toLowerCase();
+    private static String cpuList = com.iplanet.am.util.SystemCache.getProperty("sun.cpu.isalist").
             toLowerCase();
     private String libraryPath;
     private String directoryPath;

@@ -75,8 +75,8 @@ public class CLICommand extends Thread {
             try {
                 Map<String,String> env = cliProcessBuilder.environment(); 
                 env.put("PATH", workingDir.getPath() + 
-                        System.getProperty("path.separator") + env.get("PATH"));
-                env.put("JAVA_HOME", System.getProperty("java.home"));
+                        com.iplanet.am.util.SystemCache.getProperty("path.separator") + env.get("PATH"));
+                env.put("JAVA_HOME", com.iplanet.am.util.SystemCache.getProperty("java.home"));
                 cliProcess = cliProcessBuilder.start();
                 startTime = new Date();
                 outputRedirector.setInputStream(cliProcess.getInputStream());

@@ -77,7 +77,7 @@ public class CookieUtils {
     // Boolean to indicate if this is an IDP Discovery only WAR
     private static boolean idpDiscoveryOnlyWar = false; 
     // error processing URL, read from system property
-    private static String errorUrl = System.getProperty(
+    private static String errorUrl = com.iplanet.am.util.SystemCache.getProperty(
         IDPDiscoveryConstants.ERROR_URL_PARAM_NAME);
     static {
         try {

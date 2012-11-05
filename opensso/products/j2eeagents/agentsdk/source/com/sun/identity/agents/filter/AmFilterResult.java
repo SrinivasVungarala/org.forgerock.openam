@@ -183,7 +183,7 @@ public class AmFilterResult {
         private boolean                   _processResponse;        
 
         public static final String NEW_LINE = 
-                            System.getProperty("line.separator", "\n");
+                            com.iplanet.am.util.SystemCache.getProperty("line.separator", "\n");
         
         public static final String SEPARATOR =
         "-----------------------------------------------------------";

@@ -435,15 +435,15 @@ public class MultiProtocolCommon extends TestCommon {
                 + "/config/federation/default/Federate.jsp?metaAlias="
                 + spMetaalias + "&amp;idpEntityID=" + idpEntityName );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
     

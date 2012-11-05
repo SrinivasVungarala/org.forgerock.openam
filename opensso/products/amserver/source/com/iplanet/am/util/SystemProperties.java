@@ -81,6 +81,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @supported.all.api
  */
 public class SystemProperties {
+	final static Cache<String, String> cache=new Cache<String, String>(SystemProperties.class.getName());
+
     private static String instanceName;
 //    private static ReentrantReadWriteLock rwLock = new
 //        ReentrantReadWriteLock();
@@ -154,8 +156,8 @@ public class SystemProperties {
             //props = new Properties();
 
             // Load properties from file
-            String serverName = System.getProperty(SERVER_NAME_PROPERTY);
-            String configName = System.getProperty(CONFIG_NAME_PROPERTY,
+            String serverName = com.iplanet.am.util.SystemCache.getProperty(SERVER_NAME_PROPERTY);
+            String configName = com.iplanet.am.util.SystemCache.getProperty(CONFIG_NAME_PROPERTY,
                     AMCONFIG_FILE_NAME);
             String fname = null;
             FileInputStream fis = null;
@@ -262,6 +264,20 @@ public class SystemProperties {
      * @return the value if the key exists; otherwise returns <code>null</code>
      */
     public static String get(String key) {
+	String value=cache.get(key);
+	if (value==null){
+		synchronized (SystemProperties.class.getName()+"."+key) {
+			value=cache.get(key);
+			if (value==null){
+				value=get0(key);
+				cache.put(key, value==null?"":value);
+			}
+			}
+		}
+	return "".equals(value)?null:value;
+    }
+
+    public static String get0(String key) {
         //rwLock.readLock().lock();
 
         try {
@@ -289,22 +305,22 @@ public class SystemProperties {
                         if (k.equals("%SERVER_URI%")) {
                             if ((val != null) && (val.length() > 0)) {
                                 if (val.charAt(0) == '/') {
-                                    answer = answer.replaceAll("/%SERVER_URI%",
+                                    answer = answer.replace("/%SERVER_URI%",
                                         val);
                                     String lessSlash = val.substring(1);
-                                    answer = answer.replaceAll("%SERVER_URI%",
+                                    answer = answer.replace("%SERVER_URI%",
                                         lessSlash);
                                 } else {
-                                    answer = answer.replaceAll(k, val);
+                                    answer = answer.replace(k, val);
                                 }
                             }
                         } else {
-                            answer = answer.replaceAll(k, val);
+                            answer = answer.replace(k, val);
                         }
                     }
 
                     if (answer.indexOf("%ROOT_SUFFIX%") != -1) {
-                        answer = answer.replaceAll("%ROOT_SUFFIX%",
+                        answer = answer.replace("%ROOT_SUFFIX%",
                             SMSEntry.getAMSdkBaseDN());
                     }
                 }
@@ -323,7 +339,7 @@ public class SystemProperties {
     }
 
     private static String getProp(String key) {
-        String answer = System.getProperty(key);
+        String answer = com.iplanet.am.util.SystemCache.getProperty(key);
         if (answer == null) {
             answer = props.get(key);
         }
@@ -421,13 +437,14 @@ public class SystemProperties {
         for (Iterator i = mapTagswap.keySet().iterator(); i.hasNext(); ) {
             String key = (String)i.next();
             String rgKey = (String)mapTagswap.get(key);
-            String val = System.getProperty(rgKey);
+            String val = com.iplanet.am.util.SystemCache.getProperty(rgKey);
             if (val == null) {
                 val = (String)properties.get(rgKey);
             }
             if (key!=null&&val!=null)
 		tagswapValues.put(key, val);
         }
+        cache.clear();
     }
 
     /**

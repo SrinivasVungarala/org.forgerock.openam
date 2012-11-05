@@ -115,11 +115,11 @@ public class SAMLv2TransientUserTests extends TestCommon {
         try {
             ResourceBundle rbAmconfig = ResourceBundle.getBundle(
                     TestConstants.TEST_PROPERTY_AMCONFIG);
-            baseDir = getBaseDir() + System.getProperty("file.separator") 
+            baseDir = getBaseDir() + com.iplanet.am.util.SystemCache.getProperty("file.separator")
                     + rbAmconfig.getString(TestConstants.KEY_ATT_SERVER_NAME)  
-                    + System.getProperty("file.separator") + "built" 
-                    + System.getProperty("file.separator") + "classes" 
-                    + System.getProperty("file.separator");
+                    + com.iplanet.am.util.SystemCache.getProperty("file.separator") + "built"
+                    + com.iplanet.am.util.SystemCache.getProperty("file.separator") + "classes"
+                    + com.iplanet.am.util.SystemCache.getProperty("file.separator");
             //Upload global properties file in configMap
             configMap = new HashMap<String, String>();
             configMap = getMapFromResourceBundle("samlv2" + fileseparator +

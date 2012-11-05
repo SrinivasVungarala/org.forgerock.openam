@@ -91,7 +91,7 @@ public class SessionID implements Serializable {
     private Boolean cookieMode = null;
 
     static {
-        cookieName = System.getProperty("com.iplanet.am.cookie.name");
+        cookieName = com.iplanet.am.util.SystemCache.getProperty("com.iplanet.am.cookie.name");
         if (cookieName == null) {
             cookieName = SystemProperties.get("com.iplanet.am.cookie.name");
         }

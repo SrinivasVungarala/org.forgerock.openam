@@ -75,7 +75,7 @@ public final class SystemPropertiesManager {
     
     private static boolean instantiateDefinedProvider() {
         boolean succeeded = true;
-        String param = System.getProperty(PARAM_SYS_CONFIG);
+        String param = com.iplanet.am.util.SystemCache.getProperty(PARAM_SYS_CONFIG);
         if (param != null) {
             try {
                 Class clazz = ClassCache.forName(param);

@@ -41,7 +41,7 @@ import java.util.ResourceBundle;
 
 public class VersionCheck implements SetupConstants {
     private static ResourceBundle bundle = ResourceBundle.getBundle(
-        System.getProperty(SETUP_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILE));
+        com.iplanet.am.util.SystemCache.getProperty(SETUP_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILE));
     private final static String MISMATCH_MSG_TO_DEBUGLOG =
             "openam.mismatch.message.to.debuglog";
     private final static String IGNORE_VERSION_CHECK =
@@ -59,19 +59,19 @@ public class VersionCheck implements SetupConstants {
             System.exit(1);
         } catch (Exception ex) {
             System.out.println(bundle.getString("message.error.amconfig") + " "
-                + System.getProperty(Bootstrap.JVM_OPT_BOOTSTRAP));
+                + com.iplanet.am.util.SystemCache.getProperty(Bootstrap.JVM_OPT_BOOTSTRAP));
             return 1;
         }
         return isVersionValid();
     }
 
     public static int isVersionValid() {
-        String javaExpectedVersion = System.getProperty(JAVA_VERSION_EXPECTED);
-        String amExpectedVersion = System.getProperty(AM_VERSION_EXPECTED);
-        String configVersion = SystemProperties.get(System.getProperty(
+        String javaExpectedVersion = com.iplanet.am.util.SystemCache.getProperty(JAVA_VERSION_EXPECTED);
+        String amExpectedVersion = com.iplanet.am.util.SystemCache.getProperty(AM_VERSION_EXPECTED);
+        String configVersion = SystemProperties.get(com.iplanet.am.util.SystemCache.getProperty(
             AM_VERSION_CURRENT)).trim();
        
-        if (!versionCompatible(System.getProperty(JAVA_VERSION_CURRENT),
+        if (!versionCompatible(com.iplanet.am.util.SystemCache.getProperty(JAVA_VERSION_CURRENT),
             javaExpectedVersion)) {
             System.out.println(bundle.getString("message.error.version.jvm") +
                 " " + javaExpectedVersion + " .");

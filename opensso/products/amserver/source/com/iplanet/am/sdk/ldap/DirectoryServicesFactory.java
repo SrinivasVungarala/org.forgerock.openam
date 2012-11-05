@@ -52,7 +52,7 @@ class DirectoryServicesFactory {
 
     static {
         // Check if the global caching property is set in System runtime.
-        String cachingMode = System.getProperty(
+        String cachingMode = com.iplanet.am.util.SystemCache.getProperty(
                 GLOBAL_CACHE_ENABLED_DISABLED_KEY);
         if ((cachingMode == null) || (cachingMode.length() == 0)) {
             // Check if caching property is set in AMConfig. By default = true

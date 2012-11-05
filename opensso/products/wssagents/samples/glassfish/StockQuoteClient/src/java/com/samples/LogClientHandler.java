@@ -52,7 +52,7 @@ public class LogClientHandler implements SOAPHandler<SOAPMessageContext> {
         String url = null;
         if(u != null) {
            url = u.getFile(); 
-           String osName = System.getProperty("os.name"); 
+           String osName = com.iplanet.am.util.SystemCache.getProperty("os.name");
            if(osName != null && osName.toLowerCase().startsWith("windows")) {
               url = url.substring(1);
            }

@@ -400,8 +400,8 @@ public class StockQuoteSampleTest extends TestCommon {
                     String xmlFile = "generateUserAuthenticateXML" + testIndex
                             + ".xml";
                     String xmlFileLocation = getTestBase() +
-                            System.getProperty("file.separator") + "wss" +
-                            System.getProperty("file.separator") + xmlFile;
+                            com.iplanet.am.util.SystemCache.getProperty("file.separator") + "wss" +
+                            com.iplanet.am.util.SystemCache.getProperty("file.separator") + xmlFile;
                     wssc.generateUserAuthenticateXML(strUser, strUser,
                             xmlFileLocation, strExpResult, strClientURL);
                     task = new DefaultTaskHandler(xmlFileLocation);

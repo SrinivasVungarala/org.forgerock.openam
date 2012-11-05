@@ -104,10 +104,10 @@ public class FedLibSystemProperties implements ISystemProperties {
             }
         } catch (MissingResourceException mrex) {
             // check if this is the fedlet case, find fedlet home first
-            String fedletHomeDir = System.getProperty(FEDLET_HOME_DIR);
+            String fedletHomeDir = com.iplanet.am.util.SystemCache.getProperty(FEDLET_HOME_DIR);
             if ((fedletHomeDir == null) || 
                 (fedletHomeDir.trim().length() == 0)) {
-                    fedletHomeDir = System.getProperty("user.home") +
+                    fedletHomeDir = com.iplanet.am.util.SystemCache.getProperty("user.home") +
                         File.separator + "fedlet";
             }
             FileInputStream fis = null;

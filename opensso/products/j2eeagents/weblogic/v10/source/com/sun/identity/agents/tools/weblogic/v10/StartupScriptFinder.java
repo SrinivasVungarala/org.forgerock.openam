@@ -51,7 +51,7 @@ public class StartupScriptFinder implements IDefaultValueFinder, IConfigKeys {
     
     private String getDefaultStartupScriptPath() {
         String result = null;
-        String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+        String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
         if (osName.toLowerCase().startsWith(STR_WINDOWS)) {
             result =
               "C:\\bea\\user_projects\\domains\\base_domain\\startWebLogic.cmd";

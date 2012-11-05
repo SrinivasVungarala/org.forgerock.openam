@@ -116,9 +116,9 @@ public class TestCommon implements TestConstants {
     static private String uriseparator = "/";
     protected static String csDeployURI = "/IntClientSample";
  
-    protected static String newline = System.getProperty("line.separator");
+    protected static String newline = com.iplanet.am.util.SystemCache.getProperty("line.separator");
     protected static String fileseparator =
-            System.getProperty("file.separator");
+            com.iplanet.am.util.SystemCache.getProperty("file.separator");
     private static String tableContents;
     protected static String serverProtocol;
     protected static String serverHost;
@@ -345,7 +345,7 @@ public class TestCommon implements TestConstants {
     protected String getBaseDir()
     throws Exception {
         entering("getBaseDir", null);
-        String strCD =  System.getProperty("user.dir");
+        String strCD =  com.iplanet.am.util.SystemCache.getProperty("user.dir");
         log(Level.FINEST, "getBaseDir", "Current Directory: " + strCD);
         exiting("getBaseDir");
         return (strCD);
@@ -1833,7 +1833,7 @@ public class TestCommon implements TestConstants {
         String hostname = addr.getCanonicalHostName() + strClientDomain;
         log(Level.FINE, "deployClientSDKWar", "Deploy host: " + hostname);
 
-        String userHomeDir = System.getProperty("user.home");
+        String userHomeDir = com.iplanet.am.util.SystemCache.getProperty("user.home");
         deleteDirectory(userHomeDir + fileseparator + "OpenSSOClient",
                 hostname.replace(".", "_") + "_" + cltWarDeployPort);
 
@@ -1845,7 +1845,7 @@ public class TestCommon implements TestConstants {
                 String trustCertType = rb_client.getString("trust_cert_type");
                 String trustCertPassword =
                         rb_client.getString("trust_cert_password");
-                String javaHome = System.getProperty("java.home");
+                String javaHome = com.iplanet.am.util.SystemCache.getProperty("java.home");
                 log(Level.FINE, "deployClientSDKWar", "JAVA HOME: " +
                         javaHome);
                 String s = null;
@@ -2094,7 +2094,7 @@ public class TestCommon implements TestConstants {
             log(Level.FINE, "undeployClientSDKWar", "Undeploying client sdk" +
                     " war on host:port " + hostname + ":" + cltWarDeployPort);
 
-            String userHomeDir = System.getProperty("user.home");
+            String userHomeDir = com.iplanet.am.util.SystemCache.getProperty("user.home");
             deleteDirectory(userHomeDir + fileseparator + "OpenSSOClient",
                     hostname.replace(".", "_") + "_" + cltWarDeployPort);
 
@@ -2543,7 +2543,7 @@ public class TestCommon implements TestConstants {
     protected void replaceString(String inputFN, Map nvp,
             String outputFN) 
     throws Exception {
-        String enc = System.getProperty("file.encoding");
+        String enc = com.iplanet.am.util.SystemCache.getProperty("file.encoding");
         replaceString(inputFN, nvp, outputFN, enc);
     }
     

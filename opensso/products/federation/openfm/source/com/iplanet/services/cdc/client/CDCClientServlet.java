@@ -149,7 +149,7 @@ extends HttpServlet {
     private static String authURLCookieName;
     private static String authURLCookieDomain;
     private static String deployDescriptor;
-    boolean serverMode = Boolean.valueOf(System.getProperty(
+    boolean serverMode = Boolean.valueOf(com.iplanet.am.util.SystemCache.getProperty(
         Constants.SERVER_MODE, SystemProperties.get(Constants.SERVER_MODE, 
         "false"))).booleanValue();
     private static boolean cookieEncoding =

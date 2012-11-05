@@ -111,14 +111,14 @@ public class JCEEncryption implements AMEncryption, ConfigurableKey {
     private static final int ITERATION_COUNT = 5;
 
     static {
-        CRYPTO_DESCRIPTOR = System.getProperty(CRYPTO_DESCRIPTOR_PROPERTY_NAME,
+        CRYPTO_DESCRIPTOR = com.iplanet.am.util.SystemCache.getProperty(CRYPTO_DESCRIPTOR_PROPERTY_NAME,
                 CRYPTO_DESCRIPTOR_DEFAULT_VALUE);
-        KEYGEN_ALGORITHM = System.getProperty(KEYGEN_ALGORITHM_PROPERTY_NAME,
+        KEYGEN_ALGORITHM = com.iplanet.am.util.SystemCache.getProperty(KEYGEN_ALGORITHM_PROPERTY_NAME,
                 KEYGEN_ALGORITHM_DEFAULT_VALUE);
-        CRYPTO_DESCRIPTOR_PROVIDER = System.getProperty(
+        CRYPTO_DESCRIPTOR_PROVIDER = com.iplanet.am.util.SystemCache.getProperty(
                 CRYPTO_DESCRIPTOR_PROVIDER_PROPERTY_NAME,
                 CRYPTO_DESCRIPTOR_PROVIDER_DEFAULT_VALUE);
-        KEYGEN_ALGORITHM_PROVIDER = System.getProperty(
+        KEYGEN_ALGORITHM_PROVIDER = com.iplanet.am.util.SystemCache.getProperty(
                 KEYGEN_ALGORITHM_PROVIDER_PROPERTY_NAME,
                 KEYGEN_ALGORITHM_PROVIDER_DEFAULT_VALUE);
     }

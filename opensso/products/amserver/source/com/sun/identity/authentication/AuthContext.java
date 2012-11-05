@@ -132,7 +132,7 @@ public class AuthContext extends Object implements java.io.Serializable {
         "com.sun.identity.security.keystore.AMCallbackHandler";
     
     static String protHandlerPkg =
-        System.getProperty(Constants.PROTOCOL_HANDLER, Constants.JSSE_HANDLER);
+        com.iplanet.am.util.SystemCache.getProperty(Constants.PROTOCOL_HANDLER, Constants.JSSE_HANDLER);
     
     static boolean usingJSSEHandler =
         protHandlerPkg.equals(Constants.JSSE_HANDLER);

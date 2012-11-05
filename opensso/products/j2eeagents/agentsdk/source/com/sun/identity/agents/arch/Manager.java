@@ -480,7 +480,7 @@ public class Manager implements IConfigurationKeyConstants,
         }
         
         if(getModule().isLogMessageEnabled()) {
-            String newLine = System.getProperty("line.separator", "\n");
+            String newLine = com.iplanet.am.util.SystemCache.getProperty("line.separator", "\n");
             StringBuffer buff =
                     new StringBuffer("Configuration Strings for ");
             

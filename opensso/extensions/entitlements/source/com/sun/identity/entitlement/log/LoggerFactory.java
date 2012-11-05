@@ -47,7 +47,7 @@ public class LoggerFactory {
     private ILoggerProvider provider;
 
     private LoggerFactory() {
-        String prop = System.getProperty(
+        String prop = com.iplanet.am.util.SystemCache.getProperty(
             ILoggerProvider.SYSTEM_PROPERTY_LOG_PROVIDER);
         if ((prop != null) && (prop.trim().length() > 0)) {
             provider = getLoggerProvider(prop, false);

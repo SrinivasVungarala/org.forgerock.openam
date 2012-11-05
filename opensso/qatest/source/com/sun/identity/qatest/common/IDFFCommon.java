@@ -87,26 +87,26 @@ public class IDFFCommon extends TestCommon {
                 + "/config/federation/default/Federate.jsp?metaAlias="
                 + spMetaalias + "&amp;idpEntityID=" + idpEntityName );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         if (idpLogin) {
             out.write("<form name=\"form1\" buttonName=\"button\" />");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<form name=\"Login\" buttonName=\"\" >");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken1\" value=\"" + idpUser + "\" />");
-            out.write(System.getProperty("line.separator"));
+            out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
             out.write("<input name=\"IDToken2\" value=\""
                     + idpUserpw + "\" />");
         } else {
             out.write("<form>");
         }
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
 
@@ -142,17 +142,17 @@ public class IDFFCommon extends TestCommon {
                 + "/config/federation/default/Federate.jsp?metaAlias="
                 + spMetaalias + "&amp;idpEntityID=" + idpEntityName );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form name=\"form1\" buttonName=\"button\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
     
@@ -185,15 +185,15 @@ public class IDFFCommon extends TestCommon {
                 + "/config/federation/default/Federate.jsp?metaAlias="
                 + spMetaalias + "&amp;idpEntityID=" + idpEntityName );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
     
@@ -223,14 +223,14 @@ public class IDFFCommon extends TestCommon {
                 + spPort + spDeploymentURI
                 + "/liberty-logout?metaAlias=" + spMetaalias);
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form>");
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
     
@@ -261,14 +261,14 @@ public class IDFFCommon extends TestCommon {
                 + "/config/federation/default/Termination.jsp?metaAlias="
                 + spMetaalias );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form name=\"selectprovider\" buttonName=\"doIt\">");
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
     
@@ -293,14 +293,14 @@ public class IDFFCommon extends TestCommon {
                 + idpPort + idpDeploymentURI
                 + "/liberty-logout?metaAlias=" + idpMetaalias);
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form>");
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
     
@@ -326,14 +326,14 @@ public class IDFFCommon extends TestCommon {
                 + "/config/federation/default/Termination.jsp?metaAlias="
                 + idpMetaalias );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form name=\"selectprovider\" buttonName=\"doIt\">");
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
     
@@ -359,14 +359,14 @@ public class IDFFCommon extends TestCommon {
                 + "/config/federation/default/NameRegistration.jsp?metaAlias="
                 + spMetaalias );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form name=\"selectprovider\" buttonName=\"doIt\">");
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
 
@@ -392,14 +392,14 @@ public class IDFFCommon extends TestCommon {
                 + "/config/federation/default/NameRegistration.jsp?metaAlias="
                 + idpMetaalias );
         out.write("\">");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("<form name=\"selectprovider\" buttonName=\"doIt\">");
         out.write("<result text=\"" + strResult + "\" />");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</form>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.write("</url>");
-        out.write(System.getProperty("line.separator"));
+        out.write(com.iplanet.am.util.SystemCache.getProperty("line.separator"));
         out.close();
     }
 

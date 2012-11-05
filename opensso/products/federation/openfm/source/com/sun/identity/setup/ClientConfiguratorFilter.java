@@ -111,9 +111,9 @@ public final class ClientConfiguratorFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         setFilterConfig(filterConfig);
         servletCtx = filterConfig.getServletContext();
-        configFile = System.getProperty("openssoclient.config.folder");
+        configFile = com.iplanet.am.util.SystemCache.getProperty("openssoclient.config.folder");
         if (configFile == null || configFile.length() == 0) {
-            configFile = System.getProperty("user.home"); 
+            configFile = com.iplanet.am.util.SystemCache.getProperty("user.home");
         }
         configFile = configFile + File.separator +
             SetupClientWARSamples.CLIENT_WAR_CONFIG_TOP_DIR + File.separator +

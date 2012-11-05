@@ -78,7 +78,7 @@ public class FAMClassLoader {
 
                 ClassLoader localcc = FAMClassLoader.class.getClassLoader();
                 String[] mPackages = maskedPackages;
-                String version = System.getProperty("java.version");
+                String version = com.iplanet.am.util.SystemCache.getProperty("java.version");
                 if(version != null && version.startsWith("1.6")) {                   
                    mPackages = maskedPackages16;
                 }
@@ -130,12 +130,12 @@ public class FAMClassLoader {
         }
         URL[] urls = new URL[jars.length + 1];
         String FILE_BEGIN = "file:";
-        String osName = System.getProperty("os.name");
+        String osName = com.iplanet.am.util.SystemCache.getProperty("os.name");
         if ((osName != null) && (osName.toLowerCase().startsWith("windows"))) {
             FILE_BEGIN = "file:/";
         }
         String FILE_SEPARATOR = "/";
-        String installRoot = System.getProperty("com.sun.aas.installRoot");
+        String installRoot = com.iplanet.am.util.SystemCache.getProperty("com.sun.aas.installRoot");
         String defaultJarsPath = installRoot + FILE_SEPARATOR + "addons" 
             + FILE_SEPARATOR + "opensso";
         String jarsPath = FILE_BEGIN + SystemConfigurationUtil.getProperty(

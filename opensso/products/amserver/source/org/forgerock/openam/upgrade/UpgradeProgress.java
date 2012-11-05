@@ -44,7 +44,7 @@ public class UpgradeProgress {
     static private String bundleName = "amUpgrade";
 
     static private OutputStream out = null;
-    static private String encoding = System.getProperty("file.encoding");
+    static private String encoding = com.iplanet.am.util.SystemCache.getProperty("file.encoding");
     static private ResourceBundle bundle = ResourceBundle.getBundle(
         bundleName, Locale.getDefault());
     static private boolean isTextMode = false;

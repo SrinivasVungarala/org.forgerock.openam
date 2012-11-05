@@ -46,7 +46,7 @@ public class AMX509KeyManagerFactory {
     public static float jvmVersion;
     
     static {
-        jvmVersionStr = System.getProperty("java.vm.version");
+        jvmVersionStr = com.iplanet.am.util.SystemCache.getProperty("java.vm.version");
         if (debug.messageEnabled()) {
             debug.message("AMX509KeyManagerFactory : "+
                           " runtime version = " + jvmVersionStr);

@@ -144,7 +144,7 @@ public class DSConfigMgr implements IDSConfigMgr {
                     SystemProperties.CONFIG_PATH);
                 if (path == null) {
                     // For Backward compatibility obtain from runtime flag
-                    path = System.getProperty(RUN_TIME_CONFIG_PATH);
+                    path = com.iplanet.am.util.SystemCache.getProperty(RUN_TIME_CONFIG_PATH);
                 }
                 if (path == null) {
                     throw new LDAPServiceException(
@@ -153,7 +153,7 @@ public class DSConfigMgr implements IDSConfigMgr {
                         "This instance is likely to be running in client mode");
                 }
                 String configFile = path
-                        + System.getProperty("file.separator")
+                        + com.iplanet.am.util.SystemCache.getProperty("file.separator")
                         + SystemProperties.CONFIG_FILE_NAME;
                 is = new FileInputStream(configFile);
             } catch (IOException ex) {                

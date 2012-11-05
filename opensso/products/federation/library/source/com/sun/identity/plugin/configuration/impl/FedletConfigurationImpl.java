@@ -100,9 +100,9 @@ public class FedletConfigurationImpl implements ConfigurationInstance {
                 componentName);
         }
         this.componentName = componentName;       
-        fedletHomeDir = System.getProperty(FEDLET_HOME_DIR);
+        fedletHomeDir = com.iplanet.am.util.SystemCache.getProperty(FEDLET_HOME_DIR);
         if ((fedletHomeDir == null) || (fedletHomeDir.trim().length() == 0)) {
-            fedletHomeDir = System.getProperty("user.home") +
+            fedletHomeDir = com.iplanet.am.util.SystemCache.getProperty("user.home") +
                 File.separator + "fedlet";
         }
         if (debug.messageEnabled()) {

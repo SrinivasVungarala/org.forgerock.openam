@@ -54,7 +54,7 @@ public final class ConfiguratorFilter implements Filter {
     public static boolean isConfigured = false;
     private static final String SETUP_URI = "/Configurator.jsp";
     private static final String configFile = 
-        System.getProperty("user.home") + File.separator + 
+        com.iplanet.am.util.SystemCache.getProperty("user.home") + File.separator +
         "libIDPDiscoveryConfig.properties"; 
     private boolean passThrough = false;
 

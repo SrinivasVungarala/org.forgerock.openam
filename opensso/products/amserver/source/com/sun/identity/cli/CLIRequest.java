@@ -233,7 +233,7 @@ public class CLIRequest {
     private void processVersion(CommandManager mgr)
         throws CLIException {
         IOutput outputWriter = mgr.getOutputWriter();
-        String basedir = System.getProperty(Bootstrap.JVM_OPT_BOOTSTRAP);
+        String basedir = com.iplanet.am.util.SystemCache.getProperty(Bootstrap.JVM_OPT_BOOTSTRAP);
         String version = CLIUtil.getFileContent(mgr, basedir + "/.version");
         outputWriter.printlnMessage("");
         outputWriter.printlnMessage(mgr.getProductName() + " " + version);

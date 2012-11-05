@@ -63,7 +63,7 @@ public class SOAPMessage extends HttpServlet {
 		if (file == null || file.length() == 0) {
 			file = "request";
 		}
-		String fileName = System.getProperty("user.home") + "/opensso/" + file;
+		String fileName = com.iplanet.am.util.SystemCache.getProperty("user.home") + "/opensso/" + file;
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				new FileInputStream(fileName)));
         String line;

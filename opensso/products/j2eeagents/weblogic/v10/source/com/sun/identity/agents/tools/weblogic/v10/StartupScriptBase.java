@@ -141,7 +141,7 @@ public class StartupScriptBase implements InstallConstants, IConfigKeys {
     protected String getAgentEnvScriptPath(IStateAccess stateAccess) {
         
         String destFile = null;
-        String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+        String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
         String startupscriptDir =
                 (String) stateAccess.get(STR_KEY_STARTUP_SCRIPT_DIR);
         String instanceName = (String) stateAccess.get(STR_KEY_SERVER_NAME);

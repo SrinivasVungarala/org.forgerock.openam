@@ -65,7 +65,7 @@ public class ShutdownManager {
         for (int i = 0; i < size; i++) {
             listeners[i] = new HashSet();
         }
-        boolean hooksEnabled = Boolean.valueOf(System.getProperty(
+        boolean hooksEnabled = Boolean.valueOf(com.iplanet.am.util.SystemCache.getProperty(
                 com.sun.identity.shared.Constants.RUNTIME_SHUTDOWN_HOOK_ENABLED));
         if (hooksEnabled) {
             // add the trigger for stand alone application to shutdown.

@@ -90,6 +90,6 @@ public interface IConstants {
     public static final String OPENSSO_CLIENT_SDK_JAR = "openssoclientsdk.jar";
     public static final String STR_INSTANCE_CONFIG_DIR_NAME = "config";
     public static final int BUFF_SIZE = 2048;
-    public static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+    public static final String TEMP_DIR = com.iplanet.am.util.SystemCache.getProperty("java.io.tmpdir");
 }
 

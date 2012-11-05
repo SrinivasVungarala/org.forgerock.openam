@@ -88,8 +88,8 @@ public class CopyAgentFilesTask extends AgentFilesBase implements ITask {
 
         try {
             for (File localeFile : listAgentLocaleFiles()) {
-                FileUtils.copyFile(agentLocalePath + System.getProperty("file.separator") + localeFile.getName(),
-                        asClassesDir + System.getProperty("file.separator") + localeFile.getName());
+                FileUtils.copyFile(agentLocalePath + com.iplanet.am.util.SystemCache.getProperty("file.separator") + localeFile.getName(),
+                        asClassesDir + com.iplanet.am.util.SystemCache.getProperty("file.separator") + localeFile.getName());
                 Debug.log("CopyAgentFilesTask.copyAgentLocaleFiles() - copy "
                         + localeFile.getName() + " from " + agentLocalePath + " to " + asClassesDir);
             }

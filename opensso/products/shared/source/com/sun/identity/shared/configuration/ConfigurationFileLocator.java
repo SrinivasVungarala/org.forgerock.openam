@@ -49,7 +49,7 @@ public class ConfigurationFileLocator {
             String path = servletCtx.getResource("/").getPath();
             if (path != null) {
                 path = path.replaceAll("/", "_");
-                fileName = System.getProperty("user.home") + "/" + AMCONFIG +
+                fileName = com.iplanet.am.util.SystemCache.getProperty("user.home") + "/" + AMCONFIG +
                     path;
             }
         }

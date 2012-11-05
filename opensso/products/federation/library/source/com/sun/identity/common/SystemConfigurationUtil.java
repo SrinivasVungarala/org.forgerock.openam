@@ -190,7 +190,7 @@ public final class SystemConfigurationUtil implements ConfigurationListener {
      * @return <code>true</code> if this is running on server mode.
      */
     public static boolean isServerMode() {
-        return Boolean.valueOf(System.getProperty(PROP_SERVER_MODE,
+        return Boolean.valueOf(com.iplanet.am.util.SystemCache.getProperty(PROP_SERVER_MODE,
             getProperty(PROP_SERVER_MODE, "false"))).booleanValue();
     }
 

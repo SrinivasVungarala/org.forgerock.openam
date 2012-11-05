@@ -82,7 +82,7 @@ public class CharsetMapping {
 
     public static String getPlatformEncoding() {
 
-        String enc = System.getProperty("file.encoding");
+        String enc = com.iplanet.am.util.SystemCache.getProperty("file.encoding");
         String testFile = "ABC";
         try {
             testFile.getBytes(enc);

@@ -287,11 +287,11 @@ public class CommandManager {
         environment = new HashMap();
         getLocale(argv);
 
-        String defintionFiles = System.getProperty(
+        String defintionFiles = com.iplanet.am.util.SystemCache.getProperty(
             CLIConstants.SYS_PROPERTY_DEFINITION_FILES);
         setupDefinitions(defintionFiles);
 
-        commandName = System.getProperty(
+        commandName = com.iplanet.am.util.SystemCache.getProperty(
             CLIConstants.SYS_PROPERTY_COMMAND_NAME);
         if ((commandName == null) || (commandName.length() == 0)) {
             throw new CLIException(rbMessages.getString(
@@ -299,7 +299,7 @@ public class CommandManager {
                 ExitCodes.MISSING_COMMAND_NAME);
         }
 
-        String outputWriterClassName = System.getProperty(
+        String outputWriterClassName = com.iplanet.am.util.SystemCache.getProperty(
             CLIConstants.SYS_PROPERTY_OUTPUT_WRITER);
         getOutputWriter(outputWriterClassName);
 
@@ -705,7 +705,7 @@ public class CommandManager {
     }
 
     private static void getIsInstallTime() {
-        String strInstallTime = System.getProperty("installTime");
+        String strInstallTime = com.iplanet.am.util.SystemCache.getProperty("installTime");
 
         if ((strInstallTime != null) && (strInstallTime.trim().length() > 0)) {
             if (strInstallTime.trim().toLowerCase().equals("true")) {

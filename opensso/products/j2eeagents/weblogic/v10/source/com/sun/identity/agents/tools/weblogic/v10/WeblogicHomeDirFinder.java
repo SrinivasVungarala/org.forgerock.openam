@@ -44,7 +44,7 @@ public class WeblogicHomeDirFinder implements IDefaultValueFinder, IConfigKeys {
     }
     
     private String getDefaultWeblogicHomeDirPath() {
-        String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+        String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
         return (osName.toLowerCase().startsWith(STR_WINDOWS)) ?
             "C:\\bea\\wlserver_10.0" :
             "/usr/local/bea/wlserver_10.0";

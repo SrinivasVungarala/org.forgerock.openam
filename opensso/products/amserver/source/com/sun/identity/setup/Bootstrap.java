@@ -88,7 +88,7 @@ public class Bootstrap {
         throws Exception
     {   
         if (!isBootstrap) {
-            String basedir = System.getProperty(JVM_OPT_BOOTSTRAP);
+            String basedir = com.iplanet.am.util.SystemCache.getProperty(JVM_OPT_BOOTSTRAP);
             if (load(basedir, false) == null) {
                 throw new ConfiguratorException(
                     "configurator.cannot.bootstrap", null,

@@ -134,10 +134,10 @@ public class ServerGroup implements ParseOutput {
             }
 
             // Get the rest of the attributes
-            String maxConnPoolStr = System.getProperty("max_conn_pool");
+            String maxConnPoolStr = com.iplanet.am.util.SystemCache.getProperty("max_conn_pool");
             if (maxConnPoolStr == null)
                 maxConnPoolStr = (String) atts.get(DSConfigMgr.MAX_CONN_POOL);
-            String minConnPoolStr = System.getProperty("min_conn_pool");
+            String minConnPoolStr = com.iplanet.am.util.SystemCache.getProperty("min_conn_pool");
             if (minConnPoolStr == null)
                 minConnPoolStr = (String) atts.get(DSConfigMgr.MIN_CONN_POOL);
 

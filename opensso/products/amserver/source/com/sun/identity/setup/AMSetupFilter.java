@@ -106,7 +106,7 @@ public final class AMSetupFilter implements Filter {
                             httpRequest.getServerName() + ":" +
                             httpRequest.getServerPort() +
                             httpRequest.getContextPath();
-                        if ((new File(System.getProperty("user.home"))).canWrite()){
+                        if ((new File(com.iplanet.am.util.SystemCache.getProperty("user.home"))).canWrite()){
                             url += SETUPURI;
                         } else {
                             url += NOWRITE_PERMISSION;

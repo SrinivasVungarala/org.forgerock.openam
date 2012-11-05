@@ -34,6 +34,7 @@
  */
 package com.iplanet.services.naming.service;
 
+import com.iplanet.am.util.Cache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.dpro.session.Session;
 import com.iplanet.dpro.session.SessionID;
@@ -76,6 +77,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -208,52 +211,57 @@ public class NamingService implements RequestHandler, ServiceListener {
      * This method updates the naming table especially whenever a new server
      * added/deleted into platform server list
      */
+    final static Cache<Boolean, ConcurrentHashMap> cacheNamingTable=new Cache<Boolean, ConcurrentHashMap>(NamingService.class.getName()+".NamingTable");
     private static java.util.concurrent.ConcurrentHashMap updateNamingTable(boolean forClient)
             throws SMSException {
-    	java.util.concurrent.ConcurrentHashMap nametable = null;
+	java.util.concurrent.ConcurrentHashMap nametable = cacheNamingTable.get(forClient);
+	if (nametable==null)
+		synchronized (NamingService.class.getName()+".NamingTable."+forClient) {
+			nametable = cacheNamingTable.get(forClient);
+			if (nametable==null)
+			        try {
+			            ServiceSchema sc = ssmNaming.getGlobalSchema();
+			            Map namingAttrs = sc.getAttributeDefaults();
+			            sc = ssmPlatform.getGlobalSchema();
+			            Map platformAttrs = sc.getAttributeDefaults();
+			            Set sites = getSites(platformAttrs);
+			            Set servers = getServers(platformAttrs, sites);
+			            Set siteNamesAndIDs = getSiteNamesAndIDs();
+			            storeSiteNames(siteNamesAndIDs, namingAttrs);
 
-        try {
-            ServiceSchema sc = ssmNaming.getGlobalSchema();
-            Map namingAttrs = sc.getAttributeDefaults();
-            sc = ssmPlatform.getGlobalSchema();
-            Map platformAttrs = sc.getAttributeDefaults();
-            Set sites = getSites(platformAttrs);
-            Set servers = getServers(platformAttrs, sites);
-            Set siteNamesAndIDs = getSiteNamesAndIDs();
-            storeSiteNames(siteNamesAndIDs, namingAttrs);
-            
-            if ((sites != null) && !sites.isEmpty()) {
-                if (!forClient) {
-                    registFQDNMapping(sites);
-                }
-                sites.addAll(servers);
-            } else {
-                sites = servers;
-            }
+			            if ((sites != null) && !sites.isEmpty()) {
+			                if (!forClient) {
+			                    registFQDNMapping(sites);
+			                }
+			                sites.addAll(servers);
+			            } else {
+			                sites = servers;
+			            }
 
-            if (forClient) {
-                storeServerListForClient(sites, namingAttrs);
-            } else {
-                storeServerList(sites, namingAttrs);
-            }
+			            if (forClient) {
+			                storeServerListForClient(sites, namingAttrs);
+			            } else {
+			                storeServerList(sites, namingAttrs);
+			            }
 
-            // To reduce risk convert from a Map to a Hastable since the rest
-            // of the naming code expects it in this format. Note there is
-            // tradeoff based on whether or not short circuiting is being used.
+			            // To reduce risk convert from a Map to a Hastable since the rest
+			            // of the naming code expects it in this format. Note there is
+			            // tradeoff based on whether or not short circuiting is being used.
+			            nametable = convertToHash(namingAttrs);
+			            if (forClient && (namingTable != null)) {
+			                String siteList = (String) namingTable
+			                    .get(Constants.SITE_ID_LIST);
+			                nametable.put(Constants.SITE_ID_LIST, siteList);
+			            }
 
-            nametable = convertToHash(namingAttrs);
-            if (forClient && (namingTable != null)) {
-                String siteList = (String) namingTable
-                    .get(Constants.SITE_ID_LIST);
-                nametable.put(Constants.SITE_ID_LIST, siteList);
-            }
-
-            insertLBCookieValues(nametable);
-        } catch (Exception ex) {
-            namingDebug.error("Can't get naming table", ex);
-            throw new SMSException(ex.getMessage());
-        }
-
+			            insertLBCookieValues(nametable);
+			            if (nametable!=null)
+					cacheNamingTable.put(forClient, nametable);
+			        } catch (Exception ex) {
+			            namingDebug.error("Can't get naming table", ex);
+			            throw new SMSException(ex.getMessage());
+			        }
+		}
         return nametable;
     }
 
@@ -261,7 +269,7 @@ public class NamingService implements RequestHandler, ServiceListener {
      * This will convert updated naming attributes map into naming hashtable
      */
     static java.util.concurrent.ConcurrentHashMap convertToHash(Map m) {
-    	java.util.concurrent.ConcurrentHashMap retHash = new java.util.concurrent.ConcurrentHashMap();
+	final java.util.concurrent.ConcurrentHashMap retHash = new java.util.concurrent.ConcurrentHashMap(m.size());
         Set s = m.keySet();
         Iterator iter = s.iterator();
         while (iter.hasNext()) {
@@ -385,9 +393,10 @@ public class NamingService implements RequestHandler, ServiceListener {
                 nres.setNamingTable(NamingService
                         .getNamingTable(limitNametable));
             } else {
-            	java.util.concurrent.ConcurrentHashMap tempHash = new java.util.concurrent.ConcurrentHashMap();
-                tempHash = transferTable(NamingService
-                        .getNamingTable(limitNametable));
+		java.util.concurrent.ConcurrentHashMap tempHash;// = new java.util.concurrent.ConcurrentHashMap();
+//                tempHash = transferTable(NamingService
+//                        .getNamingTable(limitNametable));
+		tempHash = new ConcurrentHashMap(NamingService.getNamingTable(limitNametable));
                 java.util.concurrent.ConcurrentHashMap replacedTable = null;
                 URL url = usePreferredNamingURL(nreq, reqVersion);
                 if (url != null) {
@@ -482,7 +491,8 @@ public class NamingService implements RequestHandler, ServiceListener {
 
     private java.util.concurrent.ConcurrentHashMap replaceTable(java.util.concurrent.ConcurrentHashMap namingTable, String sessionID) {
         SessionID sessID = new SessionID(sessionID);
-        namingDebug.message("SessionId received is --" + sessionID);
+        if (namingDebug.messageEnabled())
+		namingDebug.message("SessionId received is --" + sessionID);
          
         return replaceTable(namingTable,
                        sessID.getSessionServerProtocol(),
@@ -513,10 +523,10 @@ public class NamingService implements RequestHandler, ServiceListener {
             Object obj = e.nextElement();
             String key = obj.toString();
             String url = (tempNamingTable.get(obj)).toString();
-            url = url.replaceAll("%protocol", protocol);
-            url = url.replaceAll("%host", host);
-            url = url.replaceAll("%port", port);
-            url = url.replaceAll("%uri", uri);
+            url = url.replace("%protocol", protocol);
+            url = url.replace("%host", host);
+            url = url.replace("%port", port);
+            url = url.replace("%uri", uri);
             tempNamingTable.put(key, url);
         }
         return tempNamingTable;

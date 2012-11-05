@@ -52,7 +52,7 @@ public class DistAuthConfiguratorHelper {
      */
     public static boolean initialiseDistAuth(ServletContext servletCtx)
     throws ServletException {
-        String configFile = System.getProperty("user.home") + File.separator +
+        String configFile = com.iplanet.am.util.SystemCache.getProperty("user.home") + File.separator +
                                 Constants.CONFIG_VAR_DISTAUTH_BOOTSTRAP_BASE_DIR +
                                 File.separator +
                                 SetupDistAuthWAR.getNormalizedRealPath(servletCtx) +

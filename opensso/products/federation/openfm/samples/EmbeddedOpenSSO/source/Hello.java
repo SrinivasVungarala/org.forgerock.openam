@@ -41,7 +41,7 @@ import com.sun.identity.idm.IdUtils;
 public class Hello {
 
     public static void main(String[] argv) {
-        String baseDir = System.getProperty("user.home") + "/embeddedOpenSSO";
+        String baseDir = com.iplanet.am.util.SystemCache.getProperty("user.home") + "/embeddedOpenSSO";
         System.out.println("baseDir = " + baseDir);
         Map<String, String> configData = new HashMap<String, String>();
         ResourceBundle res = ResourceBundle.getBundle("configparam");

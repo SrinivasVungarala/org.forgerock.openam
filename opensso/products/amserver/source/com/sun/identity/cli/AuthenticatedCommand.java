@@ -93,7 +93,7 @@ public abstract class AuthenticatedCommand extends CLICommandBase {
 
     private void validatePwdFilePermissions(String fileName)
         throws CLIException {
-        if (System.getProperty("path.separator").equals(":")) {
+        if (com.iplanet.am.util.SystemCache.getProperty("path.separator").equals(":")) {
             try {
                 String[] parameter = {"/bin/ls", "-l", fileName};
                 Process p = Runtime.getRuntime().exec(parameter);

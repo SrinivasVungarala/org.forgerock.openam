@@ -41,38 +41,38 @@ import java.util.ResourceBundle;
 
 public class Main implements SetupConstants{
     public static void main(String[] args) {
-        ResourceBundle bundle = ResourceBundle.getBundle(System.getProperty(
+        ResourceBundle bundle = ResourceBundle.getBundle(com.iplanet.am.util.SystemCache.getProperty(
             SETUP_PROPERTIES_FILE, DEFAULT_PROPERTIES_FILE));
 
-        if ((System.getProperty(PRINT_HELP) != null) &&
-            System.getProperty(PRINT_HELP).equals(YES)){
+        if ((com.iplanet.am.util.SystemCache.getProperty(PRINT_HELP) != null) &&
+            com.iplanet.am.util.SystemCache.getProperty(PRINT_HELP).equals(YES)){
             SetupUtils.printUsage(bundle);
             System.exit(0);
         }
 
-        if (System.getProperty(CHECK_VERSION) != null) {
-            if (System.getProperty(CHECK_VERSION).equals(YES)) {
+        if (com.iplanet.am.util.SystemCache.getProperty(CHECK_VERSION) != null) {
+            if (com.iplanet.am.util.SystemCache.getProperty(CHECK_VERSION).equals(YES)) {
                 System.exit(VersionCheck.isValid());
             }
         }
 
-        boolean loadConfig = (System.getProperty(CONFIG_LOAD) != null) &&
-            System.getProperty(CONFIG_LOAD).equals(YES);
+        boolean loadConfig = (com.iplanet.am.util.SystemCache.getProperty(CONFIG_LOAD) != null) &&
+            com.iplanet.am.util.SystemCache.getProperty(CONFIG_LOAD).equals(YES);
         String currentOS = SetupUtils.determineOS();
         Properties configProp = null;
         String debugPath = null;
         String logPath = null;
         
         if (loadConfig) {
-            String configPath = System.getProperty(AMCONFIG_PATH);
-            debugPath = System.getProperty(DEBUG_PATH);
-            logPath = System.getProperty(LOG_PATH);
-            String currentDir = System.getProperty("user.dir");
+            String configPath = com.iplanet.am.util.SystemCache.getProperty(AMCONFIG_PATH);
+            debugPath = com.iplanet.am.util.SystemCache.getProperty(DEBUG_PATH);
+            logPath = com.iplanet.am.util.SystemCache.getProperty(LOG_PATH);
+            String currentDir = com.iplanet.am.util.SystemCache.getProperty("user.dir");
 
             try {
                 if ((configPath == null) || (configPath.length() == 0)) {
                     configPath = SetupUtils.getUserInput(bundle.getString(
-                        currentOS + QUESTION), System.getProperty("user.home")
+                        currentOS + QUESTION), com.iplanet.am.util.SystemCache.getProperty("user.home")
                             + File.separator + "openam");
                     if (!(new File(configPath).isAbsolute())) {
                         System.out.println(bundle.getString(

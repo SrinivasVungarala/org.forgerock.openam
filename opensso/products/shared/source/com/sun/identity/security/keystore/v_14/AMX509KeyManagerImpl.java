@@ -61,9 +61,9 @@ public class AMX509KeyManagerImpl implements AMX509KeyManager {
     public static Debug debug = SecurityDebug.debug;
 
     static String keyStoreFile = 
-                     System.getProperty("javax.net.ssl.keyStore", null);
+                     com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.keyStore", null);
     static String keyStorePassword = 
-                     System.getProperty("javax.net.ssl.keyStorePassword", "");
+                     com.iplanet.am.util.SystemCache.getProperty("javax.net.ssl.keyStorePassword", "");
 
     String certAlias = null;
     X509KeyManager sunX509KeyManager = null;

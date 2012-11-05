@@ -159,7 +159,7 @@ public class WebtopNaming {
 
     public static void initialize() {
         serverMode = Boolean.valueOf(
-                System.getProperty(Constants.SERVER_MODE, SystemProperties.get(
+                com.iplanet.am.util.SystemCache.getProperty(Constants.SERVER_MODE, SystemProperties.get(
                         Constants.SERVER_MODE, "false"))).booleanValue();
         sitemonitorDisabled = Boolean.valueOf(SystemProperties.get(
                 Constants.SITEMONITOR_DISABLED,"false")).booleanValue();
@@ -544,7 +544,7 @@ public class WebtopNaming {
      *     nameing table
      */
     public static Vector getPlatformServerList() throws Exception {
-         return getPlatformServerList(true);
+         return getPlatformServerList(false);
     }
 
     /**
@@ -1092,7 +1092,7 @@ public class WebtopNaming {
     public  static URL getNotificationURL()
             throws URLNotFoundException {
         try {
-            String url = System.getProperty(Constants.CLIENT_NOTIFICATION_URL,
+            String url = com.iplanet.am.util.SystemCache.getProperty(Constants.CLIENT_NOTIFICATION_URL,
                     SystemProperties.get(Constants.CLIENT_NOTIFICATION_URL));
             if (url == null) {
                 throw new URLNotFoundException(NamingBundle

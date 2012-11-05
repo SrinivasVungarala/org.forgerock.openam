@@ -195,7 +195,7 @@ public class SetupClientWARSamples {
     private void createKeystoreFile() throws IOException
     {
         String location = 
-        System.getProperty("user.home") + File.separator;
+        com.iplanet.am.util.SystemCache.getProperty("user.home") + File.separator;
         InputStream in = servletContext.getResourceAsStream("/keystore.jks");
         byte[] b = new byte[2007];
         in.read(b);

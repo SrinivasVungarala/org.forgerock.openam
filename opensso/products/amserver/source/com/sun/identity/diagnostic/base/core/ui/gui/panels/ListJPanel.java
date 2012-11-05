@@ -233,7 +233,7 @@ public class ListJPanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt
     ) {
         if (containerDomainDirChooser == null) {
-            String initDir = System.getProperty("user.home");
+            String initDir = com.iplanet.am.util.SystemCache.getProperty("user.home");
             if (initDir != null) {
                 containerDomainDirChooser = new JFileChooser(initDir);
             } else {
@@ -266,7 +266,7 @@ public class ListJPanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt
     ) {
         if (containerDirChooser == null) {
-            String initDir = System.getProperty("user.home");
+            String initDir = com.iplanet.am.util.SystemCache.getProperty("user.home");
             if (initDir != null) {
                 containerDirChooser = new JFileChooser(initDir);
             } else {
@@ -296,7 +296,7 @@ public class ListJPanel extends javax.swing.JPanel {
         java.awt.event.ActionEvent evt
     ) {
         if (configDirChooser == null) {
-            String initDir = System.getProperty("user.home");
+            String initDir = com.iplanet.am.util.SystemCache.getProperty("user.home");
             if (initDir != null) {
                 configDirChooser = new JFileChooser(initDir);
             } else {

@@ -238,7 +238,7 @@ public abstract class AjaxPage extends Page {
     public String getBaseDir(HttpServletRequest req) {
         String basedir = AMSetupServlet.getPresetConfigDir();
         if ((basedir == null) || (basedir.length() == 0)) {
-            String tmp = System.getProperty("user.home");
+            String tmp = com.iplanet.am.util.SystemCache.getProperty("user.home");
             if (File.separatorChar == '\\') {
                 tmp = tmp.replace('\\', '/');
             }

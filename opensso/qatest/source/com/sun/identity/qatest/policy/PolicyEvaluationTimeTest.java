@@ -55,8 +55,8 @@ public class PolicyEvaluationTimeTest extends TestCommon {
     private SSOToken usertoken;
     private Map mapIdentity;
     private PolicyCommon  pc;
-    public static String newline = System.getProperty("line.separator");
-    public static String fileseparator = System.getProperty("file.separator");
+    public static String newline = com.iplanet.am.util.SystemCache.getProperty("line.separator");
+    public static String fileseparator = com.iplanet.am.util.SystemCache.getProperty("file.separator");
     
     /**
      * Constructor for PolicyEvaluationTimeTest class. It creates a map

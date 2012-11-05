@@ -135,7 +135,7 @@ public final class HttpsClient extends HttpClient
 
     private SSLSocket sslSocket = null;
 
-    private String nickName = System.getProperty(
+    private String nickName = com.iplanet.am.util.SystemCache.getProperty(
                      Constants.CLIENT_CERTIFICATE_ALIAS, null);
 
     /**
@@ -324,7 +324,7 @@ public final class HttpsClient extends HttpClient
         SecurityException ex = null;
 
         try {
-            return System.getProperty(prop);
+            return com.iplanet.am.util.SystemCache.getProperty(prop);
         } catch (SecurityException e) {
             ex = e;
         }

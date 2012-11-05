@@ -73,7 +73,7 @@ public class ConnectionFactoryProviderFactory {
 
     static {
         try {    
-            String className = System.getProperty(
+            String className = com.iplanet.am.util.SystemCache.getProperty(
                     CONFIG_CONNECTION_FACTORY_PROVIDER_FACTORY,
                     DEFAULT_CONNECTION_FACTORY_PROVIDER_FACTORY);                    
 

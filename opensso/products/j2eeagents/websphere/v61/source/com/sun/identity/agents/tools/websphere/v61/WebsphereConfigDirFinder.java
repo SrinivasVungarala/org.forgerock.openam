@@ -56,7 +56,7 @@ public class WebsphereConfigDirFinder implements IDefaultValueFinder,IConstants{
     
     private String getDefaultWASConfigDirPath() {
         String result = null;
-        String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+        String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
         String localHost = "localhost";
         try {
             localHost = InetAddress.getLocalHost().getHostName();

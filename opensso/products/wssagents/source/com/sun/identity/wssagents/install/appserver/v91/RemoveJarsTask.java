@@ -104,7 +104,7 @@ public class RemoveJarsTask implements ITask, InstallConstants, IConfigKeys, ICo
         String result = "";
         
         String asHomeDir = (String) stateAccess.get(STR_KEY_AS_INSTALL_DIR);
-        String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+        String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
         if (osName.toLowerCase().startsWith(STR_WINDOWS)) {
             result = asHomeDir + "\\lib\\";
         } else {

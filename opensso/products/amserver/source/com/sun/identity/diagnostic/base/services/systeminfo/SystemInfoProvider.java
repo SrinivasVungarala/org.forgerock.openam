@@ -148,7 +148,7 @@ public abstract class SystemInfoProvider implements SystemInfoConstants {
      */
     public String getOSName() {
         String OSName;
-        OSName = System.getProperty("os.name");
+        OSName = com.iplanet.am.util.SystemCache.getProperty("os.name");
         return OSName;
     }
     
@@ -159,7 +159,7 @@ public abstract class SystemInfoProvider implements SystemInfoConstants {
      */
     public String getOSReleaseNo() {
         String releaseNumberString;
-        releaseNumberString = System.getProperty("os.version");
+        releaseNumberString = com.iplanet.am.util.SystemCache.getProperty("os.version");
         if (releaseNumberString != null) {
             releaseNumberString = releaseNumberString.trim();
         }

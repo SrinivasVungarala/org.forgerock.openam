@@ -47,7 +47,7 @@ public class LogServerHandler implements SOAPHandler<SOAPMessageContext> {
         Boolean outboundProperty = (Boolean)
             smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
         if (!outboundProperty.booleanValue()) {
-            String fileName = System.getProperty("user.home") +
+            String fileName = com.iplanet.am.util.SystemCache.getProperty("user.home") +
 	                "/opensso/request";
             SOAPMessage message = smc.getMessage();
             try {

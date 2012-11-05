@@ -64,7 +64,7 @@ public class WebContainerConstant {
     
     public static final String FILE_SEPARATOR = "/";
     
-    public static final String OS_NAME = System.getProperty("os.name");
+    public static final String OS_NAME = com.iplanet.am.util.SystemCache.getProperty("os.name");
     
     public static final String WINDOWS = "windows";
     

@@ -51,15 +51,15 @@ public class Cache<K, V>   {
 		if (cacheManager==null)
 			cacheManager=CacheManager.getInstance();
 	}
-	static Stat stat=new Stat(); 
+	static Stat stat=new Stat();
 	static class Stat extends Thread{
-		
+
 		public Stat() {
 			super(Cache.class.getName()+"-stat");
 			setPriority(MIN_PRIORITY);
 			start();
 		}
-		
+
 		@Override
 		public void run() {
 			super.run();
@@ -80,22 +80,22 @@ public class Cache<K, V>   {
 				}
 		}
 	}
-	
+
 	public Cache(String cacheName) {
 		this.cacheName=cacheName;
 		synchronized (this.cacheName) {
 			Ehcache cache=cacheManager.getEhcache(cacheName);
-	    	if (cache==null){
-	    		cacheManager.addCache(cacheName);
-	    		cache=cacheManager.getEhcache(cacheName);
-	    		logger.warn("not found ({})",cache);
-	    	}else if (cache.getKeysNoDuplicateCheck().size()>0)
-	    		logger.warn("re-found ({}) with {} values {}",new Object[]{cache,cache.getKeysNoDuplicateCheck().size()});
-	    	else
-	    		logger.info("found ({})",cache);
+		if (cache==null){
+			cacheManager.addCache(cacheName);
+			cache=cacheManager.getEhcache(cacheName);
+			logger.warn("not found ({})",cache);
+		}else if (cache.getKeysNoDuplicateCheck().size()>0)
+			logger.warn("re-found ({}) with {} values {}",new Object[]{cache,cache.getKeysNoDuplicateCheck().size()});
+		else
+			logger.info("found ({})",cache);
 		}
     }
-	
+
 	public Cache(String name,int maxEntriesInMemory) {
 		this(name);
 		cacheManager.getCache(cacheName);//.getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
@@ -103,35 +103,35 @@ public class Cache<K, V>   {
 
     @SuppressWarnings("unchecked")
 	public V get(K key) {
-    	Element e=cacheManager.getEhcache(cacheName).get(key);
-    	if (debug)
-    		logger.debug("get [{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
-    	return (e==null)?null:(V)e.getObjectValue();
+	Element e=cacheManager.getEhcache(cacheName).get(key);
+	if (debug)
+		logger.debug("[{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
+	return (e==null)?null:(V)e.getObjectValue();
     }
 
     public void put(K key, V value) {
-    	if (debug)
-    		logger.debug("put [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
-    	get().put(new Element(key, value));
+	if (debug)
+		logger.debug("put [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
+	get().put(new Element(key, value));
     }
 
     public void remove(K key) {
-    	get().remove(key);
+	get().remove(key);
     }
-    
+
     public void clear() {
-    	get().removeAll();
+	get().removeAll();
     }
-    
+
     public Ehcache get() {
 		return cacheManager.getEhcache(cacheName);
 	}
-    
+
     public void removeCache(){
-    	if (cacheManager.getCache(cacheName)!=null){
-    		logger.info("remove ({})",cacheName);
-    		cacheManager.removeCache(cacheName);
-    	}
+	if (cacheManager.getCache(cacheName)!=null){
+		logger.info("remove ({})",cacheName);
+		cacheManager.removeCache(cacheName);
+	}
     }
 
 	@Override

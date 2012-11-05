@@ -43,9 +43,9 @@ import org.testng.annotations.Test;
 public class IOTest {
     private static final String RESOURCE_NAME = "eUnitTest.data";
     private static final String FILENAME =
-        System.getProperty("java.io.tmpdir") + "/" + "eUnitTest.txt";
+        com.iplanet.am.util.SystemCache.getProperty("java.io.tmpdir") + "/" + "eUnitTest.txt";
     private static final String JSON_FILENAME =
-        System.getProperty("java.io.tmpdir") + "/" + "eJSONUnitTest.txt";
+        com.iplanet.am.util.SystemCache.getProperty("java.io.tmpdir") + "/" + "eJSONUnitTest.txt";
     private static final String JSON_OBJECT = "jobject";
 
     private static final String LINE_1 = "Line1";

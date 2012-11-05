@@ -108,7 +108,7 @@ public class WindowsSystemInfoProvider extends SystemInfoProvider {
                 "Exception in executing systeminfo command", ex);
         }
         return ((cpuArch != null) && (cpuArch.length() > 0)) ? cpuArch :
-            System.getProperty("os.arch");
+            com.iplanet.am.util.SystemCache.getProperty("os.arch");
     }
     
     /**

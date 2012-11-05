@@ -53,7 +53,7 @@ public class WebsphereHomeDirFinder implements IDefaultValueFinder, IConstants{
     
     private String getDefaultWASHomeDirPath() {
         String result = null;
-        String osName = System.getProperty(STR_OS_NAME_PROPERTY);
+        String osName = com.iplanet.am.util.SystemCache.getProperty(STR_OS_NAME_PROPERTY);
         if (osName.toLowerCase().startsWith(STR_WINDOWS)) {
             result = "C:\\Program Files\\IBM\\WebSphere\\AppServer";
         } else {

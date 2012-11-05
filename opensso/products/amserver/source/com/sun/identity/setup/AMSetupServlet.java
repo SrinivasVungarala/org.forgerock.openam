@@ -1230,7 +1230,7 @@ public class AMSetupServlet extends HttpServlet {
 
     public static String getPresetConfigDir() 
         throws ConfiguratorException {
-        String configDir = System.getProperty(
+        String configDir = com.iplanet.am.util.SystemCache.getProperty(
             SetupConstants.JVM_PROP_PRESET_CONFIG_DIR);
 
         if ((configDir == null) || (configDir.length() == 0)) {
@@ -1315,7 +1315,7 @@ public class AMSetupServlet extends HttpServlet {
         if (servletCtx != null) {
             String path = getNormalizedRealPath(servletCtx);
             if (path != null) {
-                return System.getProperty("user.home") + "/" +
+                return com.iplanet.am.util.SystemCache.getProperty("user.home") + "/" +
                     SetupConstants.CONFIG_VAR_BOOTSTRAP_BASE_DIR + "/" +
                     SetupConstants.CONFIG_VAR_BOOTSTRAP_BASE_PREFIX + path;
             } else {
@@ -1336,7 +1336,7 @@ public class AMSetupServlet extends HttpServlet {
         if (servletCtx != null) {
             String path = getNormalizedRealPath(servletCtx);
             if (path != null) {
-                String bootstrap = System.getProperty("user.home") + "/" +
+                String bootstrap = com.iplanet.am.util.SystemCache.getProperty("user.home") + "/" +
                     SetupConstants.CONFIG_VAR_BOOTSTRAP_BASE_DIR + "/" +
                     SetupConstants.CONFIG_VAR_BOOTSTRAP_BASE_PREFIX + path;
                 File test = new File(bootstrap);
@@ -2525,8 +2525,8 @@ public class AMSetupServlet extends HttpServlet {
     }
 
     private static String determineOS() {
-        String OS_ARCH = System.getProperty("os.arch");
-        String OS_NAME = System.getProperty("os.name");
+        String OS_ARCH = com.iplanet.am.util.SystemCache.getProperty("os.arch");
+        String OS_NAME = com.iplanet.am.util.SystemCache.getProperty("os.name");
         if ((OS_ARCH.toLowerCase().indexOf(SetupConstants.X86) >= 0) ||
                 (OS_ARCH.toLowerCase().indexOf(SetupConstants.AMD) >= 0)){
             if (OS_NAME.toLowerCase().indexOf(SetupConstants.WINDOWS) >= 0) {
