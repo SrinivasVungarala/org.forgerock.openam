@@ -694,7 +694,8 @@ public class WebtopNaming {
             //update the naming table and as well as server id table
             //if it can not find it
             if (( serverID == null ) && (updatetbl == true)) {
-                getNamingProfile(true);
+                if (serverIdTable==null)
+			getNamingProfile(false);
                 serverID = getValueFromTable(serverIdTable, server);
                 if (serverID == null) {
                     //try without URI, this is for prior release of OpenSSO
@@ -750,19 +751,12 @@ public class WebtopNaming {
             throws ServerEntryNotFoundException {
         String server = null;
         try {
-            // refresh local naming table in case the key is not found
-            if (namingTable != null) {
-                server = getValueFromTable(namingTable, serverID);
-            }
-            if (server == null) {
-                getNamingProfile(true);
-                server = getValueFromTable(namingTable, serverID);
-            }
-            if (server == null) {
-                throw new ServerEntryNotFoundException(NamingBundle
-                        .getString("noServer" ));
-            }
-
+		if (namingTable == null)
+			getNamingProfile(false);
+		if (namingTable != null)
+			server = getValueFromTable(namingTable, serverID);
+            if (server == null)
+                throw new ServerEntryNotFoundException(NamingBundle.getString("noServer" ));
         } catch (Exception e) {
             debug.error("WebtopNaming.getServerFromID() can not find "
                         + "server name for server ID : " + serverID, e);
@@ -1367,7 +1361,7 @@ public class WebtopNaming {
             }
 
             if (!lcPlatformServers.contains(server)) {
-                getNamingProfile(true);
+                //getNamingProfile(true);
                 if (!platformServers.contains(server)) {
                     throw new URLNotFoundException(NamingBundle
                             .getString("invalidServiceHost")

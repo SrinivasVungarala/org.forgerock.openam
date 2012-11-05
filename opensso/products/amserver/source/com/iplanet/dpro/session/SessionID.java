@@ -48,6 +48,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -402,9 +404,15 @@ public class SessionID implements Serializable {
      * its id which is in session id and parses it.
      * @param id ServerID
      */
+    final static ConcurrentHashMap<String, URL> ServerIDtoURL=new ConcurrentHashMap<String, URL>(5);
     protected void setServerID(String id) {
         try {
-            URL url = new URL(WebtopNaming.getServerFromID(id));
+            URL url=ServerIDtoURL.get(id);
+            if (url==null){
+		 url= new URL(WebtopNaming.getServerFromID(id));
+		 if (url!=null&&!ServerIDtoURL.contains(id))
+			ServerIDtoURL.put(id, url);
+			}
             sessionServerID = id;
             sessionServerProtocol = url.getProtocol();
             sessionServer = url.getHost();
