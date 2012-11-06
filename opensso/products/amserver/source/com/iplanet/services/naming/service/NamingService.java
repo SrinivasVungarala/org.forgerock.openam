@@ -165,7 +165,11 @@ public class NamingService implements RequestHandler, ServiceListener {
 				@Override
 				public void run() {
 					while (true){
-						sleep(5*60*1000);
+						try{
+							sleep(5*60*1000);
+						}catch(InterruptedException e){
+							return;
+						}
 						try{
 							updateNamingTable();
 						}catch(Throwable e){
