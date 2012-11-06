@@ -166,7 +166,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 				public void run() {
 					while (true){
 						try{
-							sleep(5*60*1000);
+							sleep(30*60*1000);
 						}catch(InterruptedException e){
 							return;
 						}
