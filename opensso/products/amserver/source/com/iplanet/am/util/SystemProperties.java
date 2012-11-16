@@ -305,22 +305,22 @@ public class SystemProperties {
                         if (k.equals("%SERVER_URI%")) {
                             if ((val != null) && (val.length() > 0)) {
                                 if (val.charAt(0) == '/') {
-                                    answer = answer.replace("/%SERVER_URI%",
+                                    answer = answer.replaceAll("/%SERVER_URI%",
                                         val);
                                     String lessSlash = val.substring(1);
-                                    answer = answer.replace("%SERVER_URI%",
+                                    answer = answer.replaceAll("%SERVER_URI%",
                                         lessSlash);
                                 } else {
-                                    answer = answer.replace(k, val);
+                                    answer = answer.replaceAll(k, val);
                                 }
                             }
                         } else {
-                            answer = answer.replace(k, val);
+                            answer = answer.replaceAll(k, val);
                         }
                     }
 
                     if (answer.indexOf("%ROOT_SUFFIX%") != -1) {
-                        answer = answer.replace("%ROOT_SUFFIX%",
+                        answer = answer.replaceAll("%ROOT_SUFFIX%",
                             SMSEntry.getAMSdkBaseDN());
                     }
                 }

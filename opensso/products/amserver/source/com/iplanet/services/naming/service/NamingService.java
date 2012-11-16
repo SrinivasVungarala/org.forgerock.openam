@@ -534,10 +534,10 @@ public class NamingService implements RequestHandler, ServiceListener {
             Object obj = e.nextElement();
             String key = obj.toString();
             String url = (tempNamingTable.get(obj)).toString();
-            url = url.replace("%protocol", protocol);
-            url = url.replace("%host", host);
-            url = url.replace("%port", port);
-            url = url.replace("%uri", uri);
+            url = url.replaceAll("%protocol", protocol);
+            url = url.replaceAll("%host", host);
+            url = url.replaceAll("%port", port);
+            url = url.replaceAll("%uri", uri);
             tempNamingTable.put(key, url);
         }
         return tempNamingTable;
