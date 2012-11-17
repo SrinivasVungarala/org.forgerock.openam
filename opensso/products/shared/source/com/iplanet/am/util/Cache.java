@@ -83,22 +83,26 @@ public class Cache<K, V>   {
 
 	public Cache(String cacheName) {
 		this.cacheName=cacheName;
-		synchronized (this.cacheName) {
-			Ehcache cache=cacheManager.getEhcache(cacheName);
+		Ehcache cache=cacheManager.getEhcache(cacheName);
 		if (cache==null){
-			cacheManager.addCache(cacheName);
-			cache=cacheManager.getEhcache(cacheName);
-			logger.warn("not found ({})",cache);
-		}else if (cache.getKeysNoDuplicateCheck().size()>0)
-			logger.warn("re-found ({}) with {} values {}",new Object[]{cache,cache.getKeysNoDuplicateCheck().size()});
-		else
-			logger.info("found ({})",cache);
-		}
+			synchronized (cacheName) {
+				cache=cacheManager.getEhcache(cacheName);
+				if (cache==null){
+				try{
+					cacheManager.addCache(cacheName);
+				}catch(net.sf.ehcache.ObjectExistsExceprion e){}
+				cache=cacheManager.getEhcache(cacheName);
+				logger.warn("not found ({})",cache);
+			}else if (cache.getKeysNoDuplicateCheck().size()>0)
+				logger.warn("re-found ({}) with {} values {}",new Object[]{cache,cache.getKeysNoDuplicateCheck().size()});
+			else
+				logger.info("found ({})",cache);
+			}
     }
 
 	public Cache(String name,int maxEntriesInMemory) {
 		this(name);
-		cacheManager.getCache(cacheName);//.getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
+		cacheManager.getCache(cacheName).getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
     }
 
     @SuppressWarnings("unchecked")
