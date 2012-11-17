@@ -91,7 +91,9 @@ public class Cache<K, V>   {
 				if (cache==null){
 				try{
 					cacheManager.addCache(cacheName);
-				}catch(net.sf.ehcache.ObjectExistsExceprion e){}
+				}catch(net.sf.ehcache.ObjectExistsExceprion e){
+
+				}
 				cache=cacheManager.getEhcache(cacheName);
 				logger.warn("not found ({})",cache);
 			}else if (cache.getKeysNoDuplicateCheck().size()>0)
