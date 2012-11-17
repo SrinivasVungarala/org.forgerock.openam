@@ -81,10 +81,11 @@ public class Cache<K, V>   {
 		}
 	}
 
+	Ehcache cache;
 	public Cache(String cacheName) {
 		this.cacheName=cacheName;
-		Ehcache cache=cacheManager.getEhcache(cacheName);
-		if (cache==null){
+		cache=cacheManager.getEhcache(cacheName);
+		if (cache==null)
 			synchronized (cacheName) {
 				cache=cacheManager.getEhcache(cacheName);
 				if (cache==null){
@@ -102,12 +103,12 @@ public class Cache<K, V>   {
 
 	public Cache(String name,int maxEntriesInMemory) {
 		this(name);
-		cacheManager.getCache(cacheName).getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
+		cache.getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
     }
 
     @SuppressWarnings("unchecked")
 	public V get(K key) {
-	Element e=cacheManager.getEhcache(cacheName).get(key);
+	Element e=cache.get(key);
 	if (debug)
 		logger.debug("[{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
 	return (e==null)?null:(V)e.getObjectValue();
@@ -116,19 +117,19 @@ public class Cache<K, V>   {
     public void put(K key, V value) {
 	if (debug)
 		logger.debug("put [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
-	get().put(new Element(key, value));
+	cache.put(new Element(key, value));
     }
 
     public void remove(K key) {
-	get().remove(key);
+	cache.remove(key);
     }
 
     public void clear() {
-	get().removeAll();
+	cache.removeAll();
     }
 
     public Ehcache get() {
-		return cacheManager.getEhcache(cacheName);
+		return cache;
 	}
 
     public void removeCache(){
