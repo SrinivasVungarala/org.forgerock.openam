@@ -461,11 +461,11 @@ public class AuthXMLHandler implements RequestHandler {
                                 clientHost);
                         }
                     }
-                    if ((clientHost == null)  && (servletRequest != null)) {
-                        clientHost = servletRequest.getRemoteAddr();
-                    }
-                    loginState.setClient(clientHost);
+//                    if ((clientHost == null)  && (servletRequest != null))
+//                        clientHost = servletRequest.getRemoteAddr();
+//                  loginState.setClient(clientHost);
                     loginState.setHttpServletRequest(authXMLRequest.getClientRequest());
+                    loginState.getClient();
                     loginState.setHttpServletResponse(authXMLRequest.getClientResponse());
                     String locale = authXMLRequest.getLocale();
                     if (locale != null && locale.length() > 0) {
