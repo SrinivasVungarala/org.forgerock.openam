@@ -64,11 +64,16 @@ public class NetworkMonitor extends HttpServlet {
     /**
      * @return the collectStats
      */
+    static volatile Boolean isCollectStats=null;
     public static boolean isCollectStats() {
-        EntitlementConfiguration ec = EntitlementConfiguration.getInstance(
-                        PrivilegeManager.superAdminSubject, "/");
-        
-        return ec.networkMonitorEnabled();
+	if (isCollectStats==null)
+		synchronized (isCollectStats) {
+			if (isCollectStats==null){
+				EntitlementConfiguration ec = EntitlementConfiguration.getInstance(PrivilegeManager.superAdminSubject, "/");
+		        isCollectStats=ec.networkMonitorEnabled();
+			}
+			}
+	return isCollectStats;
     }
 
     /**
@@ -102,35 +107,37 @@ public class NetworkMonitor extends HttpServlet {
         return (System.currentTimeMillis());
     }
 
-    public synchronized void end(long start) {
-        if (isCollectStats()) {
-            long rs = 0;
-            throughput++;
-            if (start != 0) {
-                rs = System.currentTimeMillis() - start;
-                totalResponseTime += rs;
-            }
-            StatsData sd = getNewStats(rs);
-            if (history.isEmpty()) {
-                history.addLast(sd);
-            } else {
-                StatsData hsd = history.getLast();
-                if (hsd != null && hsd.equals(sd)) {
-                    hsd.updateStatsData(sd);
-                } else {
-                    if (hsd != null) {
-                        // Check if there are any missing intervals
-                        long hsdTime = hsd.getTime();
-                        while (hsdTime < sd.getTime() - 1) {
-                            history.addLast(new StatsData(hsdTime++));
-                        }
-                    }
-                    history.addLast(sd);
-                    while (history.size() > maxHistory) {
-                        history.removeFirst();
-                    }
-                }
-            }
+    public void end(long start) {
+        if (start!=0 && isCollectStats()) {
+		synchronized (isCollectStats) {
+	            long rs = 0;
+	            throughput++;
+	            if (start != 0) {
+	                rs = System.currentTimeMillis() - start;
+	                totalResponseTime += rs;
+	            }
+	            StatsData sd = getNewStats(rs);
+	            if (history.isEmpty()) {
+	                history.addLast(sd);
+	            } else {
+	                StatsData hsd = history.getLast();
+	                if (hsd != null && hsd.equals(sd)) {
+	                    hsd.updateStatsData(sd);
+	                } else {
+	                    if (hsd != null) {
+	                        // Check if there are any missing intervals
+	                        long hsdTime = hsd.getTime();
+	                        while (hsdTime < sd.getTime() - 1) {
+	                            history.addLast(new StatsData(hsdTime++));
+	                        }
+	                    }
+	                    history.addLast(sd);
+	                    while (history.size() > maxHistory) {
+	                        history.removeFirst();
+	                    }
+	                }
+	            }
+		}
         }
     }
 

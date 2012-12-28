@@ -105,7 +105,7 @@ public class Cache<K, V>   {
 
 	public Cache(String name,int maxEntriesInMemory) {
 		this(name);
-		cache.getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
+		//cache.getCacheConfiguration().setMaxEntriesLocalHeap(maxEntriesInMemory);
     }
 
     @SuppressWarnings("unchecked")
@@ -135,10 +135,10 @@ public class Cache<K, V>   {
 	}
 
     public void removeCache(){
-	if (cacheManager.getCache(cacheName)!=null){
-		logger.info("remove ({})",cacheName);
-		cacheManager.removeCache(cacheName);
-	}
+//    	if (cacheManager.getCache(cacheName)!=null){
+//    		logger.info("remove ({})",cacheName);
+//    		cacheManager.removeCache(cacheName);
+//    	}
     }
 
 	@Override
