@@ -263,8 +263,8 @@ public class IdRemoteCachedServicesImpl extends IdRemoteServicesImpl implements
         case IdRepoListener.OBJECT_REMOVED:
         	cb = getFromCache(dn);
         	if (cb!=null){
-        		//cb.clear();
         		idRepoCache.remove(cachedID);
+			cb.clear();
         	}
 //            if (cb != null) {
 //                cb.clear(); // Clear anyway & help the GC process
@@ -278,8 +278,8 @@ public class IdRemoteCachedServicesImpl extends IdRemoteServicesImpl implements
             // hanging in the cache, until LRU kicks in.
         	cb = getFromCache(dn);
         	if (cb!=null){
-        		//cb.clear();
         		idRepoCache.remove(cachedID);
+			cb.clear();
         	}
 //            if (cb != null) {
 //                cb.clear(); // Clear anyway & help the GC process

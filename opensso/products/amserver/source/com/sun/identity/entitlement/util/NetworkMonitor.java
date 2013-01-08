@@ -67,7 +67,7 @@ public class NetworkMonitor extends HttpServlet {
     static volatile Boolean isCollectStats=null;
     public static boolean isCollectStats() {
 	if (isCollectStats==null)
-		synchronized (isCollectStats) {
+		synchronized (NetworkMonitor.class) {
 			if (isCollectStats==null){
 				EntitlementConfiguration ec = EntitlementConfiguration.getInstance(PrivilegeManager.superAdminSubject, "/");
 		        isCollectStats=ec.networkMonitorEnabled();

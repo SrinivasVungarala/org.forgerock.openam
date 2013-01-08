@@ -112,7 +112,7 @@ public class Cache<K, V>   {
 	public V get(K key) {
 	Element e=cache.get(key);
 	if (debug)
-		logger.debug("[{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
+		logger.debug("get [{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
 	return (e==null)?null:(V)e.getObjectValue();
     }
 
@@ -123,7 +123,12 @@ public class Cache<K, V>   {
     }
 
     public void remove(K key) {
-	cache.remove(key);
+	V value=get(key);
+	if (value!=null){
+		cache.remove(key);
+		if (debug)
+			logger.debug("remove [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
+	}
     }
 
     public void clear() {

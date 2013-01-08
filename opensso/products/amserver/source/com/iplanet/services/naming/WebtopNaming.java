@@ -108,26 +108,26 @@ public class WebtopNaming {
 
     private static final String FAM_NAMING_PREFIX = "sun-naming-";
 
-    private static java.util.concurrent.ConcurrentHashMap namingTable = null;
+    private volatile static java.util.concurrent.ConcurrentHashMap namingTable = null;
 
-    private static java.util.concurrent.ConcurrentHashMap serverIdTable = null;
+    private volatile static java.util.concurrent.ConcurrentHashMap serverIdTable = null;
 
-    private static java.util.concurrent.ConcurrentHashMap siteIdTable = null;
+    private volatile static java.util.concurrent.ConcurrentHashMap siteIdTable = null;
     
-    private static java.util.concurrent.ConcurrentHashMap<String, String> siteNameToIdTable = null;
+    private volatile static java.util.concurrent.ConcurrentHashMap<String, String> siteNameToIdTable = null;
 
     //This is created for storing server id and lbcookievalue mapping
     //key:serverid | value:lbcookievalue      
-    private static java.util.concurrent.ConcurrentHashMap lbCookieValuesTable = null;
+    private volatile static java.util.concurrent.ConcurrentHashMap lbCookieValuesTable = null;
 
-    private static Vector platformServers = new Vector();
+    private volatile static Vector platformServers = new Vector();
 
     //This is created for ignore case comparison
-    private static Vector lcPlatformServers = new Vector();
+    private volatile static Vector lcPlatformServers = new Vector();
 
-    private static String namingServiceURL[] = null;
+    private volatile static String namingServiceURL[] = null;
 
-    private static Vector platformServerIDs = new Vector();
+    private volatile static Vector platformServerIDs = new Vector();
 
     /**
      * The debug instance.
@@ -151,7 +151,7 @@ public class WebtopNaming {
     private static String MAP_SITE_TO_SERVER =
         "com.iplanet.am.naming.map.site.to.server";
     
-    private static Map mapSiteToServer = new java.util.concurrent.ConcurrentHashMap();
+    private volatile static Map mapSiteToServer = new java.util.concurrent.ConcurrentHashMap();
 
     static {
         initialize();

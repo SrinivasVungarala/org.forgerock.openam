@@ -256,8 +256,8 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
         case AMEvent.OBJECT_REMOVED:
         	cb = sdkCache.get(dn);
         	if (cb!=null){
-        		//cb.clear();
         		sdkCache.remove(dn);
+			cb.clear();
         	}
 //            cb = (CacheBlock) sdkCache.remove(dn);
 //            if (cb != null) {
@@ -272,8 +272,8 @@ public class CachedDirectoryServicesImpl extends DirectoryServicesImpl
             // hanging in the cache, until LRU kicks in.
         	cb = sdkCache.get(dn);
         	if (cb!=null){
-        		//cb.clear();
         		sdkCache.remove(dn);
+			cb.clear();
         	}
 //            cb = (CacheBlock) sdkCache.remove(dn);
 //            if (cb != null) {

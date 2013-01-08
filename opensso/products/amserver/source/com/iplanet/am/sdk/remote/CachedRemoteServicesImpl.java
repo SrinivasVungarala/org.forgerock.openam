@@ -248,7 +248,11 @@ public class CachedRemoteServicesImpl extends RemoteServicesImpl implements
             }
             break;
         case AMEvent.OBJECT_REMOVED:
-            sdkCache.remove(dn);
+		cb = sdkCache.get(dn);
+		if (cb!=null){
+			sdkCache.remove(dn);
+			cb.clear();
+		}
 //            if (cb != null) {
 //                cb.clear(); // Clear anyway & help the GC process
 //            }
@@ -259,7 +263,11 @@ public class CachedRemoteServicesImpl extends RemoteServicesImpl implements
         case AMEvent.OBJECT_RENAMED:
             // Better to remove the renamed entry, or else it will be just
             // hanging in the cache, until LRU kicks in.
-            sdkCache.remove(dn);
+		cb = sdkCache.get(dn);
+		if (cb!=null){
+			sdkCache.remove(dn);
+			cb.clear();
+		}
 //            if (cb != null) {
 //                cb.clear(); // Clear anyway & help the GC process
 //            }
