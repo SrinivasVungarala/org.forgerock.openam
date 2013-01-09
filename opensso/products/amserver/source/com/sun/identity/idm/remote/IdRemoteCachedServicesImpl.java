@@ -184,8 +184,6 @@ public class IdRemoteCachedServicesImpl extends IdRemoteServicesImpl implements
     	IdCacheBlock cb = (IdCacheBlock) idRepoCache.get(affectDNs);
     	if (cb!=null)
     		cb.removeAttributes(attrNames);
-    	else
-    		cb.clear();
 //        Enumeration cacheKeys = idRepoCache.keys();
 //        while (cacheKeys.hasMoreElements()) {
 //            String key = (String) cacheKeys.nextElement();

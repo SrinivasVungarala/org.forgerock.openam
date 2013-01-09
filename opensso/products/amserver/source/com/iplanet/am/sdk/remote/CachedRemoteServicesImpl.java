@@ -176,8 +176,6 @@ public class CachedRemoteServicesImpl extends RemoteServicesImpl implements
     	CacheBlock cb = (CacheBlock) sdkCache.get(affectDNs);
     	if (cb!=null)
     		cb.removeAttributes(attrNames);
-    	else
-    		sdkCache.remove(affectDNs);
 //        Enumeration cacheKeys = sdkCache.keys();
 //        while (cacheKeys.hasMoreElements()) {
 //            String key = (String) cacheKeys.nextElement();

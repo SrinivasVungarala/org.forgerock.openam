@@ -212,8 +212,6 @@ public class IdCachedServicesImpl extends IdServicesImpl implements
     	IdCacheBlock cb = (IdCacheBlock) idRepoCache.get(affectDNs);
     	if (cb!=null)
     		cb.removeAttributes(attrNames);
-    	else
-    		cb.clear();
 //        Enumeration cacheKeys = idRepoCache.keys();
 //        while (cacheKeys.hasMoreElements()) {
 //            String key = DNUtils.normalizeDN(
