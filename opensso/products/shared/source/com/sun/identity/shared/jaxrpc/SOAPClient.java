@@ -228,8 +228,7 @@ public class SOAPClient {
             } catch (ConnectException ce) {
                 // Debug the exception
                 if (debug.warningEnabled()) {
-                    debug.warning("SOAP Client: Connection Exception: " + url,
-                            ce);
+                    debug.warning("SOAP Client: Connection Exception: " + url,ce);
                 }
                 // Server may be down, try the next server
                 JAXRPCHelper.serverFailed(url);
@@ -246,11 +245,13 @@ public class SOAPClient {
             } catch (IOException ioe) {
                 // Could be receiving SOAP fault
                 // Debug the exception
-                if (debug.messageEnabled()) {
-                    debug.message("SOAP Client: READ Exception", ioe);
+                if (debug.warningEnabled()) {
+                    debug.warning("SOAP Client: READ Exception", ioe);
                 }
                 in_buf = connection.getErrorStream();
                 isException = true; // Used by send(...)
+                if (in_buf==null)
+			throw ioe;
             } finally {
                 done = true;
             }
@@ -328,8 +329,7 @@ public class SOAPClient {
         InputStream in_buf = response.getResponse();
         
         // Decode the output. Parse the document using SAX
-        SOAPContentHandler handler = new SOAPContentHandler(
-            response.isException());
+        SOAPContentHandler handler = new SOAPContentHandler(response.isException());
         try {
             SAXParserFactory saxFactory = SAXParserFactory.newInstance();
             saxFactory.setNamespaceAware(true);
@@ -341,7 +341,6 @@ public class SOAPClient {
             XMLReader parser = saxFactory.newSAXParser().getXMLReader();
             parser.setContentHandler(handler);
             parser.setErrorHandler(new SOAPErrorHandler());
-
             parser.parse(new InputSource(in_buf));
         } catch (ParserConfigurationException pce) {
             if (debug.warningEnabled()) {
@@ -352,8 +351,8 @@ public class SOAPClient {
                 debug.warning("SOAPClient:send SAX exception", saxe);
             }
         }
-        
-        // Check for exceptions
+
+    // Check for exceptions
         if (handler.isException()) {
             throw (handler.getException());
         }
