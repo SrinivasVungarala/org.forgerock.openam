@@ -224,12 +224,12 @@ public abstract class CacheBlockBase {
     }
 
     public  boolean hasCache(String principalDN) {
-        CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
+        CacheEntry ce = (CacheEntry) cacheEntries.get("principalDN");
         return (ce != null && !hasExpiredAndUpdated());
     }
 
     public  boolean hasCompleteSet(String principalDN) {
-        CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
+        CacheEntry ce = (CacheEntry) cacheEntries.get("principalDN");
         boolean completeSet = false;
         if (ce != null && !hasExpiredAndUpdated()) {
             completeSet = ce.isCompleteSet();
@@ -247,7 +247,7 @@ public abstract class CacheBlockBase {
         Map attributes = new AMHashMap(byteValues);
 
         // Get the cache entry for the principal
-        CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
+        CacheEntry ce = (CacheEntry) cacheEntries.get("principalDN");
         if (ce != null && !hasExpiredAndUpdated()) {
             // Get the names of attributes that this principal can access
             Set accessibleAttrs = null;
@@ -333,10 +333,10 @@ public abstract class CacheBlockBase {
     public  void putAttributes(String principalDN, Map attributes,
             Set inAccessibleAttrNames, boolean isCompleteSet, 
             boolean byteValues) {
-        CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
+        CacheEntry ce = (CacheEntry) cacheEntries.get("principalDN");
         if (ce == null) {
             ce = new CacheEntry();
-            cacheEntries.put(principalDN, ce);
+            cacheEntries.put("principalDN", ce);
         }
 
         // Copy only the attributes in the common place. Store the invalid/
@@ -355,7 +355,7 @@ public abstract class CacheBlockBase {
     }
 
     public  void removeAttributes(String principalDN) {
-        CacheEntry ce = (CacheEntry) cacheEntries.remove(principalDN);
+        CacheEntry ce = (CacheEntry) cacheEntries.remove("principalDN");
         if (ce != null) {
             ce.clear(); // To remove all used references
         }
@@ -371,12 +371,21 @@ public abstract class CacheBlockBase {
                 String principalDN = (String) itr.next();
                 removeAttributes(principalDN, attrNames);
             }
+        }else{
+		stringAttributes.clear();
+		byteAttributes.clear();
+		//cacheEntries.clear();
+		  Iterator itr = cacheEntries.keySet().iterator();
+              while (itr.hasNext()) {
+                  String principalDN = (String) itr.next();
+                  removeAttributes(principalDN);
+              }
         }
     }
 
     private  void removeAttributes(String principalDN, 
             Set attrNames) {
-        CacheEntry ce = (CacheEntry) cacheEntries.get(principalDN);
+        CacheEntry ce = (CacheEntry) cacheEntries.get("principalDN");
         if (ce != null) {
             ce.removeAttributeNames(attrNames);
         }
