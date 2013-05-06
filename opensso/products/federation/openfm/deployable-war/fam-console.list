@@ -1231,7 +1231,6 @@
 ./WEB-INF/lib/commons-logging-1.1.1.jar
 ./WEB-INF/lib/commons-digester-1.8.jar
 ./WEB-INF/lib/jsr311-api-1.1.jar
-./WEB-INF/lib/jersey-bundle-1.1.1-ea-SNAPSHOT.jar
 ./WEB-INF/lib/esapiport.jar
 ./WEB-INF/wsdl/IdentityManagementServices.wsdl
 ./WEB-INF/wsdl/IdentityServices.wsdl

@@ -1271,7 +1271,6 @@
 ./WEB-INF/lib/jdmkrt.jar
 ./WEB-INF/lib/jdom.jar
 ./WEB-INF/lib/je.jar
-./WEB-INF/lib/jersey-bundle-1.1.1-ea-SNAPSHOT.jar
 ./WEB-INF/lib/jms.jar
 ./WEB-INF/lib/json.jar
 ./WEB-INF/lib/jsr173_api.jar
