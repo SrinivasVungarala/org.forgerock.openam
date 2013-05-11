@@ -82,6 +82,11 @@ public class Cache<K, V>   {
 	}
 
 	Ehcache cache;
+
+	public Cache(){
+		this(java.util.UUID.randomUUID().toString());
+	}
+
 	public Cache(String cacheName) {
 		this.cacheName=cacheName;
 		cache=cacheManager.getEhcache(cacheName);
