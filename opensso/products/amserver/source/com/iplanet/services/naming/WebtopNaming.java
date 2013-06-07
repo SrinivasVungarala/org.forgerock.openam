@@ -664,6 +664,7 @@ public class WebtopNaming {
             if ((uri != null) && (uri.length() > 0)) {
                 StringTokenizer tok = new StringTokenizer(uri, "/");
                 uri = "/" + tok.nextToken();
+                serverWithURI = protocol + ":" + "//" + host + ":" + port + uri;
             } else {
                 serverWithURI = protocol + ":" + "//" + host + ":" + port + amServerURI;
                 debug.message("WebtopNaming.getServerId(): serverWithURI: " + serverWithURI);
