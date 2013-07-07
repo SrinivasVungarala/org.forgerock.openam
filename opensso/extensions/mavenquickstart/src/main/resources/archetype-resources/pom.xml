@@ -75,7 +75,7 @@
     <repositories>
         <repository>
             <id>forgerock</id>
-            <url>http://repo.forgerock.org</url>
+            <url>http://maven.forgerock.org/repo/releases/</url>
         </repository>
     </repositories>
 </project>

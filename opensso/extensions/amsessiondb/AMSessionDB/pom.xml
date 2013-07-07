@@ -149,7 +149,7 @@
         <repository>
             <id>forgerock</id>
             <name>ForgeRock OpenAM Repo</name>
-            <url>http://repo.forgerock.org</url>
+            <url>http://maven.forgerock.org/repo/releases/</url>
         </repository>
     <repository>
       <id>forgerock-staging-repository</id>
