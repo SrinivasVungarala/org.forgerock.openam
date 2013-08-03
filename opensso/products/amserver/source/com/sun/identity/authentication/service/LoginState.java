@@ -6319,8 +6319,9 @@ public class LoginState {
         IdSearchControl idsc = new IdSearchControl();
         idsc.setRecursive(isRecursive);
         idsc.setTimeOut(maxTime);
-        idsc.setAllReturnAttributes(true);
-        //idsc.setReturnAttributes(returnSet);
+        //idsc.setAllReturnAttributes(true);
+        idsc.setAllReturnAttributes(false);
+        idsc.setReturnAttributes(returnSet);
         
         if (messageEnabled) {
             debug.message("alias attr=" + aliasAttrNames +
