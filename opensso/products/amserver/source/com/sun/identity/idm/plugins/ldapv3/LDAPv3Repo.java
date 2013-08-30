@@ -27,7 +27,8 @@
  */
 
 /*
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2011-2013 ForgeRock AS
+ * Portions Copyrighted 2012 Open Source Solution Technology Corporation
  */
 /**
  * Portions Copyrighted [2012] [vharseko@openam.org.ru]
@@ -84,10 +85,10 @@ import com.sun.identity.shared.ldap.LDAPDeleteRequest;
 import com.sun.identity.shared.ldap.LDAPRequestParser;
 import com.sun.identity.shared.ldap.LDAPModifyRequest;
 import com.sun.identity.shared.ldap.LDAPSearchRequest;
-
 import com.iplanet.am.sdk.AMCommonUtils;
 import com.iplanet.am.sdk.AMHashMap;
-import com.iplanet.am.util.AMURLEncDec;
+//import com.iplanet.am.util.AMURLEncDec;
+import com.sun.identity.shared.encode.URLEncDec;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.services.naming.ServerEntryNotFoundException;
 import com.iplanet.services.naming.WebtopNaming;
@@ -119,6 +120,8 @@ import com.sun.identity.shared.locale.Locale;
 import com.sun.identity.sm.SchemaType;
 
 public class LDAPv3Repo extends IdRepo {
+
+    private static final String AM_AUTH = "amAuth";
 
     private Map supportedOps = new HashMap();
 
@@ -535,7 +538,6 @@ public class LDAPv3Repo extends IdRepo {
 
     protected String amAuthLDAP = "amAuthLDAP";
 
-
     public LDAPv3Repo() {
         if (debug == null) {
             debug = Debug.getInstance(LDAPv3Repo);
@@ -666,6 +668,16 @@ public class LDAPv3Repo extends IdRepo {
         }
     }
 
+    private String getLDAPServerList() {
+	StringBuilder sb = new StringBuilder();
+	for (String ldapServerHost : ldapServers) {
+		sb.append(ldapServerHost);
+		sb.append(" ");
+	}
+	return sb.toString();
+    }
+
+
     private void initConnectionPool(Map configParams) {
 
         // connOptions has the default options set for failover and 
@@ -678,8 +690,8 @@ public class LDAPv3Repo extends IdRepo {
         if (ldapServerName == null) {
             getLDAPServerName(configParams);
         }
-        // ldapServerName is list of server names seperated by sapce for
-        // failover purposes. LDAPConnection will automatcially handle failover.
+        // ldapServerName is list of server names separated by space for
+        // failover purposes. LDAPConnection will automatically handle failover.
 
         // port will not be used since ldapserver is in the following format:
         // nameOfLDAPhost:portNumber.
@@ -706,25 +718,6 @@ public class LDAPv3Repo extends IdRepo {
         }
 
         LDAPConnection ldc = null;
-
-        // loop through the configured ldap servers until we find one that works
-        for (String ldapServerHost : ldapServers) {
-            String origLdapHost = ldapServerHost;
-            int index = origLdapHost.indexOf(':');
-            int ldapServerPort = 389;
-
-            if (index > -1) {
-                ldapHost = origLdapHost.substring(0, index);
-
-                try {
-                    ldapServerPort = Integer.parseInt(origLdapHost.substring(index + 1));
-                } catch(NumberFormatException nfe) {
-                    if (debug.warningEnabled()) {
-                        debug.warning("LDAPv3Repo:initConnectionPool : + origLdapHost" +
-                                      "incorrect port number, using default 389");
-                    }
-                }
-            }
 
             try {
                 if (ssl != null && ssl.equalsIgnoreCase("true")) {
@@ -781,8 +774,12 @@ public class LDAPv3Repo extends IdRepo {
                     ldc.setConnectTimeout(3);
                 }
 
-                ldc.connect(ldapServerHost, ldapServerPort, authid, authpw);
+                String ldapServerList = getLDAPServerList();
+                ldc.connect(ldapServerList, 389, authid, authpw);
                 connOptions.put("referrals", Boolean.valueOf(referrals));
+
+                ldapHost = ldc.getHost();
+                ldapPort = ldc.getPort();
 
                 // Construct the pool by cloning the successful connection
                 ShutdownManager shutdownMan = ShutdownManager.getInstance();
@@ -790,7 +787,7 @@ public class LDAPv3Repo extends IdRepo {
                 if (shutdownMan.acquireValidLock()) {
                     try {
                         connPool = new LDAPConnectionPool("LDAPv3Repo", minPoolSize,
-                            maxPoolSize, ldapServerName, ldapPort,
+                            maxPoolSize, ldapServerList, ldapPort,
                             ldc.getAuthenticationDN(),
                                 ldc.getAuthenticationPassword(),
                                 ldc, connOptions);
@@ -809,14 +806,11 @@ public class LDAPv3Repo extends IdRepo {
                         shutdownMan.releaseLockAndNotify();
                     }
                 }
-
-                // LDAP connection pool created successfully
-                break;
             } catch (LDAPException lex) {
                 int resultCode = lex.getLDAPResultCode();
                 ldapConnError = Integer.toString(resultCode);
                 debug.error("LDAPv3Repo: initConnectionPool ConnectionPool failed: " +
-                            resultCode + "; to server ldapServerHost:" + ldapServerPort);
+                            resultCode + "; to server " + ldapHost + ":" + ldapPort,lex);
                 connPool = null;
 
                 try {
@@ -826,7 +820,6 @@ public class LDAPv3Repo extends IdRepo {
                         + lex1.getLDAPResultCode());
                 }
             }
-        }
 
         // if we get here and connPool is still null, all servers failed
         if (connPool == null) {
@@ -859,7 +852,7 @@ public class LDAPv3Repo extends IdRepo {
      * 
      * @see com.iplanet.am.sdk.IdRepo#initialize(java.util.Map)
      */
-    public void initialize(Map configParams) {
+    public void initialize(Map configParams)  {
         if (debug.messageEnabled()) {
             debug.message("LDAPv3Repo: Initializing configuration()");
         }
@@ -1060,6 +1053,13 @@ public class LDAPv3Repo extends IdRepo {
         }
 
         initConnectionPool(configParams);
+
+        // check if connection pool is initialized properly
+        try{
+		checkConnPool();
+        }catch(IdRepoException e){
+		throw new RuntimeException(e);
+        }
 
         if (debug.messageEnabled()) {
             debug.message("    userObjClassSet: " + userObjClassSet);
@@ -2661,7 +2661,7 @@ public class LDAPv3Repo extends IdRepo {
                     String memberUrl = (String) enumVals.nextElement();
                     try {
                         LDAPUrl ldapUrl = new LDAPUrl(
-                                AMURLEncDec.encodeLDAPUrl(memberUrl));
+                                URLEncDec.encodeLDAPUrl(memberUrl));
                         Set dynMembers = findDynamicGroupMembersByUrl(ldapUrl);
                         resultSet.addAll(dynMembers);
                     } catch (java.net.MalformedURLException e) {
