@@ -1382,8 +1382,11 @@ public class LoginState {
             if (questionMark != -1) {
                 defaultLoginURL = loginURL.substring(0, questionMark);
             }
-            session.putProperty(ISAuthConstants.LOGIN_URL, defaultLoginURL);
-            session.putProperty(ISAuthConstants.FULL_LOGIN_URL, loginURL);
+            if (session.getProperty(ISAuthConstants.FULL_LOGIN_URL)==null){
+	            session.putProperty(ISAuthConstants.LOGIN_URL, defaultLoginURL);
+	            session.putProperty(ISAuthConstants.FULL_LOGIN_URL, loginURL);
+            }
+            session.putProperty(ISAuthConstants.FULL_LOGIN_URL+".LAST", loginURL);
         }
         
         sessionSuccessURL = ad.processURL(successLoginURL, servletRequest);
