@@ -914,7 +914,7 @@ public class InternalSession implements TaskRunnable, Serializable {
      *            Property value for the key
      */
     protected void internalPutProperty(String key, String value) {
-	if (value==null)
+	if (key==null||value==null)
 		return;
         if (key.equals(HOST_NAME) || key.equals(HOST)) {
             if (value == null || value.length() == 0) {
