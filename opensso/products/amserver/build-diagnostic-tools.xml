@@ -274,11 +274,11 @@
     <target name="xsd.services">
         <property name="xsd.services.dir" value="${odt.package.path}/base/config"/>
         <property name="xsd.services.files" value="${xsd.services.dir}/service.xsd"/>
-        <java classname="com.sun.tools.xjc.Driver"
+        <!--<java classname="com.sun.tools.xjc.Driver"
               maxmemory="128m" failonerror="true" fork="true">
             <classpath refid="build.class.path"/>
             <arg line="-b &quot;${xsd.services.dir}/binding.xjb&quot; -d &quot;${amserver.src.dir}&quot; &quot;${xsd.services.files}&quot;"/>
-        </java>
+        </java>-->
     </target>
     
     <target name="makeBaseJar" depends="compileCore">
