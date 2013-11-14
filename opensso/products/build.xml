@@ -161,8 +161,8 @@
             todir="${openfm.extlib.dir}"  />            
         <copy file="${amserver.dist.dir}/amConfiguratorTools.zip"
             todir="${openfm.extlib.dir}"  />            
-        <copy file="${amserver.dist.dir}/ssoDiagnosticTools.zip"
-            todir="${openfm.extlib.dir}"  />            
+        <!--<copy file="${amserver.dist.dir}/ssoDiagnosticTools.zip"
+            todir="${openfm.extlib.dir}"  /> -->
         <copy file="${amserver.tools.dir}/ssomanifest.jar"
             todir="${prd.nightly.dist.dir}/openfm"  />
         <copy file="${amserver.tools.dir}/ssopatch.jar"

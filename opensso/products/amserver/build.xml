@@ -326,9 +326,9 @@
              inheritRefs="true"/>        
         <ant antfile="${amserver.warbase.dir}/build.xml" target="configurator"
              inheritRefs="true"/>        
-        <ant antfile="${amserver.base.dir}/build-diagnostic-tools.xml"
+        <!-- <ant antfile="${amserver.base.dir}/build-diagnostic-tools.xml"
             dir="${amserver.base.dir}"
-            inheritRefs="true"/>
+            inheritRefs="true"/> -->
     </target>
     
     <target name="war" depends="build,prep.xml">

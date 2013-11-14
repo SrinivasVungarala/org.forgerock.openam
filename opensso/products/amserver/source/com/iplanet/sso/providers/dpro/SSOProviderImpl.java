@@ -106,7 +106,7 @@ public final class SSOProviderImpl implements SSOProvider {
             return ssoToken;
         } catch (Exception e) {
             if (debug.messageEnabled()) {
-                debug.message("could not create SSOToken from HttpRequest", e);
+                debug.message("could not create SSOToken from HttpRequest: "+e.toString());
             }
             throw new SSOException(e);
         }
@@ -169,7 +169,7 @@ public final class SSOProviderImpl implements SSOProvider {
         } catch (Exception e) {
             if (debug.messageEnabled()) {
                 debug.message("SSOProviderImpl.createSSOToken(tokenId, boolean)"
-                    +"could not create SSOTOken for token ID " + tokenId, e);
+                    +"could not create SSOTOken for token ID " + tokenId+": "+e.toString());
             }
             throw new SSOException(e);
         }

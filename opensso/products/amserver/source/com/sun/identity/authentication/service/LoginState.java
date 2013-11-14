@@ -4888,16 +4888,23 @@ public class LoginState {
                 for (int i = 0; i < ob.length; i++) {
                     if (ob[i] instanceof Callback[]) {
                         Callback[] cb = (Callback[]) ob[i];
-                        for (int j = 0; j < cb.length; j++) {
+                        for (int j = 0; (j < cb.length) && (userDN==null); j++) {
                             if (cb[j] instanceof NameCallback) {
                                 userDN = ((NameCallback) cb[j]).getName();
-                                if (ad.debug.messageEnabled()) {
-                                    ad.debug.message("userDN is null, setting to " + userDN);
+                                if (userDN!=null){
+	                                if (ad.debug.messageEnabled()) {
+	                                    ad.debug.message("userDN is null, setting to " + userDN);
+	                                }
+	                                props.put(LogConstants.LOGIN_ID, userDN);
                                 }
-                                props.put(LogConstants.LOGIN_ID, userDN);
                             }
                         }
                     }
+                }
+                if ((userDN==null) && (getOldSession()!=null)){
+			userDN=getOldSession().getProperty("sun.am.UniversalIdentifier");
+			if (userDN!=null)
+				props.put(LogConstants.LOGIN_ID, userDN);
                 }
             }
             if (orgDN != null) {

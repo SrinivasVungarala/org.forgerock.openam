@@ -261,14 +261,14 @@
     
     <target name="compileCore">
         <antcall target="xsd.services" />
-        <javac memoryInitialSize="256m" memoryMaximumSize="512m" fork="true"
+        <!--<javac memoryInitialSize="256m" memoryMaximumSize="512m" fork="true"
                destdir="${odt.classes.dir}"
                source="${target.jdk.set}" target="${target.jdk.set}"
                debug="${build.debug}" debuglevel="${build.debuglevel}"
                srcdir="${odt.package.path}/base"
                excludes="${odt.package.path}/plugin">
             <classpath refid="build.class.path"/>
-        </javac>
+        </javac>-->
     </target>
     
     <target name="xsd.services">
