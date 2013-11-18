@@ -740,8 +740,8 @@ public class AMLoginContext {
             authContext.setLoginException(new AuthLoginException(
             bundleName, "loginFailed", null, e));
         } catch (java.lang.Error er) {
-            debug.message(
-                "Caught java.lang.Error returned from DSAMEHandler", er);
+		if (debug.messageEnabled())
+			debug.message("Caught java.lang.Error returned from DSAMEHandler", er);
             return;
         }
         debug.message("Came to before if Failed loop");
