@@ -2557,7 +2557,7 @@ public abstract class AMLoginModule implements LoginModule {
                         + " Internal users : " + LoginState.internalUsers);
                     }
                     
-                    if (LoginState.internalUsers.contains(
+                    if (userName!=null && LoginState.internalUsers.contains(
                             userName.toLowerCase())) {
                         needToCheck = true;
                     } else {
