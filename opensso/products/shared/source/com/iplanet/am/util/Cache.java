@@ -118,7 +118,7 @@ public class Cache<K, V>   {
 	Element e=cache.get(key);
 	if (debug)
 		logger.debug("get [{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
-	return (e==null)?null:(V)e.getObjectValue();
+	return (e==null||e.isExpired())?null:(V)e.getObjectValue();
     }
 
     public void put(K key, V value) {
