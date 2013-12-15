@@ -65,15 +65,16 @@ public class Cache<K, V>   {
 			super.run();
 				while (true){
 					try{
-						sleep(20*60*1000);
+						sleep(15*60*1000);
 						logger.info("stat -------------------------------------------------------------------------------");
 						for (String name : cacheManager.getCacheNames()) {
 							net.sf.ehcache.Cache cache=cacheManager.getCache(name);
 							if (cache!=null){
 								logger.info("stat ============= {}",new Object[]{cache.getStatistics()});
 							}
+							cache.evictExpiredElements();
 						}
-						sleep(50*60*1000);
+						sleep(30*60*1000);
 					}catch (Exception e) {
 						logger.error("statistic",e);
 					}
