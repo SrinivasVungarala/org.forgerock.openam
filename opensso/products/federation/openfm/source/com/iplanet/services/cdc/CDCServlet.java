@@ -645,7 +645,8 @@ public class CDCServlet extends HttpServlet {
                         debug.message("CDCServlet init redirect URL is" +
                             "set to= " + cdcUrl);
                     }
-                    
+                    if (!cdcUrl.startsWith("/UI/Login"))
+			cdcUrl="/UI/Login";
                     if (cdcUrl.indexOf(QUESTION_MARK) == -1) {
                         redirectURL.append(cdcUrl).append(QUESTION_MARK);
                     } else {
