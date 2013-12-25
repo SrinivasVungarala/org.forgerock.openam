@@ -232,7 +232,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 	 * This method updates the naming table especially whenever a new server
 	 * added/deleted into platform server list
 	 */
-	private static java.util.concurrent.ConcurrentHashMap updateNamingTable(
+	private synchronized static java.util.concurrent.ConcurrentHashMap updateNamingTable(
 			boolean forClient) throws SMSException {
 		java.util.concurrent.ConcurrentHashMap nametable;
 		try {
