@@ -160,7 +160,6 @@ public class NamingService implements RequestHandler, ServiceListener {
 				sessionConfig = sessionServiceConfig.getSubConfigNames();
 			}
 			// init
-			updateNamingTable();
 			new Thread("nameservice-update") {
 				@Override
 				public void run() {
@@ -178,6 +177,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 					}
 				}
 			}.start();
+			updateNamingTable();
 			// Add Listener to the platform and naming service
 			// for schema changes
 			ssmNaming.addListener(new NamingService());
@@ -232,7 +232,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 	 * This method updates the naming table especially whenever a new server
 	 * added/deleted into platform server list
 	 */
-	private synchronized static java.util.concurrent.ConcurrentHashMap updateNamingTable(
+	private static java.util.concurrent.ConcurrentHashMap updateNamingTable(
 			boolean forClient) throws SMSException {
 		java.util.concurrent.ConcurrentHashMap nametable;
 		try {
@@ -591,7 +591,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 			return;
 		}
 		try {
-			updateNamingTable();
+			//updateNamingTable();
 			SessionService ss = SessionService.getSessionService();
 			if ((ss != null) && ss.isSessionFailoverEnabled()) {
 				ss.ReInitClusterMemberMap();

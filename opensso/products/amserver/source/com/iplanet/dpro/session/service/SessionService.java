@@ -2618,7 +2618,7 @@ public class SessionService {
                 "Cannot get the admin token for this operation.");
         } catch (IdRepoException idme) {
             sessionDebug.error("SessionService.isSuperUser:"+
-                "Cannot get the user identity.");
+                "Cannot get the user identity. uuid="+uuid+": "+idme.toString(),idme);
         }
         
         if (sessionDebug.messageEnabled()) {

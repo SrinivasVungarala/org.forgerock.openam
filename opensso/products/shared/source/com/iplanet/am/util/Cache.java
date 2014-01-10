@@ -74,7 +74,7 @@ public class Cache<K, V>   {
 							}
 							cache.evictExpiredElements();
 						}
-						sleep(30*60*1000);
+						sleep(60*60*1000);
 					}catch (Exception e) {
 						logger.error("statistic",e);
 					}

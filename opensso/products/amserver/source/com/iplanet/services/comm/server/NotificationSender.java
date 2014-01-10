@@ -98,7 +98,7 @@ public class NotificationSender {
                         .getString("sendNotificationFailed"));
             }
         } catch (Exception e) {
-            PLLServer.pllDebug.error("Cannot send notification to " + url, e);
+            PLLServer.pllDebug.error("Cannot send notification to " + url +": "+e.toString());
             // FIXME: Currently we ignore the exception received here, because
             // not all the agent answers with 'OK' if the notification was
             // received, see OPENAM-498 (and linked RFE) for more details.
