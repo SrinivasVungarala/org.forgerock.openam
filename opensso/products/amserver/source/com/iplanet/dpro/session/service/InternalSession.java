@@ -49,11 +49,13 @@ import com.sun.identity.common.TaskRunnable;
 import com.sun.identity.common.TimerPool;
 import com.sun.identity.session.util.SessionUtils;
 import com.sun.identity.shared.Constants;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
@@ -1719,4 +1721,18 @@ public class InternalSession implements TaskRunnable, Serializable {
             }
         }
     }
+
+	@Override
+	public String toString() {
+		final SimpleDateFormat f=new SimpleDateFormat("yyyyMMddHHmm");
+		return "maxSessionTime="+f.format(new Date(creationTime*1000+maxSessionTime*60*1000))
+				+" maxIdleTime="+f.format(new Date(latestAccessTime*1000+maxIdleTime*60*1000))
+				+" maxCachingTime="+maxCachingTime
+				+" sessionState="+sessionState
+				+" willExpireFlag="+willExpireFlag
+				+" creationTime="+f.format(new Date(creationTime*1000))
+				+" latestAccessTime="+f.format(new Date(latestAccessTime*1000))
+				+" timedOutAt="+f.format(new Date(timedOutAt*1000))
+				+" "+sessionProperties.toString();
+	}
 }

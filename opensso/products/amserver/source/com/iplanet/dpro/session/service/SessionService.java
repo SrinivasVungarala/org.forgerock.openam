@@ -34,6 +34,7 @@
  */
 package com.iplanet.dpro.session.service;
 
+import com.iplanet.am.util.Cache;
 import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.am.util.ThreadPool;
@@ -93,6 +94,7 @@ import com.sun.identity.sm.ServiceConfig;
 import com.sun.identity.sm.ServiceConfigManager;
 import com.sun.identity.sm.ServiceSchema;
 import com.sun.identity.sm.ServiceSchemaManager;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -120,11 +122,13 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import javax.servlet.http.HttpSession;
 
 import com.sun.identity.monitoring.Agent;
 import com.sun.identity.monitoring.MonitoringUtil;
 import com.sun.identity.monitoring.SsoServerSessSvcImpl;
+
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,12 +138,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import org.forgerock.openam.session.service.SessionTimeoutHandler;
 
+import org.forgerock.openam.session.service.SessionTimeoutHandler;
+import org.slf4j.LoggerFactory;
 /**  
  * This class represents a Session Service
  */
 public class SessionService {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SessionService.class);
 
     private static String LOG_PROVIDER = "Session";
     static private ThreadPool threadPool = null;
@@ -344,6 +350,7 @@ public class SessionService {
             status = "INACTIVE";
         }
         logStatus = status.equalsIgnoreCase("ACTIVE");
+
     }
 
     private static boolean returnAppSession = Boolean
@@ -1920,6 +1927,24 @@ public class SessionService {
                     getRepository();
                 }
             }
+            new Thread(SessionService.class.getName().concat("-stat")){
+		@Override
+			public void run() {
+				super.run();
+				while (true){
+					try{
+						log.info(
+								"sessionTable={} sessionHandleTable={} restrictedTokenMap={} remoteSessionSet={} threadPool={}",
+								sessionTable.size(),sessionHandleTable.size(),restrictedTokenMap.size(),remoteSessionSet.size(),threadPool.getCurrentSize());
+						sleep(10*60*1000);
+					}catch(InterruptedException e){
+						return;
+					}catch (Exception e) {
+						log.error("statistic",e);
+					}
+				}
+			}
+            }.start();
         } catch (Exception ex) {
             sessionDebug.error(
                     "SessionService.SessionService(): Initialization Failed",
@@ -1927,6 +1952,32 @@ public class SessionService {
         }
     }
 
+    public void debug(final String who){
+	 new Thread(SessionService.class.getName().concat("-stat-"+who)){
+		@Override
+		public void run() {
+			super.run();
+				try{
+					if ("sessionTable".equals(who))
+					for (InternalSession e : sessionTable.values())
+						log.info("{}: {}",who,e);
+					else if ("sessionHandleTable".equals(who))
+					for (InternalSession e : sessionHandleTable.values())
+						log.info("{}: {}",who,e);
+					else if ("restrictedTokenMap".equals(who))
+					for (Object e : restrictedTokenMap.values())
+						log.info("{}: {}",who,e);
+					else if ("remoteSessionSet".equals(who))
+					for (Object e : remoteSessionSet)
+						log.info("{}: {}",who,e);
+					else
+						log.info("unknown: {}",who);
+				}catch (Exception e) {
+					log.error("",e);
+				}
+		}
+         }.start();
+    }
     /**
      * THis is a key method for "internal request routing" mode It determines
      * the server id which is currently hosting session identified by sid. In

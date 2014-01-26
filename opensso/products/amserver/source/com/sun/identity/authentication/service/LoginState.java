@@ -1442,7 +1442,7 @@ public class LoginState {
                     }
                     session.setMaxSessionTime(Long.MAX_VALUE/60);
                     session.setMaxIdleTime(agentSessionIdleTime);
-                    session.setMaxCachingTime(agentSessionIdleTime);
+                    session.setMaxCachingTime(minAgentSessionIdleTime);
                 } else {
                     if (ad.debug.messageEnabled()) {
                         ad.debug.message("setSessionProperties for non-expiring session");
