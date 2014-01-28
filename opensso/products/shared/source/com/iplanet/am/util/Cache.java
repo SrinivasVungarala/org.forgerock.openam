@@ -66,7 +66,7 @@ public class Cache<K, V>   {
 				while (true){
 					try{
 						for (String name : cacheManager.getCacheNames()) {
-							sleep(15*60*1000);
+							sleep(10*60*1000);
 							net.sf.ehcache.Cache cache=cacheManager.getCache(name);
 							if (cache!=null){
 								logger.info("stat: {}",new Object[]{cache.getStatistics()});
