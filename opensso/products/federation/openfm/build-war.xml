@@ -474,13 +474,13 @@
 
         <!-- Uncomment the following line to include the unittest files in the WAR -->
         <!-- <antcall target="unittest" /> -->
-
         <war destfile="${fm.dist.dir}/opensso.war" webxml="${war.packageweb.dir}/web.xml">
             <manifest>
                 <attribute name="Version" value="${openfm.version}"/>
                 <attribute name="Create-On" value="${touch.time}"/>
             </manifest>
-            <zipfileset dir="${war.package.dir}" />
+            <zipfileset dir="${war.package.dir}"
+		excludes="**/webservices-*.jar, **/log4j*.jar"/>
         </war>
         <move file="${war.packageweb.dir}/web.xml" tofile="${war.package.dir}/WEB-INF/web.xml" />
         <delete dir="${war.packageweb.dir}" />
