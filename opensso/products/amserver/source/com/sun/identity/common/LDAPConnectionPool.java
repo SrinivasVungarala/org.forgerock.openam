@@ -906,12 +906,12 @@ public class LDAPConnectionPool {
         }
         
         public void run() {
-            //synchronized (pool) {
+            synchronized (pool) {
                 for (int i = 0; i < thisTurn; i++) {
                     pool.decreaseCurrentConnection();
                 }
                 thisTurn = 0;
-            //}
+            }
             synchronized (nextTurnLock) {
                 for (int i = 0; i < counterNeeded + 1; i++) {
                     if (i == 0) {
