@@ -2243,23 +2243,23 @@ public class LDAPConnection
     }
 
     public LDAPEntry read (String DN, String attrs[],
-        LDAPSearchConstraints cons) throws LDAPException {
-        LDAPSearchResults results =
-            search (DN, SCOPE_BASE,
-                    "(|(objectclass=*)(objectclass=ldapsubentry))",
-                    attrs, false, cons);
-        if (results == null) {
-            return null;
+            LDAPSearchConstraints cons) throws LDAPException {
+            LDAPSearchResults results =
+                search (DN, SCOPE_BASE,
+                        "(objectclass=*)",
+                        attrs, false, cons);
+            if (results == null) {
+                return null;
+            }
+            LDAPEntry entry = results.next();
+
+            // cleanup required for referral connections
+            /*while (results.hasMoreElements()) {
+                results.nextElement();
+            }*/
+
+            return entry;
         }
-        LDAPEntry entry = results.next();
-        
-        // cleanup required for referral connections
-        /*while (results.hasMoreElements()) {
-            results.nextElement();
-        }*/
-        
-        return entry;
-    }
 
     public LDAPEntry read (LDAPSearchRequest request,
         LDAPSearchConstraints cons) throws LDAPException {
