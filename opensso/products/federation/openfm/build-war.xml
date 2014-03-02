@@ -480,7 +480,7 @@
                 <attribute name="Create-On" value="${touch.time}"/>
             </manifest>
             <zipfileset dir="${war.package.dir}"
-		excludes="**/webservices-*.jar, **/log4j*.jar, **/commons-logg*.jar, **/jersey*.jar, **/ehcache*.jar, **/slf4j*.jar"/>
+		excludes="**/webservices-*.jar, **/log4j*.jar, **/commons-logg*.jar, **/jersey*.jar, **/ehcache*.jar, **/slf4j*.jar, **/jaxrpc-*.jar"/>
         </war>
         <move file="${war.packageweb.dir}/web.xml" tofile="${war.package.dir}/WEB-INF/web.xml" />
         <delete dir="${war.packageweb.dir}" />
