@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class LDAPConnectionPool {
 	@Override
 	public String toString() {
-		return MessageFormat.format("{0} {1} {2} {3}/{4}/{5}", name,server,servers,pool.size(), busy.size(),maxSize);
+		return MessageFormat.format("name={0} server={1} failover={2} {3}/{4}/{5}", name,server,servers,pool.size(), busy.size(),maxSize);
 	}
 
 	final static Logger logger = LoggerFactory.getLogger(LDAPConnectionPool.class);
@@ -168,7 +168,7 @@ public class LDAPConnectionPool {
 							for (Entry<LDAPConnection, Long> e : busy.entrySet())
 								if (System.currentTimeMillis()-e.getValue()>idleTime/2){ //return leak too pool
 									close(e.getKey());
-									logger.warn("clean remove leak {}: {} {}",this,e.getKey(),new Date(e.getValue()));
+									logger.warn("clean remove leak {}: {} {}",LDAPConnectionPool.this,e.getKey(),new Date(e.getValue()));
 								}
 							for (LDAPConnectionWithTime c : pool)
 								if (System.currentTimeMillis()-c.time>idleTime){
@@ -176,9 +176,9 @@ public class LDAPConnectionPool {
 									if (c.con.isConnected())
 										try{
 											c.con.disconnect();
-											logger.info("clean remove unused {}: {} {}",this,c.con,new Date(c.time));
+											logger.info("clean remove unused {}: {} {}",LDAPConnectionPool.this,c.con,new Date(c.time));
 										}catch (LDAPException e) {
-											logger.error("clean remove unused {}: {} {}",this,c.con,new Date(c.time),e);
+											logger.error("clean remove unused {}: {} {}",LDAPConnectionPool.this,c.con,new Date(c.time),e);
 										}
 								}
 						}catch(InterruptedException e){
