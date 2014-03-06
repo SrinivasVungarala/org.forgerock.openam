@@ -4973,7 +4973,8 @@ public class LoginState {
             }
             ad.logIt(data,ad.LOG_ACCESS, messageId.toString(), props);
         } catch (Exception e) {
-            debug.error("Error creating logout message" , e);
+            if (debug.messageEnabled())
+		debug.message("Error creating logout message" , e);
         }
     }
     
