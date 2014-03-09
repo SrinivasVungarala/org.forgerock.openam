@@ -383,13 +383,13 @@ class SSOTokenImpl implements SSOToken {
                 try {
                     property = SSOSession.getProperty(name);
                 } catch (Exception e) {
-                    if(logError){
-                	    SSOProviderImpl.debug.error("Can't get property: " + name);	
-                    }else{
+//                    if(logError){
+//                	    SSOProviderImpl.debug.error("Can't get property: " + name);
+//                    }else{
                         if (SSOProviderImpl.debug.messageEnabled()) {
                             SSOProviderImpl.debug.message("Can't get property: " + name);
                         }
-                    }
+//                    }
                     throw new SSOException(e);
                 }
             }

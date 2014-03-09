@@ -132,98 +132,49 @@ public class XMLUtils {
         if ((xmlString == null) || (xmlString.length() == 0)) {
             return null;
         }
-
         try {
-            ByteArrayInputStream is = new ByteArrayInputStream(xmlString
-                    .getBytes("UTF-8"));
-            return toDOMDocument(is, debug);
+            return getDocumentBuilder().parse(new ByteArrayInputStream(xmlString.getBytes("UTF-8")));
         } catch (UnsupportedEncodingException uee) {
-            if (debug != null && debug.warningEnabled()) {
-                debug.warning("Can't parse the XML document:\n" + xmlString,
-                        uee);
-            }
-            return null;
+            debug.error("Can't parse the XML document: [" + xmlString+"]",uee);
+            throw new RuntimeException(uee);
+        }catch(Exception e){
+		debug.error("Parse xml [".concat(xmlString).concat("]: ").concat(e.toString()));
+		throw new RuntimeException(e);
         }
     }
 
-    private static final ThreadLocal<DocumentBuilder> DocumentBuilderLocal =
-	    new ThreadLocal<DocumentBuilder>() {
-	        @Override protected DocumentBuilder initialValue() {
-			 DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	             dbFactory.setValidating(false);
-	             dbFactory.setNamespaceAware(true);
-	             try{
-		             dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-			     dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-	             }catch (ParserConfigurationException ex) {
-			 throw new RuntimeException(ex);
-	             }
-	             try{
-			     DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
-		             documentBuilder.setEntityResolver(new XMLHandler());
-		             logger.info("new {} in {}",new Object[]{documentBuilder,Thread.currentThread().getName()});
-		             return documentBuilder;
-	             }catch (ParserConfigurationException ex) {
-			 logger.error("error",ex);
-			 throw new RuntimeException(ex);
-	             }
-	        }
-	    };
+    private static DocumentBuilder getDocumentBuilder() {
+	 final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+         dbFactory.setValidating(false);
+         dbFactory.setNamespaceAware(true);
+         try{
+             dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	     dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+         }catch (ParserConfigurationException ex) {
+		 throw new RuntimeException(ex);
+         }
+         try{
+		 final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
+             documentBuilder.setEntityResolver(new XMLHandler());
+             return documentBuilder;
+         }catch (ParserConfigurationException ex) {
+		 logger.error("error",ex);
+		 throw new RuntimeException(ex);
+         }
+    }
     /**
      * Converts the XML document from an input stream to DOM Document format.
-     * 
+     *
      * @param is
      *            is the InputStream that contains XML document
      * @return Document is the DOM object obtained by parsing the input stream.
      *         Returns null if there are any parser errores.
      */
     public static Document toDOMDocument(InputStream is, Debug debug) {
-        /*
-         * Constructing a DocumentBuilderFactory for every call is less
-         * expensive than a synchronizing a single instance of the factory and
-         * obtaining the builder
-         */
-//        DocumentBuilderFactory dbFactory = null;
-//        try {
-//            // Assign new debug object
-//            dbFactory = DocumentBuilderFactory.newInstance();
-//            dbFactory.setValidating(false);
-//            try{
-//	            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-//	            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-//            }catch (ParserConfigurationException ex) {}
-//            dbFactory.setNamespaceAware(true);
-//        } catch (Exception e) {
-//            if (debug != null) {
-//                debug.error("XMLUtils.DocumentBuilder init failed", e);
-//            }
-//        }
-
         try {
-//            DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
-//
-//            if (documentBuilder == null) {
-//                if (debug != null) {
-//                    debug.error("XMLUtils.toDOM : null builder instance");
-//                }
-//                return null;
-//            }
-//            documentBuilder.setEntityResolver(new XMLHandler());
-//            if (debug != null && debug.warningEnabled()) {
-//                documentBuilder.setErrorHandler(new ValidationErrorHandler(
-//                        debug));
-//            }
-
-            return DocumentBuilderLocal.get().parse(is);
+            return getDocumentBuilder().parse(is);
         } catch (Exception e) {
-            // Since there may potentially be several invalid XML documents
-            // that are mostly client-side errors, only a warning is logged for
-            // efficiency reasons.
-            if (debug != null && debug.warningEnabled()) {
-                debug.warning("Can't parse the XML document", e);
-            }
-
-            return null;
+		throw new RuntimeException(e);
         }
     }
 
@@ -372,44 +323,11 @@ public class XMLUtils {
      *                if an error occurs while constructing a new document
      */
     public static Document newDocument() throws ParserConfigurationException {
-//        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//        dbFactory.setNamespaceAware(true);
-//        dbFactory.setValidating(false);
-//        try{
-//	        dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-//	        dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-//        }catch (ParserConfigurationException ex) {}
-        //return dbFactory.newDocumentBuilder().newDocument();
-	return DocumentBuilderLocal.get().newDocument();
+	return getDocumentBuilder().newDocument();
     }
 
     public static Document getXMLDocument(InputStream in) throws Exception {
-        try {
-//            DocumentBuilderFactory factory = DocumentBuilderFactory
-//                    .newInstance();
-//            factory.setValidating(false);
-//            try{
-//	            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-//	            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-//            }catch (ParserConfigurationException ex) {}
-//            DocumentBuilder builder = factory.newDocumentBuilder();
-//            Document doc = builder.parse(in);
-//            return (doc);
-		return DocumentBuilderLocal.get().parse(in);
-        } catch (SAXParseException pe) {
-            String msg = "\n" + pe.getMessage() + "\n";
-            Object params[] = { new Integer(pe.getLineNumber()) };
-            throw (new Exception(msg + "XMLUtils.parser_error" + params));
-        } catch (SAXException sax) {
-            Object params[] = { new String(sax.getMessage()) };
-            throw (new Exception("XMLUtils.exception_message" + params));
-//        } catch (ParserConfigurationException pc) {
-//            Object params[] = { new String(pc.getMessage()) };
-//            throw (new Exception("XMLUtils.invalid_xml_document" + params));
-        } catch (IOException ioe) {
-            Object params[] = { new String(ioe.getMessage()) };
-            throw (new Exception("XMLUtils.invalid_input_stream" + params));
-        }
+	return getDocumentBuilder().parse(in);
     }
 
     public static Node getRootNode(Document doc, String nodeName) {
@@ -764,30 +682,24 @@ public class XMLUtils {
      * @param encoding character encoding
      * @return An xml String representation of the DOM tree.
      */
-    private static final ThreadLocal<Transformer> TransformerLocal =
-	    new ThreadLocal<Transformer>() {
-	        @Override protected Transformer initialValue() {
-			try{
-				TransformerFactory tFactory =  TransformerFactory.newInstance();
-		            Transformer transformer = tFactory.newTransformer();
-		            transformer.setOutputProperty("omit-xml-declaration", "yes");
-		            return transformer;
-			}catch (TransformerConfigurationException ex) {
-			 throw new RuntimeException(ex);
-	             }
-	        }
-	    };
+    private static Transformer getTransformerLocal() {
+	try{
+		final TransformerFactory tFactory =  TransformerFactory.newInstance();
+		final Transformer transformer = tFactory.newTransformer();
+            transformer.setOutputProperty("omit-xml-declaration", "yes");
+            return transformer;
+	}catch (TransformerConfigurationException ex) {
+		 throw new RuntimeException(ex);
+         }
+     }
+
     public static String print(Node node, String encoding) {
 	if (node == null) {
 	    return null;
 	}
-        
+
         try {
-			// TransformerFactory tFactory =
-			// TransformerFactory.newInstance();
-			// Transformer transformer = tFactory.newTransformer();
-			// transformer.setOutputProperty("omit-xml-declaration", "yes");
-		Transformer transformer=TransformerLocal.get();
+		Transformer transformer=getTransformerLocal();
             transformer.setOutputProperty("encoding", encoding);
             DOMSource source = new DOMSource(node);
             ByteArrayOutputStream os = new ByteArrayOutputStream(2000);

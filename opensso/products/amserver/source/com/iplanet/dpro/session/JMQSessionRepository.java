@@ -308,7 +308,7 @@ public class JMQSessionRepository extends GeneralTaskRunnable implements
     * @exception when cannot save the internal session
     */
    public void save(InternalSession is) throws Exception {
-        if (!isDatabaseUp) {
+        if (!isDatabaseUp||is==null) {
             return;
         }
 
