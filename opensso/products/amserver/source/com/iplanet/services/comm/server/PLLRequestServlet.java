@@ -37,10 +37,14 @@ import com.iplanet.services.comm.share.ResponseSet;
 import com.iplanet.services.naming.WebtopNaming;
 import com.iplanet.services.naming.service.NamingService;
 import com.sun.identity.shared.Constants;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URL;
 import java.util.Hashtable;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -124,8 +128,16 @@ public class PLLRequestServlet extends HttpServlet {
             offset += r;
         }
         String xml = new String(reqData, 0, length, "UTF-8");
-
-        RequestSet set = RequestSet.parseXML(xml);
+        RequestSet set;
+        try{
+		set=RequestSet.parseXML(
+			PatternpreferredNamingURL.matcher(xml)
+				.replaceFirst("preferredNamingURL=\"".concat((new java.net.URI(req.getRequestURL().toString())).resolve(req.getContextPath()).toString() ).concat("\"") )
+			);
+        }catch(Throwable e){
+		PLLServer.pllDebug.error("xml replace [".concat(xml).concat("]: ").concat(e.getMessage()));
+		set=RequestSet.parseXML(xml);
+        }
         String svcid = set.getServiceID();
         if(!AUTH_SVC_ID.equalsIgnoreCase(svcid)) {
             if (PLLServer.pllDebug.messageEnabled()) {
@@ -148,6 +160,7 @@ public class PLLRequestServlet extends HttpServlet {
             }
         }
     }
+    static java.util.regex.Pattern PatternpreferredNamingURL=java.util.regex.Pattern.compile("preferredNamingURL=\"([^http].*?)\"");
 
     public void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, java.io.IOException {
