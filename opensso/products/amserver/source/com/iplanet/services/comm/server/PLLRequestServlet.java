@@ -41,9 +41,6 @@ import com.sun.identity.shared.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.net.URI;
-import java.net.URL;
-import java.util.Hashtable;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
