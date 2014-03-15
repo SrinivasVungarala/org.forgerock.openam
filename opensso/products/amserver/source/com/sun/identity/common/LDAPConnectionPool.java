@@ -170,7 +170,7 @@ public class LDAPConnectionPool {
 						try{
 							sleep(idleTime);
 							for (Entry<LDAPConnection, Long> e : busy.entrySet())
-								if (System.currentTimeMillis()-e.getValue()>idleTime/2){ //return leak too pool
+								if (System.currentTimeMillis()-e.getValue()>idleTime*2){ //return leak too pool
 									logger.warn("remove busy leak {}: {} borrow {}",LDAPConnectionPool.this,e.getKey(),new Date(e.getValue()));
 									close(e.getKey());
 								}
@@ -241,7 +241,11 @@ public class LDAPConnectionPool {
 	public LDAPConnection getConnection(int timeout) {
 		while (true){
 			long start = System.currentTimeMillis();
-			LDAPConnection res = poll();
+			LDAPConnection res=poll();
+//			try {
+//				if (res==null && busy.size()>maxSize/10)
+//					res=poll(idleTime/10, TimeUnit.MILLISECONDS);
+//			} catch (InterruptedException e) {}
 			if (res == null && busy.size() < maxSize)
 				try {
 					res = createConnection();
