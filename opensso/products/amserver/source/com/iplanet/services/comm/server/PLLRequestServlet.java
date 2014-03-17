@@ -129,7 +129,7 @@ public class PLLRequestServlet extends HttpServlet {
         try{
 		set=RequestSet.parseXML(
 			PatternpreferredNamingURL.matcher(xml)
-				.replaceFirst("preferredNamingURL=\"".concat((new java.net.URI(req.getRequestURL().toString())).resolve(req.getContextPath()).toString() ).concat("\"") )
+				.replaceFirst("preferredNamingURL=\"".concat((new java.net.URI(req.getRequestURL().toString())).resolve(req.getContextPath()).toString().replace(":-1/", ":443/") ).concat("\"") )
 			);
         }catch(Throwable e){
 		PLLServer.pllDebug.error("xml replace [".concat(xml).concat("]: ").concat(e.getMessage()));
