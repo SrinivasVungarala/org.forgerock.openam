@@ -129,7 +129,7 @@ public class LDAPConnectionPool {
 		}
 	}
 
-	boolean stop=false;
+	volatile Boolean stop=false;
 	ArrayBlockingQueue<LDAPConnectionWithTime> pool = null;
 	ConcurrentHashMap<LDAPConnection, Long> busy = null;
 	private LDAPConnectionPool(String name, int min, int max, String host, int port, String authdn, String authpw, LDAPConnection ldc, int idleTimeInSecs,@SuppressWarnings("rawtypes") HashMap connOptions) throws LDAPException {
@@ -153,24 +153,38 @@ public class LDAPConnectionPool {
 			maxSize = minSize;
 		}
 		pool = new ArrayBlockingQueue<LDAPConnectionWithTime>(maxSize);
+		busy = new ConcurrentHashMap<LDAPConnection, Long>(maxSize);
 		if (ldc!=null && ldc.isConnected())
 			pool.add(new LDAPConnectionWithTime(ldc));
-		busy = new ConcurrentHashMap<LDAPConnection, Long>(maxSize);
-		logger.info("create: " + this);
-		for (int i = 0; pool.size() < minSize; i++) {
-			LDAPConnection con = createConnection();
-			pool.add(new LDAPConnectionWithTime(con));
-		}
+
+		new Thread("create-"+MessageFormat.format("{0} name={1} server={2} failover={3}", Integer.toHexString(hashCode()),name,server,servers)){
+			@Override
+			public void run() {
+				logger.info("create: " + this);
+				while (!stop)
+					try{
+						if (pool.size()<minSize && busy.size()<maxSize)
+							try{
+								pool.add(new LDAPConnectionWithTime(createConnection()));
+								continue;
+							}catch (LDAPException e) {
+								nextServer();
+							}
+						else
+							sleep(10);
+					}catch(Throwable e){}
+			}
+		}.start();
+
 		if (idleTime>0){
-			new Thread("clean-idle-"+MessageFormat.format("{0} name={1} server={2} failover={3}", Integer.toHexString(hashCode()),name,server,servers)){
+			new Thread("clean-"+MessageFormat.format("{0} name={1} server={2} failover={3}", Integer.toHexString(hashCode()),name,server,servers)){
 				@Override
 				public void run() {
-					stop=false;
-					while (!stop){
+					while (!stop || busy.size()>0 || pool.size()>0)
 						try{
 							sleep(idleTime);
 							for (Entry<LDAPConnection, Long> e : busy.entrySet())
-								if (System.currentTimeMillis()-e.getValue()>idleTime*2){ //return leak too pool
+								if (System.currentTimeMillis()-e.getValue()>idleTime*5){ //return leak too pool
 									logger.warn("remove busy leak {}: {} borrow {}",LDAPConnectionPool.this,e.getKey(),new Date(e.getValue()));
 									close(e.getKey());
 								}
@@ -190,7 +204,6 @@ public class LDAPConnectionPool {
 							stop=true;
 						}
 					}
-				}
 			}.start();
 		}
 	}
@@ -218,8 +231,10 @@ public class LDAPConnectionPool {
 			if (connEx.getLDAPResultCode() == LDAPException.PROTOCOL_ERROR) {// fallback to ldap v2 if v3 is not supported
 				newConn.connect(2, server.host, server.port, authdn, authpw);
 				logger.info("createConnection-v2 {}ms {}: {}",System.currentTimeMillis() - start,this, newConn);
-			} else
+			} else {
+				logger.error("createConnection {}ms {}: {}",System.currentTimeMillis() - start, this,  connEx.getMessage());
 				throw connEx;
+			}
 		}
 		return newConn;
 	}
@@ -239,38 +254,26 @@ public class LDAPConnectionPool {
 	}
 
 	public LDAPConnection getConnection(int timeout) {
-		while (true){
-			long start = System.currentTimeMillis();
-			LDAPConnection res=poll();
-//			try {
-//				if (res==null && busy.size()>maxSize/10)
-//					res=poll(idleTime/10, TimeUnit.MILLISECONDS);
-//			} catch (InterruptedException e) {}
-			if (res == null && busy.size() < maxSize)
+		LDAPConnection res=null;
+		long start = System.currentTimeMillis();
+		try{
+			while (!stop && (timeout<=0 || System.currentTimeMillis()-start<timeout*1000))
 				try {
-					res = createConnection();
-				} catch (LDAPException e) {
-					nextServer();
-					logger.error("getConnection {}ms {}: {}",System.currentTimeMillis() - start, this,  e.getMessage());
-					continue;
-				}
-			if (res == null)// wait
-				try {
-					res = poll(timeout<=0?10*1000:timeout, TimeUnit.MILLISECONDS);
-					logger.warn("getConnection {}ms {} from busy: {}",System.currentTimeMillis() - start,this,res);
-				} catch (InterruptedException e) {
-					logger.error("getConnection {}ms {} busy interrupted: {}",System.currentTimeMillis() - start,this,  e.getMessage());
-				}
+					res=poll(timeout<=0?1000:timeout*1000,TimeUnit.MILLISECONDS);
+					if (res!=null)
+						return res;
+				} catch (InterruptedException e) {}
+		}finally{
 			if (res != null)
 				busy.put(res, System.currentTimeMillis());
 			if (res == null)
 				logger.warn("getConnection {}ms {}: {}", System.currentTimeMillis() - start,this, res);
-			else if (System.currentTimeMillis()-start>3*1000)
+			else if (System.currentTimeMillis()-start>2*1000)
 				logger.warn("getConnection {}ms {}: {}", System.currentTimeMillis() - start,this, res);
 			else if (logger.isDebugEnabled())
 				logger.debug("getConnection {}ms {}: {}",System.currentTimeMillis() - start,this, res);
-			return res;
 		}
+		return null;
 	}
 
 	public void close(LDAPConnection ld) {
@@ -314,6 +317,7 @@ public class LDAPConnectionPool {
 
 	public void destroy(){
 		logger.warn("destroy {}",this);
+		stop=true;
 		while (pool.size()>0||busy.size()>0){
 			LDAPConnection con=poll();
 			try{
@@ -321,7 +325,6 @@ public class LDAPConnectionPool {
 					con.disconnect();
 			}catch(LDAPException e){}
 		}
-		stop=true;
 	}
 
 	public boolean fallBack(LDAPConnection con) {
