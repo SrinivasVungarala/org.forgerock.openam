@@ -129,8 +129,14 @@ public class PLLRequestServlet extends HttpServlet {
         try{
 		set=RequestSet.parseXML(
 			PatternpreferredNamingURL.matcher(xml)
-				//.replaceFirst("preferredNamingURL=\"".concat((new java.net.URI(req.getRequestURL().toString())).resolve(req.getContextPath()).toString().replace(":-1/", ":443/") ).concat("\"") )
-			    .replaceFirst(" ")
+				.replaceFirst(
+						"preferredNamingURL=\""
+						.concat(req.getScheme()).concat("://")
+						.concat(req.getServerName())
+						.concat(":")
+						.concat(Integer.toString(getPort(req)))
+						.concat("\"") )
+			    //.replaceFirst(" ")
 			);
         }catch(Throwable e){
 		PLLServer.pllDebug.error("xml replace [".concat(xml).concat("]: ").concat(e.getMessage()));
@@ -158,7 +164,13 @@ public class PLLRequestServlet extends HttpServlet {
             }
         }
     }
-    static java.util.regex.Pattern PatternpreferredNamingURL=java.util.regex.Pattern.compile("preferredNamingURL=\"([^http].*?)\"");
+    static java.util.regex.Pattern PatternpreferredNamingURL=java.util.regex.Pattern.compile("preferredNamingURL=\"([^http]*.*?)\"");
+
+    public int getPort(HttpServletRequest req){
+	if (req.getServerPort()>443)
+		return req.getServerPort();
+	return req.getLocalPort();
+    }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, java.io.IOException {

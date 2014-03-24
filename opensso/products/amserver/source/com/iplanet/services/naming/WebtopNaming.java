@@ -725,7 +725,7 @@ public class WebtopNaming {
                 }
                 if (!sitemonitorDisabled) {
                     throw new ServerEntryNotFoundException(
-                            NamingBundle.getString("noServerID"));
+                            NamingBundle.getString("noServerID").concat(": ").concat(serverWithoutURI));
                 }
             }
             return serverID;
