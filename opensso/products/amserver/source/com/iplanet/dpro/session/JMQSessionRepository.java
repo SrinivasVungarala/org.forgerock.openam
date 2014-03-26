@@ -317,13 +317,13 @@ public class JMQSessionRepository extends GeneralTaskRunnable implements
             String key = SessionUtils.getEncryptedStorageKey(sid);
             byte[] blob = SessionUtils.encode(is);
             long expirationTime = is.getExpirationTime() + gracePeriod;
-            String uuid = caseSensitiveUUID ? is.getUUID() : is.getUUID().toLowerCase();
             if (is.getUUID()==null){
 		debug.warning("invalid UID: "+((is.sessionProperties==null)?null:is.sessionProperties.toString()));
 		return;
             }
+            String uuid = caseSensitiveUUID ? is.getUUID() : is.getUUID().toLowerCase();
             if (debug.messageEnabled()) {
-                debug.message("JMQSessionRepository.save(): " + 
+                debug.message("JMQSessionRepository.save(): " +
                     "session size=" + blob.length + " bytes");
             }   
             FAMRecord famRec = new FAMRecord (
