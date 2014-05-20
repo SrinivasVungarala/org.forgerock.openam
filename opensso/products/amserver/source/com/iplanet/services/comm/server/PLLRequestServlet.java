@@ -41,6 +41,11 @@ import com.sun.identity.shared.Constants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -127,20 +132,10 @@ public class PLLRequestServlet extends HttpServlet {
         String xml = new String(reqData, 0, length, "UTF-8");
         RequestSet set;
         try{
-		set=RequestSet.parseXML(
-			PatternpreferredNamingURL.matcher(xml)
-				.replaceFirst(
-						"preferredNamingURL=\""
-						.concat(req.getScheme()).concat("://")
-						.concat(req.getServerName())
-						.concat(":")
-						.concat(Integer.toString(getPort(req)))
-						.concat("\"") )
-			    //.replaceFirst(" ")
-			);
-        }catch(Throwable e){
-		PLLServer.pllDebug.error("xml replace [".concat(xml).concat("]: ").concat(e.getMessage()));
-		set=RequestSet.parseXML(xml);
+			set=RequestSet.parseXML(fix(xml,req));
+        }catch(Throwable e){ 
+			PLLServer.pllDebug.error("xml replace [".concat(xml).concat("]: ").concat(e.getMessage()));
+			set=RequestSet.parseXML(xml);
         }
         String svcid = set.getServiceID();
         if(!AUTH_SVC_ID.equalsIgnoreCase(svcid)) {
@@ -149,9 +144,8 @@ public class PLLRequestServlet extends HttpServlet {
             }
         }
          
-	String responseXML = handleRequest(set, req, res);
-        OutputStreamWriter out = new OutputStreamWriter(res.getOutputStream(),
-                "UTF-8");
+        String responseXML = handleRequest(set, req, res);
+        OutputStreamWriter out = new OutputStreamWriter(res.getOutputStream(),"UTF-8");
         try {
             out.write(responseXML);
             out.flush();
@@ -164,12 +158,49 @@ public class PLLRequestServlet extends HttpServlet {
             }
         }
     }
-    static java.util.regex.Pattern PatternpreferredNamingURL=java.util.regex.Pattern.compile("preferredNamingURL=\"([^http]*.*?)\"");
-
-    public int getPort(HttpServletRequest req){
-	if (req.getServerPort()>443)
-		return req.getServerPort();
-	return req.getLocalPort();
+    public static String fix(final String input,HttpServletRequest req){
+    	String res=input;
+    	if (res!=null)
+    		res=fix$preferredNamingURL(res,req);
+    	return res;
+    }
+    static java.util.regex.Pattern pattern$preferredNamingURL$value=java.util.regex.Pattern.compile(
+    		".*preferredNamingURL=\"(?<value>.*?)\".*"
+    		, Pattern.CASE_INSENSITIVE|Pattern.DOTALL|Pattern.MULTILINE
+    );
+    static java.util.regex.Pattern pattern$preferredNamingURL$replace=java.util.regex.Pattern.compile(
+    		"preferredNamingURL=\".*?<GetNamingProfile>"
+    		, Pattern.CASE_INSENSITIVE|Pattern.DOTALL|Pattern.MULTILINE
+    );
+    static String fix$preferredNamingURL(String input,HttpServletRequest req){//https://bugster.forgerock.org/jira/browse/OPENAM-3764
+    	if (input.contains("preferredNamingURL=")){
+    		//try get and check URL
+    		Matcher m=pattern$preferredNamingURL$value.matcher(input);
+    		String value=m.matches()?m.group("value"):null;
+    		if (!"".equals(value)){
+    			try{
+    				new URL(value);
+    			}catch(MalformedURLException e){
+    				String new$value=getPatternpreferredNamingURL(req);
+    				PLLServer.pllDebug.error(MessageFormat.format("preferredNamingURL: [{0}]->[{1}]",value,new$value));
+    				value=new$value;
+    			}
+    		}
+    		input=pattern$preferredNamingURL$replace.matcher(input).replaceFirst("preferredNamingURL=\"".concat(value).concat("\"><GetNamingProfile>"));
+    	}
+    	return input;
+    }
+    
+    static String getPatternpreferredNamingURL(HttpServletRequest req){
+    	if (req==null)
+    		return "";
+    	return req.getScheme().concat("://").concat(req.getServerName()).concat(":").concat(Integer.toString(getPort(req)));
+    }
+    
+    static int getPort(HttpServletRequest req){
+		if (req.getServerPort()>443)
+			return req.getServerPort();
+		return req.getLocalPort();
     }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res)
