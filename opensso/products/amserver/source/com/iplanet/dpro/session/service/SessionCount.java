@@ -304,7 +304,8 @@ public class SessionCount {
      *
      */
     static void decrementSessionCount(InternalSession is) {
-
+    	if (is==null||is.getUUID()==null)
+    		return;
         String uuid = (caseSensitiveUUID) ? is.getUUID() : is.getUUID().toLowerCase();
         SessionID sid = is.getID();
 
