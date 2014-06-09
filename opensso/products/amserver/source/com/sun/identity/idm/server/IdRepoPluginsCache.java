@@ -120,7 +120,7 @@ public class IdRepoPluginsCache implements ServiceListener {
 		                    if (sc == null) {
 		                        // Organization does not exist. Error condition
 		                        debug.error("IdRepoPluginsCache.getIdRepoPlugins " +
-		                            "Org does not exisit: " + orgName);
+		                            "Org does not exisit: " + orgName,new Throwable(orgName));
 		                        Object[] args = { orgName };
 		                        throw new IdRepoException(
 		                            IdRepoBundle.BUNDLE_NAME, "312", args);

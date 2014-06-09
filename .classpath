@@ -14,6 +14,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="opensso/products/shared/source"/>
 	<classpathentry kind="src" path="opensso/products/amserver/source"/>
+	<classpathentry kind="src" path="src/testManual"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

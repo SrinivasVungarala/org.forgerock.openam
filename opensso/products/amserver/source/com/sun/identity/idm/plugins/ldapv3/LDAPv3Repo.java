@@ -2627,7 +2627,7 @@ public class LDAPv3Repo extends IdRepo {
             resultCode = e.getLDAPResultCode();
             connPool.close(ld, resultCode);
             ld = null;
-            debug.error("LDAPGroups: invalid group name " + name);
+            debug.error("LDAPGroups: invalid group name " + dn);
             if (debug.messageEnabled()) {
                 debug.message("LDAPGroups: invalid group name " + name, e);
             }
