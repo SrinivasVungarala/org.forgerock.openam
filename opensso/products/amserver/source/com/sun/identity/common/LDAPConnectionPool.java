@@ -171,7 +171,7 @@ public class LDAPConnectionPool {
 							}
 							continue;
 						}
-						sleep(30);
+						sleep(100);
 					}catch(Throwable e){}
 			}
 		}.start();
