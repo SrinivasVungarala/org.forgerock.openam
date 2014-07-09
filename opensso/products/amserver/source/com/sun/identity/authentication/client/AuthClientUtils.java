@@ -1417,7 +1417,9 @@ public class AuthClientUtils {
             for (Iterator it = allDomains.iterator(); it.hasNext(); ) {
                 domain = (String)it.next();
                 //if (domain.indexOf(host) >= 0 || host.indexOf(domain) > 0) {
-                if (host.endsWith(domain)||".".concat(host).endsWith(domain)) 
+                if(host.equals(domain)) 
+                	domains.add(null);
+                else if (host.endsWith(domain)||".".concat(host).endsWith(domain)) 
                     domains.add(domain);
                 
             }
