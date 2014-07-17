@@ -430,7 +430,7 @@ class SSOTokenImpl implements SSOToken {
 		try {
             if (SSOProviderImpl.debug.messageEnabled()) {
                 SSOProviderImpl.debug.message("SSOTokenImpl.getProperty():" +
-                        " Calling getProperty(name)");
+                        " Calling getProperty("+name+")");
             }
             property = getPropertyInternal(name, false);
 	    } catch (SSOException e) {
