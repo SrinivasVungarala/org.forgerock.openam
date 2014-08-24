@@ -38,9 +38,12 @@ import com.sun.identity.idm.AMIdentity;
 import com.sun.identity.idm.IdUtils;
 import com.sun.identity.sm.ServiceSchema;
 import com.sun.identity.sm.ServiceSchemaManager;
+
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import org.forgerock.openam.session.service.DestroyOldestAction;
 
 /**
@@ -224,7 +227,7 @@ public class SessionConstraint {
                         + "IDRepo interfaces, => Use the default "
                         + "value from the dynamic schema instead.", e);
             }
-
+            debug.error(MessageFormat.format("{0}: {1}",is.getUUID(), e.toString()));
         }
         return quota;
     }

@@ -184,7 +184,7 @@ public class LDAPConnectionPool {
 						try{
 							sleep(idleTime);
 							for (Entry<LDAPConnection, LDAPConnectionWithTime> e : busy.entrySet())
-								if (System.currentTimeMillis()-e.getValue().time>idleTime*5){ //return leak too pool
+								if (System.currentTimeMillis()-e.getValue().time>idleTime*3){ //return leak too pool
 									logger.warn("remove busy leak {}: {} borrow {}",LDAPConnectionPool.this,e.getKey(),new Date(e.getValue().time));
 									close(e.getKey());
 								}
