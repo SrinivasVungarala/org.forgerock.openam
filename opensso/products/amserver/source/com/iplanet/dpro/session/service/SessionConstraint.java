@@ -211,10 +211,8 @@ public class SessionConstraint {
         int quota = getDefaultSessionQuota();
 
         try {
-            AMIdentity iden = IdUtils.getIdentity(SessionCount.getAdminToken(),
-                    is.getUUID());
-            Map serviceAttrs = 
-                iden.getServiceAttributesAscending(AM_SESSION_SERVICE);
+            AMIdentity iden = IdUtils.getIdentity(SessionCount.getAdminToken(),is.getUUID());
+            Map serviceAttrs = iden.getServiceAttributesAscending(AM_SESSION_SERVICE);
             Set s = (Set) serviceAttrs.get(SESSION_QUOTA_ATTR_NAME);
             Iterator attrs = s.iterator();
             if (attrs.hasNext()) {
@@ -228,7 +226,10 @@ public class SessionConstraint {
                         + "value from the dynamic schema instead.", e);
             }
             debug.error(MessageFormat.format("{0}: {1}",is.getUUID(), e.toString()));
-        }
+        } catch (Throwable e) {
+        	debug.error(MessageFormat.format("{0}: {1} {2}",is.getUUID(), e.toString(),is.sessionProperties));
+        	throw new RuntimeException(e);
+		}
         return quota;
     }
 

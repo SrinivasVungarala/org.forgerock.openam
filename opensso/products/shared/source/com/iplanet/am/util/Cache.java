@@ -34,6 +34,10 @@
  */
 package com.iplanet.am.util;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,40 +48,20 @@ import net.sf.ehcache.Element;
 public class Cache<K, V>   {
 	final static Logger logger = LoggerFactory.getLogger(Cache.class);
 	static boolean debug=logger.isDebugEnabled();
-	//static CacheManager cacheManager=new CacheManager();
 	static CacheManager cacheManager=CacheManager.getCacheManager(null);
 	String cacheName;
 	static{
 		if (cacheManager==null)
 			cacheManager=CacheManager.getInstance();
 	}
-	static Stat stat=new Stat();
-	static class Stat extends Thread{
-
-		public Stat() {
-			super(Cache.class.getName()+"-stat");
-			setPriority(MIN_PRIORITY);
-			start();
-		}
-
-		@Override
+	
+	static ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+	protected class Cleaner implements Runnable{
 		public void run() {
-			super.run();
-				while (true){
-					try{
-						for (String name : cacheManager.getCacheNames()) {
-							sleep(10*60*1000);
-							net.sf.ehcache.Cache cache=cacheManager.getCache(name);
-							if (cache!=null){
-								logger.info("stat: {}",new Object[]{cache.getStatistics()});
-								cache.evictExpiredElements();
-							}
-						}
-						//sleep(60*60*1000);
-					}catch (Exception e) {
-						logger.error("statistic",e);
-					}
-				}
+			if (cache!=null){
+				logger.info("stat: {}",new Object[]{cache.getStatistics()});
+				cache.evictExpiredElements();
+			}
 		}
 	}
 
@@ -94,18 +78,18 @@ public class Cache<K, V>   {
 			synchronized (cacheName) {
 				cache=cacheManager.getEhcache(cacheName);
 				if (cache==null){
-				try{
-					cacheManager.addCache(cacheName);
-				}catch(net.sf.ehcache.ObjectExistsException e){
-
-				}
-				cache=cacheManager.getEhcache(cacheName);
-				logger.warn("not found ({})",cache);
-			}else if (cache.getKeysNoDuplicateCheck().size()>0)
-				logger.warn("re-found ({}) with {} values {}",new Object[]{cache,cache.getKeysNoDuplicateCheck().size()});
-			else
-				logger.info("found ({})",cache);
+					try{
+						cacheManager.addCache(cacheName);
+					}catch(net.sf.ehcache.ObjectExistsException e){}
+					cache=cacheManager.getEhcache(cacheName);
+					logger.warn("not found ({})",cache);
+				}else
+					logger.info("found ({})",cache);
 			}
+		Long period=Math.max(cache.getCacheConfiguration().getTimeToIdleSeconds(), cache.getCacheConfiguration().getTimeToIdleSeconds());
+		period=Math.min(3*60*60, period); //maximum clean interval
+		period=Math.max(20*60, period); //minimum clean interval
+		exec.scheduleWithFixedDelay(new Cleaner(), 2*period, period, TimeUnit.SECONDS);
     }
 
 	public Cache(String name,int maxEntriesInMemory) {
@@ -115,29 +99,29 @@ public class Cache<K, V>   {
 
     @SuppressWarnings("unchecked")
 	public V get(K key) {
-	Element e=cache.get(key);
-	if (debug)
-		logger.debug("get [{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
-	return (e==null||e.isExpired())?null:(V)e.getObjectValue();
+    	Element e=cache.get(key);
+		if (debug)
+			logger.debug("get [{}] [{}]=[{}]",new Object[]{cacheName,key,(e==null)?null:(V)e.getObjectValue()});
+		return (e==null||e.isExpired())?null:(V)e.getObjectValue();
     }
 
     public void put(K key, V value) {
-	if (debug)
-		logger.debug("put [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
-	cache.put(new Element(key, value));
+		if (debug)
+			logger.debug("put [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
+		cache.put(new Element(key, value));
     }
 
     public void remove(K key) {
-	V value=get(key);
-	if (value!=null){
-		cache.remove(key);
-		if (debug)
-			logger.debug("remove [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
-	}
+		V value=get(key);
+		if (value!=null){
+			cache.remove(key);
+			if (debug)
+				logger.debug("remove [{}] [{}]=[{}]",new Object[]{cacheName,key,value});
+		}
     }
 
     public void clear() {
-	cache.removeAll();
+    	cache.removeAll();
     }
 
     public Ehcache get() {
@@ -145,15 +129,13 @@ public class Cache<K, V>   {
 	}
 
     public void removeCache(){
-//    	if (cacheManager.getCache(cacheName)!=null){
-//    		logger.info("remove ({})",cacheName);
-//    		cacheManager.removeCache(cacheName);
-//    	}
+    	clear();
+    	cache=null;
     }
 
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
-		//removeCache();
+		removeCache();
 	}
 }
