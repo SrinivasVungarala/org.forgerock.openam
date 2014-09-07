@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -130,7 +131,8 @@ public class LDAPConnectionPool {
 	}
 
 	volatile Boolean stop=false;
-	ArrayBlockingQueue<LDAPConnectionWithTime> pool = null;
+	LinkedBlockingDeque<LDAPConnectionWithTime> pool = null;
+	
 	ConcurrentHashMap<LDAPConnection, LDAPConnectionWithTime> busy = null;
 	private LDAPConnectionPool(String name, int min, int max, String host, int port, String authdn, String authpw, LDAPConnection ldc, int idleTimeInSecs,@SuppressWarnings("rawtypes") HashMap connOptions) throws LDAPException {
 		this.name = name;
@@ -152,7 +154,7 @@ public class LDAPConnectionPool {
 			logger.error("init pool:" + name + ":ConnectionPoolMax is invalid, set to " + minSize);
 			maxSize = minSize;
 		}
-		pool = new ArrayBlockingQueue<LDAPConnectionWithTime>(maxSize);
+		pool = new LinkedBlockingDeque<LDAPConnectionWithTime>(maxSize);
 		busy = new ConcurrentHashMap<LDAPConnection, LDAPConnectionWithTime>(maxSize);
 		if (ldc!=null && ldc.isConnected())
 			pool.add(new LDAPConnectionWithTime(ldc));
@@ -283,7 +285,8 @@ public class LDAPConnectionPool {
 		LDAPConnectionWithTime ldc=busy.remove(ld);
 		if (ldc!=null&&ldc.con.isConnected()) {
 			ldc.time=System.currentTimeMillis();
-			pool.add(ldc);
+			//pool.add(ldc);
+			pool.addFirst(ldc);
 			if (logger.isDebugEnabled())
 				logger.debug("close {}ms {} with return: {} ",System.currentTimeMillis() - ldc.time,this,ld);
 		}else
