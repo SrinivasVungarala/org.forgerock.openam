@@ -36,6 +36,7 @@ package com.sun.identity.idm.server;
 
 import com.iplanet.am.sdk.remote.*;
 import com.iplanet.am.util.SystemProperties;
+
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.iplanet.services.comm.server.PLLServer;
 import com.iplanet.services.comm.server.SendNotificationException;
@@ -677,10 +679,11 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
         long cacheIndex = System.currentTimeMillis() / 60000;
         for (int i = 0; i < time + 3; i++) {
             Set modDNs = (Set)idrepoCache.get(Long.toString(cacheIndex));
-            //synchronized(this){
-           	 if (modDNs != null)
-                	answer.addAll(modDNs);
-            //}
+            if (modDNs != null)
+	            synchronized(modDNs){
+	           	 if (modDNs != null)
+	                answer.addAll(modDNs);
+	            }
             cacheIndex--;
         }
         if (idRepoDebug.messageEnabled()) {
@@ -789,7 +792,8 @@ public abstract class IdRepoJAXRPCObjectImpl implements DirectoryManagerIF {
             String cacheIndex = Long.toString(currentTime);
             Set modDNs = (Set)idrepoCache.get(cacheIndex);
             if (modDNs == null) {
-                modDNs = new HashSet();
+                //modDNs = new HashSet();
+            	modDNs = new ConcurrentSkipListSet();
                 idrepoCache.put(cacheIndex, modDNs);
                 // Maintain cacheIndex
                 idrepoCacheIndices.add(cacheIndex);
