@@ -34,6 +34,7 @@
  */
 package com.iplanet.am.util;
 
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +90,7 @@ public class Cache<K, V>   {
 		Long period=Math.max(cache.getCacheConfiguration().getTimeToIdleSeconds(), cache.getCacheConfiguration().getTimeToIdleSeconds());
 		period=Math.min(3*60*60, period); //maximum clean interval
 		period=Math.max(20*60, period); //minimum clean interval
-		exec.scheduleWithFixedDelay(new Cleaner(), 2*period, period, TimeUnit.SECONDS);
+		exec.scheduleWithFixedDelay(new Cleaner(),new Random().nextLong() * (period*2-period) + period/2, period, TimeUnit.SECONDS);
     }
 
 	public Cache(String name,int maxEntriesInMemory) {
