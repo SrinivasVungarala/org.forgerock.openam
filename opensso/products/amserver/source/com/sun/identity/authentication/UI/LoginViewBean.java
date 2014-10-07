@@ -68,12 +68,17 @@ import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.encode.Base64;
 import com.sun.identity.shared.locale.L10NMessage;
 import com.sun.identity.shared.locale.L10NMessageImpl;
+
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.ChoiceCallback;
 import javax.security.auth.callback.ConfirmationCallback;
@@ -1190,12 +1195,46 @@ public class LoginViewBean extends AuthViewBeanBase {
                         + ", serviceuri=" + serviceUri);
                 }
                 // prepend deployment URI
-                response.sendRedirect(serviceUri + rUrl); 
-            } else {
-                response.sendRedirect(rUrl);
-            }
+                //response.sendRedirect(serviceUri + rUrl); 
+                processRedirect(response,rc,serviceUri + rUrl);
+            } else 
+                //response.sendRedirect(rUrl);
+            	processRedirect(response,rc,rUrl);
         }
     } 
+    
+    void processRedirect(HttpServletResponse response,RedirectCallback cb,String url) throws IOException{
+    	if ("POST".equalsIgnoreCase(cb.getMethod())){
+    		response.setHeader("Cache-Control","no-cache,no-store");
+    		response.setHeader("Pragma","no-cache");
+    		response.setDateHeader("Expires", -1);
+    		response.setContentType("text/html;charset=UTF-8");
+    		PrintWriter out = response.getWriter();
+		    out.println("<html><head><title>Wait for redirect</title></head>");
+		    out.println("<body onload=\"document.getElementById('form').submit()\">");
+		    out.println("<form id=\"form\" action=\""+cb.getRedirectUrl()+"\" method=\"post\">");
+		    if (cb.getRedirectData()!=null)
+			    for (String name : (Set<String>)cb.getRedirectData().keySet()) 
+			    	out.println("<input type=\"hidden\" name=\""+escapeHTML(name)+"\" value=\""+escapeHTML((String)cb.getRedirectData().get(name))+"\" />");
+			out.println("</form></body></html>");
+    	}else
+    		 response.sendRedirect(url);
+    }
+    
+    public String escapeHTML(String s) {
+        StringBuilder out = new StringBuilder(Math.max(16, s.length()));
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c > 127 || c == '"' || c == '<' || c == '>' || c == '&') {
+                out.append("&#");
+                out.append((int) c);
+                out.append(';');
+            } else {
+                out.append(c);
+            }
+        }
+        return out.toString();
+    }
     
     protected void processLoginDisplay() throws Exception {
         loginDebug.message("In processLoginDisplay()");
