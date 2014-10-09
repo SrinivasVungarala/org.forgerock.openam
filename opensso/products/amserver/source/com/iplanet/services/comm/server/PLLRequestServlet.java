@@ -145,6 +145,8 @@ public class PLLRequestServlet extends HttpServlet {
         }
          
         String responseXML = handleRequest(set, req, res);
+        if (PLLServer.pllDebug.messageEnabled())
+        	 PLLServer.pllDebug.message(xml+"\n"+responseXML);
         OutputStreamWriter out = new OutputStreamWriter(res.getOutputStream(),"UTF-8");
         try {
             out.write(responseXML);
