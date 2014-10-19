@@ -39,24 +39,24 @@
 	<dependencies>
 		<!-- forgerock dependency -->
 		<dependency>
-			<groupId>com.forgerock.openam</groupId>
+			<groupId>org.forgerock.openam</groupId>
 			<artifactId>amserver</artifactId>
-			<version>${openam.version}</version>
+			<version>10.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.forgerock.openam</groupId>
+			<groupId>org.forgerock.openam</groupId>
 			<artifactId>sharedlib</artifactId>
-			<version>${openam.version}</version>
+			<version>10.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.forgerock.openam</groupId>
+			<groupId>org.forgerock.openam</groupId>
 			<artifactId>fedlib</artifactId>
-			<version>${openam.version}</version>
+			<version>10.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.forgerock.openam</groupId>
+			<groupId>org.forgerock.openam</groupId>
 			<artifactId>clientsdk</artifactId>
-			<version>${openam.version}</version>
+			<version>10.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- other dependency -->
@@ -119,16 +119,16 @@
 					<!-- <skipChecksumVerification>false</skipChecksumVerification> -->
 					<install>true</install>
 					<artifactItems>
-						<artifactItem>
-							<groupId>com.forgerock.openam</groupId>
-							<artifactId>openssowssproviders</artifactId>
-							<version>nightly</version>
-							<packaging>jar</packaging>
-							<downloadUrl>
-								http://download.forgerock.org/downloads/openam/wssagents/10.0.0/{artifactId}_10.0.0.zip
-							</downloadUrl>
-							<extractFile>lib/openssowssproviders.jar</extractFile>
-						</artifactItem>
+<!-- 						<artifactItem> -->
+<!-- 							<groupId>com.forgerock.openam</groupId> -->
+<!-- 							<artifactId>openssowssproviders</artifactId> -->
+<!-- 							<version>nightly</version> -->
+<!-- 							<packaging>jar</packaging> -->
+<!-- 							<downloadUrl> -->
+<!-- 								http://download.forgerock.org/downloads/openam/wssagents/10.0.0/{artifactId}_10.0.0.zip -->
+<!-- 							</downloadUrl> -->
+<!-- 							<extractFile>lib/openssowssproviders.jar</extractFile> -->
+<!-- 						</artifactItem> -->
 						<artifactItem>
 							<groupId>com.forgerock.openam</groupId>
 							<artifactId>openam</artifactId>
@@ -174,15 +174,15 @@
 								http://download.forgerock.org/downloads/openam/wssagents/{version}/{artifactId}.{packaging}
 							</downloadUrl>
 						</artifactItem>
-						<artifactItem>
-							<groupId>com.forgerock.openam</groupId>
-							<artifactId>openssowssproviders</artifactId>
-							<version>nightly</version>
-							<packaging>zip</packaging>
-							<downloadUrl>
-								http://download.forgerock.org/downloads/openam/wssagents/{version}/{artifactId}.{packaging}
-							</downloadUrl>
-						</artifactItem>
+<!-- 						<artifactItem> -->
+<!-- 							<groupId>com.forgerock.openam</groupId> -->
+<!-- 							<artifactId>openssowssproviders</artifactId> -->
+<!-- 							<version>nightly</version> -->
+<!-- 							<packaging>zip</packaging> -->
+<!-- 							<downloadUrl> -->
+<!-- 								http://download.forgerock.org/downloads/openam/wssagents/{version}/{artifactId}.{packaging} -->
+<!-- 							</downloadUrl> -->
+<!-- 						</artifactItem> -->
 						<artifactItem>
 							<groupId>com.forgerock.openam</groupId>
 							<artifactId>openssoclientsdk</artifactId>
@@ -258,13 +258,13 @@
 									<type>zip</type>
 									<outputDirectory>target/openssowssagents</outputDirectory>
 								</artifactItem>
-								<artifactItem>
-									<groupId>com.forgerock.openam</groupId>
-									<artifactId>openssowssproviders</artifactId>
-									<version>nightly</version>
-									<type>zip</type>
-									<outputDirectory>target/openssowssproviders</outputDirectory>
-								</artifactItem>
+<!-- 								<artifactItem> -->
+<!-- 									<groupId>com.forgerock.openam</groupId> -->
+<!-- 									<artifactId>openssowssproviders</artifactId> -->
+<!-- 									<version>nightly</version> -->
+<!-- 									<type>zip</type> -->
+<!-- 									<outputDirectory>target/openssowssproviders</outputDirectory> -->
+<!-- 								</artifactItem> -->
 								<artifactItem>
 									<groupId>com.forgerock.openam</groupId>
 									<artifactId>extlib</artifactId>
@@ -471,21 +471,21 @@
 							<generatePom>true</generatePom>
 						</configuration>
 					</execution>
-<!-- 					<execution> -->
-<!-- 						<id>openssowssproviders</id> -->
-<!-- 						<phase>install</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>install-file</goal> -->
-<!-- 						</goals> -->
-<!-- 						<configuration> -->
-<!-- 							<file>target/openssowssproviders/lib/openssowssproviders.jar</file> -->
-<!-- 							<groupId>com.forgerock.openam</groupId> -->
-<!-- 							<artifactId>openssowssproviders</artifactId> -->
-<!-- 							<version>nightly</version> -->
-<!-- 							<packaging>jar</packaging> -->
-<!-- 							<generatePom>true</generatePom> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
+					<execution>
+						<id>openssowssproviders</id>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>opensso/products/wssagents/built/dist/openssowssproviders.jar</file>
+							<groupId>org.forgerock.openam</groupId>
+							<artifactId>openssowssproviders</artifactId>
+							<version>nightly</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -523,6 +523,18 @@
 							<target>
 								<ant dir="opensso/products" target="server-nightly" >
 								</ant>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jar</id>
+						<phase>initialize</phase>
+						<configuration>
+							<target>
+								<ant dir="opensso/products/wssagents" target="jars" />
 							</target>
 						</configuration>
 						<goals>
