@@ -531,7 +531,7 @@
 					</execution>
 					<execution>
 						<id>jar</id>
-						<phase>initialize</phase>
+						<phase>process-classes</phase>
 						<configuration>
 							<target>
 								<ant dir="opensso/products/wssagents" target="jars" />
