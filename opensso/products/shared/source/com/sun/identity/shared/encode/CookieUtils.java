@@ -373,25 +373,25 @@ public class CookieUtils {
         sb.append(cookie.getName()).append("=").append(cookie.getValue());
         String path = cookie.getPath();
         if (path != null && path.length() > 0) {
-            sb.append(";path=").append(path);
+            sb.append("; path=").append(path);
         } else {
-            sb.append(";path=/");
+            sb.append("; path=/");
         }
         String domain = cookie.getDomain();
         if (domain != null && domain.length() > 0) {
-            sb.append(";domain=").append(domain);
+            sb.append("; domain=").append(domain);
         }
         int age = cookie.getMaxAge();
         if (age > -1) {
-            sb.append(";max-age=").append(age);
+            sb.append("; max-age=").append(age);
         }
         if (CookieUtils.isCookieSecure()) {
-            sb.append(";secure");
+            sb.append("; secure");
         }
-        sb.append(";httponly");
+        sb.append("; HttpOnly");
         if (debug.messageEnabled()) {
             debug.message("CookieUtils:addCookieToResponse adds " + sb);
         }
-        response.addHeader("SET-COOKIE", sb.toString());
+        response.addHeader("Set-Cookie", sb.toString());
     }
 }
