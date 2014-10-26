@@ -369,7 +369,7 @@ public class CookieUtils {
 
         // Once JavaEE6 is available, the following code can be simplified
         // to be one line response.addCookie(cookie)
-        StringBuffer sb = new StringBuffer(150);
+        StringBuffer sb = new StringBuffer(250);
         sb.append(cookie.getName()).append("=").append(cookie.getValue());
         String path = cookie.getPath();
         if (path != null && path.length() > 0) {
