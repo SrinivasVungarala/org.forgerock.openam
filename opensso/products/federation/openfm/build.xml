@@ -61,7 +61,7 @@
         <fileset dir="${openfm.extlib.dir}">
             <include name="**/*.jar"/>
         </fileset>
-        <fileset dir="${library.extlib.dir}">
+        <fileset dir="${library.extlib.dir}" erroronmissingdir="false">
             <include name="**/*.jar"/>
         </fileset>
         <fileset dir="${jatolib.dir}">

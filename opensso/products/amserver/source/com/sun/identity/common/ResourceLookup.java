@@ -94,25 +94,20 @@ public class ResourceLookup {
         //}
 
         if (resourceNameCacheNotExists.get(cacheKey)!=null)
-		return null;
+        	return null;
 
         URL resourceUrl = null;
 
         // calls FileLookup to get the file paths to locate file
         try {
-            File[] orderedPaths = FileLookup.getOrderedPaths(fileRoot, locale,
-                    null, orgFilePath, clientPath, filename);
+            File[] orderedPaths = FileLookup.getOrderedPaths(fileRoot, locale,null, orgFilePath, clientPath, filename);
 
             for (int i = 0; i < orderedPaths.length; i++) {
-                resourceName = resourceDir + Constants.FILE_SEPARATOR +
-                    orderedPaths[i].toString();
+                resourceName = resourceDir + Constants.FILE_SEPARATOR +orderedPaths[i].toString();
                 resourceName = resourceName.replaceAll("\\\\", "/");
-                if ((resourceUrl = getResourceURL(context, resourceName))
-                        != null)
-                {
+                if ((resourceUrl = getResourceURL(context, resourceName))!= null)
                     break;
-                }
-            }
+            }            
         } catch (FileLookupException fe) {
             debug.message("ResourceLookup.getFirstExisting :", fe);
         } catch (Exception e) {
@@ -139,19 +134,23 @@ public class ResourceLookup {
     }
 
     /* returns the resourceURL for the resource name for the request */
-
-    private static URL getResourceURL(ServletContext context,
-            String resourceName) {
-        URL resourceURL = null;
+    static URL nullURL;
+    static{
+    	try{
+    		nullURL=new URL("http://null");
+    	}catch(Throwable e){}
+    }
+    final private static Cache<String, URL> resourceURLCache=new Cache<String, URL>(ResourceLookup.class.getName()+".URL", 8192);
+    private static URL getResourceURL(ServletContext context,String resourceName) {
+        URL resourceURL = resourceURLCache.get(resourceName);
+        if (resourceURL!=null)
+        	return nullURL.equals(resourceURL)?null:resourceURL;
         try {
-        	if (context != null) {
-            resourceURL = context.getResource(resourceName);
-        	}
-            if (resourceURL == null) {
-                resourceURL = Thread.currentThread().getContextClassLoader()
-                    .getResource(resourceName.substring(1));
-                // remove leading '/' from resourceName
-            }
+        	if (context != null) 
+        		resourceURL = context.getResource(resourceName);
+        	if (resourceURL == null) 
+                resourceURL = Thread.currentThread().getContextClassLoader().getResource(resourceName.substring(1));
+        	resourceURLCache.put(resourceName, resourceURL==null?nullURL:resourceURL);
         } catch (Exception e) {
             debug.message("Error getting resource  : " + e.getMessage());
         }
