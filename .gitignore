@@ -1,3 +1,6 @@
 /target
 built
 extlib
+/.settings/
+/.classpath
+/.project
