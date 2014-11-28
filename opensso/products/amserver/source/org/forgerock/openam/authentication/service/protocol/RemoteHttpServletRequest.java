@@ -32,7 +32,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Vector;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -55,9 +58,9 @@ public class RemoteHttpServletRequest extends RemoteServletRequest
     // normal cookies are not serialized.
     private transient Cookie[] cookies = null;
     private RemoteCookie[] internalCookies = null;
-    private Set headerNames = new HashSet();
-    private Map internalHeader = new HashMap();
-    private Map internalHeaders = new HashMap();
+    private Set headerNames = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private Map internalHeader = new TreeMap(String.CASE_INSENSITIVE_ORDER);
+    private Map internalHeaders = new TreeMap(String.CASE_INSENSITIVE_ORDER);
     private String method = null;
     private String pathInfo = null;
     private String pathTranslated = null;
