@@ -87,10 +87,10 @@ public class Cache<K, V>   {
 				}else
 					logger.info("found ({})",cache);
 			}
-		Long period=Math.max(cache.getCacheConfiguration().getTimeToIdleSeconds(), cache.getCacheConfiguration().getTimeToIdleSeconds());
-		period=Math.min(3*60*60, period); //maximum clean interval
-		period=Math.max(20*60, period); //minimum clean interval
-		exec.scheduleWithFixedDelay(new Cleaner(),new Random().nextLong() * (period*2-period) + period/2, period, TimeUnit.SECONDS);
+		Long period=Math.max(cache.getCacheConfiguration().getTimeToIdleSeconds(), cache.getCacheConfiguration().getTimeToLiveSeconds());
+		period=Math.min(1*60*60, period); //maximum clean interval
+		period=Math.max(30*60, period); //minimum clean interval
+		exec.scheduleWithFixedDelay(new Cleaner(),60+period, period, TimeUnit.SECONDS);
     }
 
 	public Cache(String name,int maxEntriesInMemory) {
