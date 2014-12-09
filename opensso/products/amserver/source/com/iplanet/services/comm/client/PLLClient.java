@@ -213,7 +213,8 @@ public class PLLClient {
             if (cookieTable != null) {
                 parseCookies(headers, cookieTable);
             }
-
+            if (debug.messageEnabled()) 
+                debug.message(url.toString() + "\r\n"+xml+ "\r\n"+in_string);
             ResponseSet resset = ResponseSet.parseXML(in_string);
             return resset.getResponses();
         } catch (Exception e) {
