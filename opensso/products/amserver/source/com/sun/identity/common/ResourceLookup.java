@@ -47,8 +47,8 @@ import javax.servlet.ServletContext;
 
 public class ResourceLookup {
 
-    final private static java.util.concurrent.ConcurrentHashMap<String,String> resourceNameCache = new java.util.concurrent.ConcurrentHashMap<String,String>(1024);
-	final private static Cache<String, Boolean> resourceNameCacheNotExists=new Cache<String, Boolean>(ResourceLookup.class.getName()+".NotExists", 1024);
+    final private static java.util.concurrent.ConcurrentHashMap<String,String> resourceNameCache = new java.util.concurrent.ConcurrentHashMap<String,String>();
+	final private static Cache<String, Boolean> resourceNameCacheNotExists=new Cache<String, Boolean>(ResourceLookup.class.getName()+".NotExists");
 
     private static Debug debug = Debug.getInstance("amResourceLookup");
 
@@ -134,23 +134,24 @@ public class ResourceLookup {
     }
 
     /* returns the resourceURL for the resource name for the request */
-    static URL nullURL;
-    static{
-    	try{
-    		nullURL=new URL("http://null");
-    	}catch(Throwable e){}
-    }
-    final private static Cache<String, URL> resourceURLCache=new Cache<String, URL>(ResourceLookup.class.getName()+".URL", 8192);
+    static Boolean nBool=true;
+    final private static java.util.concurrent.ConcurrentHashMap<String,URL> resourceURLCache = new java.util.concurrent.ConcurrentHashMap<String,URL>();
+    final private static Cache<String, Boolean> resourceURLCacheNotExists=new Cache<String, Boolean>(ResourceLookup.class.getName()+".URL.NotExists");
     private static URL getResourceURL(ServletContext context,String resourceName) {
         URL resourceURL = resourceURLCache.get(resourceName);
         if (resourceURL!=null)
-        	return nullURL.equals(resourceURL)?null:resourceURL;
+        	return resourceURL;
+        if (resourceURLCacheNotExists.get(resourceName)!=null)
+        	return null;
         try {
         	if (context != null) 
         		resourceURL = context.getResource(resourceName);
         	if (resourceURL == null) 
                 resourceURL = Thread.currentThread().getContextClassLoader().getResource(resourceName.substring(1));
-        	resourceURLCache.put(resourceName, resourceURL==null?nullURL:resourceURL);
+        	if (resourceURL!=null)
+            	resourceURLCache.put(resourceName,resourceURL);
+        	else
+        		resourceURLCacheNotExists.put(resourceName,nBool);
         } catch (Exception e) {
             debug.message("Error getting resource  : " + e.getMessage());
         }
