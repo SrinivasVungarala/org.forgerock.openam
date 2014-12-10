@@ -76,8 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -182,7 +180,7 @@ public class Session extends GeneralTaskRunnable {
      * All session related properties are stored as key-value pair in this
      * table.
      */
-    private ConcurrentMap<String, String> sessionProperties = new ConcurrentSkipListMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    private ConcurrentHashMap<String, String> sessionProperties = new ConcurrentHashMap<String, String>(20);
 
     /**
      * URL of the Session Server, where this session resides.

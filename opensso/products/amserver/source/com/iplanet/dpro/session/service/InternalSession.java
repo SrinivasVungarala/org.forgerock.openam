@@ -66,8 +66,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -118,7 +116,7 @@ public class InternalSession implements TaskRunnable, Serializable {
 
     /** session properties LoginURL,Timeout, Host */
     //private Properties sessionProperties;
-    public ConcurrentMap<String, String> sessionProperties;
+    public ConcurrentHashMap<String, String> sessionProperties;
 
     /** Flag indicates for session to expire at max timeout */
     private boolean willExpireFlag;
@@ -355,7 +353,7 @@ public class InternalSession implements TaskRunnable, Serializable {
         sessionState = Session.INVALID;
         timerPool = SystemTimerPool.getTimerPool();
         //sessionProperties = new Properties();
-        sessionProperties = new ConcurrentSkipListMap<String, String>(String.CASE_INSENSITIVE_ORDER);//new ConcurrentHashMap<String, String>(16);
+        sessionProperties = new ConcurrentHashMap<String, String>(16);
         willExpireFlag = true;
     }
 
@@ -1579,7 +1577,7 @@ public class InternalSession implements TaskRunnable, Serializable {
         cookieStr = null;
         // Clean Session Properties
         //Properties newProperties = new Properties();
-        ConcurrentMap<String, String> newProperties =  new ConcurrentSkipListMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        ConcurrentHashMap<String, String> newProperties = new ConcurrentHashMap<String, String>();
         String loginURL = getProperty(LOGIN_URL);
         String sessionTimedOut = getProperty(SESSION_TIMED_OUT);
         String  idpSessionIndex = getProperty(SAML2_IDP_SESSION_INDEX);

@@ -36,10 +36,7 @@ package com.iplanet.dpro.session.share;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.sun.identity.shared.xml.XMLUtils;
 
@@ -80,7 +77,7 @@ public class SessionInfo {
     /** <code>Session</code> state */
      public String state;
 
-    public ConcurrentMap<String, String> properties =  new ConcurrentSkipListMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+    public ConcurrentHashMap<String, String> properties = new ConcurrentHashMap<String, String>(16);
 
     static final String QUOTE = "\"";
 
@@ -117,11 +114,10 @@ public class SessionInfo {
                         NL);
 
         if (properties != null) {
-            //Enumeration enumerator = properties.keys();
-            //while (enumerator.hasMoreElements()) {
-        	for (Entry<String, String> iterable_element : properties.entrySet()) {
-			    String name = (String) iterable_element.getKey();
-                String value = (String) iterable_element.getValue();
+            Enumeration enumerator = properties.keys();
+            while (enumerator.hasMoreElements()) {
+                String name = (String) enumerator.nextElement();
+                String value = (String) properties.get(name);
                 xml.append("<Property name=").append(QUOTE).append(
                         XMLUtils.escapeSpecialCharacters(name)).append(QUOTE)
                         .append(" value=").append(QUOTE).append(
