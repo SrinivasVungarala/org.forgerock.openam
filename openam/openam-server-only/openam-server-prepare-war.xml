@@ -189,8 +189,8 @@
         </copy>
 
         <!-- Align the Console Definitions for WAR Inclusion. -->
-        <copy todir="${project.build.directory}/classes/" overwrite="false">
-            <fileset dir="${server.resources}/com/sun/identity/console">
+        <copy todir="${project.build.directory}/classes" overwrite="false">
+            <fileset dir="${server.resources}/console">
                 <include name="*.properties"/>
             </fileset>
         </copy>
