@@ -122,6 +122,28 @@ public class ResourceLookup {
 
         return resourceName;
     }
+    
+    /**
+     * Returns the first existing resource in the ordered search paths.
+     * 
+     * @param context Servlet Context Reference.
+     * @param fileRoot
+     * @param locale
+     * @param orgFilePath
+     * @param clientPath
+     * @param filename
+     * @param resourceDir absolute path of template base directory
+     * @param flag added gor backward compartibility
+     * @return <code>String</code> first existing resource in the ordered
+     *         search paths.
+     */
+  
+    public static String getFirstExisting(ServletContext context,
+            String fileRoot, String locale, String orgFilePath,
+            String clientPath, String filename, String resourceDir, boolean flag) {
+    	
+    	return getFirstExisting(context, fileRoot, locale, orgFilePath, clientPath, filename, resourceDir);
+    }
 
     /* returns the resourceURL for the resource name for the request */
     private static URL getResourceURL(ServletContext context, String resourceName) {
