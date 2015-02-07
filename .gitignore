@@ -1,0 +1,9 @@
+*.log
+target
+/RemoteSystems*
+.metadata
+*.log
+.project
+.settings
+.classpath
+.git.properties
