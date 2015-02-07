@@ -11,7 +11,11 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
+ */
+
+/*
+ * Portions Copyrighted 2015 Nomura Research Institute, Ltd.
  */
 
 package org.forgerock.openam.oauth2;
@@ -168,7 +172,7 @@ public class OpenAMTokenStore implements OpenIdConnectTokenStore {
 
         final long currentTimeInSeconds = System.currentTimeMillis() / 1000;
         final long tokenLifetimeInSeconds = providerSettings.getOpenIdTokenLifetime();
-        final long exp = (currentTimeInSeconds + tokenLifetimeInSeconds) * 1000;
+        final long exp = currentTimeInSeconds + tokenLifetimeInSeconds;
 
         final String realm = realmNormaliser.normalise(request.<String>getParameter(REALM));
 
@@ -194,7 +198,7 @@ public class OpenAMTokenStore implements OpenIdConnectTokenStore {
         try {
             tokenStore.create(json(object(
                     field(OAuth2Constants.CoreTokenParams.ID, set(opsId)),
-                    field(OAuth2Constants.JWTTokenParams.OPS, set(ops)),
+                    field(OAuth2Constants.JWTTokenParams.LEGACY_OPS, set(ops)),
                     field(OAuth2Constants.CoreTokenParams.EXPIRE_TIME, set(Long.toString(exp))))));
         } catch (CoreTokenException e) {
             logger.error("Unable to create id_token user session token", e);

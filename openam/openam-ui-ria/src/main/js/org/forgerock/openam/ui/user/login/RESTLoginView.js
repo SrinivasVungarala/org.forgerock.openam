@@ -36,8 +36,10 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
     "org/forgerock/commons/ui/common/util/CookieHelper",
     "org/forgerock/commons/ui/common/util/UIUtils",
     "org/forgerock/commons/ui/common/main/i18nManager",
-    "org/forgerock/openam/ui/user/login/RESTLoginHelper"
-], function(AbstractView, authNDelegate, validatorsManager, eventManager, constants, conf, sessionManager, router, cookieHelper, uiUtils, i18nManager, restLoginHelper, spinnerManager) {
+    "org/forgerock/openam/ui/user/login/RESTLoginHelper",
+    "org/forgerock/commons/ui/common/components/Messages",
+    'org/forgerock/openam/ui/common/util/RealmHelper'
+], function(AbstractView, authNDelegate, validatorsManager, eventManager, constants, conf, sessionManager, router, cookieHelper, uiUtils, i18nManager, restLoginHelper, messageManager, RealmHelper) {
 
     var LoginView = AbstractView.extend({
         template: "templates/openam/RESTLoginTemplate.html",
@@ -53,7 +55,7 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
         },
         selfServiceClick: function(e) {
             e.preventDefault();
-            //save the login params in a cookie for use with the cancel button on forgotPassword/register page 
+            //save the login params in a cookie for use with the cancel button on forgotPassword/register page
             //and also the "proceed to login" link once password has been successfully changed or registration is complete
             var expire = new Date(),
                 cookieVal = conf.globalData.auth.realm;
@@ -119,19 +121,12 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
                 promise = $.Deferred();
 
             if (args && args.length) {
-                conf.globalData.auth.realm = args[0];
+                conf.globalData.auth.realm = RealmHelper.getRealm();
                 conf.globalData.auth.additional = args[1]; // may be "undefined"
                 conf.globalData.auth.urlParams = urlParams;
 
                 if(args[1]){
                     urlParams = this.handleUrlParams();
-                }
-
-                if(urlParams.realm && args[0] === "/"){
-                    if(urlParams.realm.substring(0,1) !== "/"){
-                        urlParams.realm = "/" + urlParams.realm;
-                    }
-                    conf.globalData.auth.realm = urlParams.realm;
                 }
 
                 //if there are IDTokens try to login with the provided credentials
@@ -177,7 +172,7 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
                                     }
                                 });
                             }
-                            else{ 
+                            else{
                                 location.href = "#confirmLogin/";
                             }
                         },function(){
@@ -189,13 +184,19 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
                     } else { // we aren't logged in yet, so render a form...
                         this.renderForm(reqs, urlParams);
                         promise.resolve();
-                        
+
                     }
                 }, this))
-                .fail(_.bind(function () {
+                .fail(_.bind(function (error) {
                     // If we can't render a login form, then the user must not be able to login
                     this.template = this.unavailableTemplate;
-                    this.parentRender();
+                    this.parentRender( function () {
+                        if (error) {
+                            messageManager.messages.addMessage(error);
+                        }
+
+                    });
+
                 }, this));
 
             promise
@@ -408,5 +409,3 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
 
     return new LoginView();
 });
-
-

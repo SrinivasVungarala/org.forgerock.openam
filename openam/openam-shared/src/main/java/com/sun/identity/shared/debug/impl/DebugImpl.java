@@ -27,7 +27,7 @@
  */
 
 /**
- * Portions Copyrighted 2014 ForgeRock AS
+ * Portions Copyrighted 2014-2015 ForgeRock AS.
  */
 package com.sun.identity.shared.debug.impl;
 
@@ -57,6 +57,8 @@ public class DebugImpl implements IDebug {
         initProperties();
     }
 
+    private final static int DIR_ISSUE_ERROR_INTERVAL_IN_MS = 60 * 1000;
+    private long lastDirectoryIssue = 0l;
     private final String debugName;
     private boolean mergeAllMode = false;
 
@@ -71,12 +73,13 @@ public class DebugImpl implements IDebug {
     /**
      * Creates an instance of <code>DebugImpl</code>.
      *
-     * @param debugName Name of the debug.
+     * @param debugName         Name of the debug.
+     * @param debugFileProvider A debug file provider
      */
     public DebugImpl(String debugName, DebugFileProvider debugFileProvider) {
         this.debugName = debugName;
 
-        if(SystemPropertiesManager.get(DebugConstants.CONFIG_DEBUG_LEVEL) != null) {
+        if (SystemPropertiesManager.get(DebugConstants.CONFIG_DEBUG_LEVEL) != null) {
             setDebug(SystemPropertiesManager.get(DebugConstants.CONFIG_DEBUG_LEVEL));
         } else {
             setDebug(DebugLevel.ON);
@@ -170,7 +173,7 @@ public class DebugImpl implements IDebug {
      * @return <code>true</code> if debug is enabled.
      */
     public boolean messageEnabled() {
-        return this.debugLevel.compareLevel(DebugLevel.WARNING) > 0;
+        return this.debugLevel.compareLevel(DebugLevel.MESSAGE) >= 0;
     }
 
     /**
@@ -179,7 +182,7 @@ public class DebugImpl implements IDebug {
      * @return <code>true</code> if debug warning is enabled.
      */
     public boolean warningEnabled() {
-        return this.debugLevel.compareLevel(DebugLevel.ERROR) > 0;
+        return this.debugLevel.compareLevel(DebugLevel.WARNING) >= 0;
     }
 
     /**
@@ -188,7 +191,7 @@ public class DebugImpl implements IDebug {
      * @return <code>true</code> if debug error is enabled.
      */
     public boolean errorEnabled() {
-        return this.debugLevel.compareLevel(DebugLevel.OFF) > 0;
+        return this.debugLevel.compareLevel(DebugLevel.ERROR) >= 0;
     }
 
     /**
@@ -228,7 +231,11 @@ public class DebugImpl implements IDebug {
     }
 
     private void record(String msg, Throwable th) {
-        String prefix = debugName + ":" + this.dateFormat.format(new Date()) + ": " + Thread.currentThread().toString();
+
+        StringBuilder prefix = new StringBuilder();
+        prefix.append(debugName).append(":").append(this.dateFormat.format(new Date())).append(": ").append(Thread
+                .currentThread().toString());
+
         writeIt(prefix, msg, th);
     }
 
@@ -241,7 +248,7 @@ public class DebugImpl implements IDebug {
      * @param th     the optional <code>java.lang.Throwable</code> which if
      *               present will be used to record the stack trace.
      */
-    private void writeIt(String prefix, String msg, Throwable th) {
+    private void writeIt(StringBuilder prefix, String msg, Throwable th) {
 
         //we create the debug file only if we need to write on it
         if (debugFile == null) {
@@ -257,8 +264,14 @@ public class DebugImpl implements IDebug {
                 try {
                     this.debugFile.writeIt(prefix, msg, th);
                 } catch (IOException e) {
-                    stdoutDebugFile.writeIt(prefix, "debug file can't be writed", e);
-                    stdoutDebugFile.writeIt(prefix, msg, th);
+                    /*
+                     * In order to have less logs for this kind of issue. It's waiting an interval of time before
+                     * printing this error again.
+                     */
+                    if (lastDirectoryIssue + DIR_ISSUE_ERROR_INTERVAL_IN_MS < System.currentTimeMillis()) {
+                        lastDirectoryIssue = System.currentTimeMillis();
+                        stdoutDebugFile.writeIt(prefix, "Debug file can't be written : " + e.getMessage(), null);
+                    }
                 }
             }
         } catch (IOException ioex) {

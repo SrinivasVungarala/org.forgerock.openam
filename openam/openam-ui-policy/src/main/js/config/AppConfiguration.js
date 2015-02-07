@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2014 ForgeRock AS. All Rights Reserved
+ * Copyright (c) 2014-2015 ForgeRock AS. All Rights Reserved
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -45,7 +45,7 @@ define("config/AppConfiguration", function () {
                 moduleClass: "org/forgerock/commons/ui/common/SiteConfigurator",
                 configuration: {
                     remoteConfig: true,
-                    delegate: "org/forgerock/openam/ui/policy/SiteConfigurationDelegate"
+                    delegate: "org/forgerock/openam/ui/policy/delegates/SiteConfigurationDelegate"
                 }
             },
 
@@ -97,21 +97,24 @@ define("config/AppConfiguration", function () {
                 moduleClass: "org/forgerock/commons/ui/common/util/UIUtils",
                 configuration: {
                     templateUrls: [
-                        "templates/policy/EditSubjectTemplate.html",
-                        "templates/policy/EditEnvironmentTemplate.html",
-                        "templates/policy/OperatorRulesTemplate.html",
-                        "templates/policy/ConditionAttrTimeDate.html",
-                        "templates/policy/ConditionAttrEnum.html",
-                        "templates/policy/ConditionAttrString.html",
-                        "templates/policy/ConditionAttrBoolean.html",
-                        "templates/policy/ConditionAttrArray.html",
-                        "templates/policy/ConditionAttrObject.html",
-                        "templates/policy/ListItem.html",
-                        "templates/policy/LegacyListItem.html",
-                        "templates/policy/ManageAppsGridCellActionsTemplate.html",
-                        "templates/policy/ManageAppsGridActionsTemplate.html",
-                        "templates/policy/ManagePoliciesGridActionsTemplate.html",
-                        "templates/policy/ManageRefsGridActionsTemplate.html"
+                        "templates/policy/policies/conditions/EditSubjectTemplate.html",
+                        "templates/policy/policies/conditions/EditEnvironmentTemplate.html",
+                        "templates/policy/policies/conditions/OperatorRulesTemplate.html",
+                        "templates/policy/policies/conditions/ConditionAttrEnum.html",
+                        "templates/policy/policies/conditions/ConditionAttrString.html",
+                        "templates/policy/policies/conditions/ConditionAttrBoolean.html",
+                        "templates/policy/policies/conditions/ConditionAttrArray.html",
+                        "templates/policy/policies/conditions/ConditionAttrObject.html",
+                        "templates/policy/policies/conditions/ConditionAttrTime.html",
+                        "templates/policy/policies/conditions/ConditionAttrDay.html",
+                        "templates/policy/policies/conditions/ConditionAttrDate.html",
+                        "templates/policy/policies/conditions/ConditionAttrTimeZone.html",
+                        "templates/policy/policies/conditions/ListItem.html",
+                        "templates/policy/policies/conditions/LegacyListItem.html",
+                        "templates/policy/applications/ManageAppsGridCellActionsTemplate.html",
+                        "templates/policy/applications/ManageAppsGridActionsTemplate.html",
+                        "templates/policy/policies/ManagePoliciesGridActionsTemplate.html",
+                        "templates/policy/referrals/ManageRefsGridActionsTemplate.html"
                     ]
                 }
             },

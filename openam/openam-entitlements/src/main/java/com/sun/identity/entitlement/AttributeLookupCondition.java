@@ -26,7 +26,7 @@
  */
 
 /*
- * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2014-2015 ForgeRock AS.
  */
 
 package com.sun.identity.entitlement;
@@ -188,11 +188,11 @@ public class AttributeLookupCondition extends EntitlementConditionAdaptor {
     }
 
     /**
-     * Returns OpenSSO policy Condition name.
+     * Returns OpenAM policy Condition name.
      *
-     * @return subject name as used in OpenSSO policy,
-     *         this is releavant only when UserECondition was created from
-     *         OpenSSO policy Condition.
+     * @return subject name as used in OpenAM policy,
+     *         this is relevant only when UserECondition was created from
+     *         OpenAM policy Condition.
      */
     public String getPConditionName() {
         return pConditionName;
@@ -217,10 +217,10 @@ public class AttributeLookupCondition extends EntitlementConditionAdaptor {
     }
 
     /**
-     * Sets OpenSSO policy Condition name
-     * @param pConditionName subject name as used in OpenSSO policy,
-     *        this is releavant only when UserECondition was created from
-     *        OpenSSO policy Condition.
+     * Sets OpenAM policy Condition name
+     * @param pConditionName subject name as used in OpenAM policy,
+     *        this is relevant only when UserECondition was created from
+     *        OpenAM policy Condition.
      */
     public void setPConditionName(String pConditionName) {
         this.pConditionName = pConditionName;
@@ -301,13 +301,13 @@ public class AttributeLookupCondition extends EntitlementConditionAdaptor {
     public int hashCode() {
         int code = super.hashCode();
         if (key != null) {
-            code += key.hashCode();
+            code = 31*code + key.hashCode();
         }
         if (value != null) {
-            code += value.hashCode();
+            code = 31*code + value.hashCode();
         }
         if (pConditionName != null) {
-            code += pConditionName.hashCode();
+            code = 31*code + pConditionName.hashCode();
         }
         return code;
     }

@@ -53,8 +53,8 @@
         "duplicateRealm": "Duplicate realm",
         "unableToPersistPolicy": "Unable to persist policy in datastore",
         "policiesUploaded": "Policies uploaded successfully",
-        "policiesUploadFailed": "Failed to upload policies"
-
+        "policiesUploadFailed": "Failed to upload policies",
+        "policiesImportFailed": "Import Failed: __applicationName__ application not found in realm"
       }
     },
     "AppConfiguration": {
@@ -146,7 +146,7 @@
       "actions": "Actions",
       "complete": "Complete",
       "reset": "Reset",
-      "copyright": "Copyright &copy; 2010-14 ForgeRock. All rights reserved.",
+      "copyright": "Copyright &copy; 2010-15 ForgeRock. All rights reserved.",
       "sessionExpired": "Session Expired",
       "enableCookies": "Cookies must be enabled to login",
       "reloadGrid": "Reload Grid",
@@ -311,9 +311,9 @@
       }
     },
 
-      "documentation": {
-         "tooltip": "Click to read more (opens in new tab)"
-      },
+    "documentation": {
+       "tooltip": "Click to read more (opens in new tab)"
+    },
 
     "manageApplications": {
       "add": "Add New Application",
@@ -544,8 +544,12 @@
               "helper": "A time condition must contain one or more of the following values: Time (Start and End), Day (Start and End), Date (Start and End) and/or Time Zone."
           },
 
+          "ipHelper" : "Enter at least one of Start IP, End IP or DNS Name.<br>To match a single IP, enter it in either Start IP or End IP. Start IP must be less than or equal to End IP.<br>DNS Name is an explicit match, or you can use a wildcard in the lowest sub-domain.",
           "legacyFormat": "This condition is in a legacy format, and should be replaced.",
-          "nothingSelected": "Nothing selected"
+          "nothingSelected": "Nothing selected",
+          "attributes": {
+              "object": "key:value[,value2,...]"
+          }
       }
   }
 }

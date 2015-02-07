@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 package com.iplanet.dpro.session.operations.strategies;
 
@@ -27,7 +27,7 @@ import com.iplanet.dpro.session.utils.SessionInfoFactory;
 import com.sun.identity.shared.debug.Debug;
 import org.forgerock.openam.cts.CTSPersistentStore;
 import org.forgerock.openam.cts.adapters.SessionAdapter;
-import org.forgerock.openam.cts.api.fields.CoreTokenField;
+import org.forgerock.openam.tokens.CoreTokenField;
 import org.forgerock.openam.cts.api.filter.TokenFilterBuilder;
 import org.forgerock.openam.cts.api.tokens.Token;
 import org.forgerock.openam.cts.api.tokens.TokenIdFactory;
@@ -99,17 +99,18 @@ public class CTSOperations implements SessionOperations {
      * @throws SessionException If there was a problem locating the Session in the CTS.
      */
     public SessionInfo refresh(Session session, boolean reset) throws SessionException {
-        SessionID sessionID = session.getID();
-        try {
-            InternalSession internalSession = readToken(sessionID);
-            // Modifies the Session if required.
-            if (reset) {
-                internalSession.setLatestAccessTime();
-            }
-
-            return sessionInfoFactory.getSessionInfo(internalSession, sessionID);
-        } catch (ReadFailedSessionException e) {
+        if (reset) {
+            // all write operations should be delegated to the home server
             return remote.refresh(session, reset);
+        } else {
+            // handle read operations via CTS if possible
+            SessionID sessionID = session.getID();
+            try {
+                InternalSession internalSession = readToken(sessionID);
+                return sessionInfoFactory.getSessionInfo(internalSession, sessionID);
+            } catch (ReadFailedSessionException e) {
+                return remote.refresh(session, reset);
+            }
         }
     }
 

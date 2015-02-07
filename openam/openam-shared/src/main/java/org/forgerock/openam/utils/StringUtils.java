@@ -1,6 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
+ * Copyright (c) 2011-2015 ForgeRock AS. All Rights Reserved
  * Copyright (c) 2011-2014 ForgeRock AS. All Rights Reserved
  *
  * The contents of this file are subject to the terms
@@ -24,6 +25,7 @@
  */
 /*
  * Portions Copyrighted 2014 Nomura Research Institute, Ltd.
+ * Portions Copyrighted 2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.utils;
@@ -182,5 +184,27 @@ public final class StringUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Compare two strings for equality.
+     * @param s1 first string to compare.
+     * @param s2 second string to compare.
+     * @return true if strings are equal or they are both null.
+     */
+    public static boolean isEqualTo(String s1, String s2) {
+        return CollectionUtils.genericCompare(s1, s2);
+    }
+
+    /**
+     * Compares two strings in a case insensitive manner, that also allows for
+     * either of the strings to be null, without issue.
+     *
+     * @param s1 the first string to be compared.
+     * @param s2 the second string to tbe compared.
+     * @return true if the parameter values are the same, false if different.
+     */
+    public static boolean compareCaseInsensitiveString(String s1, String s2) {
+        return s1 == null ? s2 == null : s1.equalsIgnoreCase(s2);
     }
 }

@@ -24,9 +24,8 @@
  *
  * $Id: Constants.java,v 1.47 2009/08/12 23:10:44 ericow Exp $
  *
- * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2010-2015 ForgeRock AS.
  */
-
 package com.sun.identity.shared;
 
 /**
@@ -487,7 +486,7 @@ public interface Constants {
 
     /**
      * Property string to determine if validation is required when parsing XML
-     * documents using OpenSSO XMLUtils class.
+     * documents using OpenAM XMLUtils class.
      */
     static final String XML_VALIDATING = "com.iplanet.am.util.xml.validating";
 
@@ -618,7 +617,7 @@ public interface Constants {
 
     /**
      * HTTP Form Parameter name used by PEP for posting policy advices to
-     * OpenSSO.
+     * OpenAM.
      */
     static final String COMPOSITE_ADVICE = "sunamcompositeadvice";
 
@@ -1317,4 +1316,8 @@ public interface Constants {
      */
     public static final String CORE_TOKEN_RESOURCE_ENABLED = "org.forgerock.openam.cts.rest.enabled";
 
+    /**
+     * Property to define the default time limit for LDAP operations performed by the Netscape LDAP SDK.
+     */
+    public static final String DEFAULT_LDAP_TIME_LIMIT = "org.forgerock.openam.ldap.default.time.limit";
 }

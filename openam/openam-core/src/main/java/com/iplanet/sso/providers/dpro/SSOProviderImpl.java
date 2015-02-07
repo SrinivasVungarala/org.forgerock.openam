@@ -27,7 +27,7 @@
  */
 
 /**
- * Portions copyright 2013-2014 ForgeRock AS.
+ * Portions copyright 2013-2015 ForgeRock AS.
  */
 package com.iplanet.sso.providers.dpro;
 
@@ -111,7 +111,9 @@ public final class SSOProviderImpl implements SSOProvider {
             return ssoToken;
         } catch (Exception e) {
             if (debug.messageEnabled()) {
-                debug.message("could not create SSOToken from HttpRequest", e);
+                debug.message("could not create SSOToken from HttpRequest ("
+                        + e.getMessage()
+                        + ")");
             }
             throw new SSOException(e);
         }
@@ -129,8 +131,8 @@ public final class SSOProviderImpl implements SSOProvider {
      * @deprecated This method has been deprecated. Please use the
      * regular LDAP authentication mechanism instead. More information
      * on how to use the authentication programming interfaces as well as the
-     * code samples can be obtained from the "Authentication
-     * Service" chapter of the OpenSSO Developer's Guide.
+     * code samples can be obtained from the "Authenticating Using
+     * OpenAM Java SDK" chapter of the OpenAM Developer's Guide.
      */
     public SSOToken createSSOToken(java.security.Principal user,
                                    String password) throws SSOException, UnsupportedOperationException {
@@ -198,7 +200,9 @@ public final class SSOProviderImpl implements SSOProvider {
                         + possiblyResetIdleTime
                         + ") could not create SSOToken for token ID \""
                         + tokenId
-                        + "\"", e);
+                        + "\" ("
+                        + e.getMessage()
+                        + ")");
             }
             throw new SSOException(e);
         }
@@ -244,7 +248,9 @@ public final class SSOProviderImpl implements SSOProvider {
             if (debug.messageEnabled()) {
                 debug.message("could not create SSOToken for token ID \""
                         + tokenId
-                        + "\"", e);
+                        + "\" ("
+                        + e.getMessage()
+                        + ")");
             }
             throw new SSOException(e);
         }
@@ -292,7 +298,7 @@ public final class SSOProviderImpl implements SSOProvider {
              * if the token was created from createSSOToken(Principal, password)
              * there is no association with session. Use this temp solution now.
              * if this method is going to go away, we can remove that method.
-             * otheriwse a better mechanism has to be implemented.
+             * otherwise a better mechanism has to be implemented.
              */
             SSOTokenImpl tokenImpl = (SSOTokenImpl) token;
             tokenImpl.validate();
@@ -300,8 +306,7 @@ public final class SSOProviderImpl implements SSOProvider {
             if (debug.messageEnabled()) {
                 debug.message("validateToken: ", e);
             }
-            throw new SSOException(SSOProviderBundle.rbName, "invalidtoken",
-                    null);
+            throw new SSOException(SSOProviderBundle.rbName, "invalidtoken", null);
         }
     }
 
@@ -437,12 +442,9 @@ public final class SSOProviderImpl implements SSOProvider {
             throws SSOException {
         Set results = new HashSet();
         try {
+            SearchResults result = ((SSOTokenImpl) requester).getSession().getValidSessions(server, null);
 
-            SearchResults result = ((SSOTokenImpl) requester).getSession()
-                    .getValidSessions(server, null);
-
-            for (Iterator iter = result.getResultAttributes().values()
-                    .iterator(); iter.hasNext();) {
+            for (Iterator iter = result.getResultAttributes().values().iterator(); iter.hasNext();) {
                 Session s = (Session) iter.next();
                 if (s != null) {
                     results.add(new SSOTokenImpl(s));

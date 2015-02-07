@@ -2,7 +2,7 @@
 <!--
 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 *
-* Copyright (c) 2011-2014 ForgeRock AS. All Rights Reserved
+* Copyright (c) 2011-2015 ForgeRock AS. All Rights Reserved
 *
 * The contents of this file are subject to the terms
 * of the Common Development and Distribution License
@@ -123,13 +123,13 @@
         <commons.forgerock-util.version>1.3.5</commons.forgerock-util.version>
         <commons.authfilter.version>1.5.1</commons.authfilter.version>
         <forgerock.json.version>2.4.2</forgerock.json.version>
-        <forgerock-ui.version>1.1.10</forgerock-ui.version>
+        <forgerock-ui.version>1.1.12-SNAPSHOT</forgerock-ui.version>
         <restlet.version>2.1.7</restlet.version>
         <xercesj.version>2.11.0</xercesj.version>
         <powermock.version>1.5</powermock.version>
         <jackson.version>2.4.2</jackson.version>
         <guice.version>3.0</guice.version>
-        <forgerock.guice.version>1.0.2</forgerock.guice.version>
+        <forgerock.guice.version>1.1.0-SNAPSHOT</forgerock.guice.version>
         <slf4j.version>1.7.5</slf4j.version>
         <santuario.xmlsec.version>1.5.6</santuario.xmlsec.version>
         <cxf.version>2.7.8</cxf.version>
@@ -373,6 +373,7 @@
         <module>openam-slf4j</module>
         <module>openam-oauth2-saml2</module>
         <module>openam-http-client</module>
+        <module>openam-tokens</module>
     </modules>
 
     <!-- Mailing Lists -->
@@ -833,6 +834,11 @@
             </dependency>
             <dependency>
                 <groupId>org.forgerock.openam</groupId>
+                <artifactId>openam-publish-sts</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.openam</groupId>
                 <artifactId>openam-soap-sts</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -866,6 +872,11 @@
                 <artifactId>openam-http-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.forgerock.openam</groupId>
+                <artifactId>openam-tokens</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- New RIA Client UI -->
             <dependency>
@@ -888,6 +899,13 @@
                 <version>${project.version}</version>
                 <classifier>www</classifier>
                 <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons.ui.libs</groupId>
+                <artifactId>jquery.qrcode</artifactId>
+                <version>0.11.0</version>
+                <type>js</type>
+                <classifier>min</classifier>
             </dependency>
 
             <!-- CLI components -->
@@ -921,13 +939,6 @@
             <dependency>
                 <groupId>org.forgerock.openam</groupId>
                 <artifactId>openam-installer-utils</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- Documentation dependencies -->
-            <dependency>
-                <groupId>org.forgerock.openam</groupId>
-                <artifactId>openam-doc-content</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -1777,6 +1788,12 @@
                 <artifactId>forgerock-guice-servlet</artifactId>
                 <version>${forgerock.guice.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons</groupId>
+                <artifactId>forgerock-guice-test</artifactId>
+                <version>${forgerock.guice.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>javax.inject</groupId>
@@ -2078,7 +2095,7 @@
                     <additionalJOption>${javadoc.options}</additionalJOption>
                     <detectLinks>true</detectLinks>
                     <bottom>
-                        <![CDATA[Copyright &#169; 2010-2014, <a href="http://www.forgerock.com">ForgeRock<a> All Rights Reserved.]]>
+                        <![CDATA[Copyright &#169; 2010-2015, <a href="http://www.forgerock.com">ForgeRock<a> All Rights Reserved.]]>
                     </bottom>
                     <links>
                         <link>http://docs.oracle.com/javase/6/docs/api</link>
@@ -2181,11 +2198,6 @@
                     <groupId>com.github.searls</groupId>
                     <artifactId>jasmine-maven-plugin</artifactId>
                     <version>2.0-alpha-01</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.forgerock.commons</groupId>
-                    <artifactId>forgerock-doc-maven-plugin</artifactId>
-                    <version>2.1.5</version>
                 </plugin>
                 <plugin>
                     <groupId>org.forgerock.maven.plugins</groupId>

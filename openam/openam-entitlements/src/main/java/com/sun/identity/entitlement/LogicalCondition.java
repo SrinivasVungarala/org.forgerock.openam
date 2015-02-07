@@ -25,7 +25,7 @@
  * $Id: LogicalCondition.java,v 1.1 2009/08/19 05:40:33 veiming Exp $
  */
 /*
- * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2014-2015 ForgeRock AS.
  */
 package com.sun.identity.entitlement;
 
@@ -61,9 +61,9 @@ public abstract class LogicalCondition extends EntitlementConditionAdaptor {
      * Constructor.
      *
      * @param eConditions wrapped <code>EntitlementCondition</code>(s)
-     * @param pConditionName subject name as used in OpenSSO policy,
-     * this is releavant only when UserECondition was created from
-     * OpenSSO policy Condition
+     * @param pConditionName subject name as used in OpenAM policy,
+     * this is relevant only when UserECondition was created from
+     * OpenAM policy Condition
      */
     public LogicalCondition(
         Set<EntitlementCondition> eConditions,
@@ -160,20 +160,20 @@ public abstract class LogicalCondition extends EntitlementConditionAdaptor {
     }
 
     /**
-     * Sets OpenSSO policy Condition name
-     * @param pConditionName subject name as used in OpenSSO policy,
-     * this is releavant only when UserECondition was created from
-     * OpenSSO policy Condition
+     * Sets OpenAM policy Condition name
+     * @param pConditionName subject name as used in OpenAM policy,
+     * this is relevant only when UserECondition was created from
+     * OpenAM policy Condition
      */
     public void setPConditionName(String pConditionName) {
         this.pConditionName = pConditionName;
     }
 
     /**
-     * Returns OpenSSO policy Condition name
-     * @return  subject name as used in OpenSSO policy,
-     * this is releavant only when UserECondition was created from
-     * OpenSSO policy Condition
+     * Returns OpenAM policy Condition name
+     * @return  subject name as used in OpenAM policy,
+     * this is relevant only when UserECondition was created from
+     * OpenAM policy Condition
      */
     public String getPConditionName() {
         return pConditionName;
@@ -261,11 +261,11 @@ public abstract class LogicalCondition extends EntitlementConditionAdaptor {
         int code = super.hashCode();
         if (eConditions != null) {
             for (EntitlementCondition eCondition : eConditions) {
-                code += eCondition.hashCode();
+                code = 31*code + eCondition.hashCode();
             }
         }
         if (pConditionName != null) {
-            code += pConditionName.hashCode();
+            code = 31*code + pConditionName.hashCode();
         }
         return code;
     }

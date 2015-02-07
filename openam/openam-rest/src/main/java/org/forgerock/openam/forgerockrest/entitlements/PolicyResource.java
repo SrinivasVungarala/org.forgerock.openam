@@ -11,16 +11,20 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock, AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.forgerockrest.entitlements;
+
+import static org.apache.commons.lang.StringUtils.*;
+import static org.forgerock.json.fluent.JsonValue.*;
 
 import com.sun.identity.entitlement.Entitlement;
 import com.sun.identity.entitlement.EntitlementException;
 import com.sun.identity.entitlement.Privilege;
 import com.sun.identity.shared.debug.Debug;
-import org.codehaus.jackson.map.JsonMappingException;
+import java.util.List;
+import javax.inject.Inject;
 import org.forgerock.json.fluent.JsonValue;
 import org.forgerock.json.resource.ActionRequest;
 import org.forgerock.json.resource.CollectionResourceProvider;
@@ -32,24 +36,17 @@ import org.forgerock.json.resource.QueryRequest;
 import org.forgerock.json.resource.QueryResult;
 import org.forgerock.json.resource.QueryResultHandler;
 import org.forgerock.json.resource.ReadRequest;
-import org.forgerock.json.resource.Request;
 import org.forgerock.json.resource.Resource;
 import org.forgerock.json.resource.ResourceException;
 import org.forgerock.json.resource.ResultHandler;
 import org.forgerock.json.resource.ServerContext;
 import org.forgerock.json.resource.UpdateRequest;
+import org.forgerock.openam.errors.ExceptionMappingHandler;
 import org.forgerock.openam.forgerockrest.RestUtils;
 import org.forgerock.openam.forgerockrest.entitlements.model.json.PolicyRequest;
 import org.forgerock.openam.forgerockrest.entitlements.query.QueryResultHandlerBuilder;
 import org.forgerock.opendj.ldap.DN;
 import org.forgerock.util.Reject;
-
-import javax.inject.Inject;
-import java.util.List;
-
-import static org.apache.commons.lang.StringUtils.*;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
 
 /**
  * REST endpoint for policy/entitlements management and evaluation.
@@ -71,7 +68,7 @@ public final class PolicyResource implements CollectionResourceProvider {
     /**
      * Handler for converting entitlements exceptions into appropriate resource exceptions.
      */
-    private final ResourceErrorHandler<EntitlementException> resourceErrorHandler;
+    private final ExceptionMappingHandler<EntitlementException, ResourceException> resourceErrorHandler;
 
     private final PolicyEvaluatorFactory factory;
     private final PolicyRequestFactory requestFactory;
@@ -81,7 +78,7 @@ public final class PolicyResource implements CollectionResourceProvider {
                           final PolicyRequestFactory requestFactory,
                           final PolicyParser parser,
                           final PolicyStoreProvider provider,
-                          final ResourceErrorHandler<EntitlementException> handler) {
+                          final ExceptionMappingHandler<EntitlementException, ResourceException> handler) {
         Reject.ifNull(factory, requestFactory, parser, provider, handler);
         this.factory = factory;
         this.requestFactory = requestFactory;
@@ -130,8 +127,7 @@ public final class PolicyResource implements CollectionResourceProvider {
 
         } catch (final EntitlementException eE) {
             DEBUG.error("Error evaluating policy request", eE);
-            handler.handleError(resourceErrorHandler.handleError(actionRequest, eE));
-            return;
+            handler.handleError(resourceErrorHandler.handleError(context, actionRequest, eE));
         }
     }
 
@@ -178,7 +174,7 @@ public final class PolicyResource implements CollectionResourceProvider {
             handler.handleResult(policyResource(policy));
         } catch (EntitlementException ex) {
             DEBUG.error("PolicyResource :: CREATE : Error performing create for policy, " + providedName, ex);
-            handler.handleError(resourceErrorHandler.handleError(request, ex));
+            handler.handleError(resourceErrorHandler.handleError(context, request, ex));
         }
     }
 
@@ -197,8 +193,8 @@ public final class PolicyResource implements CollectionResourceProvider {
             // Return an empty resource to indicate success?
             handler.handleResult(new Resource(resourceId, "0", json(object())));
         } catch (EntitlementException ex) {
-            DEBUG.error("PolicyResource :: DELETE : Error performing delete for policy, " + resourceId, ex);
-            handler.handleError(resourceErrorHandler.handleError(request, ex));
+            String debug = "PolicyResource :: DELETE : Error performing delete for policy, " + resourceId;
+            handler.handleError(resourceErrorHandler.handleError(context, debug, request, ex));
         }
     }
 
@@ -235,7 +231,7 @@ public final class PolicyResource implements CollectionResourceProvider {
             handler.handleResult(new QueryResult(null, remaining));
         } catch (EntitlementException ex) {
             DEBUG.error("PolicyResource :: QUERY : Error querying policy collection.", ex);
-            handler.handleError(resourceErrorHandler.handleError(request, ex));
+            handler.handleError(resourceErrorHandler.handleError(context, request, ex));
         } catch (IllegalArgumentException ex) {
             DEBUG.error("PolicyResource :: QUERY : Error querying policy collection due to bad request.", ex);
             handler.handleError(ResourceException.getException(ResourceException.BAD_REQUEST, ex.getMessage()));
@@ -253,7 +249,7 @@ public final class PolicyResource implements CollectionResourceProvider {
             handler.handleResult(policyResource(policy));
         } catch (EntitlementException ex) {
             DEBUG.error("PolicyResource :: READ : Error reading policy, " + resourceId + ".", ex);
-            handler.handleError(resourceErrorHandler.handleError(request, ex));
+            handler.handleError(resourceErrorHandler.handleError(context, request, ex));
         }
     }
 
@@ -269,7 +265,7 @@ public final class PolicyResource implements CollectionResourceProvider {
             handler.handleResult(result);
         } catch (EntitlementException ex) {
             DEBUG.error("PolicyResource :: UPDATE : Error updating policy, " + resourceId + ".", ex);
-            handler.handleError(resourceErrorHandler.handleError(request, ex));
+            handler.handleError(resourceErrorHandler.handleError(context, request, ex));
         }
     }
 
