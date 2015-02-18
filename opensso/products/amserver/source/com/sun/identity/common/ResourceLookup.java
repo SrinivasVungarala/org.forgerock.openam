@@ -146,15 +146,15 @@ public class ResourceLookup {
         try {
         	if (context != null) 
         		resourceURL = context.getResource(resourceName);
-        	if (resourceURL == null) 
+        	if (resourceURL == null && resourceName.endsWith(".xml")) 
                 resourceURL = Thread.currentThread().getContextClassLoader().getResource(resourceName.substring(1));
-        	if (resourceURL!=null)
-            	resourceURLCache.put(resourceName,resourceURL);
-        	else
-        		resourceURLCacheNotExists.put(resourceName,nBool);
         } catch (Exception e) {
             debug.message("Error getting resource  : " + e.getMessage());
         }
+    	if (resourceURL!=null)
+        	resourceURLCache.put(resourceName,resourceURL);
+    	else
+    		resourceURLCacheNotExists.put(resourceName,nBool);
         return resourceURL;
     }
 }
