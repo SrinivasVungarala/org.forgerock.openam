@@ -16,12 +16,15 @@
 
 package org.forgerock.openam.forgerockrest.guice;
 
-import static org.forgerock.openam.forgerockrest.entitlements.query.AttributeType.*;
+import static org.forgerock.openam.forgerockrest.entitlements.query.AttributeType.STRING;
+import static org.forgerock.openam.forgerockrest.entitlements.query.AttributeType.TIMESTAMP;
+import static org.forgerock.openam.uma.UmaConstants.UMA_BACKEND_POLICY_RESOURCE_HANDLER;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.dpro.session.service.SessionService;
@@ -32,26 +35,16 @@ import com.sun.identity.entitlement.EntitlementException;
 import com.sun.identity.entitlement.Privilege;
 import com.sun.identity.entitlement.PrivilegeManager;
 import com.sun.identity.entitlement.opensso.PolicyPrivilegeManager;
-import com.sun.identity.log.LogConstants;
-import com.sun.identity.log.Logger;
-import com.sun.identity.log.messageid.LogMessageProvider;
-import com.sun.identity.log.messageid.MessageProviderFactory;
+import com.sun.identity.idm.IdRepoCreationListener;
 import com.sun.identity.shared.Constants;
 import com.sun.identity.shared.debug.Debug;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import org.forgerock.guice.core.GuiceModule;
 import org.forgerock.json.resource.ConnectionFactory;
 import org.forgerock.json.resource.RequestType;
 import org.forgerock.json.resource.ResourceException;
 import org.forgerock.json.resource.Resources;
 import org.forgerock.json.resource.VersionSelector;
+import org.forgerock.oauth2.restlet.resources.ResourceSetRegistrationListener;
 import org.forgerock.openam.cts.utils.JSONSerialisation;
 import org.forgerock.openam.entitlement.EntitlementRegistry;
 import org.forgerock.openam.errors.ExceptionMappingHandler;
@@ -64,22 +57,42 @@ import org.forgerock.openam.forgerockrest.entitlements.EntitlementsExceptionMapp
 import org.forgerock.openam.forgerockrest.entitlements.JsonPolicyParser;
 import org.forgerock.openam.forgerockrest.entitlements.PolicyEvaluatorFactory;
 import org.forgerock.openam.forgerockrest.entitlements.PolicyParser;
+import org.forgerock.openam.forgerockrest.entitlements.PolicyResource;
 import org.forgerock.openam.forgerockrest.entitlements.PolicyStoreProvider;
 import org.forgerock.openam.forgerockrest.entitlements.PrivilegePolicyStoreProvider;
 import org.forgerock.openam.forgerockrest.entitlements.query.QueryAttribute;
 import org.forgerock.openam.forgerockrest.utils.MailServerLoader;
 import org.forgerock.openam.forgerockrest.utils.RestLog;
+import org.forgerock.openam.forgerockrest.utils.SoapSTSAgentIdentity;
+import org.forgerock.openam.forgerockrest.utils.SoapSTSAgentIdentityImpl;
+import org.forgerock.openam.forgerockrest.utils.SpecialUserIdentity;
+import org.forgerock.openam.forgerockrest.utils.SpecialUserIdentityImpl;
 import org.forgerock.openam.rest.RestEndpointServlet;
 import org.forgerock.openam.rest.RestEndpoints;
 import org.forgerock.openam.rest.authz.CoreTokenResourceAuthzModule;
 import org.forgerock.openam.rest.authz.PrivilegeDefinition;
+import org.forgerock.openam.rest.resource.PromisedRequestHandler;
+import org.forgerock.openam.rest.resource.PromisedRequestHandlerImpl;
 import org.forgerock.openam.rest.router.CTSPersistentStoreProxy;
+import org.forgerock.openam.rest.router.DelegationEvaluatorProxy;
 import org.forgerock.openam.rest.router.RestEndpointManager;
 import org.forgerock.openam.rest.router.RestEndpointManagerProxy;
+import org.forgerock.openam.rest.uma.UmaIdRepoCreationListener;
+import org.forgerock.openam.rest.uma.UmaPolicyServiceImpl;
+import org.forgerock.openam.rest.uma.UmaResourceSetRegistrationListener;
+import org.forgerock.openam.uma.UmaPolicyService;
 import org.forgerock.openam.utils.AMKeyProvider;
 import org.forgerock.openam.utils.Config;
 import org.forgerock.util.SignatureUtil;
 import org.restlet.routing.Router;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Guice Module for configuring bindings for the AuthenticationRestService classes.
@@ -143,7 +156,28 @@ public class ForgerockRestGuiceModule extends AbstractModule {
 
         bind(RestEndpointManager.class).to(RestEndpointManagerProxy.class);
         bind(VersionSelector.class).in(Singleton.class);
-        bind(DelegationEvaluator.class).to(DelegationEvaluatorImpl.class).in(Singleton.class);
+        bind(DelegationEvaluatorImpl.class).in(Singleton.class);
+        bind(DelegationEvaluator.class).to(DelegationEvaluatorProxy.class).in(Singleton.class);
+
+        bind(UmaPolicyService.class).to(UmaPolicyServiceImpl.class);
+        bind(SoapSTSAgentIdentity.class).to(SoapSTSAgentIdentityImpl.class);
+        bind(SpecialUserIdentity.class).to(SpecialUserIdentityImpl.class);
+
+        Multibinder.newSetBinder(binder(), IdRepoCreationListener.class)
+                .addBinding().to(UmaIdRepoCreationListener.class);
+
+        Multibinder.newSetBinder(binder(), ResourceSetRegistrationListener.class)
+                .addBinding().to(UmaResourceSetRegistrationListener.class);
+    }
+
+    @Provides
+    @Inject
+    @Singleton
+    @Named(UMA_BACKEND_POLICY_RESOURCE_HANDLER)
+    PromisedRequestHandler getPolicyResource(PolicyResource policyResource) {
+        org.forgerock.json.resource.Router router = new org.forgerock.json.resource.Router();
+        router.setDefaultRoute(Resources.newCollection(policyResource));
+        return new PromisedRequestHandlerImpl(router);
     }
 
     @Provides
@@ -181,24 +215,7 @@ public class ForgerockRestGuiceModule extends AbstractModule {
     @Provides
     @Singleton
     public RestLog getRestLog() {
-        LogMessageProvider msgProvider = null;
-        Logger accessLogger = null;
-        Logger authzLogger = null;
-
-        try {
-            String status = SystemProperties.get(Constants.AM_LOGSTATUS);
-
-            if ("ACTIVE".equalsIgnoreCase(status)) {
-                accessLogger = (Logger) Logger.getLogger(LogConstants.REST_ACCESS);
-                authzLogger = (Logger) Logger.getLogger(LogConstants.REST_AUTHZ);
-                msgProvider = MessageProviderFactory.getProvider(RestLog.LOG_NAME);
-            }
-
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
-        return new RestLog(msgProvider, accessLogger, authzLogger);
+        return new RestLog();
     }
 
     @Provides
@@ -317,9 +334,14 @@ public class ForgerockRestGuiceModule extends AbstractModule {
             handlers.put(EntitlementException.APP_NOT_CREATED_POLICIES_EXIST, ResourceException.CONFLICT);
             handlers.put(EntitlementException.INVALID_APP_TYPE, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.INVALID_APP_REALM, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.INVALID_RESOURCE_TYPE_REALM, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.PROPERTY_CONTAINS_BLANK_VALUE, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.APPLICATION_NAME_MISMATCH, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.INVALID_CLASS, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.RESOURCE_TYPE_ALREADY_EXISTS, ResourceException.CONFLICT);
+            handlers.put(EntitlementException.NO_SUCH_RESOURCE_TYPE, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.RESOURCE_TYPE_IN_USE, ResourceException.CONFLICT);
+            handlers.put(EntitlementException.MISSING_RESOURCE_TYPE_NAME, ResourceException.BAD_REQUEST);
 
             return handlers;
         }

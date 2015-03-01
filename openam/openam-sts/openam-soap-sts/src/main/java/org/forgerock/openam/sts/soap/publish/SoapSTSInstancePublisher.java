@@ -18,7 +18,7 @@ package org.forgerock.openam.sts.soap.publish;
 
 /**
  * This interface is essentially a marker interface which allows Guice to inject a specific Runnable into the
- * SoapSTSPublishPollerImpl. The implementation of this interface is responsible for consulting the OpenAM home
+ * SoapSTSLifecycleImpl. The implementation of this interface is responsible for consulting the OpenAM home
  * server for published soap-sts instances (via consumption of the PublishServiceConsumer), and then exposing them
  * as web-services (via consumption of the SoapSTSInstanceLifecycleManager).
  */

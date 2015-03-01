@@ -50,7 +50,7 @@
     <parent>
         <groupId>org.forgerock</groupId>
         <artifactId>forgerock-parent</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.7</version>
     </parent>
 
     <!-- Component Definition -->
@@ -120,7 +120,7 @@
         <opendj.server.version>2.6.2</opendj.server.version>
         <opendj.sdk.version>2.6.9</opendj.sdk.version>
 
-        <commons.forgerock-util.version>1.3.5</commons.forgerock-util.version>
+        <commons.forgerock-util.version>1.4.0-SNAPSHOT</commons.forgerock-util.version>
         <commons.authfilter.version>1.5.1</commons.authfilter.version>
         <forgerock.json.version>2.4.2</forgerock.json.version>
         <forgerock-ui.version>1.1.12-SNAPSHOT</forgerock-ui.version>
@@ -339,6 +339,7 @@
         <!-- OpenAM OAuth2 Token Service -->
         <module>openam-oauth2-common</module>
         <module>openam-oauth2</module>
+        <module>openam-uma</module>
 
         <module>openam-common-auth-ui</module>
 
@@ -731,6 +732,11 @@
             <dependency>
                 <groupId>org.forgerock.openam</groupId>
                 <artifactId>openam-oauth2-saml2</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.openam</groupId>
+                <artifactId>openam-uma</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1688,6 +1694,11 @@
                 <artifactId>forgerock-guava-collect</artifactId>
                 <version>${forgerock.guava.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons.guava</groupId>
+                <artifactId>forgerock-guava-cache</artifactId>
+                <version>${forgerock.guava.version}</version>
+            </dependency>
 
             <!-- JASPIC -->
             <dependency>
@@ -2031,6 +2042,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
                 <configuration>
                     <argLine>${java.surefire.options}</argLine>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>

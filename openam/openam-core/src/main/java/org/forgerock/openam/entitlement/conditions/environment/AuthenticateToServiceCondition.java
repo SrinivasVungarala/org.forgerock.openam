@@ -26,6 +26,9 @@ import com.sun.identity.entitlement.EntitlementConditionAdaptor;
 import com.sun.identity.entitlement.EntitlementException;
 import com.sun.identity.entitlement.PrivilegeManager;
 import com.sun.identity.shared.debug.Debug;
+import com.sun.identity.shared.ldap.util.DN;
+import com.sun.identity.sm.DNMapper;
+
 import org.forgerock.openam.core.CoreWrapper;
 import org.forgerock.openam.utils.CollectionUtils;
 import org.forgerock.openam.utils.StringUtils;
@@ -33,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.security.auth.Subject;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -123,7 +127,7 @@ public class AuthenticateToServiceCondition extends EntitlementConditionAdaptor 
                 debug.message("At AuthenticateToServiceCondition.evaluate(): requestAuthnServices "
                         + "from request = " + requestAuthnServices);
             }
-        } else {
+        } else if (subject != null){
             SSOToken token = (SSOToken) subject.getPrivateCredentials().iterator().next();
             Set<String> authenticatedServices = entitlementCoreWrapper.getRealmQualifiedAuthenticatedServices(token);
             if (authenticatedServices != null) {
@@ -175,7 +179,10 @@ public class AuthenticateToServiceCondition extends EntitlementConditionAdaptor 
      * {@link com.sun.identity.authentication.util.AMAuthUtils#getDataFromRealmQualifiedData}.
      */
     private String getRealmAwareService(String authenticateToService, String realm) {
-
+        //make sure the passed realm is not DN format
+        if (DN.isDN(realm)) {
+            realm = DNMapper.orgNameToRealmName(realm);
+        }
         if (!authenticateToService.contains(ISAuthConstants.COLON)) {
             return realm + ISAuthConstants.COLON + authenticateToService;
         }

@@ -15,45 +15,16 @@
  */
 package org.forgerock.openam.cts.api.filter;
 
-import junit.framework.TestCase;
-import org.forgerock.openam.tokens.CoreTokenField;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-public class TokenFilterTest extends TestCase {
+public class TokenFilterTest {
 
     private TokenFilter filter;
 
     @BeforeMethod
     public void setup() {
         filter = new TokenFilter();
-    }
-
-    @Test
-    public void shouldBeAndByDefault() {
-        assertThat(filter.getType()).isEqualTo(TokenFilter.Type.AND);
-    }
-
-    @Test (expectedExceptions =  UnsupportedOperationException.class)
-    public void shouldPreventModificationToFilters() {
-        filter.getFilters().put(CoreTokenField.BLOB, "badger");
-    }
-
-    @Test (expectedExceptions = NullPointerException.class)
-    public void shouldPreventNullType() {
-        filter.setType(null);
-    }
-
-    @Test (expectedExceptions = NullPointerException.class)
-    public void shouldPreventNullFieldOnAdd() {
-        filter.addFilter(null, "");
-    }
-
-    @Test (expectedExceptions = NullPointerException.class)
-    public void shouldPreventNullValueOnAdd() {
-        filter.addFilter(CoreTokenField.BLOB, null);
     }
 
     @Test (expectedExceptions = UnsupportedOperationException.class)

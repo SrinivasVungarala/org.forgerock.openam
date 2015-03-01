@@ -11,52 +11,69 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 package org.forgerock.openam.core.guice;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.iplanet.am.util.SystemProperties;
-import org.apache.commons.lang.StringUtils;
-import org.forgerock.guice.core.GuiceModule;
-import org.forgerock.openam.cts.api.CoreTokenConstants;
-import org.forgerock.openam.cts.monitoring.CTSConnectionMonitoringStore;
-import org.forgerock.openam.cts.monitoring.impl.connections.MonitoredCTSConnectionFactory;
-import org.forgerock.openam.cts.monitoring.impl.connections.WrappedHandlerFactory;
-import org.forgerock.openam.sm.ConnectionConfig;
-import org.forgerock.openam.sm.ExternalCTSConfig;
-import org.forgerock.openam.sm.SMSConfigurationFactory;
-import org.forgerock.openam.sm.datalayer.api.ConnectionType;
-import org.forgerock.openam.sm.datalayer.api.DataLayerConstants;
-import org.forgerock.openam.sm.datalayer.api.StoreMode;
-import org.forgerock.openam.sm.datalayer.providers.ConnectionFactoryProvider;
-import org.forgerock.openam.sm.datalayer.providers.DataLayerConnectionFactoryCache;
-import org.forgerock.openam.sm.exceptions.InvalidConfigurationException;
-import org.forgerock.opendj.ldap.ConnectionFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.forgerock.guice.core.GuiceModule;
+import org.forgerock.guice.core.InjectorHolder;
+import org.forgerock.openam.cts.adapters.JavaBeanAdapter;
+import org.forgerock.openam.cts.adapters.JavaBeanAdapterFactory;
+import org.forgerock.openam.cts.api.tokens.TokenIdGenerator;
+import org.forgerock.openam.sm.ConnectionConfig;
+import org.forgerock.openam.sm.SMSConfigurationFactory;
+import org.forgerock.openam.sm.datalayer.api.ConnectionType;
+import org.forgerock.openam.sm.datalayer.api.DataLayer;
+import org.forgerock.openam.sm.datalayer.api.DataLayerConnectionModule;
+import org.forgerock.openam.sm.datalayer.api.DataLayerConstants;
+import org.forgerock.openam.sm.datalayer.impl.ldap.LdapDataLayerConfiguration;
+import org.forgerock.openam.sm.datalayer.utils.ThreadSafeTokenIdGenerator;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Key;
+import com.google.inject.Provider;
+import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
- * Guice Module to capture the details of the Data Layer specific bindings.
+ * Guice Module to capture the details of the Data Layer specific bindings. These are bound in a private binder so that
+ * each {@link ConnectionType} can have different bindings, allowing different backend databases.
+ * <p>
+ * ConnectionFactory and TaskExecutor instances will be available outside the private binder using the
+ * @{@link DataLayer} annotation with the desired {@link ConnectionType}.
  */
 @GuiceModule
 public class DataLayerGuiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(ConnectionFactoryProvider.class).to(DataLayerConnectionFactoryCache.class);
-    }
+        bind(TokenIdGenerator.class).to(ThreadSafeTokenIdGenerator.class);
 
-    @Provides
-    StoreMode getStoreMode() {
-        String mode = SystemProperties.get(CoreTokenConstants.CTS_STORE_LOCATION);
-        if (StringUtils.isNotEmpty(mode)) {
-            return StoreMode.valueOf(mode.toUpperCase());
-        } else {
-            return StoreMode.DEFAULT;
+        install(new FactoryModuleBuilder().implement(JavaBeanAdapter.class, JavaBeanAdapter.class)
+                .build(JavaBeanAdapterFactory.class));
+
+        Key<Map<ConnectionType, LdapDataLayerConfiguration>> connectionMapKey =
+                Key.get(new TypeLiteral<Map<ConnectionType, LdapDataLayerConfiguration>>() {});
+        binder().bind(connectionMapKey).toProvider(ConfigurationMapProvider.class).in(Singleton.class);
+
+        for (ConnectionType connectionType : ConnectionType.values()) {
+            try {
+                DataLayerConnectionModule module = connectionType.getConfigurationClass().newInstance();
+                module.setConnectionType(connectionType);
+                binder().install(module);
+            } catch (Exception e) {
+                throw new IllegalStateException("Could not initialise connection module for " + connectionType, e);
+            }
         }
+
     }
 
     @Provides @Inject @Named(DataLayerConstants.SERVICE_MANAGER_CONFIG)
@@ -64,38 +81,21 @@ public class DataLayerGuiceModule extends AbstractModule {
         return smsConfigurationFactory.getSMSConfiguration();
     }
 
-    @Provides @Inject @Named(DataLayerConstants.EXTERNAL_CTS_CONFIG)
-    ConnectionConfig getExternalCTSConfig(ExternalCTSConfig externalCTSConfig) {
-        externalCTSConfig.update();
-        return externalCTSConfig;
-    }
+    private static final class ConfigurationMapProvider
+            implements Provider<Map<ConnectionType, LdapDataLayerConfiguration>> {
 
-    @Provides @Inject @Named(DataLayerConstants.DATA_LAYER_CTS_ASYNC_BINDING)
-    ConnectionFactory getCTSAsyncConnectionFactory(DataLayerConnectionFactoryCache factoryCache,
-                                                   CTSConnectionMonitoringStore monitorStore,
-                                                   WrappedHandlerFactory handlerFactory) {
-        return new MonitoredCTSConnectionFactory(
-                getConnectionFactory(ConnectionType.CTS_ASYNC, factoryCache),
-                monitorStore,
-                handlerFactory);
-    }
-
-    @Provides @Inject @Named(DataLayerConstants.DATA_LAYER_CTS_REAPER_BINDING)
-    ConnectionFactory getCTSReaperConnectionFactory(DataLayerConnectionFactoryCache factoryCache) {
-        return getConnectionFactory(ConnectionType.CTS_REAPER, factoryCache);
-    }
-
-    @Provides @Inject @Named(DataLayerConstants.DATA_LAYER_BINDING)
-    ConnectionFactory getDataLayerConnectionFactory(DataLayerConnectionFactoryCache factoryCache) {
-        return getConnectionFactory(ConnectionType.DATA_LAYER, factoryCache);
-    }
-
-    private ConnectionFactory getConnectionFactory(ConnectionType type,
-                                                   DataLayerConnectionFactoryCache factoryCache) {
-        try {
-            return factoryCache.createFactory(type);
-        } catch (InvalidConfigurationException e) {
-            throw new RuntimeException(e);
+        @Override
+        public Map<ConnectionType, LdapDataLayerConfiguration> get() {
+            Map<ConnectionType, LdapDataLayerConfiguration> configurations =
+                    new HashMap<ConnectionType, LdapDataLayerConfiguration>();
+            for (ConnectionType type : ConnectionType.values()) {
+                LdapDataLayerConfiguration config = InjectorHolder.getInstance(
+                        Key.get(LdapDataLayerConfiguration.class, DataLayer.Types.typed(type)));
+                configurations.put(type, config);
+            }
+            return configurations;
         }
+
     }
+
 }

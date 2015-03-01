@@ -1,4 +1,4 @@
-/**
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2008 Sun Microsystems Inc. All Rights Reserved
@@ -24,7 +24,7 @@
  *
  * $Id: PolicyPrivilegeManager.java,v 1.9 2010/01/26 20:10:15 dillidorai Exp $
  *
- * Portions Copyrighted 2014 ForgeRock AS
+ * Portions Copyrighted 2014-2015 ForgeRock AS.
  */
 package com.sun.identity.entitlement.opensso;
 
@@ -49,12 +49,15 @@ import com.sun.identity.policy.PolicyEvent;
 import com.sun.identity.policy.PolicyException;
 import com.sun.identity.policy.PolicyManager;
 import com.sun.identity.security.AdminTokenAction;
+import org.forgerock.openam.entitlement.service.ResourceTypeService;
+
 import java.security.AccessController;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 
 /**
@@ -78,7 +81,7 @@ public class PolicyPrivilegeManager extends PrivilegeManager {
         try {
             if (PrivilegeManager.debug.messageEnabled()) {
                 PrivilegeManager.debug.message(
-                        "PolicyPrivilegeManager.static initializer, getting instance of PolicyCache", null);
+                        "PolicyPrivilegeManager.static initializer, getting instance of PolicyCache");
             }
             policyCache = PolicyCache.getInstance();
         } catch (Exception e) {
@@ -89,7 +92,9 @@ public class PolicyPrivilegeManager extends PrivilegeManager {
     /**
      * Creates instance of <code>PolicyPrivilegeManager</code>
      */
-    public PolicyPrivilegeManager() {
+    @Inject
+    public PolicyPrivilegeManager(final ResourceTypeService resourceTypeService) {
+        super(resourceTypeService);
     }
 
     /**
@@ -262,7 +267,6 @@ public class PolicyPrivilegeManager extends PrivilegeManager {
     @Override
     public void modify(String existingName, Privilege privilege) throws EntitlementException {
         validate(privilege);
-        privilege.validateResourceNames(dsameUserSubject, realm);
         updateMetaInfo(existingName, privilege);
 
         try {
@@ -386,7 +390,7 @@ public class PolicyPrivilegeManager extends PrivilegeManager {
 
         if (PrivilegeManager.debug.messageEnabled()) {
             PrivilegeManager.debug.message("PolicyPrivilegeManager.notifyPrivilegeChanged():"
-                    + "applicationName=" + applicationName + ", resources=" + resourceNames, null);
+                    + "applicationName=" + applicationName + ", resources=" + resourceNames);
         }
         PrivilegeChangeNotifier.getInstance().notify(getAdminSubject(), realm,
             applicationName, current.getName(), resourceNames);

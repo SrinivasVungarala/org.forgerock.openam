@@ -8,6 +8,10 @@
         <listener-class>org.forgerock.guice.core.GuiceInitialisationFilter</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>org.forgerock.openam.identity.idm.AMIdentityRepositoryListenerInitializer</listener-class>
+    </listener>
+
     <context-param>
         <param-name>jato:enforceStrictSessionTimeout</param-name>
         <param-value>true</param-value>
@@ -1149,6 +1153,10 @@
     <servlet-mapping>
         <servlet-name>ForgeRockRest</servlet-name>
         <url-pattern>/oauth2/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgeRockRest</servlet-name>
+        <url-pattern>/uma/*</url-pattern>
     </servlet-mapping>
 
     <!-- Setup favicon.ico extension type -->

@@ -134,7 +134,7 @@ public class SessionCondition extends EntitlementConditionAdaptor {
     public ConditionDecision evaluate(String realm, Subject subject, String resourceName, Map<String, Set<String>> env)
             throws EntitlementException {
 
-        SSOToken token = (SSOToken) getValue(subject.getPrivateCredentials());
+        SSOToken token = (subject == null) ? null : (SSOToken) getValue(subject.getPrivateCredentials());
         if (token == null) {
             return new ConditionDecision(true, Collections.<String, Set<String>>emptyMap(), Long.MAX_VALUE);
         }

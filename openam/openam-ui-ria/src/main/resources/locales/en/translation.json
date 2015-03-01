@@ -12,7 +12,7 @@
                 "inconsistentRealm": "The realm is inconsistent"
             },
             "CommonMessages" : {
-                "authenticationFailed" : "Login/password combination is invalid.",
+                "authenticationFailed" : "User name/password combination is invalid.",
                 "loginFailureLockout" : "Your password has expired. Please contact service desk to reset your password",
                 "maxSessionsLimitOrSessionQuota": "Maximum sessions limit reached or session quota has exhausted.",
                 "serviceUnavailable" : "Service unavailable",
@@ -73,7 +73,14 @@
                     "allTasks" : "Tasks that are in my group's queue",
                     "myTasks" : "My tasks",
                     "startProcess" : "Start process",
-                    "oauthtokens" : "OAuth 2 Token Manager"
+                    "oauthtokens" : "OAuth 2 Token Manager",
+                    "uma" : "User Managed Access",
+                    "umaLinks": {
+                        "history" : "History",
+                        "resources" : "Resources",
+                        "users" : "Users",
+                        "apps" : "Apps"
+                    }
                 }
             }
         }
@@ -141,7 +148,7 @@
                 "haveAccoutQuestion" : "Already have an account?",
                 "agreeToTerms" : "I agree to the %sterms of use%s",
                 "emailSubject" : "OpenAM Registration",
-                "emailMessage" : "Please goto the link below to continue the registration process:",
+                "emailMessage" : "Please go to the link below to continue the registration process:",
                 "emailSent" : "We have sent you an e-mail, please follow the link in the e-mail to complete the registration process.",
                 "registrationComplete" : "Registration complete"
             },
@@ -189,7 +196,7 @@
         }
     },
     "common" : {
-         "form" : {
+        "form" : {
             "yes" : "Yes",
             "no" : "No",
             "true" : "True",
@@ -218,10 +225,12 @@
             "submit" : "Submit",
             "actions" : "Actions",
             "complete" : "Complete",
-            "copyright" : "Copyright &copy; 2010-14 ForgeRock AS, all rights reserved.",
+            "revoke" : "Revoke",
+            "copyright" : "Copyright &copy; 2010-15 ForgeRock AS, all rights reserved.",
             "sessionExpired" : "Session Expired",
             "enableCookies" : "Cookies must be enabled to login",
             "deleteSelected" : "Delete Selected",
+            "startTypingToSearch": "Start typing to search",
             "validation" : {
                 "VALID_PHONE_FORMAT": "Contains invalid characters",
                 "VALID_NAME_FORMAT": "Contains invalid characters",
@@ -254,8 +263,8 @@
                 "shouldBeLong" : "Should be long value",
                 "wrongDateFormat" : "Wrong format"
             }
-         },
-         "user" : {
+        },
+        "user" : {
             "user" : "User",
             "login" : "Log in",
             "loginConfirm" : "You have already logged in. Do you want to log out and then login to a different organization?",
@@ -304,8 +313,8 @@
             "changePhoto" : "Change photo",
             "SKYPE" : "SKYPE",
             "googlePlus" : "Google+"
-         },
-         "task" : {
+        },
+        "task" : {
             "unassigned" : "Unassigned",
             "assignToMe" : "Assign to me",
             "claim" : "Claim",
@@ -321,8 +330,8 @@
             "myTasks" : "My tasks",
             "tasksList" : "Tasks list",
             "processes" : "Processes"
-         },
-         "application" : {
+        },
+        "application" : {
             "applicationName" : "Application Name",
             "requestedBy" : "Requested by",
             "yourFrequentlyUsedApplications" : "Your frequently used apps",
@@ -331,8 +340,8 @@
             "addMoreApplications" : "Add more apps",
             "allAvailableApps" : "All available apps",
             "dropApplicationsHere" : "drop apps here"
-         },
-         "notification" : {
+        },
+        "notification" : {
             "notifications" : "Notifications",
             "deleteThisMessage" : "Delete this message",
             "type" : "Notification type",
@@ -342,7 +351,7 @@
                 "warning" : "Warning",
                 "error" : "Error"
             }
-         }
+        }
     },
     "openam" : {
         "apps" : {
@@ -372,6 +381,68 @@
             },
             "unavailable": "Unable to login to OpenAM"
 
+        }
+    },
+    "uma": {
+        "all": {
+            "grid": {
+                "empty": "No results..."
+            }
+        },
+        "share": {
+            "people": "Search for people",
+            "permission": "Select Permission",
+            "share": "Share",
+            "info": "Shared with __count__ person",
+            "info_plural": "Shared with __count__ people",
+            "info_none": "Not shared",
+            "messages": {
+                "success": "Resource successfully shared",
+                "fail": "Failed to share resource"
+            },
+            "notSpecifiedResource": "You have not specified a resource to share."
+        },
+        "resources": {
+            "all": {
+                "grid": {
+                    "filter": "Filter by __header__"
+                }
+            },
+            "list": {
+                "title": "Resources",
+                "subtitle": "All your shared resources",
+                "grid": ["Resources", "Modified By", "Last accessed", "Host"]
+            },
+            "show": {
+                "subtitle": "Users allowed to access this resource and their permissions",
+                "grid": ["User", "Last accessed", "Permissions"],
+                "share": "Share",
+                "revokeAll": "Revoke All",
+                "revokeAllMessage": "Are you sure you want to revoke all access?",
+                "resource" : "Resource"
+            }
+        },
+        "history": {
+            "title": "History",
+            "subtitle": "History of events on your resources",
+            "grid": {
+                "header": ["User", "Resource", "Action", "When"],
+                "types": {
+                    "authorisation_denied": "Denied authorisation",
+                    "authorisation_granted": "Granted authorisation",
+                    "authorisation_requested": "Requested authorisation",
+                    "policy_created": "Created policy",
+                    "policy_updated": "Updated policy"
+                }
+            }
+        },
+        "users": {
+            "title": "Users",
+            "subtitle": "..."
+        },
+        "apps": {
+            "title": "Apps",
+            "subtitle": "..."
         }
     },
     "openidm" : {
@@ -435,9 +506,9 @@
                     }
                 },
                 "BaseApplicationsView" : {
-                    "noApplicationsHere" : "Your have no apps here",
-                    "noDefaultApplications" : "Your have no default apps",
-                    "noFrequentlyUsedApplications" : "Your have no frequently used apps"
+                    "noApplicationsHere" : "You have no apps here",
+                    "noDefaultApplications" : "You have no default apps",
+                    "noFrequentlyUsedApplications" : "You have no frequently used apps"
                 },
                 "UsersApplicationsView" : {
                     "noApplications" : "You have no applications"

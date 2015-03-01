@@ -1,7 +1,7 @@
-/** 
+/**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2014 ForgeRock AS. All rights reserved.
+ * Copyright (c) 2011-2015 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -33,7 +33,7 @@
  */
 define("config/routes/AMRoutesConfig", [
 ], function() {
-    
+
     var obj = {
         "forgotPassword": {
             view: "org/forgerock/openam/ui/user/profile/ForgotPasswordView",
@@ -83,9 +83,69 @@ define("config/routes/AMRoutesConfig", [
             pattern: "loggedOut??",
             defaults: ["/",""],
             argumentNames: ["realm","additionalParameters"]
+        },
+
+
+        "uma": {
+            view: "org/forgerock/openam/ui/uma/views/resource/ListResource",
+            url: /^uma/,
+            pattern: "uma/resource/",
+            role: "ui-user"
+        },
+        "dialogShare": {
+            base: "editResource",
+            dialog: "org/forgerock/openam/ui/uma/views/share/DialogShare",
+            role: "ui-user",
+            url: /^uma\/resources\/(.+?)\/(share)\//,
+            pattern: "uma/resources/?/share/"
+        },
+        "editResource": {
+            view: "org/forgerock/openam/ui/uma/views/resource/EditResource",
+            url: /^uma\/resources\/(.*?)(?:\/){0,1}$/,
+            role: "ui-user",
+            pattern: "uma/resources/?"
+        },
+        "listResource": {
+            view: "org/forgerock/openam/ui/uma/views/resource/ListResource",
+            url: /^uma\/resources\/$/,
+            defaults: [""],
+            role: "ui-user",
+            pattern: "uma/resources/"
+        },/*
+        "listSubject": {
+            view: "org/forgerock/openam/ui/uma/views/subject/SubjectListView",
+            url: /^uma\/resources\/(.+?)\/(users)\//,
+            role: "ui-user",
+            pattern: "uma/resources/?/users/"
+        },*/
+        "baseShare": {
+            view: "org/forgerock/openam/ui/uma/views/share/BaseShare",
+            url: /^uma\/share\/(.*?)(?:\/){0,1}$/,
+            pattern: "uma/share/?",
+            defaults: [""],
+            role: "ui-user"
+        },
+        "listHistory": {
+            view: "org/forgerock/openam/ui/uma/views/history/ListHistory",
+            role: "ui-user",
+            url: /^uma\/history\/$/,
+            pattern: "uma/history/"
+        },
+        "listSubject": {
+            view: "org/forgerock/openam/ui/uma/views/subjects/ListSubject",
+            role: "ui-user",
+            url: /^uma\/users\/$/,
+            pattern: "uma/users/"
+        },
+        "listApplication": {
+            view: "org/forgerock/openam/ui/uma/views/application/ListApplication",
+            role: "ui-user",
+            defaults: [""],
+            url: /^uma\/apps\/(.*?)(?:\/){0,1}$/,
+            pattern: "uma/apps/?"
         }
 
     };
-    
+
     return obj;
 });

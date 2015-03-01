@@ -47,7 +47,8 @@ define("config/AppConfiguration", [
                         LoginDialog : "org/forgerock/openam/ui/user/login/RESTLoginDialog",
                         RegisterView : "org/forgerock/openam/ui/user/profile/RegisterView",
                         ChangeSecurityDataDialog : "org/forgerock/openam/ui/user/profile/ChangeSecurityDataDialog",
-                        ConfirmPasswordDialog : "org/forgerock/commons/ui/user/profile/ConfirmPasswordDialog"
+                        ConfirmPasswordDialog : "org/forgerock/commons/ui/user/profile/ConfirmPasswordDialog",
+                        ResourceEditDialog : "org/forgerock/openam/ui/uma/share/DialogShare"
                     }
                 },
                 {
@@ -101,6 +102,8 @@ define("config/AppConfiguration", [
                     moduleClass: "org/forgerock/commons/ui/common/util/UIUtils",
                     configuration: {
                         templateUrls: [
+                            "templates/uma/backgrid/cell/RevokeCell.html",
+                            "templates/uma/backgrid/cell/SelectizeCell.html"
                         ]
                     }
                 },
@@ -138,11 +141,30 @@ define("config/AppConfiguration", [
                                         "name": "config.AppConfiguration.Navigation.links.dashboard",
                                         "icon": "glyph-icon-th-list",
                                         "inactive": false
-                                    }/*,
-                                    "oauth2": {
-                                        "url": "#oauth2/tokens",
-                                        "name": "config.AppConfiguration.Navigation.links.oauthtokens"
-                                    }*/
+                                    },
+                                    "uma": {
+                                        "url": "#uma/resources/",
+                                        "icon": "glyph-icon-user",
+                                        "name": "config.AppConfiguration.Navigation.links.uma",
+                                        "urls": {
+                                            "listResource": {
+                                                "url": "#uma/resources/",
+                                                "name": "config.AppConfiguration.Navigation.links.umaLinks.resources"
+                                            },
+                                            "listHistory": {
+                                                "url": "#uma/history/",
+                                                "name": "config.AppConfiguration.Navigation.links.umaLinks.history"
+                                            },
+                                            /*"users": {
+                                                "url": "#uma/users/",
+                                                "name": "config.AppConfiguration.Navigation.links.umaLinks.users"
+                                            },*/
+                                            "listApplication": {
+                                                "url": "#uma/apps/",
+                                                "name": "config.AppConfiguration.Navigation.links.umaLinks.apps"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

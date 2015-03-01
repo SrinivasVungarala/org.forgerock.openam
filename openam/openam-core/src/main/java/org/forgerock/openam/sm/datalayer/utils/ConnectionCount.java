@@ -11,16 +11,19 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 package org.forgerock.openam.sm.datalayer.utils;
+
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.forgerock.openam.cts.impl.queue.QueueSelector;
 import org.forgerock.openam.sm.datalayer.api.ConnectionType;
 import org.forgerock.openam.sm.datalayer.api.StoreMode;
+import org.forgerock.openam.sm.datalayer.impl.ldap.LdapDataLayerConfiguration;
 import org.forgerock.util.Reject;
-
-import javax.inject.Inject;
 
 /**
  * Logic to resolve the number of connections used by the three main users of the Service Management layer.
@@ -28,17 +31,18 @@ import javax.inject.Inject;
  * @see ConnectionType
  */
 public class ConnectionCount {
-    static final int MINIMUM_CONNECTIONS = 6;
-    private final StoreMode storeMode;
+    static final int MINIMUM_CONNECTIONS = 9;
+    private final Map<ConnectionType, LdapDataLayerConfiguration> dataLayerConfiguration;
 
     /**
      * Guice initialised constructor.
      *
-     * @param storeMode Non null required for calculating connections.
+     * @param dataLayerConfiguration Configuration object from which the StoreMode (required for calculating
+     *                               connections) can be obtained.
      */
     @Inject
-    public ConnectionCount(StoreMode storeMode) {
-        this.storeMode = storeMode;
+    public ConnectionCount(Map<ConnectionType, LdapDataLayerConfiguration> dataLayerConfiguration) {
+        this.dataLayerConfiguration = dataLayerConfiguration;
     }
 
     /**
@@ -59,25 +63,50 @@ public class ConnectionCount {
         Reject.ifTrue(max < MINIMUM_CONNECTIONS);
         switch (type) {
             case CTS_ASYNC:
-                if (storeMode == StoreMode.DEFAULT) {
-                    max = max / 2;
+                if (dataLayerConfiguration.get(type).getStoreMode() == StoreMode.DEFAULT) {
+                    max = (max - 1) / 4;
                 } else {
                     max = max - 2;
                 }
                 return findPowerOfTwo(max);
             case CTS_REAPER:
                 return 1;
+            case RESOURCE_SETS:
+                if (dataLayerConfiguration.get(type).getStoreMode() == StoreMode.DEFAULT) {
+                    max = (max - 1) / 4;
+                }
+                return max;
+            case UMA_AUDIT_ENTRY:
+                if (dataLayerConfiguration.get(type).getStoreMode() == StoreMode.DEFAULT) {
+                    max = (max - 1) / 4;
+                }
+                return max;
             case DATA_LAYER:
                 /**
                   * Ensure that the DATA_LAYER connection type fits into the available
                   * connection space alongside CTS_REAPER and CTS_ASYNC
                   */
-                int async = getConnectionCount(max, ConnectionType.CTS_ASYNC);
-                int reaper = getConnectionCount(max, ConnectionType.CTS_REAPER);
-                return max - (async + reaper);
+                int async = getSMSConnectionCount(max, ConnectionType.CTS_ASYNC);
+                int reaper = getSMSConnectionCount(max, ConnectionType.CTS_REAPER);
+                int resourceSets = getSMSConnectionCount(max, ConnectionType.RESOURCE_SETS);
+                int auditEntry = getSMSConnectionCount(max, ConnectionType.UMA_AUDIT_ENTRY);
+                return max - (async + reaper + resourceSets + auditEntry);
             default:
                 throw new IllegalStateException();
         }
+    }
+
+    /**
+     *
+     * @param max
+     * @param type
+     * @return
+     */
+    private int getSMSConnectionCount(int max, ConnectionType type) {
+        if (dataLayerConfiguration.get(type).getStoreMode() == StoreMode.DEFAULT) {
+            return getConnectionCount(max, type);
+        }
+        return 0;
     }
 
     /**

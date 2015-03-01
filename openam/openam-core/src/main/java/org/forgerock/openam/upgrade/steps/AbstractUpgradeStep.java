@@ -11,27 +11,32 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2013-2014 ForgeRock AS.
+ * Copyright 2013-2015 ForgeRock AS.
  */
 package org.forgerock.openam.upgrade.steps;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.security.auth.Subject;
+
+import com.sun.identity.entitlement.opensso.SubjectUtils;
+import org.forgerock.openam.sm.datalayer.api.ConnectionFactory;
+import org.forgerock.openam.sm.datalayer.api.ConnectionType;
+import org.forgerock.openam.sm.datalayer.api.DataLayer;
+import org.forgerock.openam.sm.datalayer.api.DataLayerException;
+import org.forgerock.openam.upgrade.UpgradeException;
+import org.forgerock.openam.utils.CollectionUtils;
+import org.forgerock.opendj.ldap.Connection;
+import org.forgerock.opendj.ldap.ErrorResultException;
 
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.sm.OrganizationConfigManager;
 import com.sun.identity.sm.SMSException;
-import org.forgerock.openam.sm.datalayer.api.DataLayerConstants;
-import org.forgerock.openam.upgrade.UpgradeException;
-import org.forgerock.openam.utils.CollectionUtils;
-import org.forgerock.opendj.ldap.Connection;
-import org.forgerock.opendj.ldap.ConnectionFactory;
-import org.forgerock.opendj.ldap.ErrorResultException;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ResourceBundle;
-import java.util.Set;
 
 /**
  * An abstract class that provides utility methods for upgrade steps.
@@ -43,11 +48,11 @@ public abstract class AbstractUpgradeStep implements UpgradeStep {
     protected static final Debug DEBUG = Debug.getInstance("amUpgrade");
     protected static ResourceBundle BUNDLE = ResourceBundle.getBundle("amUpgrade");
     private final PrivilegedAction<SSOToken> adminTokenAction;
-    private final ConnectionFactory connectionFactory;
+    private final ConnectionFactory<Connection> connectionFactory;
 
     @Inject
     public AbstractUpgradeStep(final PrivilegedAction<SSOToken> adminTokenAction,
-                               @Named(DataLayerConstants.DATA_LAYER_BINDING) final ConnectionFactory connectionFactory) {
+            @DataLayer(ConnectionType.DATA_LAYER) final ConnectionFactory connectionFactory) {
         this.adminTokenAction = adminTokenAction;
         this.connectionFactory = connectionFactory;
     }
@@ -59,6 +64,19 @@ public abstract class AbstractUpgradeStep implements UpgradeStep {
      */
     protected final SSOToken getAdminToken() {
         return AccessController.doPrivileged(adminTokenAction);
+    }
+
+    /**
+     * Return an admin subject built out of the admin token.
+     *
+     * @return an admin subject.
+     */
+    protected final Subject getAdminSubject() {
+        final SSOToken adminToken = getAdminToken();
+        if (adminToken == null) {
+            return null;
+        }
+        return SubjectUtils.createSubject(adminToken);
     }
 
     /**
@@ -89,7 +107,7 @@ public abstract class AbstractUpgradeStep implements UpgradeStep {
      * @return An LDAP connection object set up based on the configuration store settings.
      * @throws ErrorResultException If there was a problem establishing a connection to a valid server.
      */
-    protected final Connection getConnection() throws ErrorResultException {
-        return connectionFactory.getConnection();
+    protected final Connection getConnection() throws DataLayerException {
+        return connectionFactory.create();
     }
 }

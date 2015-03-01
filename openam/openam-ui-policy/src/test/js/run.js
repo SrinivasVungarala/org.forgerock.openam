@@ -24,42 +24,22 @@
 
 /*global $, require, QUnit */
 
-require.config({
-    paths: {
-        sinon: "../test/libs/sinon-1.10.3",
-        jquery: "libs/jquery-2.1.1-min",
-        text: "../test/text"
-    },
-    shim: {
-        sinon: {
-            exports: "sinon"
-        }
-    }
-});
-
-require([
+define([
     "jquery",
     "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/main/EventManager",
-    "sinon",
-    "../test/tests/mocks/systemInit",
-    "../test/tests/mocks/policyInit",
     "../test/tests/policy"
-], function ($, constants, eventManager, sinon, systemInit, policyInit, policyTests) {
+], function ($, constants, eventManager, policyTests) {
+    return function (server) {
+        eventManager.registerListener(constants.EVENT_APP_INTIALIZED, function () {
+            $.doTimeout = function (name, time, func) {
+                func(); // run the function immediately rather than delayed.
+            };
 
-    var server = sinon.fakeServer.create();
-    server.autoRespond = true;
-    systemInit(server);
-    policyInit(server);
-
-    eventManager.registerListener(constants.EVENT_APP_INTIALIZED, function () {
-        $.doTimeout = function (name, time, func) {
-            func(); // run the function immediately rather than delayed.
-        };
-
-        require("ThemeManager").getTheme().then(function () {
-            QUnit.start();
-            policyTests.executeAll(server);
+            require("ThemeManager").getTheme().then(function () {
+                QUnit.start();
+                policyTests.executeAll(server);
+            });
         });
-    });
+    }
 });

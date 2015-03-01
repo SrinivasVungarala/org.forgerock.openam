@@ -11,18 +11,25 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 package org.forgerock.openam.sm.datalayer.utils;
 
-import org.forgerock.openam.sm.datalayer.api.ConnectionType;
-import org.forgerock.openam.sm.datalayer.api.StoreMode;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import static org.fest.assertions.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.fest.assertions.Assertions.assertThat;
+import org.forgerock.openam.cts.impl.CTSDataLayerConfiguration;
+import org.forgerock.openam.sm.datalayer.api.ConnectionType;
+import org.forgerock.openam.sm.datalayer.api.StoreMode;
+import org.forgerock.openam.sm.datalayer.impl.ResourceSetDataLayerConfiguration;
+import org.forgerock.openam.sm.datalayer.impl.UmaAuditDataLayerConfiguration;
+import org.forgerock.openam.sm.datalayer.impl.ldap.LdapDataLayerConfiguration;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class ConnectionCountTest {
 
@@ -30,7 +37,18 @@ public class ConnectionCountTest {
 
     @BeforeMethod
     public void setup() {
-        count = new ConnectionCount(StoreMode.DEFAULT);
+        LdapDataLayerConfiguration ctsConfiguration = mock(LdapDataLayerConfiguration.class);
+        LdapDataLayerConfiguration resourceSetConfiguration = mock(LdapDataLayerConfiguration.class);
+        LdapDataLayerConfiguration umaAuditConfiguration = mock(UmaAuditDataLayerConfiguration.class);
+        when(ctsConfiguration.getStoreMode()).thenReturn(StoreMode.DEFAULT);
+        when(resourceSetConfiguration.getStoreMode()).thenReturn(StoreMode.DEFAULT);
+        when(umaAuditConfiguration.getStoreMode()).thenReturn(StoreMode.DEFAULT);
+        Map<ConnectionType, LdapDataLayerConfiguration> configMap = new HashMap<ConnectionType, LdapDataLayerConfiguration>();
+        configMap.put(ConnectionType.CTS_ASYNC, ctsConfiguration);
+        configMap.put(ConnectionType.CTS_REAPER, ctsConfiguration);
+        configMap.put(ConnectionType.RESOURCE_SETS, resourceSetConfiguration);
+        configMap.put(ConnectionType.UMA_AUDIT_ENTRY, umaAuditConfiguration);
+        count = new ConnectionCount(configMap);
     }
 
     @Test
@@ -48,7 +66,7 @@ public class ConnectionCountTest {
 
     @Test (expectedExceptions = IllegalArgumentException.class)
     public void shouldRejectAMinimumCount() {
-        count.getConnectionCount(3, ConnectionType.CTS_ASYNC);
+        count.getConnectionCount(6, ConnectionType.CTS_ASYNC);
     }
 
     @Test
@@ -63,7 +81,9 @@ public class ConnectionCountTest {
         int max = 10;
         int total = count.getConnectionCount(max, ConnectionType.CTS_ASYNC) +
                 count.getConnectionCount(max, ConnectionType.CTS_REAPER) +
-                count.getConnectionCount(max, ConnectionType.DATA_LAYER);
+                count.getConnectionCount(max, ConnectionType.RESOURCE_SETS) +
+                count.getConnectionCount(max, ConnectionType.DATA_LAYER) +
+                count.getConnectionCount(max, ConnectionType.UMA_AUDIT_ENTRY);
         assertThat(total).isEqualTo(max);
     }
 
@@ -81,7 +101,10 @@ public class ConnectionCountTest {
     }
 
     public static void main(String... args) {
-        ConnectionCount count = new ConnectionCount(StoreMode.DEFAULT);
+        Map<ConnectionType, LdapDataLayerConfiguration> configMap = new HashMap<ConnectionType, LdapDataLayerConfiguration>();
+        configMap.put(ConnectionType.CTS_ASYNC, new CTSDataLayerConfiguration("ou=root-dn"));
+        configMap.put(ConnectionType.RESOURCE_SETS, new ResourceSetDataLayerConfiguration("ou=root-dn"));
+        ConnectionCount count = new ConnectionCount(configMap);
         System.out.println("Total = Async:Reaper:Data");
         for (int ii = ConnectionCount.MINIMUM_CONNECTIONS; ii < 1000; ii++) {
             int a = count.getConnectionCount(ii, ConnectionType.CTS_ASYNC);

@@ -27,7 +27,7 @@
  */
 
 /**
- * Portions Copyrighted 2011-2013 ForgeRock AS
+ * Portions Copyrighted 2011-2015 ForgeRock AS.
  */
 package com.iplanet.services.ldap;
 
@@ -437,14 +437,12 @@ public class ServerConfigMgr {
         idCallbacks[1] = passwordCallback;
         
         try {
-            AMIdentityRepository amir = new AMIdentityRepository(ssoToken, "/");
+            AMIdentityRepository amir = new AMIdentityRepository("/", ssoToken);
             if (!amir.authenticate(idCallbacks)) {
                 passwordCallback.setPassword(newPassword.toCharArray());
                 return amir.authenticate(idCallbacks);
             }
             return true;
-        } catch (SSOException ex) {
-            return false;
         } catch (AuthLoginException ex) {
             return false;
         } catch (IdRepoException ex) {

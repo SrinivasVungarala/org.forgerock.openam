@@ -25,16 +25,28 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.forgerock.guice.core.InjectorHolder;
+import org.forgerock.json.fluent.JsonPointer;
+import org.forgerock.openam.cts.api.filter.TokenFilter;
+import org.forgerock.openam.cts.api.filter.TokenFilterBuilder;
 import org.forgerock.openam.cts.api.tokens.Token;
+import org.forgerock.openam.cts.api.tokens.TokenIdGenerator;
 import org.forgerock.openam.tokens.Converter;
 import org.forgerock.openam.tokens.CoreTokenField;
 import org.forgerock.openam.tokens.Field;
 import org.forgerock.openam.tokens.TokenType;
 import org.forgerock.openam.tokens.Type;
 import org.forgerock.util.Reject;
+import org.forgerock.util.query.QueryFilter;
+import org.forgerock.util.query.QueryFilterVisitor;
+
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * A TokenAdapter that can adapt Java bean-compliant POJOs that have been annotated with the annotations in
@@ -44,23 +56,27 @@ import org.forgerock.util.Reject;
 public class JavaBeanAdapter<T> implements TokenAdapter<T> {
 
     private final Class<T> beanClass;
+    private final TokenIdGenerator idGenerator;
     private TokenType tokenType;
     private final List<FieldDetails> fields = new ArrayList<FieldDetails>();
+    private final Map<String, FieldDetails> fieldsMap = new HashMap<String, FieldDetails>();
     private FieldDetails idField;
-    private boolean initialised = false;
 
-    JavaBeanAdapter(Class<T> beanClass) {
+    @Inject
+    public JavaBeanAdapter(@Assisted Class<T> beanClass, TokenIdGenerator idGenerator) {
         Type type = beanClass.getAnnotation(Type.class);
         if (type == null || type.value() == null) {
             throw new IllegalArgumentException("Token class does not declare token type: " + beanClass.getName());
         }
         this.beanClass = beanClass;
+        this.idGenerator = idGenerator;
+        initialise();
     }
 
     /**
      * Process the annotations on the bean class, and throw exceptions for invalid configuration.
      */
-    void initialise() {
+    private void initialise() {
         this.tokenType = beanClass.getAnnotation(Type.class).value();
         BeanInfo beanInfo;
         try {
@@ -95,11 +111,16 @@ public class JavaBeanAdapter<T> implements TokenAdapter<T> {
                     }
                     validateConverterType(attributeType, beanFieldType, converterType);
                     Converter converter = InjectorHolder.getInstance(converterType);
-                    FieldDetails field = new FieldDetails(tokenField, readMethod, writeMethod, converter);
+                    boolean generated = f.generated();
+                    FieldDetails field = new FieldDetails(tokenField, readMethod, writeMethod, converter, generated);
                     if (tokenField == CoreTokenField.TOKEN_ID) {
                         idField = field;
                     } else {
+                        if (generated) {
+                            throw new IllegalStateException("Non-id values cannot be generated: " + f.toString());
+                        }
                         fields.add(field);
+                        fieldsMap.put(pd.getName(), field);
                     }
                 }
             }
@@ -107,7 +128,6 @@ public class JavaBeanAdapter<T> implements TokenAdapter<T> {
         if (idField == null) {
             throw new IllegalStateException("The bean class does not declare an ID field");
         }
-        initialised = true;
     }
 
     /**
@@ -152,22 +172,26 @@ public class JavaBeanAdapter<T> implements TokenAdapter<T> {
 
     @Override
     public Token toToken(T o) {
-        if (!initialised) {
-            throw new IllegalStateException("Not initialised");
-        }
         Reject.ifTrue(o == null, "Object must not be null");
-        Token token = new Token((String) idField.read(o), tokenType);
+        String tokenId = (String) idField.read(o);
+        if (tokenId == null && idField.generated) {
+            tokenId = idGenerator.generateTokenId(null);
+            idField.write(tokenId, o);
+        } else if (tokenId == null) {
+            throw new IllegalArgumentException("ID field is not generated and is null");
+        }
+        Token token = new Token(tokenId, tokenType);
         for (FieldDetails details : fields) {
-            token.setAttribute(details.tokenField, details.read(o));
+            Object value = details.read(o);
+            if (value != null) {
+                token.setAttribute(details.tokenField, value);
+            }
         }
         return token;
     }
 
     @Override
     public T fromToken(Token token) {
-        if (!initialised) {
-            throw new IllegalStateException("Not initialised");
-        }
         Reject.ifTrue(token == null, "Object must not be null");
         if (token.getType() != tokenType) {
             throw new IllegalArgumentException("Wrong token type (" + token.getType().name() + ") - expecting " +
@@ -196,18 +220,116 @@ public class JavaBeanAdapter<T> implements TokenAdapter<T> {
         }
     }
 
+    /**
+     * Use the bean mappings that have been parsed to turn a query keyed by bean property names into a query keyed by
+     * token property names.
+     * @param filter The query keyed by bean property names.
+     * @return The transformed query keyed by token field names.
+     */
+    public TokenFilter toTokenQuery(QueryFilter<String> filter) {
+        TokenFilterBuilder builder = new TokenFilterBuilder();
+        List<QueryFilter<CoreTokenField>> tokenFilter = new ArrayList<QueryFilter<CoreTokenField>>();
+        tokenFilter.add(filter.accept(TOKEN_QUERY_TRANSLATOR, null));
+
+        tokenFilter.add(QueryFilter.equalTo(CoreTokenField.TOKEN_TYPE, tokenType));
+
+        return builder.withQuery(QueryFilter.and(tokenFilter)).build();
+    }
+
+    private final QueryFilterVisitor<QueryFilter<CoreTokenField>, Void, String> TOKEN_QUERY_TRANSLATOR =
+            new QueryFilterVisitor<QueryFilter<CoreTokenField>, Void, String>() {
+        @Override
+        public QueryFilter<CoreTokenField> visitAndFilter(Void initial, List<QueryFilter<String>> subFilters) {
+            List<QueryFilter<CoreTokenField>> queryFilters = new ArrayList<QueryFilter<CoreTokenField>>();
+            for (QueryFilter<String> filter : subFilters) {
+                queryFilters.add(filter.accept(this, null));
+            }
+            return QueryFilter.and(queryFilters);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitBooleanLiteralFilter(Void initial, boolean value) {
+            return value ? QueryFilter.<CoreTokenField>alwaysTrue() : QueryFilter.<CoreTokenField>alwaysFalse();
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitContainsFilter(Void initial, String field, Object valueAssertion) {
+            return QueryFilter.contains(convertToTokenField(field), valueAssertion);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitEqualsFilter(Void initial, String field, Object valueAssertion) {
+            return QueryFilter.equalTo(convertToTokenField(field), valueAssertion);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitExtendedMatchFilter(Void initial, String field, String operator, Object valueAssertion) {
+            return QueryFilter.extendedMatch(convertToTokenField(field), operator, valueAssertion);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitGreaterThanFilter(Void initial, String field, Object valueAssertion) {
+            return QueryFilter.greaterThan(convertToTokenField(field), valueAssertion);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitGreaterThanOrEqualToFilter(Void initial, String field, Object valueAssertion) {
+            return QueryFilter.greaterThanOrEqualTo(convertToTokenField(field), valueAssertion);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitLessThanFilter(Void initial, String field, Object valueAssertion) {
+            return QueryFilter.lessThan(convertToTokenField(field), valueAssertion);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitLessThanOrEqualToFilter(Void initial, String field, Object valueAssertion) {
+            return QueryFilter.lessThanOrEqualTo(convertToTokenField(field), valueAssertion);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitNotFilter(Void initial, QueryFilter<String> subFilter) {
+            return QueryFilter.not(subFilter.accept(this, null));
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitOrFilter(Void initial, List<QueryFilter<String>> subFilters) {
+            List<QueryFilter<CoreTokenField>> queryFilters = new ArrayList<QueryFilter<CoreTokenField>>();
+            for (QueryFilter<String> filter : subFilters) {
+                queryFilters.add(filter.accept(this, null));
+            }
+            return QueryFilter.or(queryFilters);
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitPresentFilter(Void initial, String field) {
+            return QueryFilter.present(convertToTokenField(field));
+        }
+
+        @Override
+        public QueryFilter<CoreTokenField> visitStartsWithFilter(Void initial, String field, Object valueAssertion) {
+            return QueryFilter.startsWith(convertToTokenField(field), valueAssertion);
+        }
+
+        private CoreTokenField convertToTokenField(String field) {
+            return fieldsMap.get(field).tokenField;
+        }
+    };
+
     private static class FieldDetails {
         private final CoreTokenField tokenField;
         private final Method readMethod;
         private final Method writeMethod;
         private final Converter converter;
+        private final boolean generated;
 
         FieldDetails(CoreTokenField tokenField, Method readMethod, Method writeMethod,
-                Converter converter) {
+                Converter converter, boolean generated) {
             this.tokenField = tokenField;
             this.readMethod = readMethod;
             this.writeMethod = writeMethod;
             this.converter = converter;
+            this.generated = generated;
         }
 
         Object read(Object o) {

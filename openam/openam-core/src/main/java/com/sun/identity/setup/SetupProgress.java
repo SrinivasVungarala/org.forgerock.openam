@@ -24,13 +24,12 @@
  *
  * $Id: SetupProgress.java,v 1.10 2008/08/31 06:56:18 hengming Exp $
  *
- */
-
-/*
- * Portions Copyrighted 2011-2013 ForgeRock, Inc.
+ * Portions Copyrighted 2011-2015 ForgeRock AS.
  */
 
 package com.sun.identity.setup;
+
+import org.forgerock.openam.utils.IOUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -150,11 +149,7 @@ public class SetupProgress {
     }
 
     public static void closeOutputStream() {
-        try {
-            writer.close();
-        } catch (IOException ex) {
-            //ignore
-        }
+        IOUtils.closeIfNotNull(writer);
     }
 
     /**

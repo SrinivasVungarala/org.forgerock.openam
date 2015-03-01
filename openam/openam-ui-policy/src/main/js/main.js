@@ -75,7 +75,7 @@ require.config({
             exports: "doTimeout"
         },
         handlebars: {
-            exports: "handlebars"
+            exports: "Handlebars"
         },
         sortable: {
             deps: ["jquery"]
@@ -112,7 +112,6 @@ require.config({
         selectize: {
             deps: ["jquery"]
         }
-
     }
 });
 

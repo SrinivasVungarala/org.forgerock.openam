@@ -3,7 +3,7 @@
 
 {{! The IDs are used for testing }}
 <div class="col2">
-    <div class="review-row clearfix{{#equals '' entity.name}} invalid{{/equals}}{{#if options.invalidName}} invalid{{/if}}" tabindex="0">
+    <div class="review-row clearfix{{#equals '' entity.name}} invalid{{/equals}}{{#if options.invalidName}} invalid{{/if}}{{#if options.incorrectName}} invalid{{/if}}" tabindex="0">
         <h2>{{t "policy.common.name"}}</h2>
         {{#unless advancedMode}}
         {{#if entity.name}}
@@ -12,7 +12,17 @@
         {{/unless}}
         <div class="advanced-mode">
 
-            <p id="reviewName"{{#unless entity.name}} class="invalid"{{/unless}}>{{#if entity.name}}{{entity.name}}{{else}}{{t "policy.summaryReview.noName"}}{{/if}}</p>
+            <p id="reviewName" {{#unless entity.name}} class="invalid"{{/unless}}>
+            {{#if options.incorrectName}}
+                {{t "policy.summaryReview.invalidName"}}
+            {{else}}
+                {{#if entity.name}}
+                    {{entity.name}}
+                {{else}}
+                    {{t "policy.summaryReview.noName"}}
+                {{/if}}
+            {{/if}}
+            </p>
 
             {{#if entity.description}}
             <h2>{{t "policy.common.description"}}</h2>
@@ -66,7 +76,7 @@
         {{/unless}}
         <div class="advanced-mode">
             {{#if subjectString}}
-            <pre>{{subjectString}}</pre>
+            <pre id="reviewSubj">{{subjectString}}</pre>
             {{else}}
             <p>{{t "policy.summaryReview.noSubjectConditions"}}</p>
             {{/if}}
@@ -80,7 +90,7 @@
         {{/unless}}
         <div class="advanced-mode">
             {{#if environmentString}}
-            <pre>{{environmentString}}</pre>
+            <pre id="reviewEnv">{{environmentString}}</pre>
             {{else}}
             <p>{{t "policy.summaryReview.noEnvironmentConditions"}}</p>
             {{/if}}
