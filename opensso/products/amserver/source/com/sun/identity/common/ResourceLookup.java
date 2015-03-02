@@ -34,9 +34,12 @@ import com.iplanet.am.util.Cache;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.search.FileLookup;
 import com.sun.identity.shared.search.FileLookupException;
+
 import java.io.File;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Hashtable;
+
 import javax.servlet.ServletContext;
 
 /**
@@ -48,7 +51,7 @@ import javax.servlet.ServletContext;
 public class ResourceLookup {
 
     final private static java.util.concurrent.ConcurrentHashMap<String,String> resourceNameCache = new java.util.concurrent.ConcurrentHashMap<String,String>();
-	final private static Cache<String, Boolean> resourceNameCacheNotExists=new Cache<String, Boolean>(ResourceLookup.class.getName()+".NotExists");
+//	final private static Cache<String, Boolean> resourceNameCacheNotExists=new Cache<String, Boolean>(ResourceLookup.class.getName()+".NotExists");
 
     private static Debug debug = Debug.getInstance("amResourceLookup");
 
@@ -93,7 +96,7 @@ public class ResourceLookup {
             }
         //}
 
-        if (resourceNameCacheNotExists.get(cacheKey)!=null)
+        if (resourceURLCacheNotExists.get(cacheKey)!=null)
         	return null;
 
         URL resourceUrl = null;
@@ -126,7 +129,7 @@ public class ResourceLookup {
                 resourceNameCache.put(cacheKey, resourceName);
 //            }
         } else {
-		resourceNameCacheNotExists.put(cacheKey, true);
+        	resourceURLCacheNotExists.put(cacheKey, true);
             resourceName = null;
         }
 
@@ -144,10 +147,14 @@ public class ResourceLookup {
         if (resourceURLCacheNotExists.get(resourceName)!=null)
         	return null;
         try {
-        	if (context != null) 
+        	if (context != null){ 
         		resourceURL = context.getResource(resourceName);
-        	if (resourceURL == null && resourceName.endsWith(".xml")) 
+        		debug.error(MessageFormat.format("context.getResource {0}: {1}", resourceName,resourceURL));
+        	}
+        	if (resourceURL == null && resourceName.endsWith(".xml")){ 
                 resourceURL = Thread.currentThread().getContextClassLoader().getResource(resourceName.substring(1));
+                debug.error(MessageFormat.format("Thread.currentThread().getContextClassLoader().getResource {0}: {1}", resourceName,resourceURL));
+        	}
         } catch (Exception e) {
             debug.message("Error getting resource  : " + e.getMessage());
         }
@@ -158,3 +165,4 @@ public class ResourceLookup {
         return resourceURL;
     }
 }
+
