@@ -38,7 +38,6 @@ import com.sun.identity.shared.search.FileLookupException;
 import java.io.File;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Hashtable;
 
 import javax.servlet.ServletContext;
 
@@ -51,7 +50,6 @@ import javax.servlet.ServletContext;
 public class ResourceLookup {
 
     final private static java.util.concurrent.ConcurrentHashMap<String,String> resourceNameCache = new java.util.concurrent.ConcurrentHashMap<String,String>();
-//	final private static Cache<String, Boolean> resourceNameCacheNotExists=new Cache<String, Boolean>(ResourceLookup.class.getName()+".NotExists");
 
     private static Debug debug = Debug.getInstance("amResourceLookup");
 
@@ -83,18 +81,9 @@ public class ResourceLookup {
                 .append(":").append(filename).append(":").append(resourceDir)
                 .toString();
 
-        //if (enableCache) {
-            if ((resourceNameCache != null) && (!resourceNameCache.isEmpty())) {
-                resourceName = (String) resourceNameCache.get(cacheKey);
-                if (resourceName != null
-                        //&& getResourceURL(context, resourceName) != null
-                        ) {
-                    return resourceName;
-//                } else {
-//                    resourceNameCache.remove(cacheKey);
-                }
-            }
-        //}
+        resourceName = (String) resourceNameCache.get(cacheKey);
+        if (resourceName != null) 
+            return resourceName;
 
         if (resourceURLCacheNotExists.get(cacheKey)!=null)
         	return null;
@@ -121,18 +110,11 @@ public class ResourceLookup {
             debug.message("amResourceLookup: resourceURL :" + resourceUrl);
             debug.message("amResourceLookup: resourceName:" + resourceName);
         }
-        if (resourceUrl != null) {
-//            if (enableCache) {
-//                if (resourceNameCache == null) {
-//                    resourceNameCache = new java.util.concurrent.ConcurrentHashMap();
-//                }
-                resourceNameCache.put(cacheKey, resourceName);
-//            }
-        } else {
+        if (resourceUrl != null) 
+            resourceNameCache.put(cacheKey, resourceName);
+        else
         	resourceURLCacheNotExists.put(cacheKey, true);
-            resourceName = null;
-        }
-
+        
         return resourceName;
     }
 
