@@ -13,6 +13,7 @@
             },
             "CommonMessages" : {
                 "authenticationFailed" : "User name/password combination is invalid.",
+                "authenticationFailedWarning" : "Invalid Password! Warning: Account lockout will occur after next __count__ password failure(s)",
                 "loginFailureLockout" : "Your password has expired. Please contact service desk to reset your password",
                 "maxSessionsLimitOrSessionQuota": "Maximum sessions limit reached or session quota has exhausted.",
                 "serviceUnavailable" : "Service unavailable",
@@ -226,6 +227,8 @@
             "actions" : "Actions",
             "complete" : "Complete",
             "revoke" : "Revoke",
+            "done" : "Done",
+            "ok" : "OK",
             "copyright" : "Copyright &copy; 2010-15 ForgeRock AS, all rights reserved.",
             "sessionExpired" : "Session Expired",
             "enableCookies" : "Cookies must be enabled to login",
@@ -390,7 +393,7 @@
             }
         },
         "share": {
-            "people": "Search for people",
+            "people": "Add or select people to share your resource with",
             "permission": "Select Permission",
             "share": "Share",
             "info": "Shared with __count__ person",
@@ -400,7 +403,8 @@
                 "success": "Resource successfully shared",
                 "fail": "Failed to share resource"
             },
-            "notSpecifiedResource": "You have not specified a resource to share."
+            "notSpecifiedResource": "You have not specified a resource to share.",
+            "advanced" : "Advanced"
         },
         "resources": {
             "all": {
@@ -411,7 +415,9 @@
             "list": {
                 "title": "Resources",
                 "subtitle": "All your shared resources",
-                "grid": ["Resources", "Modified By", "Last accessed", "Host"]
+                "grid": ["Resources", "Host", "Type"],
+                "revokeAllResourcesSuccess" : "All resources successfully revoked",
+                "revokeAllResourcesFail" : "We have been unable revoke access to your resources. Please contact your Administrator"
             },
             "show": {
                 "subtitle": "Users allowed to access this resource and their permissions",
@@ -419,7 +425,12 @@
                 "share": "Share",
                 "revokeAll": "Revoke All",
                 "revokeAllMessage": "Are you sure you want to revoke all access?",
-                "resource" : "Resource"
+                "resource" : "Resource",
+                "revokeAllPoliciesSuccess" : "All access successfully revoked for your resource",
+                "revokeAllPoliciesFail" : "We have been unable revoke all access to your resource. Please contact your Administrator",
+                "revokePolicySuccess" : "Access successfully revoked for your resource",
+                "revokePolicyFail" : "We have been unable revoke access to your resource. Please contact your Administrator",
+                "revokeAllResourcesMessage": "Are you sure you want to revoke all access? Selecting OK will not remove your resources, but will remove all the shares within your resources."
             }
         },
         "history": {
@@ -443,80 +454,6 @@
         "apps": {
             "title": "Apps",
             "subtitle": "..."
-        }
-    },
-    "openidm" : {
-        "ui" : {
-            "common" : {
-                "components" : {
-                    "LineTableView" : {
-                        "seeMoreItems" : "see more",
-                        "noItems" : "No items"
-                    }
-                }
-            },
-            "admin" : {
-                "tasks" : {
-                    "TasksMenuView" : {
-                        "noTasksAssigned" : "You do not have any tasks assigned to you right now.",
-                        "noTasksInGroupQueue" : "You do not have any tasks in your's group's queue now.",
-                        "denyDefaultReason" : "Enter a reason for denying this request",
-                        "acceptanceForm" : {
-                            "for" : "For",
-                            "application" : "Application",
-                            "requested" : "Requested",
-                            "actions" : "Actions"
-                        },
-                        "headers" : {
-                            "initiator" : "Initiator",
-                            "key" : "Key",
-                            "requested" : "Requested",
-                            "inQueue" : "In queue",
-                            "actions" : "Actions"
-                        }
-                    },
-                    "TasksWithMenuView" : {
-                        "chooseTask" : "Choose a task"
-                    },
-                    "StartProcessDashboardView" : {
-                        "chooseProcess" : "Please choose a process to start",
-                        "noProcesses": "No processes",
-                        "noDataRequired": "No data required"
-                    }
-                },
-                "users" : {
-                    "UsersView" : {
-                        "display" : "Display",
-                        "perPage" : "per page"
-                    },
-                    "AdminUserProfileView" : {
-                        "profileOwnership" : "%s' profile",
-                        "profileWillBeDeleted" : "%s account will be deleted."
-                    },
-                    "ChangeUserPasswordDialog" : {
-                        "securityDataChangeForWhom" : "Security data change for %s"
-                    }
-                }
-            },
-            "apps" : {
-                "dashboard" : {
-                    "NotificationsView" : {
-                        "noNotifications" : "You have no notifications right now.",
-                        "seeMoreNotifications" : "see more notifications"
-                    }
-                },
-                "BaseApplicationsView" : {
-                    "noApplicationsHere" : "You have no apps here",
-                    "noDefaultApplications" : "You have no default apps",
-                    "noFrequentlyUsedApplications" : "You have no frequently used apps"
-                },
-                "UsersApplicationsView" : {
-                    "noApplications" : "You have no applications"
-                },
-                "FrequentlyUsedApplicationsView" : {
-                    "clickHereToAdd" : "Click %shere%s to add."
-                }
-            }
         }
     }
 }

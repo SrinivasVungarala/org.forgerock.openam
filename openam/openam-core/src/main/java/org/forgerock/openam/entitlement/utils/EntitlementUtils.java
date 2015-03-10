@@ -2,18 +2,20 @@
  * The contents of this file are subject to the terms of the Common Development and
  * Distribution License (the License). You may not use this file except in compliance with the
  * License.
- * 
+ *
  * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
  * specific language governing permission and limitations under the License.
- * 
+ *
  * When distributing Covered Software, include this CDDL Header Notice in each file and include
  * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
- * 
+ *
  * Copyright 2014-2015 ForgeRock AS.
  */
 package org.forgerock.openam.entitlement.utils;
+
+import static com.sun.identity.entitlement.opensso.EntitlementService.*;
 
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.entitlement.Application;
@@ -23,28 +25,18 @@ import com.sun.identity.entitlement.ApplicationTypeManager;
 import com.sun.identity.entitlement.DenyOverride;
 import com.sun.identity.entitlement.EntitlementException;
 import com.sun.identity.entitlement.PrivilegeManager;
-import static com.sun.identity.entitlement.opensso.EntitlementService.APPLICATION_CLASSNAME;
-import static com.sun.identity.entitlement.opensso.EntitlementService.ATTR_NAME_META;
-import static com.sun.identity.entitlement.opensso.EntitlementService.ATTR_NAME_SUBJECT_ATTR_NAMES;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_ACTIONS;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_APPLICATION_DESC;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_CONDITIONS;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_ENTITLEMENT_COMBINER;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_RESOURCES;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_RESOURCE_COMP_IMPL;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_RESOURCE_TYPE_UUIDS;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_SAVE_INDEX_IMPL;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_SEARCH_INDEX_IMPL;
-import static com.sun.identity.entitlement.opensso.EntitlementService.CONFIG_SUBJECTS;
 
 import com.sun.identity.entitlement.opensso.SubjectUtils;
 import com.sun.identity.security.AdminTokenAction;
 import java.security.AccessController;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.forgerock.openam.entitlement.ResourceType;
 import org.forgerock.util.Reject;
 
 import javax.security.auth.Subject;
@@ -53,6 +45,29 @@ import javax.security.auth.Subject;
  * Utility methods for managing entitlements.
  */
 public final class EntitlementUtils {
+
+
+    public static final String SERVICE_NAME = "sunEntitlementService";
+    public static final String REALM_DN_TEMPLATE = "ou={0},ou=default,ou=OrganizationConfig,ou=1.0,ou="
+            + SERVICE_NAME + ",ou=services,{1}";
+    public static final String CONFIG_ACTIONS = "actions";
+    public static final String CONFIG_DESCRIPTION = "description";
+    public static final String CONFIG_RESOURCES = "resources";
+    public static final String CONFIG_CREATED_BY = "createdBy";
+    public static final String CONFIG_CREATION_DATE = "creationDate";
+    public static final String CONFIG_LAST_MODIFIED_BY = "lastModifiedBy";
+    public static final String CONFIG_LAST_MODIFIED_DATE = "lastModifiedDate";
+    public static final String CONFIG_NAME = "name";
+    public static final String EMPTY = "";
+    public static final String SCHEMA_RESOURCE_TYPES = "resourceTypes";
+    public static final String CONFIG_RESOURCE_TYPES = "registeredResourceTypes";
+    public static final String CONFIG_PATTERNS = "patterns";
+    public static final String RESOURCE_TYPE = "resourceType";
+    public static final String REGISTERED_APPLICATIONS = "registeredApplications";
+    public static final String APPLICATION_TYPE = "applicationType";
+    public static final String APPLICATION_TYPES = "applicationTypes";
+    public static final String CONFIG_RESOURCE_TYPE_UUIDS = "resourceTypeUuids";
+    public static final String APPLICATION = "application";
 
     private EntitlementUtils() {
     }
@@ -106,7 +121,7 @@ public final class EntitlementUtils {
             app.addAllResourceTypeUuids(resourceTypeUuids);
         }
 
-        String description = getAttribute(data, CONFIG_APPLICATION_DESC);
+        String description = getAttribute(data, CONFIG_DESCRIPTION);
         if (description != null) {
             app.setDescription(description);
         }
@@ -218,6 +233,17 @@ public final class EntitlementUtils {
     }
 
     /**
+     * Returns the set of resource type UUIDs
+     * @param data The entire set of information about an application
+     * @return A set of Strings representing the UUIDs of the ResourceTypes this application is associated with.
+     */
+    public static Set<String> getResourceTypeUUIDs(Map<String, Set<String>> data) {
+        Reject.ifNull(data);
+
+        return data.get(CONFIG_RESOURCE_TYPE_UUIDS);
+    }
+
+    /**
      * Returns the list of conditions from the provided set of data within
      * the entitlement format.
      *
@@ -227,7 +253,7 @@ public final class EntitlementUtils {
     public static Set<String> getDescription(Map<String, Set<String>> data) {
         Reject.ifNull(data);
 
-        return data.get(CONFIG_APPLICATION_DESC);
+        return data.get(CONFIG_DESCRIPTION);
     }
 
     public static Set<String> getResources(Map<String, Set<String>> data) {
@@ -242,22 +268,42 @@ public final class EntitlementUtils {
      * @param data The set of actions that needs to be converted.
      * @return The map of actions after the conversion.
      */
-    public static Map<String, Boolean> getActions(Map<String, Set<String>> data) {
-        Map<String, Boolean> results = new HashMap<String, Boolean>();
-        Set<String> actions = data.get(CONFIG_ACTIONS);
-        if (actions != null) {
-            for (String a : actions) {
-                int index = a.indexOf('=');
-                String name = a;
-                Boolean defaultVal = Boolean.TRUE;
+    public static Map<String, Boolean> getActions(final Map<String, Set<String>> data) {
+        Reject.ifNull(data);
 
-                if (index != -1) {
-                    name = a.substring(0, index);
-                    defaultVal = Boolean.parseBoolean(a.substring(index + 1));
-                }
-                results.put(name, defaultVal);
-            }
+        final Set<String> actionStrings = data.get(CONFIG_ACTIONS);
+
+        if (actionStrings == null) {
+            return Collections.emptyMap();
         }
+
+        return getActions(actionStrings);
+    }
+
+    /**
+     * Transforms the set of action strings to its corresponding map of actions to boolean outcomes.
+     *
+     * @param actionStrings
+     *         action strings
+     *
+     * @return action map
+     */
+    public static Map<String, Boolean> getActions(final Set<String> actionStrings) {
+        Reject.ifNull(actionStrings);
+
+        final Map<String, Boolean> results = new HashMap<String, Boolean>();
+
+        for (String actionString : actionStrings) {
+            final String[] parts = actionString.split("=");
+
+            if (parts.length == 1) {
+                results.put(parts[0], true);
+                continue;
+            }
+
+            results.put(parts[0], Boolean.parseBoolean(parts[1]));
+        }
+
         return results;
     }
 
@@ -362,5 +408,25 @@ public final class EntitlementUtils {
         }
 
         return DenyOverride.class;
+    }
+
+    /**
+     * Create a ResourceType object from a map, mapping strings to sets.
+     * @param realm The realm in which to create the new ResourceType object.
+     * @param uuid The uuid of the created resource type object.
+     * @param data The data map for the object.
+     * @return The newly created ResourceType object.
+     */
+    public static ResourceType resourceTypeFromMap(String realm, String uuid, Map<String, Set<String>> data) {
+        return ResourceType.builder(getAttribute(data, CONFIG_NAME), realm)
+                .setUUID(uuid)
+                .setDescription(getAttribute(data, CONFIG_DESCRIPTION, EMPTY))
+                .addPatterns(data.get(CONFIG_PATTERNS))
+                .addActions(getActions(data))
+                .setCreatedBy(getAttribute(data, CONFIG_CREATED_BY, EMPTY))
+                .setCreationDate(getDateAttributeAsLong(data, CONFIG_CREATION_DATE))
+                .setLastModifiedBy(getAttribute(data, CONFIG_LAST_MODIFIED_BY, EMPTY))
+                .setLastModifiedDate(getDateAttributeAsLong(data, CONFIG_LAST_MODIFIED_DATE))
+                .build();
     }
 }

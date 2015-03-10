@@ -22,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.eq;
 
+import java.util.Collections;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,12 +32,13 @@ import org.forgerock.oauth2.core.OAuth2ProviderSettings;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
 import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.OAuth2RequestFactory;
-import org.forgerock.oauth2.core.TokenStore;
 import org.forgerock.oauth2.core.exceptions.InvalidGrantException;
 import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.oauth2.resources.ResourceSetDescription;
 import org.forgerock.oauth2.resources.ResourceSetStore;
+import org.forgerock.openam.cts.api.fields.ResourceSetTokenField;
+import org.forgerock.util.query.QueryFilter;
 import org.json.JSONObject;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
@@ -63,7 +65,6 @@ public class PermissionRequestEndpointTest {
     public void setup() throws ServerException, InvalidGrantException, NotFoundException {
         resourceSetStore = mock(ResourceSetStore.class);
         OAuth2RequestFactory<Request> requestFactory = mock(OAuth2RequestFactory.class);
-        TokenStore tokenStore = mock(TokenStore.class);
         umaTokenStore = mock(UmaTokenStore.class);
 
         OAuth2ProviderSettingsFactory providerSettingFactory = mock(OAuth2ProviderSettingsFactory.class);
@@ -77,21 +78,22 @@ public class PermissionRequestEndpointTest {
         given(umaProviderSettingsFactory.get(any(Request.class))).willReturn(umaProviderSettings);
         given(umaProviderSettings.getUmaTokenStore()).willReturn(umaTokenStore);
 
-        endpoint = spy(new PermissionRequestEndpoint(providerSettingFactory, requestFactory, tokenStore,
+        endpoint = spy(new PermissionRequestEndpoint(providerSettingFactory, requestFactory,
                 umaProviderSettingsFactory));
 
         response = mock(Response.class);
         endpoint.setResponse(response);
 
         Request request = mock(Request.class);
-        ChallengeResponse challengeResponse = new ChallengeResponse(ChallengeScheme.HTTP_BASIC);
-        challengeResponse.setRawValue("PAT");
-        given(request.getChallengeResponse()).willReturn(challengeResponse);
         given(endpoint.getRequest()).willReturn(request);
 
         AccessToken accessToken = mock(AccessToken.class);
         given(accessToken.getClientId()).willReturn("CLIENT_ID");
-        given(tokenStore.readAccessToken(Matchers.<OAuth2Request>anyObject(), eq("PAT"))).willReturn(accessToken);
+        given(accessToken.getResourceOwnerId()).willReturn("RESOURCE_OWNER_ID");
+
+        OAuth2Request oAuth2Request = mock(OAuth2Request.class);
+        given(requestFactory.create(request)).willReturn(oAuth2Request);
+        given(oAuth2Request.getToken(AccessToken.class)).willReturn(accessToken);
     }
 
     private void setupResourceSetStore() throws NotFoundException, ServerException {
@@ -99,7 +101,7 @@ public class PermissionRequestEndpointTest {
         ResourceSetDescription resourceSetDescription = new ResourceSetDescription("RESOURCE_SET_ID",
                 "CLIENT_ID", "RESOURCE_OWNER_ID", description.asMap());
 
-        given(resourceSetStore.read("RESOURCE_SET_ID")).willReturn(resourceSetDescription);
+        given(resourceSetStore.read("RESOURCE_SET_ID", "RESOURCE_OWNER_ID")).willReturn(resourceSetDescription);
     }
 
     @Test(expectedExceptions = UmaException.class)
@@ -169,9 +171,12 @@ public class PermissionRequestEndpointTest {
         //Given
         JsonRepresentation entity = mock(JsonRepresentation.class);
         JSONObject requestBody = mock(JSONObject.class);
+        ResourceSetDescription resourceSetDescription = new ResourceSetDescription("RESOURCE_SET_ID",
+                "CLIENT_ID", "RESOURCE_OWNER_ID", Collections.<String, Object>emptyMap());
 
         given(entity.getJsonObject()).willReturn(requestBody);
         given(requestBody.toString()).willReturn("{\"resource_set_id\":\"RESOURCE_SET_ID\"}");
+        given(resourceSetStore.read("RESOURCE_SET_ID", "RESOURCE_OWNER_ID")).willReturn(resourceSetDescription);
 
         //When
         try {
@@ -186,14 +191,17 @@ public class PermissionRequestEndpointTest {
     }
 
     @Test(expectedExceptions = UmaException.class)
-    public void shouldThrowInvalidScopexceptionWhenScopeIsNotASetOfStrings() throws Exception {
+    public void shouldThrowInvalidScopeExceptionWhenScopeIsNotASetOfStrings() throws Exception {
 
         //Given
         JsonRepresentation entity = mock(JsonRepresentation.class);
         JSONObject requestBody = mock(JSONObject.class);
+        ResourceSetDescription resourceSetDescription = new ResourceSetDescription("RESOURCE_SET_ID",
+                "CLIENT_ID", "RESOURCE_OWNER_ID", Collections.<String, Object>emptyMap());
 
         given(entity.getJsonObject()).willReturn(requestBody);
         given(requestBody.toString()).willReturn("{\"resource_set_id\":\"RESOURCE_SET_ID\", \"scopes\":\"SCOPE\"}");
+        given(resourceSetStore.read("RESOURCE_SET_ID", "RESOURCE_OWNER_ID")).willReturn(resourceSetDescription);
 
         //When
         try {
@@ -218,7 +226,7 @@ public class PermissionRequestEndpointTest {
         given(requestBody.toString()).willReturn("{\"resource_set_id\":\"RESOURCE_SET_ID\", "
                 + "\"scopes\":[\"SCOPE_A\", \"SCOPE_C\"]}");
 
-        doThrow(NotFoundException.class).when(resourceSetStore).read("RESOURCE_SET_ID");
+        doThrow(NotFoundException.class).when(resourceSetStore).read("RESOURCE_SET_ID", "RESOURCE_OWNER_ID");
 
         //When
         try {
@@ -242,7 +250,7 @@ public class PermissionRequestEndpointTest {
         given(requestBody.toString()).willReturn("{\"resource_set_id\":\"RESOURCE_SET_ID\", "
                 + "\"scopes\":[\"SCOPE_A\", \"SCOPE_C\"]}");
 
-        doThrow(ServerException.class).when(resourceSetStore).read("RESOURCE_SET_ID");
+        doThrow(ServerException.class).when(resourceSetStore).read("RESOURCE_SET_ID", "RESOURCE_OWNER_ID");
 
         //When
         try {

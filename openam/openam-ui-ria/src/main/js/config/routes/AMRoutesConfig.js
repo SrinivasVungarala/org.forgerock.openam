@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 ForgeRock AS. All rights reserved.
+ * Copyright 2011-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -89,15 +89,29 @@ define("config/routes/AMRoutesConfig", [
         "uma": {
             view: "org/forgerock/openam/ui/uma/views/resource/ListResource",
             url: /^uma/,
-            pattern: "uma/resource/",
+            pattern: "uma/resources/",
             role: "ui-user"
         },
         "dialogShare": {
             base: "editResource",
             dialog: "org/forgerock/openam/ui/uma/views/share/DialogShare",
             role: "ui-user",
-            url: /^uma\/resources\/(.+?)\/(share)\//,
-            pattern: "uma/resources/?/share/"
+            url: /^uma\/resources\/$/,
+            pattern: "uma/resources/"
+        },
+        "dialogRevokeAllResources": {
+            base: "listResource",
+            dialog: "org/forgerock/openam/ui/uma/views/resource/DialogRevokeAllResources",
+            role: "ui-user",
+            url: /^uma\/resources\/$/,
+            pattern: "uma/resources/"
+        },
+        "dialogRevokeAllPolicies": {
+            base: "editResource",
+            dialog: "org/forgerock/openam/ui/uma/views/resource/DialogRevokeAllPolicies",
+            role: "ui-user",
+            url: /^uma\/resources\/$/,
+            pattern: "uma/resources/"
         },
         "editResource": {
             view: "org/forgerock/openam/ui/uma/views/resource/EditResource",

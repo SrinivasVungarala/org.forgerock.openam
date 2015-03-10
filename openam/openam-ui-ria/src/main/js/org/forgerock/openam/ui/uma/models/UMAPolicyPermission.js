@@ -23,17 +23,23 @@
  */
 
 /*global define*/
-define("org/forgerock/openam/ui/uma/models/UMAPolicyPermission", [
-    "backbone"
-], function(Backbone) {
-    return Backbone.Model.extend({
-        defaults: {
-            scopes: []
-        },
+define('org/forgerock/openam/ui/uma/models/UMAPolicyPermission', [
+    'backbone',
+    'backboneRelational',
+    'org/forgerock/openam/ui/uma/models/UMAPolicyPermissionScope'
+], function(Backbone, BackboneRelational, UMAPolicyPermissionScope) {
+    return Backbone.RelationalModel.extend({
         idAttribute: "subject",
+        relations: [{
+            type: Backbone.HasMany,
+            key: 'scopes',
+            relatedModel: UMAPolicyPermissionScope,
+            includeInJSON: Backbone.Model.prototype.idAttribute,
+            parse: true
+        }],
         validate: function(attributes, options) {
-            if(!attributes.subject) { return "no subject"; }
-            if(!attributes.scopes.length) { return "no scopes"; }
+            if (!attributes.subject) { return "no subject"; }
+            if (!attributes.scopes || !attributes.scopes.length) { return "no scopes"; }
         }
     });
 });

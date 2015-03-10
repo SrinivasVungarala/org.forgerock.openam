@@ -25,84 +25,127 @@
 /*global define, $, _, Backgrid, Backbone*/
 
 define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
+    "org/forgerock/commons/ui/common/components/Messages",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "org/forgerock/commons/ui/common/main/Configuration",
     "org/forgerock/commons/ui/common/main/EventManager",
-    "org/forgerock/commons/ui/common/util/UIUtils",
-    "org/forgerock/commons/ui/common/util/Constants",
-    "org/forgerock/openam/ui/uma/util/BackgridUtils",
     "org/forgerock/commons/ui/common/main/Router",
+    "org/forgerock/commons/ui/common/util/Constants",
+    "org/forgerock/openam/ui/uma/delegates/UMADelegate",
+    "org/forgerock/openam/ui/uma/util/BackgridUtils",
+    "org/forgerock/openam/ui/uma/util/UMAUtils",
+    "org/forgerock/openam/ui/uma/views/resource/DialogRevokeAllResources",
     "backgrid"
-], function(AbstractView, conf, eventManager, uiUtils, constants, backgridUtils, router, Backgrid) {
+], function(MessageManager, AbstractView, Configuration, EventManager, Router, Constants, UMADelegate, BackgridUtils, UMAUtils, DialogRevokeAllResources, Backgrid) {
 
     var ListResource = AbstractView.extend({
         template: "templates/uma/views/resource/ListResource.html",
         baseTemplate: "templates/common/DefaultBaseTemplate.html",
+
         events: {
-            'click td.uri-cell': 'openPolicy'
+            'click a#revokeAll:not(.disabled)': 'onRevokeAll'
+        },
+        onRevokeAll: function() {
+
+            var confirmCallBack = function(){
+                UMADelegate.revokeAllResources().done(function(){
+                        EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "revokeAllResourcesSuccess");
+                    }).fail(function(error){
+                        MessageManager.messages.addMessage({ message: JSON.parse(error.responseText).message, type: "error"});
+                    });
+                };
+
+            DialogRevokeAllResources.render(confirmCallBack);
+
         },
 
         render: function(args, callback) {
-
             var self = this,
                 columns,
                 grid,
                 paginator,
                 ResourceSetCollection,
-                realm = backgridUtils.getRealm();
+                realm = UMAUtils.getRealm();
 
             ResourceSetCollection = Backbone.PageableCollection.extend({
-                url: "/" + constants.context + "/json" + realm + "/users/" + conf.loggedUser.username + '/uma/policies',
+                url: "/" + Constants.context + "/json" + realm + "/users/" + Configuration.loggedUser.username + '/oauth2/resourcesets',
                 state: {
                     pageSize: 10,
                     sortKey: "name"
                 },
                 queryParams: {
                     pageSize: "_pageSize",
-                    sortKey: "_sortKeys",
-                    _queryFilter: 'resourceServer+eq+"RSClient"'
-                    //_queryFilter: backgridUtils.queryFilter
-                    /* TODO : Temp until endpoint working
-                    // backgridUtils.queryFilter=true,
-                    //_pagedResultsOffset:  backgridUtils.pagedResultsOffset*/
+                    _sortKeys: BackgridUtils.sortKeys,
+                    _queryId: "*",
+                    _queryFilter: BackgridUtils.queryFilter,
+                    _pagedResultsOffset:  BackgridUtils.pagedResultsOffset,
+                    _fields: ['_id', 'icon_uri', 'name', 'resourceServer', 'type']
                 },
 
-                parseState: backgridUtils.parseState,
-                parseRecords: backgridUtils.parseRecords,
-                sync: backgridUtils.sync
+                parseState: BackgridUtils.parseState,
+                parseRecords: function(data, options){
+                    if(data.result.length === 0){
+                        self.$el.find("a#revokeAll").addClass("disabled");
+                    } else {
+                        self.$el.find("a#revokeAll").removeClass("disabled");
+                    }
+                    return data.result;
+                },
+                sync: BackgridUtils.sync
             });
 
             columns = [
                 {
-                    name: "name",
-                    label: $.t("uma.resources.list.grid.0"),
-                    cell: backgridUtils.UriExtCell,
-                    headerCell: backgridUtils.FilterHeaderCell,
-                    href: function(rawValue, formattedValue, model){
-                        return "#uma/resource/" + model.get('policyId');
-                    },
-                    model: true,
-                    editable: false
-                }/*,
-                {
-                    name: "lastModifiedDate",
-                    label: $.t("uma.resources.list.grid.2"),
-                    cell: "datetime",
+                    name: "share",
+                    label: "",
+                    cell: Backgrid.Cell.extend({
+                        className: "icon-share",
+                        events: { "click": "share" },
+                        share: function(e) {
+                            self.data.currentResourceSetId = this.model.get('_id');
+
+                            EventManager.sendEvent(Constants.EVENT_SHOW_DIALOG,{
+                                route: Router.configuration.routes.dialogShare,
+                                noViewChange: true
+                            });
+                        },
+                        render: function () {
+                            this.delegateEvents();
+                            return this;
+                        }
+                    }),
                     editable: false
                 },
                 {
-                    name: "resources",
-                    label: $.t("uma.resources.list.grid.3"),
-                    editable: false,
-                    cell: backgridUtils.UriExtCell,
+                    name: "name",
+                    label: $.t("uma.resources.list.grid.0"),
+                    cell: BackgridUtils.UriExtCell,
+                    headerCell: BackgridUtils.FilterHeaderCell,
                     href: function(rawValue, formattedValue, model){
-                        return "#uma/apps/" + formattedValue;
-                    }
-                }*/
-
+                        return "#uma/resources/" + model.get('_id');
+                    },
+                    editable: false
+                },
+                {
+                    name: "resourceServer",
+                    label: $.t("uma.resources.list.grid.1"),
+                    cell: BackgridUtils.UriExtCell,
+                    headerCell: BackgridUtils.FilterHeaderCell,
+                    href: function(rawValue, formattedValue, model){
+                        return "#uma/apps/" + encodeURIComponent(model.get('resourceServer'));
+                    },
+                    editable: false
+                },
+                {
+                    name: "type",
+                    label: $.t("uma.resources.list.grid.2"),
+                    cell: "string",
+                    editable: false
+                }
             ];
 
             self.data.resourceSetCollection = new ResourceSetCollection();
+            self.data.resourceSetCollection.on("backgrid:sort", BackgridUtils.doubleSortFix);
 
             grid = new Backgrid.Grid({
                 columns: columns,
@@ -121,17 +164,6 @@ define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
                 self.data.resourceSetCollection.fetch({reset: true, processData: false});
                 if (callback) { callback();}
             });
-        },
-
-        openPolicy: function(e) {
-            e.preventDefault();
-            var policy = $(e.currentTarget).data();
-            if (policy.policyId) {
-                router.routeTo( router.configuration.routes.editResource, {args: [policy.policyId], trigger: true});
-            } else {
-                // throw an error message
-                console.log(e);
-            }
         }
 
     });

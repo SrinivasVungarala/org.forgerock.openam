@@ -17,6 +17,7 @@ package org.forgerock.openam.entitlement.configuration;
 
 import com.sun.identity.entitlement.EntitlementException;
 import org.forgerock.openam.entitlement.ResourceType;
+import org.forgerock.util.query.QueryFilter;
 
 import javax.security.auth.Subject;
 import java.util.Map;
@@ -26,15 +27,6 @@ import java.util.Set;
  * Implementations of this interface are responsible for the persistence of the resource type entitlement configuration.
  */
 public interface ResourceTypeConfiguration {
-
-    /**
-     * Create a ResourceType object from a map, mapping strings to sets.
-     * @param realm The realm in which to create the new ResourceType object.
-     * @param uuid The uuid of the created resource type object.
-     * @param data The data map for the object.
-     * @return The newly created ResourceType object.
-     */
-    public ResourceType resourceTypeFromMap(String realm, String uuid, Map<String, Set<String>> data);
 
     /**
      * Retrieve a map of registered resource types, keyed on their uuid.
@@ -79,5 +71,23 @@ public interface ResourceTypeConfiguration {
      * @throws EntitlementException if the resource type cannot be stored.
      */
     public void storeResourceType(Subject subject, ResourceType resourceType) throws EntitlementException;
+
+    /**
+     * Retrieves a set of resource types based on the passed query filter.
+     *
+     * @param filter
+     *         the query filter
+     * @param subject
+     *         the calling subject
+     * @param realm
+     *         the realm to look within
+     *
+     * @return a set of matching resource types
+     *
+     * @throws EntitlementException
+     *         should an error occur during lookup
+     */
+    public Set<ResourceType> getResourceTypes(QueryFilter<SmsAttribute> filter,
+                                              Subject subject, String realm) throws EntitlementException;
 
 }

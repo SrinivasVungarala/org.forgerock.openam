@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Copyright 2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -41,6 +41,30 @@ define("config/AppMessages", [
         },
         "policyCreatedFail": {
             msg: "uma.share.messages.fail",
+            type: "error"
+        },
+        "revokeAllResourcesSuccess": {
+            msg: "uma.resources.list.revokeAllResourcesSuccess",
+            type: "info"
+        },
+        "revokeAllResourcesFail": {
+            msg: "uma.resources.list.revokeAllResourcesFail",
+            type: "error"
+        },
+        "revokeAllPoliciesSuccess": {
+            msg: "uma.resources.show.revokeAllPoliciesSuccess",
+            type: "info"
+        },
+        "revokeAllPoliciesFail": {
+            msg: "uma.resources.show.revokeAllPoliciesFail",
+            type: "error"
+        },
+        "revokePolicySuccess": {
+            msg: "uma.resources.show.revokePolicySuccess",
+            type: "info"
+        },
+        "revokePolicyFail": {
+            msg: "uma.resources.show.revokePolicyFail",
             type: "error"
         }
     };

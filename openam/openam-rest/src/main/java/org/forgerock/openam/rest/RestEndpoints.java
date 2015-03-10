@@ -41,6 +41,7 @@ import org.forgerock.openam.forgerockrest.authn.restlet.AuthenticationServiceV1;
 import org.forgerock.openam.forgerockrest.authn.restlet.AuthenticationServiceV2;
 import org.forgerock.openam.forgerockrest.cts.CoreTokenResource;
 import org.forgerock.openam.forgerockrest.entitlements.ApplicationTypesResource;
+import org.forgerock.openam.forgerockrest.entitlements.ApplicationV1Filter;
 import org.forgerock.openam.forgerockrest.entitlements.ApplicationsResource;
 import org.forgerock.openam.forgerockrest.entitlements.ConditionTypesResource;
 import org.forgerock.openam.forgerockrest.entitlements.DecisionCombinersResource;
@@ -51,10 +52,7 @@ import org.forgerock.openam.forgerockrest.entitlements.SubjectAttributesResource
 import org.forgerock.openam.forgerockrest.entitlements.SubjectTypesResource;
 import org.forgerock.openam.forgerockrest.server.ServerInfoResource;
 import org.forgerock.openam.forgerockrest.session.SessionResource;
-import org.forgerock.openam.rest.authz.CoreTokenResourceAuthzModule;
-import org.forgerock.openam.rest.authz.PrivilegeAuthzModule;
-import org.forgerock.openam.rest.authz.ResourceOwnerOrSuperUserAuthzModule;
-import org.forgerock.openam.rest.authz.SessionResourceAuthzModule;
+import org.forgerock.openam.rest.authz.*;
 import org.forgerock.openam.rest.dashboard.DashboardResource;
 import org.forgerock.openam.rest.dashboard.TrustedDevicesResource;
 import org.forgerock.openam.rest.fluent.FluentRealmRouter;
@@ -65,9 +63,12 @@ import org.forgerock.openam.rest.oauth2.ResourceSetResource;
 import org.forgerock.openam.rest.resource.CrestRouter;
 import org.forgerock.openam.rest.router.RestRealmValidator;
 import org.forgerock.openam.rest.router.VersionBehaviourConfigListener;
+import org.forgerock.openam.rest.scripting.ScriptResource;
 import org.forgerock.openam.rest.service.RestletRealmRouter;
 import org.forgerock.openam.rest.service.ServiceRouter;
+import org.forgerock.openam.rest.uma.UmaConfigurationResource;
 import org.forgerock.openam.rest.uma.UmaPolicyResource;
+import org.forgerock.openam.rest.uma.UmaPolicyResourceAuthzFilter;
 import org.forgerock.openam.uma.UmaConstants;
 import org.forgerock.openam.uma.UmaExceptionFilter;
 import org.forgerock.openam.uma.UmaWellKnownConfigurationEndpoint;
@@ -185,6 +186,9 @@ public class RestEndpoints {
         dynamicRealmRouter.route("/serverinfo")
                 .forVersion("1.1").to(ServerInfoResource.class);
 
+        dynamicRealmRouter.route("/serverinfo/uma")
+                .forVersion("1.0").to(InjectorHolder.getInstance(UmaConfigurationResource.class));
+
         dynamicRealmRouter.route("/users")
                 .forVersion("1.1").to(IdentityResourceV1.class, "UsersResource")
                 .forVersion("2.0").to(IdentityResourceV2.class, "UsersResource");
@@ -205,10 +209,11 @@ public class RestEndpoints {
                 .forVersion("1.0").to(ResourceSetResource.class);
 
         dynamicRealmRouter.route("/users/{user}/uma/policies")
-                .through(ResourceOwnerOrSuperUserAuthzModule.class, ResourceOwnerOrSuperUserAuthzModule.NAME)
+                .through(UmaPolicyResourceAuthzFilter.class, UmaPolicyResourceAuthzFilter.NAME)
                 .forVersion("1.0").to(UmaPolicyResource.class);
 
         dynamicRealmRouter.route("/users/{user}/uma/auditHistory")
+                .through(ResourceOwnerOrSuperUserAuthzModule.class, ResourceOwnerOrSuperUserAuthzModule.NAME)
                 .forVersion("1.0").to(AuditHistory.class);
 
         //protected
@@ -230,7 +235,11 @@ public class RestEndpoints {
 
         dynamicRealmRouter.route("/applications")
                 .through(PrivilegeAuthzModule.class, PrivilegeAuthzModule.NAME)
-                .forVersion("1.0").to(ApplicationsResource.class);
+                .forVersion("1.0")
+                    .through(ApplicationV1Filter.class)
+                    .to(ApplicationsResource.class)
+                .forVersion("2.0")
+                    .to(ApplicationsResource.class);
 
         dynamicRealmRouter.route("/subjectattributes")
                 .through(PrivilegeAuthzModule.class, PrivilegeAuthzModule.NAME)
@@ -259,6 +268,10 @@ public class RestEndpoints {
         rootRealmRouter.route("/tokens")
                 .through(CoreTokenResourceAuthzModule.class, CoreTokenResourceAuthzModule.NAME)
                 .forVersion("1.0").to(CoreTokenResource.class);
+
+        dynamicRealmRouter.route("/scripts")
+                .through(AdminOnlyAuthzModule.class, AdminOnlyAuthzModule.NAME)
+                .forVersion("1.0").to(ScriptResource.class);
 
         VersionBehaviourConfigListener.bindToServiceConfigManager(rootRealmRouter);
         VersionBehaviourConfigListener.bindToServiceConfigManager(dynamicRealmRouter);

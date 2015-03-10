@@ -23,39 +23,46 @@
  */
 
 /*global define*/
-define("org/forgerock/openam/ui/uma/models/UMAPolicy", [
-    "backbone",
-    "org/forgerock/openam/ui/uma/util/URLHelper",
-    "org/forgerock/openam/ui/uma/models/UMAPolicyPermissionCollection"
-], function(Backbone, URLHelper, UMAPolicyPermissionCollection) {
-    return Backbone.Model.extend({
+define('org/forgerock/openam/ui/uma/models/UMAPolicy', [
+    'backbone',
+    'backboneRelational',
+    'org/forgerock/openam/ui/uma/models/UMAPolicyPermission',
+    'org/forgerock/openam/ui/uma/util/URLHelper'
+], function(Backbone, BackboneRelational, UMAPolicyPermission, URLHelper) {
+    return Backbone.RelationalModel.extend({
         idAttribute: "policyId",
-        initialize: function() {
-            this.attributes.permissions = new UMAPolicyPermissionCollection();
-        },
+        createRequired: true,
+        relations: [{
+            type: Backbone.HasMany,
+            key: 'permissions',
+            relatedModel: UMAPolicyPermission
+        }],
         parse: function(response, options) {
             if(response.permissions) {
-                this.get("permissions").reset(response.permissions);
+                this.createRequired = false;
             }
 
-            this.isSaved = true;
+            return response;
         },
         sync: function(method, model, options) {
             options.beforeSend = function(xhr) {
                 xhr.setRequestHeader("Accept-API-Version", "protocol=1.0,resource=1.0");
             };
 
-            if(method.toLowerCase() === 'update' && !model.isSaved) {
+            if(method.toLowerCase() === 'update' && model.createRequired === true) {
+                model.createRequired = false;
+
                 options = options || {};
                 options.headers = {};
                 options.headers["If-None-Match"] = "*";
             }
 
+            if(!model.get('permissions').length) {
+                model.createRequired = true;
+            }
+
             return Backbone.Model.prototype.sync.call(this, method, model, options);
         },
-        urlRoot: function() {
-            // FIXME: Has to be wrapped in a clojure as __username__ can't resolve early on. Race condition
-            return URLHelper.substitute("__api__/users/__username__/uma/policies");
-        }
+        urlRoot: URLHelper.substitute("__api__/users/__username__/uma/policies")
     });
 });

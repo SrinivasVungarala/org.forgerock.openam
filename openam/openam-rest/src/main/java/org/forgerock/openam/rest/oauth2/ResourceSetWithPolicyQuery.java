@@ -23,33 +23,22 @@ import org.forgerock.json.resource.QueryFilter;
  *
  * @since 13.0.0
  */
-final class ResourceSetWithPolicyQuery {
+final class ResourceSetWithPolicyQuery
+        extends AggregateQuery<org.forgerock.util.query.QueryFilter<String>, QueryFilter> {
 
-    private org.forgerock.util.query.QueryFilter<String> resourceSetQuery;
-    private QueryFilter policyQuery;
-    private String operator = "OR";
-
-    org.forgerock.util.query.QueryFilter<String> getResourceSetQuery() {
-        return resourceSetQuery;
+    public org.forgerock.util.query.QueryFilter<String> getResourceSetQuery() {
+        return getFirstQuery();
     }
 
-    void setResourceSetQuery(org.forgerock.util.query.QueryFilter<String> query) {
-        this.resourceSetQuery = query;
+    public void setResourceSetQuery(org.forgerock.util.query.QueryFilter<String> query) {
+        setFirstQuery(query);
     }
 
-    QueryFilter getPolicyQuery() {
-        return policyQuery;
+    public QueryFilter getPolicyQuery() {
+        return getSecondQuery();
     }
 
-    void setPolicyQuery(QueryFilter query) {
-        this.policyQuery = query;
-    }
-
-    String getOperator() {
-        return operator;
-    }
-
-    void setOperator(String operator) {
-        this.operator = operator;
+    public void setPolicyQuery(QueryFilter query) {
+        setSecondQuery(query);
     }
 }

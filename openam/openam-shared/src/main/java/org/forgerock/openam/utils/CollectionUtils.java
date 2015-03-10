@@ -21,6 +21,7 @@ import org.forgerock.util.promise.Function;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -99,6 +100,30 @@ public class CollectionUtils {
         } else {
             return new LinkedHashSet<T>(Arrays.asList(values));
         }
+    }
+
+    /**
+     * Creates a new Map which contains the entries of the provided map but with keys and values exchanged.
+     *
+     * @param map
+     *          the non-null original map.
+     * @param <K>
+     *         the type of keys in the provided map; the type of the values in the returned map.
+     * @param <V>
+     *         the type of values in the provided map; the type of the keys in the returned map.
+     *
+     * @return a new map with inverted key-value mapping.
+     */
+    public static <K, V> Map<V, K> invertMap(final Map<K, V> map) {
+
+        Reject.ifNull(map);
+        final Map<V, K> newMap = new HashMap<V, K>(map.size());
+
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            newMap.put(entry.getValue(), entry.getKey());
+        }
+
+        return newMap;
     }
 
     /**
@@ -343,6 +368,60 @@ public class CollectionUtils {
      */
     public static boolean isNotEmpty(final Collection<?> collection) {
         return collection != null && !collection.isEmpty();
+    }
+
+
+    /**
+     * Creates a Hash Map, of names mapped to the provided value. If there is no value, an empty map is returned.
+     *
+     * @param names The set of names to be associated with the provided value.
+     * @param value The value to be mapped to each of the provided names.
+     * @return The map of name / value pairs, otherwise an Empty Map if no value is provided or an empty hashmap if no
+     * names are specified.
+     */
+    public static Map<String, Set<String>> toAvPairMap(final Set<String> names, final String value) {
+        if (value == null) {
+            return Collections.EMPTY_MAP;
+        }
+
+        if (names == null || names.isEmpty()) {
+            return new HashMap();
+        }
+
+        final Map<String, Set<String>> map = new HashMap<String, Set<String>>(names.size());
+        final Set<String> set = new HashSet<String>(1);
+        set.add(value);
+        for (final String name : names) {
+            map.put(name, set);
+        }
+        return map;
+    }
+    /**
+     * Given a map determines whether it contains some values.
+     *
+     * @param map map in question
+     *
+     * @return whether the map contains any values
+     */
+    public static boolean isNotEmpty(Map<?, ?> map) {
+        return map != null && !map.isEmpty();
+    }
+
+    /**
+     * See if any of the containers have entries and if so return true.  Any argument which is not a {@code Collection}
+     * or a {@code Map} is ignored.
+     * @param containers a varied list of maps and collections
+     * @return true if any one of the maps and/or collections have entries
+     */
+    public static boolean anyHaveEntries(Object... containers) {
+        for (Object o : containers) {
+            if (o instanceof Collection<?> && isNotEmpty((Collection<?>) o)) {
+                return true;
+            } else if (o instanceof Map<?, ?> && isNotEmpty((Map<?, ?>) o)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

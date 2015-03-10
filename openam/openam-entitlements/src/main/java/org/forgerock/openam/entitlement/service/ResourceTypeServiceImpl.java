@@ -15,17 +15,17 @@
  */
 package org.forgerock.openam.entitlement.service;
 
-import com.iplanet.sso.SSOToken;
 import com.sun.identity.entitlement.EntitlementException;
 import org.forgerock.openam.entitlement.ResourceType;
+import org.forgerock.openam.entitlement.configuration.SmsAttribute;
 import org.forgerock.openam.entitlement.configuration.ResourceTypeConfiguration;
+import org.forgerock.util.query.QueryFilter;
 
 import javax.inject.Inject;
 import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static com.sun.identity.entitlement.EntitlementException.*;
@@ -41,13 +41,6 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
     @Inject
     public ResourceTypeServiceImpl( ResourceTypeConfiguration configuration) {
         this.configuration = configuration;
-    }
-
-    @Override
-    public ResourceType saveResourceType(Subject subject, String realm, String uuid, Map<String, Set<String>> data)
-            throws EntitlementException
-    {
-        return saveResourceType(subject, configuration.resourceTypeFromMap(realm, uuid, data));
     }
 
     /**
@@ -154,4 +147,11 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
 
         return updatedResourceType;
     }
+
+    @Override
+    public Set<ResourceType> getResourceTypes(QueryFilter<SmsAttribute> filter,
+                                              Subject subject, String realm) throws EntitlementException {
+        return configuration.getResourceTypes(filter, subject, realm);
+    }
+
 }

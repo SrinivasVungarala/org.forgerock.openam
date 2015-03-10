@@ -1,0 +1,47 @@
+/* General */
+button .fa {
+    margin: 0 6px 0 0;
+}
+
+/* Edit page */
+.script-toolbar {
+  border-bottom: 0;
+  padding-bottom: 10px;
+  margin-bottom: 0;
+  margin-top: 5px;
+  margin-left: -5px;
+}
+
+/* Backgrid */
+.backgrid {
+    thead th {
+        vertical-align: top;
+        text-align: left;
+
+        .form-search {
+            margin: 5px 0 0 0;
+        }
+    }
+
+    tbody {
+        tr {
+            &.selected {
+                background-color: #d9edf7;
+            }
+
+            &.empty {
+                background-color: #d9edf7;
+                td {
+                    display: table-cell;
+                    color: #31708f;
+                }
+            }
+
+            td.editor {
+                padding: 4px 5px;
+                outline: inherit;
+                background-color: inherit;
+            }
+        }
+    }
+}

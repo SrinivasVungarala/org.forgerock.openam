@@ -15,12 +15,12 @@
  */
 package org.forgerock.openam.entitlement.service;
 
-import com.iplanet.sso.SSOToken;
 import com.sun.identity.entitlement.EntitlementException;
 import org.forgerock.openam.entitlement.ResourceType;
+import org.forgerock.openam.entitlement.configuration.SmsAttribute;
+import org.forgerock.util.query.QueryFilter;
 
 import javax.security.auth.Subject;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -39,19 +39,6 @@ public interface ResourceTypeService {
      * @throws com.sun.identity.entitlement.EntitlementException If the resource type fails to save.
      */
     public ResourceType saveResourceType(Subject subject, ResourceType resourceType) throws EntitlementException;
-
-    /**
-     * Create a ResourceType from the data map and persist in the data store under the realm specified in the map.
-     * This will also add the creation meta data, if this resource type does not already exist, and the last modified meta data.
-     * @param subject The subject with privilege to create resource types.
-     * @param realm The realm in which to create the ResourceType.
-     * @param uuid The resource type's UUID.
-     * @param data Map of data from which to create the ResourceType to be saved.
-     * @return The saved resource type.
-     * @throws com.sun.identity.entitlement.EntitlementException If the resource type fails to save.
-     */
-    public ResourceType saveResourceType(Subject subject, String realm, String uuid, Map<String, Set<String>> data)
-            throws EntitlementException;
 
     /**
      * Delete the resource type with the given UUID stored under the given realm from the data store.
@@ -90,4 +77,23 @@ public interface ResourceTypeService {
      * @throws EntitlementException If the update of the resource type failed.
      */
     public ResourceType updateResourceType(Subject subject, ResourceType resourceType) throws EntitlementException;
+
+    /**
+     * Retrieves a set of resource types based on the passed query filter.
+     *
+     * @param filter
+     *         the query filter
+     * @param subject
+     *         the calling subject
+     * @param realm
+     *         the realm to look within
+     *
+     * @return a set of matching resource types
+     *
+     * @throws EntitlementException
+     *         should an error occur during lookup
+     */
+    public Set<ResourceType> getResourceTypes(QueryFilter<SmsAttribute> filter,
+                                              Subject subject, String realm) throws EntitlementException;
+
 }
