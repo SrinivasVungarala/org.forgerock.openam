@@ -112,9 +112,10 @@ public class ResourceLookup {
         }
         if (resourceUrl != null) 
             resourceNameCache.put(cacheKey, resourceName);
-        else
+        else{
         	resourceURLCacheNotExists.put(cacheKey, true);
-        
+        	resourceName = null;
+        }
         return resourceName;
     }
 
