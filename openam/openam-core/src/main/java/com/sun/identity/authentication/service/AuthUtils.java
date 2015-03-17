@@ -237,7 +237,7 @@ public class AuthUtils extends AuthClientUtils {
                     }
                     if ((cookieURL != null) && (!cookieURL.isEmpty()) &&
                         (isLocalServer(cookieURL,true))) {
-                        utilDebug.error("AuthUtils:getAuthContext(): "
+                        utilDebug.message("AuthUtils:getAuthContext(): "
                             + "Invalid Session Timed out");
                         clearAllCookies(request, response);
                         throw new AuthException(
