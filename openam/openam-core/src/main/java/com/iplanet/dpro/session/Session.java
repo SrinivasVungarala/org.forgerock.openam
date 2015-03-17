@@ -1295,5 +1295,8 @@ public class Session extends GeneralTaskRunnable {
     Object getContext() {
         return context;
     }
-
+    
+    public static Session getSession(SessionID sid) throws SessionException {
+    	return org.forgerock.openam.session.SessionCache.getInstance().getSession(sid);
+    }
 }
