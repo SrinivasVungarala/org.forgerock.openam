@@ -143,23 +143,35 @@ public class XMLUtils {
         }
     }
 
-    private static DocumentBuilder getDocumentBuilder() {
-	 final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    private static final ThreadLocal<DocumentBuilder> ThreadLocalBuilderLocal=new ThreadLocal<DocumentBuilder>(){
+    	 @Override 
+    	 protected DocumentBuilder initialValue() {
+    		 return getDocumentBuilderOld();
+    	 }
+    };
+    
+    private static final DocumentBuilder getDocumentBuilder(){
+    	return ThreadLocalBuilderLocal.get();
+    }
+    
+    private static DocumentBuilder getDocumentBuilderOld() {
+    	final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
          dbFactory.setValidating(false);
          dbFactory.setNamespaceAware(true);
          try{
              dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-	     dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+             dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
          }catch (ParserConfigurationException ex) {
-		 throw new RuntimeException(ex);
+        	 throw new RuntimeException(ex);
          }
          try{
-		 final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
+        	 final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
              documentBuilder.setEntityResolver(new XMLHandler());
+             logger.info("create "+documentBuilder);
              return documentBuilder;
          }catch (ParserConfigurationException ex) {
-		 logger.error("error",ex);
-		 throw new RuntimeException(ex);
+			 logger.error("error",ex);
+			 throw new RuntimeException(ex);
          }
     }
     /**
@@ -682,13 +694,26 @@ public class XMLUtils {
      * @param encoding character encoding
      * @return An xml String representation of the DOM tree.
      */
-    private static Transformer getTransformerLocal() {
+    
+    private static final ThreadLocal<Transformer> ThreadLocalTransformer=new ThreadLocal<Transformer>(){
+   	 @Override 
+   	 protected Transformer initialValue() {
+   		 return getTransformerLocalOld();
+   	 }
+   };
+   
+   private static final Transformer getTransformerLocal(){
+   		return ThreadLocalTransformer.get();
+   }
+   
+    private static Transformer getTransformerLocalOld() {
 	try{
 		final TransformerFactory tFactory =  TransformerFactory.newInstance();
 		final Transformer transformer = tFactory.newTransformer();
             transformer.setOutputProperty("omit-xml-declaration", "yes");
+            logger.info("create "+transformer);
             return transformer;
-	}catch (TransformerConfigurationException ex) {
+		}catch (TransformerConfigurationException ex) {
 		 throw new RuntimeException(ex);
          }
      }

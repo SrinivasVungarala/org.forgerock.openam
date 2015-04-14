@@ -2646,6 +2646,8 @@ public class SessionService {
      * @param uuid the uuid of the login user
      */    
     boolean isSuperUser(String uuid) {
+    	if (uuid==null)
+    		return false;
         boolean isSuperUser = false;
         try {
             // Get the AMIdentity Object for super user 
