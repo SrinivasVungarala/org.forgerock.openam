@@ -32,8 +32,8 @@ package com.sun.identity.entitlement;
 
 import com.sun.identity.entitlement.interfaces.IThreadPool;
 import com.sun.identity.entitlement.util.NetworkMonitor;
-
 import com.sun.identity.shared.debug.Debug;
+
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,10 +41,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import javax.security.auth.Subject;
+
 import org.forgerock.openam.session.util.AppTokenHandler;
 import org.forgerock.openam.entitlement.PrivilegeEvaluatorContext;
 
@@ -383,7 +386,8 @@ class PrivilegeEvaluator {
         try {
             while (!isDone && (counter < totalCount)) {
                 if (resultQ.isEmpty()) {
-                    hasResults.await();
+                    if (!hasResults.await(10,TimeUnit.SECONDS))
+                    	return;
                 }
                 while (!resultQ.isEmpty() && !isDone) {
                     entitlementCombiner.add(resultQ.remove(0));
@@ -431,7 +435,7 @@ class PrivilegeEvaluator {
 
         public void run() {
             PrivilegeEvaluatorContext.setCurrent(ctx);
-            
+            boolean signal=false;
             try {
                 for (final IPrivilege eval : privileges) {
                     List<Entitlement> entitlements = eval.evaluate(
@@ -447,6 +451,7 @@ class PrivilegeEvaluator {
                                 parent.lock.lock();
                                 parent.resultQ.add(entitlements);
                                 parent.hasResults.signal();
+                                signal=true;
                             } finally {
                                 parent.lock.unlock();
                             }
@@ -455,18 +460,23 @@ class PrivilegeEvaluator {
                         }
                     }
                 }
-            } catch (EntitlementException ex) {
+            } catch (Throwable ex) {
                 if (isThreaded) {
                     try {
                         parent.lock.lock();
-                        parent.eException = ex;
+                        parent.eException = (ex instanceof EntitlementException) ?(EntitlementException)ex:new EntitlementException(-1, ex);
                         parent.hasResults.signal();
+                        signal=true;
                     } finally {
                         parent.lock.unlock();
                     }
                 } else {
-                    parent.eException = ex;
+                    parent.eException =  (ex instanceof EntitlementException) ?(EntitlementException)ex:new EntitlementException(-1, ex);
                 }
+            }finally{
+            	if (!signal){
+            		parent.hasResults.signal();
+            	}
             }
         }
     }
