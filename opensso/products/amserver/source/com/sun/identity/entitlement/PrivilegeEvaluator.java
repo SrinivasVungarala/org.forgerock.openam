@@ -474,9 +474,14 @@ class PrivilegeEvaluator {
                     parent.eException =  (ex instanceof EntitlementException) ?(EntitlementException)ex:new EntitlementException(-1, ex);
                 }
             }finally{
-            	if (!signal){
-            		parent.hasResults.signal();
-            	}
+            	if (isThreaded && !signal) 
+	            	try {
+	                    parent.lock.lock();
+	                    parent.hasResults.signal();
+	                    signal=true;
+	                } finally {
+	                    parent.lock.unlock();
+	                }
             }
         }
     }
