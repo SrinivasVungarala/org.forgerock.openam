@@ -153,7 +153,7 @@
   require it (new location, ancient last login time, new device, new IP address,
   specific application, and so forth). You can add the <link xlink:show="new"
   xlink:href="admin-guide#device-print-auth-module-conf-hints"
-  xlink:role="http://docbook.org/xlink/role/olink">Device Print module</link>
+  xlink:role="http://docbook.org/xlink/role/olink">Device ID (Match) module</link>
   to an authentication chain to fingerprint users' devices for additional risk
   assessment, making it easier to handle sign-on when users bring their
   own devices.</para>
