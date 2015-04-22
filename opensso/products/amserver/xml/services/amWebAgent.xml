@@ -71,6 +71,27 @@
                         <BooleanFalseValue i18nKey="deny">deny</BooleanFalseValue>
                     </BooleanValues>
 		</AttributeSchema>
+		<AttributeSchema cosQualifier="default"  i18nKey="PUT"  isSearchable="no"  name="PUT"  syntax="boolean"  type="single"  uitype="radio" >
+		    <IsResourceNameAllowed></IsResourceNameAllowed>
+		    <BooleanValues>
+                        <BooleanTrueValue i18nKey="allow" >allow</BooleanTrueValue>
+                        <BooleanFalseValue i18nKey="deny" >deny</BooleanFalseValue>
+                    </BooleanValues>
+		</AttributeSchema>
+<AttributeSchema cosQualifier="default"  i18nKey="DELETE"  isSearchable="no"  name="DELETE"  syntax="boolean"  type="single"  uitype="radio" >
+		    <IsResourceNameAllowed></IsResourceNameAllowed>
+		    <BooleanValues>
+                        <BooleanTrueValue i18nKey="allow" >allow</BooleanTrueValue>
+                        <BooleanFalseValue i18nKey="deny" >deny</BooleanFalseValue>
+                    </BooleanValues>
+		</AttributeSchema>
+<AttributeSchema cosQualifier="default"  i18nKey="HEAD"  isSearchable="no"  name="HEAD"  syntax="boolean"  type="single"  uitype="radio" >
+		    <IsResourceNameAllowed></IsResourceNameAllowed>
+		    <BooleanValues>
+                        <BooleanTrueValue i18nKey="allow" >allow</BooleanTrueValue>
+                        <BooleanFalseValue i18nKey="deny" >deny</BooleanFalseValue>
+                    </BooleanValues>
+		</AttributeSchema>
             </Policy>
         </Schema>
     </Service>
