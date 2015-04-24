@@ -65,8 +65,8 @@
     </para>
 
     <para>
-     <command>ssoadm</command> attribute:
-     <literal>idRepoLoadSchema</literal>
+     This attribute is not available for use with the <command>ssoadm</command>
+     command.
     </para>
 
     <para>
