@@ -94,6 +94,8 @@ public class IdRepoPluginsCache implements ServiceListener {
             debug.message("IdRepoPluginsCache.getIdRepoPlugins orgName: " +
                 orgName);
         }
+        if (orgName!=null)
+        	orgName=orgName.replace("==", "=");
         // Check the cache
         Map orgRepos = null;
         orgName = DNUtils.normalizeDN(orgName);
