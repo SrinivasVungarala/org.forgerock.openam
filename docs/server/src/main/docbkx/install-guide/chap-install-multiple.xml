@@ -348,20 +348,36 @@
     on which a user's session resides.
    </para>
    <para>
-    When an OpenAM request to read a session arrives at a server that does not
-    hold the user's session, the OpenAM server attempts to locate the session
-    from the Core Token Service session store by default.
+    The OpenAM server that does not hold the user's session can attempt to
+    locate the user's session by retrieving it from the Core Token Service's
+    token store, or by communicating with other OpenAM servers in an OpenAM site
+    using back-channel communication over the network. This back-channel
+    communication is called <firstterm>crosstalk</firstterm>.
    </para>
    <para>
-    OpenAM servers can also use crosstalk to locate
-    remote sessions. With crosstalk, OpenAM servers
-    communicate with each other through a back channel to locate remote sessions.
-    Because crosstalk generates network traffic, locating sessions from the
-    Core Token Service session store is preferred for performance reasons.
+    By default, OpenAM sites are configured with the Reduce Crosstalk option
+    enabled. With this option enabled, the OpenAM server that
+    does not hold the user's session attempts to retrieve it from the Core Token
+    Service's token store if session failover is enabled.
+   </para>
+   <para>
+    For example, suppose you deploy several OpenAM servers in a site
+    configured for session failover. If the site's load balancer directs a
+    user's request to a server other than the OpenAM server that held the
+    user's session, then the server will attempt to retrieve the session from
+    the Core Token Service, provided you have not modified the default OpenAM
+    configuration.
+   </para>
+   <para>
+    If you disable the Reduce Crosstalk option,
+    the OpenAM server that does not hold the user's session attempts to retrieve
+    it by using crosstalk. Because crosstalk generates network traffic,
+    locating sessions from the Core Token Service's token store is preferred for
+    performance reasons.
    </para>
    <para>
     Requests to update sessions, such as requests to log out, reset the session
-    idle time, or set a session attribute, always use crosstalk to ensure the
+    idle time, or set a session attribute always use crosstalk to ensure the
     integrity of the update requests.
    </para>
    <para>
