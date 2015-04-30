@@ -44,7 +44,7 @@
    <link
     xlink:show="new"
     xlink:href="http://en.wikipedia.org/wiki/Representational_state_transfer"
-   >Representational State Transfer</link>(REST) is an architectural style
+   >Representational State Transfer</link> (REST) is an architectural style
    that sets certain constraints for designing and building
    large-scale distributed hypermedia systems.
    As an architectural style, REST has very broad application.
@@ -65,8 +65,13 @@
    Native OpenAM REST APIs in version 11.0.0 and later use the CREST verbs.
    (In contrast, OAuth 2.0, OpenID Connect 1.0 and UMA 1.0 APIs follow their
    respective standards.)
-   APIs covered in sections labelled (Legacy API) predate CREST,
-   and do not use the CREST verbs.
+   APIs covered
+   in <link xlink:show="new"
+            xlink:href="dev-guide#appendix-deprecated-apis"
+            xlink:role="http://docbook.org/xlink/role/olink">Deprecated
+   REST APIs</link> predate CREST,
+   do not use the CREST verbs, and are deprecated
+   in OpenAM <?eval ${serverDocTargetVersion}?>.
   </para>
 
   <para>
@@ -244,7 +249,7 @@
       xlink:show="new"
       xlink:href="dev-guide#sec-rest-authz-policy"
       xlink:role="http://docbook.org/xlink/role/olink"
-      >Authorization and Policy Management</link>
+      >Authorization and policy management</link>
     </para>
    </listitem>
    <listitem>
@@ -253,7 +258,7 @@
       xlink:show="new"
       xlink:href="dev-guide#rest-api-oauth2"
       xlink:role="http://docbook.org/xlink/role/olink"
-      >OAuth 2.0 Authorization</link>
+      >OAuth 2.0 authorization</link>
     </para>
    </listitem>
    <listitem>
@@ -276,14 +281,14 @@
       xlink:show="new"
       xlink:href="dev-guide#sec-rest-user-services"
       xlink:role="http://docbook.org/xlink/role/olink"
-      >User Self-Registration</link></para>
+      >User self-registration</link></para>
    </listitem>
    <listitem>
     <para><link
      xlink:show="new"
      xlink:href="dev-guide#sec-rest-user-services"
      xlink:role="http://docbook.org/xlink/role/olink"
-     >Resetting Forgotten Passwords</link></para>
+     >Resetting forgotten passwords</link></para>
    </listitem>
    <listitem>
     <para><link
@@ -299,7 +304,7 @@
       xlink:show="new"
       xlink:href="dev-guide#sec-rest-identity-realm-mgmt"
       xlink:role="http://docbook.org/xlink/role/olink"
-      >Identity Management
+      >Identity management
       (creating, reading, updating, deleting identities)
      </link>
     </para>
@@ -309,7 +314,7 @@
      xlink:show="new"
      xlink:href="dev-guide#sec-rest-identity-realm-mgmt"
      xlink:role="http://docbook.org/xlink/role/olink"
-     >Realm Management
+     >Realm management
      (creating, reading, updating, deleting realms)
     </link></para>
    </listitem>
@@ -709,7 +714,11 @@ $ <userinput>curl \
     <literal>/identity/logout</literal>, you find the backwards-compatible,
     legacy API.</para>
 
-    <para>See <xref linkend="rest-api-auth-legacy" /> below.</para>
+    <para>See <link xlink:show="new"
+                    xlink:href="dev-guide#deprecated-apis-auth"
+                    xlink:role="http://docbook.org/xlink/role/olink">Deprecated
+     Authentication and Logout APIs</link>.
+    </para>
    </listitem>
   </itemizedlist>
 
@@ -1090,54 +1099,6 @@ $ <userinput>curl \
 {"result":"Successfully logged out"}</computeroutput>
    </screen>
   </section>
-
-  <section xml:id="rest-api-auth-legacy">
-   <title>Authentication &amp; Logout (Legacy API)</title>
-
-    <para>Interface Stability: <link xlink:show="new"
-    xlink:href="admin-guide#interface-stability"
-    xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
-
-    <para>Simple authentication with a user name and password returns a
-    token.</para>
-
-    <screen>
-$ <userinput>curl \
- --request POST \
- --data "username=bjensen&amp;password=hifalutin" \
- https://openam.example.com:8443/openam/identity/authenticate</userinput>
-<computeroutput>
-token.id=AQIC5wM2LY4SfcxvdvHOXjtC_eWSs2RB54tgvgK8SuYi7aQ.*AAJTSQACMDE.*</computeroutput>
-    </screen>
-
-    <para>If you must specify parameters as when authenticating to
-    <literal>/UI/Login</literal>, you provide a percent encoded string of the
-    parameters as the value of the <literal>uri</literal> parameter. The
-    <literal>/UI/Login</literal> parameter deals with the <literal>realm</literal>,
-    <literal>module</literal>, and <literal>service</literal> parameters. Setting the
-    <literal>client</literal> parameter sets the user's IP address as part of the
-    token following successful authentication. The default for the <literal>client</literal>
-    parameter is the IP of the machine making the REST request.</para>
-
-    <screen>
-$ <userinput>curl \
- --request POST \
- --data "username=bjensen&amp;password=hifalutin&amp;uri=realm%3D%2F%26module%3DDataStore\
-&amp;client=192.168.1.1" \
- https://openam.example.com:8443/openam/identity/authenticate</userinput>
-<computeroutput>
-token.id=AQIC5wM2LY4SfcxvdvHOXjtC_eWSs2RB54tgvgK8SuYi7aQ.*AAJTSQACMDE.*</computeroutput>
-    </screen>
-
-    <para>You log out using the token to end the user session.</para>
-
-    <screen>
-$ <userinput>curl \
- --request POST \
- --data "subjectid=AQIC5w...*AAJTSQACMDE.*" \
- https://openam.example.com:8443/openam/identity/logout</userinput>
-    </screen>
-  </section>
  </section>
 
  <section xml:id="rest-api-serverinfo">
@@ -1242,11 +1203,13 @@ string=amlbcookie</computeroutput>
    <listitem>
     <para>
      Under <literal>/identity/isTokenValid</literal>
-     you find the backwards compatible, legacy APIs.
+     you find the backwards-compatible, legacy APIs.
     </para>
 
-    <para>
-     See <xref linkend="rest-api-tokens-legacy" /> below.
+    <para>See <link xlink:show="new"
+                    xlink:href="dev-guide#deprecated-apis-tokens"
+                    xlink:role="http://docbook.org/xlink/role/olink">Deprecated
+     Token Validation and Attribute Retrieval APIs</link>.
     </para>
    </listitem>
   </itemizedlist>
@@ -1401,147 +1364,7 @@ $ <userinput>curl \
 
   </section>
 
-  <section xml:id="rest-api-tokens-legacy">
-   <title>Token Validation, Attribute Retrieval (Legacy API)</title>
 
-   <para>Interface Stability: <link xlink:show="new"
-   xlink:href="admin-guide#interface-stability"
-   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
-
-   <para>You check whether a token is valid as follows:</para>
-
-   <screen>
-$ <userinput>curl \
- --request POST \
- --data "tokenid=AQIC5w...*AAJTSQACMDE.*" \
- https://openam.example.com:8443/openam/identity/isTokenValid</userinput>
-<computeroutput>boolean=true</computeroutput>
-   </screen>
-
-   <para>An invalid token returns <literal>boolean=false</literal>.</para>
-
-   <screen>
-$ <userinput>curl \
- --request POST \
- --data "tokenid=INVALID" \
- https://openam.example.com:8443/openam/identity/isTokenValid</userinput>
-<computeroutput>boolean=false</computeroutput>
-   </screen>
-
-   <para>With a valid token, you can retrieve attributes about the subject.
-    OpenAM returns a series of <replaceable>name</replaceable>,
-    <replaceable>value</replaceable> pairs.</para>
-
-   <para>The newer API for retrieving user information is demonstrated in
-    <link xlink:show="new"
-          xlink:href="dev-guide#rest-api-read-identity"
-          xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>Reading Identities</citetitle></link>. What follows describes the
-    legacy API.</para>
-
-   <screen>
-$ <userinput>curl \
- --request POST \
- --data "subjectid=AQIC5w...*AAJTSQACMDE.*" \
- https://openam.example.com:8443/openam/identity/attributes</userinput>
-<computeroutput>userdetails.token.id=
- AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*
-userdetails.attribute.name=uid
-userdetails.attribute.value=bjensen
-userdetails.attribute.name=mail
-userdetails.attribute.value=bjensen@example.com
-userdetails.attribute.name=sn
-userdetails.attribute.value=Jensen
-userdetails.attribute.name=userpassword
-userdetails.attribute.value={SSHA}rhusOfYpkapDWEHcfT2Y7y83LMuC++F4Abqvig==
-userdetails.attribute.name=cn
-userdetails.attribute.value=Babs Jensen
-userdetails.attribute.value=Barbara Jensen
-userdetails.attribute.name=givenname
-userdetails.attribute.value=Barbara
-userdetails.attribute.name=dn
-userdetails.attribute.value=uid=bjensen,ou=people,dc=example,dc=com
-userdetails.attribute.name=telephonenumber
-userdetails.attribute.value=+1 408 555 1862
-userdetails.attribute.name=objectclass
-userdetails.attribute.value=organizationalPerson
-userdetails.attribute.value=person
-userdetails.attribute.value=posixAccount
-userdetails.attribute.value=inetOrgPerson
-userdetails.attribute.value=krbprincipalaux
-userdetails.attribute.value=krbTicketPolicyAux
-userdetails.attribute.value=top</computeroutput>
-   </screen>
-
-   <para>You can specify attributes to limit what you retrieve.</para>
-
-   <screen>
-$ <userinput>curl "https://openam.example.com:8443/openam/identity/attributes?\
-subjectid=AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*\
-&amp;attributenames=mail\
-&amp;attributenames=uid"</userinput>
-<computeroutput>userdetails.token.id=
- AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*
-userdetails.attribute.name=uid
-userdetails.attribute.value=bjensen
-userdetails.attribute.name=mail
-userdetails.attribute.value=bjensen@example.com</computeroutput>
-   </screen>
-
-   <para>When retrieving attributes, you can refresh the session thus setting
-    the idle time to 0, by adding the boolean parameter
-    <literal>refresh=true</literal> to the query string.</para>
-
-   <screen>
-$ <userinput>curl "https://openam.example.com:8443/openam/identity/attributes?\
-subjectid=AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*\
-&amp;attributenames=cn\
-&amp;refresh=true"</userinput>
-<computeroutput>userdetails.token.id=
- AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*
-userdetails.attribute.name=cn
-userdetails.attribute.value=Babs Jensen
-userdetails.attribute.value=Barbara Jensen</computeroutput>
-   </screen>
-
-   <para>
-    You can specify the following attributes to retrieve information
-    about the user's session time limits and current session:
-    <literal>maxsessiontime</literal> (maximum length of a session),
-    <literal>maxidletime</literal> (maximum idle time allowed during a session),
-    <literal>idletime</literal> (actual idle time during the current session),
-    <literal>timeleft</literal> (actual time left in session).
-    The unit for maximum times is minutes.
-    The unit for actual times is seconds.
-   </para>
-
-   <para>
-    Also use the parameter <literal>refresh=false</literal>
-    to avoid changing the <literal>idletime</literal> with your request.
-   </para>
-
-   <screen>
-$ <userinput>curl \
---data "subjectid=AQIC5w....*AAJTSQACMDE.*\
- &amp;attributenames=idletime\
- &amp;attributenames=maxidletime\
- &amp;attributenames=timeleft\
- &amp;attributenames=maxsessiontime\
- &amp;refresh=false" \
- https://openam.example.com:8443/openam/identity/attributes</userinput>
-<computeroutput>
-userdetails.token.id=AQIC5w....*AAJTSQACMDE.*
-userdetails.attribute.name=maxsessiontime
-userdetails.attribute.value=120
-userdetails.attribute.name=maxidletime
-userdetails.attribute.value=30
-userdetails.attribute.name=idletime
-userdetails.attribute.value=664
-userdetails.attribute.name=timeleft
-userdetails.attribute.value=6319</computeroutput>
-  </screen>
-
-  </section>
  </section>
 
  <section xml:id="rest-api-logging">

@@ -131,6 +131,8 @@
   </refentry>
  </reference>
  -->
- 
+
+    <xinclude:include href='appendix-deprecated-apis.xml' />
+
  <index />
 </book>
