@@ -34,7 +34,6 @@
  */
 package com.iplanet.services.naming.service;
 
-import com.iplanet.am.util.Cache;
 import com.iplanet.am.util.SystemProperties;
 import com.iplanet.dpro.session.Session;
 import com.iplanet.dpro.session.SessionID;
@@ -64,20 +63,22 @@ import com.sun.identity.sm.ServiceConfigManager;
 import com.sun.identity.sm.ServiceListener;
 import com.sun.identity.sm.ServiceSchema;
 import com.sun.identity.sm.ServiceSchemaManager;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.text.MessageFormat;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -93,8 +94,8 @@ public class NamingService implements RequestHandler, ServiceListener {
 
 	public static final String NAMING_SERVICE = "com.iplanet.am.naming";
 
-	private volatile static java.util.concurrent.ConcurrentHashMap namingTable = null;
-	private volatile static java.util.concurrent.ConcurrentHashMap namingTableClient = null;
+	private volatile static Map namingTable = null;
+	private volatile static Map namingTableClient = null;
 
 	private static Properties platformProperties = null;
 
@@ -129,55 +130,44 @@ public class NamingService implements RequestHandler, ServiceListener {
 		initialize();
 	}
 
+	static Timer timer=null;
 	public static void initialize() {
 		namingDebug = Debug.getInstance("amNaming");
 		platformProperties = SystemProperties.getAll();
-		server_proto = platformProperties.getProperty(
-				"com.iplanet.am.server.protocol", "");
-		server_host = platformProperties.getProperty(
-				"com.iplanet.am.server.host", "");
-		server_port = platformProperties.getProperty(Constants.AM_SERVER_PORT,
-				"");
+		server_proto = platformProperties.getProperty("com.iplanet.am.server.protocol", "");
+		server_host = platformProperties.getProperty("com.iplanet.am.server.host", "");
+		server_port = platformProperties.getProperty(Constants.AM_SERVER_PORT, "");
 
 		try {
 			SSOTokenManager mgr = SSOTokenManager.getInstance();
-			String adminDN = (String) AccessController
-					.doPrivileged(new AdminDNAction());
-			String adminPassword = (String) AccessController
-					.doPrivileged(new AdminPasswordAction());
+			String adminDN = (String) AccessController.doPrivileged(new AdminDNAction());
+			String adminPassword = (String) AccessController.doPrivileged(new AdminPasswordAction());
 			sso = mgr.createSSOToken(new AuthPrincipal(adminDN), adminPassword);
 			ssmNaming = new ServiceSchemaManager("iPlanetAMNamingService", sso);
-			ssmPlatform = new ServiceSchemaManager("iPlanetAMPlatformService",
-					sso);
+			ssmPlatform = new ServiceSchemaManager("iPlanetAMPlatformService", sso);
 			scmNaming = new ServiceConfigManager("iPlanetAMNamingService", sso);
-			scmPlatform = new ServiceConfigManager("iPlanetAMPlatformService",
-					sso);
+			scmPlatform = new ServiceConfigManager("iPlanetAMPlatformService", sso);
 			serviceRevNumber = ssmPlatform.getRevisionNumber();
 			if (serviceRevNumber < SERVICE_REV_NUMBER_70) {
-				ServiceConfigManager scm = new ServiceConfigManager(
-						"iPlanetAMSessionService", sso);
+				ServiceConfigManager scm = new ServiceConfigManager("iPlanetAMSessionService", sso);
 				sessionServiceConfig = scm.getGlobalConfig(null);
 				sessionConfig = sessionServiceConfig.getSubConfigNames();
 			}
+			updateNamingTable();
 			// init
-			new Thread("nameservice-update") {
-				@Override
-				public void run() {
-					while (true) {
-						try {
-							sleep(30 * 60 * 1000);
-						} catch (InterruptedException e) {
-							return;
-						}
+			if (timer==null){
+				timer=new Timer("nameservice-update", true);
+				timer.scheduleAtFixedRate(new TimerTask() {
+					@Override
+					public void run() {
 						try {
 							updateNamingTable();
 						} catch (Throwable e) {
 							namingDebug.error("Naming update failed.", e);
 						}
 					}
-				}
-			}.start();
-			updateNamingTable();
+				}, 5*60*1000, 5*60*1000);
+			}
 			// Add Listener to the platform and naming service
 			// for schema changes
 			ssmNaming.addListener(new NamingService());
@@ -195,27 +185,34 @@ public class NamingService implements RequestHandler, ServiceListener {
 
 	}
 
+	static Object locknamingTable=new Object();
+	static Object locknamingTableClient=new Object();
+	
 	/**
 	 * This function returns the naming table that consists of service urls,
 	 * platform servers and key/value mappings for platform servers Each server
 	 * instance needs to be updated in the platform server list to reflect that
 	 * server in the naming table
 	 */
-	public static java.util.concurrent.ConcurrentHashMap getNamingTable(
-			boolean forClient) throws SMSException {
+	public static Map getNamingTable(boolean forClient) throws SMSException {
 		if (forClient) {
 			if (namingTableClient == null)
-				namingTableClient = updateNamingTable(forClient);
+				synchronized (locknamingTableClient) {
+					if (locknamingTableClient == null)
+						namingTableClient = updateNamingTable(forClient);
+				}
 			return namingTableClient;
 		} else {
 			if (namingTable == null)
-				namingTable = updateNamingTable(forClient);
+				synchronized (locknamingTable) {
+					if (namingTable == null)
+						namingTable = updateNamingTable(forClient);
+				}
 			return namingTable;
 		}
 	}
 
-	public static java.util.concurrent.ConcurrentHashMap getNamingTable()
-			throws SMSException {
+	public static Map getNamingTable() throws SMSException {
 		return getNamingTable(false);
 	}
 
@@ -232,9 +229,8 @@ public class NamingService implements RequestHandler, ServiceListener {
 	 * This method updates the naming table especially whenever a new server
 	 * added/deleted into platform server list
 	 */
-	private static java.util.concurrent.ConcurrentHashMap updateNamingTable(
-			boolean forClient) throws SMSException {
-		java.util.concurrent.ConcurrentHashMap nametable;
+	private static Map updateNamingTable(boolean forClient) throws SMSException {
+		Map nametable;
 		try {
 			ServiceSchema sc = ssmNaming.getGlobalSchema();
 			Map namingAttrs = sc.getAttributeDefaults();
@@ -265,8 +261,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 			// tradeoff based on whether or not short circuiting is being used.
 			nametable = convertToHash(namingAttrs);
 			if (forClient && (namingTable != null)) {
-				String siteList = (String) namingTable
-						.get(Constants.SITE_ID_LIST);
+				String siteList = (String) namingTable.get(Constants.SITE_ID_LIST);
 				nametable.put(Constants.SITE_ID_LIST, siteList);
 			}
 			insertLBCookieValues(nametable);
@@ -280,9 +275,8 @@ public class NamingService implements RequestHandler, ServiceListener {
 	/**
 	 * This will convert updated naming attributes map into naming hashtable
 	 */
-	static java.util.concurrent.ConcurrentHashMap convertToHash(Map m) {
-		final java.util.concurrent.ConcurrentHashMap retHash = new java.util.concurrent.ConcurrentHashMap(
-				m.size());
+	static Map convertToHash(Map m) {
+		final Map retHash = new HashMap(m.size());
 		Set s = m.keySet();
 		Iterator iter = s.iterator();
 		while (iter.hasNext()) {
@@ -314,8 +308,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 			int index = serverEntry.indexOf(delimiter);
 			if (index != -1) {
 				String server = serverEntry.substring(0, index);
-				String serverId = serverEntry.substring(index + 1,
-						serverEntry.length());
+				String serverId = serverEntry.substring(index + 1, serverEntry.length());
 
 				siteList.add(serverId);
 				index = serverId.indexOf(delimiter);
@@ -328,8 +321,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 				serverList.add(server);
 				namingAttrs.put(serverId, serverSet);
 			} else {
-				namingDebug.error("Platform Server List entry is invalid:"
-						+ serverEntry);
+				namingDebug.error("Platform Server List entry is invalid:" + serverEntry);
 			}
 		}
 		namingAttrs.put(Constants.PLATFORM_LIST, serverList);
@@ -344,8 +336,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 			int index = serverEntry.indexOf(delimiter);
 			if (index != -1) {
 				String server = serverEntry.substring(0, index);
-				String serverId = serverEntry.substring(index + 1,
-						serverEntry.length());
+				String serverId = serverEntry.substring(index + 1, serverEntry.length());
 				index = serverId.indexOf(delimiter);
 				if (index != -1) {
 					continue;
@@ -355,8 +346,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 				serverList.add(server);
 				namingAttrs.put(serverId, serverSet);
 			} else {
-				namingDebug.error("Platform Server List entry is invalid:"
-						+ serverEntry);
+				namingDebug.error("Platform Server List entry is invalid:" + serverEntry);
 			}
 		}
 		namingAttrs.put(Constants.PLATFORM_LIST, serverList);
@@ -378,9 +368,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 		return sb.toString();
 	}
 
-	public ResponseSet process(List<Request> requests,
-			HttpServletRequest servletRequest,
-			HttpServletResponse servletResponse, ServletContext servletContext) {
+	public ResponseSet process(List<Request> requests, HttpServletRequest servletRequest, HttpServletResponse servletResponse, ServletContext servletContext) {
 		ResponseSet rset = new ResponseSet(NAMING_SERVICE);
 		for (Request req : requests) {
 			Response res = processRequest(req);
@@ -402,45 +390,32 @@ public class NamingService implements RequestHandler, ServiceListener {
 		String sessionId = nreq.getSessionId();
 		try {
 			if (sessionId == null) {
-				nres.setNamingTable(NamingService
-						.getNamingTable(limitNametable));
+				nres.setNamingTable(NamingService.getNamingTable(limitNametable));
 			} else {
-				java.util.concurrent.ConcurrentHashMap tempHash;// = new
-																// java.util.concurrent.ConcurrentHashMap();
-				// tempHash = transferTable(NamingService
-				// .getNamingTable(limitNametable));
-				tempHash = new ConcurrentHashMap(
-						NamingService.getNamingTable(limitNametable));
-				java.util.concurrent.ConcurrentHashMap replacedTable = null;
+				Map replacedTable = null;
 				URL url = usePreferredNamingURL(nreq, reqVersion);
 				if (url != null) {
-					String uri = (reqVersion < 3.0) ? SystemProperties
-							.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR)
-							: WebtopNaming.getURI(url);
+					String uri = (reqVersion < 3.0) ? SystemProperties.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR) : WebtopNaming.getURI(url);
 
 					if (uri.equals(Constants.EMPTY)) {
-						uri = SystemProperties
-								.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR);
+						uri = SystemProperties.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR);
 
 						if (namingDebug.messageEnabled()) {
 							namingDebug.message("uri is blank; adding " + uri);
 						}
 					}
 
-					replacedTable = replaceTable(tempHash, url.getProtocol(),
-							url.getHost(), Integer.toString(url.getPort()), uri);
+					replacedTable = replaceTable(NamingService.getNamingTable(limitNametable), url.getProtocol(), url.getHost(), Integer.toString(url.getPort()), uri);
 				} else {
-					replacedTable = replaceTable(tempHash, sessionId);
+					replacedTable = replaceTable(NamingService.getNamingTable(limitNametable), sessionId);
 				}
 
 				if (replacedTable == null) {
-					nres.setException("SessionID ---" + sessionId
-							+ "---is Invalid");
+					nres.setException("SessionID ---" + sessionId + "---is Invalid");
 				} else {
 					nres.setNamingTable(replacedTable);
 				}
-				nres.setAttribute(Constants.NAMING_AM_LB_COOKIE,
-						Session.getLBCookie(sessionId));
+				nres.setAttribute(Constants.NAMING_AM_LB_COOKIE, Session.getLBCookie(sessionId));
 			}
 		} catch (Exception e) {
 			nres.setException(e.getMessage());
@@ -448,8 +423,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 		// if request version is less than 3.0, need to replace
 		// %uri with the actual value
 		if (reqVersion < 3.0) {
-			String uri = SystemProperties
-					.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR);
+			String uri = SystemProperties.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR);
 			if (!uri.startsWith("/")) {
 				uri = "/" + uri;
 			}
@@ -458,8 +432,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 		return new Response(nres.toXMLString());
 	}
 
-	private URL usePreferredNamingURL(NamingRequest request, float reqVersion)
-			throws ServerEntryNotFoundException, MalformedURLException {
+	private URL usePreferredNamingURL(NamingRequest request, float reqVersion) throws ServerEntryNotFoundException, MalformedURLException {
 		String preferredNamingURL = null;
 		URL preferredURL = null;
 
@@ -478,11 +451,8 @@ public class NamingService implements RequestHandler, ServiceListener {
 		}
 
 		URL url = new URL(request.getPreferredNamingURL());
-		String uri = (reqVersion < 3.0) ? SystemProperties
-				.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR)
-				: WebtopNaming.getURI(url);
-		String serverID = WebtopNaming.getServerID(url.getProtocol(),
-				url.getHost(), Integer.toString(url.getPort()), uri);
+		String uri = (reqVersion < 3.0) ? SystemProperties.get(Constants.AM_SERVICES_DEPLOYMENT_DESCRIPTOR) : WebtopNaming.getURI(url);
+		String serverID = WebtopNaming.getServerID(url.getProtocol(), url.getHost(), Integer.toString(url.getPort()), uri);
 		SessionID sessionID = new SessionID(sessionid);
 		String primary_id = sessionID.getExtension(SessionID.PRIMARY_ID);
 
@@ -499,56 +469,51 @@ public class NamingService implements RequestHandler, ServiceListener {
 		return preferredURL;
 	}
 
-	private java.util.concurrent.ConcurrentHashMap replaceTable(
-			java.util.concurrent.ConcurrentHashMap namingTable, String sessionID) {
+	private Map replaceTable(Map namingTable, String sessionID) {
 		SessionID sessID = new SessionID(sessionID);
 		if (namingDebug.messageEnabled())
 			namingDebug.message("SessionId received is --" + sessionID);
 
-		return replaceTable(namingTable, sessID.getSessionServerProtocol(),
-				sessID.getSessionServer(), sessID.getSessionServerPort(),
-				sessID.getSessionServerURI());
+		return replaceTable(namingTable, sessID.getSessionServerProtocol(), sessID.getSessionServer(), sessID.getSessionServerPort(), sessID.getSessionServerURI());
 	}
-
-	private java.util.concurrent.ConcurrentHashMap replaceTable(
-			java.util.concurrent.ConcurrentHashMap namingTable,
-			String protocol, String host, String port, String uri) {
-		if (protocol.equalsIgnoreCase("") || host.equalsIgnoreCase("")
-				|| port.equalsIgnoreCase("")) {
+//java.util.regex.Pattern.compile(regex).matcher(str).replaceAll(repl)
+	static Pattern protocolPattern=Pattern.compile("%protocol");
+	static Pattern hostPattern=Pattern.compile("%host");
+	static Pattern portPattern=Pattern.compile("%port");
+	static Pattern uriPattern=Pattern.compile("%uri");
+	
+	private Map replaceTable(Map namingTable, String protocol, String host, String port, String uri) {
+		if (protocol.equalsIgnoreCase("") || host.equalsIgnoreCase("") || port.equalsIgnoreCase("")) {
 			return null;
 		}
 		// Do validation from platform server list
-		if (!(protocol.equals(server_proto) && host.equals(server_host) && port
-				.equals(server_port))) {
+		if (!(protocol.equals(server_proto) && host.equals(server_host) && port.equals(server_port))) {
 			String cookieURL = protocol + "://" + host + ":" + port;
-			String platformList = (String) namingTable
-					.get(Constants.PLATFORM_LIST);
+			String platformList = (String) namingTable.get(Constants.PLATFORM_LIST);
 			if (platformList.indexOf(cookieURL) == -1) {
 				return null;
 			}
 		}
-		java.util.concurrent.ConcurrentHashMap tempNamingTable = namingTable;
+		Map tempNamingTable = new HashMap(namingTable.size());
 		// replace all percent here
-		for (Enumeration e = tempNamingTable.keys(); e.hasMoreElements();) {
-			Object obj = e.nextElement();
+		for (Object obj: tempNamingTable.keySet()) {
+			//Object obj = e.nextElement();
 			String key = obj.toString();
 			String url = (tempNamingTable.get(obj)).toString();
-			url = url.replaceAll("%protocol", protocol);
-			url = url.replaceAll("%host", host);
-			url = url.replaceAll("%port", port);
-			url = url.replaceAll("%uri", uri);
+			url = protocolPattern.matcher(url).replaceAll(protocol);// url.replaceAll("%protocol", protocol);
+			url = hostPattern.matcher(url).replaceAll(host);// url.replaceAll("%host", host);
+			url = portPattern.matcher(url).replaceAll(port);// url.replaceAll("%port", port);
+			url = uriPattern.matcher(url).replaceAll(uri);// url.replaceAll("%uri", uri);
 			tempNamingTable.put(key, url);
 		}
 		return tempNamingTable;
 	}
 
-	private java.util.concurrent.ConcurrentHashMap transferTable(
-			java.util.concurrent.ConcurrentHashMap hashTab) {
+	private Map transferTable(Map hashTab) {
 		if (hashTab == null)
 			return null;
-		java.util.concurrent.ConcurrentHashMap newTab = new java.util.concurrent.ConcurrentHashMap();
-		for (Enumeration e = hashTab.keys(); e.hasMoreElements();) {
-			Object obj = e.nextElement();
+		Map newTab = new HashMap(hashTab.size());
+		for (Object obj: hashTab.keySet()) {
 			String key = obj.toString();
 			String value = (hashTab.get(obj)).toString();
 			newTab.put(key, value);
@@ -565,9 +530,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 	 */
 	public void schemaChanged(String serviceName, String version) {
 		// Do not update if the servieName is not "iPlanetAMPlatformService"
-		if ((serviceName == null)
-				|| (!serviceName.equals("iPlanetAMPlatformService") && !serviceName
-						.equals("iPlanetAMNamingService"))) {
+		if ((serviceName == null) || (!serviceName.equals("iPlanetAMPlatformService") && !serviceName.equals("iPlanetAMNamingService"))) {
 			return;
 		}
 
@@ -583,15 +546,12 @@ public class NamingService implements RequestHandler, ServiceListener {
 	// invoked since the Platform service currently does not support
 	// global/organization 'Configuration'.
 
-	public void globalConfigChanged(String serviceName, String version,
-			String groupName, String serviceComponent, int type) {
-		if ((serviceName == null)
-				|| (!serviceName.equals("iPlanetAMPlatformService") && !serviceName
-						.equals("iPlanetAMNamingService"))) {
+	public void globalConfigChanged(String serviceName, String version, String groupName, String serviceComponent, int type) {
+		if ((serviceName == null) || (!serviceName.equals("iPlanetAMPlatformService") && !serviceName.equals("iPlanetAMNamingService"))) {
 			return;
 		}
 		try {
-			//updateNamingTable();
+			updateNamingTable();
 			SessionService ss = SessionService.getSessionService();
 			if ((ss != null) && ss.isSessionFailoverEnabled()) {
 				ss.ReInitClusterMemberMap();
@@ -601,8 +561,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 		}
 	}
 
-	public void organizationConfigChanged(String serviceName, String version,
-			String orgName, String groupName, String serviceComponent, int type) {
+	public void organizationConfigChanged(String serviceName, String version, String orgName, String groupName, String serviceComponent, int type) {
 		// Do nothing
 	}
 
@@ -611,8 +570,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 			return;
 		}
 
-		MessageFormat form = new MessageFormat(
-				"com.sun.identity.server.fqdnMap[{0}]");
+		MessageFormat form = new MessageFormat("com.sun.identity.server.fqdnMap[{0}]");
 
 		for (Iterator iter = sites.iterator(); iter.hasNext();) {
 			String entry = (String) iter.next();
@@ -626,8 +584,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 				if (host != null) {
 					Object[] args = { host };
 					form.format(args);
-					SystemProperties.initializeProperties(form.format(args),
-							host);
+					SystemProperties.initializeProperties(form.format(args), host);
 				}
 			} catch (MalformedURLException ex) {
 				namingDebug.error("NamingService.registFQDNMapping", ex);
@@ -674,8 +631,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 		return siteNamesAndIDs;
 	}
 
-	private static Set getServers(Map platformAttrs, Set sites)
-			throws Exception {
+	private static Set getServers(Map platformAttrs, Set sites) throws Exception {
 		Set servers = ServerConfiguration.getServerInfo(sso);
 
 		if ((sites != null) && (serviceRevNumber < SERVICE_REV_NUMBER_70)) {
@@ -708,8 +664,7 @@ public class NamingService implements RequestHandler, ServiceListener {
 		return sites.isEmpty() ? null : sites;
 	}
 
-	private static Set getServersFromSessionConfig(Set sites, Set platform)
-			throws Exception {
+	private static Set getServersFromSessionConfig(Set sites, Set platform) throws Exception {
 		HashSet servers = new HashSet();
 
 		Map clusterInfo = getClusterInfo(sites);
@@ -743,9 +698,8 @@ public class NamingService implements RequestHandler, ServiceListener {
 		return servers.isEmpty() ? null : servers;
 	}
 
-	private static java.util.concurrent.ConcurrentHashMap getClusterInfo(
-			Set sites) throws Exception {
-		java.util.concurrent.ConcurrentHashMap clustertbl = new java.util.concurrent.ConcurrentHashMap();
+	private static Map getClusterInfo(Set sites) throws Exception {
+		Map clustertbl = new HashMap();
 		Iterator iter = sites.iterator();
 
 		while (iter.hasNext()) {
@@ -755,23 +709,20 @@ public class NamingService implements RequestHandler, ServiceListener {
 			site = site.substring(0, idx);
 			ServiceConfig subConfig = sessionServiceConfig.getSubConfig(site);
 			Map sessionAttrs = subConfig.getAttributes();
-			String clusterServerList = CollectionHelper.getMapAttr(
-					sessionAttrs, Constants.CLUSTER_SERVER_LIST, "");
+			String clusterServerList = CollectionHelper.getMapAttr(sessionAttrs, Constants.CLUSTER_SERVER_LIST, "");
 			clustertbl.put(siteid, clusterServerList);
 		}
 
 		return clustertbl;
 	}
 
-	private static void insertLBCookieValues(
-			java.util.concurrent.ConcurrentHashMap nametable) throws Exception {
+	private static void insertLBCookieValues(Map nametable) throws Exception {
 		Map lbCookieMappings = null;
 
 		lbCookieMappings = ServerConfiguration.getLBCookieValues(sso);
 
 		if (namingDebug.messageEnabled()) {
-			namingDebug.message("NamingService.insertLBCookieValues()"
-					+ "LBCookie Mappings : " + lbCookieMappings.toString());
+			namingDebug.message("NamingService.insertLBCookieValues()" + "LBCookie Mappings : " + lbCookieMappings.toString());
 		}
 
 		StringBuilder strBuffer = new StringBuilder();

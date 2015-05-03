@@ -35,7 +35,12 @@
 package com.iplanet.services.naming.share;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 
 /**
@@ -72,7 +77,7 @@ public class NamingResponse {
 
     private String requestID = null;
 
-    private java.util.concurrent.ConcurrentHashMap namingTable = new java.util.concurrent.ConcurrentHashMap();
+    private Map namingTable = new HashMap();
 
     private String exception = null;
 
@@ -175,14 +180,14 @@ public class NamingResponse {
     /**
      * Gets the naming table.
      */
-    public java.util.concurrent.ConcurrentHashMap getNamingTable() {
+    public Map getNamingTable() {
         return namingTable;
     }
 
     /**
      * Sets the naming table.
      */
-    public void setNamingTable(java.util.concurrent.ConcurrentHashMap table) {
+    public void setNamingTable(Map table) {
         namingTable = table;
     }
 
@@ -204,18 +209,22 @@ public class NamingResponse {
         return exception;
     }
     
+    static Pattern uriPattern=Pattern.compile("%uri");
     /**
      * Replaces "%uri" with the acutal URI
      */
     public void replaceURI(String uri) {
         if ((namingTable != null) && !namingTable.isEmpty()) {
-        	java.util.concurrent.ConcurrentHashMap newNamingTable = new java.util.concurrent.ConcurrentHashMap();
-            Enumeration e = namingTable.keys();
-            while (e.hasMoreElements()) {
-                String name = e.nextElement().toString();
-                String value = namingTable.get(name).toString();
+        	Map newNamingTable = new HashMap(namingTable.size());
+//            Enumeration e = namingTable.keys();
+//            while (e.hasMoreElements()) {
+//                String name = e.nextElement().toString();
+//                String value = namingTable.get(name).toString();
+        	for (Map.Entry<String, String> e : (Set<Map.Entry<String, String>>)namingTable.entrySet()) {
+			    String name = e.getKey();//(String) e.nextElement();
+                String value = e.getValue();//(String) namingTable.get(name);
                 if (value.indexOf("%uri") != -1) {
-                    value = value.replaceAll("%uri", uri);
+                    value=uriPattern.matcher(value).replaceAll(uri);// value.replaceAll("%uri", uri);
                 } else {
                     // strip the URI if the entry is like
                     // 01=http://whatever.domain.com/opensso
@@ -253,10 +262,11 @@ public class NamingResponse {
             xml.append("<Exception>").append(exception).append("</Exception>")
                     .append(NL);
         } else {
-            Enumeration e = namingTable.keys();
-            while (e.hasMoreElements()) {
-                String name = (String) e.nextElement();
-                String value = (String) namingTable.get(name);
+//            Enumeration e = namingTable.keys();
+//            while (e.hasMoreElements()) {
+        	for (Map.Entry<String, String> e : (Set<Map.Entry<String, String>>)namingTable.entrySet()) {
+			    String name = e.getKey();//(String) e.nextElement();
+                String value = e.getValue();//(String) namingTable.get(name);
                 xml.append("<Attribute name=").append(QUOTE).append(name).append(QUOTE)
                         .append(" value=").append(QUOTE).append(value).append(
                                 QUOTE).append('>').append(
