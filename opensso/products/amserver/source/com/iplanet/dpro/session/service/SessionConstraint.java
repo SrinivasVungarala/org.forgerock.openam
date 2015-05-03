@@ -43,6 +43,12 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.forgerock.openam.session.service.DestroyOldestAction;
 
@@ -117,6 +123,39 @@ public class SessionConstraint {
         }
     }
 
+    
+    static ThreadPoolExecutor tpQuota=new ThreadPoolExecutor(4,256,60, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>(32000),
+    		 new ThreadFactory() {
+		 		final AtomicInteger threadNumber = new AtomicInteger(1);
+				@Override
+				public Thread newThread(Runnable r) {
+					Thread t = new Thread(r, "quota-" + threadNumber.getAndIncrement());
+		            t.setDaemon(true);
+		            t.setPriority(Thread.MIN_PRIORITY);
+		            return t;
+				}
+			});
+    static{
+		tpQuota.allowCoreThreadTimeOut(true);
+	}
+	public static class AsyncQuota implements Runnable {
+		final InternalSession is;
+		public AsyncQuota(InternalSession is){
+			this.is=is;
+		}
+		public void run() {
+			try{
+				checkQuotaAndPerformAction0(is);
+			}catch(Exception e){
+				debug.error("quota ",e);
+			}
+		}
+	}
+	protected static boolean checkQuotaAndPerformAction(InternalSession is) {
+		if (is!=null && is.getID()!=null)
+			tpQuota.execute(new AsyncQuota(is));
+		return false;
+	}
     /**
      * Check if the session quota for a given user has been exhausted and
      * perform necessary actions in such as case.
@@ -125,7 +164,7 @@ public class SessionConstraint {
      * @return true if the session activation request should be rejected, false
      *         otherwise
      */
-    protected static boolean checkQuotaAndPerformAction(InternalSession is) {
+    protected static boolean checkQuotaAndPerformAction0(InternalSession is) {
         boolean reject = false;
         int sessionCount = -1;
 
