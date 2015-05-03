@@ -36,6 +36,7 @@
 package com.sun.identity.monitoring;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 public class SSOServerInfo {
     String serverID;
@@ -45,9 +46,9 @@ public class SSOServerInfo {
     String serverURI;
     String serverPort;
     boolean isEmbeddedDS;
-    java.util.concurrent.ConcurrentHashMap<String, String> siteIDTable;
-    java.util.concurrent.ConcurrentHashMap<String, String> serverIDTable;
-    java.util.concurrent.ConcurrentHashMap<String, String> namingTable;
+    Map<String, String> siteIDTable;
+    Map<String, String> serverIDTable;
+    Map<String, String> namingTable;
     String startDate;
 
     public SSOServerInfo() {
@@ -75,9 +76,9 @@ public class SSOServerInfo {
         String serverURI;
         String serverPort;
         boolean isEmbeddedDS;
-        java.util.concurrent.ConcurrentHashMap<String, String> siteIDTable;
-        java.util.concurrent.ConcurrentHashMap<String, String> serverIDTable;
-        java.util.concurrent.ConcurrentHashMap<String, String> namingTable;
+        Map<String, String> siteIDTable;
+        Map<String, String> serverIDTable;
+        Map<String, String> namingTable;
         String startDate;
 
         public SSOServerInfoBuilder(String svrId, String siteId) {
@@ -110,17 +111,17 @@ public class SSOServerInfo {
             return this;
         }
 
-        public SSOServerInfoBuilder siteIdTable (java.util.concurrent.ConcurrentHashMap<String, String> siteIdTab) {
+        public SSOServerInfoBuilder siteIdTable (Map<String, String> siteIdTab) {
             siteIDTable = siteIdTab;
             return this;
         }
 
-        public SSOServerInfoBuilder svrIdTable (java.util.concurrent.ConcurrentHashMap<String, String> svrIdTab) {
+        public SSOServerInfoBuilder svrIdTable (Map<String, String> svrIdTab) {
             serverIDTable = svrIdTab;
             return this;
         }
 
-        public SSOServerInfoBuilder namingTable (java.util.concurrent.ConcurrentHashMap<String, String> namingTab) {
+        public SSOServerInfoBuilder namingTable (Map<String, String> namingTab) {
             namingTable = namingTab;
             return this;
         }

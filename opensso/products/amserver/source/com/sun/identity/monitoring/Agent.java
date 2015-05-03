@@ -123,11 +123,11 @@ public class Agent {
     private static String ssoSiteID;
     private static String ssoServerID;
     private static boolean dsIsEmbedded;
-    private static java.util.concurrent.ConcurrentHashMap<String, String> siteIdTable;
-    private static java.util.concurrent.ConcurrentHashMap<String, String> serverIDTable;
-    private static java.util.concurrent.ConcurrentHashMap<String, String> namingTable;
-    private static java.util.concurrent.ConcurrentHashMap<String, String> siteToURL;
-    private static java.util.concurrent.ConcurrentHashMap<String, String> URLToSite;
+    private static Map<String, String> siteIdTable;
+    private static Map<String, String> serverIDTable;
+    private static Map<String, String> namingTable;
+    private static Map<String, String> siteToURL;
+    private static Map<String, String> URLToSite;
     private static String startDate;
     private static JMXConnectorServer cs;
 
@@ -1016,7 +1016,7 @@ public class Agent {
         }
     }
 
-    public static java.util.concurrent.ConcurrentHashMap<String, String> getSiteIdTable() {
+    public static Map<String, String> getSiteIdTable() {
         if (agentSvrInfo != null) {
             return agentSvrInfo.siteIDTable;
         } else {
@@ -1024,7 +1024,7 @@ public class Agent {
         }
     }
 
-    public static java.util.concurrent.ConcurrentHashMap<String, String> getServerIdTable() {
+    public static Map<String, String> getServerIdTable() {
         if (agentSvrInfo != null) {
             return agentSvrInfo.serverIDTable;
         } else {
@@ -1032,7 +1032,7 @@ public class Agent {
         }
     }
 
-    public static java.util.concurrent.ConcurrentHashMap<String, String> getNamingTable() {
+    public static Map<String, String> getNamingTable() {
         if (agentSvrInfo != null) {
             return agentSvrInfo.namingTable;
         } else {
@@ -1069,7 +1069,7 @@ public class Agent {
      * @param sNames site name -> primary URL
      * @param urlSites is opposite... primary URL -> site name
      */
-    public static void siteNames (java.util.concurrent.ConcurrentHashMap<String, String> sNames, java.util.concurrent.ConcurrentHashMap<String, String> urlSites) {
+    public static void siteNames (Map<String, String> sNames, Map<String, String> urlSites) {
         String classMethod = "Agent.siteNames:";
         if (sNames.isEmpty()) {
             if (debug.messageEnabled()) {

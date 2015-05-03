@@ -41,8 +41,10 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import com.sun.identity.common.GeneralTaskRunnable;
@@ -61,6 +63,7 @@ import com.iplanet.services.naming.share.NamingResponse;
 import com.sun.identity.monitoring.MonitoringUtil;
 import com.sun.identity.shared.Constants;
 import com.sun.identity.shared.debug.Debug;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.io.File;
@@ -70,8 +73,8 @@ import java.io.File;
  *  build the monitoring stuff
  */
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
 import java.text.SimpleDateFormat;
+
 import com.sun.identity.monitoring.SSOServerInfo;
 
 /*
@@ -108,17 +111,17 @@ public class WebtopNaming {
 
     private static final String FAM_NAMING_PREFIX = "sun-naming-";
 
-    private volatile static java.util.concurrent.ConcurrentHashMap namingTable = null;
+    private volatile static Map namingTable = null;
 
-    private volatile static java.util.concurrent.ConcurrentHashMap serverIdTable = null;
+    private volatile static Map serverIdTable = null;
 
-    private volatile static java.util.concurrent.ConcurrentHashMap siteIdTable = null;
+    private volatile static Map siteIdTable = null;
     
-    private volatile static java.util.concurrent.ConcurrentHashMap<String, String> siteNameToIdTable = null;
+    private volatile static Map<String, String> siteNameToIdTable = null;
 
     //This is created for storing server id and lbcookievalue mapping
     //key:serverid | value:lbcookievalue      
-    private volatile static java.util.concurrent.ConcurrentHashMap lbCookieValuesTable = null;
+    private volatile static Map lbCookieValuesTable = null;
 
     private volatile static Vector platformServers = new Vector();
 
@@ -151,7 +154,7 @@ public class WebtopNaming {
     private static String MAP_SITE_TO_SERVER =
         "com.iplanet.am.naming.map.site.to.server";
     
-    private volatile static Map mapSiteToServer = new java.util.concurrent.ConcurrentHashMap();
+    private volatile static Map mapSiteToServer = new HashMap();
 
     static {
         initialize();
@@ -569,15 +572,13 @@ public class WebtopNaming {
      * Returns key value from a hashtable, ignoring the case of the
      * key.
      */
-    private static String getValueFromTable(java.util.concurrent.ConcurrentHashMap table, String key) {
-        if (table.contains(key)) {
+    private static String getValueFromTable(Map table, String key) {
+        if (table.containsKey(key)) {
             return (String) table.get(key);
         }
-        for (Enumeration keys = table.keys(); keys.hasMoreElements();) {
-            String tmpKey = (String) keys.nextElement();
-            if (tmpKey.equalsIgnoreCase(key)) {
-                return (String) table.get(tmpKey);
-            }
+        for (Map.Entry<String, String> e : (Set<Map.Entry<String, String>>)table.entrySet()) {
+            if (e.getKey().equalsIgnoreCase(key)) 
+                return (String) e.getValue();
         }
         return null;
     }
@@ -783,7 +784,7 @@ public class WebtopNaming {
     }
 
     private static void updateLBCookieValueMappings() {
-    	java.util.concurrent.ConcurrentHashMap lbcookieTbl = new java.util.concurrent.ConcurrentHashMap();
+    	Map lbcookieTbl = new HashMap();
         String serverSet = (String) namingTable.get(
                            Constants.SERVERID_LBCOOKIEVALUE_LIST);
 
@@ -1026,15 +1027,16 @@ public class WebtopNaming {
 
         String siteid = getSiteID(serverid);
 
-        Enumeration e = siteIdTable.keys();
-        while (e.hasMoreElements()) {
-            String node = (String) e.nextElement();
-            if (siteid.equalsIgnoreCase(node)) {
+//        Enumeration e = siteIdTable.keys();
+//        while (e.hasMoreElements()) {
+//            String node = (String) e.nextElement();
+        for (Map.Entry<String, String> e : (Set<Map.Entry<String, String>>)siteIdTable.entrySet()) {
+            if (siteid.equalsIgnoreCase(e.getKey())) {
                 continue;
             }
 
-            if (siteid.equalsIgnoreCase(getSiteID(node))) {
-                nodeset.add(node);
+            if (siteid.equalsIgnoreCase(getSiteID(e.getKey()))) {
+                nodeset.add(e.getKey());
             }
         }
 
@@ -1140,8 +1142,8 @@ public class WebtopNaming {
         }
     }
 
-    private static java.util.concurrent.ConcurrentHashMap getNamingTable(URL nameurl) throws Exception {
-    	java.util.concurrent.ConcurrentHashMap nametbl = null;
+    private static Map getNamingTable(URL nameurl) throws Exception {
+    	Map nametbl = null;
         NamingRequest nrequest = new NamingRequest(NamingRequest.reqVersion);
         Request request = new Request(nrequest.toXMLString());
         RequestSet set = new RequestSet(NAMING_SERVICE);
@@ -1180,7 +1182,7 @@ public class WebtopNaming {
             // Try for the primary server first, if it fails and then
             // for the second server. We get connection refused error
             // if it doesn't succeed.
-            java.util.concurrent.ConcurrentHashMap namingtbl = null;
+            Map namingtbl = null;
             URL tempNamingURL = null;
             for (int i = 0; ((namingtbl == null) && 
                     (i < namingServiceURL.length)); i++) {
@@ -1242,11 +1244,14 @@ public class WebtopNaming {
      * exclude each other entry which is there in.
      */
     private static void updateServerIdMappings() {
-    	java.util.concurrent.ConcurrentHashMap serverIdTbl = new java.util.concurrent.ConcurrentHashMap();
-        Enumeration e = namingTable.keys();
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
-            String value = (String) namingTable.get(key);
+    	Map serverIdTbl = new HashMap();
+//        Enumeration e = namingTable.keys();
+//        while (e.hasMoreElements()) {
+    	for (Entry<String,String> e : (Set<Entry<String,String>>)namingTable.entrySet()) {
+//            String key = (String) e.nextElement();
+//            String value = (String) namingTable.get(key);
+    		String key=e.getKey();
+    		String value =e.getValue();
             if ((key == null) || (value == null)) {
                 continue;
             }
@@ -1257,12 +1262,11 @@ public class WebtopNaming {
             }
             serverIdTbl.put(value, key);
         }
-        
         serverIdTable = serverIdTbl;
     }
 
     private static void updateSiteIdMappings() {
-    	java.util.concurrent.ConcurrentHashMap siteIdTbl = new java.util.concurrent.ConcurrentHashMap();
+    	Map siteIdTbl = new HashMap();
         String serverSet = (String) namingTable.get(Constants.SITE_ID_LIST);
 
         if ((serverSet == null) || (serverSet.length() == 0)) {
@@ -1304,7 +1308,7 @@ public class WebtopNaming {
     }
     
     private static void updateSiteNameToIDMappings() {
-    	ConcurrentHashMap<String, String> siteNameToIdTbl = new ConcurrentHashMap<String, String>();
+    	Map<String, String> siteNameToIdTbl = new HashMap<String, String>();
         String siteNameToIDs = (String) namingTable.get(Constants.SITE_NAMES_LIST);
 
         if ((siteNameToIDs == null) || (siteNameToIDs.length() == 0)) {

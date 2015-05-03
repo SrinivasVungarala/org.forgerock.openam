@@ -87,8 +87,8 @@ public class SsoServerTopologyImpl extends SsoServerTopology {
          *  and add them to their corresponding tables.
          */
         
-        java.util.concurrent.ConcurrentHashMap<String, String> ntbl = Agent.getNamingTable();
-        java.util.concurrent.ConcurrentHashMap<String, String> sidtbl = Agent.getSiteIdTable();
+        Map<String, String> ntbl = Agent.getNamingTable();
+        Map<String, String> sidtbl = Agent.getSiteIdTable();
 
         for (Map.Entry<String, String> entry : sidtbl.entrySet()) {
             String svrId = entry.getKey();
