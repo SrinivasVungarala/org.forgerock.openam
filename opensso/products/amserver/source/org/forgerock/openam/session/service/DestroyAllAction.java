@@ -56,21 +56,19 @@ public class DestroyAllAction implements QuotaExhaustionAction {
         //synchronized (sessions) 
         {
             for (String sid : sids) {
-                SessionID sessID = new SessionID(sid);
-
+            	SessionID sessID = new SessionID(sid);
+                
                 try {
-                    Session s = Session.getSession(sessID);
-                    s.destroySession(s);
-                    debug.message("Destroy sid " + sessID);
+                	if (!sessID.equals(is.getID())){
+	                    Session s = Session.getSession(sessID);
+	                    debug.error("destroy " + sessID+" "+s.getClientID());
+	                    s.destroySession(s);
+                	}
                 } catch (SessionException se) {
                     if (debug.messageEnabled()) {
                         debug.message("Failed to destroy the next "
                                 + "expiring session.", se);
                     }
-
-                    // deny the session activation request
-                    // in this case
-                    return false;
                 }
             }
         }
