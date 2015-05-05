@@ -1230,6 +1230,29 @@ $ <userinput>cp ~/Downloads/fedlet/conf/fedlet.cot-template ~/fedlet/fedlet2.cot
     ><citetitle>To Create a Fedlet</citetitle></link>,
     or by using the <command>ssoadm create-metadata-templ</command> subcommand.
    </para>
+   <note>
+    <para>
+     Custom authentication contexts can be loaded and saved when they are loaded via
+     ssoadm as part of the hosted IDP/SP extended metadata and the saves are made
+     in the console. Any custom contexts loaded via ssoadm are
+     also visible in the console.
+    </para>
+    <para>
+     For example, you can specify custom entries in the
+     <literal>idpAuthncontextClassrefMapping</literal> element of the
+     extended metadata for a hosted IDP as follows:
+    </para>
+    <programlisting>
+&lt;Attribute name="idpAuthncontextClassrefMapping">
+ &lt;Value>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+  |1||default&lt;/Value>
+ &lt;Value>http://idmanagement.gov/ns/assurance/loa/4|4||&lt;/Value>
+ &lt;Value>http://idmanagement.gov/ns/assurance/loa/3|3||&lt;/Value>
+ &lt;Value>http://idmanagement.gov/ns/assurance/loa/2|2||&lt;/Value>
+ &lt;Value>http://idmanagement.gov/ns/assurance/loa/1|1||&lt;/Value>
+&lt;/Attribute>
+    </programlisting>
+   </note>
   </section>
  </section>
 

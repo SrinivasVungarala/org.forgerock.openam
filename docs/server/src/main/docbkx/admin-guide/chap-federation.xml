@@ -37,7 +37,7 @@
  organizations participating in a circle of trust.</para>
  
  <section xml:id="about-federation">
-  <title>About SAML v2.0 SSO &amp; Federation</title>
+  <title>About SAML v2.0 SSO and Federation</title>
   <indexterm><primary>Federation</primary></indexterm>
   <para>SAML v2.0 SSO is part of federated access management. Federation lets
   access management cross organizational boundaries. Federation helps
@@ -637,7 +637,7 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
     xlink:href="install-guide#install-openam-admin-tools"
     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up
     Administration Tools</citetitle></link>. The administration tools include
-    the <command>ssoadm</command> tool that you need to export metadata.</para>
+    the <command>ssoadm</command> command that you need to export metadata.</para>
 
     <step>
      <para>On each identity provider console, register the service provider as
@@ -2111,7 +2111,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
  </section>
 
  <section xml:id="using-saml2-sso-slo">
-  <title>Using SAML v2.0 Single Sign-On &amp; Single Logout</title>
+  <title>Using SAML v2.0 Single Sign-On and Single Logout</title>
 
   <indexterm>
    <primary>Federation</primary>
@@ -2332,8 +2332,14 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>AuthnContextClassRef</literal></term>
     <listitem>
      <para>(Optional) Use this parameter to specify authentication context
-     class references. Separate multiple values with pipe characters
-     (<literal>|</literal>).</para>
+      class references. Separate multiple values with pipe characters
+      (<literal>|</literal>).
+      When hosted Idp and SP entities are saved in the console, any
+      custom authentication contexts are also saved as long as they
+      are included in the extended metadata. You can load custom
+      authentication contexts in the extended metadata using the
+      <command>ssoadm</command> command.
+     </para>
     </listitem>
    </varlistentry>
 
@@ -3463,7 +3469,7 @@ $ <userinput>ssoadm \
  </section>
 
  <section xml:id="using-saml2-with-policy-agents">
-  <title>SAML v2.0 &amp; Policy Agents</title>
+  <title>SAML v2.0 and Policy Agents</title>
 
   <para>
    You can use policy agents in a SAML v2.0 Federation deployment.
