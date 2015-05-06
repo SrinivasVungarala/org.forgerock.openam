@@ -1732,6 +1732,19 @@
    </varlistentry>
   </variablelist>
 
+  <variablelist xml:id="j2ee-agent-tcp-connect-timeout">
+   <title>TCP Connection Timeout</title>
+   <varlistentry>
+    <term>TCP Connection Timeout</term>
+    <listitem>
+     <para>Sets the TCP connection timeout for outbound HTTP connections created by
+     the Java EE policy agent. Set the property in the <literal>OpenSSOAgentBootstrap.properties</literal>
+     file.</para>
+     <para>Property: <literal>org.forgerock.openam.url.connectTimeout</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
   <variablelist xml:id="j2ee-agent-custom-properties">
    <title>Custom properties</title>
    <varlistentry>
