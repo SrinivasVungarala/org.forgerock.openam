@@ -2514,8 +2514,8 @@ $ <userinput>jar xvf ~/Downloads/${coreWarFile}</userinput>
 
             <step>
                 <para>Update the <literal># configuration.dir=</literal> line in the
-                    <filename>bootstrap.properties</filename> file so that it appears as follows,
-                    and save the change.</para>
+                    <filename>bootstrap.properties</filename> file to a path
+                 with read and write permisions, and save the change.</para>
 
                 <programlisting language="ini">
 # This property should also be used when the system user that
@@ -2523,8 +2523,7 @@ $ <userinput>jar xvf ~/Downloads/${coreWarFile}</userinput>
 # a home directory. i.e. System.getProperty("user.home") returns
 # null.
 
-configuration.dir=$HOME/openamJboss
-                </programlisting>
+configuration.dir=/my/readwrite/config/dir</programlisting>
             </step>
 
             <step>
