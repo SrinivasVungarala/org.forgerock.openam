@@ -346,9 +346,7 @@
   </step>
   <step>
    <para>
-    Remove all domains from the Cookies Domains list,
-    or if OpenAM is behind a load balancer, use the load balancer host name
-    such as <literal>load-balancer.example.com</literal>.
+    Remove all domains from the Cookies Domains list.
    </para>
   </step>
   <step>
