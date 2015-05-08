@@ -862,14 +862,14 @@ $ <userinput>backup \
      <term><literal>com.sun.identity.session.repository.cleanupRunPeriod</literal></term>
      <listitem>
       <para>Specifies a minimum CTS token lifetime. If there is no activity in the specified
-       time period, the token is erased. Default: 300 seconds.</para>
+       time period, the token is erased. Default: 300000 ms.</para>
      </listitem>
     </varlistentry>
     <varlistentry>
      <term><literal>com.sun.identity.session.repository.healthCheckRunPeriod</literal></term>
      <listitem>
       <para>Sets a period of time when requests are sent to make sure the current instance of
-       OpenAM is running. Default: 60 seconds.</para>
+       OpenAM is running. Default: 60000 ms.</para>
      </listitem>
     </varlistentry>
    </variablelist>
