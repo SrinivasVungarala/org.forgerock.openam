@@ -246,6 +246,12 @@ public class WebtopNaming {
      */
     public static boolean isSiteEnabled(String serverid) throws Exception {
         String siteid = (String) siteIdTable.get(serverid);
+        if (!serverid.equals(siteid))
+        	return true;
+        for (Entry<String,String> e: (Set<Entry<String,String>>)siteIdTable.entrySet()) {
+			if(e.getValue().contains(serverid)&&!serverid.equals(e.getKey()))
+				return true;
+		}
         return (!serverid.equals(siteid));
     }
 

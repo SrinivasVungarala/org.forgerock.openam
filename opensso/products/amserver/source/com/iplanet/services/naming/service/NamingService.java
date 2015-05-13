@@ -73,6 +73,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -496,10 +497,10 @@ public class NamingService implements RequestHandler, ServiceListener {
 		}
 		Map tempNamingTable = new HashMap(namingTable.size());
 		// replace all percent here
-		for (Object obj: tempNamingTable.keySet()) {
+		for (Entry<String,String> e: (Set<Entry<String,String>>)namingTable.entrySet()) {
 			//Object obj = e.nextElement();
-			String key = obj.toString();
-			String url = (tempNamingTable.get(obj)).toString();
+			String key = e.getKey();
+			String url = e.getValue();
 			url = protocolPattern.matcher(url).replaceAll(protocol);// url.replaceAll("%protocol", protocol);
 			url = hostPattern.matcher(url).replaceAll(host);// url.replaceAll("%host", host);
 			url = portPattern.matcher(url).replaceAll(port);// url.replaceAll("%port", port);
@@ -513,9 +514,9 @@ public class NamingService implements RequestHandler, ServiceListener {
 		if (hashTab == null)
 			return null;
 		Map newTab = new HashMap(hashTab.size());
-		for (Object obj: hashTab.keySet()) {
-			String key = obj.toString();
-			String value = (hashTab.get(obj)).toString();
+		for (Entry<String,String> e: (Set<Entry<String,String>>)hashTab.entrySet()) {
+			String key = e.getKey();
+			String value = e.getValue();
 			newTab.put(key, value);
 		}
 		return newTab;
