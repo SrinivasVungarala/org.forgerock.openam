@@ -43,6 +43,7 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -124,7 +125,7 @@ public class SessionConstraint {
     }
 
     
-    static ThreadPoolExecutor tpQuota=new ThreadPoolExecutor(4,256,60, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>(32000),
+    static ThreadPoolExecutor tpQuota=new ThreadPoolExecutor(32,256,60, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(32000),
     		 new ThreadFactory() {
 		 		final AtomicInteger threadNumber = new AtomicInteger(1);
 				@Override
