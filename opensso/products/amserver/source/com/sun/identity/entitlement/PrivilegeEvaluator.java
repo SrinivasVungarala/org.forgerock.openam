@@ -386,7 +386,7 @@ class PrivilegeEvaluator {
         try {
             while (!isDone && (counter < totalCount)) {
                 if (resultQ.isEmpty()) {
-                    if (!hasResults.await(10,TimeUnit.SECONDS))
+                    if (!hasResults.await(5,TimeUnit.SECONDS))
                     	return;
                 }
                 while (!resultQ.isEmpty() && !isDone) {
