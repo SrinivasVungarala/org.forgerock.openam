@@ -2031,7 +2031,7 @@ public class SessionService {
             return serverID;
         }
 
-        if (clusterStateService.isUp(primaryID)) {
+        if (clusterStateService!=null && clusterStateService.isUp(primaryID)) {
             return primaryID;
         } else {
             int selectionListSize = clusterStateService
