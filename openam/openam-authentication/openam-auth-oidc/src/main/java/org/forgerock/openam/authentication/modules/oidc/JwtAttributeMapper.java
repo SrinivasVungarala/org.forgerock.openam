@@ -11,7 +11,8 @@
 * Header, with the fields enclosed by brackets [] replaced by your own identifying
 * information: "Portions copyright [year] [name of copyright owner]".
 *
-* Copyright 2014 ForgeRock AS.
+* Copyright 2014-2015 ForgeRock AS.
+* Portions Copyrighted 2015 Nomura Research Institute, Ltd.
 */
 
 package org.forgerock.openam.authentication.modules.oidc;
@@ -63,9 +64,12 @@ public class JwtAttributeMapper implements AttributeMapper<JwtClaimsSet> {
     /**
      * {@inheritDoc}
      */
-    public Map<String, Set<String>> getAttributes(Map<String, String> localToJwtAttributeMapping,
+    public Map<String, Set<String>> getAttributes(Map<String, String> jwtToLocalAttributeMapping,
                                                                     JwtClaimsSet jwtClaimsSet) {
         Map<String, Set<String>> lookupAttributes = new HashMap<String, Set<String>>();
+        if (jwtToLocalAttributeMapping == null || jwtClaimsSet == null) {
+            return lookupAttributes;
+        }
         /*
         Go through the localToJwtAttributeMapping entries and see if the jwt attribute is present in the jwt. If
         present, create an entry in the lookupAttributes, and insert an entry corresponding to the value in the jwt.
@@ -77,7 +81,7 @@ public class JwtAttributeMapper implements AttributeMapper<JwtClaimsSet> {
         nor the localToJwtAttributeMapping contains duplicate entries.
         Just to be sure, I will log an error if I encounter this situation, in case any of the above invariants are violated.
          */
-        for (Map.Entry<String, String> entry : localToJwtAttributeMapping.entrySet()) {
+        for (Map.Entry<String, String> entry : jwtToLocalAttributeMapping.entrySet()) {
             String jwtName = entry.getKey();
             if (jwtClaimsSet.isDefined(jwtName)) {
                 String localName = entry.getValue();
@@ -91,7 +95,7 @@ public class JwtAttributeMapper implements AttributeMapper<JwtClaimsSet> {
                     lookupAttributes.put(localName, CollectionUtils.asSet(data));
                 } else {
                     logger.error("In JwtAttributeMapper.getAttributes, the " +
-                            "localToJwtAttributeMappings appears to have duplicate entries: " + localToJwtAttributeMapping +
+                            "jwtToLocalAttributeMappings appears to have duplicate entries: " + jwtToLocalAttributeMapping +
                             "; Or possibly the JwtClaimsSet has duplicate entries: " + jwtClaimsSet +
                             ". Will preserve the following existing mappings: " + lookupAttributes);
                 }

@@ -24,7 +24,7 @@
  *
  * $Id: ISAuthConstants.java,v 1.21 2009/11/25 12:05:07 manish_rustagi Exp $
  *
- * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2010-2015 ForgeRock AS.
  */
 
 package com.sun.identity.authentication.util;
@@ -327,6 +327,8 @@ public interface ISAuthConstants {
     public static final String AUTH_ALIAS_ATTR = AUTH_ATTR_PREFIX
             + "alias-attr-name";
 
+    public static final String AUTH_STATELESS_SESSIONS = "openam-auth-stateless-sessions";
+
     public static final String AUTH_USER_CONTAINER = AUTH_ATTR_PREFIX
             + "user-container";
 
@@ -338,12 +340,6 @@ public interface ISAuthConstants {
 
     public static final String DYNAMIC_PROFILE = AUTH_ATTR_PREFIX
             + "dynamic-profile-creation";
-
-    public static final String PERSISTENT_COOKIE_MODE = AUTH_ATTR_PREFIX
-            + "persistent-cookie-mode";
-
-    public static final String PERSISTENT_COOKIE_TIME = AUTH_ATTR_PREFIX
-            + "persistent-cookie-time";
 
     public static final String AUTH_ALLOWED_MODULES = AUTH_ATTR_PREFIX
             + "allowed-modules";
@@ -448,13 +444,6 @@ public interface ISAuthConstants {
     public static final String AUTH_BUNDLE_NAME = "amAuth";
 
     /**
-     * invalidate PCookie
-     */
-    public static final String PCOOKIE = "iPSPCookie";
-
-    public static final String INVALID_PCOOKIE = "inPersistentCookie";
-
-    /**
      * Default Values
      */
 
@@ -493,6 +482,8 @@ public interface ISAuthConstants {
     public static final String SERVICE = "Service";
 
     public static final String HOST = "Host";
+
+    public static final String HOST_NAME = "HostName";
     
     public static final String USER_PROFILE = "UserProfile";
     
@@ -684,14 +675,8 @@ public interface ISAuthConstants {
     
     // Property name for user password attribute
     public static final String ATTR_USER_PASSWORD = "userpassword";
-    
-    /**
-     * Property name for persistent cookie auth level.
-     */
-    public static final String PCOOKIE_AUTH_LEVEL = "openam-auth-pcookie-auth-level";
 
-    /**
-     * The AuthType string for persistent cookie based logins.
-     */
-    public static final String PCOOKIE_AUTH_TYPE = "PCookie";
+    //Property name for forcing two factor auth
+    public static final String TWO_FACTOR_AUTH_MANDATORY = "forgerockTwoFactorAuthMandatory";
+
 }

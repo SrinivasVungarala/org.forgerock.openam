@@ -28,11 +28,11 @@ define("org/forgerock/openam/ui/dashboard/TrustedDevicesView", [
     "org/forgerock/commons/ui/common/main/AbstractView",
     "org/forgerock/openam/ui/dashboard/TrustedDevicesDelegate"
 ], function(AbstractView, TrustedDevicesDelegate) {
-    
+
     var TrustedDevices = AbstractView.extend({
         template: "templates/openam/TrustedDevicesTemplate.html",
         noBaseTemplate: true,
-        element: '#myTrustedDevices',
+        element: '#myTrustedDevicesSection',
         events: { 'click  a.deleteDevice' : 'deleteDevice' },
         render: function() {
 
@@ -40,7 +40,9 @@ define("org/forgerock/openam/ui/dashboard/TrustedDevicesView", [
             TrustedDevicesDelegate.getTrustedDevices()
                 .then(function (data) {
                     self.data.devices = data.result;
-                    self.parentRender();
+                    self.parentRender(function() {
+                        self.$el.find('[data-toggle="tooltip"]').tooltip();
+                    });
                 });
         },
 
@@ -59,5 +61,3 @@ define("org/forgerock/openam/ui/dashboard/TrustedDevicesView", [
 
     return new TrustedDevices();
 });
-
-

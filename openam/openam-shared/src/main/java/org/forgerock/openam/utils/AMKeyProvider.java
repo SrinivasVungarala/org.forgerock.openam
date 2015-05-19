@@ -15,7 +15,7 @@
  */
 
 /*
- * Portions Copyrighted 2013 ForgeRock, Inc.
+ * Portions Copyrighted 2013-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.utils;
@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.AccessController;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -47,6 +48,11 @@ import java.util.HashMap;
 
 public class AMKeyProvider implements KeyProvider {
 
+    private static final String DEFAULT_KEYSTORE_FILE_PROP = "com.sun.identity.saml.xmlsig.keystore";
+    private static final String DEFAULT_KEYSTORE_PASS_FILE_PROP = "com.sun.identity.saml.xmlsig.storepass";
+    private static final String DEFAULT_KEYSTORE_TYPE_PROP = "com.sun.identity.saml.xmlsig.storetype";
+    private static final String DEFAULT_PRIVATE_KEY_PASS_FILE_PROP = "com.sun.identity.saml.xmlsig.keypass";
+
     private Debug logger = SecurityDebug.debug;
 
     private KeyStore ks = null;
@@ -54,14 +60,6 @@ public class AMKeyProvider implements KeyProvider {
     private String keystorePass   = "";
     private String keystoreFile = "";
     private String keystoreType = "JKS";
-    private final static String DEFAULT_KEYSTORE_FILE_PROP =
-            "com.sun.identity.saml.xmlsig.keystore";
-    private final static String DEFAULT_KEYSTORE_PASS_FILE_PROP =
-            "com.sun.identity.saml.xmlsig.storepass";
-    private final static String DEFAULT_KEYSTORE_TYPE_PROP =
-            "com.sun.identity.saml.xmlsig.storetype";
-    private final static String DEFAULT_PRIVATE_KEY_PASS_FILE_PROP  =
-            "com.sun.identity.saml.xmlsig.keypass";
 
     HashMap keyTable = new HashMap();
 
@@ -250,6 +248,11 @@ public class AMKeyProvider implements KeyProvider {
         java.security.PublicKey pkey = null;
         try {
             X509Certificate cert = (X509Certificate) ks.getCertificate(keyAlias);
+            if (cert == null) {
+                logger.error("Unable to retrieve certificate with alias '" + keyAlias + "' from keystore " +
+                        "'" + this.keystoreFile + "'");
+                return null;
+            }
             pkey = cert.getPublicKey();
         } catch (KeyStoreException e) {
             logger.error("Unable to get public key:" + keyAlias, e);
@@ -306,6 +309,25 @@ public class AMKeyProvider implements KeyProvider {
         }
 
         return key;
+    }
+
+    /**
+     * Return {@link KeyPair} containing {@link PublicKey} and {@link PrivateKey} for the specified certAlias.
+     *
+     * @param certAlias Certificate alias name
+     *
+     * @return KeyPair which matches the certAlias, return null if the PrivateKey or PublicKey could not be found.
+     */
+    public KeyPair getKeyPair(String certAlias) {
+
+        PublicKey publicKey = getPublicKey(certAlias);
+        PrivateKey privateKey = getPrivateKey(certAlias);
+
+        if (publicKey != null && privateKey != null) {
+            return new KeyPair(publicKey, privateKey);
+        } else {
+            return null;
+        }
     }
 
     /**

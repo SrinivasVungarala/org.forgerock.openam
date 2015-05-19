@@ -17,12 +17,15 @@ package org.forgerock.openam.rest;
 
 import static org.forgerock.openam.rest.service.RestletUtils.*;
 
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import com.sun.identity.sm.InvalidRealmNameManager;
+import com.sun.identity.sm.SchemaType;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.forgerock.guice.core.InjectorHolder;
+import org.forgerock.json.resource.RoutingMode;
 import org.forgerock.json.resource.VersionSelector;
 import org.forgerock.oauth2.core.OAuth2Constants;
 import org.forgerock.oauth2.restlet.AccessTokenFlowFinder;
@@ -53,9 +56,14 @@ import org.forgerock.openam.forgerockrest.entitlements.SubjectAttributesResource
 import org.forgerock.openam.forgerockrest.entitlements.SubjectTypesResource;
 import org.forgerock.openam.forgerockrest.server.ServerInfoResource;
 import org.forgerock.openam.forgerockrest.session.SessionResource;
-import org.forgerock.openam.rest.authz.*;
+import org.forgerock.openam.rest.authz.AdminOnlyAuthzModule;
+import org.forgerock.openam.rest.authz.CoreTokenResourceAuthzModule;
+import org.forgerock.openam.rest.authz.PrivilegeAuthzModule;
+import org.forgerock.openam.rest.authz.ResourceOwnerOrSuperUserAuthzModule;
+import org.forgerock.openam.rest.authz.SessionResourceAuthzModule;
 import org.forgerock.openam.rest.dashboard.DashboardResource;
 import org.forgerock.openam.rest.dashboard.TrustedDevicesResource;
+import org.forgerock.openam.rest.dashboard.OathDevicesResource;
 import org.forgerock.openam.rest.fluent.FluentRealmRouter;
 import org.forgerock.openam.rest.fluent.FluentRoute;
 import org.forgerock.openam.rest.fluent.FluentRouter;
@@ -67,6 +75,8 @@ import org.forgerock.openam.rest.router.VersionBehaviourConfigListener;
 import org.forgerock.openam.rest.scripting.ScriptResource;
 import org.forgerock.openam.rest.service.RestletRealmRouter;
 import org.forgerock.openam.rest.service.ServiceRouter;
+import org.forgerock.openam.rest.sms.SmsRequestHandlerFactory;
+import org.forgerock.openam.rest.sms.SmsServerPropertiesResource;
 import org.forgerock.openam.rest.uma.UmaConfigurationResource;
 import org.forgerock.openam.rest.uma.UmaPolicyResource;
 import org.forgerock.openam.rest.uma.UmaPolicyResourceAuthzFilter;
@@ -80,10 +90,6 @@ import org.forgerock.openidconnect.restlet.OpenIDConnectJWKEndpoint;
 import org.forgerock.openidconnect.restlet.UserInfo;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
-
-import com.google.inject.Key;
-import com.google.inject.name.Names;
-import com.sun.identity.sm.InvalidRealmNameManager;
 
 /**
  * Singleton class which contains both the routers for CREST resources and Restlet service endpoints.
@@ -101,6 +107,7 @@ public class RestEndpoints {
     private final ServiceRouter xacmlServiceRouter;
     private final Router umaServiceRouter;
     private final Router oauth2ServiceRouter;
+    private final SmsRequestHandlerFactory smsRequestHandlerFactory;
 
     /**
      * Constructs a new RestEndpoints instance.
@@ -109,15 +116,18 @@ public class RestEndpoints {
      * @param versionSelector An instance of the VersionSelector.
      */
     @Inject
-    public RestEndpoints(RestRealmValidator realmValidator, VersionSelector versionSelector, CoreWrapper coreWrapper) {
-        this(realmValidator, versionSelector, coreWrapper, InvalidRealmNameManager.getInvalidRealmNames());
+    public RestEndpoints(RestRealmValidator realmValidator, VersionSelector versionSelector, CoreWrapper coreWrapper,
+            SmsRequestHandlerFactory smsRequestHandlerFactory) {
+        this(realmValidator, versionSelector, coreWrapper, InvalidRealmNameManager.getInvalidRealmNames(),
+                smsRequestHandlerFactory);
     }
 
     RestEndpoints(RestRealmValidator realmValidator, VersionSelector versionSelector, CoreWrapper coreWrapper,
-                  Set<String> invalidRealmNames) {
+                  Set<String> invalidRealmNames, SmsRequestHandlerFactory smsRequestHandlerFactory) {
         this.realmValidator = realmValidator;
         this.versionSelector = versionSelector;
         this.coreWrapper = coreWrapper;
+        this.smsRequestHandlerFactory = smsRequestHandlerFactory;
 
         this.resourceRouter = createResourceRouter(invalidRealmNames);
         this.jsonServiceRouter = createJSONServiceRouter(invalidRealmNames);
@@ -180,6 +190,9 @@ public class RestEndpoints {
         FluentRouter rootRealmRouter = new RealmBlackListingFluentRouter(rootRealmRouterDelegate, invalidRealmNames);
         FluentRealmRouter dynamicRealmRouter = rootRealmRouter.dynamically();
 
+        // ------------------
+        // Realm based routes
+        // ------------------
         //not protected
         dynamicRealmRouter.route("/dashboard")
                 .forVersion("1.0").to(DashboardResource.class);
@@ -191,8 +204,8 @@ public class RestEndpoints {
                 .forVersion("1.0").to(InjectorHolder.getInstance(UmaConfigurationResource.class));
 
         dynamicRealmRouter.route("/users")
-                .forVersion("1.1").to(IdentityResourceV1.class, "UsersResource")
-                .forVersion("2.0").to(IdentityResourceV2.class, "UsersResource");
+                .forVersion("1.2").to(IdentityResourceV1.class, "UsersResource")
+                .forVersion("2.1").to(IdentityResourceV2.class, "UsersResource");
 
         dynamicRealmRouter.route("/groups")
                 .forVersion("1.1").to(IdentityResourceV1.class, "GroupsResource")
@@ -204,6 +217,9 @@ public class RestEndpoints {
 
         dynamicRealmRouter.route("/users/{user}/devices/trusted")
                 .forVersion("1.0").to(TrustedDevicesResource.class);
+
+        dynamicRealmRouter.route("/users/{user}/devices/2fa/oath")
+                .forVersion("1.0").to(OathDevicesResource.class);
 
         dynamicRealmRouter.route("/users/{user}/oauth2/resourcesets")
                 .through(ResourceOwnerOrSuperUserAuthzModule.class, ResourceOwnerOrSuperUserAuthzModule.NAME)
@@ -258,6 +274,17 @@ public class RestEndpoints {
                 .through(PrivilegeAuthzModule.class, PrivilegeAuthzModule.NAME)
                 .forVersion("1.0").to(ResourceTypesResource.class);
 
+        dynamicRealmRouter.route("/scripts")
+                .through(AdminOnlyAuthzModule.class, AdminOnlyAuthzModule.NAME)
+                .forVersion("1.0").to(ScriptResource.class);
+
+        dynamicRealmRouter.route("/realm-config")
+                .through(AdminOnlyAuthzModule.class, AdminOnlyAuthzModule.NAME)
+                .forVersion("1.0").to(RoutingMode.STARTS_WITH, smsRequestHandlerFactory.create(SchemaType.ORGANIZATION));
+
+        // ------------------
+        // Global routes
+        // ------------------
         rootRealmRouter.route("/decisioncombiners")
                 .through(PrivilegeAuthzModule.class, PrivilegeAuthzModule.NAME)
                 .forVersion("1.0").to(DecisionCombinersResource.class);
@@ -274,9 +301,13 @@ public class RestEndpoints {
                 .through(CoreTokenResourceAuthzModule.class, CoreTokenResourceAuthzModule.NAME)
                 .forVersion("1.0").to(CoreTokenResource.class);
 
-        dynamicRealmRouter.route("/scripts")
+        rootRealmRouter.route("/global-config")
                 .through(AdminOnlyAuthzModule.class, AdminOnlyAuthzModule.NAME)
-                .forVersion("1.0").to(ScriptResource.class);
+                .forVersion("1.0").to(RoutingMode.STARTS_WITH, smsRequestHandlerFactory.create(SchemaType.GLOBAL));
+
+        rootRealmRouter.route("/global-config/servers/{serverName}/properties/{tab}")
+                .through(AdminOnlyAuthzModule.class, AdminOnlyAuthzModule.NAME)
+                .forVersion("1.0").to(InjectorHolder.getInstance(SmsServerPropertiesResource.class));
 
         VersionBehaviourConfigListener.bindToServiceConfigManager(rootRealmRouter);
         VersionBehaviourConfigListener.bindToServiceConfigManager(dynamicRealmRouter);

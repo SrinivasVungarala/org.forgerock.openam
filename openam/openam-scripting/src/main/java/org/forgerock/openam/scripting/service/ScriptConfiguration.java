@@ -15,6 +15,8 @@
  */
 package org.forgerock.openam.scripting.service;
 
+import static org.forgerock.openam.scripting.ScriptConstants.ScriptErrorCode.*;
+
 import org.forgerock.openam.scripting.ScriptConstants.ScriptContext;
 import org.forgerock.openam.scripting.ScriptException;
 import org.forgerock.openam.scripting.SupportedScriptingLanguage;
@@ -30,11 +32,16 @@ import java.util.UUID;
  */
 public class ScriptConfiguration {
 
-    private final String uuid;
+    private final String id;
     private final String name;
     private final String script;
     private final SupportedScriptingLanguage language;
     private final ScriptContext context;
+    private final String description;
+    private final String createdBy;
+    private final long creationDate;
+    private final String lastModifiedBy;
+    private final long lastModifiedDate;
 
     private volatile int hashCode = 0;
 
@@ -42,11 +49,16 @@ public class ScriptConfiguration {
      * Builder for {@code ScriptConfiguration}.
      */
     public static class Builder {
-        private String uuid;
+        private String id;
         private String name;
         private String script;
         private SupportedScriptingLanguage language;
         private ScriptContext context;
+        private String description;
+        private String createdBy;
+        private long creationDate;
+        private String lastModifiedBy;
+        private long lastModifiedDate;
 
         /**
          * This {@code Builder} can be constructed from {@code ScriptConfiguration} with the
@@ -59,8 +71,8 @@ public class ScriptConfiguration {
          * Generate a universally unique identifier for the {@code ScriptConfiguration}.
          * @return The {@code ScriptConfiguration} builder.
          */
-        public Builder generateUuid() {
-            this.uuid = UUID.randomUUID().toString();
+        public Builder generateId() {
+            this.id = UUID.randomUUID().toString();
             return this;
         }
 
@@ -68,8 +80,8 @@ public class ScriptConfiguration {
          * Set a universally unique identifier for the {@code ScriptConfiguration}.
          * @return The {@code ScriptConfiguration} builder.
          */
-        public Builder setUuid(String uuid) {
-            this.uuid = uuid;
+        public Builder setId(String id) {
+            this.id = id;
             return this;
         }
 
@@ -114,25 +126,75 @@ public class ScriptConfiguration {
         }
 
         /**
+         * Add the description for the {@code ScriptConfiguration}.
+         * @param description The description.
+         * @return The {@code ScriptConfiguration} builder.
+         */
+        public Builder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        /**
+         * Set the ID of the user that created the {@code ScriptConfiguration}.
+         * @param createdBy The user ID.
+         * @return The {@code ScriptConfiguration} builder.
+         */
+        public Builder setCreatedBy(String createdBy) {
+            this.createdBy = createdBy;
+            return this;
+        }
+
+        /**
+         * Set the creation date of the {@code ScriptConfiguration}.
+         * @param creationDate The creation date in milliseconds.
+         * @return The {@code ScriptConfiguration} builder.
+         */
+        public Builder setCreationDate(long creationDate) {
+            this.creationDate = creationDate;
+            return this;
+        }
+
+        /**
+         * Set the ID of the user that last modified the {@code ScriptConfiguration}.
+         * @param lastModifiedBy The user ID.
+         * @return The {@code ScriptConfiguration} builder.
+         */
+        public Builder setLastModifiedBy(String lastModifiedBy) {
+            this.lastModifiedBy = lastModifiedBy;
+            return this;
+        }
+
+        /**
+         * Set the last modified date of the {@code ScriptConfiguration}.
+         * @param lastModifiedDate The last modified date.
+         * @return The {@code ScriptConfiguration} builder.
+         */
+        public Builder setLastModifiedDate(long lastModifiedDate) {
+            this.lastModifiedDate = lastModifiedDate;
+            return this;
+        }
+
+        /**
          * Construct the {@code ScriptConfiguration} with the parameters set on this builder.
          * @return An instance of {@code ScriptConfiguration}.
          * @throws ScriptException if any of the required parameters are null.
          */
         public ScriptConfiguration build() throws ScriptException {
-            if (uuid == null) {
-                throw new ScriptException("UUID must be specified.");
+            if (id == null) {
+                throw new ScriptException(MISSING_SCRIPT_UUID);
             }
             if (name == null) {
-                throw new ScriptException("Name must be specified.");
+                throw new ScriptException(MISSING_SCRIPT_NAME);
             }
             if (script == null) {
-                throw new ScriptException("Script must be specified.");
+                throw new ScriptException(MISSING_SCRIPT);
             }
             if (language == null) {
-                throw new ScriptException("Language must be specified.");
+                throw new ScriptException(MISSING_SCRIPTING_LANGUAGE);
             }
             if (context == null) {
-                throw new ScriptException("UUID must be specified.");
+                throw new ScriptException(MISSING_SCRIPT_CONTEXT);
             }
             return new ScriptConfiguration(this);
         }
@@ -143,11 +205,16 @@ public class ScriptConfiguration {
      * @param builder The builder that contains the parameters for the {@code ScriptConfiguration}.
      */
     private ScriptConfiguration(Builder builder) {
-        this.uuid = builder.uuid;
+        this.id = builder.id;
         this.name = builder.name;
         this.script = builder.script;
         this.language = builder.language;
         this.context = builder.context;
+        this.description = builder.description;
+        this.createdBy = builder.createdBy;
+        this.creationDate = builder.creationDate;
+        this.lastModifiedBy = builder.lastModifiedBy;
+        this.lastModifiedDate = builder.lastModifiedDate;
     }
 
     /**
@@ -162,8 +229,8 @@ public class ScriptConfiguration {
      * Get the universally unique identifier for the {@code ScriptConfiguration}.
      * @return The UUID.
      */
-    public String getUuid() {
-        return uuid;
+    public String getId() {
+        return id;
     }
 
     /**
@@ -198,6 +265,48 @@ public class ScriptConfiguration {
         return context;
     }
 
+    /**
+     * Get the description for the script.
+     * @return The script description.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Get the ID of the user that created the script.
+     *
+     * @return The user ID.
+     */
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    /**
+     * Get the date this script was created.
+     * @return The creation date.
+     */
+    public long getCreationDate() {
+        return creationDate;
+    }
+
+    /**
+     * Get the ID of the user that last modified the script.
+     *
+     * @return The user ID.
+     */
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    /**
+     * Get the date this script was last modified.
+     * @return The last modified date.
+     */
+    public long getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -207,11 +316,16 @@ public class ScriptConfiguration {
             return false;
         }
         ScriptConfiguration sc = (ScriptConfiguration)o;
-        return sc.uuid.equals(uuid)
+        return sc.id.equals(id)
                 && sc.name.equals(name)
                 && StringUtils.isEqualTo(sc.script, script)
                 && sc.language.equals(language)
-                && sc.context.equals(context);
+                && sc.context.equals(context)
+                && StringUtils.isEqualTo(sc.description, description)
+                && StringUtils.isEqualTo(sc.createdBy, createdBy)
+                && sc.creationDate == creationDate
+                && StringUtils.isEqualTo(sc.lastModifiedBy, lastModifiedBy)
+                && sc.lastModifiedDate == lastModifiedDate;
     }
 
     @Override
@@ -220,14 +334,29 @@ public class ScriptConfiguration {
         if (result == 0) {
             int prime = 31;
             result = 17;
-            result = prime * result + uuid.hashCode();
+            result = prime * result + id.hashCode();
             result = prime * result + name.hashCode();
             result = prime * result + script.hashCode();
             result = prime * result + language.hashCode();
             result = prime * result + context.hashCode();
+            result = prime * result + (description == null ? 0 : description.hashCode());
+            result = prime * result + (createdBy == null ? 0 : createdBy.hashCode());
+            result = prime * result + (int) (creationDate ^ (creationDate >>> 32));
+            result = prime * result + (lastModifiedBy == null ? 0 : lastModifiedBy.hashCode());
+            result = prime * result + (int) (lastModifiedDate ^ (lastModifiedDate >>> 32));
             hashCode = result;
         }
         return result;
+    }
+
+    /**
+     * Create a builder for this {@code ScriptConfiguration} with all fields populated and ready for modification.
+     * @return A populated {@code ScriptConfiguration} builder.
+     */
+    public Builder populatedBuilder() {
+        return builder().setId(id).setName(name).setContext(context).setLanguage(language).setScript(script)
+                .setDescription(description).setCreatedBy(createdBy).setCreationDate(creationDate)
+                .setLastModifiedBy(lastModifiedBy).setLastModifiedDate(lastModifiedDate);
     }
 
 }

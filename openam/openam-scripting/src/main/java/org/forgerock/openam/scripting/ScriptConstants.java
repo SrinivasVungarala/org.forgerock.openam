@@ -26,11 +26,46 @@ public final class ScriptConstants {
         throw new RuntimeException("Constructor for ScriptConstants is not supported.");
     }
 
+    /**
+     * Resource bundle used for error messages.
+     */
+    public static final String RESOURCE_BUNDLE = "scripting";
+
     public static final String SCRIPT_NAME = "name";
-    public static final String SCRIPT_UUID = "uuid";
+    public static final String JSON_UUID = "_id";
     public static final String SCRIPT_TEXT = "script";
     public static final String SCRIPT_LANGUAGE = "language";
     public static final String SCRIPT_CONTEXT = "context";
+    public static final String SCRIPT_DESCRIPTION = "description";
+    public static final String SCRIPT_CREATED_BY = "createdBy";
+    public static final String SCRIPT_CREATION_DATE = "creationDate";
+    public static final String SCRIPT_LAST_MODIFIED_BY = "lastModifiedBy";
+    public static final String SCRIPT_LAST_MODIFIED_DATE = "lastModifiedDate";
+    public static final String SERVICE_NAME = "ScriptingService";
+    public static final String SCRIPT_CONFIGURATION = "scriptConfiguration";
+    public static final String SCRIPT_CONFIGURATIONS = "scriptConfigurations";
+    public static final String EMPTY = "";
+
+    public static final String SCRIPT_TIMEOUT = "serverTimeout";
+    public static final String THREAD_POOL_CORE_SIZE = "coreThreads";
+    public static final String THREAD_POOL_MAX_SIZE = "maxThreads";
+    public static final String THREAD_POOL_QUEUE_SIZE = "queueSize";
+    public static final String THREAD_POOL_IDLE_TIMEOUT = "idleTimeout";
+    public static final String WHITE_LIST = "whiteList";
+    public static final String BLACK_LIST = "blackList";
+    public static final String USE_SECURITY_MANAGER = "useSecurityManager";
+    public static final String ENGINE_CONFIGURATION = "EngineConfiguration";
+    public static final String DEFAULT_LANGUAGE = "defaultLanguage";
+
+    public static final int DEFAULT_CORE_THREADS = 10;
+    public static final int DEFAULT_MAX_THREADS = 10;
+    public static final int DEFAULT_QUEUE_SIZE = 10;
+    public static final long DEFAULT_IDLE_TIMEOUT_SECONDS = 60l; // Seconds
+
+    public static final String SCRIPT_ERROR_MESSAGE = "validation-error-message";
+    public static final String SCRIPT_ERROR_DETAIL = "validation-error-detail";
+
+    public static final String LOGGER_NAME = "Scripting";
 
     /**
      * The context in which a script will be used.
@@ -39,6 +74,53 @@ public final class ScriptConstants {
         AUTHENTICATION_SERVER_SIDE,
         AUTHENTICATION_CLIENT_SIDE,
         AUTHORIZATION_ENTITLEMENT_CONDITION
+    }
+
+    /**
+     * Error messages are stored in the scripting.properties file to facilitate translation. Each entry in this
+     * enum corresponds to a specific error message in the file keyed on the code.
+     */
+    public static enum ScriptErrorCode {
+        CONTEXT_NOT_RECOGNISED("1"),
+        LANGUAGE_NOT_SUPPORTED("2"),
+        FIND_BY_NAME_FAILED("3"),
+        FIND_BY_UUID_FAILED("4"),
+        DELETE_FAILED("5"),
+        RETRIEVE_FAILED("6"),
+        RETRIEVE_ALL_FAILED("7"),
+        SAVE_FAILED("8"),
+        MISSING_SCRIPT_UUID("9"),
+        MISSING_SCRIPT_NAME("10"),
+        MISSING_SCRIPT("11"),
+        MISSING_SCRIPTING_LANGUAGE("12"),
+        MISSING_SCRIPT_CONTEXT("13"),
+        SCRIPT_NAME_EXISTS("14"),
+        SCRIPT_UUID_EXISTS("15"),
+        SCRIPT_UUID_NOT_FOUND("16"),
+        FILTER_BOOLEAN_LITERAL_FALSE("17"),
+        FILTER_EXTENDED_MATCH("18"),
+        FILTER_GREATER_THAN("19"),
+        FILTER_GREATER_THAN_OR_EQUAL("20"),
+        FILTER_LESS_THAN("21"),
+        FILTER_LESS_THAN_OR_EQUAL("22"),
+        FILTER_NOT("23"),
+        FILTER_PRESENT("24"),
+        SCRIPT_ENCODING_FAILED("25"),
+        RESOURCE_FILTER_NOT_SUPPORTED("26");
+
+        private final String code;
+
+        private ScriptErrorCode(String code) {
+            this.code = code;
+        }
+
+        /**
+         * Get the code for this error message.
+         * @return the error message code
+         */
+        public String getCode() {
+            return code;
+        }
     }
 
     /**
@@ -53,7 +135,7 @@ public final class ScriptConstants {
                 return ssl;
             }
         }
-        throw new ScriptException("Scripting language not supported: " + languageName);
+        throw new ScriptException(ScriptErrorCode.LANGUAGE_NOT_SUPPORTED, languageName);
     }
 
     /**
@@ -68,6 +150,6 @@ public final class ScriptConstants {
                 return sc;
             }
         }
-        throw new ScriptException("Scripting context not recognised: " + context);
+        throw new ScriptException(ScriptErrorCode.CONTEXT_NOT_RECOGNISED, context);
     }
 }

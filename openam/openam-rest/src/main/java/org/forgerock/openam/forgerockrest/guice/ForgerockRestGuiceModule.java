@@ -16,14 +16,14 @@
 
 package org.forgerock.openam.forgerockrest.guice;
 
-import static org.forgerock.openam.forgerockrest.entitlements.query.AttributeType.STRING;
-import static org.forgerock.openam.forgerockrest.entitlements.query.AttributeType.TIMESTAMP;
-import static org.forgerock.openam.uma.UmaConstants.UMA_BACKEND_POLICY_RESOURCE_HANDLER;
+import static org.forgerock.openam.forgerockrest.entitlements.query.AttributeType.*;
+import static org.forgerock.openam.uma.UmaConstants.*;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.iplanet.am.util.SystemProperties;
@@ -38,6 +38,15 @@ import com.sun.identity.entitlement.opensso.PolicyPrivilegeManager;
 import com.sun.identity.idm.IdRepoCreationListener;
 import com.sun.identity.shared.Constants;
 import com.sun.identity.shared.debug.Debug;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.forgerock.guice.core.GuiceModule;
 import org.forgerock.json.resource.ConnectionFactory;
 import org.forgerock.json.resource.RequestType;
@@ -45,9 +54,11 @@ import org.forgerock.json.resource.ResourceException;
 import org.forgerock.json.resource.Resources;
 import org.forgerock.json.resource.VersionSelector;
 import org.forgerock.oauth2.restlet.resources.ResourceSetRegistrationListener;
+import org.forgerock.openam.core.CoreWrapper;
 import org.forgerock.openam.cts.utils.JSONSerialisation;
 import org.forgerock.openam.entitlement.EntitlementRegistry;
 import org.forgerock.openam.errors.ExceptionMappingHandler;
+import org.forgerock.openam.forgerockrest.IdentityResourceUtils;
 import org.forgerock.openam.forgerockrest.IdentityResourceV1;
 import org.forgerock.openam.forgerockrest.IdentityResourceV2;
 import org.forgerock.openam.forgerockrest.cts.CoreTokenResource;
@@ -78,25 +89,24 @@ import org.forgerock.openam.rest.router.DelegationEvaluatorProxy;
 import org.forgerock.openam.rest.router.RestEndpointManager;
 import org.forgerock.openam.rest.router.RestEndpointManagerProxy;
 import org.forgerock.openam.rest.scripting.ScriptExceptionMappingHandler;
+import org.forgerock.openam.rest.sms.SmsCollectionProvider;
+import org.forgerock.openam.rest.sms.SmsCollectionProviderFactory;
+import org.forgerock.openam.rest.sms.SmsGlobalSingletonProvider;
+import org.forgerock.openam.rest.sms.SmsGlobalSingletonProviderFactory;
+import org.forgerock.openam.rest.sms.SmsRequestHandler;
+import org.forgerock.openam.rest.sms.SmsRequestHandlerFactory;
+import org.forgerock.openam.rest.sms.SmsSingletonProvider;
+import org.forgerock.openam.rest.sms.SmsSingletonProviderFactory;
 import org.forgerock.openam.rest.uma.UmaIdRepoCreationListener;
 import org.forgerock.openam.rest.uma.UmaPolicyServiceImpl;
 import org.forgerock.openam.rest.uma.UmaResourceSetRegistrationListener;
 import org.forgerock.openam.scripting.ScriptException;
-import org.forgerock.openam.scripting.service.ScriptConfigurationService;
-import org.forgerock.openam.scripting.service.ScriptConfigurationServiceMockImpl;
+import org.forgerock.openam.services.RestSecurityProvider;
 import org.forgerock.openam.uma.UmaPolicyService;
 import org.forgerock.openam.utils.AMKeyProvider;
 import org.forgerock.openam.utils.Config;
 import org.forgerock.util.SignatureUtil;
 import org.restlet.routing.Router;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Guice Module for configuring bindings for the AuthenticationRestService classes.
@@ -174,9 +184,24 @@ public class ForgerockRestGuiceModule extends AbstractModule {
                 .addBinding().to(UmaResourceSetRegistrationListener.class);
 
         // Scripting configuration
-        bind(ScriptConfigurationService.class).to(ScriptConfigurationServiceMockImpl.class);
         bind(new TypeLiteral<ExceptionMappingHandler<ScriptException, ResourceException>>() {})
                 .to(ScriptExceptionMappingHandler.class);
+
+        install(new FactoryModuleBuilder()
+                .implement(SmsRequestHandler.class, SmsRequestHandler.class)
+                .build(SmsRequestHandlerFactory.class));
+
+        install(new FactoryModuleBuilder()
+                .implement(SmsCollectionProvider.class, SmsCollectionProvider.class)
+                .build(SmsCollectionProviderFactory.class));
+
+        install(new FactoryModuleBuilder()
+                .implement(SmsSingletonProvider.class, SmsSingletonProvider.class)
+                .build(SmsSingletonProviderFactory.class));
+
+        install(new FactoryModuleBuilder()
+                .implement(SmsGlobalSingletonProvider.class, SmsGlobalSingletonProvider.class)
+                .build(SmsGlobalSingletonProviderFactory.class));
     }
 
     @Provides
@@ -209,16 +234,22 @@ public class ForgerockRestGuiceModule extends AbstractModule {
     @Named("UsersResource")
     @Inject
     @Singleton
-    public IdentityResourceV1 getUsersResourceV1(MailServerLoader mailServerLoader) {
-        return new IdentityResourceV1(IdentityResourceV1.USER_TYPE, mailServerLoader);
+    public IdentityResourceV1 getUsersResourceV1(MailServerLoader mailServerLoader,
+            IdentityResourceUtils identityResourceUtils, CoreWrapper coreWrapper,
+            RestSecurityProvider restSecurityProvider) {
+        return new IdentityResourceV1(IdentityResourceV1.USER_TYPE, mailServerLoader, identityResourceUtils,
+                coreWrapper, restSecurityProvider);
     }
 
     @Provides
     @Named("GroupsResource")
     @Inject
     @Singleton
-    public IdentityResourceV1 getGroupsResourceV1(MailServerLoader mailServerLoader) {
-        return new IdentityResourceV1(IdentityResourceV1.GROUP_TYPE, mailServerLoader);
+    public IdentityResourceV1 getGroupsResourceV1(MailServerLoader mailServerLoader,
+            IdentityResourceUtils identityResourceUtils, CoreWrapper coreWrapper,
+            RestSecurityProvider restSecurityProvider) {
+        return new IdentityResourceV1(IdentityResourceV1.GROUP_TYPE, mailServerLoader, identityResourceUtils,
+                coreWrapper, restSecurityProvider);
     }
 
     @Provides
@@ -231,32 +262,44 @@ public class ForgerockRestGuiceModule extends AbstractModule {
     @Named("AgentsResource")
     @Inject
     @Singleton
-    public IdentityResourceV1 getAgentsResourceV1(MailServerLoader mailServerLoader) {
-        return new IdentityResourceV1(IdentityResourceV1.AGENT_TYPE, mailServerLoader);
+    public IdentityResourceV1 getAgentsResourceV1(MailServerLoader mailServerLoader,
+            IdentityResourceUtils identityResourceUtils, CoreWrapper coreWrapper,
+            RestSecurityProvider restSecurityProvider) {
+        return new IdentityResourceV1(IdentityResourceV1.AGENT_TYPE, mailServerLoader, identityResourceUtils,
+                coreWrapper, restSecurityProvider);
     }
 
     @Provides
     @Named("UsersResource")
     @Inject
     @Singleton
-    public IdentityResourceV2 getUsersResource(MailServerLoader mailServerLoader) {
-        return new IdentityResourceV2(IdentityResourceV2.USER_TYPE, mailServerLoader);
+    public IdentityResourceV2 getUsersResource(MailServerLoader mailServerLoader,
+            IdentityResourceUtils identityResourceUtils, CoreWrapper coreWrapper,
+            RestSecurityProvider restSecurityProvider) {
+        return new IdentityResourceV2(IdentityResourceV2.USER_TYPE, mailServerLoader, identityResourceUtils,
+                coreWrapper, restSecurityProvider);
     }
 
     @Provides
     @Named("GroupsResource")
     @Inject
     @Singleton
-    public IdentityResourceV2 getGroupsResource(MailServerLoader mailServerLoader) {
-        return new IdentityResourceV2(IdentityResourceV2.GROUP_TYPE, mailServerLoader);
+    public IdentityResourceV2 getGroupsResource(MailServerLoader mailServerLoader,
+            IdentityResourceUtils identityResourceUtils, CoreWrapper coreWrapper,
+            RestSecurityProvider restSecurityProvider) {
+        return new IdentityResourceV2(IdentityResourceV2.GROUP_TYPE, mailServerLoader, identityResourceUtils,
+                coreWrapper, restSecurityProvider);
     }
 
     @Provides
     @Named("AgentsResource")
     @Inject
     @Singleton
-    public IdentityResourceV2 getAgentsResource(MailServerLoader mailServerLoader) {
-        return new IdentityResourceV2(IdentityResourceV2.AGENT_TYPE, mailServerLoader);
+    public IdentityResourceV2 getAgentsResource(MailServerLoader mailServerLoader,
+            IdentityResourceUtils identityResourceUtils, CoreWrapper coreWrapper,
+            RestSecurityProvider restSecurityProvider) {
+        return new IdentityResourceV2(IdentityResourceV2.AGENT_TYPE, mailServerLoader, identityResourceUtils,
+                coreWrapper, restSecurityProvider);
     }
 
     @Provides
@@ -291,6 +334,24 @@ public class ForgerockRestGuiceModule extends AbstractModule {
         definitions.put("evaluateTree", evaluateDefinition);
 
         return definitions;
+    }
+
+    @Provides
+    @Singleton
+    @Named("ServerAttributeSyntax")
+    public Properties getServerAttributeSyntax() throws IOException {
+        Properties syntaxProperties = new Properties();
+        syntaxProperties.load(getClass().getClassLoader().getResourceAsStream("validserverconfig.properties"));
+        return syntaxProperties;
+    }
+
+    @Provides
+    @Singleton
+    @Named("ServerAttributeTitles")
+    public Properties getServerAttributeTitles() throws IOException {
+        Properties titleProperties = new Properties();
+        titleProperties.load(getClass().getClassLoader().getResourceAsStream("amConsole.properties"));
+        return titleProperties;
     }
 
     /**
@@ -343,14 +404,18 @@ public class ForgerockRestGuiceModule extends AbstractModule {
             handlers.put(EntitlementException.APP_NOT_CREATED_POLICIES_EXIST, ResourceException.CONFLICT);
             handlers.put(EntitlementException.INVALID_APP_TYPE, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.INVALID_APP_REALM, ResourceException.BAD_REQUEST);
-            handlers.put(EntitlementException.INVALID_RESOURCE_TYPE_REALM, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.PROPERTY_CONTAINS_BLANK_VALUE, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.APPLICATION_NAME_MISMATCH, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.INVALID_CLASS, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.RESOURCE_TYPE_ALREADY_EXISTS, ResourceException.CONFLICT);
-            handlers.put(EntitlementException.NO_SUCH_RESOURCE_TYPE, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.NO_SUCH_RESOURCE_TYPE, ResourceException.NOT_FOUND);
             handlers.put(EntitlementException.RESOURCE_TYPE_IN_USE, ResourceException.CONFLICT);
             handlers.put(EntitlementException.MISSING_RESOURCE_TYPE_NAME, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.RESOURCE_TYPE_REFERENCED, ResourceException.CONFLICT);
+            handlers.put(EntitlementException.INVALID_RESOURCE_TYPE, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.POLICY_DEFINES_INVALID_RESOURCE_TYPE, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.MISSING_RESOURCE_TYPE, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.CONDITION_EVALUATION_FAILED, ResourceException.INTERNAL_ERROR);
 
             return handlers;
         }
@@ -374,14 +439,14 @@ public class ForgerockRestGuiceModule extends AbstractModule {
         public Map<String, QueryAttribute> get() {
             final Map<String, QueryAttribute> attributes = new HashMap<String, QueryAttribute>();
 
-            attributes.put("name", new QueryAttribute(STRING, Privilege.NAME_ATTRIBUTE));
-            attributes.put("description", new QueryAttribute(STRING, Privilege.DESCRIPTION_ATTRIBUTE));
-            attributes.put("applicationName", new QueryAttribute(STRING, Privilege.APPLICATION_ATTRIBUTE));
-            attributes.put("createdBy", new QueryAttribute(STRING, Privilege.CREATED_BY_ATTRIBUTE));
-            attributes.put("creationDate", new QueryAttribute(TIMESTAMP, Privilege.CREATION_DATE_ATTRIBUTE));
-            attributes.put("lastModifiedBy", new QueryAttribute(STRING, Privilege.LAST_MODIFIED_BY_ATTRIBUTE));
-            attributes.put("lastModifiedDate", new QueryAttribute(TIMESTAMP, Privilege.LAST_MODIFIED_DATE_ATTRIBUTE));
-            attributes.put("resourceTypeUuid", new QueryAttribute(STRING, Privilege.RESOURCE_TYPE_UUID_ATTRIBUTE));
+            attributes.put("name", new QueryAttribute(STRING, Privilege.NAME_SEARCH_ATTRIBUTE));
+            attributes.put("description", new QueryAttribute(STRING, Privilege.DESCRIPTION_SEARCH_ATTRIBUTE));
+            attributes.put("applicationName", new QueryAttribute(STRING, Privilege.APPLICATION_SEARCH_ATTRIBUTE));
+            attributes.put("createdBy", new QueryAttribute(STRING, Privilege.CREATED_BY_SEARCH_ATTRIBUTE));
+            attributes.put("creationDate", new QueryAttribute(TIMESTAMP, Privilege.CREATION_DATE_SEARCH_ATTRIBUTE));
+            attributes.put("lastModifiedBy", new QueryAttribute(STRING, Privilege.LAST_MODIFIED_BY_SEARCH_ATTRIBUTE));
+            attributes.put("lastModifiedDate", new QueryAttribute(TIMESTAMP, Privilege.LAST_MODIFIED_DATE_SEARCH_ATTRIBUTE));
+            attributes.put("resourceTypeUuid", new QueryAttribute(STRING, Privilege.RESOURCE_TYPE_UUID_SEARCH_ATTRIBUTE));
 
             return attributes;
         }
@@ -395,12 +460,12 @@ public class ForgerockRestGuiceModule extends AbstractModule {
         public Map<String, QueryAttribute> get() {
             final Map<String, QueryAttribute> attributes = new HashMap<String, QueryAttribute>();
 
-            attributes.put("name", new QueryAttribute(STRING, Application.NAME_ATTRIBUTE));
-            attributes.put("description", new QueryAttribute(STRING, Application.DESCRIPTION_ATTRIBUTE));
-            attributes.put("createdBy", new QueryAttribute(STRING, Application.CREATED_BY_ATTRIBUTE));
-            attributes.put("creationDate", new QueryAttribute(TIMESTAMP, Application.CREATION_DATE_ATTRIBUTE));
-            attributes.put("lastModifiedBy", new QueryAttribute(STRING, Application.LAST_MODIFIED_BY_ATTRIBUTE));
-            attributes.put("lastModifiedDate", new QueryAttribute(TIMESTAMP, Application.LAST_MODIFIED_DATE_ATTRIBUTE));
+            attributes.put("name", new QueryAttribute(STRING, Application.NAME_SEARCH_ATTRIBUTE));
+            attributes.put("description", new QueryAttribute(STRING, Application.DESCRIPTION_SEARCH_ATTRIBUTE));
+            attributes.put("createdBy", new QueryAttribute(STRING, Application.CREATED_BY_SEARCH_ATTRIBUTE));
+            attributes.put("creationDate", new QueryAttribute(TIMESTAMP, Application.CREATION_DATE_SEARCH_ATTRIBUTE));
+            attributes.put("lastModifiedBy", new QueryAttribute(STRING, Application.LAST_MODIFIED_BY_SEARCH_ATTRIBUTE));
+            attributes.put("lastModifiedDate", new QueryAttribute(TIMESTAMP, Application.LAST_MODIFIED_DATE_SEARCH_ATTRIBUTE));
 
             return attributes;
         }

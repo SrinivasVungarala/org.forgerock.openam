@@ -29,6 +29,7 @@
 
 package com.iplanet.dpro.session.service;
 
+import static com.iplanet.dpro.session.service.SessionConstants.*;
 import static com.sun.identity.shared.Constants.*;
 import static org.forgerock.openam.cts.api.CoreTokenConstants.*;
 
@@ -45,6 +46,8 @@ import com.sun.identity.sm.ServiceConfigManager;
 import com.sun.identity.sm.ServiceListener;
 import com.sun.identity.sm.ServiceSchema;
 import com.sun.identity.sm.ServiceSchemaManager;
+import org.forgerock.openam.sso.providers.stateless.JwtSessionMapper;
+import org.forgerock.openam.sso.providers.stateless.JwtSessionMapperConfig;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -158,6 +161,7 @@ public class SessionServiceConfig {
         private static final int DEFAULT_MAX_SESSION_LIST_SIZE = 200;
         private static final int DEFAULT_MAX_WAIT_TIME_FOR_CONSTRAINT = 6000;
 
+        private final JwtSessionMapperConfig jwtSessionMapperConfig;
         private final Set<String> timeoutHandlers;
         private final boolean sessionTrimmingEnabled;
         private final boolean sessionConstraintEnabled;
@@ -169,10 +173,17 @@ public class SessionServiceConfig {
         private final int maxSessionListSize;
         private final int maxWaitTimeForConstraint; // in milli-seconds
 
+        private final boolean sessionBlacklistEnabled;
+        private final int sessionBlacklistCacheSize;
+        private final long sessionBlacklistPollIntervalSeconds;
+        private final long sessionBlacklistPurgeDelayMinutes;
+
+
         private HotSwappableSessionServiceConfig(ServiceSchemaManager ssm) throws SMSException {
             ServiceSchema schema = ssm.getGlobalSchema();
             Map attrs = schema.getAttributeDefaults();
 
+            jwtSessionMapperConfig = new JwtSessionMapperConfig(attrs);
             sessionRetrievalTimeout = loadSessionRetrievalTimeoutSchemaSetting(attrs);
             maxSessionListSize = loadMaxSessionListSizeSchemaSetting(attrs);
             propertyNotificationEnabled = loadPropertyNotificationEnabledSchemaSetting(attrs);
@@ -183,6 +194,14 @@ public class SessionServiceConfig {
             denyLoginIfDBIsDown = loadDenyLoginIfDBIsDownServiceSchemaSetting(attrs);
             constraintHandler = loadConstraintHandlerServiceSchemaSetting(attrs);
             maxWaitTimeForConstraint = loadMaxWaitTimeForConstraintHandlerServiceSchemaSetting(attrs);
+
+            sessionBlacklistEnabled = CollectionHelper.getBooleanMapAttr(attrs, SESSION_BLACKLIST_ENABLED_ATTR, false);
+            sessionBlacklistCacheSize = CollectionHelper.getIntMapAttr(attrs, SESSION_BLACKLIST_CACHE_SIZE_ATTR, 0,
+                    sessionDebug);
+            sessionBlacklistPollIntervalSeconds = CollectionHelper.getLongMapAttr(attrs,
+                    SESSION_BLACKLIST_POLL_INTERVAL_ATTR, 60, sessionDebug);
+            sessionBlacklistPurgeDelayMinutes = CollectionHelper.getLongMapAttr(attrs,
+                    SESSION_BLACKLIST_PURGE_DELAY_ATTR, 1, sessionDebug);
         }
 
         public boolean isSendPropertyNotification(String key) {
@@ -228,16 +247,24 @@ public class SessionServiceConfig {
         }
 
         private Set<String> loadTimeoutHandlersServiceSchemaSetting(Map attrs) {
-            Set<String> value = (Set<String>) attrs.get(Constants.TIMEOUT_HANDLER_LIST);
-            if (value == null) {
-                value = Collections.emptySet();
+            Set<String> values = (Set<String>) attrs.get(Constants.TIMEOUT_HANDLER_LIST);
+            if (values == null) {
+                values = Collections.emptySet();
             } else {
-                value = new HashSet<String>(value);
+                // Only copy non-empty String values to avoid triggering a ClassNotFoundException on empty values when
+                // SessionService iterates over the list to call the handlers.
+                Set<String> valuesCopy = new HashSet<String>(values.size());
+                for (String value : values) {
+                    if (!value.isEmpty()) {
+                        valuesCopy.add(value);
+                    }
+                }
+                values = valuesCopy;
             }
             if (sessionDebug.messageEnabled()) {
-                sessionDebug.message("timeoutHandlers=" + value);
+                sessionDebug.message("timeoutHandlers=" + values);
             }
-            return value;
+            return values;
         }
 
         private boolean loadSessionTrimmingServiceSchemaSetting(Map attrs) {
@@ -339,8 +366,6 @@ public class SessionServiceConfig {
              * site name. hence we need to lookup the site name based on the URL
              */
             String subCfgName =
-                    ServerConfiguration.isLegacy(dsameAdminTokenProvider.getAdminToken()) ?
-                    primaryServerURL :
                     SiteConfiguration.getSiteIdByURL(dsameAdminTokenProvider.getAdminToken(), primaryServerURL);
             ServiceConfig subConfig =
                     subCfgName != null ?
@@ -656,6 +681,13 @@ public class SessionServiceConfig {
     }
 
     /**
+     * @return JwtSessionMapper configured according to hot-swappable SMS settings.
+     */
+    public JwtSessionMapper getJwtSessionMapper() {
+        return hotSwappableSessionServiceConfig.jwtSessionMapperConfig.getJwtSessionMapper();
+    }
+
+    /**
      * Returns true if SystemProperty "com.iplanet.am.session.failover.useInternalRequestRouting" is enabled or
      * session failover is enabled.
      *
@@ -683,6 +715,43 @@ public class SessionServiceConfig {
      */
     public long getSessionFailoverClusterStateCheckPeriod() {
         return sessionFailoverClusterStateCheckPeriod;
+    }
+
+    /**
+     * Whether session blacklisting is enabled for stateless session logout.
+     *
+     * Defaults to false.
+     */
+    public boolean isSessionBlacklistingEnabled() {
+        return hotSwappableSessionServiceConfig.sessionBlacklistEnabled;
+    }
+
+    /**
+     * Maximum number of blacklisted sessions to cache in memory on each server. Beyond this number, sessions will be
+     * evicted from memory (but kept in the CTS) in a least-recently used (LRU) strategy.
+     *
+     * Defaults to 10000.
+     */
+    public int getSessionBlacklistCacheSize() {
+        return hotSwappableSessionServiceConfig.sessionBlacklistCacheSize;
+    }
+
+    /**
+     * The interval at which to poll for changes to the session blacklist. May be 0 to indicate polling is disabled.
+     *
+     * @param unit the desired time unit for the poll interval.
+     */
+    public long getSessionBlacklistPollInterval(TimeUnit unit) {
+        return unit.convert(hotSwappableSessionServiceConfig.sessionBlacklistPollIntervalSeconds, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Amount of time to keep sessions in the blacklist beyond their expiry time to account for clock skew.
+     *
+     * @param unit the desired time unit for the purge delay.
+     */
+    public long getSessionBlacklistPurgeDelay(TimeUnit unit) {
+        return unit.convert(hotSwappableSessionServiceConfig.sessionBlacklistPurgeDelayMinutes, TimeUnit.MINUTES);
     }
 
     /**

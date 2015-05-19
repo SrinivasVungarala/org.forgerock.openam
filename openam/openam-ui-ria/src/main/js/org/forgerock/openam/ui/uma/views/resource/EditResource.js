@@ -24,15 +24,18 @@
 
 /*global $, _, Backbone, define*/
 define('org/forgerock/openam/ui/uma/views/resource/EditResource', [
+    'org/forgerock/commons/ui/common/components/Messages',
     'org/forgerock/commons/ui/common/main/AbstractView',
     'backgrid',
     'org/forgerock/openam/ui/uma/util/BackgridUtils',
+    'org/forgerock/commons/ui/common/components/BSDialog',
+    'org/forgerock/openam/ui/uma/views/share/CommonShare',
     'org/forgerock/commons/ui/common/util/Constants',
     'org/forgerock/commons/ui/common/main/EventManager',
     'org/forgerock/commons/ui/common/main/Router',
     'org/forgerock/commons/ui/common/util/UIUtils',
     'org/forgerock/openam/ui/uma/models/UMAResourceSetWithPolicy'
-], function(AbstractView, Backgrid, BackgridUtils, Constants, EventManager, Router, UIUtils, UMAResourceSetWithPolicy) {
+], function(Messages, AbstractView, Backgrid, BackgridUtils, BSDialog, CommonShare, Constants, EventManager, Router, UIUtils, UMAResourceSetWithPolicy) {
     var EditResource = AbstractView.extend({
         initialize: function(options) {
             this.model = null;
@@ -40,32 +43,48 @@ define('org/forgerock/openam/ui/uma/views/resource/EditResource', [
         template: "templates/uma/views/resource/EditResource.html",
         baseTemplate: "templates/common/DefaultBaseTemplate.html",
         events: {
-            'click a#revokeAll:not(.disabled)': 'onRevokeAll',
-            'click a#share': 'onShare'
+            'click button#revokeAll': 'onRevokeAll',
+            'click button#share': 'onShare'
         },
         onModelError: function(model, response) {
             console.error('Unrecoverable load failure UMAResourceSetWithPolicy. ' +
-                           response.responseJSON.code + ' (' + response.responseJSON.reason + ') ' +
-                           response.responseJSON.message);
+                response.responseJSON.code + ' (' + response.responseJSON.reason + ') ' +
+                response.responseJSON.message);
         },
         onModelSync: function(model, response) {
             this.render();
         },
-        onRevokeAll: function(event) {
-            event.preventDefault();
-            EventManager.sendEvent(Constants.EVENT_SHOW_DIALOG,{
-                route: Router.configuration.routes.dialogRevokeAllPolicies,
-                noViewChange: true
-            });
+        onRevokeAll: function() {
+            var self = this,
+                revokeDialog = new BSDialog();
+            revokeDialog.setTitle(self.model.get('name'));
+            revokeDialog.closable = false;
+            revokeDialog.type = "type-danger";
+            revokeDialog.message = $.t("uma.resources.show.revokeAllMessage");
+            revokeDialog.actions = [{
+                id: "btnOk",
+                label: $.t("common.form.ok"),
+                cssClass: "btn-primary btn-danger",
+                action: function(dialog) {
+                    dialog.enableButtons(false);
+                    dialog.getButton("btnOk").text($.t("common.form.working"));
+                    self.model.get('policy').destroy().done(function (response) {
+                        EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "revokeAllPoliciesSuccess");
+                        self.render();
+                    }).fail(function (error) {
+                        Messages.messages.addMessage({ message: JSON.parse(error.responseText).message, type: "error"});
+                    }).always(function() {
+                        dialog.close();
+                    });
+                }
+            },{
+                type: "close"
+            }];
+            revokeDialog.show();
         },
-        onShare: function(event) {
-            event.preventDefault();
-            this.data.currentResourceSetId = this.model.id;
-            EventManager.sendEvent(Constants.EVENT_SHOW_DIALOG,{
-                route: Router.configuration.routes.dialogShare,
-                // This is required because the dialog will otherwise try to automatically route the window to the base view
-                noViewChange: true
-            });
+        onShare: function() {
+            var shareView = new CommonShare();
+            shareView.renderDialog(this.model.id);
         },
         render: function(args, callback) {
             var collection, grid, id = null, options, paginator, RevokeCell, SelectizeCell, self = this;
@@ -87,7 +106,9 @@ define('org/forgerock/openam/ui/uma/views/resource/EditResource', [
              * FIXME: Ideally the data needs to the be whole model, but I'm told it's also global so we're
              * copying in just the attributes I need ATM
              */
+            this.data = {};
             this.data.name = this.model.get('name');
+            this.data.icon = this.model.get('icon_uri');
 
             // FIXME: Re-enable filtering and pagination
             //     UserPoliciesCollection = Backbone.PageableCollection.extend({
@@ -171,29 +192,39 @@ define('org/forgerock/openam/ui/uma/views/resource/EditResource', [
 
             grid = new Backgrid.Grid({
                 columns: [
-                {
-                    name: "subject",
-                    label: $.t("uma.resources.show.grid.0"),
-                    cell: 'string',
-                    // headerCell: BackgridUtils.FilterHeaderCell,
-                    editable: false
-                },
-                {
-                    name: "permissions",
-                    label: $.t("uma.resources.show.grid.2"),
-                    cell: SelectizeCell,
-                    editable: false,
-                    sortable: false
-                },
-                {
-                    name: "edit",
-                    label: "",
-                    cell: RevokeCell,
-                    editable: false,
-                    sortable: false
-                }],
+                    {
+                        name: "subject",
+                        label: $.t("uma.resources.show.grid.0"),
+                        cell: 'string',
+                        // headerCell: BackgridUtils.FilterHeaderCell,
+                        editable: false,
+                        headerCell : BackgridUtils.ClassHeaderCell.extend({
+                            className: "col-md-4"
+                        })
+                    },
+                    {
+                        name: "permissions",
+                        label: $.t("uma.resources.show.grid.2"),
+                        cell: SelectizeCell,
+                        editable: false,
+                        sortable: false,
+                        headerCell : BackgridUtils.ClassHeaderCell.extend({
+                            className: "col-md-6"
+                        })
+                    },
+                    {
+                        name: "edit",
+                        label: "",
+                        cell: RevokeCell,
+                        editable: false,
+                        sortable: false,
+                        headerCell : BackgridUtils.ClassHeaderCell.extend({
+                            className: "col-md-2"
+                        })
+                    }],
                 collection: collection,
-                emptyText: $.t("uma.all.grid.empty")
+                emptyText: $.t("uma.all.grid.empty"),
+                className:"backgrid table table-striped"
             });
 
             // FIXME: Re-enable filtering and pagination
@@ -202,13 +233,19 @@ define('org/forgerock/openam/ui/uma/views/resource/EditResource', [
             //     windowSize: 3
             // });
 
+
+
             this.parentRender(function() {
-                if (!self.model.get('policy')){
-                    self.$el.find("a#revokeAll").addClass("disabled");
+                self.$el.find('[data-toggle="tooltip"]').tooltip();
+                if (self.model.has('policy') && self.model.get('policy').get('permissions').length > 0){
+                    self.$el.find("button#revokeAll").prop("disabled", false);
                 }
                 self.$el.find("#backgridContainer").append(grid.render().el);
                 // FIXME: Re-enable filtering and pagination
                 // self.$el.find("#paginationContainer").append(paginator.render().el);
+                self.$el.find("#umaShareImage img").error(function () {
+                    $(this).parent().addClass('no-image');
+                });
             });
         },
         syncModel: function(id) {

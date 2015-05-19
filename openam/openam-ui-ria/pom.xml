@@ -2,7 +2,7 @@
 <!--
   ~ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
   ~
-  ~ Copyright (c) 2011-2013 ForgeRock AS. All Rights Reserved
+  ~ Copyright 2011-2015 ForgeRock AS.
   ~
   ~ The contents of this file are subject to the terms
   ~ of the Common Development and Distribution License
@@ -51,15 +51,35 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons.ui.libs</groupId>
-            <artifactId>jquery.qrcode</artifactId>
-            <type>js</type>
+            <artifactId>selectize</artifactId>
+            <version>0.12.1</version>
             <classifier>min</classifier>
+            <type>js</type>
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons.ui.libs</groupId>
-            <artifactId>selectize</artifactId>
-            <version>0.11.2</version>
+            <artifactId>qrcode</artifactId>
+            <version>1.0.0</version>
             <classifier>min</classifier>
+            <type>js</type>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.commons.ui.libs</groupId>
+            <artifactId>jquery-nestingSortable</artifactId>
+            <version>0.9.12</version>
+            <type>js</type>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.commons.ui.libs</groupId>
+            <artifactId>jsoneditor</artifactId>
+            <version>0.7.9</version>
+            <classifier>min</classifier>
+            <type>js</type>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.commons.ui.libs</groupId>
+            <artifactId>bootstrap-tabdrop</artifactId>
+            <version>1.0</version>
             <type>js</type>
         </dependency>
     </dependencies>
@@ -68,6 +88,7 @@
         <resources>
             <resource>
                 <directory>${basedir}/src/main/js</directory>
+                <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>

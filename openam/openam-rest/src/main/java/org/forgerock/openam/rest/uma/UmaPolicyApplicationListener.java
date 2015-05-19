@@ -16,11 +16,8 @@
 
 package org.forgerock.openam.rest.uma;
 
-import static org.forgerock.openam.uma.UmaConstants.UMA_BACKEND_POLICY_RESOURCE_HANDLER;
+import static org.forgerock.openam.uma.UmaConstants.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.security.auth.Subject;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,24 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.iplanet.sso.SSOException;
-import com.iplanet.sso.SSOToken;
-import com.iplanet.sso.SSOTokenManager;
-import com.sun.identity.entitlement.Application;
-import com.sun.identity.entitlement.ApplicationType;
-import com.sun.identity.entitlement.DenyOverride;
-import com.sun.identity.entitlement.EntitlementException;
-import com.sun.identity.entitlement.opensso.SubjectUtils;
-import com.sun.identity.idm.AMIdentity;
-import com.sun.identity.idm.IdEventListener;
-import com.sun.identity.idm.IdRepoException;
-import com.sun.identity.idm.IdSearchControl;
-import com.sun.identity.idm.IdSearchResults;
-import com.sun.identity.idm.IdType;
-import com.sun.identity.security.AdminTokenAction;
-import com.sun.identity.shared.debug.Debug;
-import com.sun.identity.sm.DNMapper;
-import com.sun.identity.sm.SMSException;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.security.auth.Subject;
+
 import org.forgerock.json.resource.Context;
 import org.forgerock.json.resource.DeleteRequest;
 import org.forgerock.json.resource.QueryFilter;
@@ -78,6 +61,25 @@ import org.forgerock.util.promise.FailureHandler;
 import org.forgerock.util.promise.Promise;
 import org.forgerock.util.promise.PromiseImpl;
 import org.forgerock.util.promise.Promises;
+
+import com.iplanet.sso.SSOException;
+import com.iplanet.sso.SSOToken;
+import com.iplanet.sso.SSOTokenManager;
+import com.sun.identity.entitlement.Application;
+import com.sun.identity.entitlement.ApplicationType;
+import com.sun.identity.entitlement.DenyOverride;
+import com.sun.identity.entitlement.EntitlementException;
+import com.sun.identity.entitlement.opensso.SubjectUtils;
+import com.sun.identity.idm.AMIdentity;
+import com.sun.identity.idm.IdEventListener;
+import com.sun.identity.idm.IdRepoException;
+import com.sun.identity.idm.IdSearchControl;
+import com.sun.identity.idm.IdSearchResults;
+import com.sun.identity.idm.IdType;
+import com.sun.identity.security.AdminTokenAction;
+import com.sun.identity.shared.debug.Debug;
+import com.sun.identity.sm.DNMapper;
+import com.sun.identity.sm.SMSException;
 
 /**
  * Listens for changes to UMA Resource Server (OAuth2 Agent) to create or delete its policy
@@ -217,9 +219,13 @@ public class UmaPolicyApplicationListener implements IdEventListener {
     }
 
     private boolean isResourceServer(AMIdentity identity) throws IdRepoException, SSOException {
-        for (String scope : getScopes(getIdentityAttributes(identity))) {
-            if (scope.endsWith("uma_protection")) {
-                return true;
+
+        Set<String> scopes = getScopes(getIdentityAttributes(identity));
+        if (scopes != null) {
+            for (String scope : scopes) {
+                if (scope.endsWith("uma_protection")) {
+                    return true;
+                }
             }
         }
         return false;
@@ -234,7 +240,7 @@ public class UmaPolicyApplicationListener implements IdEventListener {
                         UmaConstants.UMA_POLICY_APPLICATION_TYPE);
                 application = new Application(realm, resourceServerId, applicationType);
                 application.setEntitlementCombiner(DenyOverride.class);
-                applicationManager.saveApplication(adminSubject, application);
+                applicationManager.saveUmaApplication(adminSubject, application);
             }
         } catch (EntitlementException e) {
             logger.error("Failed to create policy application", e);

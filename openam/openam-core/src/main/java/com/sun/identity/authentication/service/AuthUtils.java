@@ -397,7 +397,6 @@ public class AuthUtils extends AuthClientUtils {
                 utilDebug.message("AuthUtil :Session is .. : " + sess);
             }
             loginState.setSession(sess);
-            loginState.persistentCookieArgExists();
             loginState.setRequestLocale(request);
             if (checkForCookies(request)) {
                 loginState.setCookieDetect(false);
@@ -707,44 +706,6 @@ public class AuthUtils extends AuthClientUtils {
         return timedOut;
     }    
    
-    /* return the value of argument iPSPCookie entered on the URL */
-    public static boolean isPersistentCookieOn(AuthContextLocal authContext) {
-        return getLoginState(authContext).isPersistentCookieOn();
-    }
-    
-    /* retrieve persistent cookie setting from core auth profile */
-    public static boolean getPersistentCookieMode(AuthContextLocal authContext) {
-        return getLoginState(authContext).getPersistentCookieMode();
-    }
-
-    /* return persistent cookie */
-    public static Cookie getPersistentCookieString(AuthContextLocal authContext,
-    String cookieDomain ) {
-        return null;
-    }
-    
-    /* returns the username from the persistent cookie */
-    public static String searchPersistentCookie(AuthContextLocal authContext) {
-        LoginState loginState = getLoginState(authContext);
-        return loginState.searchPersistentCookie();
-    }
-    
-    public static Cookie createPersistentCookie(AuthContextLocal authContext,
-    String cookieDomain) throws AuthException {
-        Cookie pCookie=null;
-        try {
-            if (utilDebug.messageEnabled()) {
-                utilDebug.message("cookieDomain : " + cookieDomain);
-            }
-            LoginState loginState = getLoginState(authContext);
-            pCookie = loginState.setPersistentCookie(cookieDomain);
-            return pCookie;
-        } catch (Exception e) {
-            utilDebug.message("Unable to create persistent Cookie");
-            throw new AuthException(AMAuthErrorCode.AUTH_ERROR, null);
-        }
-    }
-    
     public static Cookie createlbCookie(AuthContextLocal authContext,
     String cookieDomain, boolean persist) throws AuthException {
         Cookie lbCookie=null;
@@ -781,22 +742,6 @@ public class AuthUtils extends AuthClientUtils {
         }
     }     
   
-    /**
-     * called by UI if the username returned by
-     * searchPersistentCookie is null
-     * clear persistent cookie  in the request
-     */
-    public static Cookie clearPersistentCookie(String cookieDomain,
-    AuthContextLocal authContext) {
-        String pCookieValue = LoginState.encodePCookie();
-        int maxAge = 0;
-        
-        Cookie clearPCookie = createPersistentCookie(getPersistentCookieName(),
-        pCookieValue,maxAge,cookieDomain);
-        
-        return clearPCookie;
-    }    
-   
     /* return the indexType for this request */
     public static int getCompositeAdviceType(AuthContextLocal authContext) {
         int type = 0;
@@ -1938,19 +1883,6 @@ public class AuthUtils extends AuthClientUtils {
 
         Cookie cookie = getLogoutCookie(sid, cookieDomain);
         response.addCookie(cookie);
-        String pCookieName = getPersistentCookieName();
-        String cookieValue = CookieUtils.getCookieValueFromReq(request,
-            pCookieName);
-        if (cookieValue != null) {
-            // clear Persistent Cookie
-            cookie = clearPersistentCookie(cookieDomain, null);
-            if (utilDebug.messageEnabled()) {
-                utilDebug.message("AuthUtils.clearAllCookiesByDomain: " +
-                    "Clearing persistent cookie = " + cookie + ", domain = " +
-                    cookieDomain);
-            }
-            response.addCookie(cookie);
-        }
     }
 
              /*
@@ -2126,16 +2058,15 @@ public class AuthUtils extends AuthClientUtils {
             
             if ((token != null) && isTokenValid) {
                 AuthD.getAuth().logLogout(token);
-                Session session = sessionCache.getSession(new SessionID(token.getTokenID().toString()));
-                session.logout();
-                
+                SSOTokenManager.getInstance().logout(token);
+
                 if (utilDebug.messageEnabled()) {
                     utilDebug.message("AuthUtils.logout: logout successful.");
                 }
             }
-        } catch (SessionException se) {
+        } catch (SSOException se) {
             if (utilDebug.warningEnabled()) {
-                utilDebug.warning("AuthUtils.logout: SessionException"
+                utilDebug.warning("AuthUtils.logout: SSOException"
                     + " checking validity of SSO Token", se);
             }
         }

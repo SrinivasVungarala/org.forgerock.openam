@@ -28,42 +28,34 @@ define("org/forgerock/openam/ui/policy/delegates/SiteConfigurationDelegate", [
     "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/main/Configuration",
     "org/forgerock/commons/ui/common/main/EventManager",
-    "org/forgerock/commons/ui/common/util/UIUtils",
+    "org/forgerock/commons/ui/common/main/Router",
     "org/forgerock/commons/ui/common/main/AbstractDelegate"
-
-], function(constants, conf, eventManager, uiUtils, AbstractDelegate) {
+], function(constants, conf, eventManager, Router, AbstractDelegate) {
     var obj = new AbstractDelegate('');
 
     obj.getConfiguration = function(successCallback, errorCallback) {
         console.info("Getting configuration");
 
-        var urlParams = uiUtils.convertCurrentUrlToJSON().params;
+        var urlParams = Router.convertCurrentUrlToJSON().params,
+            configuration = {lang: "en"};
         if (urlParams) {
             conf.globalData.auth.realm = urlParams.realm;
         } else {
             conf.globalData.auth.realm = undefined;
         }
 
-        obj.serviceCall({url: "configuration.json",
-            success: function (data) {
-                if (successCallback) {
-                    successCallback(data.configuration);
-                }
-            },
-            error: function (data) {
-                if (errorCallback) {
-                    errorCallback({lang: "en"});
-                }
-            },
-            headers: {}
-        });
-
-        obj.serviceCall({
-            serviceUrl: constants.host + "/" + constants.context + "/json",
-            url: "/serverinfo/*",
-            headers: {"Accept-API-Version": "protocol=1.0,resource=1.0"}
-        }).done(function (info) {
-            _.extend(conf.globalData, {serverInfo: info});
+        obj.serviceCall({url: "configuration.json",  headers: {} }).done(function(data){
+            _.extend(configuration, data.configuration);
+        }).always(function(){
+            obj.serviceCall({
+                serviceUrl: constants.host + "/" + constants.context + "/json",
+                url: "/serverinfo/*",
+                headers: {"Accept-API-Version": "protocol=1.0,resource=1.0"}
+            }).done(function (info) {
+                _.extend(configuration, info);
+            }).always(function(){
+                successCallback(configuration);
+            });
         });
     };
 

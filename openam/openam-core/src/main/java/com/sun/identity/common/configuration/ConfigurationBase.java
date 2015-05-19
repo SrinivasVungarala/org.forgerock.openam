@@ -1,4 +1,4 @@
-/**
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2007 Sun Microsystems Inc. All Rights Reserved
@@ -24,10 +24,7 @@
  *
  * $Id: ConfigurationBase.java,v 1.4 2009/07/07 06:14:12 veiming Exp $
  *
- */
-
-/*
- * Portions Copyrighted [2010] [ForgeRock AS]
+ * Portions Copyrighted 2010-2015 ForgeRock AS.
  */
 
 package com.sun.identity.common.configuration;
@@ -65,12 +62,12 @@ public abstract class ConfigurationBase {
     protected static final String OLD_ATTR_SERVER_LIST = 
         "iplanet-am-platform-server-list";
 
-    static final String CONFIG_SERVERS = "com-sun-identity-servers";
-    protected static final String SUBSCHEMA_SERVER = "server";
+    public static final String CONFIG_SERVERS = "com-sun-identity-servers";
+    public static final String SUBSCHEMA_SERVER = "server";
     protected static final String ATTR_SERVER_ID = "serverid";
     
-    protected static final String SUBSCHEMA_SITE = "site";
-    protected static final String CONFIG_SITES = "com-sun-identity-sites";
+    public static final String SUBSCHEMA_SITE = "site";
+    public static final String CONFIG_SITES = "com-sun-identity-sites";
     protected static final String SUBCONFIG_ACCESS_URL = "accesspoint";
     protected static final String ATTR_PRIMARY_SITE_ID = "primary-siteid";
     protected static final String ATTR_PRIMARY_SITE_URL = "primary-url";
@@ -81,16 +78,9 @@ public abstract class ConfigurationBase {
         throws SMSException, SSOException {
         Set currentIds = new HashSet();
         
-        if (isLegacy(ssoToken)) {
-            currentIds.addAll(legacyGetServerIds(ssoToken));
-            currentIds.addAll(legacyGetSiteIds(ssoToken));
-        } else {
-            currentIds.addAll(getServerConfigurationId(
-                getRootServerConfig(ssoToken)));
-            currentIds.addAll(getSiteConfigurationId(
-                getRootSiteConfig(ssoToken)));
-        }
-        
+        currentIds.addAll(getServerConfigurationId(getRootServerConfig(ssoToken)));
+        currentIds.addAll(getSiteConfigurationId(getRootSiteConfig(ssoToken)));
+
         return getNextId(currentIds);
     }
     
@@ -182,40 +172,6 @@ public abstract class ConfigurationBase {
         return (id == null) ? "01" : id;
     }
 
-    /**
-     * Returns <code>true</code> if platform service is not migrated to
-     * Revision 30.
-     *
-     * @return <code>true</code> if platform service is not migrated to
-     *         Revision 30.
-     */
-    public static boolean isLegacy() {
-        try {
-            return isLegacy((SSOToken)AccessController.doPrivileged(
-                AdminTokenAction.getInstance()));
-        } catch (SSOException e) {
-            return true;
-        } catch (SMSException e) {
-            return true;
-        }
-    }
-
-    /**
-     * Returns <code>true</code> if platform service is not migrated to
-     * Revision 30.
-     *
-     * @param ssoToken Single Sign-On Token which is used to access to the
-     *        service management datastore.
-     * @return <code>true</code> if platform service is not migrated to
-     *         Revision 30.
-     */
-    public static boolean isLegacy(SSOToken ssoToken)
-        throws SMSException, SSOException {
-        ServiceSchemaManager sm = new ServiceSchemaManager(
-            Constants.SVC_NAME_PLATFORM, ssoToken);
-        return (sm.getRevisionNumber() < 30);
-    }
-
     protected static void updateOrganizationAlias(
         SSOToken ssoToken,
         String instanceName,
@@ -269,73 +225,5 @@ public abstract class ConfigurationBase {
         ServiceConfig globalSvcConfig = scm.getGlobalConfig(null);
         return (globalSvcConfig != null) ?
             globalSvcConfig.getSubConfig(CONFIG_SITES) : null;
-    }
-
-    protected static ServiceConfig getSiteConfig(SSOToken ssoToken, String name)
-        throws SMSException, SSOException {
-        ServiceConfig sc = getRootSiteConfig(ssoToken);
-        return (sc != null) ? sc.getSubConfig(name) : null;
-    }
-
-    private static Set legacyGetSiteIds(SSOToken token)
-        throws SMSException, SSOException {
-        Set currentIds = new HashSet();
-        Set sites = legacyGetSiteInfo(token);
-        if ((sites != null) && !sites.isEmpty()) {
-            for (Iterator i = sites.iterator(); i.hasNext(); ) {
-                String site = (String)i.next();
-                int idx = site.indexOf('|');
-                if (idx != -1) {
-                    site = site.substring(idx+1);
-                    idx = site.indexOf('|');
-
-                    if (idx != -1) {
-                        site = site.substring(0, idx);
-                    }
-                    currentIds.add(site);
-                }
-            }
-        }
-        return currentIds;
-    }
-
-    protected static Set legacyGetSiteInfo(SSOToken ssoToken)
-        throws SMSException, SSOException {
-        ServiceSchemaManager scm = new ServiceSchemaManager(
-            Constants.SVC_NAME_PLATFORM, ssoToken);
-        ServiceSchema global = scm.getSchema(SchemaType.GLOBAL);
-        AttributeSchema as = global.getAttributeSchema(OLD_ATTR_SITE_LIST);
-        return (as == null) ? null : as.getDefaultValues();
-    }
-
-    private static Set legacyGetServerIds(SSOToken token) 
-        throws SMSException, SSOException {
-        Set currentIds = new HashSet();
-        Set servers = legacyGetServerInfo(token);
-        if ((servers != null) && !servers.isEmpty()) {
-            for (Iterator i = servers.iterator(); i.hasNext(); ) {
-                String server = (String)i.next();
-                int idx = server.indexOf('|');
-                if (idx != -1) {
-                    server = server.substring(idx+1);
-                    idx = server.indexOf('|');
-                    
-                    if (idx != -1) {
-                        server = server.substring(0, idx);
-                    }
-                    currentIds.add(server);
-                }
-            }
-        }
-        return currentIds;
-    }
-
-    protected static Set legacyGetServerInfo(SSOToken ssoToken)
-        throws SMSException, SSOException {
-        ServiceSchemaManager scm = new ServiceSchemaManager(
-            Constants.SVC_NAME_PLATFORM, ssoToken);
-        ServiceSchema global = scm.getSchema(SchemaType.GLOBAL);
-        AttributeSchema as = global.getAttributeSchema(OLD_ATTR_SERVER_LIST);
-        return (as == null) ? null : as.getDefaultValues();
     }
 }

@@ -1,7 +1,7 @@
-/**
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2014 ForgeRock AS. All rights reserved.
+ * Copyright 2011-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -58,13 +58,17 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
             //save the login params in a cookie for use with the cancel button on forgotPassword/register page
             //and also the "proceed to login" link once password has been successfully changed or registration is complete
             var expire = new Date(),
-                cookieVal = conf.globalData.auth.realm;
+                cookieVal = "/" + conf.globalData.auth.subRealm,
+                href = e.target.href + "/";
             if(conf.globalData.auth.urlParams){
                 cookieVal += restLoginHelper.filterUrlParams(conf.globalData.auth.urlParams);
             }
             expire.setDate(expire.getDate() + 1);
             cookieHelper.setCookie("loginUrlParams",cookieVal,expire);
-            location.href = e.target.href + conf.globalData.auth.realm;
+            if(conf.globalData.auth.subRealm) {
+                href += conf.globalData.auth.subRealm;
+            }
+            location.href = href;
         },
         autoLogin: function() {
             var index,
@@ -121,7 +125,6 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
                 promise = $.Deferred();
 
             if (args && args.length) {
-                conf.globalData.auth.realm = RealmHelper.getRealm();
                 conf.globalData.auth.additional = args[1]; // may be "undefined"
                 conf.globalData.auth.urlParams = urlParams;
 
@@ -148,10 +151,10 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
                     // if simply by asking for the requirements, we end up with a token, then we must have auto-logged-in somehow
                     if (reqs.hasOwnProperty("tokenId") && urlParams.ForceAuth !== 'true') {
                         //set a variable for the realm passed into the browser so there can be a check to make sure it is the same as the current user's realm
-                        conf.globalData.auth.passedInRealm = conf.globalData.auth.realm;
+                        conf.globalData.auth.passedInRealm = conf.globalData.auth.subRealm;
                         // if we have a token, let's see who we are logged in as....
                         sessionManager.getLoggedUser(function(user) {
-                            if(String(conf.globalData.auth.passedInRealm).toLowerCase() === conf.globalData.auth.realm.toLowerCase()){
+                            if(String(conf.globalData.auth.passedInRealm).toLowerCase() === conf.globalData.auth.subRealm.toLowerCase()){
                                 conf.setProperty('loggedUser', user);
                                 delete conf.globalData.auth.passedInRealm;
                                 restLoginHelper.setSuccessURL(reqs.tokenId).then(function() {
@@ -305,7 +308,7 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
                 this.$el.find("[name=loginRemember]").attr("checked","true");
                 this.$el.find("[type=password]").focus();
             } else {
-                this.$el.find(":input:first").focus();
+                this.$el.find(":input:not([type='radio']):not([type='checkbox']):not([type='submit']):not([type='button']):first").focus();
             }
         },
         handleUrlParams: function() {
@@ -336,34 +339,44 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
     Handlebars.registerHelper("callbackRender", function () {
         var result = "",
             cb = this,
-            prompt,
+            prompt = "",
             options,
-            hideButton;
+            hideButton,
+            defaultOption,
+            btnClass = '',
+            callbackType = {
+                PasswordCallback : "PasswordCallback",
+                TextInputCallback : "TextInputCallback",
+                TextOutputCallback: "TextOutputCallback",
+                ConfirmationCallback : "ConfirmationCallback",
+                ChoiceCallback : "ChoiceCallback",
+                HiddenValueCallback : "HiddenValueCallback",
+                RedirectCallback : "RedirectCallback",
+                ScriptTextOutputCallback : "4" //Magic number 4 is for a <script>, taken from ScriptTextOutputCallback.java
+            };
 
-        prompt = _.find(cb.output, function (o) { return o.name === "prompt"; });
-        if (prompt && prompt.value !== undefined && prompt.value.length) {
-            if (cb.type === "ChoiceCallback") {
-                result = '<label>' + prompt.value + '</label>';
-            } else {
-                result = '<label class="short">' + prompt.value + '</label>';
+
+        _.find(cb.output, function (obj) {
+            if (obj.name === "prompt" && obj.value !== undefined && obj.value.length){
+                prompt = obj.value.replace(/:$/, '');
             }
-        }
+        });
 
         switch (cb.type) {
-            case "PasswordCallback" :
-                result += '<input type="password" name="callback_' + cb.input.index + '" value="' + cb.input.value + '" data-validator="required" required data-validator-event="keyup" />';
+            case callbackType.PasswordCallback :
+                result += '<input type="password" name="callback_' + cb.input.index + '" class="form-control input-lg" placeholder="' + prompt + '" value="' + cb.input.value + '" data-validator="required" required data-validator-event="keyup">';
                 break;
 
-            case "TextInputCallback" :
+            case callbackType.TextInputCallback :
                 result += '<textarea name="callback_' + cb.input.index + '" data-validator="required" required data-validator-event="keyup">' + cb.input.value + '</textarea>';
                 break;
 
-            case "TextOutputCallback" :
+            case callbackType.TextOutputCallback :
                 options = [];
                 options.message = _.find(cb.output, function (o) { return o.name === "message"; });
                 options.type = _.find(cb.output, function (o) { return o.name === "messageType"; });
 
-                if (options.type.value === "4") { //4 is our magic number for a <script>, taken from ScriptTextOutputCallback.java
+                if (options.type.value === callbackType.ScriptTextOutputCallback) {
                     hideButton = "if(document.getElementsByClassName('button')[0] != undefined){document" +
                         ".getElementsByClassName" +
                         "('button')[0].style.visibility = 'hidden';}";
@@ -374,33 +387,45 @@ define("org/forgerock/openam/ui/user/login/RESTLoginView", [
 
                 break;
 
-            case "ConfirmationCallback" :
+            case callbackType.ConfirmationCallback :
                 options = _.find(cb.output, function (o) { return o.name === "options"; });
+
                 if (options && options.value !== undefined) {
-                    _.each(options.value, function (option, index) {
-                        result += '<input name="callback_' + cb.input.index + '" type="submit" class="button" index="'+ index +'" value="'+ option +'">';
+                    // if there is only one option then mark it as default.
+                    defaultOption = options.value.length > 1 ? _.find(cb.output, function (o) { return o.name === "defaultOption"; }) : {"value":0} ;
+                    _.each(options.value, function (option, key) {
+                        btnClass = (defaultOption && defaultOption.value === key) ? "btn-primary" : "btn-default";
+                        result += '<input name="callback_' + cb.input.index + '" type="submit" class="btn btn-lg btn-block btn-uppercase ' + btnClass + '" index="'+ key +'" value="'+ option +'">';
                     });
                 }
                 break;
-            case "ChoiceCallback" :
+            case callbackType.ChoiceCallback :
                 options = _.find(cb.output, function (o) { return o.name === "choices"; });
+                defaultOption = cb.input.value;
+
                 if (options && options.value !== undefined) {
-                    result += "<ul>";
-                    _.each(options.value, function (option, index) {
-                        var checked = (cb.input.value === index) ? " checked" : "";
-                        result += '<li><label class="short light" for="callback_' + cb.input.index + '_'+ index +'">'+option+': </label><input '+ checked +' id="callback_' + cb.input.index + '_'+ index +'" name="callback_' + cb.input.index + '" type="radio" value="'+ index +'"></li>';
+                    result +=   '<label class="choice-callback">' + prompt + '</label>'+
+                                '<div class="btn-group btn-group-justified" data-toggle="buttons">';
+                    _.each(options.value, function (option, key) {
+                        var checked = (defaultOption === key) ? "checked" : "",
+                            active = checked ? "active" : "";
+
+                        result +=   '<label class="btn btn-default '+ active +'">' +
+                                        ' <input type="radio" name="callback_' + cb.input.index + '" id="callback_' + cb.input.index + '_'+ key +'" autocomplete="off" '+ checked +' value="'+ key +'">' + option +
+                                    '</label>';
                     });
-                    result += "</ul>";
+                    result +=  '</div>';
                 }
+
                 break;
-            case "HiddenValueCallback" :
-                result += '<input type="hidden" id="' + cb.input.value + '" name="callback_' + cb.input.index + '" value="" data-validator="required" required data-validator-event="keyup" />';
+            case callbackType.HiddenValueCallback :
+                result += '<input type="hidden" id="' + cb.input.value + '" name="callback_' + cb.input.index + '" value="" />';
                 break;
-            case "RedirectCallback":
-                result += 'Redirecting...';
+            case callbackType.RedirectCallback:
+                result += '<p class="text-center">Redirecting...</p>';
                 break;
             default:
-                result += '<input type="text" name="callback_' + cb.input.index + '" value="' + cb.input.value + '" data-validator="required" required data-validator-event="keyup" />';
+                result += '<input type="text" name="callback_' + cb.input.index + '" value="' + cb.input.value + '" data-validator="required" required data-validator-event="keyup" class="form-control input-lg" placeholder="'+ prompt +'">';
                 break;
         }
 

@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 ForgeRock AS. All rights reserved.
+ * Copyright 2011-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -23,89 +23,113 @@
  */
 
 /*global require, define, window */
-
-
-/**
- * @author yaromin
- */
-
 require.config({
     paths: {
-        i18next              : "libs/i18next-1.7.3-min",
-        backbone             : "libs/backbone-1.1.2-min",
+        "backbone"           : "libs/backbone-1.1.2-min",
         "backbone.paginator" : "libs/backbone-paginator.min",
-        underscore           : "libs/lodash-2.4.1-min",
-        js2form              : "libs/js2form-2.0",
-        form2js              : "libs/form2js-2.0",
-        spin                 : "libs/spin-2.0.1-min",
-        jquery               : "libs/jquery-2.1.1-min",
-        xdate                : "libs/xdate-0.8-min",
-        doTimeout            : "libs/jquery.ba-dotimeout-1.0-min",
-        handlebars           : "libs/handlebars-1.3.0-min",
-        moment               : "libs/moment-2.8.1-min",
-        selectize            : "libs/selectize-0.11.2-min",
-        backgrid             : "libs/backgrid.min",
-        "backgrid.paginator" : "libs/backgrid-paginator.min",
-        "backgrid.filter"    : "libs/backgrid-filter.min",
-        ThemeManager         : "org/forgerock/openam/ui/common/util/ThemeManager",
-        UserDelegate         : "org/forgerock/openam/ui/user/delegates/UserDelegate",
-        backboneRelational   : "libs/backbone-relational"
-    },
+        "backbone-relational": "libs/backbone-relational",
 
+        "backgrid"          : "libs/backgrid.min",
+        "backgrid.filter"   : "libs/backgrid-filter.min",
+        "backgrid.paginator": "libs/backgrid-paginator.min",
+
+        "bootstrap"         : "libs/bootstrap-3.3.4-custom",
+        "bootstrap-dialog"  : "libs/bootstrap-dialog-1.34.4-min",
+        "bootstrap-tabdrop": "libs/bootstrap-tabdrop-1.0",
+
+        "doTimeout"       : "libs/jquery.ba-dotimeout-1.0-min",
+        "form2js"         : "libs/form2js-2.0",
+        "handlebars"      : "libs/handlebars-1.3.0-min",
+        "i18next"         : "libs/i18next-1.7.3-min",
+        "jquery"          : "libs/jquery-2.1.1-min",
+        "js2form"         : "libs/js2form-2.0",
+        "jsonEditor"      : "libs/jsoneditor-custom",
+        "moment"          : "libs/moment-2.8.1-min",
+        "qrcode"          : "libs/qrcode-1.0.0-min",
+        "selectize"       : "libs/selectize-0.12.1-min",
+        "sortable"        : "libs/jquery-nestingSortable-0.9.12",
+        "spin"            : "libs/spin-2.0.1-min",
+        "underscore"      : "libs/lodash-2.4.1-min",
+        "xdate"           : "libs/xdate-0.8-min",
+
+        "ThemeManager": "org/forgerock/openam/ui/common/util/ThemeManager",
+        "UserDelegate": "org/forgerock/openam/ui/user/delegates/UserDelegate"
+    },
     shim: {
-        underscore: {
-            exports: "_"
-        },
-        backbone: {
+        "backbone": {
             deps: ["underscore"],
             exports: "Backbone"
         },
         "backbone.paginator":{
             deps: ["backbone"]
         },
-        js2form: {
-            exports: "js2form"
+        "backbone-relational": {
+            deps: ['backbone']
         },
-        form2js: {
-            exports: "form2js"
-        },
-        spin: {
-            exports: "spin"
-        },
-        xdate: {
-            exports: "xdate"
-        },
-        doTimeout: {
-            deps: ["jquery"],
-            exports: "doTimeout"
-        },
-        handlebars: {
-            exports: "handlebars"
-        },
-        i18next: {
-            deps: ["jquery", "handlebars"],
-            exports: "i18next"
-        },
-        moment: {
-            exports: "moment"
-        },
-        selectize: {
-            deps: ["jquery"]
-        },
-        backgrid: {
+
+        "backgrid": {
             deps: ["jquery", "underscore", "backbone"],
             exports: "Backgrid"
-        },
-        "backgrid.paginator": {
-            deps: ["backgrid", "backbone.paginator"]
         },
         "backgrid.filter": {
             deps: ["backgrid"]
         },
-        backboneRelational: {
-            deps: ['backbone']
+        "backgrid.paginator": {
+            deps: ["backgrid", "backbone.paginator"]
+        },
+
+        "bootstrap": {
+            deps: ["jquery"]
+        },
+        "bootstrap-dialog": {
+            deps: ["jquery", "underscore", "backbone", "bootstrap"]
+        },
+        "bootstrap-tabdrop": {
+            deps: ["jquery", "bootstrap"]
+        },
+        "doTimeout": {
+            deps: ["jquery"],
+            exports: "doTimeout"
+        },
+        "form2js": {
+            exports: "form2js"
+        },
+        "handlebars": {
+            exports: "handlebars"
+        },
+        "i18next": {
+            deps: ["jquery", "handlebars"],
+            exports: "i18next"
+        },
+        "js2form": {
+            exports: "js2form"
+        },
+        "jsonEditor": {
+            exports: "JSONEditor"
+        },
+        "moment": {
+            exports: "moment"
+        },
+        "qrcode": {
+            exports: "qrcode"
+        },
+        "selectize": {
+            deps: ["jquery"]
+        },
+        "spin": {
+            exports: "spin"
+        },
+        "underscore": {
+            exports: "_"
+        },
+        "xdate": {
+            exports: "xdate"
+        },
+        "sortable": {
+            deps: ["jquery"]
         }
-    }
+    },
+    urlArgs: "v=${version}" // jshint ignore:line
 });
 
 /**
@@ -121,6 +145,7 @@ require([
     "backgrid",
     "form2js",
     "js2form",
+    "jsonEditor",
     "spin",
     "xdate",
     "moment",
@@ -141,9 +166,15 @@ require([
     "backbone.paginator",
     "backgrid.paginator",
     "backgrid.filter",
-    "org/forgerock/openam/ui/uma/main"
-], function(constants, eventManager, $, _, Backbone) {
+    "bootstrap",
+    "bootstrap-dialog",
+    "bootstrap-tabdrop",
+    "org/forgerock/openam/ui/uma/main",
+    "org/forgerock/openam/ui/admin/main",
+    "sortable",
+    "qrcode"
 
+], function(constants, eventManager, $, _, Backbone) {
     // Helpers for the code that hasn't been properly migrated to require these as explicit dependencies:
     window.$ = $;
     window._ = _;

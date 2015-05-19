@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-troubleshooting'
@@ -532,6 +532,7 @@ $ <userinput>./ssoadm \
 
     </answer>
    </qandaentry>
+
    <qandaentry xml:id="change-app-password">
     <question>
      <para>I want to change the password for the <literal>UrlAccessAgent</literal> that
@@ -563,6 +564,21 @@ $ <userinput>./ssoadm \
      </screen>
 
      <para>The new password will take effect the next time you start OpenAM.</para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="change-default-timeout">
+    <question>
+     <para>How do I set the TCP connection timeout for outbound HTTP connections
+     created by OpenAM?</para>
+    </question>
+    <answer>
+     <para>The default connection timeout is 10 seconds (10000ms). You can
+     change the default timeout by setting the
+     <literal>org.forgerock.openam.url.connectTimeout</literal> property.</para>
+     <para>On the OpenAM console, go to Configuration &gt; Server &amp; Sites &gt;
+     <replaceable>server-instance</replaceable> &gt; Advanced, and then set the property with a
+     value representing the TCP connection timeout in milliseconds.</para>
     </answer>
    </qandaentry>
   </qandadiv>

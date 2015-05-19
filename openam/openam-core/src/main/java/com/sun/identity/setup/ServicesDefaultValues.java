@@ -1,4 +1,4 @@
-/**
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2006 Sun Microsystems Inc. All Rights Reserved
@@ -172,8 +172,13 @@ public class ServicesDefaultValues {
             map.put(SetupConstants.UM_DIRECTORY_PORT,
                 UserIdRepo.getPort(userRepo));
             String s = (String) userRepo.get(SetupConstants.USER_STORE_SSL);
-            String ssl = ((s != null) && s.equals("SSL")) ? "true" : "false";
-            map.put(SetupConstants.UM_SSL, ssl);
+            final String isSecure = ((s != null) && s.equals("SSL")) ? "true" : "false";
+            map.put(SetupConstants.UM_SSL, isSecure);
+            if (Boolean.parseBoolean(isSecure)) {
+                map.put(SetupConstants.LDAP_CONNECTION_MODE_TAG, SetupConstants.LDAP_CONNECTION_MODE_LDAPS);
+            } else {
+                map.put(SetupConstants.LDAP_CONNECTION_MODE_TAG, SetupConstants.LDAP_CONNECTION_MODE_LDAP);
+            }
             umRootSuffix =(String)userRepo.get(
                 SetupConstants.USER_STORE_ROOT_SUFFIX);
         } else {
@@ -186,6 +191,7 @@ public class ServicesDefaultValues {
             map.put(SetupConstants.UM_DIRECTORY_PORT,
                 map.get(SetupConstants.CONFIG_VAR_DIRECTORY_SERVER_PORT));
             map.put(SetupConstants.UM_SSL, "false");
+            map.put(SetupConstants.LDAP_CONNECTION_MODE_TAG, SetupConstants.LDAP_CONNECTION_MODE_LDAP);
             umRootSuffix = (String)map.get(
                 SetupConstants.CONFIG_VAR_ROOT_SUFFIX);
         }
@@ -348,7 +354,7 @@ public class ServicesDefaultValues {
         String ekey = ((String)map.get(
                 SetupConstants.CONFIG_VAR_ENCRYPTION_KEY));
         if (ekey == null) {
-            ekey = AMSetupServlet.getRandomString().trim();
+            ekey = AMSetupUtils.getRandomString().trim();
             map.put(SetupConstants.CONFIG_VAR_ENCRYPTION_KEY, ekey);
         }
         // in future release need to check if length of greater from 10.

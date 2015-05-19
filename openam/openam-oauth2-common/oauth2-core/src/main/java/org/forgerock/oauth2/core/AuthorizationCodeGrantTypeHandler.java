@@ -16,7 +16,13 @@
 
 package org.forgerock.oauth2.core;
 
-import org.forgerock.oauth2.core.exceptions.ClientAuthenticationFailedException;
+import static org.forgerock.oauth2.core.Utils.joinScope;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
+import java.util.Set;
+
 import org.forgerock.oauth2.core.exceptions.InvalidClientException;
 import org.forgerock.oauth2.core.exceptions.InvalidCodeException;
 import org.forgerock.oauth2.core.exceptions.InvalidGrantException;
@@ -24,15 +30,9 @@ import org.forgerock.oauth2.core.exceptions.InvalidRequestException;
 import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.RedirectUriMismatchException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
+import org.forgerock.openam.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.List;
-import java.util.Set;
-
-import static org.forgerock.oauth2.core.Utils.joinScope;
 
 /**
  * Implementation of the GrantTypeHandler for the OAuth2 Authorization Code grant.
@@ -78,8 +78,8 @@ public class AuthorizationCodeGrantTypeHandler extends GrantTypeHandler {
             requestValidator.validateRequest(request, clientRegistration);
         }
 
-        final String code = request.getParameter("code");
-        final String redirectUri = request.getParameter("redirect_uri");
+        final String code = request.getParameter(OAuth2Constants.Params.CODE);
+        final String redirectUri = request.getParameter(OAuth2Constants.Params.REDIRECT_URI);
 
         final AuthorizationCode authorizationCode = tokenStore.readAuthorizationCode(request, code);
 
@@ -92,7 +92,7 @@ public class AuthorizationCodeGrantTypeHandler extends GrantTypeHandler {
         AccessToken accessToken;
         Set<String> authorizationScope;
         // Only allow one request per code through here at a time, to prevent replay.
-        synchronized (code) {
+        synchronized (code.intern()) {
             if (authorizationCode.isIssued()) {
                 tokenInvalidator.invalidateTokens(code);
                 tokenStore.deleteAuthorizationCode(code);
@@ -117,29 +117,37 @@ public class AuthorizationCodeGrantTypeHandler extends GrantTypeHandler {
                 throw new InvalidCodeException("Authorization code expired.");
             }
 
-            final String grantType = request.getParameter("grant_type");
+            final String grantType = request.getParameter(OAuth2Constants.Params.GRANT_TYPE);
             authorizationScope = authorizationCode.getScope();
             final String resourceOwnerId = authorizationCode.getResourceOwnerId();
+            final String validatedClaims = providerSettings.validateRequestedClaims(
+                    authorizationCode.getStringProperty(OAuth2Constants.Custom.CLAIMS));
 
             if (providerSettings.issueRefreshTokens()) {
                 refreshToken = tokenStore.createRefreshToken(grantType, clientRegistration.getClientId(),
                         resourceOwnerId, redirectUri, authorizationScope, request);
+
+                if (!StringUtils.isBlank(validatedClaims)) {
+                    refreshToken.setStringProperty(OAuth2Constants.Custom.CLAIMS, validatedClaims);
+                }
+
+                tokenStore.updateRefreshToken(refreshToken);
             }
 
-            accessToken = tokenStore.createAccessToken(grantType, "Bearer", code,
-                    resourceOwnerId, clientRegistration.getClientId(), redirectUri, authorizationScope, refreshToken,
-                    authorizationCode.getNonce(), request);
+            accessToken = tokenStore.createAccessToken(grantType, OAuth2Constants.Bearer.BEARER, code,
+                    resourceOwnerId, clientRegistration.getClientId(), redirectUri, authorizationScope,
+                    refreshToken, authorizationCode.getNonce(), validatedClaims, request);
 
             authorizationCode.setIssued();
             tokenStore.updateAuthorizationCode(authorizationCode);
         }
 
         if (refreshToken != null) {
-            accessToken.addExtraData("refresh_token", refreshToken.getTokenId());
+            accessToken.addExtraData(OAuth2Constants.Params.REFRESH_TOKEN, refreshToken.getTokenId());
         }
 
         final String nonce = authorizationCode.getNonce();
-        accessToken.addExtraData("nonce", nonce);
+        accessToken.addExtraData(OAuth2Constants.Custom.NONCE, nonce);
         accessToken.addExtraData(OAuth2Constants.Custom.SSO_TOKEN_ID, authorizationCode.getSessionId());
 
         providerSettings.additionalDataToReturnFromTokenEndpoint(accessToken, request);
@@ -147,7 +155,7 @@ public class AuthorizationCodeGrantTypeHandler extends GrantTypeHandler {
 
         // We should report the scope originally consented to and not the scope added to this request
         if (authorizationScope != null && !authorizationScope.isEmpty()) {
-            accessToken.addExtraData("scope", joinScope(authorizationScope));
+            accessToken.addExtraData(OAuth2Constants.Params.SCOPE, joinScope(authorizationScope));
         }
 
         return accessToken;

@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import javax.security.auth.Subject;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sun.identity.entitlement.Application;
 import com.sun.identity.entitlement.EntitlementException;
@@ -64,12 +66,20 @@ public class UmaResourceSetRegistrationListener implements ResourceSetRegistrati
      */
     @Override
     public void resourceSetCreated(String realm, ResourceSetDescription resourceSet) {
-        ResourceType resourceType = ResourceType.builder(resourceSet.getName() + " - " + resourceSet.getId(), realm)
+        Map<String, Boolean> resourceTypeActions = new HashMap<String, Boolean>();
+        for (String umaScope : resourceSet.getScopes()) {
+            resourceTypeActions.put(umaScope, Boolean.TRUE);
+        }
+        ResourceType resourceType = ResourceType.builder()
+                .setName(resourceSet.getName() + " - " + resourceSet.getId())
                 .setUUID(resourceSet.getId())
+                .setDescription("Dynamically created resource type for the UMA resource set. " +
+                        "Used to find all Policy Engine Policies that make up an UMA Policy")
+                .setActions(resourceTypeActions)
                 .addPattern(UmaConstants.UMA_POLICY_SCHEME_PATTERN).build();
         Subject adminSubject = SubjectUtils.createSuperAdminSubject();
         try {
-            resourceTypeService.saveResourceType(adminSubject, resourceType);
+            resourceTypeService.saveResourceType(adminSubject, realm, resourceType);
         } catch (EntitlementException e) {
             if (logger.errorEnabled()) {
                 logger.error("Failed to create resource type for resource set, " + resourceSet, e);

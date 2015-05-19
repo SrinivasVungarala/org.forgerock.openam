@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2014-2015 ForgeRock AS. All rights reserved.
+ * Copyright 2014-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -22,12 +22,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  */
 
-/**
- * @author JKigwana
- * @author Eugenia Sergueeva
- */
-
-/*global window, define, $, _, document, console, Handlebars */
+/*global window, define, $, _, console, Handlebars */
 
 define("org/forgerock/openam/ui/policy/policies/conditions/EditEnvironmentView", [
     "org/forgerock/commons/ui/common/main/AbstractView",
@@ -51,6 +46,7 @@ define("org/forgerock/openam/ui/policy/policies/conditions/EditEnvironmentView",
         i18n: {
             'condition': { 'key': 'policy.conditionTypes.', 'title': '.title', 'props': '.props.' }
         },
+        SCRIPT_RESOURCE: 'Script',
 
         render: function (schema, callback, element, itemID, itemData) {
             var self = this;
@@ -79,6 +75,8 @@ define("org/forgerock/openam/ui/policy/policies/conditions/EditEnvironmentView",
             }
 
             this.$el.find('select#selection').focus();
+
+            this.$el.find('.fa[data-toggle="popover"]').popover();
 
             if (callback) {
                 callback();
@@ -180,13 +178,13 @@ define("org/forgerock/openam/ui/policy/policies/conditions/EditEnvironmentView",
 
             if (itemData.type === "SimpleTime") {
                 attributesWrapper = '<div class="clearfix clear-left" id="conditionAttrTimeDate"></div>';
-
                 new TimeAttr().render({itemData: itemData}, itemDataEl);
                 new DayAttr().render({itemData: itemData}, itemDataEl);
                 new DateAttr().render({itemData: itemData}, itemDataEl);
                 new TimeZoneAttr().render({itemData: itemData}, itemDataEl);
-
-                this.$el.find(attributesSelector).wrapAll(attributesWrapper);
+            } else if (schema.title === self.SCRIPT_RESOURCE) {
+                attributesWrapper = '<div class="no-float"></div>';
+                new ArrayAttr().render({itemData: itemData, data: [itemData.scriptId], title: 'scriptId', i18nKey: self.i18n.condition.key + schema.title + self.i18n.condition.props + 'scriptId', dataSource: 'scripts'}, itemDataEl);
             } else {
                 attributesWrapper = '<div class="no-float"></div>';
 
@@ -212,9 +210,8 @@ define("org/forgerock/openam/ui/policy/policies/conditions/EditEnvironmentView",
                             break;
                     }
                 });
-
-                this.$el.find(attributesSelector).wrapAll(attributesWrapper);
             }
+            this.$el.find(attributesSelector).wrapAll(attributesWrapper);
         },
 
         setDefaultJsonValues: function (schema) {

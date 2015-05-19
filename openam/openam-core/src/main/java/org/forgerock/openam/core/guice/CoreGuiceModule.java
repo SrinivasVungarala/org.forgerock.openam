@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2013-2015 ForgeRock AS.
+ * Portions Copyrighted 2015 Nomura Research Institute, Ltd.
  */
 
 package org.forgerock.openam.core.guice;
@@ -30,6 +31,7 @@ import com.iplanet.dpro.session.operations.SessionOperationStrategy;
 import com.iplanet.dpro.session.service.SessionConstants;
 import com.iplanet.dpro.session.service.SessionServerConfig;
 import com.iplanet.dpro.session.service.SessionService;
+import com.iplanet.dpro.session.service.SessionServiceConfig;
 import com.iplanet.services.ldap.DSConfigMgr;
 import com.iplanet.services.ldap.LDAPServiceException;
 import com.iplanet.sso.SSOException;
@@ -37,10 +39,6 @@ import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenManager;
 import com.sun.identity.common.configuration.ConfigurationObserver;
 import com.sun.identity.delegation.DelegationManager;
-import com.sun.identity.entitlement.EntitlementConfiguration;
-import com.sun.identity.entitlement.opensso.SubjectUtils;
-import com.sun.identity.entitlement.xacml3.XACMLConstants;
-import com.sun.identity.entitlement.xacml3.validation.RealmValidator;
 import com.sun.identity.idm.AMIdentityRepository;
 import com.sun.identity.idm.IdRepoCreationListener;
 import com.sun.identity.security.AdminTokenAction;
@@ -48,6 +46,7 @@ import com.sun.identity.setup.ServicesDefaultValues;
 import com.sun.identity.shared.configuration.SystemPropertiesManager;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.stats.Stats;
+import com.sun.identity.shared.validation.URLValidator;
 import com.sun.identity.sm.DNMapper;
 import com.sun.identity.sm.OrganizationConfigManager;
 import com.sun.identity.sm.SMSEntry;
@@ -86,17 +85,8 @@ import org.forgerock.openam.cts.monitoring.CTSOperationsMonitoringStore;
 import org.forgerock.openam.cts.monitoring.CTSReaperMonitoringStore;
 import org.forgerock.openam.cts.monitoring.impl.CTSMonitoringStoreImpl;
 import org.forgerock.openam.cts.monitoring.impl.queue.MonitoredResultHandlerFactory;
-import org.forgerock.openam.entitlement.indextree.IndexChangeHandler;
-import org.forgerock.openam.entitlement.indextree.IndexChangeManager;
-import org.forgerock.openam.entitlement.indextree.IndexChangeManagerImpl;
-import org.forgerock.openam.entitlement.indextree.IndexChangeMonitor;
-import org.forgerock.openam.entitlement.indextree.IndexChangeMonitorImpl;
-import org.forgerock.openam.entitlement.indextree.IndexTreeService;
-import org.forgerock.openam.entitlement.indextree.IndexTreeServiceImpl;
-import org.forgerock.openam.entitlement.indextree.events.IndexChangeObservable;
 import org.forgerock.openam.entitlement.monitoring.PolicyMonitor;
 import org.forgerock.openam.entitlement.monitoring.PolicyMonitorImpl;
-import org.forgerock.openam.entitlement.utils.EntitlementUtils;
 import org.forgerock.openam.federation.saml2.SAML2TokenRepository;
 import org.forgerock.openam.identity.idm.AMIdentityRepositoryFactory;
 import org.forgerock.openam.session.SessionCache;
@@ -104,6 +94,11 @@ import org.forgerock.openam.session.SessionCookies;
 import org.forgerock.openam.session.SessionPollerPool;
 import org.forgerock.openam.session.SessionServiceURLService;
 import org.forgerock.openam.session.SessionURL;
+import org.forgerock.openam.session.blacklist.BloomFilterSessionBlacklist;
+import org.forgerock.openam.session.blacklist.CTSSessionBlacklist;
+import org.forgerock.openam.session.blacklist.CachingSessionBlacklist;
+import org.forgerock.openam.session.blacklist.NoOpSessionBlacklist;
+import org.forgerock.openam.session.blacklist.SessionBlacklist;
 import org.forgerock.openam.sm.SMSConfigurationFactory;
 import org.forgerock.openam.sm.ServerGroupConfiguration;
 import org.forgerock.openam.sm.datalayer.api.ConnectionType;
@@ -112,7 +107,6 @@ import org.forgerock.openam.sm.datalayer.api.DataLayerConstants;
 import org.forgerock.openam.sm.datalayer.api.DataLayerException;
 import org.forgerock.openam.sm.datalayer.api.QueueConfiguration;
 import org.forgerock.openam.utils.Config;
-import org.forgerock.opendj.ldap.SearchResultHandler;
 import org.forgerock.util.promise.Function;
 import org.forgerock.util.promise.NeverThrowsException;
 import org.forgerock.util.thread.ExecutorServiceFactory;
@@ -120,11 +114,13 @@ import org.forgerock.util.thread.ExecutorServiceFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Guice Module for configuring bindings for the OpenAM Core classes.
@@ -137,24 +133,11 @@ public class CoreGuiceModule extends AbstractModule {
         bind(new AdminTokenType()).toProvider(new AdminTokenProvider()).in(Singleton.class);
         bind(ServiceManagementDAO.class).to(ServiceManagementDAOWrapper.class).in(Singleton.class);
         bind(DNWrapper.class).in(Singleton.class);
-        bind(IndexChangeObservable.class).in(Singleton.class);
-        bind(SearchResultHandler.class).to(IndexChangeHandler.class).in(Singleton.class);
-        bind(IndexChangeManager.class).to(IndexChangeManagerImpl.class).in(Singleton.class);
-        bind(IndexChangeMonitor.class).to(IndexChangeMonitorImpl.class).in(Singleton.class);
-        bind(IndexTreeService.class).to(IndexTreeServiceImpl.class).in(Singleton.class);
+        bind(URLValidator.class).toInstance(URLValidator.getInstance());
 
         bind(new TypeLiteral<TokenAdapter<JsonValue>>(){})
                 .annotatedWith(Names.named(OAuth2Constants.CoreTokenParams.OAUTH_TOKEN_ADAPTER))
                 .to(OAuthAdapter.class);
-
-        bind(EntitlementConfiguration.class).toProvider(new Provider<EntitlementConfiguration>() {
-
-            @Override
-            public EntitlementConfiguration get() {
-                return EntitlementConfiguration.getInstance(SubjectUtils.createSuperAdminSubject(), "/");
-            }
-
-        }).in(Singleton.class);
 
         bind(DSConfigMgr.class).toProvider(new Provider<DSConfigMgr>() {
             public DSConfigMgr get() {
@@ -219,12 +202,6 @@ public class CoreGuiceModule extends AbstractModule {
 
         // CTS Reaper configuration
         bind(ReaperQuery.class).to(ReaperConnection.class);
-
-        /**
-         * Entitlements
-         */
-        bind(Debug.class).annotatedWith(Names.named(XACMLConstants.DEBUG))
-                .toInstance(Debug.getInstance(XACMLConstants.DEBUG));
 
         // Policy Monitoring
         bind(PolicyMonitor.class).to(PolicyMonitorImpl.class);
@@ -368,25 +345,9 @@ public class CoreGuiceModule extends AbstractModule {
         }
     }
 
-    @Provides
-    @Inject
-    @Named(EntitlementUtils.SERVICE_NAME)
-    ServiceConfigManager getServiceConfigManagerForEntitlements(final PrivilegedAction<SSOToken> adminTokenAction) {
-        try {
-            final SSOToken adminToken = AccessController.doPrivileged(adminTokenAction);
-            return new ServiceConfigManager(EntitlementUtils.SERVICE_NAME, adminToken);
-        } catch (SMSException smsE) {
-            throw new IllegalStateException("Failed to retrieve the service config manager for entitlements", smsE);
-        } catch (SSOException ssoE) {
-            throw new IllegalStateException("Failed to retrieve the service config manager for entitlements", ssoE);
-        }
-    }
-
     /**
      * Provides instances of the OrganizationConfigManager which requires an Admin
      * token to perform its operations.
-     *
-     * Used by {@link RealmValidator}
      *
      * @param provider Non null.
      * @return Non null.
@@ -476,9 +437,39 @@ public class CoreGuiceModule extends AbstractModule {
         }
     }
 
+    // provides our stored servlet context to classes which require it
+    @Provides @Named(ServletContextCache.CONTEXT_REFERENCE)
+    ServletContext getServletContext() {
+        return ServletContextCache.getStoredContext();
+    }
+
     @Provides @Named(SessionConstants.PRIMARY_SERVER_URL) @Inject @Singleton
     String getPrimaryServerURL(SessionServerConfig serverConfig) {
         return serverConfig.getPrimaryServerURL().toString();
+    }
+
+    @Provides @Singleton @Inject
+    public static SessionBlacklist getSessionBlacklist(final CTSSessionBlacklist ctsBlacklist,
+                                                       final SessionServiceConfig serviceConfig) {
+
+        if (!serviceConfig.isSessionBlacklistingEnabled()) {
+            return NoOpSessionBlacklist.INSTANCE;
+        }
+
+        final long purgeDelayMs = serviceConfig.getSessionBlacklistPurgeDelay(TimeUnit.MILLISECONDS);
+        final int cacheSize = serviceConfig.getSessionBlacklistCacheSize();
+        final long pollIntervalMs = serviceConfig.getSessionBlacklistPollInterval(TimeUnit.MILLISECONDS);
+
+        SessionBlacklist blacklist = ctsBlacklist;
+        if (cacheSize > 0) {
+            blacklist = new CachingSessionBlacklist(blacklist, cacheSize, purgeDelayMs);
+        }
+
+        if (pollIntervalMs > 0) {
+            blacklist = new BloomFilterSessionBlacklist(blacklist, serviceConfig);
+        }
+
+        return blacklist;
     }
 
     /**

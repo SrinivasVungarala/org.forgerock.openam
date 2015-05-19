@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.rest.resource;
@@ -132,12 +132,23 @@ public class CrestRealmRouterTest {
                 {"alias.example.com", "", null, "/otherRealm"},
                 //http://openam.example.com:8080/openam/json/users/demo?realm=/realm
                 {"openam.example.com", "", "/realm", "/realm"},
+                //http://openam.example.com:8080/openam/json/users/demo?realm=/
+                {"openam.example.com", "", "/", "/"},
+                //http://openam.example.com:8080/openam/json/users/demo?realm=/
+                {"openam.example.com", "/realm", "/", "/"},
                 //http://openam.example.com:8080/openam/json/users/demo?realm=/realmAlias
                 {"openam.example.com", "", "/realmAlias", "/realm"},
                 //http://openam.example.com:8080/openam/json/realm/users/demo
                 {"openam.example.com", "/realm", null, "/realm"},
                 //http://openam.example.com:8080/openam/json/realmAlias/users/demo
                 {"openam.example.com", "/realmAlias", null, "/realm"},
+
+                //http://alias.example.com:8080/openam/json/nextRealm/users/demo
+                {"alias.example.com", "nextRealm", null, "/otherRealm/nextRealm"},
+                //http://alias.example.com:8080/openam/json/nextRealm/users/demo?realm=overrideRealm
+                {"alias.example.com", "nextRealm", "overrideRealm", "/overrideRealm"},
+                //http://alias.example.com:8080/openam/json/nextRealm/users/demo?realm=/
+                {"alias.example.com", "nextRealm", "/", "/"},
         };
     }
 
@@ -165,8 +176,8 @@ public class CrestRealmRouterTest {
                 Matchers.<ResultHandler<Resource>>anyObject());
         ServerContext serverContext = contextCaptor.getValue();
         RealmContext realmContext = serverContext.asContext(RealmContext.class);
-        final String relativeRealm = realmContext.getResolvedRealm();
-        assertThat(relativeRealm).isEqualTo(expectedRealm);
+        final String resolvedRealm = realmContext.getResolvedRealm();
+        assertThat(resolvedRealm).isEqualTo(expectedRealm);
     }
 
     private HttpServletRequest setUpRequest(String hostname, String uriRealm, String queryRealm) {
@@ -214,6 +225,8 @@ public class CrestRealmRouterTest {
 
         given(realmValidator.isRealm("/realm")).willReturn(true);
         given(realmValidator.isRealm("/realmAlias")).willReturn(false);
+        given(realmValidator.isRealm("/otherRealm/nextRealm")).willReturn(true);
+        given(realmValidator.isRealm("/overrideRealm")).willReturn(true);
         given(coreWrapper.getOrganization(adminToken, "realmAlias")).willReturn("REALM_DN");
         given(coreWrapper.convertOrgNameToRealmName("REALM_DN")).willReturn("/realm");
     }

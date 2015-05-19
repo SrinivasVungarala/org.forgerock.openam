@@ -25,38 +25,51 @@
 /*global define, $, _, Backgrid, Backbone*/
 
 define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
-    "org/forgerock/commons/ui/common/components/Messages",
     "org/forgerock/commons/ui/common/main/AbstractView",
-    "org/forgerock/commons/ui/common/main/Configuration",
-    "org/forgerock/commons/ui/common/main/EventManager",
-    "org/forgerock/commons/ui/common/main/Router",
-    "org/forgerock/commons/ui/common/util/Constants",
-    "org/forgerock/openam/ui/uma/delegates/UMADelegate",
+    "backgrid",
     "org/forgerock/openam/ui/uma/util/BackgridUtils",
-    "org/forgerock/openam/ui/uma/util/UMAUtils",
-    "org/forgerock/openam/ui/uma/views/resource/DialogRevokeAllResources",
-    "backgrid"
-], function(MessageManager, AbstractView, Configuration, EventManager, Router, Constants, UMADelegate, BackgridUtils, UMAUtils, DialogRevokeAllResources, Backgrid) {
+    "org/forgerock/commons/ui/common/components/BSDialog",
+    "org/forgerock/openam/ui/uma/views/share/CommonShare",
+    "org/forgerock/commons/ui/common/main/Configuration",
+    "org/forgerock/commons/ui/common/util/Constants",
+    "org/forgerock/commons/ui/common/main/EventManager",
+    "org/forgerock/commons/ui/common/components/Messages",
+    "org/forgerock/openam/ui/common/util/RealmHelper",
+    "org/forgerock/commons/ui/common/main/Router",
+    "org/forgerock/openam/ui/uma/delegates/UMADelegate"
+], function(AbstractView, Backgrid, BackgridUtils, BSDialog, CommonShare, Configuration, Constants, EventManager, MessageManager, RealmHelper, Router, UMADelegate) {
 
     var ListResource = AbstractView.extend({
         template: "templates/uma/views/resource/ListResource.html",
         baseTemplate: "templates/common/DefaultBaseTemplate.html",
-
         events: {
-            'click a#revokeAll:not(.disabled)': 'onRevokeAll'
+            'click button#revokeAll:not(.disabled)': 'onRevokeAll'
         },
         onRevokeAll: function() {
-
-            var confirmCallBack = function(){
-                UMADelegate.revokeAllResources().done(function(){
+            var revokeDialog = new BSDialog();
+            revokeDialog.setTitle($.t("uma.resources.show.revokeAll"));
+            revokeDialog.closable = false;
+            revokeDialog.type = "type-danger";
+            revokeDialog.message = $.t("uma.resources.show.revokeAllResourcesMessage");
+            revokeDialog.actions = [{
+                id: "btnOk",
+                label: $.t("common.form.ok"),
+                cssClass: "btn-primary btn-danger",
+                action: function(dialog) {
+                    dialog.enableButtons(false);
+                    dialog.getButton("btnOk").text($.t("common.form.working"));
+                    UMADelegate.revokeAllResources().done(function() {
                         EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "revokeAllResourcesSuccess");
-                    }).fail(function(error){
+                    }).fail(function(error) {
                         MessageManager.messages.addMessage({ message: JSON.parse(error.responseText).message, type: "error"});
+                    }).always(function() {
+                        dialog.close();
                     });
-                };
-
-            DialogRevokeAllResources.render(confirmCallBack);
-
+                }
+            },{
+                type: "close"
+            }];
+            revokeDialog.show();
         },
 
         render: function(args, callback) {
@@ -64,11 +77,10 @@ define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
                 columns,
                 grid,
                 paginator,
-                ResourceSetCollection,
-                realm = UMAUtils.getRealm();
+                ResourceSetCollection;
 
             ResourceSetCollection = Backbone.PageableCollection.extend({
-                url: "/" + Constants.context + "/json" + realm + "/users/" + Configuration.loggedUser.username + '/oauth2/resourcesets',
+                url: RealmHelper.decorateURIWithRealm("/" + Constants.context + "/json/__subrealm__/users/" + Configuration.loggedUser.username + '/oauth2/resourcesets'),
                 state: {
                     pageSize: 10,
                     sortKey: "name"
@@ -84,11 +96,8 @@ define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
 
                 parseState: BackgridUtils.parseState,
                 parseRecords: function(data, options){
-                    if(data.result.length === 0){
-                        self.$el.find("a#revokeAll").addClass("disabled");
-                    } else {
-                        self.$el.find("a#revokeAll").removeClass("disabled");
-                    }
+                    self.$el.find("button#revokeAll").attr("disabled", data.result.length === 0);
+
                     return data.result;
                 },
                 sync: BackgridUtils.sync
@@ -96,31 +105,12 @@ define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
 
             columns = [
                 {
-                    name: "share",
-                    label: "",
-                    cell: Backgrid.Cell.extend({
-                        className: "icon-share",
-                        events: { "click": "share" },
-                        share: function(e) {
-                            self.data.currentResourceSetId = this.model.get('_id');
-
-                            EventManager.sendEvent(Constants.EVENT_SHOW_DIALOG,{
-                                route: Router.configuration.routes.dialogShare,
-                                noViewChange: true
-                            });
-                        },
-                        render: function () {
-                            this.delegateEvents();
-                            return this;
-                        }
-                    }),
-                    editable: false
-                },
-                {
                     name: "name",
                     label: $.t("uma.resources.list.grid.0"),
                     cell: BackgridUtils.UriExtCell,
-                    headerCell: BackgridUtils.FilterHeaderCell,
+                    headerCell: BackgridUtils.FilterHeaderCell.extend({
+                        addClassName: "col-md-5"
+                    }),
                     href: function(rawValue, formattedValue, model){
                         return "#uma/resources/" + model.get('_id');
                     },
@@ -135,13 +125,40 @@ define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
                         return "#uma/apps/" + encodeURIComponent(model.get('resourceServer'));
                     },*/
                     cell: "string",
-                    editable: false
+                    editable: false,
+                    headerCell : BackgridUtils.ClassHeaderCell.extend({
+                        className: "col-md-1"
+                    })
                 },
                 {
                     name: "type",
                     label: $.t("uma.resources.list.grid.2"),
                     cell: "string",
+                    headerCell : BackgridUtils.ClassHeaderCell.extend({
+                        className: "col-md-4"
+                    }),
                     editable: false
+                },
+                {
+                    name: "share",
+                    label: "",
+                    cell: Backgrid.Cell.extend({
+                        className: "fa fa-share-alt",
+                        events: { "click": "share" },
+                        share: function(e) {
+                            var shareView = new CommonShare();
+                            shareView.renderDialog(this.model.get('_id'));
+                        },
+                        render: function () {
+                            this.$el.attr({"title": $.t("uma.share.shareResource")});
+                            this.delegateEvents();
+                            return this;
+                        }
+                    }),
+                    editable: false,
+                    headerCell : BackgridUtils.ClassHeaderCell.extend({
+                        className: "col-md-1"
+                    })
                 }
             ];
 
@@ -150,6 +167,7 @@ define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
 
             grid = new Backgrid.Grid({
                 columns: columns,
+                className:"backgrid table table-striped",
                 collection: self.data.resourceSetCollection,
                 emptyText: $.t("uma.all.grid.empty")
             });
@@ -160,6 +178,7 @@ define("org/forgerock/openam/ui/uma/views/resource/ListResource", [
             });
 
             self.parentRender(function() {
+                self.$el.find('[data-toggle="tooltip"]').tooltip();
                 self.$el.find("#backgridContainer").append( grid.render().el );
                 self.$el.find("#paginationContainer").append( paginator.render().el );
                 self.data.resourceSetCollection.fetch({reset: true, processData: false});

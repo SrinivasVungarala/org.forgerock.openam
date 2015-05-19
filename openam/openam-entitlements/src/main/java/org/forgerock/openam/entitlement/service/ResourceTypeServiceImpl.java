@@ -15,20 +15,22 @@
  */
 package org.forgerock.openam.entitlement.service;
 
+import static com.sun.identity.entitlement.EntitlementException.NO_SUCH_RESOURCE_TYPE;
+import static com.sun.identity.entitlement.EntitlementException.RESOURCE_TYPE_ALREADY_EXISTS;
+
 import com.sun.identity.entitlement.EntitlementException;
 import org.forgerock.openam.entitlement.ResourceType;
-import org.forgerock.openam.entitlement.configuration.SmsAttribute;
 import org.forgerock.openam.entitlement.configuration.ResourceTypeConfiguration;
+import org.forgerock.openam.entitlement.configuration.ResourceTypeSmsAttributes;
+import org.forgerock.openam.entitlement.configuration.SmsAttribute;
 import org.forgerock.util.query.QueryFilter;
 
 import javax.inject.Inject;
 import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-
-import static com.sun.identity.entitlement.EntitlementException.*;
 
 /**
  * Implementation for <code>ResourceTypeService</code> that uses the <code>ResourceTypeConfiguration</code> to access
@@ -47,16 +49,16 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
      * {@inheritDoc}
      */
     @Override
-    public ResourceType saveResourceType(Subject subject, ResourceType resourceType) throws EntitlementException {
+    public ResourceType saveResourceType(Subject subject, String realm, ResourceType resourceType)
+            throws EntitlementException {
 
-        final String realm = resourceType.getRealm();
         final String name = resourceType.getName();
         if (configuration.containsName(subject, realm, name)) {
             throw new EntitlementException(RESOURCE_TYPE_ALREADY_EXISTS, name);
         }
 
         final ResourceType updatedResourceType = setMetaData(subject, realm, resourceType);
-        configuration.storeResourceType(subject, updatedResourceType);
+        configuration.storeResourceType(subject, realm, updatedResourceType);
 
         return updatedResourceType;
     }
@@ -72,7 +74,7 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
         final long now = new Date().getTime();
         final String principalName = getPrincipalName(subject);
         final ResourceType oldResourceType = getResourceType(subject, realm, resourceType.getUUID());
-        final ResourceType.Builder builder = resourceType.builder();
+        final ResourceType.Builder builder = resourceType.populatedBuilder();
 
         if (oldResourceType == null) {
             builder.setCreatedBy(principalName);
@@ -105,29 +107,17 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
      * {@inheritDoc}
      */
     @Override
-    public Set<ResourceType> getResourceTypes(Subject subject, String realm)
+    public ResourceType getResourceType(Subject subject, String realm, String uuid) throws EntitlementException {
+        return configuration.getResourceType(subject, realm, uuid);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResourceType updateResourceType(Subject subject, String realm, ResourceType resourceType)
             throws EntitlementException {
 
-        final Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
-        resourceTypes.addAll(configuration.getResourceTypes(subject, realm).values());
-        return resourceTypes;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResourceType getResourceType(Subject subject, String realm, String uuid) throws EntitlementException {
-        return configuration.getResourceTypes(subject, realm).get(uuid);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResourceType updateResourceType(Subject subject, ResourceType resourceType) throws EntitlementException {
-
-        final String realm = resourceType.getRealm();
         final String uuid = resourceType.getUUID();
         final String name = resourceType.getName();
 
@@ -135,23 +125,35 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
             throw new EntitlementException(NO_SUCH_RESOURCE_TYPE, uuid, realm);
         }
 
-        final Set<ResourceType> resourceTypes = getResourceTypes(subject, realm);
+        final Set<ResourceType> resourceTypes = getResourceTypes(
+                QueryFilter.equalTo(ResourceTypeSmsAttributes.NAME, name), subject, realm);
         for (ResourceType rt : resourceTypes) {
-            if (name.equals(rt.getName()) && !uuid.equals(rt.getUUID())) {
+            if (!uuid.equals(rt.getUUID())) {
                 throw new EntitlementException(RESOURCE_TYPE_ALREADY_EXISTS, name);
             }
         }
 
         final ResourceType updatedResourceType = setMetaData(subject, realm, resourceType);
-        configuration.storeResourceType(subject, updatedResourceType);
+        configuration.storeResourceType(subject, realm, updatedResourceType);
 
         return updatedResourceType;
+    }
+
+    @Override
+    public boolean contains(Subject subject, String realm, String id) throws EntitlementException {
+        return configuration.containsUUID(subject, realm, id);
     }
 
     @Override
     public Set<ResourceType> getResourceTypes(QueryFilter<SmsAttribute> filter,
                                               Subject subject, String realm) throws EntitlementException {
         return configuration.getResourceTypes(filter, subject, realm);
+    }
+
+    @Override
+    public Map<String, Map<String, Set<String>>> getResourceTypesData(Subject subject, String realm)
+            throws EntitlementException {
+        return configuration.getResourceTypesData(subject, realm);
     }
 
 }

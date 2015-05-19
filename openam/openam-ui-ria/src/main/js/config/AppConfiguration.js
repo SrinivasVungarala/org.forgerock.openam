@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2014 ForgeRock AS. All rights reserved.
+ * Copyright (c) 2011-2015 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -46,10 +46,7 @@ define("config/AppConfiguration", [
                         UserProfileView : "org/forgerock/commons/ui/user/profile/UserProfileView",
                         LoginDialog : "org/forgerock/openam/ui/user/login/RESTLoginDialog",
                         RegisterView : "org/forgerock/openam/ui/user/profile/RegisterView",
-                        ChangeSecurityDataDialog : "org/forgerock/openam/ui/user/profile/ChangeSecurityDataDialog",
-                        ConfirmPasswordDialog : "org/forgerock/commons/ui/user/profile/ConfirmPasswordDialog",
-                        DialogShare : "org/forgerock/openam/ui/uma/views/share/DialogShare",
-                        DialogRevokeAllResources : "org/forgerock/openam/ui/uma/views/resource/DialogRevokeAllResources"
+                        ChangeSecurityDataDialog : "org/forgerock/openam/ui/user/profile/ChangeSecurityDataDialog"
                     }
                 },
                 {
@@ -104,7 +101,8 @@ define("config/AppConfiguration", [
                     configuration: {
                         templateUrls: [
                             "templates/uma/backgrid/cell/RevokeCell.html",
-                            "templates/uma/backgrid/cell/SelectizeCell.html"
+                            "templates/uma/backgrid/cell/SelectizeCell.html",
+                            "templates/user/ConfirmPasswordDialogTemplate.html"
                         ]
                     }
                 },
@@ -134,18 +132,43 @@ define("config/AppConfiguration", [
                 {
                     moduleClass: "org/forgerock/commons/ui/common/components/Navigation",
                     configuration: {
+                        userBar: [
+                            {
+                                "id": "profileLink",
+                                "href": "#profile/",
+                                "i18nKey": "common.user.profile"
+                            }, {
+                                "id": "changePasswordLink",
+                                "event" : constants.EVENT_SHOW_CHANGE_SECURITY_DIALOG,
+                                "i18nKey": "common.user.changePassword"
+                            }, {
+                                "id": "logoutLink",
+                                "href": "#logout/",
+                                "i18nKey": "common.form.logout"
+                            }
+                        ],
                         links: {
+                            "admin": {
+                                "role": "ui-admin",
+                                "urls": {
+                                    "console": {
+                                        "url": "#console",
+                                        "name": "config.AppConfiguration.Navigation.links.console",
+                                        "icon": "fa fa-cubes"
+                                    }
+                                }
+                            },
                             "user" : {
                                 "urls": {
                                     "dashboard": {
                                         "url": "#dashboard/",
                                         "name": "config.AppConfiguration.Navigation.links.dashboard",
-                                        "icon": "glyph-icon-th-list",
+                                        "icon": "fa fa-dashboard",
                                         "inactive": false
                                     },
                                     "uma": {
                                         "url": "#uma/resources/",
-                                        "icon": "glyph-icon-user",
+                                        "icon": "fa fa-user",
                                         "name": "config.AppConfiguration.Navigation.links.uma",
                                         "urls": {
                                             "listResource": {

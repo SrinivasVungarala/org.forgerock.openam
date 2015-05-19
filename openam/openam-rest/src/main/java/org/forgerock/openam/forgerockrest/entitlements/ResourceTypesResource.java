@@ -20,12 +20,12 @@ import static com.sun.identity.entitlement.EntitlementException.*;
 import com.sun.identity.entitlement.EntitlementException;
 import com.sun.identity.shared.debug.Debug;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.forgerock.json.fluent.JsonPointer;
 import org.forgerock.json.fluent.JsonValue;
 import org.forgerock.json.resource.ActionRequest;
 import org.forgerock.json.resource.CreateRequest;
 import org.forgerock.json.resource.DeleteRequest;
 import org.forgerock.json.resource.PatchRequest;
+import org.forgerock.json.resource.QueryFilter;
 import org.forgerock.json.resource.QueryRequest;
 import org.forgerock.json.resource.QueryResult;
 import org.forgerock.json.resource.QueryResultHandler;
@@ -43,17 +43,16 @@ import org.forgerock.openam.forgerockrest.RestUtils;
 import org.forgerock.openam.forgerockrest.entitlements.query.QueryResultHandlerBuilder;
 import org.forgerock.openam.forgerockrest.entitlements.wrappers.JsonResourceType;
 import org.forgerock.openam.forgerockrest.utils.PrincipalRestUtils;
-import org.forgerock.openam.utils.CollectionUtils;
+import org.forgerock.openam.forgerockrest.utils.ServerContextUtils;
+import org.forgerock.openam.rest.query.DataQueryFilterVisitor;
+import org.forgerock.openam.rest.query.QueryException;
 import org.forgerock.openam.utils.StringUtils;
-import org.forgerock.util.promise.Function;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.auth.Subject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -123,18 +122,14 @@ public class ResourceTypesResource extends RealmAwareResource {
 
         if (METHOD_PUT.equalsIgnoreCase(context.asContext(HttpContext.class).getMethod())) {
             handler.handleError(ResourceException.getException(METHOD_NOT_ALLOWED));
+            return;
         }
 
         String principalName = "unknown";
         try {
             final Subject subject = getSubject(context);
             principalName = PrincipalRestUtils.getPrincipalNameFromSubject(subject);
-            final String realm = getRealm(context);
             final JsonResourceType jsonWrapper = createJsonResourceType(request.getContent());
-
-            if (!realm.equals(jsonWrapper.getRealm())) {
-                throw new EntitlementException(INVALID_RESOURCE_TYPE_REALM, jsonWrapper.getRealm(), realm);
-            }
 
             if (StringUtils.isEmpty(jsonWrapper.getName())) {
                 throw new EntitlementException(MISSING_RESOURCE_TYPE_NAME);
@@ -144,7 +139,7 @@ public class ResourceTypesResource extends RealmAwareResource {
             // adds all manner of good stuff - creation dates, updated dates, etc. etc.  It is the resource type filled
             // out with this extra stuff that we put into the resource and the user gets to see.
             //
-            final ResourceType savedResourceType = resourceTypeService.saveResourceType(subject,
+            final ResourceType savedResourceType = resourceTypeService.saveResourceType(subject, getRealm(context),
                     jsonWrapper.getResourceType(true));
 
             if (logger.messageEnabled()) {
@@ -229,19 +224,13 @@ public class ResourceTypesResource extends RealmAwareResource {
         try {
             final Subject subject = getSubject(context);
             principalName = PrincipalRestUtils.getPrincipalNameFromSubject(subject);
-            final String realm = getRealm(context);
-
             final JsonResourceType jsonWrapper = createJsonResourceType(request.getContent());
-
-            if (!realm.equals(jsonWrapper.getRealm())) {
-                throw new EntitlementException(INVALID_RESOURCE_TYPE_REALM, jsonWrapper.getRealm(), realm);
-            }
 
             if (StringUtils.isEmpty(jsonWrapper.getName())) {
                 throw new EntitlementException(MISSING_RESOURCE_TYPE_NAME);
             }
 
-            final ResourceType updatedResourceType = resourceTypeService.updateResourceType(subject,
+            final ResourceType updatedResourceType = resourceTypeService.updateResourceType(subject, getRealm(context),
                     jsonWrapper.getResourceType(false));
 
             if (logger.messageEnabled()) {
@@ -276,20 +265,32 @@ public class ResourceTypesResource extends RealmAwareResource {
      */
     @Override
     public void queryCollection(ServerContext context, QueryRequest request, QueryResultHandler handler) {
-
         String principalName = "unknown";
-        List<JsonResourceType> jsonWrappedResourceTypes = new LinkedList<JsonResourceType>();
-        try {
-            final Subject mySubject = getSubject(context);
-            principalName = PrincipalRestUtils.getPrincipalNameFromSubject(mySubject);
-            final String realm = getRealm(context);
+        String realm = getRealm(context);
+        QueryFilter queryFilter = request.getQueryFilter();
+        handler = QueryResultHandlerBuilder.withPagingAndSorting(handler, request);
 
-            Set<ResourceType> resourceTypes = resourceTypeService.getResourceTypes(mySubject, realm);
-            if (resourceTypes != null) {
-                for (ResourceType resourceType : resourceTypes) {
-                    jsonWrappedResourceTypes.add(new JsonResourceType(resourceType));
-                }
+        try {
+            Subject subject = getSubject(context);
+            principalName = PrincipalRestUtils.getPrincipalNameFromSubject(subject);
+            Map<String, Map<String, Set<String>>> configData = resourceTypeService.getResourceTypesData(subject, realm);
+
+            Set<String> filterResults;
+            if (queryFilter == null) {
+                filterResults = configData.keySet();
+            } else {
+                filterResults = queryFilter.accept(new DataQueryFilterVisitor(), configData);
             }
+
+            for (String uuid : filterResults) {
+                ResourceType resourceType = resourceTypeService.getResourceType(subject, realm, uuid);
+                handler.handleResource(new Resource(uuid,
+                        String.valueOf(resourceType.hashCode()),
+                        new JsonResourceType(resourceType).toJsonValue()));
+            }
+            int remaining = request.getPageSize() == 0 ? 0 :
+                    filterResults.size() - (request.getPagedResultsOffset() + request.getPageSize());
+            handler.handleResult(new QueryResult(request.getPagedResultsCookie(), remaining < 0 ? 0 : remaining));
         } catch (EntitlementException ee) {
             if (logger.errorEnabled()) {
                 logger.error("ResourceTypesResource :: QUERY by "
@@ -297,57 +298,11 @@ public class ResourceTypesResource extends RealmAwareResource {
                              + ": Caused EntitlementException: ",
                              ee);
             }
-            // we can safely continue here, because resourceTypes will be empty
+            handler.handleError(exceptionMappingHandler.handleError(context, request, ee));
+        } catch (QueryException e) {
+            handler.handleError(ResourceException.getException(ResourceException.BAD_REQUEST,
+                    e.getL10NMessage(ServerContextUtils.getLocaleFromContext(context))));
         }
-
-        final List<JsonValue> jsonifiedResourceTypes = jsonify(jsonWrappedResourceTypes);
-
-        handler = QueryResultHandlerBuilder.withPagingAndSorting(handler, request);
-
-        int remaining = jsonWrappedResourceTypes.size();
-        if (remaining > 0) {
-            for (JsonValue resourceTypeToReturn : jsonifiedResourceTypes) {
-
-                final JsonValue resourceId = resourceTypeToReturn.get(new JsonPointer(JsonResourceType.FIELD_NAME));
-                final String id = resourceId != null ? resourceId.toString() : null;
-
-                if (!handler.handleResource(new Resource(id,
-                        String.valueOf(System.currentTimeMillis()), resourceTypeToReturn))) {
-                    break;
-                }
-
-                remaining--;
-                if (logger.messageEnabled()) {
-                    logger.message("ApplicationTypesResource :: QUERY by "
-                            + principalName
-                            + ": Added resource to response: "
-                            + id);
-                }
-            }
-        }
-        handler.handleResult(new QueryResult(null, remaining));
-    }
-
-    /**
-     * Takes a set of ResourceTypes and for each returns their Json representation as a JsonValue.
-     *
-     * @param types The ResourceTypes whose values to look up and return in the JsonValue
-     * @return a {@link org.forgerock.json.fluent.JsonValue} object representing the provided {@link java.util.Set}
-     */
-    private List<JsonValue> jsonify(List<JsonResourceType> types) {
-
-        JsonResourceTypeToJsonValueMapper mapper = new JsonResourceTypeToJsonValueMapper();
-        List<JsonValue> resourceTypeList = new ArrayList<JsonValue>();
-        try {
-            resourceTypeList = CollectionUtils.transformList(types, mapper);
-        } catch (EntitlementException ee) {
-            if (logger.warningEnabled()) {
-                logger.warning("ResourceTypesResource :: JSONIFY - Error applying "
-                               + "jsonification to the ResourceType class representation.",
-                               ee);
-            }
-        }
-        return resourceTypeList;
     }
 
     /**
@@ -433,18 +388,5 @@ public class ResourceTypesResource extends RealmAwareResource {
             throw new EntitlementException(INTERNAL_ERROR, "Cannot retrieve subject");
         }
         return result;
-    }
-
-
-    /**
-     * Mapping function that maps a JsonResourceType to a JsonValue
-     */
-    private static final class JsonResourceTypeToJsonValueMapper
-            implements Function<JsonResourceType, JsonValue, EntitlementException> {
-
-        @Override
-        public JsonValue apply(final JsonResourceType entry) throws EntitlementException {
-            return entry.toJsonValue();
-        }
     }
 }

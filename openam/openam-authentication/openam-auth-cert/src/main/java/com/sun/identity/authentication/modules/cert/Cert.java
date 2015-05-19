@@ -24,7 +24,7 @@
  *
  * $Id: Cert.java,v 1.14 2009/03/13 20:54:42 beomsuk Exp $
  *
- * Portions Copyrighted 2013-2014 ForgeRock AS.
+ * Portions Copyrighted 2013-2015 ForgeRock AS.
  */
 
 package com.sun.identity.authentication.modules.cert;
@@ -413,7 +413,8 @@ public class Cert extends AMLoginModule {
                             "noURLCertAuth", null);
                     }
 
-                    thecert = getPortalStyleCert(servletRequest); 
+                    thecert = getPortalStyleCert(servletRequest);
+                    allCerts = new X509Certificate[] { thecert };
                 } else {
                     if (debug.messageEnabled()) {
                         debug.message("Certificate: got all certs from " + 

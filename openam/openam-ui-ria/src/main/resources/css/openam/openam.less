@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms of the Common Development and Distribution License (the License).
  * You may not use this file except in compliance with the License.
@@ -14,10 +14,144 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  */
-#logout-container {
-  h1{
-    background: transparent url('../images/icon_info.png') 0 0 no-repeat;
-    padding-left: 40px;
-  }
 
+
+
+/* Helpers */
+
+/* Candidate for Commons */
+ .wordwrap{
+    white-space: initial;
+    word-wrap: break-word;
+    word-break: break-word;
+ }
+
+ /* Candidate for Commons */
+ .ellipsis{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+ }
+
+ /* Candidate for Commons */
+ .btn-transparent {
+     background: none;
+     border-color:transparent;
+     &:hover{
+         background:none;
+         border-color:transparent;
+         color:#519387;
+     }
+     &:focus{
+         outline:none;
+         box-shadow:none;
+         color:#3f7269;
+     }
+ }
+
+ /* Candidate for Commons */
+ .transition(@property: all, @duration:.5s, @easing:ease, @delay:0s){
+     -webkit-transition: @arguments;
+        -moz-transition: @arguments;
+         -ms-transition: @arguments;
+          -o-transition: @arguments;
+             transition: @arguments;
+ }
+
+ /* Candidate for Commons */
+ .popover{
+     max-width: 500px;
+
+     .popover-title {
+         background-color: #519387;
+         border-bottom: 1px solid #488378;
+         color: white;
+         font-weight: normal;
+     }
+ }
+
+ /* Candidate for Commons */
+ .table-striped>tbody>tr.selected{
+     background-color:#d9edf7;
+ }
+
+
+
+ .page-header {
+
+     margin: 40px 0 20px;
+     border-bottom:none;
+
+     h4.page-type {
+         text-transform: uppercase;
+         font-size: 13px;
+         letter-spacing: 1px;
+         margin-bottom: 5px;
+         color: #666;
+         font-weight: 600;
+         margin-top: 3px;
+     }
+
+     .header-icon {
+         display: table;
+         background: #519387;
+         color: #fff;
+         text-align: center;
+         width: 64px;
+         height: 64px;
+         border-radius: 32px;
+         line-height: 64px;
+         font-size: 32px;
+         margin: -2px 10px 0 0;
+         overflow: hidden;
+     }
+
+     .fa-question-circle{
+         font-size: 15px;
+         vertical-align: top;
+         color:grey;
+     }
+ }
+
+
+.remember-forgot{
+    padding: 0 0 0;
+    .pull-right, .pull-left, .checkbox {
+        margin-top: 0;
+    }
+}
+
+#login-base {
+    .page-header {
+        h1 {
+            text-transform: uppercase;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+    }
+
+    .btn-group-justified {
+        padding-top: 5px;
+    }
+
+    .btn-block+.btn-block {
+        margin-top: 15px;
+    }
+
+    label.choice-callback{
+        padding-right: 10px;
+        font-weight: normal;
+    }
+
+     .btn-default.active {
+        cursor:auto;
+    }
+}
+
+#dialogs .validationRules{
+    margin-left: 0;
+}
+
+.modal-dialog .modal-body .page-header {
+    margin: 0 0 20px;
 }

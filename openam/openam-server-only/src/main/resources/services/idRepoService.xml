@@ -26,9 +26,7 @@
 
    $Id: idRepoService.xml,v 1.37 2009/11/10 01:50:57 hengming Exp $
 
--->
-<!--
-   Portions Copyrighted 2012-2014 ForgeRock AS
+   Portions Copyrighted 2012-2015 ForgeRock AS.
 -->
 <!DOCTYPE ServicesConfiguration
     PUBLIC "=//iplanet//Service Management Services (SMS) 1.0 DTD//EN"
@@ -296,12 +294,17 @@
                         </DefaultValues>
                     </AttributeSchema>
 
-                    <AttributeSchema name="sun-idrepo-ldapv3-config-ssl-enabled"
-                        type="single"
-                        syntax="boolean"
-                        i18nKey="a2007">
+                    <AttributeSchema name="sun-idrepo-ldapv3-config-connection-mode"
+                        type="single_choice"
+                        syntax="string"
+                        i18nKey="a20071">
+                        <ChoiceValues>
+                            <ChoiceValue i18nKey="a20072">LDAP</ChoiceValue>
+                            <ChoiceValue i18nKey="a20073">LDAPS</ChoiceValue>
+                            <ChoiceValue i18nKey="a20074">StartTLS</ChoiceValue>
+                        </ChoiceValues>
                         <DefaultValues>
-                            <Value>false</Value>
+                            <Value>LDAP</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -845,12 +848,17 @@
                         </DefaultValues>
                     </AttributeSchema>
 
-                    <AttributeSchema name="sun-idrepo-ldapv3-config-ssl-enabled"
-                        type="single"
-                        syntax="boolean"
-                        i18nKey="a2007">
+                    <AttributeSchema name="sun-idrepo-ldapv3-config-connection-mode"
+                        type="single_choice"
+                        syntax="string"
+                        i18nKey="a20071">
+                        <ChoiceValues>
+                            <ChoiceValue i18nKey="a20072">LDAP</ChoiceValue>
+                            <ChoiceValue i18nKey="a20073">LDAPS</ChoiceValue>
+                            <ChoiceValue i18nKey="a20074">StartTLS</ChoiceValue>
+                        </ChoiceValues>
                         <DefaultValues>
-                            <Value>false</Value>
+                            <Value>LDAP</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -943,6 +951,7 @@
                             <Value>sunFMSAML2NameIdentifier</Value>
                             <Value>forgerock-am-dashboard-service</Value>
                             <Value>devicePrintProfilesContainer</Value>
+                            <Value>oathDeviceProfilesContainer</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -1039,6 +1048,8 @@
                             <Value>devicePrintProfiles</Value>
                             <Value>modifyTimestamp</Value>
                             <Value>createTimestamp</Value>
+                            <Value>oathDeviceProfiles</Value>
+                            <Value>oath2faEnabled</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -1498,12 +1509,17 @@
                         </DefaultValues>
                     </AttributeSchema>
 
-                    <AttributeSchema name="sun-idrepo-ldapv3-config-ssl-enabled"
-                        type="single"
-                        syntax="boolean"
-                        i18nKey="a2007">
+                    <AttributeSchema name="sun-idrepo-ldapv3-config-connection-mode"
+                        type="single_choice"
+                        syntax="string"
+                        i18nKey="a20071">
+                        <ChoiceValues>
+                            <ChoiceValue i18nKey="a20072">LDAP</ChoiceValue>
+                            <ChoiceValue i18nKey="a20073">LDAPS</ChoiceValue>
+                            <ChoiceValue i18nKey="a20074">StartTLS</ChoiceValue>
+                        </ChoiceValues>
                         <DefaultValues>
-                            <Value>false</Value>
+                            <Value>LDAP</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -1595,6 +1611,7 @@
                             <Value>sunFMSAML2NameIdentifier</Value>
                             <Value>forgerock-am-dashboard-service</Value>
                             <Value>devicePrintProfilesContainer</Value>
+                            <Value>oathDeviceProfilesContainer</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -1690,6 +1707,8 @@
                             <Value>devicePrintProfiles</Value>
                             <Value>modifyTimestamp</Value>
                             <Value>createTimestamp</Value>
+                            <Value>oathDeviceProfiles</Value>
+                            <Value>oath2faEnabled</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -1800,6 +1819,15 @@
                         i18nKey="a2024">
                         <DefaultValues>
                             <Value>uniqueMember</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+
+                    <AttributeSchema name="sun-idrepo-ldapv3-config-memberurl"
+                        type="single"
+                        syntax="string"
+                        i18nKey="a2025">
+                        <DefaultValues>
+                            <Value>memberUrl</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -2017,12 +2045,17 @@
                         </DefaultValues>
                     </AttributeSchema>
 
-                    <AttributeSchema name="sun-idrepo-ldapv3-config-ssl-enabled"
-                        type="single"
-                        syntax="boolean"
-                        i18nKey="a2007">
+                    <AttributeSchema name="sun-idrepo-ldapv3-config-connection-mode"
+                        type="single_choice"
+                        syntax="string"
+                        i18nKey="a20071">
+                        <ChoiceValues>
+                            <ChoiceValue i18nKey="a20072">LDAP</ChoiceValue>
+                            <ChoiceValue i18nKey="a20073">LDAPS</ChoiceValue>
+                            <ChoiceValue i18nKey="a20074">StartTLS</ChoiceValue>
+                        </ChoiceValues>
                         <DefaultValues>
-                            <Value>false</Value>
+                            <Value>LDAP</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -2114,6 +2147,7 @@
                             <Value>sunFMSAML2NameIdentifier</Value>
                             <Value>forgerock-am-dashboard-service</Value>
                             <Value>devicePrintProfilesContainer</Value>
+                            <Value>oathDeviceProfilesContainer</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -2209,6 +2243,8 @@
                             <Value>devicePrintProfiles</Value>
                             <Value>modifyTimestamp</Value>
                             <Value>createTimestamp</Value>
+                            <Value>oathDeviceProfiles</Value>
+                            <Value>oath2faEnabled</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -2544,12 +2580,17 @@
                         </DefaultValues>
                     </AttributeSchema>
 
-                    <AttributeSchema name="sun-idrepo-ldapv3-config-ssl-enabled"
-                        type="single"
-                        syntax="boolean"
-                        i18nKey="a2007">
+                    <AttributeSchema name="sun-idrepo-ldapv3-config-connection-mode"
+                        type="single_choice"
+                        syntax="string"
+                        i18nKey="a20071">
+                        <ChoiceValues>
+                            <ChoiceValue i18nKey="a20072">LDAP</ChoiceValue>
+                            <ChoiceValue i18nKey="a20073">LDAPS</ChoiceValue>
+                            <ChoiceValue i18nKey="a20074">StartTLS</ChoiceValue>
+                        </ChoiceValues>
                         <DefaultValues>
-                            <Value>false</Value>
+                            <Value>LDAP</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -2723,6 +2764,8 @@
                             <Value>devicePrintProfiles</Value>
                             <Value>modifyTimestamp</Value>
                             <Value>createTimestamp</Value>
+                            <Value>oathDeviceProfiles</Value>
+                            <Value>oath2faEnabled</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -3051,12 +3094,17 @@
                         </DefaultValues>
                     </AttributeSchema>
 
-                    <AttributeSchema name="sun-idrepo-ldapv3-config-ssl-enabled"
-                        type="single"
-                        syntax="boolean"
-                        i18nKey="a2007">
+                    <AttributeSchema name="sun-idrepo-ldapv3-config-connection-mode"
+                        type="single_choice"
+                        syntax="string"
+                        i18nKey="a20071">
+                        <ChoiceValues>
+                            <ChoiceValue i18nKey="a20072">LDAP</ChoiceValue>
+                            <ChoiceValue i18nKey="a20073">LDAPS</ChoiceValue>
+                            <ChoiceValue i18nKey="a20074">StartTLS</ChoiceValue>
+                        </ChoiceValues>
                         <DefaultValues>
-                            <Value>false</Value>
+                            <Value>LDAP</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -3147,6 +3195,7 @@
                             <Value>user</Value>
                             <Value>forgerock-am-dashboard-service</Value>
                             <Value>devicePrintProfilesContainer</Value>
+                            <Value>oathDeviceProfilesContainer</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -3239,6 +3288,8 @@
                             <Value>devicePrintProfiles</Value>
                             <Value>modifyTimestamp</Value>
                             <Value>createTimestamp</Value>
+                            <Value>oathDeviceProfiles</Value>
+                            <Value>oath2faEnabled</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -4614,17 +4665,6 @@
                         <AttributeValuePair>
                             <Attribute name="telephoneNumber" />
                             <Value></Value>
-                        </AttributeValuePair>
-                    </SubConfiguration>
-                    <SubConfiguration name="amldapuser"
-                        id="user">
-                        <AttributeValuePair>
-                            <Attribute name="userPassword" />
-                            <Value>@HASHLDAPUSERPASSWD@</Value>
-                        </AttributeValuePair>
-                        <AttributeValuePair>
-                            <Attribute name="dn" />
-                            <Value>cn=amldapuser,ou=DSAME Users,</Value>
                         </AttributeValuePair>
                     </SubConfiguration>
                     <SubConfiguration name="amService-URLAccessAgent"

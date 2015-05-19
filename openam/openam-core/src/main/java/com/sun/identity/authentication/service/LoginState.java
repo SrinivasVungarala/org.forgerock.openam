@@ -28,9 +28,9 @@
  */
 package com.sun.identity.authentication.service;
 
-import static java.util.Collections.unmodifiableSet;
+import static java.util.Collections.*;
 import static org.forgerock.openam.session.SessionConstants.*;
-import static org.forgerock.openam.utils.CollectionUtils.asSet;
+import static org.forgerock.openam.utils.CollectionUtils.*;
 
 import com.iplanet.am.sdk.AMException;
 import com.iplanet.am.sdk.AMObject;
@@ -66,15 +66,12 @@ import com.sun.identity.idm.IdType;
 import com.sun.identity.idm.IdUtils;
 import com.sun.identity.log.LogConstants;
 import com.sun.identity.security.AdminTokenAction;
-import com.sun.identity.security.DecodeAction;
-import com.sun.identity.security.EncodeAction;
 import com.sun.identity.session.util.SessionUtils;
 import com.sun.identity.shared.Constants;
 import com.sun.identity.shared.DateUtils;
 import com.sun.identity.shared.datastruct.CollectionHelper;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.shared.encode.Base64;
-import com.sun.identity.shared.encode.CookieUtils;
 import com.sun.identity.shared.ldap.util.DN;
 import com.sun.identity.shared.ldap.util.RDN;
 import com.sun.identity.sm.DNMapper;
@@ -82,16 +79,6 @@ import com.sun.identity.sm.OrganizationConfigManager;
 import com.sun.identity.sm.SMSEntry;
 import com.sun.identity.sm.ServiceConfig;
 import com.sun.identity.sm.ServiceManager;
-import org.forgerock.openam.authentication.service.DefaultSessionPropertyUpgrader;
-import org.forgerock.openam.authentication.service.SessionPropertyUpgrader;
-import org.forgerock.openam.utils.ClientUtils;
-
-import javax.security.auth.Subject;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.NameCallback;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.net.InetAddress;
 import java.security.AccessController;
 import java.security.NoSuchAlgorithmException;
@@ -110,6 +97,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.NameCallback;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.forgerock.openam.authentication.service.DefaultSessionPropertyUpgrader;
+import org.forgerock.openam.authentication.service.SessionPropertyUpgrader;
+import org.forgerock.openam.utils.ClientUtils;
 
 /**
  * This class maintains the User's login state information from the time user
@@ -123,8 +119,7 @@ public class LoginState {
      * For these users we would allow authentication only at root realm
      * and require to be authenticated to configuration datastore.
      */
-    public static final Set<String> INTERNAL_USERS = unmodifiableSet(asSet("amadmin", "dsameuser", "urlaccessagent",
-            "amldapuser"));
+    public static final Set<String> INTERNAL_USERS = unmodifiableSet(asSet("amadmin", "dsameuser", "urlaccessagent"));
 
     private static final boolean URL_REWRITE_IN_PATH = SystemProperties.getAsBoolean(Constants.REWRITE_AS_PATH);
     private static final String NO_SESSION_QUERY_PARAM = "noSession";
@@ -140,7 +135,6 @@ public class LoginState {
      */
     private static class LazyConfig {
         private static final AuthD AUTHD = AuthD.getAuth();
-        private static final String PERSISTENT_COOKIE_NAME = AuthUtils.getPersistentCookieName();
         private static final SessionPropertyUpgrader SESSION_PROPERTY_UPGRADER = loadPropertyUpgrader();
     }
 
@@ -179,6 +173,7 @@ public class LoginState {
 
     }
 
+    private boolean mandatory2fa;
     private boolean userIDGeneratorEnabled;
     private String userIDGeneratorClassName;
     private boolean loginFailureLockoutMode = false;
@@ -214,7 +209,6 @@ public class LoginState {
     private boolean dynamicProfileCreation = false;
     private boolean ignoreUserProfile = false;
     private boolean createWithAlias = false;
-    private boolean persistentCookieMode = false;
     private Subject subject;
     private String token = null;
     private String userDN = null;
@@ -263,7 +257,6 @@ public class LoginState {
     // timed out
     private boolean timedOut = false;
     private String principalList = null;
-    private String pCookieUserName = null;
     private X509Certificate cert = null;
     private String defaultUserSuccessURL;
     private String clientUserSuccessURL;
@@ -292,8 +285,6 @@ public class LoginState {
     private String fqdnFailureLoginURL = null;
     private Map<String, String> moduleMap = null;
     private Map roleAttributeMap = null;
-    private Boolean foundPCookie = null;
-    private long pCookieTimeCreated = 0;
     private Set<String> identityTypes = Collections.emptySet();
     private Set<String> userSessionMapping = Collections.emptySet();
     private AMIdentityRepository amIdRepo = null;
@@ -305,6 +296,10 @@ public class LoginState {
     private boolean forwardSuccess = false;
     private boolean postProcessInSession = false;
     private boolean modulesInSession = false;
+
+    // Indicates Session is stateless
+    public boolean stateless = false;
+
     /**
      * Indicates if orgnization is active
      */
@@ -314,21 +309,10 @@ public class LoginState {
      */
     private Set<String> defaultRoles = null;
     /**
-     * Max. cookie time in seconds. Integer range is 0 - 2147483.
-     * persistentCookieOn has to be true.
-     */
-    private String persistentCookieTime = null;
-    /**
-     * Indicate if the persistent cookie mode is enabled.
-     * set to false for production.
-     */
-    private boolean persistentCookieOn = false;
-    /**
      * Default auth level for each auth module
      */
     private String defaultAuthLevel = "0";
     private ZeroPageLoginConfig zeroPageLoginConfig;
-    private String pCookieAuthLevel;
     private InternalSession oldSession = null;
     private SSOToken oldSSOToken = null;
     private boolean forceAuth;
@@ -373,16 +357,6 @@ public class LoginState {
             hexData.append(Integer.toHexString(onebyte).substring(6));
         }
         return hexData.toString();
-    }
-
-    /**
-     * Encode persistent cookie
-     *
-     * @return encoded value of persistent cookie
-     */
-    public static String encodePCookie() {
-        return AccessController.doPrivileged(
-                new EncodeAction(ISAuthConstants.INVALID_PCOOKIE));
     }
 
     String getDefaultAuthLevel() {
@@ -437,6 +411,16 @@ public class LoginState {
         } else {
             this.sid = null;
         }
+    }
+
+    /**
+     * Sets the session id, independently of the session. Used by stateless session activation to update the
+     * serialised session id while leaving the InternalSession null.
+     *
+     * @param sid the new session id to set.
+     */
+    void setSessionID(SessionID sid) {
+        this.sid = sid;
     }
 
     /**
@@ -632,6 +616,8 @@ public class LoginState {
                     orgConfigMgr.getServiceConfig(ISAuthConstants.AUTH_SERVICE_NAME);
 
             Map<String, Set<String>> attrs = svcConfig.getAttributes();
+            stateless = CollectionHelper.getBooleanMapAttr(attrs, ISAuthConstants.AUTH_STATELESS_SESSIONS, false);
+
             aliasAttrNames = attrs.get(ISAuthConstants.AUTH_ALIAS_ATTR);
             // NEEDED FOR BACKWARD COMPATIBILITY SUPPORT - OPEN ISSUE
             // TODO: Remove backward compat stuff
@@ -664,16 +650,6 @@ public class LoginState {
                 createWithAlias = true;
                 dynamicProfileCreation = true;
             }
-
-            tmp = CollectionHelper.getMapAttr(
-                    attrs, ISAuthConstants.PERSISTENT_COOKIE_MODE);
-            if (tmp.equalsIgnoreCase("true")) {
-                persistentCookieMode = true;
-            }
-
-            tmp = CollectionHelper.getMapAttr(
-                    attrs, ISAuthConstants.PERSISTENT_COOKIE_TIME);
-            persistentCookieTime = tmp;
 
             tmp = CollectionHelper.getMapAttr(attrs, Constants.ZERO_PAGE_LOGIN_ENABLED);
             boolean zplEnabled = Boolean.valueOf(tmp);
@@ -812,6 +788,11 @@ public class LoginState {
                 setUserIDGeneratorEnabled(Boolean.valueOf(tmp));
             }
 
+            tmp = CollectionHelper.getMapAttr(attrs, ISAuthConstants.TWO_FACTOR_AUTH_MANDATORY);
+            if (tmp != null) {
+                setMandatory2FAValue(tmp);
+            }
+
             setUserIDGeneratorClassName(CollectionHelper.getMapAttr(
                     attrs, ISAuthConstants.USERNAME_GENERATOR_CLASS));
             tmp = CollectionHelper.getMapAttr(
@@ -825,7 +806,6 @@ public class LoginState {
             setInvalidAttemptsDataAttrName(CollectionHelper.getMapAttr(
                     attrs, ISAuthConstants.INVALID_ATTEMPTS_DATA_ATTR_NAME));
 
-            pCookieAuthLevel = CollectionHelper.getMapAttr(attrs, ISAuthConstants.PCOOKIE_AUTH_LEVEL);
             if (DEBUG.messageEnabled()) {
                 DEBUG.message("Getting Org Profile: " + orgDN
                         + "\nlocale->" + localeContext.getLocale()
@@ -850,7 +830,6 @@ public class LoginState {
                         + "\nloginLockoutUserWarning->" + getLoginLockoutUserWarning()
                         + "\nloginLockoutNotification->" + getLoginLockoutNotification()
                         + "\ninvalidAttemptsDataAttrName->" + getInvalidAttemptsDataAttrName()
-                        + "\npersistentCookieMode->" + persistentCookieMode
                         + "\nzeroPageLoginConfig->" + zeroPageLoginConfig
                         + "\nidentityTypes->" + identityTypes
                         + "\naliasAttrNames ->" + aliasAttrNames);
@@ -958,10 +937,6 @@ public class LoginState {
      * @param authLevel Authentication Level.
      */
     public void setAuthLevel(String authLevel) {
-        //check if we authenticated using a persistent cookie, and if so, use the persistent cookie authlevel instead
-        if (foundPCookie != null && foundPCookie) {
-            authLevel = pCookieAuthLevel;
-        }
         // check if module Level is set and is greater
         // then authenticated modules level
         if (authLevel == null) {
@@ -1123,20 +1098,8 @@ public class LoginState {
 
             setSuccessLoginURL(indexType, indexName);
 
-            this.session = getSessionActivator().activateSession(this, LazyConfig.AUTHD.getSessionService(), session);
-            if (session == null) {
-                return isNoSession();
-            }
-
-            this.sid = session.getID();
-            setSubject(addSSOTokenPrincipal(subject));
-
-            if (modulesInSession && loginContext != null) {
-                session.setObject(ISAuthConstants.LOGIN_CONTEXT, loginContext);
-            }
-
-            return session.activate(getUserDN());
-
+            return getSessionActivator().activateSession(this, AuthD.getSessionService(), session, subject,
+                    loginContext);
         } catch (AuthException ae) {
             DEBUG.error("Error setting session properties: ", ae);
             throw ae;
@@ -1151,25 +1114,16 @@ public class LoginState {
             return NoSessionActivator.INSTANCE;
         }
 
+        if (LazyConfig.AUTHD.isSuperUser(getUserDN()) || LazyConfig.AUTHD.isSpecialUser(getUserDN())) {
+            DEBUG.message("Using stateful session activation for super admin");
+            return DefaultSessionActivator.INSTANCE;
+        }
+
+        if (stateless) {
+            return StatelessSessionActivator.INSTANCE;
+        }
+
         return DefaultSessionActivator.INSTANCE;
-    }
-
-    /* add the SSOTokenPrincipal to the Subject */
-    private Subject addSSOTokenPrincipal(Subject subject) {
-        if (subject == null) {
-            subject = new Subject();
-        }
-        String sidStr = sid.toString();
-        if (DEBUG.messageEnabled()) {
-            DEBUG.message("sid string is.. " + sidStr);
-        }
-        Principal ssoTokenPrincipal = new SSOTokenPrincipal(sidStr);
-        subject.getPrincipals().add(ssoTokenPrincipal);
-        if (DEBUG.messageEnabled()) {
-            DEBUG.message("Subject is.. :" + subject);
-        }
-
-        return subject;
     }
 
     /**
@@ -1623,16 +1577,6 @@ public class LoginState {
     }
 
     /**
-     * Checks for <code>persistentCookie</code>.
-     */
-    public void persistentCookieArgExists() {
-        String arg = (String) requestHash.get(ISAuthConstants.PCOOKIE);
-        if (arg != null && arg.length() != 0) {
-            persistentCookieOn = arg.equalsIgnoreCase("yes");
-        }
-    }
-
-    /**
      * Returns Session ID.
      *
      * @return Session ID.
@@ -1714,23 +1658,7 @@ public class LoginState {
             Hashtable requestHash) {
         String userOrg = null;
 
-        //org profile is not loaded yet so we can't check with getPersistentCookieMode()
-        //but we will check if persistentCookie is there and use it because we will
-        //verify if the pcookie is valid later anyways.
         String username = null;
-        String cookieValue = CookieUtils.getCookieValueFromReq(request, LazyConfig.PERSISTENT_COOKIE_NAME);
-        if (cookieValue != null) {
-            username = parsePersistentCookie(cookieValue);
-            if (username != null) {
-                //call to searchPersistentCookie should set userOrg
-                //getDN or LazyConfig.AUTHD.getOrgDN doesn't return correct dn so using DNMapper
-                orgDN = DNMapper.orgNameToDN(this.userOrg);
-                if (!username.endsWith(orgDN)) {
-                    orgDN = ServiceManager.getBaseDN();
-                }
-                userOrg = orgDN;
-            }
-        }
 
         if (userOrg == null) {
             if (AuthUtils.newSessionArgExists(requestHash, sid) &&
@@ -1822,7 +1750,6 @@ public class LoginState {
         }
         setGoToOnFailURL();
         amIdRepo = LazyConfig.AUTHD.getAMIdentityRepository(getOrgDN());
-        persistentCookieArgExists();
         populateOrgProfile();
         populateGlobalProfile();
         return authContext;
@@ -1835,8 +1762,9 @@ public class LoginState {
     ) throws AuthException {
         DEBUG.message("LoginState: createSession: Creating new session: ");
         SessionID sid = null;
+
         DEBUG.message("Save authContext in InternalSession");
-        session = LazyConfig.AUTHD.newSession(getOrgDN(), null);
+        session = LazyConfig.AUTHD.newSession(getOrgDN(), null, false);
         //save the AuthContext object in Session
         sid = session.getID();
         session.setObject(ISAuthConstants.AUTH_CONTEXT_OBJ, authContext);
@@ -1856,13 +1784,13 @@ public class LoginState {
      * @throws SSOException
      */
     public SSOToken getSSOToken() throws SSOException {
-        if (session == null || session.getState() == INACTIVE) {
+        if (!stateless && (session == null || session.getState() == INACTIVE)) {
             return null;
         }
 
         try {
             SSOTokenManager ssoManager = SSOTokenManager.getInstance();
-            SSOToken ssoToken = ssoManager.createSSOToken(session.getID().toString());
+            SSOToken ssoToken = ssoManager.createSSOToken(sid.toString());
             return ssoToken;
         } catch (SSOException ex) {
             DEBUG.message("Error retrieving SSOToken :", ex);
@@ -2544,7 +2472,6 @@ public class LoginState {
             DEBUG.message("Subject is.. :" + subject);
             DEBUG.message("token is.. :" + token);
             DEBUG.message("tokenSet is.. :" + tokenSet);
-            DEBUG.message("pCookieUserName is.. :" + pCookieUserName);
             DEBUG.message("ignoreUserProfile.. :" + ignoreUserProfile);
             DEBUG.message("userDN is.. :" + userDN);
         }
@@ -2569,11 +2496,7 @@ public class LoginState {
             // authenticated as is present
             // in the user-alias-list
 
-            if ((indexType == AuthContext.IndexType.USER) ||
-                    (pCookieUserName != null)) {
-                if ((token == null) && (pCookieUserName != null)) {
-                    token = pCookieUserName;
-                }
+            if ((indexType == AuthContext.IndexType.USER)) {
                 if (token == null) {
                     return false;
                 }
@@ -3023,24 +2946,6 @@ public class LoginState {
     }
 
     /**
-     * Returns persistent cookie argument.
-     *
-     * @return persistent cookie argument.
-     */
-    public boolean isPersistentCookieOn() {
-        return persistentCookieOn;
-    }
-
-    /**
-     * Returns persistent cookie profie.
-     *
-     * @return persistent cookie profie.
-     */
-    public boolean getPersistentCookieMode() {
-        return persistentCookieMode;
-    }
-
-    /**
      * Returns the configuration for whether Zero Page Login (ZPL) should be allowed or not.
      *
      * @return the ZPL configuration
@@ -3189,253 +3094,6 @@ public class LoginState {
     }
 
     /**
-     * Searches persistent cookie in request.
-     *
-     * @return user name set in persistent cookie, null if no persistent cookie
-     * found
-     */
-    public String searchPersistentCookie() {
-        try {
-            String username = null;
-            // trying to find persistent cookie
-            String cookieValue = CookieUtils.getCookieValueFromReq(
-                    servletRequest, LazyConfig.PERSISTENT_COOKIE_NAME);
-            if (cookieValue != null) {
-                username = parsePersistentCookie(cookieValue);
-            }
-
-            return username;
-        } catch (Exception e) {
-            if (DEBUG.messageEnabled()) {
-                DEBUG.message("ERROR searchPersistentCookie ", e);
-            }
-            return null;
-        }
-    }
-
-    /**
-     * parse persistent cookie parameters
-     * persistent cookie has form:
-     * [pCookie]=
-     * username%domainname%authMethod%maxSession%idleTime%cacheTime%sid%time
-     *
-     * @param cookieValue Value of the persistent cookie
-     * @return user name set in persistent cookie, return if no PC found
-     */
-    private String parsePersistentCookie(String cookieValue) {
-        try {
-            foundPCookie = Boolean.FALSE;
-            String encodedInvalidCookie = AccessController.
-                    doPrivileged(new EncodeAction(ISAuthConstants.INVALID_PCOOKIE));
-            if (cookieValue == null || cookieValue.length() == 0 ||
-                    cookieValue.equals(encodedInvalidCookie)) {
-                return null;
-            }
-
-            // some decryption/extraction to be done here
-            String decode_cookieValue = AccessController.
-                    doPrivileged(new DecodeAction(cookieValue));
-
-            // check domain param in cookie value
-            int domainIndex = decode_cookieValue.indexOf(
-                    ISAuthConstants.PERCENT);
-            if (domainIndex == -1) {
-                //  treat as if cookie not found
-                return null;
-            }
-
-            // set user name
-            String usernameStr = decode_cookieValue.substring(0, domainIndex);
-            // tmpstr points to start of domainname
-            String tmpstr = decode_cookieValue.substring(domainIndex + 1);
-            // check auth method param in cookie value
-            int authMethIndex = tmpstr.indexOf(ISAuthConstants.PERCENT);
-            if (authMethIndex == -1) {
-                // clear our cookie
-                //  treat as if cookie not found
-                return null;
-            }
-
-            // set domain name string
-            String domainStr = tmpstr.substring(0, authMethIndex);
-            // tmpstr2 point to the start of auth method
-            String tmpstr2 = tmpstr.substring(authMethIndex + 1);
-            // check maxSession param in cookie value
-            int tmpIndex = tmpstr2.indexOf(ISAuthConstants.PERCENT);
-            if (tmpIndex == -1) {
-                // clear our cookie
-                //  treat as if cookie not found
-                return null;
-            }
-
-            // set auth method string
-            String authMethStr = tmpstr2.substring(0, tmpIndex);
-            // tmpstr point to the start of maxSession
-            tmpstr = tmpstr2.substring(tmpIndex + 1);
-            // check idle Time string
-            tmpIndex = tmpstr.indexOf(ISAuthConstants.PERCENT);
-            if (tmpIndex == -1) {
-                //  treat as if cookie not found
-                return null;
-            }
-
-            // set max session
-            int maxSession = Integer.parseInt(tmpstr.substring(0, tmpIndex));
-            // tmpstr2 point to the start of idleTime
-            tmpstr2 = tmpstr.substring(tmpIndex + 1);
-            // check cacheTime in cookie value
-            tmpIndex = tmpstr2.indexOf(ISAuthConstants.PERCENT);
-            if (tmpIndex == -1) {
-                //  treat as if cookie not found
-                return null;
-            }
-
-            // set idle time
-            int idleTime = Integer.parseInt(tmpstr2.substring(0, tmpIndex));
-
-            // set cache time
-            tmpstr2 = tmpstr2.substring(tmpIndex + 1);
-            tmpIndex = tmpstr2.indexOf(ISAuthConstants.PERCENT);
-            if (tmpIndex == -1) {
-                // treat as if cookie  not found
-                return null;
-            }
-
-            int cacheTime = Integer.parseInt(tmpstr2.substring(0, tmpIndex));
-
-            tmpstr2 = tmpstr2.substring(tmpIndex + 1);
-            tmpIndex = tmpstr2.indexOf(ISAuthConstants.PERCENT);
-            if (tmpIndex == -1) {
-                // treat as if cookie  not found
-                return null;
-            }
-
-            // get sid
-            String oldSidString = tmpstr2.substring(0, tmpIndex);
-
-            // get the time the pCookie was created
-            pCookieTimeCreated = Long.parseLong(tmpstr2.substring(tmpIndex + 1));
-            if (DEBUG.messageEnabled()) {
-                DEBUG.message("pCookieTimeCreated : " + pCookieTimeCreated);
-            }
-            // clean up auth internal tables
-            if (!sessionUpgrade) {
-                SessionID oldSessionID = new SessionID(oldSidString);
-                LazyConfig.AUTHD.getSessionService().destroyInternalSession(oldSessionID);
-            }
-
-            userOrg = domainStr;
-
-            String orgDN = DNMapper.orgNameToDN(userOrg);
-            if (!usernameStr.endsWith(orgDN)) {
-                orgDN = ServiceManager.getBaseDN();
-            }
-
-            OrganizationConfigManager orgConfigMgr = LazyConfig.AUTHD.getOrgConfigManager(orgDN);
-            ServiceConfig svcConfig = orgConfigMgr.getServiceConfig(ISAuthConstants.AUTH_SERVICE_NAME);
-
-            Map<String, Set<String>> attrs = svcConfig.getAttributes();
-            persistentCookieMode = Boolean.valueOf(
-                    CollectionHelper.getMapAttr(attrs, ISAuthConstants.PERSISTENT_COOKIE_MODE));
-            if (!persistentCookieMode) {
-                //The authentication was started in a realm where persistent cookie was enabled, however the cookie
-                //points to a different realm where pcookie is not enabled, so we should reject the cookie here right
-                //away.
-                return null;
-            }
-
-            persistentCookieTime = CollectionHelper.getMapAttr(attrs, ISAuthConstants.PERSISTENT_COOKIE_TIME);
-            int value = -1;
-            try {
-                value = Integer.parseInt(persistentCookieTime);
-            } catch (NumberFormatException nfe) {
-                //ignore
-            }
-
-            if ((pCookieTimeCreated + value * 1000) < System.currentTimeMillis()) {
-                //the cookie should have already reach its lifetime
-                return null;
-            }
-
-            pAuthMethName = ISAuthConstants.PCOOKIE_AUTH_TYPE;
-            if (DEBUG.messageEnabled()) {
-                DEBUG.message("Found valid PC : username=" + usernameStr +
-                        "\ndomainname=" + domainStr + "\nauthMethod=" +
-                        authMethStr + "\nmaxSession=" + maxSession +
-                        "\nidleTime=" + idleTime + "\ncacheTime=" + cacheTime +
-                        "\norgDN=" + orgDN);
-            }
-
-            foundPCookie = Boolean.TRUE;
-            return usernameStr;
-        } catch (Exception e) {
-            if (DEBUG.messageEnabled()) {
-                DEBUG.message("ERROR:parsePersistentCookie : ", e);
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Sets persistent cookie in request
-     * TO TAKE CARE OF LOAD BALANCING COOKIE
-     *
-     * @param cookieDomain name of cookie domain for persistent cookie
-     * @return persistent cookie in request
-     * @throws SSOException
-     * @throws AMException
-     */
-    public Cookie setPersistentCookie(String cookieDomain)
-            throws SSOException, AMException {
-        String maxage_str = persistentCookieTime;
-        Cookie pCookie = null;
-        if (maxage_str != null) {
-            int maxAge;
-            try {
-                maxAge = Integer.parseInt(maxage_str);
-                if (foundPCookie != null && foundPCookie) {
-                    long timeRem =
-                            System.currentTimeMillis() - pCookieTimeCreated;
-                    maxAge = maxAge - (new Long(timeRem / 1000)).intValue();
-                }
-            } catch (Exception Ex2) {
-                maxAge = 0;
-            }
-            if (DEBUG.messageEnabled()) {
-                DEBUG.message("Add Cookie: maxage=" + maxAge);
-                DEBUG.message("Add Cookie: maxage_str=" + maxage_str);
-            }
-
-            if (maxAge > 0) {
-                String cookiestr = getUserDN(amIdentityUser) +
-                        "%" + getOrgName() +
-                        "%" + authMethName + "%" + Integer.toString(maxSession) +
-                        "%" + Integer.toString(idleTime) +
-                        "%" + Integer.toString(cacheTime) +
-                        "%" + sid.toString() +
-                        "%" + (pCookieTimeCreated != 0 ? pCookieTimeCreated : System.currentTimeMillis());
-                String pCookieValue = AccessController.doPrivileged(
-                        new EncodeAction(cookiestr));
-                pCookie = AuthUtils.createPersistentCookie(
-                        AuthUtils.getPersistentCookieName(),
-                        pCookieValue, maxAge, cookieDomain);
-
-                if (DEBUG.messageEnabled()) {
-                    DEBUG.message("Add PCookie = " + cookiestr);
-                }
-            } else {
-                if (DEBUG.messageEnabled()) {
-                    DEBUG.message("Persistent Cookie Mode" +
-                            " configured for domain " + orgName +
-                            ", but no persistentCookieTime = " + maxage_str);
-                }
-
-            }
-        }
-        return pCookie;
-    }
-
-    /**
      * set Load Balance Cookie
      *
      * @param cookieDomain name of cookie domain for persistent cookie
@@ -3448,31 +3106,8 @@ public class LoginState {
             throws SSOException, AMException {
         String cookieName = AuthUtils.getlbCookieName();
         String cookieValue = AuthUtils.getlbCookieValue();
-        String maxage_str = persistentCookieTime;
-        Cookie lbCookie = null;
-        if ((maxage_str != null) && persist) {
-            int maxAge;
-            try {
-                maxAge = Integer.parseInt(maxage_str);
-            } catch (Exception Ex2) {
-                maxAge = 0;
-            }
-            if (DEBUG.messageEnabled()) {
-                DEBUG.message("Add Load Balance Cookie: maxage=" + maxAge);
-            }
-
-            if (maxAge > 0) {
-                lbCookie = AuthUtils.createPersistentCookie(
-                        cookieName, cookieValue,
-                        maxAge, cookieDomain);
-                DEBUG.message("Add Load Balance Cookie!");
-            } else {
-                DEBUG.message("No Load Balance Cookie set!");
-            }
-        } else {
-            lbCookie = AuthUtils.createPersistentCookie(
-                    cookieName, cookieValue, -1, cookieDomain);
-        }
+        Cookie lbCookie = AuthUtils.createCookie(
+                cookieName, cookieValue, -1, cookieDomain);
         return lbCookie;
     }
 
@@ -4176,13 +3811,6 @@ public class LoginState {
      */
     public void setHttpServletResponse(HttpServletResponse servletResponse) {
         this.servletResponse = servletResponse;
-    }
-
-    /**
-     * Sets persistent cookie to true - called by <code>AMLoginModule</code>.
-     */
-    public synchronized void setPersistentCookieOn() {
-        persistentCookieOn = true;
     }
 
     /**
@@ -5629,10 +5257,11 @@ public class LoginState {
      * failover is enabled
      */
     void updateSessionForFailover() {
-        if (!isNoSession()) {
-            InternalSession intSess = getSession();
-            intSess.setIsISStored(true);
+        if (stateless || isNoSession()) {
+            return;
         }
+
+        getSession().setIsISStored(true);
     }
 
     /**
@@ -5651,18 +5280,6 @@ public class LoginState {
      */
     public void setCallbacksPerState(String pageState, Callback[] callbacks) {
         this.callbacksPerState.put(pageState, callbacks);
-    }
-
-    /**
-     * Sets the persistent cookie user name.
-     *
-     * @param indexName Persistent cookie user name.
-     */
-    public void setPCookieUserName(String indexName) {
-        this.pCookieUserName = indexName;
-        if (DEBUG.messageEnabled()) {
-            DEBUG.message("Setting Pcookie user name : " + pCookieUserName);
-        }
     }
 
     /**
@@ -6342,7 +5959,7 @@ public class LoginState {
     }
 
     /**
-     * Sets userDN based on pcookie - called by <code>AMLoginContext</code>.
+     * Sets userDN - called by <code>AMLoginContext</code>.
      */
     public void setUserName(String username) {
         userDN = username;
@@ -6431,6 +6048,10 @@ public class LoginState {
         this.loginLockoutAttrName = loginLockoutAttrName;
     }
 
+    public void setMandatory2FAValue(final String mandatory2FAValue) {
+        this.mandatory2fa = Boolean.parseBoolean(mandatory2FAValue);
+    }
+
     public void setLoginLockoutAttrValue(final String loginLockoutAttrValue) {
         this.loginLockoutAttrValue = loginLockoutAttrValue;
     }
@@ -6444,6 +6065,15 @@ public class LoginState {
     }
 
     /**
+     * Whether to keep authentication module instances in the session so that they can be called on logout. This is
+     * useful if the login modules have particular logout callback functionality that must be invoked. See
+     * authentication service setting "sunAMAuthKeepAuthModuleIntances". Not supported for stateless sessions.
+     */
+    boolean isModulesInSessionEnabled() {
+        return modulesInSession;
+    }
+
+    /**
      * <code>SSOToken</code> ID for login failed
      */
     public String getFailureTokenId() {
@@ -6452,6 +6082,10 @@ public class LoginState {
 
     public void setFailureTokenId(final String failureTokenId) {
         this.failureTokenId = failureTokenId;
+    }
+
+    public boolean is2faMandatory() {
+        return mandatory2fa;
     }
 
     /**

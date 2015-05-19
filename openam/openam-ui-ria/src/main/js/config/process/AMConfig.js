@@ -24,18 +24,14 @@
 
 /*global define, require, window, _*/
 
-/**
- * @author Halina Shabuldayeva
- */
-
 define("config/process/AMConfig", [
     "org/forgerock/openam/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/main/EventManager",
     "org/forgerock/commons/ui/common/util/UIUtils"
-], function(constants, eventManager, uiUtils) {
+], function(Constants, EventManager, UIUtils) {
     var obj = [
         {
-            startEvent: constants.EVENT_LOGOUT,
+            startEvent: Constants.EVENT_LOGOUT,
             description: "used to override common logout event",
             override: true,
             dependencies: [
@@ -45,32 +41,32 @@ define("config/process/AMConfig", [
             ],
             processDescription: function(event, router, conf, sessionManager) {
                 var argsURLFragment = event ? (event.args ? event.args[0] : '') : '',
-                    urlParams = uiUtils.convertQueryParametersToJSON(argsURLFragment),
+                    urlParams = UIUtils.convertQueryParametersToJSON(argsURLFragment),
                     gotoURL = urlParams.goto;
 
                 sessionManager.logout(function() {
                     conf.setProperty('loggedUser', null);
-                    eventManager.sendEvent(constants.EVENT_AUTHENTICATION_DATA_CHANGED, { anonymousMode: true});
+                    EventManager.sendEvent(Constants.EVENT_AUTHENTICATION_DATA_CHANGED, { anonymousMode: true});
                     delete conf.gotoURL;
                     if (gotoURL) {
-                        uiUtils.setUrl(decodeURIComponent(gotoURL));
+                        UIUtils.setUrl(decodeURIComponent(gotoURL));
                     } else {
-                        eventManager.sendEvent(constants.EVENT_CHANGE_VIEW, {route: router.configuration.routes.loggedOut });
+                        EventManager.sendEvent(Constants.EVENT_CHANGE_VIEW, {route: router.configuration.routes.loggedOut });
                     }
                 }, function(){
                     conf.setProperty('loggedUser', null);
-                    eventManager.sendEvent(constants.EVENT_AUTHENTICATION_DATA_CHANGED, { anonymousMode: true});
-                    eventManager.sendEvent(constants.EVENT_DISPLAY_MESSAGE_REQUEST, "unauthorized");
+                    EventManager.sendEvent(Constants.EVENT_AUTHENTICATION_DATA_CHANGED, { anonymousMode: true});
+                    EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "unauthorized");
                     if (gotoURL) {
-                        uiUtils.setUrl(decodeURIComponent(gotoURL));
+                        UIUtils.setUrl(decodeURIComponent(gotoURL));
                     } else {
-                        eventManager.sendEvent(constants.EVENT_CHANGE_VIEW, {route: router.configuration.routes.login });
+                        EventManager.sendEvent(Constants.EVENT_CHANGE_VIEW, {route: router.configuration.routes.login });
                     }
                 });
             }
         },
         {
-            startEvent: constants.EVENT_INVALID_REALM,
+            startEvent: Constants.EVENT_INVALID_REALM,
             override: true,
             dependencies: [
                 "org/forgerock/commons/ui/common/main/Router",
@@ -79,27 +75,48 @@ define("config/process/AMConfig", [
             processDescription: function(event, router, conf) {
                 if (event.error.responseJSON.message.indexOf('Invalid realm') > -1 ) {
                     if (conf.baseTemplate) {
-                        eventManager.sendEvent(constants.EVENT_DISPLAY_MESSAGE_REQUEST, "invalidRealm");
+                        EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "invalidRealm");
                     }
                     else {
                         router.navigate('login', {trigger: true});
-                        eventManager.sendEvent(constants.EVENT_DISPLAY_MESSAGE_REQUEST, "invalidRealm");
+                        EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "invalidRealm");
                     }
                 }
             }
-        }, {
-            startEvent: constants.EVENT_INCONSISTENT_REALM,
+        },
+        {
+
+            startEvent: Constants.EVENT_SHOW_CONFIRM_PASSWORD_DIALOG,
+            description: "",
+            dependencies: [
+                "org/forgerock/commons/ui/user/profile/ConfirmPasswordDialog"
+            ],
+            processDescription: function(event, ConfirmPasswordDialog) {
+                ConfirmPasswordDialog.show();
+            }
+        },
+        {
+            startEvent: Constants.EVENT_SHOW_CHANGE_SECURITY_DIALOG,
             override: true,
             dependencies: [
-                "org/forgerock/commons/ui/common/main/Router",
+                "org/forgerock/openam/ui/user/profile/ChangeSecurityDataDialog"
+            ],
+            processDescription: function(event, ChangeSecurityDataDialog) {
+                ChangeSecurityDataDialog.show(event);
+            }
+        },
+        {
+            startEvent: Constants.EVENT_RETURN_TO_AM_CONSOLE,
+            description: "",
+            dependencies: [
                 "org/forgerock/commons/ui/common/main/Configuration"
             ],
-            processDescription: function(event, router, conf) {
-                if(!conf.baseTemplate) { router.navigate('login', { trigger: true }); }
-
-                eventManager.sendEvent(constants.EVENT_DISPLAY_MESSAGE_REQUEST, 'inconsistentRealm');
+            processDescription: function (event, conf) {
+                var subRealm = conf.globalData.auth.subRealm || "/";
+                window.location.href = "/" + Constants.context + "/realm/RMRealm?RMRealm.tblDataActionHref=" + encodeURIComponent(subRealm);
             }
         }
+
     ];
     return obj;
 });

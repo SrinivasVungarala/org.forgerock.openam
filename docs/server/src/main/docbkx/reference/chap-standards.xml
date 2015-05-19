@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-standards'
@@ -53,7 +53,7 @@
     <para><link xlink:show="new" xlink:href="http://tools.ietf.org/html/draft-ietf-oauth-assertions"
     >Assertion Framework for OAuth 2.0</link>, which is an Internet-Draft.</para>
     <para><link xlink:show="new" xlink:href="http://tools.ietf.org/html/draft-ietf-oauth-saml2-bearer"
-    >SAML 2.0 Bearer Assertion Profiles for OAuth 2.0</link>, which is an
+    >SAML v2.0 Bearer Assertion Profiles for OAuth 2.0</link>, which is an
     Internet-Draft.</para>
     <para><link xlink:show="new" xlink:href="http://tools.ietf.org/html/draft-ietf-oauth-jwt-bearer"
     >JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and
@@ -155,6 +155,23 @@
    </listitem>
   </varlistentry>
 
+  <varlistentry xml:id="uma-1.0">
+   <term><link
+    xlink:href="${umaHomeUrl}">User-Managed Access (UMA) 1.0</link></term>
+   <listitem>
+    <indexterm>
+     <primary>Supported standards</primary>
+     <secondary>UMA 1.0</secondary>
+    </indexterm>
+    <para><link xlink:show="new" xlink:href="${umaHomeUrl}"
+     >User-Managed Access (UMA) Profile of OAuth 2.0 (Draft)</link>, in which
+     OpenAM can play the role of authorization server.</para>
+    <para><link xlink:show="new" xlink:href="${oauthRRegSpecUrl}"
+     >OAuth 2.0 Resource Set Registration</link>, in which
+     OpenAM plays the role of authorization server.</para>
+   </listitem>
+  </varlistentry>
+
   <varlistentry xml:id="rest">
    <term><link
    xlink:href="http://en.wikipedia.org/wiki/Representational_state_transfer"
@@ -201,7 +218,7 @@
      <secondary>Liberty ID-FF</secondary>
     </indexterm>
     <para>Federation standard, whose concepts and capabilities contributed to
-    SAML 2.0.</para>
+    SAML v2.0.</para>
    </listitem>
   </varlistentry>
   <varlistentry xml:id="soap">

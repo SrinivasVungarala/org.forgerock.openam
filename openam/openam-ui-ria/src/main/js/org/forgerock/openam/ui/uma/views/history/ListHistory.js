@@ -29,10 +29,9 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
     "org/forgerock/commons/ui/common/main/Configuration",
     "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/openam/ui/uma/util/BackgridUtils",
-    "org/forgerock/openam/ui/uma/util/UMAUtils",
-    "backgrid"
-
-], function(AbstractView, Configuration, Constants, BackgridUtils, UMAUtils, Backgrid) {
+    "backgrid",
+    "org/forgerock/openam/ui/common/util/RealmHelper"
+], function(AbstractView, Configuration, Constants, BackgridUtils, Backgrid, RealmHelper) {
     var HistoryView = AbstractView.extend({
         template: "templates/uma/views/history/ListHistory.html",
         baseTemplate: "templates/common/DefaultBaseTemplate.html",
@@ -42,11 +41,10 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
             var self = this,
                 collection,
                 grid,
-                paginator,
-                realm = UMAUtils.getRealm();
+                paginator;
 
             collection = new (Backbone.PageableCollection.extend({
-                url: "/" + Constants.context + "/json" + realm + "/users/" + Configuration.loggedUser.username + '/uma/auditHistory',
+                url: RealmHelper.decorateURIWithRealm("/" + Constants.context + "/json/__subrealm__/users/" + Configuration.loggedUser.username + '/uma/auditHistory'),
                 state: {
                     pageSize: 10,
                     sortKey: "eventTime",
@@ -67,14 +65,18 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
                 columns: [{
                     name: "requestingPartyId",
                     label: $.t("uma.history.grid.header.0"),
-                    headerCell: BackgridUtils.FilterHeaderCell,
+                    headerCell: BackgridUtils.FilterHeaderCell.extend({
+                        addClassName: "col-md-4"
+                    }),
                     cell: 'string',
                     editable: false,
                     sortType: "toggle"
                 }, {
                     name: "resourceSetName",
                     label: $.t("uma.history.grid.header.1"),
-                    headerCell: BackgridUtils.FilterHeaderCell,
+                    headerCell: BackgridUtils.FilterHeaderCell.extend({
+                        addClassName: "col-md-4"
+                    }),
                     cell: BackgridUtils.UriExtCell,
                     href: function(rawValue, formattedValue, model){
                         return "#uma/resources/" + encodeURIComponent(model.get('resourceSetId'));
@@ -91,15 +93,22 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
                         }
                     }),
                     editable: false,
-                    sortType: "toggle"
+                    sortType: "toggle",
+                    headerCell : BackgridUtils.ClassHeaderCell.extend({
+                        className: "col-md-2"
+                    })
                 }, {
                     name: "eventTime",
                     label: $.t("uma.history.grid.header.3"),
                     cell: BackgridUtils.DatetimeAgoCell,
                     editable: false,
-                    sortType: "toggle"
+                    sortType: "toggle",
+                    headerCell : BackgridUtils.ClassHeaderCell.extend({
+                        className: "col-md-2"
+                    })
                 }],
                 emptyText: $.t("uma.all.grid.empty"),
+                className:"backgrid table table-striped",
                 collection: collection
             });
 
@@ -111,6 +120,7 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
             });
 
             self.parentRender(function() {
+                self.$el.find('[data-toggle="tooltip"]').tooltip();
                 self.$el.find("#backgridContainer").append( grid.render().el );
                 self.$el.find("#paginationContainer").append( paginator.render().el );
                 collection.fetch({ processData: false, reset: true });

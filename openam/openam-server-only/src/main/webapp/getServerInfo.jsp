@@ -24,23 +24,21 @@
 
    $Id: getServerInfo.jsp,v 1.6 2008/09/04 00:34:01 rajeevangal Exp $
 
-   Portions Copyrighted 2010-2014 ForgeRock AS
+   Portions Copyrighted 2010-2015 ForgeRock AS.
 --%>
 
 <%@ page
 import="com.iplanet.am.util.SystemProperties,
         com.iplanet.services.naming.WebtopNaming,
         com.iplanet.sso.SSOException,
-        com.iplanet.sso.SSOToken,
         com.iplanet.sso.SSOTokenManager,
         com.sun.identity.authentication.AuthContext,
-        com.sun.identity.setup.AMSetupServlet,
+        com.sun.identity.setup.AMSetupUtils,
         com.sun.identity.setup.BootstrapData,
         com.sun.identity.setup.EmbeddedOpenDS,
         com.sun.identity.setup.JCECrypt,
         com.sun.identity.setup.SetupConstants,
         java.io.File,
-        java.net.URLDecoder,
         java.net.URLEncoder,
         java.util.ArrayList,
         java.util.Map,
@@ -133,7 +131,7 @@ import="com.iplanet.am.util.SystemProperties,
         replPortAvailable = "true";
         if (replPort == null) {
             replPortAvailable = "false";
-            replPort = ""+ AMSetupServlet.getUnusedPort("localhost", 50889, 1000);
+            replPort = ""+ AMSetupUtils.getFirstUnusedPort("localhost", 50889, 1000);
         }
 
         adminPort = EmbeddedOpenDS.getAdminPort(dsmgr, JCECrypt.decode(dspwd),

@@ -17,11 +17,18 @@
 package org.forgerock.openam.oauth2;
 
 import static org.forgerock.json.fluent.JsonValue.*;
-import static org.forgerock.oauth2.core.Utils.isEmpty;
-import static org.forgerock.oauth2.core.Utils.joinScope;
+import static org.forgerock.oauth2.core.Utils.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import com.iplanet.sso.SSOException;
+import com.iplanet.sso.SSOToken;
+import com.sun.identity.authentication.AuthContext;
+import com.sun.identity.idm.AMIdentity;
+import com.sun.identity.security.AdminTokenAction;
+import com.sun.identity.shared.debug.Debug;
+import com.sun.identity.sm.DNMapper;
+import com.sun.identity.sm.SMSException;
+import com.sun.identity.sm.ServiceConfigManager;
+import com.sun.identity.sm.ServiceListener;
 import java.security.AccessController;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -35,21 +42,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
-
-import com.iplanet.sso.SSOException;
-import com.iplanet.sso.SSOToken;
-import com.sun.identity.authentication.AuthContext;
-import com.sun.identity.idm.AMIdentity;
-import com.sun.identity.idm.IdConstants;
-import com.sun.identity.security.AdminTokenAction;
-import com.sun.identity.shared.debug.Debug;
-import com.sun.identity.sm.DNMapper;
-import com.sun.identity.sm.OrganizationConfigManager;
-import com.sun.identity.sm.SMSException;
-import com.sun.identity.sm.ServiceConfigManager;
-import com.sun.identity.sm.ServiceListener;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import org.forgerock.guice.core.InjectorHolder;
 import org.forgerock.json.fluent.JsonValue;
 import org.forgerock.json.jose.jwk.KeyUse;
@@ -67,6 +62,7 @@ import org.forgerock.oauth2.core.ResponseTypeHandler;
 import org.forgerock.oauth2.core.ScopeValidator;
 import org.forgerock.oauth2.core.Token;
 import org.forgerock.oauth2.core.exceptions.InvalidClientException;
+import org.forgerock.oauth2.core.exceptions.InvalidRequestException;
 import org.forgerock.oauth2.core.exceptions.InvalidScopeException;
 import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
@@ -79,9 +75,12 @@ import org.forgerock.openam.oauth2.legacy.LegacyCoreTokenAdapter;
 import org.forgerock.openam.oauth2.legacy.LegacyResponseTypeHandler;
 import org.forgerock.openam.oauth2.provider.ResponseType;
 import org.forgerock.openam.oauth2.provider.Scope;
-import org.forgerock.openam.utils.MappingUtils;
 import org.forgerock.openam.utils.OpenAMSettingsImpl;
+import org.forgerock.openam.utils.StringUtils;
+import org.forgerock.openidconnect.Client;
 import org.forgerock.util.encode.Base64url;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.restlet.Request;
 import org.restlet.ext.servlet.ServletUtils;
 
@@ -93,13 +92,11 @@ import org.restlet.ext.servlet.ServletUtils;
 public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements OAuth2ProviderSettings {
 
     private final Debug logger = Debug.getInstance("OAuth2Provider");
-    private String issuer;
     private final String realm;
     private final String deploymentUrl;
     private final ResourceSetStore resourceSetStore;
     private final CookieExtractor cookieExtractor;
     private ScopeValidator scopeValidator;
-    private Map<String, Object> scopeToUserUserProfileAttributes;
 
     /**
      * Constructs a new OpenAMOAuth2ProviderSettings.
@@ -117,7 +114,6 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
         this.resourceSetStore = resourceSetStore;
         this.cookieExtractor = cookieExtractor;
         addServiceListener();
-        setUserProfileScopeMappings();
     }
 
     private void addServiceListener() {
@@ -153,6 +149,7 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
             return value;
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -595,12 +592,43 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
             throw new ServerException(e);
         }
     }
+
     /**
      * {@inheritDoc}
      */
     public Set<String> getSupportedClaims() throws ServerException {
         try {
             return getSetting(realm, OAuth2ProviderService.SUPPORTED_CLAIMS);
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<String> getSupportedScopes() throws ServerException {
+        try {
+            return getSetting(realm, OAuth2ProviderService.SUPPORTED_SCOPES);
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<String> getDefaultScopes() throws ServerException {
+        try {
+            return getSetting(realm, OAuth2ProviderService.DEFAULT_SCOPES);
         } catch (SMSException e) {
             logger.error(e.getMessage());
             throw new ServerException(e);
@@ -636,32 +664,7 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
      * {@inheritDoc}
      */
     public String getIssuer() throws ServerException {
-        if (issuer == null) {
-            synchronized (this) {
-                final SSOToken token = AccessController.doPrivileged(AdminTokenAction.getInstance());
-                try {
-                    OrganizationConfigManager ocm = new OrganizationConfigManager(token, realm);
-                    Map attrs = ocm.getAttributes(IdConstants.REPO_SERVICE);
-                    Set<String> aliases = (Set<String>)attrs.get(IdConstants.ORGANIZATION_ALIAS_ATTR);
-                    aliases = new TreeSet<String>(aliases);
-                    if (aliases.isEmpty()) {
-                        issuer = deploymentUrl;
-                    } else {
-                        Iterator<String> iterator = aliases.iterator();
-                        issuer = iterator.next();
-                        while (!issuer.contains(".") && iterator.hasNext()) {
-                            issuer = iterator.next();
-                        }
-                        if (!issuer.contains(".")) {
-                            issuer = deploymentUrl;
-                        }
-                    }
-                } catch (SMSException e) {
-                    throw new ServerException(e);
-                }
-            }
-        }
-        return issuer;
+        return getOAuth2BaseUrl();
     }
 
     private String getOAuth2BaseUrl() {
@@ -687,7 +690,7 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
      * {@inheritDoc}
      */
     public String getTokenEndpoint() {
-        return getOAuth2BaseUrl() + "/access_token";
+        return getOAuth2BaseUrl() + "/" + OAuth2Constants.Params.ACCESS_TOKEN;
     }
 
     /**
@@ -701,7 +704,7 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
      * {@inheritDoc}
      */
     public String getResourceSetRegistrationPolicyEndpoint(String resourceSetId) {
-        return getBaseUrl("/XUI/#uma/share/") + resourceSetId;
+        return deploymentUrl + "/XUI/?realm=" + realm + "#uma/share/" + resourceSetId;
     }
 
     /**
@@ -709,6 +712,87 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
      */
     public String getResourceSetRegistrationEndpoint() {
         return getOAuth2BaseUrl() + "/resource_set";
+    }
+
+    @Override
+    public boolean getClaimsParameterSupported() throws ServerException {
+        try {
+            return getBooleanSetting(realm, OAuth2ProviderService.CLAIMS_PARAMETER_SUPPORTED);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+        }
+
+        return false;
+    }
+
+    @Override
+    public String validateRequestedClaims(String requestedClaims) throws InvalidRequestException, ServerException {
+
+        if (!getClaimsParameterSupported()) {
+            return null;
+        }
+
+        if (StringUtils.isBlank(requestedClaims)) {
+            return null;
+        }
+
+        final Set<String> claims = new HashSet<String>();
+
+        try {
+            JSONObject json = new JSONObject(requestedClaims);
+            JSONObject userinfo = json.optJSONObject(OAuth2Constants.UserinfoEndpoint.USERINFO);
+            JSONObject id_token = json.optJSONObject(OAuth2Constants.JWTTokenParams.ID_TOKEN);
+
+            if (userinfo != null) {
+                Iterator<String> it = userinfo.keys();
+                while (it.hasNext()) {
+                    claims.add(it.next());
+                }
+            }
+
+            if (id_token != null) {
+                Iterator<String> it = id_token.keys();
+                while (it.hasNext()) {
+                    claims.add(it.next());
+                }
+            }
+        } catch (JSONException e) {
+            throw new InvalidRequestException("Requested claims must be valid json.");
+
+        }
+
+        if (!getSupportedClaims().containsAll(claims)) {
+            throw new InvalidRequestException("Requested claims must be allowed by the client's configuration");
+        }
+
+        return requestedClaims;
+    }
+
+    @Override
+    public Set<String> getEndpointAuthMethodsSupported() {
+        Set<String> supported = new HashSet<String>();
+
+        for (Client.TokenEndpointAuthMethod method : Client.TokenEndpointAuthMethod.values()) {
+            supported.add(method.getType());
+        }
+
+        return supported;
+    }
+
+    @Override
+    public String getHashSalt() throws ServerException {
+        try {
+            return getStringSetting(realm, OAuth2ProviderService.HASH_SALT);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        }
     }
 
     /**
@@ -770,7 +854,8 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
     }
 
     private Map<String, Object> createRSAJWK(RSAPublicKey key, KeyUse use, String alg) {
-        return json(object(field("kty", "RSA"), field("kid", UUID.randomUUID().toString()),
+        return json(object(field("kty", "RSA"), field(OAuth2Constants.JWTTokenParams.KEY_ID,
+                        UUID.randomUUID().toString()),
                 field("use", use.toString()), field("alg", alg),
                 field("n", Base64url.encode(key.getModulus().toByteArray())),
                 field("e", Base64url.encode(key.getPublicExponent().toByteArray())))).asMap();
@@ -780,11 +865,13 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
         try {
             return getStringSetting(realm, OAuth2ProviderService.CREATED_TIMESTAMP_ATTRIBUTE_NAME);
         } catch (SSOException e) {
-            e.printStackTrace();
+
+            logger.error(e.getMessage());
+            throw new ServerException(e);
         } catch (SMSException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new ServerException(e);
         }
-        return null;
     }
 
 
@@ -792,11 +879,12 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
         try {
             return getStringSetting(realm, OAuth2ProviderService.MODIFIED_TIMESTAMP_ATTRIBUTE_NAME);
         } catch (SSOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new ServerException(e);
         } catch (SMSException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new ServerException(e);
         }
-        return null;
     }
 
     /**
@@ -903,25 +991,6 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
         }
     }
 
-    @Override
-    public Map<String, Object> getUserProfileScopeMappings() {
-        return scopeToUserUserProfileAttributes;
-    }
-
-    private void setUserProfileScopeMappings() {
-        try {
-            scopeToUserUserProfileAttributes = new HashMap<String, Object>();
-            scopeToUserUserProfileAttributes.put("email", getStringSetting(realm, OAuth2ProviderService.EMAIL_MAPPING));
-            scopeToUserUserProfileAttributes.put("address", getStringSetting(realm, OAuth2ProviderService.ADDRESS_MAPPING));
-            scopeToUserUserProfileAttributes.put("phone", getStringSetting(realm, OAuth2ProviderService.PHONE_MAPPING));
-
-            Set<String> profileMappings = getSetting(realm, OAuth2ProviderService.PROFILE_MAPPINGS);
-            scopeToUserUserProfileAttributes.put("profile", MappingUtils.parseMappings(profileMappings));
-        } catch (Exception e) {
-            logger.error("Could not load user profile attributes for realm " + realm, e);
-        }
-    }
-
     /**
      * ServiceListener implementation to clear cache when it changes.
      */
@@ -948,7 +1017,6 @@ public class OpenAMOAuth2ProviderSettings extends OpenAMSettingsImpl implements 
                     attributeCache.clear();
                     jwks.clear();
                 }
-                setUserProfileScopeMappings();
             } else {
                 if (logger.messageEnabled()) {
                     logger.message("Got service update message, but update did not target OAuth2Provider in " +

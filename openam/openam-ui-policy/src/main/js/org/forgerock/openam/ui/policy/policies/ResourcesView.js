@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 ForgeRock AS. All rights reserved.
+ * Copyright 2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -32,26 +32,29 @@ define("org/forgerock/openam/ui/policy/policies/ResourcesView", [
     "org/forgerock/commons/ui/common/main/AbstractView" ,
     "org/forgerock/openam/ui/policy/common/StripedListView",
     "org/forgerock/openam/ui/policy/resources/CreatedResourcesView"
-], function (AbstractView, StripedList, createdResources) {
+], function (AbstractView, StripedList, CreatedResourcesView) {
     var ResourcesView = AbstractView.extend({
         element: "#editResources",
         template: "templates/policy/policies/ResourcesStepTemplate.html",
         noBaseTemplate: true,
 
         render: function (data, callback) {
+            _.extend(this.data, data);
+
             this.parentRender(function () {
                 var d1 = $.Deferred(), d2 = $.Deferred(); // fire callback after both views are rendered
 
                 this.availablePatternsView = new StripedList();
                 this.availablePatternsView.render({
+                    entity: this.data.entity,
                     title: $.t('policy.common.availablePatterns'),
-                    items: data.options.availablePatterns,
+                    items: this.data.options.availablePatterns,
                     clickItem: this.addPattern.bind(this)
                 }, '#patterns', function () {
                     d1.resolve();
                 });
 
-                createdResources.render(data, function () {
+                CreatedResourcesView.render(this.data, function () {
                     d2.resolve();
                 });
 
@@ -63,7 +66,7 @@ define("org/forgerock/openam/ui/policy/policies/ResourcesView", [
 
         addPattern: function (item) {
             this.data.options.newPattern = item;
-            createdResources.render(this.data);
+            CreatedResourcesView.render(this.data);
         }
     });
 

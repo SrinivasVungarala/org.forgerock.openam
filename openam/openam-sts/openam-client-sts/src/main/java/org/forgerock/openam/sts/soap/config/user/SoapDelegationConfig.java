@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions Copyrighted [year] [name of copyright owner]".
  *
- * Copyright 2015 ForgeRock AS. All rights reserved.
+ * Copyright 2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.sts.soap.config.user;
@@ -21,10 +21,10 @@ import org.forgerock.json.fluent.JsonValue;
 import org.forgerock.openam.sts.MapMarshallUtils;
 import org.forgerock.openam.sts.TokenType;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,7 +50,7 @@ import static org.forgerock.json.fluent.JsonValue.object;
  * 2. runs through the registered TokenDelegationHandler instances, to see if they approve the delegation relationship. If
  * no TokenDelegationHandlers are registered, or if none approve the delegation, then the Issue operation is failed.
  *
- * In this class, the TokenTypes set in the validatedDelegatedTokenTypes determine the set of TokenValidators to be created, which
+ * In this class, the TokenTypes set in the validatedDelegatedTokenConfiguration determine the set of TokenValidators to be created, which
  * will be invoked in step 1 above. If no custom delegation token handlers are specified, then the DefaultTokenDelegationHandler
  * will be plugged-in, which will approve of the delegation provided that one of the TokenValidators could successfully
  * validate the token state in the OnBehalfOf or ActAs element. If additional delegation work needs to be done above and
@@ -68,7 +68,7 @@ public class SoapDelegationConfig {
         The set of Tokens for which TokenValidators will be created to validate OnBehalfOf and ActAs tokens sent in a
         RST as part of a IssueOperation invocation.
          */
-        private Set<TokenType> validatedDelegatedTokenTypes;
+        private Set<TokenValidationConfig> validatedDelegatedTokenConfiguration;
 
         /*
         The class names of customer implementations of the org.apache.cxf.sts.token.delegation.TokenDelegationHandler
@@ -78,12 +78,17 @@ public class SoapDelegationConfig {
         private Set<String> customDelegationTokenHandlers;
 
         private SoapDelegationConfigBuilder() {
-            validatedDelegatedTokenTypes = new HashSet<TokenType>();
+            validatedDelegatedTokenConfiguration = new HashSet<TokenValidationConfig>();
             customDelegationTokenHandlers = new HashSet<String>();
         }
 
-        public SoapDelegationConfigBuilder addValidatedDelegationTokenType(TokenType tokenType) {
-            this.validatedDelegatedTokenTypes.add(tokenType);
+        public SoapDelegationConfigBuilder addValidatedDelegationTokenType(TokenType tokenType, boolean invalidateInterimSession) {
+            this.validatedDelegatedTokenConfiguration.add(new TokenValidationConfig(tokenType, invalidateInterimSession));
+            return this;
+        }
+
+        public SoapDelegationConfigBuilder withValidatedDelegatedTokenSet(Set<TokenValidationConfig> configs) {
+            this.validatedDelegatedTokenConfiguration.addAll(configs);
             return this;
         }
 
@@ -101,7 +106,7 @@ public class SoapDelegationConfig {
     The set of Tokens for which TokenValidators will be created to validate OnBehalfOf and ActAs tokens sent in a
     RST as part of a IssueOperation invocation.
      */
-    private final Set<TokenType> validatedDelegatedTokenTypes;
+    private final Set<TokenValidationConfig> validatedDelegatedTokenConfiguration;
 
     /*
     The class names of customer implementations of the org.apache.cxf.sts.token.delegation.TokenDelegationHandler
@@ -111,16 +116,27 @@ public class SoapDelegationConfig {
     private final Set<String> customDelegationTokenHandlers;
 
     private SoapDelegationConfig(SoapDelegationConfigBuilder builder) {
-        this.validatedDelegatedTokenTypes = Collections.unmodifiableSet(builder.validatedDelegatedTokenTypes);
+        this.validatedDelegatedTokenConfiguration = Collections.unmodifiableSet(builder.validatedDelegatedTokenConfiguration);
         this.customDelegationTokenHandlers = Collections.unmodifiableSet(builder.customDelegationTokenHandlers);
-        if (validatedDelegatedTokenTypes.isEmpty() && customDelegationTokenHandlers.isEmpty()) {
-            throw new IllegalStateException("At least one of the validatedDelegatedTokenTypes or customDelegationTokenHandler " +
+        if (validatedDelegatedTokenConfiguration.isEmpty() && customDelegationTokenHandlers.isEmpty()) {
+            throw new IllegalStateException("At least one of the validatedDelegatedTokenConfiguration or customDelegationTokenHandler " +
                     "collections must be non-empty!");
+        }
+        /*
+        Throw an exception if x509 tokens are specified to be validated as delegated token types, as x509 certificates
+        are an adequate representation of a subject's identity only when proof of ownership of the associated private
+        key is demonstrated, which is not possible when x509 certificates are simply presented in the ActAs/OnBehalfOf
+        element in a RequestSecurityToken request.
+         */
+        for (TokenValidationConfig validationConfig : validatedDelegatedTokenConfiguration) {
+            if (TokenType.X509.equals(validationConfig.getValidatedTokenType())) {
+                throw new IllegalStateException("X509 tokens are not supported as delegated token types.");
+            }
         }
     }
 
-    public Set<TokenType> getValidatedDelegatedTokenTypes() {
-        return validatedDelegatedTokenTypes;
+    public Set<TokenValidationConfig> getValidatedDelegatedTokenConfiguration() {
+        return validatedDelegatedTokenConfiguration;
     }
 
     public Set<String> getCustomDelegationTokenHandlers() {
@@ -135,7 +151,7 @@ public class SoapDelegationConfig {
     public String toString() {
         StringBuilder sb = new StringBuilder("SoapDelegationConfig instance:");
         sb.append('\n');
-        sb.append('\t').append("validatedDelegatedTokenTypes: ").append(validatedDelegatedTokenTypes).append('\n');
+        sb.append('\t').append("validatedDelegatedTokenConfiguration: ").append(validatedDelegatedTokenConfiguration).append('\n');
         sb.append('\t').append("customDelegationTokenHandlers: ").append(customDelegationTokenHandlers).append('\n');
         return sb.toString();
     }
@@ -149,7 +165,7 @@ public class SoapDelegationConfig {
     public boolean equals(Object other) {
         if (other instanceof SoapDelegationConfig) {
             SoapDelegationConfig otherConfig = (SoapDelegationConfig)other;
-            return Objects.equal(validatedDelegatedTokenTypes, otherConfig.getValidatedDelegatedTokenTypes()) &&
+            return Objects.equal(validatedDelegatedTokenConfiguration, otherConfig.getValidatedDelegatedTokenConfiguration()) &&
                             Objects.equal(customDelegationTokenHandlers, otherConfig.getCustomDelegationTokenHandlers());
         }
         return false;
@@ -157,29 +173,30 @@ public class SoapDelegationConfig {
 
     public JsonValue toJson() {
         JsonValue baseValue = json(object(field(CUSTOM_DELEGATION_TOKEN_HANDLERS, customDelegationTokenHandlers)));
-        //cannot just add the validatedDelegatedTokenTypes set directly to the baseValue because the enclosing enums will not be quoted
-        JsonValue delegationTokenTypesJson = new JsonValue(new HashSet<String>());
-        Collection<String> delegationCollection = delegationTokenTypesJson.asCollection(String.class);
-        Iterator<TokenType> tokenTypeIter = validatedDelegatedTokenTypes.iterator();
-        while (tokenTypeIter.hasNext()) {
-            delegationCollection.add(tokenTypeIter.next().name());
+
+        JsonValue validatedTokenConfiguration = new JsonValue(new ArrayList<Object>(validatedDelegatedTokenConfiguration.size()));
+        List<Object> validationList = validatedTokenConfiguration.asList();
+        for (TokenValidationConfig config : validatedDelegatedTokenConfiguration) {
+            validationList.add(config.toJson());
         }
-        baseValue.add(DELEGATION_TOKEN_VALIDATORS, delegationCollection);
+        baseValue.add(DELEGATION_TOKEN_VALIDATORS, validatedTokenConfiguration);
+
         return baseValue;
     }
 
     public static SoapDelegationConfig fromJson(JsonValue json) {
         SoapDelegationConfigBuilder builder = SoapDelegationConfig.builder();
+
         if (!json.get(DELEGATION_TOKEN_VALIDATORS).isNull()) {
-            Iterator iter = json.get(DELEGATION_TOKEN_VALIDATORS).asCollection().iterator();
-            while (iter.hasNext()) {
-                builder.addValidatedDelegationTokenType(TokenType.valueOf(iter.next().toString()));
+            Set<TokenValidationConfig> validationConfigs = new HashSet<TokenValidationConfig>();
+            for (Object obj : json.get(DELEGATION_TOKEN_VALIDATORS).asCollection()) {
+                validationConfigs.add(TokenValidationConfig.fromJson(new JsonValue(obj)));
             }
+            builder.withValidatedDelegatedTokenSet(validationConfigs);
         }
         if (!json.get(CUSTOM_DELEGATION_TOKEN_HANDLERS).isNull()) {
-            Iterator iter = json.get(CUSTOM_DELEGATION_TOKEN_HANDLERS).asCollection().iterator();
-            while (iter.hasNext()) {
-                builder.addCustomDelegationTokenHandler((String) iter.next());
+            for (Object obj : json.get(CUSTOM_DELEGATION_TOKEN_HANDLERS).asCollection()) {
+                builder.addCustomDelegationTokenHandler((String) obj);
             }
         }
         return builder.build();
@@ -190,8 +207,8 @@ public class SoapDelegationConfig {
         interimMap.remove(DELEGATION_TOKEN_VALIDATORS);
         Set<String> tokenTypes = new HashSet<String>();
         interimMap.put(DELEGATION_TOKEN_VALIDATORS, tokenTypes);
-        for (TokenType tt : validatedDelegatedTokenTypes) {
-            tokenTypes.add(tt.toString());
+        for (TokenValidationConfig tvc : validatedDelegatedTokenConfiguration) {
+            tokenTypes.add(tvc.toSMSString());
         }
 
         interimMap.remove(CUSTOM_DELEGATION_TOKEN_HANDLERS);
@@ -207,18 +224,18 @@ public class SoapDelegationConfig {
         Map<String, Object> jsonAttributes = MapMarshallUtils.toJsonValueMap(attributeMap);
 
         /*
-        Ultimately, the DELEGATION_TOKEN_VALIDATORS is a set, but it's set type gets stripped by the MapMarshalUtils.toJsonValueMap
-        method. Thus it is a 'complex' object, which must be reconstituted in this method. Note also that the map may not
-        have an entry if the instance was first marshaled to json, which is the first step in marshaling to an attribute map.
+         The DELEGATION_TOKEN_VALIDATORS are currently each in a String representation in the Set<String> map entry corresponding
+         to the DELEGATION_TOKEN_VALIDATORS key. I need to marshal each back into a TokenValidationConfig instance, and then
+         call toJson on each, and put them in a JsonValue wrapping a list.
          */
         if (attributeMap.get(DELEGATION_TOKEN_VALIDATORS) != null) {
-            Set<String> jsonValidatorSet = new HashSet<String>();
-            JsonValue jsonValidatorTypes = new JsonValue(jsonValidatorSet);
+            ArrayList<JsonValue> jsonValidationConfigList = new ArrayList<JsonValue>();
+            JsonValue jsonTranslations = new JsonValue(jsonValidationConfigList);
             jsonAttributes.remove(DELEGATION_TOKEN_VALIDATORS);
-            jsonAttributes.put(DELEGATION_TOKEN_VALIDATORS, jsonValidatorTypes);
-            Set<String> delegationTypes = attributeMap.get(DELEGATION_TOKEN_VALIDATORS);
-            for (String issueType : delegationTypes) {
-                jsonValidatorSet.add(issueType);
+            jsonAttributes.put(DELEGATION_TOKEN_VALIDATORS, jsonTranslations);
+            Set<String> stringTokenTranslations = attributeMap.get(DELEGATION_TOKEN_VALIDATORS);
+            for (String translation : stringTokenTranslations) {
+                jsonValidationConfigList.add(TokenValidationConfig.fromSMSString(translation).toJson());
             }
         }
 

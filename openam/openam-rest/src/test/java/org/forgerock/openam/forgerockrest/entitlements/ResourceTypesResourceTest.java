@@ -1,15 +1,47 @@
+/*
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2015 ForgeRock AS.
+ */
 package org.forgerock.openam.forgerockrest.entitlements;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.forgerock.json.fluent.JsonValue.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 import com.sun.identity.entitlement.EntitlementException;
 import com.sun.identity.shared.debug.Debug;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.forgerock.json.fluent.JsonValue;
-import org.forgerock.json.resource.*;
+import org.forgerock.json.resource.Context;
+import org.forgerock.json.resource.CreateRequest;
+import org.forgerock.json.resource.DeleteRequest;
+import org.forgerock.json.resource.QueryRequest;
+import org.forgerock.json.resource.QueryResult;
+import org.forgerock.json.resource.QueryResultHandler;
+import org.forgerock.json.resource.ReadRequest;
+import org.forgerock.json.resource.Resource;
+import org.forgerock.json.resource.ResourceException;
+import org.forgerock.json.resource.ResultHandler;
+import org.forgerock.json.resource.SecurityContext;
+import org.forgerock.json.resource.ServerContext;
+import org.forgerock.json.resource.UpdateRequest;
 import org.forgerock.json.resource.servlet.HttpContext;
 import org.forgerock.openam.entitlement.ResourceType;
 import org.forgerock.openam.entitlement.service.ResourceTypeService;
-import org.forgerock.openam.forgerockrest.entitlements.wrappers.JsonResourceType;
+import org.forgerock.openam.entitlement.utils.EntitlementUtils;
 import org.forgerock.openam.forgerockrest.guice.ForgerockRestGuiceModule;
+import org.forgerock.openam.rest.query.QueryException;
 import org.forgerock.openam.rest.resource.RealmContext;
 import org.forgerock.openam.rest.resource.SSOTokenContext;
 import org.mockito.ArgumentCaptor;
@@ -20,16 +52,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.security.auth.Subject;
-
-import java.io.IOException;
-import java.util.*;
-
-import static org.fest.assertions.Assertions.assertThat;
-import static org.forgerock.json.fluent.JsonValue.field;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class ResourceTypesResourceTest {
 
@@ -48,10 +77,11 @@ public class ResourceTypesResourceTest {
             "    \"name\": \"myResourceType\"," +
             "    \"patterns\": [" +
             "            \"http://example.com:80/*\"" +
-            "    ]," +
-            "    \"realm\": \"/\"" +
+            "    ]" +
             "}" +
             ";";
+
+    private final Map<String, Set<String>> rawData = new HashMap<String, Set<String>>();
 
     private ResultHandler<Resource> mockResultHandler;
 
@@ -64,7 +94,8 @@ public class ResourceTypesResourceTest {
         ResourceType resourceType;
 
         @Override
-        public ResourceType saveResourceType(Subject subject, ResourceType resourceType) throws EntitlementException {
+        public ResourceType saveResourceType(Subject subject, String realm, ResourceType resourceType)
+                throws EntitlementException {
             this.resourceType = resourceType;
 
             return resourceType;
@@ -72,15 +103,14 @@ public class ResourceTypesResourceTest {
 
         @Override
         public ResourceType getResourceType(Subject subject, String realm, String uuid) throws EntitlementException {
-            assertThat(realm).isEqualTo(resourceType.getRealm());
             assertThat(uuid).isEqualTo(resourceType.getUUID());
 
             return resourceType;
         }
 
         @Override
-        public ResourceType updateResourceType(Subject subject, ResourceType resourceType) throws EntitlementException {
-            assertThat(this.resourceType.getRealm()).isEqualTo(resourceType.getRealm());
+        public ResourceType updateResourceType(Subject subject, String realm, ResourceType resourceType)
+                throws EntitlementException {
             assertThat(this.resourceType.getUUID()).isEqualTo(resourceType.getUUID());
 
             return resourceType;
@@ -88,7 +118,6 @@ public class ResourceTypesResourceTest {
 
         @Override
         public void deleteResourceType(Subject subject, String realm, String uuid) throws EntitlementException {
-            assertThat(realm).isEqualTo(resourceType.getRealm());
             assertThat(uuid).isEqualTo(resourceType.getUUID());
         }
     }
@@ -128,6 +157,14 @@ public class ResourceTypesResourceTest {
                 resourceTypeService);
 
         mockResultHandler = mock(ResourceResultHandler.class);
+
+        rawData.put("name", Collections.singleton("myResourceType"));
+        rawData.put("description", Collections.singleton("myResourceType"));
+        rawData.put("realm", Collections.singleton("/"));
+        rawData.put("actions", Collections.singleton("CREATE"));
+        rawData.put("patterns", Collections.singleton("http://example.com:80/*"));
+        rawData.put("creationDate", Collections.singleton(String.valueOf(new Date().getTime())));
+        rawData.put("lastModifiedDate", Collections.singleton(String.valueOf(new Date().getTime())));
     }
 
     @Test
@@ -140,7 +177,8 @@ public class ResourceTypesResourceTest {
         given(mockCreateRequest.getContent()).willReturn(content);
         given(content.toString()).willReturn(jsonResourceType);
 
-        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.createInstance(mockServerContext, mockCreateRequest, mockResultHandler);
@@ -185,7 +223,8 @@ public class ResourceTypesResourceTest {
 
         // the name attribute is required, but here replaced by an unrecognised attribute
         given(content.toString()).willReturn(jsonResourceType.replaceAll("\"name\"", "\"id\""));
-        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.createInstance(mockServerContext, mockCreateRequest, mockResultHandler);
@@ -216,7 +255,8 @@ public class ResourceTypesResourceTest {
 
         // the name attribute is required, but here replaced by an unrecognised attribute
         given(content.toString()).willReturn(jsonResourceType.replaceAll("\"name\":.*,", ""));
-        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.createInstance(mockServerContext, mockCreateRequest, mockResultHandler);
@@ -230,33 +270,6 @@ public class ResourceTypesResourceTest {
 
         assertThat(e.getCause()).isInstanceOf(EntitlementException.class);
         assertThat(((EntitlementException)e.getCause()).getErrorCode()).isEqualTo(EntitlementException.MISSING_RESOURCE_TYPE_NAME);
-
-        verify(mockResultHandler, times(0)).handleResult(any(Resource.class));
-    }
-
-    @Test
-    public void createShouldFailWhenRealmsDiffer() throws EntitlementException {
-        //given
-        CreateRequest mockCreateRequest = mock(CreateRequest.class);
-        JsonValue content = mock(JsonValue.class);
-        given(mockCreateRequest.getContent()).willReturn(content);
-
-        // this realm in the Json resource type replaces the one in the create request
-        given(content.toString()).willReturn(jsonResourceType.replaceAll("\"/\"", "\"/realm2\""));
-
-        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
-
-        //when
-        resourceTypesResource.createInstance(mockServerContext, mockCreateRequest, mockResultHandler);
-
-        //then
-        ArgumentCaptor<ResourceException> errorCaptor = ArgumentCaptor.forClass(ResourceException.class);
-        verify(mockResultHandler, times(1)).handleError(errorCaptor.capture());
-        ResourceException e = errorCaptor.getValue();
-        assertThat(e.getCode()).isEqualTo(ResourceException.BAD_REQUEST);
-
-        assertThat(e.getCause()).isInstanceOf(EntitlementException.class);
-        assertThat(((EntitlementException)e.getCause()).getErrorCode()).isEqualTo(EntitlementException.INVALID_RESOURCE_TYPE_REALM);
 
         verify(mockResultHandler, times(0)).handleResult(any(Resource.class));
     }
@@ -278,7 +291,8 @@ public class ResourceTypesResourceTest {
         given(mockCreateRequest.getNewResourceId()).willReturn("ignored-new-resource-id");
         given(content.toString()).willReturn(jsonResourceType);
 
-        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.createInstance(mockServerContext, mockCreateRequest, mockResultHandler);
@@ -316,15 +330,15 @@ public class ResourceTypesResourceTest {
                         "    \"name\": \"myResourceType\"," +
                         "    \"patterns\": [" +
                         "            \"http://example.com:80/*\"" +
-                        "    ]," +
-                        "    \"realm\": \"/\"" +
+                        "    ]" +
                         "}" +
                         ";";
 
         // Json has unnecessary UUID
         given(content.toString()).willReturn(jsonWithUuid);
 
-        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.createInstance(mockServerContext, mockCreateRequest, mockResultHandler);
@@ -347,7 +361,8 @@ public class ResourceTypesResourceTest {
 
         // simulate failure in the resource type service
         Throwable t = new EntitlementException(EntitlementException.RESOURCE_TYPE_ALREADY_EXISTS);
-        Mockito.doThrow(t).when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
+        Mockito.doThrow(t).when(resourceTypeService).saveResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.createInstance(mockServerContext, mockCreateRequest, mockResultHandler);
@@ -373,7 +388,8 @@ public class ResourceTypesResourceTest {
         given(requestContent.toString()).willReturn(jsonResourceType);
 
         ResultHandler<Resource> createHandler = mock(ResourceResultHandler.class);
-        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).saveResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.createInstance(mockServerContext, createRequest, createHandler);
@@ -434,7 +450,8 @@ public class ResourceTypesResourceTest {
 
         UpdateRequest updateRequest = mock(UpdateRequest.class);
         given(updateRequest.getContent()).willReturn(createdResource.getContent());
-        doCallRealMethod().when(resourceTypeService).updateResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).updateResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.updateInstance(mockServerContext, createdResource.getId(), updateRequest, mockResultHandler);
@@ -456,7 +473,8 @@ public class ResourceTypesResourceTest {
         UpdateRequest updateRequest = mock(UpdateRequest.class);
 
         given(updateRequest.getContent()).willReturn(v);
-        doCallRealMethod().when(resourceTypeService).updateResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).updateResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.updateInstance(mockServerContext, createdResource.getId(), updateRequest, mockResultHandler);
@@ -479,7 +497,8 @@ public class ResourceTypesResourceTest {
         UpdateRequest updateRequest = mock(UpdateRequest.class);
         given(updateRequest.getContent()).willReturn(createdResource.getContent());
         Throwable t = new EntitlementException(EntitlementException.RESOURCE_TYPE_ALREADY_EXISTS);
-        doThrow(t).when(resourceTypeService).updateResourceType(any(Subject.class), any(ResourceType.class));
+        doThrow(t).when(resourceTypeService).updateResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.updateInstance(mockServerContext, createdResource.getId(), updateRequest, mockResultHandler);
@@ -510,7 +529,8 @@ public class ResourceTypesResourceTest {
         UpdateRequest updateRequest = mock(UpdateRequest.class);
         given(updateRequest.getContent()).willReturn(modifiedValue);
 
-        doCallRealMethod().when(resourceTypeService).updateResourceType(any(Subject.class), any(ResourceType.class));
+        doCallRealMethod().when(resourceTypeService).updateResourceType(any(Subject.class), anyString(),
+                any(ResourceType.class));
 
         //when
         resourceTypesResource.updateInstance(mockServerContext, createdResource.getId(), updateRequest, mockResultHandler);
@@ -524,36 +544,6 @@ public class ResourceTypesResourceTest {
 
         assertThat(e.getCause()).isInstanceOf(EntitlementException.class);
         assertThat(((EntitlementException)e.getCause()).getErrorCode()).isEqualTo(EntitlementException.INVALID_CLASS);
-
-        verify(mockResultHandler, times(0)).handleResult(any(Resource.class));
-    }
-
-    @Test
-    public void updateShouldFailWhenRealmDiffers() throws EntitlementException {
-        //given
-        Resource createdResource = setupExistingResourceTypeFromJson(jsonResourceType);
-
-        UpdateRequest updateRequest = mock(UpdateRequest.class);
-
-        JsonValue mockJsonValue = mock(JsonValue.class);
-        given(updateRequest.getContent()).willReturn(mockJsonValue);
-
-        // altered the realm in the resource
-        given(mockJsonValue.toString()).willReturn(createdResource.getContent().toString().replaceAll("\"/\"", "\"/realm2\""));
-        doCallRealMethod().when(resourceTypeService).updateResourceType(any(Subject.class), any(ResourceType.class));
-
-        //when
-        resourceTypesResource.updateInstance(mockServerContext, createdResource.getId(), updateRequest, mockResultHandler);
-
-        //then
-        ArgumentCaptor<ResourceException> errorCaptor = ArgumentCaptor.forClass(ResourceException.class);
-        verify(mockResultHandler, times(1)).handleError(errorCaptor.capture());
-        ResourceException e = errorCaptor.getValue();
-
-        assertThat(e.getCode()).isEqualTo(ResourceException.BAD_REQUEST);
-
-        assertThat(e.getCause()).isInstanceOf(EntitlementException.class);
-        assertThat(((EntitlementException)e.getCause()).getErrorCode()).isEqualTo(EntitlementException.INVALID_RESOURCE_TYPE_REALM);
 
         verify(mockResultHandler, times(0)).handleResult(any(Resource.class));
     }
@@ -610,21 +600,15 @@ public class ResourceTypesResourceTest {
         QueryRequest queryRequest = mock(QueryRequest.class);
         QueryResultHandler queryHandler = mock(QueryResultHandler.class);
 
-        ObjectMapper mapper = new ObjectMapper();
-        Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
-
+        Map<String, Map<String, Set<String>>> resourceTypes = new HashMap<String, Map<String, Set<String>>>();
         final int resultSize = 10;
-
-        try {
-            for (int i = 0; i < resultSize; i++) {
-                JsonResourceType resource = mapper.readValue(jsonResourceType, JsonResourceType.class);
-                resourceTypes.add(resource.getResourceType(true));
-            }
-        } catch (IOException e) {
-            assertThat(false);
+        for (int i = 0; i < resultSize; i++) {
+            resourceTypes.put(UUID.randomUUID().toString(), rawData);
         }
 
-        when(resourceTypeService.getResourceTypes(any(Subject.class), anyString())).thenReturn(resourceTypes);
+        when(resourceTypeService.getResourceTypesData(any(Subject.class), anyString())).thenReturn(resourceTypes);
+        when(resourceTypeService.getResourceType(any(Subject.class), anyString(), anyString())).thenReturn
+                (EntitlementUtils.resourceTypeFromMap(UUID.randomUUID().toString(), rawData));
         when(queryHandler.handleResource(any(Resource.class))).thenReturn(true);
 
         //when
@@ -648,22 +632,19 @@ public class ResourceTypesResourceTest {
         QueryRequest queryRequest = mock(QueryRequest.class);
         QueryResultHandler queryHandler = mock(QueryResultHandler.class);
 
-        ObjectMapper mapper = new ObjectMapper();
-        Set<ResourceType> resourceTypes = new HashSet<ResourceType>();
-
-        final int resultSize = 10;
         final int firstPageSize = 2;
-
-        try {
-            for (int i = 0; i < resultSize; i++) {
-                JsonResourceType resource = mapper.readValue(jsonResourceType, JsonResourceType.class);
-                resourceTypes.add(resource.getResourceType(true));
-            }
-        } catch (IOException e) {
-            assertThat(false);
+        final int pageOffset = 0;
+        final int resultSize = 10;
+        Map<String, Map<String, Set<String>>> resourceTypes = new HashMap<String, Map<String, Set<String>>>();
+        for (int i = 0; i < resultSize; i++) {
+           resourceTypes.put(UUID.randomUUID().toString(), rawData);
         }
 
-        when(resourceTypeService.getResourceTypes(any(Subject.class), anyString())).thenReturn(resourceTypes);
+        when(resourceTypeService.getResourceTypesData(any(Subject.class), anyString())).thenReturn(resourceTypes);
+        when(resourceTypeService.getResourceType(any(Subject.class), anyString(), anyString())).thenReturn
+               (EntitlementUtils.resourceTypeFromMap(UUID.randomUUID().toString(), rawData));
+        when(queryRequest.getPagedResultsOffset()).thenReturn(pageOffset);
+        when(queryRequest.getPageSize()).thenReturn(firstPageSize);
 
         Answer<Boolean> onlyFirstPage = new Answer<Boolean>() {
             int count = 0;
@@ -682,7 +663,7 @@ public class ResourceTypesResourceTest {
         //then
         verify(queryHandler, times(0)).handleError(any(ResourceException.class));
 
-        verify(queryHandler, times(firstPageSize + 1)).handleResource(any(Resource.class));
+        verify(queryHandler, times(firstPageSize)).handleResource(any(Resource.class));
 
         ArgumentCaptor<QueryResult> resultCaptor = ArgumentCaptor.forClass(QueryResult.class);
         verify(queryHandler, times(1)).handleResult(resultCaptor.capture());
@@ -691,23 +672,69 @@ public class ResourceTypesResourceTest {
         assertThat(result.getRemainingPagedResults()).isEqualTo(resultSize - firstPageSize);
     }
 
-
     @Test
-    public void queryShouldIgnoreServiceException() throws EntitlementException {
+    public void shouldHandleQueryPageLargerThanResults() throws EntitlementException {
         //given
-        setupExistingResourceTypeFromJson(jsonResourceType);
-
         QueryRequest queryRequest = mock(QueryRequest.class);
         QueryResultHandler queryHandler = mock(QueryResultHandler.class);
-        Throwable t = new EntitlementException(EntitlementException.RESOURCE_TYPE_RETRIEVAL_ERROR);
-        when(resourceTypeService.getResourceTypes(any(Subject.class), anyString())).thenThrow(t);
+
+        final int lastPageSize = 5;
+        final int pageOffset = 10;
+        final int resultSize = 11;
+        Map<String, Map<String, Set<String>>> resourceTypes = new HashMap<String, Map<String, Set<String>>>();
+        for (int i = 0; i < resultSize; i++) {
+            resourceTypes.put(UUID.randomUUID().toString(), rawData);
+        }
+
+        when(resourceTypeService.getResourceTypesData(any(Subject.class), anyString())).thenReturn(resourceTypes);
+        when(resourceTypeService.getResourceType(any(Subject.class), anyString(), anyString())).thenReturn
+                (EntitlementUtils.resourceTypeFromMap(UUID.randomUUID().toString(), rawData));
+        when(queryRequest.getPagedResultsOffset()).thenReturn(pageOffset);
+        when(queryRequest.getPageSize()).thenReturn(lastPageSize);
+
+        Answer<Boolean> onlyFirstPage = new Answer<Boolean>() {
+            int count = pageOffset;
+
+            @Override
+            public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return count++ < resultSize;
+            }
+        };
+
+        when(queryHandler.handleResource(any(Resource.class))).thenAnswer(onlyFirstPage);
 
         //when
         resourceTypesResource.queryCollection(mockServerContext, queryRequest, queryHandler);
 
         //then
         verify(queryHandler, times(0)).handleError(any(ResourceException.class));
-        verify(queryHandler, times(1)).handleResult(any(QueryResult.class));
+
+        verify(queryHandler, times(resultSize - pageOffset)).handleResource(any(Resource.class));
+
+        ArgumentCaptor<QueryResult> resultCaptor = ArgumentCaptor.forClass(QueryResult.class);
+        verify(queryHandler, times(1)).handleResult(resultCaptor.capture());
+        QueryResult result = resultCaptor.getValue();
+
+        assertThat(result.getRemainingPagedResults()).isEqualTo(0);
+    }
+
+
+    @Test
+    public void queryShouldHandleQueryException() throws EntitlementException {
+        //given
+        setupExistingResourceTypeFromJson(jsonResourceType);
+
+        QueryRequest queryRequest = mock(QueryRequest.class);
+        QueryResultHandler queryHandler = mock(QueryResultHandler.class);
+        Throwable t = new QueryException(QueryException.QueryErrorCode.FILTER_BOOLEAN_LITERAL_FALSE);
+        when(resourceTypeService.getResourceTypesData(any(Subject.class), anyString())).thenThrow(t);
+
+        //when
+        resourceTypesResource.queryCollection(mockServerContext, queryRequest, queryHandler);
+
+        //then
+        verify(queryHandler, times(0)).handleResult(any(QueryResult.class));
+        verify(queryHandler, times(1)).handleError(any(ResourceException.class));
     }
 
 }

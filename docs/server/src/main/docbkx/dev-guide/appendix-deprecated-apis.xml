@@ -1,0 +1,1066 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2013 ForgeRock, Inc.
+  !    
+-->
+<appendix xml:id='appendix-deprecated-apis'
+ xmlns='http://docbook.org/ns/docbook'
+ version='5.0' xml:lang='en'
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
+ xmlns:xlink='http://www.w3.org/1999/xlink'
+ xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+ <title>Deprecated REST APIs</title>
+
+ <para>This appendix provides information about REST APIs
+  deprecated in OpenAM <?eval ${serverDocTargetVersion}?>.
+ </para>
+
+ <section xml:id="deprecated-apis-auth">
+
+  <title>Deprecated Authentication and Logout APIs</title>
+
+   <para>Interface Stability: <link xlink:show="new"
+    xlink:href="admin-guide#interface-stability"
+    xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+   </para>
+
+   <para>
+    Simple authentication with a user name and password returns a token.
+   </para>
+
+    <screen>
+$ <userinput>curl \
+ --request POST \
+ --data "username=bjensen&amp;password=hifalutin" \
+ https://openam.example.com:8443/openam/identity/authenticate</userinput>
+<computeroutput>
+token.id=AQIC5wM2LY4SfcxvdvHOXjtC_eWSs2RB54tgvgK8SuYi7aQ.*AAJTSQACMDE.*</computeroutput>
+    </screen>
+
+    <para>If you must specify parameters as when authenticating to
+    <literal>/UI/Login</literal>, you provide a percent encoded string of the
+    parameters as the value of the <literal>uri</literal> parameter. The
+    <literal>/UI/Login</literal> parameter deals with the <literal>realm</literal>,
+    <literal>module</literal>, and <literal>service</literal> parameters. Setting the
+    <literal>client</literal> parameter sets the user's IP address as part of the
+    token following successful authentication. The default for the <literal>client</literal>
+    parameter is the IP of the machine making the REST request.</para>
+
+    <screen>
+$ <userinput>curl \
+ --request POST \
+ --data "username=bjensen&amp;password=hifalutin&amp;uri=realm%3D%2F%26module%3DDataStore\
+&amp;client=192.168.1.1" \
+ https://openam.example.com:8443/openam/identity/authenticate</userinput>
+<computeroutput>
+token.id=AQIC5wM2LY4SfcxvdvHOXjtC_eWSs2RB54tgvgK8SuYi7aQ.*AAJTSQACMDE.*</computeroutput>
+    </screen>
+
+    <para>You log out using the token to end the user session.</para>
+
+    <screen>
+$ <userinput>curl \
+ --request POST \
+ --data "subjectid=AQIC5w...*AAJTSQACMDE.*" \
+ https://openam.example.com:8443/openam/identity/logout</userinput>
+    </screen>
+
+ </section>
+
+ <section xml:id="deprecated-apis-tokens">
+
+  <title>Deprecated Token Validation and Attribute Retrieval APIs</title>
+
+  <para>Interface Stability: <link xlink:show="new"
+   xlink:href="admin-guide#interface-stability"
+   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
+
+  <para>You check whether a token is valid as follows:</para>
+
+  <screen>
+$ <userinput>curl \
+ --request POST \
+ --data "tokenid=AQIC5w...*AAJTSQACMDE.*" \
+ https://openam.example.com:8443/openam/identity/isTokenValid</userinput>
+<computeroutput>boolean=true</computeroutput>
+   </screen>
+
+   <para>An invalid token returns <literal>boolean=false</literal>.</para>
+
+  <screen>
+$ <userinput>curl \
+ --request POST \
+ --data "tokenid=INVALID" \
+ https://openam.example.com:8443/openam/identity/isTokenValid</userinput>
+<computeroutput>boolean=false</computeroutput>
+  </screen>
+
+  <para>With a valid token, you can retrieve attributes about the subject.
+   OpenAM returns a series of <replaceable>name</replaceable>,
+   <replaceable>value</replaceable> pairs.</para>
+
+  <para>The newer API for retrieving user information is demonstrated in
+   <link xlink:show="new"
+         xlink:href="dev-guide#rest-api-read-identity"
+         xlink:role="http://docbook.org/xlink/role/olink">
+    <citetitle>Reading Identities</citetitle></link>. What follows describes the
+   legacy API.</para>
+
+  <screen>
+$ <userinput>curl \
+ --request POST \
+ --data "subjectid=AQIC5w...*AAJTSQACMDE.*" \
+ https://openam.example.com:8443/openam/identity/attributes</userinput>
+<computeroutput>userdetails.token.id=
+ AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*
+userdetails.attribute.name=uid
+userdetails.attribute.value=bjensen
+userdetails.attribute.name=mail
+userdetails.attribute.value=bjensen@example.com
+userdetails.attribute.name=sn
+userdetails.attribute.value=Jensen
+userdetails.attribute.name=userpassword
+userdetails.attribute.value={SSHA}rhusOfYpkapDWEHcfT2Y7y83LMuC++F4Abqvig==
+userdetails.attribute.name=cn
+userdetails.attribute.value=Babs Jensen
+userdetails.attribute.value=Barbara Jensen
+userdetails.attribute.name=givenname
+userdetails.attribute.value=Barbara
+userdetails.attribute.name=dn
+userdetails.attribute.value=uid=bjensen,ou=people,dc=example,dc=com
+userdetails.attribute.name=telephonenumber
+userdetails.attribute.value=+1 408 555 1862
+userdetails.attribute.name=objectclass
+userdetails.attribute.value=organizationalPerson
+userdetails.attribute.value=person
+userdetails.attribute.value=posixAccount
+userdetails.attribute.value=inetOrgPerson
+userdetails.attribute.value=krbprincipalaux
+userdetails.attribute.value=krbTicketPolicyAux
+userdetails.attribute.value=top</computeroutput>
+  </screen>
+
+  <para>You can specify attributes to limit what you retrieve.</para>
+
+  <screen>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/attributes?\
+subjectid=AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*\
+&amp;attributenames=mail\
+&amp;attributenames=uid"</userinput>
+<computeroutput>userdetails.token.id=
+ AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*
+userdetails.attribute.name=uid
+userdetails.attribute.value=bjensen
+userdetails.attribute.name=mail
+userdetails.attribute.value=bjensen@example.com</computeroutput>
+  </screen>
+
+  <para>When retrieving attributes, you can refresh the session thus setting
+   the idle time to 0, by adding the boolean parameter
+   <literal>refresh=true</literal> to the query string.</para>
+
+  <screen>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/attributes?\
+subjectid=AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*\
+&amp;attributenames=cn\
+&amp;refresh=true"</userinput>
+<computeroutput>userdetails.token.id=
+ AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*
+userdetails.attribute.name=cn
+userdetails.attribute.value=Babs Jensen
+userdetails.attribute.value=Barbara Jensen</computeroutput>
+  </screen>
+
+  <para>
+   You can specify the following attributes to retrieve information
+   about the user's session time limits and current session:
+   <literal>maxsessiontime</literal> (maximum length of a session),
+   <literal>maxidletime</literal> (maximum idle time allowed during a session),
+   <literal>idletime</literal> (actual idle time during the current session),
+   <literal>timeleft</literal> (actual time left in session).
+   The unit for maximum times is minutes.
+   The unit for actual times is seconds.
+  </para>
+
+  <para>
+   Also use the parameter <literal>refresh=false</literal>
+   to avoid changing the <literal>idletime</literal> with your request.
+  </para>
+
+  <screen>
+$ <userinput>curl \
+--data "subjectid=AQIC5w....*AAJTSQACMDE.*\
+ &amp;attributenames=idletime\
+ &amp;attributenames=maxidletime\
+ &amp;attributenames=timeleft\
+ &amp;attributenames=maxsessiontime\
+ &amp;refresh=false" \
+ https://openam.example.com:8443/openam/identity/attributes</userinput>
+<computeroutput>
+userdetails.token.id=AQIC5w....*AAJTSQACMDE.*
+userdetails.attribute.name=maxsessiontime
+userdetails.attribute.value=120
+userdetails.attribute.name=maxidletime
+userdetails.attribute.value=30
+userdetails.attribute.name=idletime
+userdetails.attribute.value=664
+userdetails.attribute.name=timeleft
+userdetails.attribute.value=6319</computeroutput>
+  </screen>
+
+ </section>
+
+ <section xml:id="deprecated-apis-policy">
+
+  <title>Deprecated Authorization and Policy Management APIs</title>
+
+  <para>
+   The following sections describe deprecated authorization and policy management
+   APIs.
+  </para>
+
+ <section xml:id="deprecated-apis-authz">
+  <title>Authorization</title>
+
+  <para>Interface Stability:
+   <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+  </para>
+
+  <para>You can call on OpenAM to decide whether to authorize access to a
+   protected resource based on a valid token. Of course, you must percent
+   encode the resource URI.
+  </para>
+
+  <programlisting>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/authorize?\
+uri=http%3A%2F%2Fwww.example.com%3A8080%2Fexamples%2Findex.html\
+&amp;subjectid=AQIC5wM2LY4SfcxuxIP0VnP2lVjs7ypEM6VDx6srk56CN1Q.*AAJTSQACMDE.*"</userinput>
+<computeroutput>boolean=true</computeroutput>
+  </programlisting>
+
+  <para>
+   To indicate access denied, OpenAM returns
+   <literal>boolean=false</literal>.
+  </para>
+
+ </section>
+
+ <section xml:id="deprecated-apis-policy-decisions">
+  <title>Requesting Policy Decisions</title>
+
+  <para>Interface Stability:
+   <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+  </para>
+
+  <para>OpenAM provides additional REST APIs for requesting policy
+   decisions.
+  </para>
+
+  <itemizedlist>
+   <para>The policy decision interfaces use the following path suffixes and
+    query string parameters.
+   </para>
+
+   <para>
+    Path suffixes for policy decision requests include the following:
+   </para>
+
+   <listitem>
+    <para><literal>ws/1/entitlement/decision</literal>. Request a decision
+     pertaining to a single resource.</para>
+   </listitem>
+
+   <listitem>
+    <para><literal>ws/1/entitlement/decisions</literal>. Request decisions
+    pertaining to multiple resources.</para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <literal>ws/1/entitlement/entitlement</literal>. Request decisions
+     for a specified resource URL.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <literal>ws/1/entitlement/entitlements</literal>. Request decisions
+     for a specified resource URL and all resources underneath.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <itemizedlist>
+   <para>
+    Query string parameters for policy decision requests include the
+    following.
+   </para>
+
+   <listitem>
+    <para><literal>subject=<replaceable>encoded-token</replaceable></literal>,
+     where the token is encoded using the method implemented in
+     <link xlink:show="new"
+     xlink:href="http://sources.forgerock.org/browse/~raw,r=6/openam/trunk/opensso/www/public/use/docs/fampdf/Encoder.java"
+     ><filename>Encoder.java</filename></link>.
+    </para>
+
+    <para>
+     In the examples for this section, the token ID obtained during
+     authentication for <literal>amadmin</literal> is abbreviated as
+     <literal>AQIC5...DU3*</literal> and the encoded token ID for the subject
+     is <literal>MJ3QFTr4ZV2QrtlJvXlg0Q2dMRM=</literal>.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <literal>action=get</literal>, or <literal>action=post</literal>,
+     which identifies the user agent action when requesting a decision.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <literal>application=iPlanetAMWebAgentService</literal>
+     or <literal>application=crestPolicyService</literal>
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <literal>resource=<replaceable>resource-url</replaceable></literal>,
+    or multiple <literal>resources=<replaceable>resource-url</replaceable></literal>
+    parameters for multiple decisions.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <literal>env=<replaceable>requestDnsName%3Dfqdn</replaceable></literal>,
+     <literal>env=<replaceable>requestIP%3Ddotted-quads</replaceable></literal>,
+     <literal>env=<replaceable>requestTime%3Dseconds-since-epoch</replaceable></literal>,
+     and <literal>env=<replaceable>requestDnsName%3Dtime-zone</replaceable></literal>
+     where <replaceable>time-zone</replaceable> is from Java
+     <literal>TimeZone.getTimeZone().getID()</literal>. The
+     <literal>env</literal> parameters thus express conditions.
+    </para>
+
+    <para>
+     In order to express a condition that specifies OAuth 2.0 scopes,
+     set the value of the parameter
+     to <literal>scope=<replaceable>scopes</replaceable></literal>.
+     To set scopes to <literal>openid</literal> and <literal>profile</literal>,
+     use <literal>env=scope%3Dopenid%20profile</literal> for example.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Authentication for these interfaces uses cookies, so if your
+   application is not running in a browser, first authenticate as described in
+   <link xlink:show="new"
+         xlink:href="dev-guide#rest-api-auth-json"
+         xlink:role="http://docbook.org/xlink/role/olink"
+   >REST APIs for Authentication &amp; Logout</link>.
+  </para>
+
+  <para>
+   To request a decision for a single resource, use an HTTP GET on
+   <literal>/ws/1/entitlement/decision</literal> as in the following example:
+  </para>
+
+  <programlisting>
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ "https://openam.example.com:8443/openam/ws/1/entitlement/decision\
+?subject=MJ3QFTr4ZV2QrtlJvXlg0Q2dMRM=&amp;action=GET\
+&amp;application=iPlanetAMWebAgentService\
+&amp;resource=http%3A%2F%2Fwww.example.com%2Findex.html"</userinput>
+<computeroutput>allow</computeroutput>
+  </programlisting>
+
+  <para>
+   If access is denied, the result is <literal>deny</literal>.
+  </para>
+
+  <para>
+   To request decisions for multiple resources, use an HTTP GET on
+    <literal>/ws/1/entitlement/decisions</literal> as in the following example:
+  </para>
+
+  <programlisting>
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ "https://openam.example.com:8443/openam/ws/1/entitlement/decisions\
+?subject=MJ3QFTr4ZV2QrtlJvXlg0Q2dMRM=&amp;action=GET\
+&amp;application=iPlanetAMWebAgentService\
+&amp;resources=http%3A%2F%2Fwww.example.com%2Findex.html\
+&amp;resources=http%3A%2F%2Fwww.example.com%2Ffavicon.ico"</userinput>
+<computeroutput>{
+    "statusCode": 200,
+    "body": {
+        "results": [
+            {
+                "actionsValues": {
+                    "POST": true,
+                    "GET": true
+                },
+                "attributes": {},
+                "advices": {},
+                "resourceName": "http://www.example.com:80/index.html"
+            },
+            {
+                "actionsValues": {
+                    "POST": true,
+                    "GET": true
+                },
+                "attributes": {},
+                "advices": {},
+                "resourceName": "http://www.example.com:80/favicon.ico"
+            }
+        ]
+    },
+    "statusMessage": "OK"
+}</computeroutput>
+  </programlisting>
+
+  <para>
+   To request decisions for a given resource,
+   use an HTTP GET on <literal>/ws/1/entitlement/entitlement</literal>
+   as in the following example:
+  </para>
+
+  <programlisting>
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ "https://openam.example.com:8443/openam/ws/1/entitlement/entitlement\
+?subject=MJ3QFTr4ZV2QrtlJvXlg0Q2dMRM=\
+&amp;application=iPlanetAMWebAgentService\
+&amp;resource=http%3A%2F%2Fwww.example.com%2F*"</userinput>
+<computeroutput>{
+    "statusCode": 200,
+    "body": {
+        "actionsValues": {
+            "POST": true,
+            "GET": true
+        },
+        "attributes": {},
+        "advices": {},
+        "resourceName": "http://www.example.com:80/*"
+    },
+    "statusMessage": "OK"
+}</computeroutput>
+  </programlisting>
+
+  <para>
+   To request decisions for all resources underneath a given resource,
+   use an HTTP GET on <literal>/ws/1/entitlement/entitlements</literal>
+   as in the following example:
+  </para>
+
+  <programlisting>
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ "https://openam.example.com:8443/openam/ws/1/entitlement/entitlements\
+?subject=MJ3QFTr4ZV2QrtlJvXlg0Q2dMRM=\
+&amp;application=iPlanetAMWebAgentService\
+&amp;resource=http%3A%2F%2Fwww.example.com%2F"</userinput>
+<computeroutput>{
+    "statusCode": 200,
+    "body": {
+        "results": [
+            {
+                "actionsValues": {},
+                "resourceName": "http://www.example.com:80/"
+            },
+            {
+                "actionsValues": {
+                    "POST": true,
+                    "GET": true
+                },
+                "advices": {},
+                "resourceName": "http://www.example.com:80/*"
+            },
+            {
+                "actionsValues": {
+                    "POST": true,
+                    "GET": true
+                },
+                "attributes": {},
+                "advices": {},
+                "resourceName": "http://www.example.com:80/*?*"
+            }
+        ]
+    },
+    "statusMessage": "OK"
+}</computeroutput>
+  </programlisting>
+ </section>
+
+ <section xml:id="deprecated-apis-policy-management">
+  <title>Managing Policies</title>
+
+  <para>Interface Stability:
+   <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+  </para>
+
+  <para>
+   OpenAM exposes a REST API through the
+   <literal>/ws/1/entitlement/privilege</literal> endpoint under the
+   deployment URI. The API lets you create, read, update, delete, and query
+   policies.
+  </para>
+
+  <para>
+   Authentication for these interfaces uses cookies, so if your
+   application is not running in a browser, first authenticate as described in
+   <link xlink:show="new"
+         xlink:href="dev-guide#rest-api-auth-json"
+         xlink:role="http://docbook.org/xlink/role/olink"
+   >REST APIs for Authentication &amp; Logout</link>.
+  </para>
+ </section>
+
+ <section xml:id="rest-api-policy-management-create">
+  <title>Creating Policies</title>
+
+  <para>Interface Stability:
+   <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+  </para>
+
+   <para>
+    You create a policy by using an HTTP POST of the JSON representation
+    to the endpoint. You must URL encode the JSON before passing it to
+    OpenAM.
+   </para>
+
+   <programlisting>
+$ <userinput>cat entitlement.json</userinput>
+<computeroutput>{
+    "name": "Example HTTP",
+    "eSubject": {
+        "state": {
+            "className": "com.sun.identity.policy.plugins.AuthenticatedUsers",
+            "exclusive": false,
+            "name": "All Authenticated Users",
+            "values": []
+        },
+        "className": "com.sun.identity.entitlement.opensso.PolicySubject"
+    },
+    "entitlement": {
+        "actionsValues": {
+            "POST": true,
+            "GET": true
+        },
+        "applicationName": "iPlanetAMWebAgentService",
+        "name": "authorize",
+        "resourceNames": [
+            "http://www.example.com:80/*"
+        ]
+    }
+}</computeroutput>
+$ <userinput>curl \
+ --request POST \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ --data-urlencode "privilege.json@entitlement.json" \
+ https://openam.example.com:8443/openam/ws/1/entitlement/privilege</userinput>
+<computeroutput>{"statusCode":201,"body":"Created","statusMessage":"Created"}</computeroutput>
+
+$ <userinput>cat entitlement2.json</userinput>
+<computeroutput>{
+    "name": "Example HTTPS",
+    "eSubject": {
+        "state": {
+            "className": "com.sun.identity.policy.plugins.AuthenticatedUsers",
+            "exclusive": false,
+            "name": "All Authenticated Users",
+            "values": []
+        },
+        "className": "com.sun.identity.entitlement.opensso.PolicySubject"
+    },
+    "entitlement": {
+        "actionsValues": {
+            "POST": false,
+            "GET": true
+        },
+        "applicationName": "iPlanetAMWebAgentService",
+        "name": "authorize",
+        "resourceNames": [
+            "https://www.example.com:443/*?*"
+        ]
+    }
+}</computeroutput>
+
+$ <userinput>curl \
+ --request POST \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ --data-urlencode "privilege.json@entitlement2.json" \
+ https://openam.example.com:8443/openam/ws/1/entitlement/privilege</userinput>
+<computeroutput>{"statusCode":201,"body":"Created","statusMessage":"Created"}</computeroutput>
+   </programlisting>
+  </section>
+
+ <section xml:id="deprecated-apis-policy-management-read">
+   <title>Reading Policies</title>
+
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+   </para>
+
+   <para>
+    To read a policy, use an HTTP GET on the endpoint followed by
+    the URL-encoded name of the policy.
+   </para>
+
+   <para>
+    Notice that the "state" is returned as a long string, and so is not
+    shown here in full.
+   </para>
+
+   <programlisting>
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ https://openam.example.com:8443/openam/ws/1/entitlement/privilege/Example%20HTTP</userinput>
+<computeroutput>{
+    "statusCode": 200,
+    "body": {
+        "results": {
+            "name": "Example HTTP",
+            "eSubject": {
+                "state": "{\n  \"className\": \"com.sun.identity.policy...}",
+                "className": "com.sun.identity.entitlement.opensso.PolicySubject"
+            },
+            "entitlement": {
+                "actionsValues": {
+                    "POST": true,
+                    "GET": true
+                },
+                "applicationName": "iPlanetAMWebAgentService",
+                "name": "authorize",
+                "resourceNames": [
+                    "http://www.example.com:80/*"
+                ]
+            }
+        }
+    },
+    "statusMessage": "OK"
+}</computeroutput>
+
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ https://openam.example.com:8443/openam/ws/1/entitlement/privilege/Example%20HTTPS</userinput>
+<computeroutput>{
+    "statusCode": 200,
+    "body": {
+        "results": {
+            "name": "Example HTTPS",
+            "eSubject": {
+                "state": "{\n  \"className\": \"com.sun.identity.policy...}",
+                "className": "com.sun.identity.entitlement.opensso.PolicySubject"
+            },
+            "entitlement": {
+                "actionsValues": {
+                    "POST": false,
+                    "GET": true
+                },
+                "applicationName": "iPlanetAMWebAgentService",
+                "name": "authorize",
+                "resourceNames": [
+                    "https://www.example.com:443/*?*"
+                ]
+            }
+        }
+    },
+    "statusMessage": "OK"
+}</computeroutput>
+   </programlisting>
+  </section>
+
+ <section xml:id="deprecated-apis-policy-management-update">
+   <title>Updating Policies</title>
+
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+   </para>
+
+   <para>
+    To update a policy, use an HTTP PUT on the endpoint followed by the
+    URL-encoded name of the policy.
+   </para>
+
+   <programlisting>
+$ <userinput>cat update.json</userinput>
+<computeroutput>{
+    "name": "Example HTTP",
+    "eSubject": {
+        "state": {
+            "className": "com.sun.identity.policy.plugins.AuthenticatedUsers",
+            "exclusive": false,
+            "name": "All Authenticated Users",
+            "values": []
+        },
+        "className": "com.sun.identity.entitlement.opensso.PolicySubject"
+    },
+    "entitlement": {
+        "actionsValues": {
+            "POST": false,
+            "GET": true
+        },
+        "applicationName": "iPlanetAMWebAgentService",
+        "name": "authorize",
+        "resourceNames": [
+            "http://www.example.com:80/*?*"
+        ]
+    }
+}</computeroutput>
+
+$ <userinput>curl \
+ --request PUT \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ --data-urlencode "privilege.json@update.json" \
+ https://openam.example.com:8443/openam/ws/1/entitlement/privilege/Example%20HTTP</userinput>
+<computeroutput>{"statusCode":200,"body":"OK","statusMessage":"OK"}</computeroutput>
+   </programlisting>
+  </section>
+
+ <section xml:id="deprecated-apis-policy-management-delete">
+   <title>Deleting Policies</title>
+
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+   </para>
+
+   <para>
+    To delete a policy, use an HTTP DELETE on the endpoint followed by
+    the URL-encoded name of the policy.
+   </para>
+
+   <programlisting>
+$ <userinput>curl \
+ --request DELETE \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ https://openam.example.com:8443/openam/ws/1/entitlement/privilege/Example%20HTTPS</userinput>
+<computeroutput>{"statusCode":200,"body":"OK","statusMessage":"OK"}</computeroutput>
+   </programlisting>
+  </section>
+
+ <section xml:id="deprecated-apis-policy-management-query">
+   <title>Querying Policies</title>
+
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
+   </para>
+
+   <para>
+    To get the names of policies, use an HTTP GET on the endpoint.
+   </para>
+
+   <programlisting>
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ https://openam.example.com:8443/openam/ws/1/entitlement/privilege</userinput>
+<computeroutput>{
+    "statusCode": 200,
+    "body": {
+        "results": [
+            "Example HTTPS",
+            "Example HTTP"
+        ]
+    },
+    "statusMessage": "OK"
+}</computeroutput>
+   </programlisting>
+
+   <para>
+    You can pass a filter query parameter to get only policies
+    that match the filter. Make sure you URL encode the filter value.
+   </para>
+
+   <programlisting>
+$ <userinput>curl \
+ --request GET \
+ --cookie "iPlanetDirectoryPro=AQIC5...DU3*" \
+ "https://openam.example.com:8443/openam/ws/1/entitlement/privilege\
+?subject=MJ3QFTr4ZV2QrtlJvXlg0Q2dMRM=&amp;filter=name%3D*HTTP"</userinput>
+<computeroutput>{
+    "statusCode": 200,
+    "body": {
+        "results": [
+            "Example HTTP"
+        ]
+    },
+    "statusMessage": "OK"
+}</computeroutput>
+   </programlisting>
+  </section>
+
+ </section>
+
+ <section xml:id="deprecated-apis-identity">
+
+  <title>Deprecated Identity Management APIs</title>
+
+  <para>
+   The following sections describe deprecated identity management
+   APIs.
+  </para>
+
+  <section xml:id="deprecated-apis-create-identity">
+   <title>Creating Identities</title>
+
+   <para>Interface Stability: <link xlink:show="new"
+   xlink:href="admin-guide#interface-stability"
+   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
+
+   <para>OpenAM lets you create user profiles, and also create web and J2EE
+   policy agent profiles. When you create an entry, you must provide the
+   following parameters.</para>
+   <variablelist>
+    <varlistentry>
+     <term>admin</term>
+     <listitem>
+      <para>Valid token for the user with permissions to add the identity</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>identity_name</term>
+     <listitem>
+      <para>A unique name for the identity to create</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>identity_attribute_names</term>
+     <listitem>
+      <para>LDAP attribute names for attributes to create</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>identity_attribute_values_<replaceable>name</replaceable></term>
+     <listitem>
+      <para>LDAP attribute values for the identity to create. For example,
+      <literal>identity_attribute_names=sn&amp;identity_attribute_values_sn=Jensen</literal>.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>identity_realm</term>
+     <listitem>
+      <para>The realm in which to create the identity</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>identity_type</term>
+     <listitem>
+      <para>Either <literal>user</literal> or <literal>AgentOnly</literal></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+    <screen>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/create?\
+admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
+&amp;identity_name=testuser\
+&amp;identity_attribute_names=cn\
+&amp;identity_attribute_values_cn=Test%20User\
+&amp;identity_attribute_names=sn\
+&amp;identity_attribute_values_sn=User\
+&amp;identity_attribute_names=userpassword\
+&amp;identity_attribute_values_userpassword=secret12\
+&amp;identity_realm=%2F\
+&amp;identity_type=user"</userinput>
+    </screen>
+  </section>
+
+  <section xml:id="deprecated-apis-read-identity">
+   <title>Reading and Searching for Identities</title>
+
+   <para>Interface Stability: <link xlink:show="new"
+   xlink:href="admin-guide#interface-stability"
+   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
+
+   <para>Reading is similar to attribute retrieval, as described in
+    <link xlink:show="new"
+          xlink:href="dev-guide#rest-api-tokens"
+          xlink:role="http://docbook.org/xlink/role/olink">Token Validation</link>,
+   but obtained using the token of
+   a user with permissions to perform the search, as shown in the following
+   example.</para>
+
+   <screen>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/read?\
+admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
+&amp;name=testuser\
+&amp;attributes_names=realm\
+&amp;attributes_values_realm=%2F"</userinput>
+<computeroutput>identitydetails.name=testuser
+identitydetails.type=user
+identitydetails.realm=o=openam
+identitydetails.attribute=
+identitydetails.attribute.name=uid
+identitydetails.attribute.value=testuser
+identitydetails.attribute=
+identitydetails.attribute.name=sn
+identitydetails.attribute.value=User
+identitydetails.attribute=
+identitydetails.attribute.name=userpassword
+identitydetails.attribute.value={SSHA}AzpT+N1sjrQhL1wfX2ETWh/Aqbd+lH9LOlhDqg==
+identitydetails.attribute=
+identitydetails.attribute.name=cn
+identitydetails.attribute.value=Test User
+identitydetails.attribute=
+identitydetails.attribute.name=inetuserstatus
+identitydetails.attribute.value=Active
+identitydetails.attribute=
+identitydetails.attribute.name=dn
+identitydetails.attribute.value=uid=testuser,ou=people,dc=example,dc=com
+identitydetails.attribute=
+identitydetails.attribute.name=objectclass
+identitydetails.attribute.value=person
+identitydetails.attribute.value=sunIdentityServerLibertyPPService
+identitydetails.attribute.value=inetorgperson
+identitydetails.attribute.value=sunFederationManagerDataStore
+identitydetails.attribute.value=iPlanetPreferences
+identitydetails.attribute.value=iplanet-am-auth-configuration-service
+identitydetails.attribute.value=organizationalperson
+identitydetails.attribute.value=sunFMSAML2NameIdentifier
+identitydetails.attribute.value=inetuser
+identitydetails.attribute.value=iplanet-am-managed-person
+identitydetails.attribute.value=iplanet-am-user-service
+identitydetails.attribute.value=sunAMAuthAccountLockout
+identitydetails.attribute.value=top
+identitydetails.attribute=
+identitydetails.attribute.name=universalid
+identitydetails.attribute.value=id=testuser,ou=user,o=openam</computeroutput>
+   </screen>
+
+   <para>You can search for user IDs by providing the following
+   parameters.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>admin</term>
+     <listitem>
+      <para>Valid token for the user with access to perform the search</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>attributes_names</term>
+     <listitem>
+      <para>LDAP attribute names for attributes to search</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>attributes_values_<replaceable>name</replaceable></term>
+     <listitem>
+      <para>LDAP attribute values for the identity to search. For example,
+      <literal>attribute_names=sn&amp;attribute_values_sn=Jensen</literal>.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>filter</term>
+     <listitem>
+      <para>Additional LDAP filter component to limit the search results
+      returned</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <screen>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/search?\
+admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
+&amp;attributes_names=sn\
+&amp;attributes_values_sn=Jensen\
+&amp;attributes_names=mail\
+&amp;attributes_values_mail=bjensen*\
+&amp;attributes_names=realm\
+&amp;attributes_values_realm=%2F"</userinput>
+<computeroutput>string=bjensen</computeroutput>
+   </screen>
+  </section>
+
+  <section xml:id="deprecated-apis-update-identity">
+   <title>Updating Identities</title>
+
+   <para>Interface Stability: <link xlink:show="new"
+   xlink:href="admin-guide#interface-stability"
+   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
+
+   <para>You can update an identity with the same parameters used to create
+   identities, provided the token corresponds to a user with access to
+   update the identity.</para>
+
+   <screen>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/update?\
+admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
+&amp;identity_name=testuser\
+&amp;identity_attribute_names=mail\
+&amp;identity_attribute_values_mail=testuser%40example.com\
+&amp;identity_realm=%2F\
+&amp;identity_type=user"</userinput>
+   </screen>
+  </section>
+
+  <section xml:id="deprecated-apis-delete-identity">
+   <title>Deleting Identities</title>
+
+
+   <para>Interface Stability: <link xlink:show="new"
+   xlink:href="admin-guide#interface-stability"
+   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
+
+   <para>You can also delete an identity.</para>
+
+   <screen>
+$ <userinput>curl "https://openam.example.com:8443/openam/identity/delete?\
+admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
+&amp;identity_name=testuser\
+&amp;identity_realm=%2F\
+&amp;identity_type=user"</userinput>
+   </screen>
+  </section>
+ </section>
+
+</appendix>

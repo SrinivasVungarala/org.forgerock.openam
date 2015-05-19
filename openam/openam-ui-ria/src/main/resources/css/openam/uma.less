@@ -1,6 +1,23 @@
+/*
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2015 ForgeRock AS.
+ */
+
 /* VARIABLES */
 @table-base-color: #1f6fb1;
-@cell-hover-color: #B6D4EA;
+@cell-hover-color: #519387;
+@text-base-color: #1f2223;
 
 .webkit-text-rendering-bugfix{
     -webkit-transform: translateZ(0px);
@@ -12,17 +29,7 @@
     background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(60, 60, 60, 0.1) 35px, rgba(60, 60, 60, 0.1) 70px);
 }
 
-.wordwrap{
-    white-space: initial;
-    word-wrap: break-word;
-    word-break: break-word;
-}
 
-.ellipsis{
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
 
 span.tooltips {
     position: relative;
@@ -72,9 +79,9 @@ span.item-button-panel {
 
     > span {
         opacity:0.5;
-        transition:opacity 200ms linear;
+        .transition(opacity, 200ms, linear);
 
-        &.icon-checkmark {
+        &.fa-check {
             display:none;
         }
 
@@ -85,14 +92,6 @@ span.item-button-panel {
     }
 }
 
-
-.content-bg {
-    padding: 20px 10px;
-}
-
-.policy-content {
-    margin: 0 10px;
-}
 
 .policy-header {
     padding:0 0 30px;
@@ -124,56 +123,48 @@ span.item-button-panel {
     }
 }
 
-
-
 .selectize-control.multi .selectize-input {
 
-    padding: 6px 5px 2px 5px;
-    margin: 5px 0 0 0;
-    border-radius: 0;
-    border-top-color: #b7b7b7;
-    border-left-color: #b7b7b7;
 
-    &.has-items{
-        padding: 3px 15px 0px 3px;
+    &.has-items {
+      padding-left: 5px;
+      padding-right: 5px;
     }
 
-}
+     > div {
+         cursor: pointer;
+         margin: 0 2px 2px 0;
+         padding: 1px 5px 0;
+         background: #A4CAE7;
+         color: #095390;
+         border: 1px solid #90A7BA;
+         border-radius: 2px;
 
-.selectize-input > input {
-    margin: 0 5px 0 5px !important;
-}
-
-
-html .selectize-dropdown .optgroup-header{
-    font-weight:bold;
-    color:#80b7ab;
-}
-
-.selectize-control.multi .selectize-input > div {
-    cursor: pointer;
-    margin: 0 2px 2px 0;
-    padding: 1px 5px 0;
-    background: #A4CAE7;
-    color: #095390;
-    border: 1px solid #90A7BA;
-    border-radius: 2px;
-
-    &:hover, &.active{
-        background: #EFB6BE;
-        border: 1px solid #DD7785;
-        color: #CA3232;
+         &:hover, &.active{
+             background: #EFB6BE;
+             border: 1px solid #DD7785;
+             color: #CA3232;
+         }
     }
 }
+
+.selectize-dropdown-content > div{
+    border-top: 1px solid #eee;
+
+    &:first-of-type{
+        border-top:none;
+    }
+}
+
 
 .backgrid-readonly{
 
     .selectize-control.multi .selectize-input > div {
         &:hover, &.active{
-                background: #A4CAE7;
-                color: #095390;
-                border: 1px solid #90A7BA;
-                cursor: auto;
+            background: #A4CAE7;
+            color: #095390;
+            border: 1px solid #90A7BA;
+            cursor: auto;
         }
     }
 
@@ -187,110 +178,122 @@ html .selectize-dropdown .optgroup-header{
 
 
 
-.selectize-control.single .selectize-input{
-    padding:6px 5px 2px 5px;
-    border-radius: 0;
-}
-
-
-.selectize-dropdown-content > div{
-    border-top: 1px solid #eee;
-
-    &:first-of-type{
-        border-top:none;
-    }
-}
-
 #lastFSlash, select {
-    transition:opacity 300ms linear;
+    .transition(opacity, 300ms, linear);
     &.fade{
         opacity:0;
     }
 }
 
 /* XUI Overrides */
-body{
+body, .modal-open {
     /* This will prevent to sudden shift of content which can sometimes occur
     * when navigating between them long views which require a scroll bar and
     * short ones which do not.
     */
     overflow-y: scroll;
+
+
+    // To remove the empty space at the bottom of the footer which causes the
+    // scroll bar to always be present.
+    .footer .container {
+        padding-bottom: 0;
+    }
+}
+
+
+#umaShareImage.header-icon {
+    display:block;
+    position:relative;
+    background-color:transparent;
+    .transition(background-color, 200ms, linear);
+
+    // If this img fails to load the class no-image is added to #umaShareImage
+    img {
+        width: 64px;
+        height: 64px;
+        border-radius: 32px;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    &.no-image{
+        background-color:#519387;
+        img {
+            display:none;
+        }
+    }
 }
 
 
 #uma {
 
+
     input[type="text"]:invalid:required, input[type="text"].invalid {
         .invalid-background;
-        transition: background-color 200ms linear;
-    }
-
-    .policy-content {
-        min-height:100px;
-    }
-
-    #selectUser {
-        width: 370px;
-        margin: 0 15px 10px 0;
-    }
-
-    #selectPermission {
-        min-width:370px;
-        margin: 0 15px 10px 0;
+        .transition(background-color, 200ms, linear);
     }
 
     #resourceList {
         margin-bottom:30px;
     }
 
-    input.button {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        margin: 26px 0 0 0;
-    }
 
-    label {
-        display: block;
-        padding: 0 0 4px 2px;
-        color: grey;
-    }
-
-    .backgrid{
-
-        max-width: none;
-        position: relative;
+    .backgrid {
 
         .string-cell, .uri-cell, .email-cell,  .string-cell.editor input[type=text],  .uri-cell.editor input[type=text], .email-cell.editor input[type=text], .datetime-cell {
             text-align: left;
         }
 
-        td.uri-cell{
-            padding:13px 5px;
-            border-left: 1px solid transparent;
-            border-right: 1px solid transparent;
+        .template-cell a {
+            float:right;
+        }
 
+        td.uri-cell{
+
+            // TODO: BOOTSTRAP: Removed due to build issues. Will need re-adding
             .transition(background, 0.1s);
             &:hover{
                 background-color: @cell-hover-color;
+                border-bottom-color: @cell-hover-color;
+
                 cursor:pointer;
-                border-color: lighten(@table-base-color, 35%);
+                a {
+                    color:#f7f7f7;
+                }
             }
+
         }
 
-        td:not(.uri-cell) a {
+        td a:hover{
+            text-decoration: none;
+        }
+        td:not(.uri-cell) a:hover {
             // Adds the click event to the td so that the entire cell is clickable so underline not needed
             text-decoration: underline;
         }
 
+
+
         th {
             text-align: left;
-            border-bottom: none;
             font-weight: bold;
             font-size: 15px;
             vertical-align: bottom;
-            background-color: white;
+            background-color:transparent;
+
+            &.colored {
+                a {
+                    color: @cell-hover-color;
+                }
+            }
+
             a {
-                color: #777;
+                float: left;
+                color: @text-base-color;
+                font-size: 14px;
             }
 
             &.sortable a {
@@ -298,49 +301,30 @@ body{
             }
 
             &.descending a, &.ascending a {
-                color: @table-base-color;
                 padding-right:0;
             }
         }
 
-        thead tr {
-            border-bottom: 1px solid lighten(@table-base-color, 45%);
-        }
-
         tbody tr {
-            background-color: lighten(@table-base-color, 50%);
-            border-bottom: 1px solid  lighten(@table-base-color, 45%);
-            color: @table-base-color;
-
-            &:nth-child(even) {
-                background-color: lighten(@table-base-color, 55%);
-            }
 
             &.empty {
-                .invalid-background(lighten(@table-base-color, 45%));
-                border-top: 1px solid lighten(@table-base-color, 45%);
-                td{
+                td {
                     display: table-cell;
                     padding:10px;
                 }
             }
 
             td {
-                border-bottom: 1px solid lighten(@table-base-color, 45%);
+                padding: 8px 8px;
+                vertical-align: middle;
 
-                a {
-                    color: @table-base-color;
-                    text-decoration: none;
-                    font-weight:bold;
-                }
-
-                &.icon-share {
-                    font-size:15px;
-                    padding:0 10px;
-                    text-align:center;
+                &.fa-share-alt {
+                    font-size:14px;
+                    text-align:right;
 
                     &:hover {
-                        background-color: @cell-hover-color;
+                        color: @cell-hover-color;
+                        cursor:pointer;
                     }
                 }
             }
@@ -348,17 +332,24 @@ body{
 
         }
         .ascending .sort-caret{
-            border-bottom: 4px solid @table-base-color;
+            border-bottom: 4px solid @cell-hover-color;
+        }
+        .ascending a{
+            color: @cell-hover-color;
+        }
+
+        .descending a{
+            color: @cell-hover-color;
         }
 
         .descending .sort-caret {
-            border-top: 4px solid @table-base-color;
+            border-top: 4px solid @cell-hover-color;
         }
 
         tbody tr.unsaved-changes {
 
             background-color:#fff;
-            transition: background 0.2s linear;
+            .transition(background, 0.2s, linear);
 
             .backgrid-revoke-cell {
                 #revoke {
@@ -387,7 +378,6 @@ body{
     .backgrid-container{
         width: 100%;
         overflow-x: scroll;
-        border: 1px solid lighten(@table-base-color, 45%);
         border-bottom: none;
         height: auto;
         overflow: auto;
@@ -395,26 +385,29 @@ body{
     }
 
     .backgrid-filter.form-search {
-        margin: 0 0 5px;
-        .hideSearchCloseBtn;
+        margin: 5px 0 5px;
+        // TODO: BOOTSTRAP: Removed due to build issues. Will need re-adding
+        //.hideSearchCloseBtn;
     }
 
     .backgrid-revoke-cell {
 
         width: 64px;
 
-        [class^="icon-"], [class*=" icon-"] {
+        [class^="fa-"], [class*=" fa-"] {
             font-size: 12px;
             padding: 13px 10px 13px 10px;
 
             &:hover, &:focus{
-                color: @color-error;
+                // TODO: BOOTSTRAP: Removed due to build issues. Will need re-adding
+                //color: @color-error;
             }
         }
 
         #save {
             &:hover, &:focus{
-                color: @color-success;
+                // TODO: BOOTSTRAP: Removed due to build issues. Will need re-adding
+                //color: @color-success;
             }
         }
 
@@ -424,87 +417,19 @@ body{
 
     }
 
-    .search {
-        &:after {
-            background-color: lighten(@table-base-color, 30%);
-        }
-        &:before {
-            border: 3px solid lighten(@table-base-color, 30%);
-        }
-    }
-
-    .selectize-control.multi .selectize-input, .selectize-control.single .selectize-input{
-        margin: 5px 0 0 0;
-    }
-
-
-    span.tooltips:hover span, span.tooltips:focus span {
-        width: 200px;
-        margin-left: -100px;
-    }
-
-    span.tooltips span {
-
-        color: #d7e9f8;
-        background-color: @table-base-color;
-        padding: 6px 5px;
-        background-image: -webkit-linear-gradient(top, lighten(@table-base-color, 10%), @table-base-color);
-    }
-
-    span.tooltips span:after {
-        border-top: 8px solid @table-base-color;
-    }
-
-    #footerShare{
-        margin: 15px -10px -20px -10px;
-        border-top: 1px solid rgb(213, 213, 213);
-        padding: 15px;
-        background-color: #eee;
-        border-radius: 0 0 5px 5px;
-        #footerNav{
-
-            margin: 18px 0 0;
-            font-size: 13px;
-            line-height: 13px;
-            a {
-                text-decoration:none
-            }
-
-            #shareCounter {
-                display: inline-block;
-                color: grey;
-                border-left: 2px solid grey;
-                padding-left: 11px;
-                margin-left: 10px;
-            }
-
-            .icon-users, .icon-user, .icon-cog, .icon-lock{
-                font-size:13px;
-                padding-right:3px;
-                cursor:auto;
-            }
-        }
-    }
-
     #advancedView {
         overflow:hidden;
         max-height:0;
         opacity:0;
-        transition:max-height 500ms ease-out, opacity 500ms ease-in-out ;
-        margin-bottom:30px;
-        border: 1px solid lighten(@table-base-color, 45%);
+        transition: opacity 500ms ease-in-out ;
         border-bottom:none;
     }
 
-    #selectAuthentication{
-        width:200px;
-        background-color:#ddd;
-        display:none;
-        margin-right:20px;
-        height:59px;
-    }
-
     &.advanced-mode{
+
+        #shareCounter, #shareCounterContainer{
+            display:none;
+        }
 
         #advancedView{
             max-height:500px;
@@ -512,130 +437,9 @@ body{
             transition:max-height 500ms ease-out, opacity 500ms ease-in-out ;
         }
 
-        #selectAuthentication{
-            display:block;
-            clear:left;
-        }
-
-    }
-
-}
-
-/* new submenu style */
-.menubar {
-    margin: 0 5px 0;
-}
-
-#menu {
-    .menu {
-        margin:0 0 15px 0;
-    }
-}
-
-.content {
-    padding: 0px 10px;
-}
-
-.submenubar {
-    clear: both;
-    border: none;
-    margin: 0 5px 0;
-
-    li a {
-        text-decoration:none;
-        color: #777;
-    }
-
-    a:hover, .active a{
-        border-radius: 0;
-        background-color: transparent;
-        color: #80b7ab;
-
-        &:focus{
-            box-shadow:none;
-        }
     }
 }
 
 #dialog-background.show {
     opacity: 0.5;
-}
-
-.uma-dialog {
-
-    max-width:300px;
-
-    h1 {
-        font-weight: normal;
-        padding: 0 0 10px;
-    }
-
-
-}
-#dialogs #footerShare {
-    margin: 15px -15px -15px -15px;
-}
-
-.border-circle-32 {
-    height: 32px;
-    border-radius: 21px;
-    margin: 0 10px 0 0;
-    width: 32px;
-    overflow: hidden;
-}
-
-/* enable responsive layout*/
-#default-base {
-    width:100%;
-    max-width:980px;
-}
-
-@media screen and (max-width: 1000px) {
-    #default-base {
-        width:900px;
-        #userProfileForm .group-field-block {
-            label{
-                text-align: left;
-            }
-            input{
-                width:380px;
-            }
-        }
-    }
-}
-
-
-@media screen and (max-width: 920px) {
-    .col2{
-        width:100%;
-    }
-    #default-base {
-        width:700px;
-        #userProfileForm .group-field-block input{
-            width:440px;
-        }
-    }
-
-}
-
-@media screen and (max-width: 720px) {
-    #default-base {
-        width:500px;
-        #userProfileForm .group-field-block input{
-            width:420px;
-        }
-    }
-}
-
-@media screen and (max-width: 520px) {
-    #default-base {
-        width:360px;
-        #userProfileForm .group-field-block input{
-            width:280px;
-        }
-
-        li:not(.active) .glyph-title {
-            display: none;
-        }
-    }
 }

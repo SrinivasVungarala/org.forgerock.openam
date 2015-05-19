@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2014-2015 ForgeRock AS. All rights reserved.
+ * Copyright 2014-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -22,27 +22,21 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  */
 
-/**
- * @author Eugenia Sergueeva
- */
-
-/*global window, define, $, _, document, console */
+/*global window, define, $, _, console */
 define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
     "org/forgerock/openam/ui/policy/common/AbstractEditView",
     "org/forgerock/openam/ui/policy/common/StripedListView",
     "org/forgerock/openam/ui/policy/common/ReviewInfoView",
     "org/forgerock/openam/ui/policy/delegates/PolicyDelegate",
     "org/forgerock/commons/ui/common/util/UIUtils",
-    "org/forgerock/openam/ui/common/components/Accordion",
     "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/main/Configuration",
     "org/forgerock/commons/ui/common/main/EventManager",
     "org/forgerock/commons/ui/common/components/Messages"
-], function (AbstractEditView, StripedList, reviewInfoView, policyDelegate, uiUtils, Accordion, constants, conf, eventManager, messager) {
+], function (AbstractEditView, StripedList, ReviewInfoView, PolicyDelegate, UIUtils, Constants, Configuration, EventManager, Messages) {
     var EditApplicationView = AbstractEditView.extend({
         template: "templates/policy/applications/EditApplicationTemplate.html",
         reviewTemplate: "templates/policy/applications/ReviewApplicationStepTemplate.html",
-        data: {},
         APPLICATION_TYPE: "iPlanetAMWebAgentService",
         validationFields: ["name", "resourceTypeUuids"],
 
@@ -51,12 +45,12 @@ define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
             var self = this,
                 data = self.data,
                 appName = args[0],
-                appTypePromise = policyDelegate.getApplicationType(self.APPLICATION_TYPE),
-                envConditionsPromise = policyDelegate.getEnvironmentConditions(),
-                subjConditionsPromise = policyDelegate.getSubjectConditions(),
-                decisionCombinersPromise = policyDelegate.getDecisionCombiners(),
+                appTypePromise = PolicyDelegate.getApplicationType(self.APPLICATION_TYPE),
+                envConditionsPromise = PolicyDelegate.getEnvironmentConditions(),
+                subjConditionsPromise = PolicyDelegate.getSubjectConditions(),
+                decisionCombinersPromise = PolicyDelegate.getDecisionCombiners(),
                 appPromise = this.getApplication(appName),
-                resourceTypesPromise = policyDelegate.listResourceTypes();
+                resourceTypesPromise = PolicyDelegate.listResourceTypes();
 
             $.when(appTypePromise, envConditionsPromise, subjConditionsPromise, decisionCombinersPromise, resourceTypesPromise, appPromise).done(
                 function (appType, envConditions, subjConditions, decisionCombiners, resourceTypes) {
@@ -65,7 +59,7 @@ define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
                     }
 
                     if (!data.entity.realm) {
-                        data.entity.realm = conf.globalData.auth.realm;
+                        data.entity.realm = Configuration.globalData.auth.realm;
                     }
 
                     self.processConditions(data, envConditions[0].result, subjConditions[0].result);
@@ -100,7 +94,7 @@ define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
             this.resourceTypesListView = new StripedList();
             this.resourceTypesListView.render({
                 items: availableNames,
-                title: $.t('policy.resourceTypes.availableResourceTypes'),
+                title: $.t('policy.applications.edit.resourceTypes.availableResourceTypes'),
                 filter: true,
                 clickItem: this.selectResourceType.bind(this)
             }, '#availableResTypes');
@@ -108,7 +102,7 @@ define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
             this.resourceTypesListSelectedView = new StripedList();
             this.resourceTypesListSelectedView.render({
                 items: this.data.options.selectedResourceTypeNames,
-                title: $.t('policy.resourceTypes.selectedResourceTypes'),
+                title: $.t('policy.applications.edit.resourceTypes.selectedResourceTypes'),
                 created: true,
                 clickItem: this.deselectResourceType.bind(this)
             }, '#selectedResTypes');
@@ -147,12 +141,12 @@ define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
                 deferred = $.Deferred();
 
             if (appName) {
-                policyDelegate.getApplicationByName(appName)
-                .done(function (app) {
-                    self.data.entity = app;
-                    self.data.entityName = appName;
-                    deferred.resolve();
-                });
+                PolicyDelegate.getApplicationByName(appName)
+                    .done(function (app) {
+                        self.data.entity = app;
+                        self.data.entityName = appName;
+                        deferred.resolve();
+                    });
             } else {
                 self.data.entity = {};
                 self.data.entity.resourceTypeUuids = [];
@@ -169,7 +163,7 @@ define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
         },
 
         processConditions: function (data, envConditions, subjConditions) {
-            if (!data.entityName){
+            if (!data.entityName) {
                 data.entity.conditions = this.populateConditions(envConditions, envConditions);
                 data.entity.subjects = this.populateConditions(subjConditions, subjConditions);
             }
@@ -207,56 +201,56 @@ define("org/forgerock/openam/ui/policy/applications/EditApplicationView", [
                 self = this;
 
             if (this.data.entityName) {
-                policyDelegate.updateApplication( this.data.entityName, persistedApp )
-                .done(function (e) {
-                    eventManager.sendEvent(constants.EVENT_HANDLE_DEFAULT_ROUTE);
-                    eventManager.sendEvent(constants.EVENT_DISPLAY_MESSAGE_REQUEST, "applicationUpdated");
-                })
-                .fail(function (e) {
-                    self.errorHandler(e);
-                });
+                PolicyDelegate.updateApplication(this.data.entityName, persistedApp)
+                    .done(function (e) {
+                        EventManager.sendEvent(Constants.EVENT_HANDLE_DEFAULT_ROUTE);
+                        EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "applicationUpdated");
+                    })
+                    .fail(function (e) {
+                        self.errorHandler(e);
+                    });
             } else {
-                policyDelegate.createApplication(persistedApp)
-                .done(function (e) {
-                    console.log(e);
-                    eventManager.sendEvent(constants.EVENT_HANDLE_DEFAULT_ROUTE);
-                    eventManager.sendEvent(constants.EVENT_DISPLAY_MESSAGE_REQUEST, "applicationCreated");
-                })
-                .fail(function (e) {
-                    self.errorHandler(e);
-                });
+                PolicyDelegate.createApplication(persistedApp)
+                    .done(function (e) {
+                        console.log(e);
+                        EventManager.sendEvent(Constants.EVENT_HANDLE_DEFAULT_ROUTE);
+                        EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "applicationCreated");
+                    })
+                    .fail(function (e) {
+                        self.errorHandler(e);
+                    });
             }
         },
-        errorHandler : function (e) {
+        errorHandler: function (e) {
 
             var obj = { message: JSON.parse(e.responseText).message, type: "error"},
                 invalidResourceText = "Invalid Resource";
 
             if (e.status === 500) {
                 console.error(e.responseJSON, e.responseText, e);
-                messager.messages.addMessage(obj);
+                Messages.messages.addMessage(obj);
             } else if (e.status === 400 || e.status === 404) {
 
-                if ( uiUtils.responseMessageMatch( e.responseText, invalidResourceText) ) {
+                if (UIUtils.responseMessageMatch(e.responseText, invalidResourceText)) {
                     this.data.options.invalidResource = obj.message.substr(invalidResourceText.length + 1);
-                    reviewInfoView.render(this.data, null, this.$el.find('#reviewInfo'), 'templates/policy/applications/ReviewApplicationStepTemplate.html');
+                    ReviewInfoView.render(this.data, null, this.$el.find('#reviewInfo'), 'templates/policy/applications/ReviewApplicationStepTemplate.html');
                     delete this.data.options.invalidResource;
-                    eventManager.sendEvent(constants.EVENT_DISPLAY_MESSAGE_REQUEST, "invalidResource");
+                    EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "invalidResource");
 
                 } else {
                     console.log(e.responseJSON, e.responseText, e);
-                    messager.messages.addMessage(obj);
+                    Messages.messages.addMessage(obj);
                 }
             } else if (e.status === 409) {
                 // duplicate name
                 this.data.options.invalidName = true;
-                reviewInfoView.render(this.data, null, this.$el.find('#reviewInfo'), "templates/policy/applications/ReviewApplicationStepTemplate.html");
+                ReviewInfoView.render(this.data, null, this.$el.find('#reviewInfo'), "templates/policy/applications/ReviewApplicationStepTemplate.html");
                 delete this.data.options.invalidName;
-                messager.messages.addMessage(obj);
+                Messages.messages.addMessage(obj);
 
             } else {
                 console.log(e.responseJSON, e.responseText, e);
-                messager.messages.addMessage(obj);
+                Messages.messages.addMessage(obj);
             }
         }
     });

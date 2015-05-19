@@ -11,11 +11,16 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openidconnect;
 
+import static org.forgerock.oauth2.core.AccessTokenVerifier.*;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import org.forgerock.json.fluent.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.AccessTokenVerifier;
@@ -23,16 +28,11 @@ import org.forgerock.oauth2.core.OAuth2ProviderSettings;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
 import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.TokenStore;
+import org.forgerock.oauth2.core.exceptions.InvalidTokenException;
 import org.forgerock.oauth2.core.exceptions.OAuth2Exception;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import static org.forgerock.oauth2.core.AccessTokenVerifier.*;
 
 /**
  * Service for retrieving user's information from the access token the user granted the authorization.
@@ -74,9 +74,11 @@ public class UserInfoServiceImpl implements UserInfoService {
         AccessTokenVerifier.TokenState headerToken = headerTokenVerifier.verify(request);
         AccessTokenVerifier.TokenState formToken = formTokenVerifier.verify(request);
         if (!headerToken.isValid() && !formToken.isValid()) {
-            throw new ServerException("Access Token not valid");
+            logger.debug("No access token provided for this request.");
+            throw new InvalidTokenException();
         }
         if (headerToken.isValid() && formToken.isValid()) {
+            logger.debug("Access token provided in both form and header.");
             throw new ServerException("Access Token cannot be provided in both form and header");
         }
 
@@ -85,6 +87,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         final AccessToken token = tokenStore.readAccessToken(request, tokenId);
 
         final OAuth2ProviderSettings providerSettings = providerSettingsFactory.get(request);
+
         return new JsonValue(providerSettings.getUserInfo(token, request));
     }
 }

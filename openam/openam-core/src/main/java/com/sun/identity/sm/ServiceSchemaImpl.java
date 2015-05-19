@@ -67,6 +67,8 @@ class ServiceSchemaImpl {
 
     String inheritance;
 
+    String resourceName;
+
     // Attribute & sub-schema variables
     Set serviceAttributes;
 
@@ -115,6 +117,13 @@ class ServiceSchemaImpl {
      */
     String getName() {
         return (name);
+    }
+
+    /**
+     * Returns the name of the schema for CREST representation.
+     */
+    String getResourceName() {
+        return resourceName;
     }
 
     /**
@@ -174,7 +183,7 @@ class ServiceSchemaImpl {
                                 serviceName.toLowerCase()))) {
                     tmpSet.add((serviceName + "-" + str).toLowerCase());
                 } else {
-                    tmpSet.add(str);
+                    tmpSet.add(str.toLowerCase());
                 }
             }
         }
@@ -299,6 +308,9 @@ class ServiceSchemaImpl {
         if (getName() != null) {
             sb.append("Schema name: ").append(getName()).append("\n");
         }
+        if (getResourceName() != null) {
+            sb.append("Schema resource name: ").append(getResourceName()).append("\n");
+        }
         // Attributes
         if (attrSchemas.size() > 0) {
             sb.append("Attribute Schemas:\n");
@@ -350,6 +362,8 @@ class ServiceSchemaImpl {
                 SMSUtils.INHERITANCE);
         validate = XMLUtils
                 .getNodeAttributeValue(schemaNode, SMSUtils.VALIDATE);
+        resourceName = XMLUtils
+                .getNodeAttributeValue(schemaNode, SMSUtils.RESOURCE_NAME);
 
         // Update sub-schema's, organization schema and attributes
         Set newServiceAttributes = new HashSet();
@@ -514,51 +528,6 @@ class ServiceSchemaImpl {
         }
 
         validatePlugin(ssoToken, attrName, values);
-    }
-
-    /**
-     * Retrieve a list of dynamic plugin validators for a specific attribute. This method will check if
-     * the validators specified in the Service Configuration file implements the {@link DynamicAttributeValidator}
-     * interface and instantiate the validators.
-     *
-     * @param attributeName The name of the attribute for which the validators were specified.
-     * @return A list of {@link DynamicAttributeValidator}s associated with the given attribute or
-     * an empty list if none were found.
-     * @throws SMSException If the validator class can not be instantiated.
-     * @throws InvalidAttributeNameException If the attribute is null or can not be found.
-     */
-    List<DynamicAttributeValidator> getDynamicPluginValidators(String attributeName) throws SMSException {
-        final AttributeSchemaImpl as = getAttributeSchema(attributeName);
-        if (as == null) {
-            String[] args = { attributeName };
-            throw new InvalidAttributeNameException(
-                    IUMSConstants.UMS_BUNDLE_NAME,
-                    "sms-validation_failed_invalid_name", args);
-        }
-
-        final List<DynamicAttributeValidator> validatorList = new ArrayList<DynamicAttributeValidator>();
-        final String validatorName = as.getValidator();
-        if (validatorName != null) {
-            final AttributeSchemaImpl validatorAttrSchema = getAttributeSchema(validatorName);
-            if (validatorAttrSchema != null) {
-                final Iterator javaClasses = validatorAttrSchema.getDefaultValues().iterator();
-                while (javaClasses.hasNext()) {
-                    final String javaClass = (String) javaClasses.next();
-                    try {
-                        final Class clazz = Class.forName(javaClass);
-                        if (DynamicAttributeValidator.class.isAssignableFrom(clazz)) {
-                            validatorList.add((DynamicAttributeValidator) clazz.newInstance());
-                        }
-                    } catch (Exception ex) {
-                        debug.error("ServiceSchemaImpl.serverEndAttrValidation", ex);
-                        String args[] = {javaClass};
-                        throw new SMSException(IUMSConstants.UMS_BUNDLE_NAME,
-                                IUMSConstants.SMS_VALIDATOR_CANNOT_INSTANTIATE_CLASS, args);
-                    }
-                }
-            }
-        }
-        return validatorList;
     }
 
     /**

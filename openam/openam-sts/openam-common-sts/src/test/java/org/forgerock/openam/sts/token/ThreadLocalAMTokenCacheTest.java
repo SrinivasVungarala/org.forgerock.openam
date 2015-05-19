@@ -22,14 +22,12 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import org.forgerock.openam.sts.AMSTSConstants;
 import org.forgerock.openam.sts.TokenCreationException;
-import org.forgerock.openam.sts.token.ThreadLocalAMTokenCache;
-import org.forgerock.openam.sts.token.ThreadLocalAMTokenCacheImpl;
+import org.forgerock.openam.sts.TokenValidationException;
+import org.forgerock.openam.sts.token.validator.ValidationInvocationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import java.util.concurrent.Callable;
 
 import static org.testng.Assert.assertTrue;
 
@@ -58,10 +56,15 @@ public class ThreadLocalAMTokenCacheTest {
         }
 
         public void run() {
-            tokenCache.cacheAMToken(value);
             try {
-                assertTrue(tokenCache.getAMToken().equals(value));
+                tokenCache.cacheSessionIdForContext(ValidationInvocationContext.REST_TOKEN_TRANSFORMATION, value, true);
+                assertTrue(tokenCache.getSessionIdForContext(ValidationInvocationContext.REST_TOKEN_TRANSFORMATION).equals(value));
+                tokenCache.clearCachedSessions();
+                tokenCache.cacheSessionIdForContext(ValidationInvocationContext.REST_TOKEN_TRANSFORMATION, value, true);
+                assertTrue(tokenCache.getSessionIdForContext(ValidationInvocationContext.REST_TOKEN_TRANSFORMATION).equals(value));
             } catch (TokenCreationException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } catch (TokenValidationException e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
         }

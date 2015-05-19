@@ -102,8 +102,8 @@
         <!-- **************************************************************** -->
 
         <!-- Java Properties -->
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
 
         <!-- Surefire Argument Line -->
         <java.surefire.options>-Xms256m -Xmx256m -XX:MaxPermSize=96m</java.surefire.options>
@@ -121,9 +121,10 @@
         <opendj.sdk.version>2.6.10</opendj.sdk.version>
 
         <commons.forgerock-util.version>1.4.0-SNAPSHOT</commons.forgerock-util.version>
+        <forgerock.bloomfilter.version>1.0.0-SNAPSHOT</forgerock.bloomfilter.version>
         <commons.authfilter.version>1.5.1</commons.authfilter.version>
-        <forgerock.json.version>2.4.2</forgerock.json.version>
-        <forgerock-ui.version>1.1.12-SNAPSHOT</forgerock-ui.version>
+        <forgerock.json.version>2.5.0-SNAPSHOT</forgerock.json.version>
+        <forgerock-ui.version>2.0.6-SNAPSHOT</forgerock-ui.version>
         <restlet.version>2.1.7</restlet.version>
         <xercesj.version>2.11.0</xercesj.version>
         <powermock.version>1.5</powermock.version>
@@ -132,9 +133,6 @@
         <forgerock.guice.version>1.1.0-SNAPSHOT</forgerock.guice.version>
         <slf4j.version>1.7.5</slf4j.version>
         <santuario.xmlsec.version>1.5.6</santuario.xmlsec.version>
-        <cxf.version>2.7.8</cxf.version>
-        <!-- Same version as required by cxf-rt-ws-security. 2.x release introduced major changes -->
-        <wss4j.version>1.6.13</wss4j.version>
         <click.version>2.3.0</click.version>
         <commons-beanutils.version>1.8.3</commons-beanutils.version>
         <commons-codec.version>1.6</commons-codec.version>
@@ -376,6 +374,7 @@
         <module>openam-oauth2-saml2</module>
         <module>openam-http-client</module>
         <module>openam-tokens</module>
+        <module>openam-upgrade</module>
     </modules>
 
     <!-- Mailing Lists -->
@@ -884,6 +883,12 @@
                 <artifactId>openam-tokens</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons</groupId>
+                <artifactId>json-test</artifactId>
+                <version>${forgerock.json.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <!-- New RIA Client UI -->
             <dependency>
@@ -1035,6 +1040,11 @@
                 <artifactId>openam-distribution-ssoconfiguratortools</artifactId>
                 <version>${project.version}</version>
                 <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.openam</groupId>
+                <artifactId>openam-upgrade</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -1669,6 +1679,16 @@
             </dependency>
             <dependency>
                 <groupId>org.forgerock.commons</groupId>
+                <artifactId>forgerock-bloomfilter-core</artifactId>
+                <version>${forgerock.bloomfilter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons</groupId>
+                <artifactId>forgerock-bloomfilter-monitoring</artifactId>
+                <version>${forgerock.bloomfilter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons</groupId>
                 <artifactId>forgerock-auth-filter-common</artifactId>
                 <version>${commons.authfilter.version}</version>
             </dependency>
@@ -1706,6 +1726,11 @@
                 <groupId>org.forgerock.commons.guava</groupId>
                 <artifactId>forgerock-guava-cache</artifactId>
                 <version>${forgerock.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>3.0.0</version>
             </dependency>
 
             <!-- JASPIC -->
@@ -1821,52 +1846,12 @@
             </dependency>
 
             <!--
-              required by the STS
+              required by the STS and SAML libraries
               -->
             <dependency>
                 <groupId>org.apache.santuario</groupId>
                 <artifactId>xmlsec</artifactId>
                 <version>${santuario.xmlsec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf.services.sts</groupId>
-                <artifactId>cxf-services-sts-core</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-bindings-soap</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http-jetty</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-policy</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-security</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.security</groupId>
-                <artifactId>wss4j</artifactId>
-                <version>${wss4j.version}</version>
             </dependency>
 
             <!-- Test dependency -->
@@ -1983,8 +1968,7 @@
                 <!-- License: legal/CC-Public-Domain.txt -->
                 <groupId>org.hdrhistogram</groupId>
                 <artifactId>HdrHistogram</artifactId>
-                <version>2.0.3</version>
-                <scope>test</scope>
+                <version>2.1.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -2099,6 +2083,9 @@
                         <nonFilteredFileExtension>war</nonFilteredFileExtension>
                         <nonFilteredFileExtension>zip</nonFilteredFileExtension>
                         <nonFilteredFileExtension>7z</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
                         <!-- See: http://en.wikipedia.org/wiki/List_of_file_formats -->
                     </nonFilteredFileExtensions>
                 </configuration>

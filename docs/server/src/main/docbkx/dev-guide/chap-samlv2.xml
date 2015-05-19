@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-samlv2'
@@ -30,12 +30,12 @@
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
- <title>Handling Federation With SAMLv2</title>
+ <title>Handling Federation With SAML v2.0</title>
 
- <para>This chapter covers using SAMLv2 with OpenAM to manage access across
+ <para>This chapter covers using SAML v2.0 with OpenAM to manage access across
  federated services. This chapter also addresses Shibboleth.</para>
  
- <!-- TODO: Include examples demonstrating use of SAML 2.0 extensions. -->
+ <!-- TODO: Include examples demonstrating use of SAML v2.0 extensions. -->
 
 </chapter>
 

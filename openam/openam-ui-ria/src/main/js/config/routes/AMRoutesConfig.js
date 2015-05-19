@@ -32,7 +32,8 @@
  * @author jfeasel
  */
 define("config/routes/AMRoutesConfig", [
-], function() {
+    "org/forgerock/openam/ui/common/util/Constants"
+], function(Constants) {
 
     var obj = {
         "forgotPassword": {
@@ -85,33 +86,11 @@ define("config/routes/AMRoutesConfig", [
             argumentNames: ["realm","additionalParameters"]
         },
 
-
         "uma": {
             view: "org/forgerock/openam/ui/uma/views/resource/ListResource",
             url: /^uma/,
             pattern: "uma/resources/",
             role: "ui-user"
-        },
-        "dialogShare": {
-            base: "editResource",
-            dialog: "org/forgerock/openam/ui/uma/views/share/DialogShare",
-            role: "ui-user",
-            url: /^uma\/resources\/$/,
-            pattern: "uma/resources/"
-        },
-        "dialogRevokeAllResources": {
-            base: "listResource",
-            dialog: "org/forgerock/openam/ui/uma/views/resource/DialogRevokeAllResources",
-            role: "ui-user",
-            url: /^uma\/resources\/$/,
-            pattern: "uma/resources/"
-        },
-        "dialogRevokeAllPolicies": {
-            base: "editResource",
-            dialog: "org/forgerock/openam/ui/uma/views/resource/DialogRevokeAllPolicies",
-            role: "ui-user",
-            url: /^uma\/resources\/$/,
-            pattern: "uma/resources/"
         },
         "editResource": {
             view: "org/forgerock/openam/ui/uma/views/resource/EditResource",
@@ -125,13 +104,7 @@ define("config/routes/AMRoutesConfig", [
             defaults: [""],
             role: "ui-user",
             pattern: "uma/resources/"
-        },/*
-        "listSubject": {
-            view: "org/forgerock/openam/ui/uma/views/subject/SubjectListView",
-            url: /^uma\/resources\/(.+?)\/(users)\//,
-            role: "ui-user",
-            pattern: "uma/resources/?/users/"
-        },*/
+        },
         "baseShare": {
             view: "org/forgerock/openam/ui/uma/views/share/BaseShare",
             url: /^uma\/share\/(.*?)(?:\/){0,1}$/,
@@ -139,6 +112,13 @@ define("config/routes/AMRoutesConfig", [
             defaults: [""],
             role: "ui-user"
         },
+        /*
+        "listSubject": {
+            view: "org/forgerock/openam/ui/uma/views/subject/SubjectListView",
+            url: /^uma\/resources\/(.+?)\/(users)\//,
+            role: "ui-user",
+            pattern: "uma/resources/?/users/"
+        },*/
         "listHistory": {
             view: "org/forgerock/openam/ui/uma/views/history/ListHistory",
             role: "ui-user",
@@ -157,8 +137,40 @@ define("config/routes/AMRoutesConfig", [
             defaults: [""],
             url: /^uma\/apps\/(.*?)(?:\/){0,1}$/,
             pattern: "uma/apps/?"
-        }
+        },
 
+
+        // Console
+        "authentication": {
+            view: "org/forgerock/openam/ui/admin/views/console/realms/authentication/Authentication",
+            url: /^console\/realms\/authentication/,
+            pattern: "console/realms/authentication/",
+            role: "ui-user"
+        },
+        "advancedSettings": {
+            view: "org/forgerock/openam/ui/admin/views/console/realms/authentication/advanced/AdvancedSettings",
+            url: /^console\/realms\/authentication\/advanced/,
+            pattern: "console/realms/authentication/advanced/",
+            role: "ui-user"
+        },
+        "chains": {
+            view: "org/forgerock/openam/ui/admin/views/console/realms/authentication/chains/Chains",
+            url: /^console\/realms\/authentication\/chains\/(.*?)(?:\/){0,1}$/,
+            pattern: "console/realms/authentication/chains/?",
+            defaults: [""],
+            role: "ui-user"
+        },
+        "module": {
+            view: "org/forgerock/openam/ui/admin/views/console/realms/authentication/modules/Modules",
+            url: /^console\/realms\/authentication\/modules\/(.*?)(?:\/){0,1}$/,
+            pattern: "console/realms/authentication/modules/?",
+            defaults: [""],
+            role: "ui-user"
+        },
+        "consoleRealm": {
+            url: "console/realm",
+            event: Constants.EVENT_RETURN_TO_AM_CONSOLE
+        }
     };
 
     return obj;

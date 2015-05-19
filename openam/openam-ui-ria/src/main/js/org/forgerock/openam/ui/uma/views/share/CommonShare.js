@@ -27,6 +27,7 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
     "org/forgerock/commons/ui/common/main/AbstractView",
     "backgrid",
     "org/forgerock/openam/ui/uma/util/BackgridUtils",
+    "org/forgerock/commons/ui/common/components/BSDialog",
     "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/main/EventManager",
     "org/forgerock/openam/ui/uma/views/share/ShareCounter",
@@ -34,9 +35,22 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
     'org/forgerock/openam/ui/uma/models/UMAPolicyPermission',
     'org/forgerock/openam/ui/uma/models/UMAPolicyPermissionScope',
     'org/forgerock/openam/ui/uma/models/UMAResourceSetWithPolicy',
-    "org/forgerock/openam/ui/uma/models/User"
-], function(AbstractView, Backgrid, BackgridUtils, Constants, EventManager, ShareCounter, UMAPolicy, UMAPolicyPermission, UMAPolicyPermissionScope, UMAResourceSetWithPolicy, User) {
-    var CommonShare = AbstractView.extend({
+    'org/forgerock/openam/ui/common/util/RealmHelper'
+], function(AbstractView, Backgrid, BackgridUtils, BSDialog, Constants, EventManager, ShareCounter, UMAPolicy, UMAPolicyPermission, UMAPolicyPermissionScope, UMAResourceSetWithPolicy, RealmHelper) {
+
+    var CommonShare,
+        realmRegex = /[?&]realm=/,
+        resourcesetsRegex = /\/json\/users\/[^\/]+\/uma\/policies/,
+        policyRegex = /\/json\/users\/[^\/]+\/oauth2\/resourcesets/;
+
+    $.ajaxPrefilter(function(options) {
+        if ((resourcesetsRegex.test(options.url) || policyRegex.test(options.url)) && !realmRegex.test(options.url) &&
+                RealmHelper.getOverrideRealm()) {
+            options.url = RealmHelper.decorateURLWithOverrideRealm(options.url);
+        }
+    });
+
+    CommonShare = AbstractView.extend({
         initialize: function(options) {
             this.parentModel = null;
         },
@@ -55,6 +69,7 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
             console.error('Unrecoverable load failure UMAResourceSetWithPolicy. ' +
                            response.responseJSON.code + ' (' + response.responseJSON.reason + ') ' +
                            response.responseJSON.message);
+            // TODO : Fire and event message
         },
         onParentModelSync: function(model, response) {
             // Hardwire the policyID into the policy as it's ID
@@ -72,13 +87,36 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
             if(syncRequired) {
                 this.stopListening(this.parentModel);
 
-                this.parentModel = UMAResourceSetWithPolicy.findOrCreate( { _id: id} );
+                this.parentModel = UMAResourceSetWithPolicy.findOrCreate({ _id: id });
                 this.listenTo(this.parentModel, 'sync', this.onParentModelSync);
                 this.listenTo(this.parentModel, 'error', this.onParentModelError);
                 this.parentModel.fetch();
             }
 
             return syncRequired;
+        },
+
+        renderDialog: function(args, callback) {
+            var self = this,
+                $div = $('<div></div>'),
+                shareDialog = new BSDialog();
+            shareDialog.setTitle($.t("uma.share.shareResource"));
+            shareDialog.contentTemplate = this.template;
+            shareDialog.message = $div;
+            shareDialog.closable = false;
+            shareDialog.size = "size-wide";
+            shareDialog.cssClass = "shareDialog";
+            shareDialog.actions = [{
+                type: "close"
+            }];
+            shareDialog.onshow = function(dialog){
+                self.element = $div;
+                self.render(args);
+            };
+            shareDialog.onshown = function(dialog){
+                self.renderShareCounter(callback);
+            };
+            shareDialog.show();
         },
 
         render: function(args, callback) {
@@ -88,7 +126,6 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
 
             // FIXME: Resolve unknown issue with args appearing as an Array
             if(args instanceof Array) {
-                this.data.dialog = args[1]; // This needs a tidyup. I am passing in true as the second args[1] to indicate the parent is a dialog
                 args = args[0];
             }
 
@@ -103,10 +140,10 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
             if (this.syncParentModel(args)) {
                 return;
             }
-
+            this.data = {};
             this.data.name = this.parentModel.get('name');
-            this.data.scopes = this.parentModel.get('scopes').toJSON();
             this.data.icon = this.parentModel.get('icon_uri');
+            this.data.scopes = this.parentModel.get('scopes').toJSON();
             collection = this.parentModel.get('policy').get('permissions');
             this.data.permissions = collection.toJSON();
 
@@ -116,7 +153,10 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
                     name: "subject",
                     label: $.t("uma.resources.show.grid.0"),
                     cell: 'string',
-                    editable: false
+                    editable: false,
+                    headerCell : BackgridUtils.ClassHeaderCell.extend({
+                          className: "col-md-6"
+                    })
                 },
                 {
                     name: "scopes",
@@ -131,10 +171,14 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
                         }
 
                     }),
-                    editable: false
+                    editable: false,
+                    headerCell : BackgridUtils.ClassHeaderCell.extend({
+                          className: "col-md-6"
+                    })
                 }],
                 collection: collection,
-                emptyText: $.t("uma.all.grid.empty")
+                emptyText: $.t("uma.all.grid.empty"),
+                className:"backgrid table table-striped"
             });
 
             this.parentRender(function() {
@@ -142,6 +186,9 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
                 self.renderPermissionOptions();
                 self.renderShareCounter(callback);
                 self.$el.find("#advancedView").append(grid.render().el);
+                self.$el.find("#umaShareImage img").error(function () {
+                    $(this).parent().addClass('no-image');
+                });
             });
         },
         renderPermissionOptions: function() {
@@ -221,22 +268,31 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
         save: function() {
             var self = this,
                 permissions = this.parentModel.get('policy').get("permissions"),
-                subject = this.$el.find('#selectUser select')[0].selectize.getValue(),
+                subjects = this.$el.find('#selectUser select')[0].selectize.getValue(),
                 scopes = _.each(this.$el.find('#selectPermission select')[0].selectize.getValue(), function(scope) {
                     return UMAPolicyPermissionScope.find({ id: scope });
                 }),
-                permission = UMAPolicyPermission.findOrCreate({
+                newPermissions = [];
+            _.forEach(subjects, function(subject) {
+                var permission = UMAPolicyPermission.findOrCreate({
                     subject: subject,
                     scopes: scopes
                 });
-            permissions.add(permission);
+                permissions.add(permission);
+                newPermissions.push(permission);
+            });
 
             this.parentModel.get('policy').save()
             .done(function(response) {
                 EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "policyCreatedSuccess");
                 self.reset();
             })
-            .fail(function() {
+            .fail(function(response) {
+                if (response.status && response.status === 500) {
+                    _.forEach(newPermissions, function(permission) {
+                        permissions.remove(permission);
+                    });
+                }
                 EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "policyCreatedFail");
             });
         },
@@ -244,7 +300,7 @@ define("org/forgerock/openam/ui/uma/views/share/CommonShare", [
         renderShareCounter: function(callback){
             var policy = this.parentModel.get('policy'),
                 permissionCount = policy ? policy.get('permissions').length : 0;
-                ShareCounter.render(permissionCount, callback);
+            ShareCounter.render(permissionCount, callback);
         },
 
         onToggleAdvanced: function(event) {

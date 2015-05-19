@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <book xml:id='dev-guide'
@@ -39,38 +39,38 @@
    Federation software.</para>
   </abstract>
   <copyright>
-   <year>2011-2014</year>
-   <holder>ForgeRock AS</holder>
+   <year>2011-2015</year>
+   <holder>ForgeRock AS.</holder>
   </copyright>
   <authorgroup>
    <author>
     <personname>
-     <firstname>Mark </firstname><surname>Craig</surname>
+     <firstname>Mark</firstname> <surname>Craig</surname>
     </personname>
    </author>
    <author>
     <personname>
-     <firstname>David </firstname><surname>Goldsmith</surname>
+     <firstname>David</firstname> <surname>Goldsmith</surname>
     </personname>
    </author>
    <author>
     <personname>
-     <firstname>Gene </firstname><surname>Hirayama</surname>
+     <firstname>Gene</firstname> <surname>Hirayama</surname>
     </personname>
    </author>
    <author>
     <personname>
-     <firstname>Mike </firstname><surname>Jang</surname>
+     <firstname>Mike</firstname> <surname>Jang</surname>
     </personname>
    </author>
    <author>
     <personname>
-     <firstname>Chris </firstname><surname>Lee</surname>
+     <firstname>Chris</firstname> <surname>Lee</surname>
     </personname>
    </author>
    <author>
     <personname>
-     <firstname>Peter </firstname><surname>Major</surname>
+     <firstname>Peter</firstname> <surname>Major</surname>
     </personname>
     <xinclude:include href="../shared/affiliation-fr.xml"/>
    </author>
@@ -85,55 +85,30 @@
 
  <toc />
  
- <xinclude:include href="preface.xml" />
-
- <xinclude:include href='chap-api-overview.xml' />
+    <xinclude:include href="preface.xml" />
+    <xinclude:include href='chap-api-overview.xml' />
  <!-- TODO: Build a full list of what to include in this chapter.
  <xinclude:include href='chap-best-practices.xml' />
  -->
- <xinclude:include href='chap-client-dev.xml' />
+    <xinclude:include href='chap-client-dev.xml' />
+    <xinclude:include href='chap-fedlets.xml' />
+    <xinclude:include href='chap-customizing.xml' />
+    <xinclude:include href='chap-extending.xml' />
 
- <xinclude:include href='chap-rest.xml' />
- <xinclude:include href='chap-rest-authz-policy.xml' />
- <xinclude:include href='chap-rest-oauth2-oidc.xml' />
- <xinclude:include href='chap-rest-user-services.xml' />
- <xinclude:include href='chap-rest-identity-realm-mgmt.xml' />
-
- <xinclude:include href='chap-rest-sts.xml' />
-
- <xinclude:include href='chap-jdk.xml' />
- <xinclude:include href='chap-authentication.xml' />
- <xinclude:include href='chap-session.xml' />
- <xinclude:include href='chap-policy-decisions.xml' />
- <xinclude:include href='chap-xacml.xml' />
- <xinclude:include href='chap-fedlet-java.xml' />
- <xinclude:include href='chap-fedlet-dotnet.xml' />
- <!-- TODO: Show some basic uses of the SAML 2.0 and WS-Federation APIs
- <xinclude:include href='chap-samlv2.xml' />
- <xinclude:include href='chap-ws-federation.xml' />
+ <!-- TODO: Show some basic uses of the SAML v2.0 and WS-Federation APIs
+    <xinclude:include href='chap-samlv2.xml' />
+    <xinclude:include href='chap-ws-federation.xml' />
   -->
- <xinclude:include href="chap-sae.xml" />
+    <xinclude:include href="chap-sae.xml" />
  <!-- OpenID is currently an extension on trunk.
- <xinclude:include href='chap-openid.xml' />
+    <xinclude:include href='chap-openid.xml' />
  -->
- <xinclude:include href='chap-csdk.xml' />
-
- <xinclude:include href='chap-extending.xml' />
- <xinclude:include href='chap-custom-attr.xml' />
- <xinclude:include href='chap-oauth2-scopes.xml' />
- <xinclude:include href='chap-scripted-auth-module.xml' />
- <xinclude:include href='chap-auth-spi.xml' />
- <xinclude:include href='chap-custom-quota-exhaustion-action.xml' />
- <xinclude:include href='chap-post-auth.xml' />
- <xinclude:include href='chap-policy-spi.xml' />
- <xinclude:include href='chap-identity-repo-spi.xml' />
  <!-- TODO: Chapter on integrating a custom service
- <xinclude:include href='chap-sms-spi.xml' />
+    <xinclude:include href='chap-sms-spi.xml' />
  -->
  <!-- TODO: Chapter on building a custom web agent with the C SDK
- <xinclude:include href='chap-custom-web-agent.xml' />
+     <xinclude:include href='chap-custom-web-agent.xml' />
  -->
-
 <!-- TODO: Add the C API Reference pages
  <reference>
   <title>OpenAM C API Reference</title>
@@ -156,6 +131,8 @@
   </refentry>
  </reference>
  -->
- 
+
+    <xinclude:include href='appendix-deprecated-apis.xml' />
+
  <index />
 </book>

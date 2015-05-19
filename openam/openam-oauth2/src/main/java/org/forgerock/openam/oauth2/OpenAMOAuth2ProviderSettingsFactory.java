@@ -18,11 +18,10 @@ package org.forgerock.openam.oauth2;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
-
+import org.forgerock.oauth2.core.OAuth2Constants;
 import org.forgerock.oauth2.core.OAuth2ProviderSettings;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
 import org.forgerock.oauth2.core.OAuth2Request;
@@ -49,7 +48,7 @@ public class OpenAMOAuth2ProviderSettingsFactory implements OAuth2ProviderSettin
     private final BaseURLProviderFactory baseURLProviderFactory;
 
     /**
-     * Contructs a new OpenAMOAuth2ProviderSettingsFactory.
+     * Constructs a new OpenAMOAuth2ProviderSettingsFactory.
      *
      * @param realmNormaliser An instance of the RealmNormaliser.
      * @param cookieExtractor An instance of the CookieExtractor.
@@ -68,9 +67,9 @@ public class OpenAMOAuth2ProviderSettingsFactory implements OAuth2ProviderSettin
      * {@inheritDoc}
      */
     public OAuth2ProviderSettings get(OAuth2Request request) throws NotFoundException {
-        final String realm = realmNormaliser.normalise(request.<String>getParameter("realm"));
+        final String realm = realmNormaliser.normalise(request.<String>getParameter(OAuth2Constants.Custom.REALM));
         final HttpServletRequest req = ServletUtils.getRequest(request.<Request>getRequest());
-        String baseUrlPattern = baseURLProviderFactory.get(req, realm).getURL(req);
+        String baseUrlPattern = baseURLProviderFactory.get(realm).getURL(req);
         return getInstance(realm, baseUrlPattern);
     }
 

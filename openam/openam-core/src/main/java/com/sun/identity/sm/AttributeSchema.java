@@ -1,4 +1,4 @@
-/**
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2005 Sun Microsystems Inc. All Rights Reserved
@@ -24,10 +24,7 @@
  *
  * $Id: AttributeSchema.java,v 1.13 2009/01/13 06:56:08 mahesh_prasad_r Exp $
  *
- */
-
-/*
- * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2014-2015 ForgeRock AS.
  */
 
 package com.sun.identity.sm;
@@ -59,7 +56,7 @@ import com.sun.identity.security.EncodeAction;
  */
 public class AttributeSchema {
     // Debug
-    private static Debug debug = SMSEntry.debug;
+    private Debug debug = Debug.getInstance("amSMS");
 
     // Instance variable
     ServiceSchemaManager ssm;
@@ -362,13 +359,34 @@ public class AttributeSchema {
      * Returns the possible choice values for the attribute if the attribute
      * type is either <code>SINGLE_CHOICE</code> or
      * <code>MULTIPLE_CHOICE</code>, for the given environment parameters.
-     * 
+     *
      * @param envParams
      *            Map of environment parameter to a set of values
      * @return set of possible choice values
      */
     public String[] getChoiceValues(Map envParams) {
         return (as.getChoiceValues(envParams));
+    }
+
+    /**
+     * Returns the possible choice values for the attribute if the attribute
+     * type is either <code>SINGLE_CHOICE</code> or
+     * <code>MULTIPLE_CHOICE</code>, for the given environment parameters,
+     * along with the values' i18n keys.
+     *
+     * @param envParams
+     *            Map of environment parameter to a set of values
+     * @return Map of value to i18n key.
+     */
+    public Map getChoiceValuesMap(Map envParams) {
+        return as.getChoiceValuesMap(envParams);
+    }
+
+    /**
+     * Indicates whether this AttributeSchema has choice values defined.
+     */
+    public boolean hasChoiceValues() {
+        return as.hasChoiceValues();
     }
 
     /**
@@ -721,6 +739,28 @@ public class AttributeSchema {
                     + ":" + arg, "sms-invalid-searchable-value");
         }
         updateXMLDocument(SMSUtils.ISSEARCHABLE, value);
+    }
+
+    /**
+     * Returns the name of this attribute when used in a CREST representation.
+     */
+    public String getResourceName() {
+        String resourceName = as.getResourceName();
+        return resourceName == null ? getName() : resourceName;
+    }
+
+    /**
+     * Sets the CREST representation name for the attribute.
+     *
+     * @param name
+     *            the name of the CREST property.
+     * @throws SMSException
+     *             if an error is encountered when trying to set.
+     * @throws SSOException
+     *             if the single sign on token is invalid or expired.
+     */
+    public void setResourceName(String name) throws SSOException, SMSException {
+        updateXMLDocument(SMSUtils.RESOURCE_NAME, name);
     }
 
     /**

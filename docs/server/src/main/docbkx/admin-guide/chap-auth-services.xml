@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-auth-services'
@@ -685,6 +685,17 @@
       <literal>iplanet-am-auth-ldap-ssl-enabled</literal></para>
      </listitem>
     </varlistentry>
+
+    <varlistentry>
+     <term>Trust All Server Certificates</term>
+     <listitem>
+      <para>When enabled, blindly trust server certificates, including
+       self-signed test certificates.</para>
+      <para><command>ssoadm</command> attribute:
+       <literal>iplanet-am-auth-ldap-ssl-trust-all</literal></para>
+     </listitem>
+    </varlistentry>
+
     <varlistentry>
      <term>Return User DN to DataStore</term>
      <listitem>
@@ -3220,6 +3231,20 @@ $ ssoadm set-realm-svc-attrs \
      <literal>sunAMAuthJDBCAuthLevel</literal></para></listitem>
     </varlistentry>
    </variablelist>
+
+   <note>
+    <para>
+OpenAM provides two properties, <literal>iplanet-am-admin-console-invalid-chars</literal> and
+<literal>iplanet-am-auth-ldap-invalid-chars</literal>, that store
+LDAP-releated special characters that are not allowed in username searches.
+    </para>
+    <para>
+When using JDBC databases, consider adding the '%' wildcard character to
+the <literal>iplanet-am-admin-console-invalid-chars</literal> and
+<literal>iplanet-am-auth-ldap-invalid-chars</literal> properties. By default,
+the '%' character is not included in the properties.
+    </para>
+   </note>
   </section>
   
   <section xml:id="ldap-module-conf-hints">
@@ -4942,7 +4967,7 @@ ssoadm \
     For details on writing authentication module scripts, see the
     <citetitle>Developer Guide</citetitle> chapter,
     <link
-     xlink:href="dev-guide#chap-scripted-auth-module"
+     xlink:href="dev-guide#sec-scripted-auth-module"
      xlink:role="http://docbook.org/xlink/role/olink"
      xlink:show="new"
     ><citetitle>Scripting Authentication</citetitle></link>.
@@ -5613,7 +5638,7 @@ ssoadm \
 
   <para>If necessary, you can also write your own custom post authentication
   plugin as described in the <citetitle>Developer's Guide</citetitle> chapter
-  on <link xlink:href="dev-guide#chap-post-auth"
+  on <link xlink:href="dev-guide#sec-post-auth"
   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Creating a Post
   Authentication Plugin</citetitle></link>.</para>
  </section>
@@ -6048,7 +6073,7 @@ ssoadm \
    <para>If none of these session quota exhaustion actions fit your deployment,
    you can implement a custom session quota exhaustion action. See the
    <citetitle>Developer's Guide</citetitle> chapter on <link
-   xlink:href="dev-guide#chap-custom-quota-exhaustion-action"
+   xlink:href="dev-guide#sec-custom-quota-exhaustion-action"
    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Customizing
    Session Quota Exhaustion Actions</citetitle></link> for an example.</para>
   </step>

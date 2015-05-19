@@ -72,34 +72,6 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>process</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <processors>
-                                <processor>org.forgerock.openam.upgrade.apt.UpgradeStepProcessor</processor>
-                            </processors>
-                            <options>
-                                <outputFile>${project.build.directory}/generated-resources/upgradesteps.properties</outputFile>
-                            </options>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.forgerock.openam</groupId>
-                        <artifactId>openam-build-tools</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -178,10 +150,6 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-entitlements</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-coretoken</artifactId>
         </dependency>
         <dependency>
@@ -223,6 +191,14 @@
         <dependency>
             <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-tokens</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.commons</groupId>
+            <artifactId>forgerock-bloomfilter-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.commons</groupId>
+            <artifactId>forgerock-bloomfilter-monitoring</artifactId>
         </dependency>
 
         <!-- LDAP APIs -->
@@ -355,6 +331,11 @@
         <dependency>
             <groupId>xerces-J</groupId>
             <artifactId>xml-serializer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
         </dependency>
 
         <!-- Legacy External Libraries for OpenAM -->

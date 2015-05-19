@@ -8,8 +8,7 @@
         },
         "messages" : {
             "AppMessages" : {
-                "invalidRealm": "The realm doesn't exist",
-                "inconsistentRealm": "The realm is inconsistent"
+                "invalidRealm": "The realm doesn't exist"
             },
             "CommonMessages" : {
                 "authenticationFailed" : "User name/password combination is invalid.",
@@ -42,7 +41,7 @@
                 "profileUpdateFailed" : "Problem during profile update",
                 "profileUpdateSuccessful" : "Profile has been updated",
                 "userNameUpdated" : "Username has been modified successfully.",
-                "afterRegistration" : "Your account has been registered successfully",
+                "afterRegistration" : "Your account has been registered successfully.",
                 "siteIdentificationChanged" : "Site identification image has been changed",
                 "userAlreadyExists" : "User already exists",
                 "errorDeletingNotification" : "Error deleting notification.",
@@ -75,13 +74,14 @@
                     "myTasks" : "My tasks",
                     "startProcess" : "Start process",
                     "oauthtokens" : "OAuth 2 Token Manager",
-                    "uma" : "User Managed Access",
+                    "uma" : "Shares",
                     "umaLinks": {
                         "history" : "History",
                         "resources" : "Resources",
                         "users" : "Users",
                         "apps" : "Apps"
-                    }
+                    },
+                    "console": "Console"
                 }
             }
         }
@@ -194,6 +194,10 @@
             "issued" : "Issued",
             "realm" : "Realm",
             "tokenInfo": "TokenInfo"
+        },
+        "login" : {
+            "notMember": "Not a member?",
+            "joinNow": "Join now"
         }
     },
     "common" : {
@@ -213,10 +217,12 @@
             "home" : "Home",
             "start" : "Start",
             "continue" : "Continue",
+            "next" : "Next",
             "back" : "Back",
             "delete" : "Delete",
             "details" : "Details",
             "pleaseSelect" : "Please Select",
+            "select" : "Select",
             "addUser" : "Add user",
             "decision" : "Decision",
             "accept" : "Accept",
@@ -229,7 +235,8 @@
             "revoke" : "Revoke",
             "done" : "Done",
             "ok" : "OK",
-            "copyright" : "Copyright &copy; 2010-15 ForgeRock AS, all rights reserved.",
+            "working" : "Working...",
+            "copyright" : "Copyright &copy; 2010-15 ForgeRock AS. All rights reserved.",
             "sessionExpired" : "Session Expired",
             "enableCookies" : "Cookies must be enabled to login",
             "deleteSelected" : "Delete Selected",
@@ -393,6 +400,7 @@
             }
         },
         "share": {
+            "shareResource": "Share the resource",
             "people": "Add or select people to share your resource with",
             "permission": "Select Permission",
             "share": "Share",
@@ -454,6 +462,30 @@
         "apps": {
             "title": "Apps",
             "subtitle": "..."
+        }
+    },
+    "console": {
+        "authentication": {
+            "advancedSettings": {
+                "revert": "Revert",
+                "saveChanges": "Save Changes"
+            },
+            "settings": {
+                "advancedSettings": "Advanced Settings",
+                "saveChanges": "Save Changes"
+            },
+            "modules": {
+                "description" : "OpenAM uses authentication modules to identify the user. Normally authentication modules are associated with an authentication chain. Each realm has a default authentication chain that will be used to authenticate users. This section is used to add, configure or remove authentication module available for authentication into this realm.",
+                "addModuleDialogTitle" : "Create new Module",
+                "addModule": "Add Module",
+                "deleteModule": "Delete"
+            },
+            "chains": {
+                "action" : "Add Chain",
+                "description" : "OpenAM uses authentication chains to control the authentication flow the user. Use this section to add, configure or remove the realms set of authentication chains.",
+                "defaultAdminAuthConfiguration" : "Default Administrator Authentication Chain",
+                "defaultOrgAuthConfiguration" : "Default Organization Authentication Chain"
+            }
         }
     }
 }

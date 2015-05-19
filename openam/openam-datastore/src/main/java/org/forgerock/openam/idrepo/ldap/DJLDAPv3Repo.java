@@ -166,6 +166,9 @@ public class DJLDAPv3Repo extends IdRepo implements IdentityMovedOrRenamedListen
     private Cache dnCache;
     // provides a switch to enable/disable the dnCache
     private boolean dnCacheEnabled = false;
+    
+    private boolean isSecure = false;
+    private boolean useStartTLS = false;
 
     /**
      * Initializes the IdRepo instance, basically within this method we process
@@ -208,6 +211,11 @@ public class DJLDAPv3Repo extends IdRepo implements IdentityMovedOrRenamedListen
         heartBeatInterval = CollectionHelper.getIntMapAttr(configParams, LDAP_SERVER_HEARTBEAT_INTERVAL, "10",
                 DEBUG);
         heartBeatTimeUnit = CollectionHelper.getMapAttr(configParams, LDAP_SERVER_HEARTBEAT_TIME_UNIT, "SECONDS");
+
+        String connectionMode = CollectionHelper.getMapAttr(configParams, LDAP_CONNECTION_MODE);
+        useStartTLS = LDAP_CONNECTION_MODE_STARTTLS.equalsIgnoreCase(connectionMode);
+        isSecure = LDAP_CONNECTION_MODE_LDAPS.equalsIgnoreCase(connectionMode) || useStartTLS;
+
         bindConnectionFactory = createConnectionFactory(null, null, maxPoolSize);
         connectionFactory = createConnectionFactory(username, password, maxPoolSize);
 
@@ -284,6 +292,7 @@ public class DJLDAPv3Repo extends IdRepo implements IdentityMovedOrRenamedListen
         } else {
             helper = new DirectoryHelper();
         }
+
         if (DEBUG.messageEnabled()) {
             DEBUG.message("IdRepo configuration:\n"
                     + IdRepoUtils.getAttrMapWithoutPasswordAttrs(configMap, asSet(LDAP_SERVER_PASSWORD)));
@@ -293,11 +302,14 @@ public class DJLDAPv3Repo extends IdRepo implements IdentityMovedOrRenamedListen
     protected ConnectionFactory createConnectionFactory(String username, char[] password, int maxPoolSize) {
         LDAPOptions ldapOptions = new LDAPOptions();
         ldapOptions.setTimeout(defaultTimeLimit, TimeUnit.SECONDS);
-        boolean sslMode = Boolean.valueOf(CollectionHelper.getMapAttr(configMap, LDAP_SSL_ENABLED)).booleanValue();
 
-        if (sslMode) {
+        if (isSecure) {
             try {
                 ldapOptions.setSSLContext(new SSLContextBuilder().getSSLContext());
+
+                if (useStartTLS) {
+                    ldapOptions.setUseStartTLS(true);
+                }
             } catch (GeneralSecurityException gse) {
                 DEBUG.error("An error occurred while setting the SSLContext", gse);
             }

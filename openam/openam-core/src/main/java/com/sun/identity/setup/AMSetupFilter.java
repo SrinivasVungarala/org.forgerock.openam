@@ -1,4 +1,4 @@
-/**
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2006 Sun Microsystems Inc. All Rights Reserved
@@ -24,18 +24,11 @@
  *
  * $Id: AMSetupFilter.java,v 1.12 2008/07/13 06:06:49 kevinserwin Exp $
  *
- */
-
-/*
- * Portions Copyrighted 2011-2014 ForgeRock AS
+ * Portions Copyrighted 2011-2015 ForgeRock AS.
  */
 
 package com.sun.identity.setup;
 
-import com.sun.identity.common.configuration.ConfigurationException;
-import com.sun.identity.shared.Constants;
-import java.io.File;
-import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -45,7 +38,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.forgerock.openam.upgrade.UpgradeUtils;
+import java.io.File;
+import java.io.IOException;
+
+import com.sun.identity.common.configuration.ConfigurationException;
+import com.sun.identity.shared.Constants;
+import org.forgerock.openam.upgrade.VersionUtils;
 
 /**
  * This filter brings administrator to a configuration page
@@ -53,9 +51,7 @@ import org.forgerock.openam.upgrade.UpgradeUtils;
  * yet configured.
 */
 public final class AMSetupFilter implements Filter {
-    private FilterConfig config;
-    private ServletContext servletCtx;
-    private boolean initialized;
+
     private boolean passthrough;
     private static final String SETUP_URI = "/config/options.htm";
     private static final String UPGRADE_URI = "/config/upgrade/upgrade.htm";
@@ -78,29 +74,23 @@ public final class AMSetupFilter implements Filter {
      * @throws IOException if configuration file cannot be read.
      * @throws ServletException if there are errors in the servlet space.
      */
-    public void doFilter(
-        ServletRequest request, 
-        ServletResponse response, 
-        FilterChain filterChain
-    ) throws IOException, ServletException 
-    {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException,
+            ServletException {
         HttpServletRequest  httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response ;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         try {
             if (AMSetupServlet.isCurrentConfigurationValid()) {
                 String incomingURL = httpRequest.getRequestURI();
                 if (incomingURL.endsWith(SETUP_URI) || incomingURL.endsWith(UPGRADE_URI)
                         || incomingURL.endsWith(SETUP_PROGRESS_URI) || incomingURL.endsWith(UPGRADE_PROGESS_URI)) {
-                    String url = httpRequest.getScheme() + "://" +
-                        httpRequest.getServerName() + ":" +
-                        httpRequest.getServerPort() +
-                        httpRequest.getContextPath();
+                    String url = httpRequest.getScheme() + "://" + httpRequest.getServerName() + ":"
+                            + httpRequest.getServerPort() + httpRequest.getContextPath();
                     httpResponse.sendRedirect(url);
                 } else {
                     filterChain.doFilter(httpRequest, httpResponse);
                 }
             } else {
-                if (AMSetupServlet.getBootStrapFile() != null && !UpgradeUtils.isVersionNewer() 
+                if (AMSetupServlet.getBootStrapFile() != null && !VersionUtils.isVersionNewer()
                         && !AMSetupServlet.isUpgradeCompleted()) {
                     String redirectUrl = System.getProperty(Constants.CONFIG_STORE_DOWN_REDIRECT_URL);
                     if (redirectUrl != null && redirectUrl.length() > 0) {
@@ -116,11 +106,9 @@ public final class AMSetupFilter implements Filter {
                         if (incomingURL.endsWith("configurator")) {
                             filterChain.doFilter(httpRequest, httpResponse);  
                         } else {
-                            String url = httpRequest.getScheme() + "://" +
-                                httpRequest.getServerName() + ":" +
-                                httpRequest.getServerPort() +
-                                httpRequest.getContextPath();
-                            if ((new File(System.getProperty("user.home"))).canWrite()){
+                            String url = httpRequest.getScheme() + "://" + httpRequest.getServerName() + ":"
+                                    + httpRequest.getServerPort() + httpRequest.getContextPath();
+                            if (new File(System.getProperty("user.home")).canWrite()) {
                                 url += SETUP_URI;
                             } else {
                                 url += NOWRITE_PERMISSION;
@@ -144,10 +132,10 @@ public final class AMSetupFilter implements Filter {
      * @return <code>true</code> if the request for resources.
      */
     private boolean validateStream(HttpServletRequest httpRequest) {
-        String uri =  httpRequest.getRequestURI();
+        String uri = httpRequest.getRequestURI();
         boolean ok = false;
         for (int i = 0; (i < fList.length) && !ok; i++) {
-            ok = (uri.indexOf(fList[i]) != -1);
+            ok = uri.contains(fList[i]);
         }
         return ok;     
     }
@@ -156,7 +144,6 @@ public final class AMSetupFilter implements Filter {
      * Destroy the filter config on sever shutdowm 
      */
     public void destroy() {
-        config = null;
     }
     
     /**
@@ -165,23 +152,11 @@ public final class AMSetupFilter implements Filter {
      * @param filterConfig Filter Configuration.
      */
     public void init(FilterConfig filterConfig) {
-        setFilterConfig(filterConfig);
-        servletCtx = filterConfig.getServletContext();
-        initialized = AMSetupServlet.checkInitState(servletCtx); 
-        if (!initialized) {
+        ServletContext servletCtx = filterConfig.getServletContext();
+        if (!AMSetupServlet.checkInitState(servletCtx)) {
             //Set the encryption Key
-            servletCtx.setAttribute("am.enc.pwd",
-                AMSetupServlet.getRandomString());
+            servletCtx.setAttribute("am.enc.pwd", AMSetupUtils.getRandomString());
         }
-    }
-    
-    /**
-     * Initializes the filter configuration.
-     *
-     * @param fconfig Filter Configuration.
-     */
-    public void setFilterConfig(FilterConfig fconfig) {
-        config = fconfig;
     }
     
     /**
