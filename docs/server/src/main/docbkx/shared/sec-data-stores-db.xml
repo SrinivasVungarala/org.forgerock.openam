@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <section xml:id="sec-data-stores-db"
@@ -311,6 +311,24 @@
     <para>
      Table to store user profiles
     </para>
+
+    <tip><para>A MySQL database table for storing user profiles could be
+     created with the following example SQL statement:</para>
+<programlisting language="SQL">CREATE TABLE `opensso_users` (
+ `_id` int(10) NOT NULL AUTO_INCREMENT,
+ `uid` varchar(35) DEFAULT NULL,
+ `sn` varchar(35) DEFAULT NULL,
+ `cn` varchar(75) DEFAULT NULL,
+ `userpassword` varchar(45) DEFAULT NULL,
+ `inetuserstatus` varchar(8) DEFAULT "Active",
+ `mail` varchar(254) DEFAULT NULL,
+ `givenname` varchar(35) DEFAULT NULL,
+ `telephonenumber` varchar(15) DEFAULT NULL,
+ `employeenumber` varchar(10) DEFAULT NULL,
+ `postaladdress` varchar(175) DEFAULT NULL,
+ `iplanet-am-user-account-life` varchar(19) DEFAULT NULL,
+ PRIMARY KEY (`_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;</programlisting></tip>
 
     <para>
      <command>ssoadm</command> attribute:
