@@ -262,6 +262,9 @@ public class Session extends GeneralTaskRunnable {
 
     private SessionID sessionID;
 
+    public static Session getSession(SessionID sid) throws SessionException {
+    	return org.forgerock.openam.session.SessionCache.getInstance().getSession(sid);
+    }
     /**
      * Constructor used by this package only.
      *
