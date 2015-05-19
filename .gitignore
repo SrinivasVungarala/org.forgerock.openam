@@ -7,3 +7,7 @@ target
 .settings
 .classpath
 .git.properties
+.DS_Store
+dependency-reduced-pom.xml
+logs
+openam-agents/jee-agents/jee-agents-sdk/src/main/java/org/forgerock/openam/util/Version.java
