@@ -35,8 +35,8 @@ define([
 
     "./common/Utils",
     "./common/HelpLinkView",
-    "./common/GenericGridView",
     "./common/AbstractEditView",
+    "./common/AbstractListView",
 
     "./applications/ApplicationsListView",
     "./applications/EditApplicationView",
@@ -56,8 +56,5 @@ define([
     "./policies/conditions/OperatorRulesView",
 
     "./resourcetypes/EditResourceTypeView",
-    "./resourcetypes/ResourceTypesListView",
-
-    "./referrals/EditReferralView",
-    "./referrals/SelectRealmsView"
+    "./resourcetypes/ResourceTypesListView"
 ]);

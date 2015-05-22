@@ -14,13 +14,12 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-/*global define Backgrid, Backbone, _, $*/
+/*global define Backbone, _, $*/
 
 define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
-    "org/forgerock/commons/ui/common/util/UIUtils",
-    "org/forgerock/commons/ui/common/main/Router",
-    "backgrid"
-], function (UIUtils, Router, Backgrid) {
+    "backgrid",
+    "org/forgerock/commons/ui/common/util/UIUtils"
+], function (Backgrid, UIUtils) {
     var obj = {};
 
     // TODO: the difference between this implementation and the one used for UMA is that here the cell is not clickable
@@ -138,14 +137,21 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
     });
 
     // TODO: candidate for commons, have not changed it, using UMA version
-    obj.queryFilter = function () {
-        var params = [];
+    obj.queryFilter = function (customFilters) {
+        var params = [],
+            i = 0;
+
+        customFilters = customFilters || [];
+
         _.each(this.state.filters, function (filter) {
             if (filter.query() !== '') {
                 // todo: No server side support for 'co' ATM, this is effectively an 'eq'
                 params.push(filter.name + '+co+' + encodeURIComponent('"' + filter.query() + '"'));
             }
         });
+
+        params = params.concat(customFilters);
+
         return params.length === 0 || params.join('+AND+');
     };
 
@@ -190,6 +196,26 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
     // TODO: candidate for commons, have not changed it, using UMA version
     obj.parseRecords = function (data, options) {
         return data.result;
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    obj.sortKeys = function() {
+        return this.state.order === 1 ? '-' + this.state.sortKey : this.state.sortKey;
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    // FIXME: Workaround to fix "Double sort indicators" issue
+    // @see https://github.com/wyuenho/backgrid/issues/453
+    obj.doubleSortFix = function(model) {
+        // No ids so identify model with CID
+        var cid = model.cid,
+            filtered = model.collection.filter(function(model) {
+                return model.cid !== cid;
+            });
+
+        _.each(filtered, function(model) {
+            model.set('direction', null);
+        });
     };
 
     return obj;
