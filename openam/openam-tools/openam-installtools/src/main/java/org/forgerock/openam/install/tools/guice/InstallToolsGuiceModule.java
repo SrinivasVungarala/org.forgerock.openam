@@ -37,7 +37,8 @@ public class InstallToolsGuiceModule extends AbstractModule {
     @Override
     protected void configure() {
 
-        bind(LicenseLog.class).toInstance(new PropertiesFileLicenseLog(new File(ConfigUtil.getDataDirPath())));
+    	if (ConfigUtil.getDataDirPath()!=null)
+    		bind(LicenseLog.class).toInstance(new PropertiesFileLicenseLog(new File(ConfigUtil.getDataDirPath())));
         bind(DebugLog.class).to(DebugFileLog.class);
 
     }

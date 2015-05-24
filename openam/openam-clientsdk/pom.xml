@@ -117,9 +117,27 @@
                             <include>org.forgerock.openam:OpenFM</include>
                             <include>org.forgerock.openam:openam-client-sts</include>
                             <include>org.json:json</include>
+                            <include>commons-collections:commons-collections</include>
+                            <include>org.forgerock.openam:openam-license-core</include>
                         </includes>
                     </artifactSet>
                     <filters>
+                    	<filter>
+                            <artifact>org.forgerock.openam:openam-license-core</artifact>
+                            <includes>
+                                <include>**/**</include>
+                            </includes>
+                            <excludes>
+                            </excludes>
+                        </filter>
+                    	<filter>
+                            <artifact>commons-collections:commons-collections</artifact>
+                            <includes>
+                                <include>**/**</include>
+                            </includes>
+                            <excludes>
+                            </excludes>
+                        </filter>
                         <filter>
                             <artifact>org.forgerock.openam:openam-core</artifact>
                             <includes>
@@ -134,10 +152,13 @@
                                 <include>amSecurity.properties</include>
                                 <include>amSession.properties</include>
                                 <include>serverAttributeMap.properties</include>
+                                <include>debugfiles.properties</include>
                                 <include>com/iplanet/am/sdk/**</include>
                                 <include>com/iplanet/am/util/**</include>
                                 <include>com/iplanet/dpro/session/service/InternalSession*</include>
                                 <include>com/iplanet/dpro/session/service/SessionService*</include>
+                                <include>com/iplanet/dpro/session/service/cluster/ClusterMonitor*</include>
+                                <include>org/apache/commons/collections/Predicate*</include>
                                 <include>com/iplanet/dpro/session/operations/SessionOperations*</include>
                                 <include>com/iplanet/dpro/session/operations/SessionOperationStrategy*</include>
                                 <include>com/iplanet/dpro/session/operations/RemoteSessionOperationStrategy*</include>
@@ -209,6 +230,7 @@
                                 <include>com/sun/identity/common/SystemProperties*</include>
                                 <include>com/sun/identity/configuration/SystemProperties*</include>
                                 <include>com/sun/identity/delegation/DelegationException*</include>
+                                <include>com/sun/identity/delegation/DelegationEvaluator*</include>
                                 <include>com/sun/identity/entitlement/**</include>
                                 <include>com/sun/identity/entity/*</include>
                                 <include>com/sun/identity/idm/*</include>
@@ -254,10 +276,12 @@
                                 <include>org/forgerock/openam/entitlement/conditions/**</include>
                                 <include>org/forgerock/openam/services/cdm/**</include>
                                 <include>org/forgerock/openam/session/*</include>
+                                <include>org/forgerock/openam/sso/providers/stateless/*</include>
                                 <include>org/forgerock/openam/security/whitelist/**</include>
                                 <include>org/forgerock/openam/upgrade/UpgradeException*</include>
                                 <include>org/forgerock/openam/validation/ResponseValidationFilter*</include>
                                 <include>META-INF/services/org.forgerock.openam.entitlement.ConditionTypeRegistry</include>
+                                <include>org/forgerock/openam/cts/exceptions/CoreTokenException*</include>
                             </includes>
                             <excludes>
                                 <exclude>com/iplanet/am/sdk/ldap/**</exclude>
