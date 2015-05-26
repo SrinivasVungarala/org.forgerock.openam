@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2014 ForgeRock AS
+  !      Copyright 2014-2015 ForgeRock AS.
   !
 -->
 
@@ -38,9 +38,10 @@
      <primary>Application</primary>
      <secondary>Configuring</secondary>
     </indexterm>
-    <para>This section describes the process of creating applications, which are
-     used as templates for policies protecting a web site or web application,
-     using the OpenAM console.</para>
+    <para>This section describes how to use the OpenAM
+     console to create applications, which are
+     used as templates for policies protecting Web sites, Web applications,
+     or other resources.</para>
 
     <procedure xml:id="create-app-xui">
 
@@ -69,82 +70,39 @@
              description, and then click Next.
             </para>
 
-            <para>
-             Do not use special characters within policy, application or referral names
-             (for example, "my+referral") using the Policy Editor or REST endpoints as
-             OpenAM returns a 400 Bad Request error.
-             The special characters are: double quotes ("), plus sign (+), comma (,),
-             less than (&lt;), equals (=), greater than (&gt;), backslash (\), and
-             null (\u0000).
-            </para>
+            <xinclude:include
+             href="shared/para-special-characters.xml"><xinclude:fallback>
+             <para>
+              Special Characters in Policies, Resource Types or Applications missing:
+              shared/para-special-characters.xml
+             </para>
+            </xinclude:fallback></xinclude:include>
 
         </step>
      <step>
-     <para>Define resource patterns that policies within this
-      application use as the basis for their rules, by following the steps
+     <para>Select the resource types that policies within this
+      application use as the basis for their rules by following the steps
       below:</para>
      <substeps>
         <step>
-            <para>In the Available patterns section, click
-             the row containing an asterisk (<literal>*</literal>) to move the
-             pattern to the Create your resources section.</para>
-            <mediaobject xml:id="figure-resource-patterns-step1">
-             <alt>Move available starter patterns to the right of the screen to
-              configure the resource patterns that policies in this
+            <para>In the Available Resource Types section, click a resource
+             type to move to the Selected Resource Types section.</para>
+            <mediaobject xml:id="console-applications-add-resource-types">
+             <alt>Move available resource types to the right of the screen to
+              select the resource types that policies in this
               application use.</alt>
              <imageobject>
               <imagedata
-               fileref="./images/resource-pattern-templates-step1.png"
+               fileref="images/console-applications-add-resource-types.png"
                          format="PNG" />
              </imageobject>
-             <textobject><para>Click the arrow to move the pattern to
+             <textobject><para>Click the arrow to move the resource type to
               the right.</para></textobject>
             </mediaobject>
         </step>
-
-
-          <step performance="optional">
-            <para>Optionally, in the Create your resources section, replace the
-             asterisk with a pattern that the policies in the application use as
-             a template for specifying resources.</para>
-
-         <mediaobject xml:id="figure-resource-patterns-step2">
-          <alt>Create resource patterns, with optional wildcards,
-           that policies in this application use.</alt>
-          <imageobject>
-           <imagedata
-            fileref="images/resource-pattern-templates-step2.png"
-            format="PNG" />
-          </imageobject>
-          <textobject><para>Enter the resource pattern.</para></textobject>
-         </mediaobject>
-         <para>For information on specifying patterns that the
-          policies use for matching resources, see
-          <link xlink:href="admin-guide#policy-patterns-wildcards"
-                xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink">
-           <citetitle>Specifying Resource Patterns with Wildcards</citetitle></link>.</para>
-      </step>
-      <step>
-
-        <para>Click the Add icon to move the pattern into
-         the Resources section.</para>
-
-         <mediaobject xml:id="figure-resource-patterns-step3">
-          <alt>Add the completed resource template to the Resources section
-           by clicking the Add icon.</alt>
-          <imageobject>
-           <imagedata
-            fileref="images/resource-pattern-templates-step3.png"
-            format="PNG" />
-          </imageobject>
-          <textobject><para>Add the resource pattern to the Resources
-           section.</para></textobject>
-         </mediaobject>
-      </step>
      </substeps>
-      <tip><para>To remove a resource pattern,
-       click the Delete icon.</para></tip>
-      <para>Repeat these steps to add all the resource patterns your
+      <tip><para>To remove a resource type, click the Delete icon.</para></tip>
+      <para>Repeat these steps to add all the resource types your
             policies may require, and then click Next.</para>
         </step>
 
@@ -164,14 +122,9 @@
         </step>
     </procedure>
 
-  <itemizedlist>
    <para>
     To make use of the new application and any policies it contains,
-    you must perform one of the following procedures:
-   </para>
-
-   <listitem>
-    <para>Configure a policy agent to use the application for
+    you must configure a policy agent to use the application for
      policy decisions.
     </para>
 
@@ -183,20 +136,4 @@
       xlink:role="http://docbook.org/xlink/role/olink"
      ><citetitle>To Specify the Realm and Application for Policy Decisions</citetitle></link>.
     </para>
-   </listitem>
-   <listitem>
-    <para>
-     Create a referral to the realm the application is in.
-    </para>
-
-    <para>
-     For details see the procedure
-     <link
-      xlink:href="admin-guide#create-referral-xui"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>To Enable Referrals in the Policy Editor</citetitle></link>.
-    </para>
-   </listitem>
-  </itemizedlist>
 </section>

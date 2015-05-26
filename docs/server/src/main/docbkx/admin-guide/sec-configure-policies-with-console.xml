@@ -20,13 +20,13 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2014 ForgeRock AS
+  !      Copyright 2014-2015 ForgeRock AS.
   !
 -->
 
 <section xml:id="configure-policies-with-console"
           xmlns='http://docbook.org/ns/docbook'
-          version='5.0' xml:lang='en'
+          version='5.0' xml:lang='en' xml:base="../"
           xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
           xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -35,8 +35,10 @@
 
     <title>Configuring Policies by Using the OpenAM Console</title>
 
-    <para>This section describes the process of configuring policies to
-     protect a web site or web application by using the OpenAM console.</para>
+ <para>This section describes the process of using the OpenAM
+  console to configure policies, which are
+  used to protect a web site, web application,
+  or other resources.</para>
 
  <procedure xml:id="create-policy-xui">
   <title>To Configure a Policy by Using the OpenAM Console</title>
@@ -66,14 +68,13 @@
    <para>Provide a name for the policy, and optionally a
     description, and then click Next.
    </para>
-   <para>
-    Do not use special characters within policy, application or referral names
-    (for example, "my+referral") using the Policy Editor or REST endpoints as
-    OpenAM returns a 400 Bad Request error.
-    The special characters are: double quotes ("), plus sign (+), comma (,),
-    less than (&lt;), equals (=), greater than (&gt;), backslash (\), and
-    null (\u0000).
-   </para>
+   <xinclude:include
+    href="shared/para-special-characters.xml"><xinclude:fallback>
+    <para>
+     Special Characters in Policies, Resource Types or Applications missing:
+     shared/para-special-characters.xml
+    </para>
+   </xinclude:fallback></xinclude:include>
   </step>
 
   <step>
@@ -81,10 +82,16 @@
     follow the steps below:</para>
    <substeps>
     <step>
+     <para>Choose a resource type in the Select Resource Type drop-down list
+      box. For information on configuring resource types, see <xref
+       linkend="configure-resource-types-with-console"/>.</para>
+     </step>
+   <step>
      <para>In the Available patterns section, click the
       row containing the pattern to use as the template for a resource pattern
       to move it to the Create your resources section.</para>
-     <mediaobject xml:id="figure-resource-patterns-policies-step1">
+
+     <mediaobject xml:id="resource-patterns-policies-step1">
       <alt>Modify the resource patterns to specify the resources the
        policy applies to.</alt>
       <imageobject>
@@ -101,7 +108,7 @@
       section, replace the asterisks with values to define the resources
       that the policy applies to.</para>
 
-     <mediaobject xml:id="figure-resource-patterns-policies-step2">
+     <mediaobject xml:id="resource-patterns-policies-step2">
       <alt>Edit the resource pattern if required.</alt>
       <imageobject>
        <imagedata
@@ -112,15 +119,13 @@
      </mediaobject>
 
      <para>For information on specifying patterns for matching resources, see
-      <link xlink:href="admin-guide#policy-patterns-wildcards"
-            xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Specifying Resource Patterns with Wildcards</citetitle></link>.</para>
+      <xref linkend="policy-patterns-wildcards" />.</para>
   </step>
 
     <step>
      <para>Click the Add icon to move the resource into
       the Resources section.</para>
-     <mediaobject xml:id="figure-resource-patterns-policies-step3">
+     <mediaobject xml:id="resource-patterns-policies-step3">
       <alt>Add the completed resource to the Resources section
        by clicking the Add icon.</alt>
       <imageobject>
@@ -132,24 +137,27 @@
      </mediaobject>
     </step>
    </substeps>
-   <tip><para>To remove a resource pattern,
-    click the Delete icon.</para></tip>
+   <tip><para>To remove a resource, click the Delete icon.</para></tip>
    <para>Repeat these steps to add all the resources your
-    policy applies to,  and then click Next.</para>
+    policy applies to, and then click Next.</para>
   </step>
 
   <step>
    <para>
-    Select the HTTP 1.1 methods that the policy applies to, and whether to
-    <literal>Allow</literal> or <literal>Deny</literal> those methods on the
-    resources specified earlier, and then click Next.</para>
-   <para>For more information on HTTP 1.1 methods, see <link
-    xlink:show="new"
-    xlink:href="https://tools.ietf.org/html/rfc2616#section-9"
-    ><citetitle>Method Definitions</citetitle></link> and <link
-    xlink:show="new"
-    xlink:href="https://tools.ietf.org/html/rfc5789"
-    ><citetitle>PATCH Method for HTTP</citetitle></link>.</para>
+    Select the actions that the policy applies to by checking the relevant box,
+    and whether to <literal>Allow</literal> or <literal>Deny</literal> those
+    actions on the resources specified earlier, and then click Next.</para>
+   <mediaobject xml:id="resource-actions-step1">
+    <alt>Select the actions and whether to allow or deny the
+     action for the resources specified.</alt>
+    <imageobject>
+     <imagedata
+      fileref="images/resource-actions-step1.png"
+      format="PNG" />
+    </imageobject>
+    <textobject><para>Select the actions and whether to allow or deny the
+     action for the resources specified.</para></textobject>
+   </mediaobject>
    </step>
 
     <step>

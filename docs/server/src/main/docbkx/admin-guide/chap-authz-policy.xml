@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-authz-policy'
@@ -74,17 +74,20 @@
   </para>
 
   <section xml:id="what-is-authz-policies">
-   <title>OpenAM Policies and Applications</title>
+   <title>OpenAM Resource Types, Applications, and Policies</title>
    <indexterm>
     <primary>Policy</primary>
    </indexterm>
+   <indexterm>
+    <primary>Resource Types</primary>
+   </indexterm>
 
-   <variablelist>
     <para>
      To allow OpenAM to determine whether to grant access,
      you define authorization <firstterm>policies</firstterm>.
      A policy defines the following.
     </para>
+   <variablelist>
 
     <varlistentry>
      <term><firstterm>resources</firstterm></term>
@@ -170,67 +173,79 @@
    </mediaobject>
 
    <para>
-    To act as a template for the policies,
-    OpenAM uses <firstterm>applications</firstterm>.
-    An application can constrain the resources that its policies apply to.
+    To help with the creation of policies, OpenAM uses
+    <firstterm>resource types</firstterm> and <firstterm>applications
+   </firstterm>.</para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Resource types</term>
+     <listitem>
+      <para>Resource types define a template for the resources that policies
+       apply to, and the actions that could be performed on those resources.</para>
+      <para>For example, the <literal>URL</literal> resource type that is
+      included by default in OpenAM acts as a template for protecting web
+      pages or applications. It contains resource patterns such as
+       <literal>*://*:*/*?*</literal>, which can be made more specific
+       when used in the policy. The actions that the resource supports
+       are also defined, as follows:</para>
+      <itemizedlist>
+       <listitem><para><literal>GET</literal></para></listitem>
+       <listitem><para><literal>POST</literal></para></listitem>
+       <listitem><para><literal>PUT</literal></para></listitem>
+       <listitem><para><literal>HEAD</literal></para></listitem>
+       <listitem><para><literal>PATCH</literal></para></listitem>
+       <listitem><para><literal>DELETE</literal></para></listitem>
+       <listitem><para><literal>OPTIONS</literal></para></listitem>
+      </itemizedlist>
+
+     <para>OpenAM also includes a resource type to protect REST endpoints, with
+      patterns including <literal>https://*:*/*?*</literal>
+      and the <abbrev>CRUDPAQ</abbrev> actions:</para>
+     <itemizedlist>
+      <listitem><para><literal>CREATE</literal></para></listitem>
+      <listitem><para><literal>READ</literal></para></listitem>
+      <listitem><para><literal>UPDATE</literal></para></listitem>
+      <listitem><para><literal>DELETE</literal></para></listitem>
+      <listitem><para><literal>PATCH</literal></para></listitem>
+      <listitem><para><literal>ACTION</literal></para></listitem>
+      <listitem><para><literal>QUERY</literal></para></listitem>
+     </itemizedlist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Applications</term>
+     <listitem>
+      <para>
+       Applications are associated with a set of resource types, and contain one
+       or more policies based upon the template it provides.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
     For example, an application for Example.com's HR service
-    might constrain all policies to apply to resources under
-    <literal>http*://example.com/hr*</literal> and
-    <literal>http*://example.com/hr*?*</literal>.
+    might contain resource types that constrain all policies to apply to URL
+    resource types under <literal>http*://example.com/hr*</literal> and
+    <literal>http*://example.com/hr*?*</literal>, and only the HTTP
+    <literal>GET</literal> and <literal>POST</literal> actions.</para>
+   <para>
     The list of applications is the first thing that you see
-    when editing policies through OpenAM console.
-    You create or select an application,
-    and then configure the policies for that application.
-   </para>
+    when editing policies in the OpenAM console. </para>
 
-   <para>
-    Applications have associated types.
-    The default application type that represents web resources
-    is <literal>iPlanetAMWebAgentService</literal>,
-    which defines resources as URL patterns and actions as HTTP methods.
-    OpenAM policy agents use a default application type based on this type,
-    which is called <literal>iPlanetAMWebAgentService</literal>.
-    This is the application type for policies
-    that you edit through OpenAM console.
-    OpenAM supports other application types as well
-    that you can manage over the policy REST APIs.
-   </para>
-
-   <para>
-    For applications that are not of type <literal>iPlanetAmWebAgentService</literal>,
-    such as CREST applications, you must manage these applications over REST.
-    OpenAM policy agents work with applications of type
-    <literal>iPlanetAmWebAgentService</literal>, so your policy evaluation points (PEPs)
-    should use the REST endpoints for policy decision requests.
-   </para>
-
-   <tip>
-    <para>
-     When you configure a policy agent,
-     if the application for its policies is not named
-     <literal>iPlanetAMWebAgentService</literal>,
-     then you must edit the policy agent configuration,
-     setting the application name to match your application.
-    </para>
-
-    <para>
-     The application you specify must exist in the evaluation realm
-     that you specify for the policy agent.
-    </para>
-   </tip>
-
-   <para>
-    When policies for an application are administered in multiple realms,
-    you set up a <firstterm>referral</firstterm> between applications.
-    When finding all policies that apply for a given request,
-    OpenAM follows the referrals
-    to locate the application's policies in other realms.
-    This is useful, for example,
-    when the same policy agents protect multiple applications.
-    The OpenAM policy editor does allow you to manage referrals as well,
-    though the referral editor is not enabled by default.
-   </para>
-   <!-- TODO: link to section explaining how to do this. -->
+   <mediaobject xml:id="console-applications">
+    <alt>Shows the Applications and Resource Types tabs as they appear in
+     the console.</alt>
+    <imageobject>
+     <imagedata
+      fileref="images/console-applications.png"
+      format="PNG" />
+    </imageobject>
+    <textobject><para>The Applications and Resource Types tabs as they appear in
+     the console.</para></textobject>
+   </mediaobject>
+   <para>To view, create or edit resource types, click the Resource Types
+    tab. See <xref linkend="configure-authz-apps" />. </para>
   </section>
 
   <section xml:id="what-is-authz-decision">
@@ -383,35 +398,44 @@
  </section>
 
  <section xml:id="configure-authz-apps">
-  <title>Configuring Applications, Policies, and Referrals</title>
+  <title>Configuring Resource Types, Applications, and Policies</title>
 
-  <para>You can configure applications, policies and referrals by using the
-   policy editor in the OpenAM console, by using the REST interface,
+  <para>You can configure resource types, applications, and policies by using
+   the Policies tab in the OpenAM console, by using the REST interface,
    or by using the <command>ssoadm</command> command.</para>
   <para>This section explains how to use the OpenAM console to configure
-   applications, policies and referrals to protect a web site or web
-   application.</para>
-  <para>To configure applications and policies to protect
-   other types of resource, you must use the REST API or
-   the <command>ssoadm</command> command. For more information on the REST API,
-   see the <citetitle>Developer's Guide</citetitle> chapters
+   resource types, applications, and policies to protect resources.</para>
+  <para>For information on managing resource types, applications, and policies
+   by using the REST API, see the <citetitle>Developer's Guide</citetitle> chapters
+      <link xlink:href="dev-guide#rest-api-authz-resource-types"
+         xlink:role="http://docbook.org/xlink/role/olink">
+    <citetitle>Managing Resource Types</citetitle></link>,
    <link xlink:href="dev-guide#rest-api-authz-applications"
          xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Defining Applications</citetitle></link> and
+    <citetitle>Managing Applications</citetitle></link>, and
    <link xlink:href="dev-guide#rest-api-authz-policies"
          xlink:role="http://docbook.org/xlink/role/olink">
     <citetitle>Managing Policies</citetitle></link>. For more
-   information on the <command>ssoadm</command> command,
+   information on using the <command>ssoadm</command> command,
    see the <citetitle>OpenAM Reference Guide</citetitle> chapter
    <link xlink:href="reference#ssoadm-1"
          xlink:role="http://docbook.org/xlink/role/olink">
     <citetitle>ssoadm</citetitle></link>.</para>
 
+  <xinclude:include href="sec-configure-resource-types-with-console.xml">
+   <xinclude:fallback>
+    <para>
+     Configuring Resource Types with the OpenAM Console missing:
+     sec-configure-resource-types-with-console.xml
+    </para>
+   </xinclude:fallback>
+  </xinclude:include>
+
   <xinclude:include href="sec-configure-apps-with-console.xml">
    <xinclude:fallback>
     <para>
      Configuring Applications with the OpenAM Console missing:
-     /sections/sec-configure-apps-with-console.xml
+     sec-configure-apps-with-console.xml
     </para>
    </xinclude:fallback>
   </xinclude:include>
@@ -420,16 +444,7 @@
    <xinclude:fallback>
     <para>
      Configuring Policies with the OpenAM Console missing:
-     /sections/sec-configure-apps-with-console.xml
-    </para>
-   </xinclude:fallback>
-  </xinclude:include>
-
-  <xinclude:include href="sec-configure-referrals-with-console.xml">
-   <xinclude:fallback>
-    <para>
-     Configuring Referrals with the OpenAM Console missing:
-     /sections/sec-configure-referrals-with-console.xml
+     sec-configure-apps-with-console.xml
     </para>
    </xinclude:fallback>
   </xinclude:include>

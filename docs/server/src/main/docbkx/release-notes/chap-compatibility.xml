@@ -42,10 +42,207 @@
 
    <listitem>
     <para>
-     TODO: Update for the next release
+     The <literal>applications</literal> REST endpoint has changed.
+    </para>
+    <para>
+     With the introduction of
+     <link xlink:show="new" xlink:href="admin-guide#what-is-authz-policies"
+      xlink:role="http://docbook.org/xlink/role/olink">resource types</link> into
+     the policy model the <literal>/json/applications</literal> endpoint has
+     changed, and the <link xlink:show="new"
+                            xlink:href="dev-guide#rest-api-versioning"
+      xlink:role="http://docbook.org/xlink/role/olink">REST resource
+     version</link> upped to <literal>2.0</literal>.</para>
+    <para>
+     Version 2.0 of the endpoint includes a new <literal>resourceTypeUuids</literal>
+     field in the JSON representation of applications, which holds the UUIDs of
+     the associated resource types. The <literal>resources</literal> and
+     <literal>actions</literal> fields have been removed. Version 1.0 of the
+     endpoint is unchanged, providing backwards compatibility.
+    </para>
+    <para>Any existing applications will be converted to use the version 2.0
+     JSON representation when upgrading OpenAM instances.</para>
+    <itemizedlist>
+     <listitem>
+      <para><literal>/json/applications</literal> endpoint version 2.0</para>
+<screen>
+$ <userinput>curl \
+  --header "Content-Type: application/json" \
+  --header  "Accept-API-Version: resource=2.0, protocol=1.0" \
+  --header "iPlanetDirectoryPro: AQIC5..." \
+  https://openam.example.com:8443/openam/json/applications/myapplication
+</userinput><computeroutput>{
+    "creationDate": 1431363195434,
+    "lastModifiedDate": 1431363197721,
+    "conditions": [
+        "NOT",
+        "SimpleTime"
+    ],
+    "resourceComparator": null,
+    "attributeNames": [ ],
+    "saveIndex": null,
+    "searchIndex": null,
+    "editable": true,
+    "applicationType": "iPlanetAMWebAgentService",
+    "subjects": [
+        "AuthenticatedUsers",
+        "Identity",
+        "NOT",
+        "AND",
+        "OR"
+    ],
+    "entitlementCombiner": "DenyOverride",
+    "resourceTypeUuids": [
+        "12345a67-8f0b-123c-45de-6fab78cd01e4"
+    ],
+    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "description": "My example application.",
+    "realm": "/",
+    "name": "myapplication"
+}</computeroutput></screen>
+     </listitem>
+     <listitem>
+      <para><literal>/json/applications</literal> endpoint version 1.0</para>
+<screen>
+$ <userinput>curl \
+  --header "Content-Type: application/json" \
+  --header  "Accept-API-Version: resource=1.0, protocol=1.0" \
+  --header "iPlanetDirectoryPro: AQIC5..." \
+  https://openam.example.com:8443/openam/json/applications/myapplication
+</userinput><computeroutput>{
+    "creationDate": 1431363195434,
+    "lastModifiedDate": 1431363197721,
+    "conditions": [
+    "NOT",
+        "SimpleTime"
+    ],
+    "resourceComparator": null,
+    "attributeNames": [ ],
+    "saveIndex": null,
+    "searchIndex": null,
+    "editable": true,
+    "applicationType": "iPlanetAMWebAgentService",
+    "subjects": [
+        "AuthenticatedUsers",
+        "Identity",
+        "NOT",
+        "AND",
+        "OR"
+    ],
+    "entitlementCombiner": "DenyOverride",
+    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "description": "My example application.",
+    "realm": "/",
+    "name": "myapplication",
+    "actions": {
+        "POST": true,
+        "PATCH": true,
+        "GET": true,
+        "DELETE": true,
+        "OPTIONS": true,
+        "PUT": true,
+        "HEAD": true
+    },
+    "resources": [
+        "*://*:*/*?*",
+        "*://*:*/*"
+    ]
+}</computeroutput></screen>
+     </listitem>
+    </itemizedlist>
+    <para>For more information, see
+     <link xlink:show="new" xlink:href="dev-guide#rest-api-authz-applications"
+      xlink:role="http://docbook.org/xlink/role/olink">Managing Applications</link>.</para>
+   </listitem>
+   <listitem>
+    <para>
+     The <literal>policies</literal> REST endpoint has changed.
+    </para>
+    <para>
+     With the introduction of
+     <link xlink:show="new" xlink:href="admin-guide#what-is-authz-policies"
+      xlink:role="http://docbook.org/xlink/role/olink">resource types</link> into
+     the policy model the <literal>/json/policies</literal> endpoint has
+     changed, and the <link xlink:show="new"
+                            xlink:href="dev-guide#rest-api-versioning"
+      xlink:role="http://docbook.org/xlink/role/olink">REST resource
+     version</link> upped to <literal>2.0</literal>.</para>
+    <para>
+     Version 2.0 of the endpoint includes a new <literal>resourceTypeUuid</literal>
+     field in the JSON representation of policies, which holds the UUID of the
+     associated resource type. Version 1.0 of the endpoint is unchanged,
+     providing backwards compatibility.
+    </para>
+    <para>Any existing policies will be converted to use the version 2.0
+     JSON representation when upgrading OpenAM instances.</para>
+    <itemizedlist>
+     <listitem>
+      <para><literal>/json/policies</literal> endpoint v2.0</para>
+<screen>
+$ <userinput>curl \
+  --header "Content-Type: application/json" \
+  --header  "Accept-API-Version: resource=2.0, protocol=1.0" \
+  --header "iPlanetDirectoryPro: AQIC5..." \
+  https://openam.example.com:8443/openam/json/policies/mypolicy
+</userinput><computeroutput>{
+    "name": "mypolicy",
+    "active": true,
+    "description": "My example policy.",
+    "applicationName": "iPlanetAMWebAgentService",
+    "actionValues": {
+        "GET": true
+    },
+    "resources": [
+        "http://www.example.com:80/*",
+        "http://www.example.com:80/*?*"
+    ],
+    "subject": {
+        "type": "AuthenticatedUsers"
+    },
+    "resourceTypeUuid": "12345a67-8f0b-123c-45de-6fab78cd01e4",
+    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedDate": "2015-05-14T15:20:35.550Z",
+    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "creationDate": "2015-05-11T17:37:24.556Z"
+}</computeroutput></screen>
+     </listitem>
+     <listitem>
+      <para><literal>/json/policies</literal> endpoint v1.0</para>
+<screen>
+$ <userinput>curl \
+  --header "Content-Type: application/json" \
+  --header  "Accept-API-Version: resource=1.0, protocol=1.0" \
+  --header "iPlanetDirectoryPro: AQIC5..." \
+  https://openam.example.com:8443/openam/json/policies/mypolicy
+</userinput><computeroutput>{
+    "name": "mypolicy",
+    "active": true,
+    "description": "My example policy.",
+    "applicationName": "iPlanetAMWebAgentService",
+    "actionValues": {
+        "GET": true
+    },
+    "resources": [
+        "http://www.example.com:80/*",
+        "http://www.example.com:80/*?*"
+    ],
+    "subject": {
+        "type": "AuthenticatedUsers"
+    },
+    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedDate": "2015-05-14T15:20:35.550Z",
+    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "creationDate": "2015-05-11T17:37:24.556Z"
+}</computeroutput></screen>
+     </listitem>
+    </itemizedlist>
+    <para>For more information, see
+     <link xlink:show="new" xlink:href="dev-guide#rest-api-authz-policies"
+      xlink:role="http://docbook.org/xlink/role/olink">Managing Policies</link>.
     </para>
    </listitem>
-
   </itemizedlist>
  </section>
 

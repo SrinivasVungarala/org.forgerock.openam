@@ -20,17 +20,19 @@
  !
  ! CCPL HEADER END
  !
- !      Copyright 2014 ForgeRock AS
+ !      Copyright 2014-2015 ForgeRock AS.
  !
 -->
 <para xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://docbook.org/ns/docbook
                           http://docbook.org/xml/5.0/xsd/docbook.xsd">
-  Do not use special characters within policy, application or referral names
-  (for example, "my+referral") using the Policy Editor or REST endpoints as
-  OpenAM returns a 400 Bad Request error.
-  The special characters are: double quotes ("), plus sign (+), comma (,),
-  less than (&lt;), equals (=), greater than (&gt;), backslash (\), and
-  null (\u0000).
- </para>
+Do not use special characters within resource type, policy,
+or application names (for example, "my+resource+type") using the Policy
+Editor or REST endpoints as OpenAM returns a 400 Bad Request error.
+The special characters are: double quotes (<keycap>"</keycap>), plus
+sign (<keycap>+</keycap>), comma (<keycap>,</keycap>),
+less than (<keycap>&lt;</keycap>), equals (<keycap>=</keycap>), greater
+than (<keycap>&gt;</keycap>), backslash (<keycap>\</keycap>), and
+null (<keycap>\u0000</keycap>).
+</para>

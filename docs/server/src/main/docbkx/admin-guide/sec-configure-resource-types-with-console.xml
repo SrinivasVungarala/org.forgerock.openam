@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !
+-->
+
+<section xml:id="configure-resource-types-with-console"
+          xmlns='http://docbook.org/ns/docbook'
+          version='5.0' xml:lang='en' xml:base="../"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xsi:schemaLocation='http://docbook.org/ns/docbook
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'
+          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+
+    <title>Configuring Resource Types by Using the OpenAM Console</title>
+    <indexterm>
+     <primary>Resource Types</primary>
+     <secondary>Configuring</secondary>
+    </indexterm>
+    <para>This section describes the process of using the OpenAM
+     console for creating resource types, which
+     define a template for the resources that policies apply to,
+     and the actions that could be performed on those resources.</para>
+
+    <procedure xml:id="create-resource-type-xui">
+
+        <title>To Configure a Resource Type by Using the Policy Editor</title>
+
+        <step>
+            <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
+            Name</replaceable> &gt; Policies, and then click the Resource
+             Types tab.</para>
+            <substeps>
+             <step>
+              <para>To create a new resource type, click Add New
+                Resource Type.</para>
+             </step>
+             <step>
+              <para>To modify an existing resource type, click the resource
+               type name.</para>
+             </step>
+             <step>
+              <para>To delete existing resource types, select the checkbox
+               next to the name, and then click Delete Selected.</para>
+              <note><para>You can only delete resource types that are not being
+               used by applications or policies. Trying to delete a resource
+               type that is in use will return an HTTP 409 Conflict status
+               code. </para>
+              <para>Remove the resource type from any associated applications or
+               policies to be able to delete it.</para></note>
+             </step>
+             <step><para>To discard any changes and return to the previous page,
+              click Cancel.</para></step>
+            </substeps>
+        </step>
+     <step>
+      <para>Provide a name for the resource type, and optionally a
+       description, and then click Next.
+      </para>
+      <xinclude:include
+       href="shared/para-special-characters.xml"><xinclude:fallback>
+       <para>
+        Special Characters in Policies, Resource Types or Applications missing:
+        shared/para-special-characters.xml
+       </para>
+      </xinclude:fallback></xinclude:include>
+     </step>
+
+     <step>
+      <para>To define resource patterns that policies using this
+       resource type can expand upon, follow the steps below:</para>
+      <substeps>
+       <step>
+        <para>In the Add new pattern box, enter a pattern, with
+         optional wildcards, that the policies will use as a template.</para>
+
+        <para>For information on specifying patterns for matching resources, see
+         <xref linkend="policy-patterns-wildcards" />.</para>
+       </step>
+       <step>
+        <para>Click the Add icon to move the pattern into
+         the Patterns section.</para>
+        <mediaobject xml:id="console-resource-types-patterns">
+         <alt>Add the completed pattern to the Patterns section
+          by clicking the Add icon.</alt>
+         <imageobject>
+          <imagedata
+           fileref="images/console-resource-types-patterns.png"
+           format="PNG" />
+         </imageobject>
+         <textobject><para>Add the pattern to the Patterns section.</para></textobject>
+        </mediaobject>
+       </step>
+      </substeps>
+      <tip><para>To remove a pattern,
+       click the Delete icon.</para></tip>
+      <para>Repeat these steps to add all the patterns your
+       policy type describes, and then click Next.</para>
+     </step>
+     <step>
+      <para>To define the actions that policies using this
+       resource type can allow or deny, follow the steps below:</para>
+      <substeps>
+       <step>
+        <para>In the Add new action box, enter an action related to the types of
+         resources being described.</para>
+        <para>Select either <literal>Allow</literal> or <literal>Deny</literal>
+         as the default decision for the action.</para>
+       </step>
+       <step>
+        <para>Click the Add icon to move the action into
+         the Actions section.</para>
+        <mediaobject xml:id="console-resource-types-actions">
+         <alt>Add the completed resource to the Resources section
+          by clicking the Add icon.</alt>
+         <imageobject>
+          <imagedata
+           fileref="images/console-resource-types-actions.png"
+           format="PNG" />
+         </imageobject>
+         <textobject><para>Add the resource to the Resources section.</para></textobject>
+        </mediaobject>
+       </step>
+      </substeps>
+      <tip><para>To remove an action, click the Delete icon.</para></tip>
+      <para>Repeat these steps to add all the actions your
+       policy type requires, and then click Next.</para>
+     </step>
+     <step>
+      <para>Review your configuration.</para>
+
+      <tip><para>If the configuration is not visible, click the maximized
+       link to switch to maximized view.</para></tip>
+
+      <para>To make changes to the configuration, either click the relevant step,
+       or click the item to jump to the relevant step and make amendments to
+       the configuration.</para>
+
+      <para>When the configuration is completed, click Finish.</para>
+     </step>
+    </procedure>
+</section>
