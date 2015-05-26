@@ -113,7 +113,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <frDocPluginVersion>3.0.0-SNAPSHOT</frDocPluginVersion>
+        <frDocPluginVersion>3.0.0</frDocPluginVersion>
 
         <projectName>OpenAM</projectName>
 
