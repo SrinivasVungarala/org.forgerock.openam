@@ -2247,7 +2247,7 @@ $ <userinput>curl \
     "resourceTypeUuids": [
         "12345a67-8f0b-123c-45de-6fab78cd01e2"
     ],
-    "realm": "/";
+    "realm": "/",
     "conditions": [
         "AND",
         "OR",
