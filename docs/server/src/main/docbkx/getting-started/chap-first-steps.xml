@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2013-2014 ForgeRock AS
+  !      Copyright 2013-2015 ForgeRock AS.
   !
 -->
 <chapter xml:id='chap-first-steps'
@@ -35,30 +35,32 @@
 
  <title>Protecting a Web Site With OpenAM</title>
 
- <para>You can get started with OpenAM using this chapter. Follow the steps in
- this chapter to learn how to protect a web site with OpenAM.</para>
+ <para>This guide shows you how to quickly set up OpenAM and get started with
+  access management. In reading and following the instructions in this guide,
+  you will learn how to protect a Web page using OpenAM and a Web policy agent.
+ </para>
 
  <important>
   <para>
    You need a Linux, Solaris, or Windows system
-   that can run the web policy agent
+   that can run the OpenAM Web policy agent
    (see the <citetitle>Web Policy Agent Release Notes</citetitle> section,
    <link
     xlink:show="new"
     xlink:href="${webPaDocBase}/web-release-notes/#web-pa-platform-requirements"
    ><citetitle>Web Policy Agents Platform Requirements</citetitle></link>)
-   with a minimum of 1 GB of free RAM memory,
+   with a minimum of 1 GB of available RAM memory,
    a few hundred MB of free disk space,
-   a web browser and Internet connection to download software.
+   a web browser, and an Internet connection to download software.
   </para>
 
-  <para>If you are running Mac OS X, set up a virtual machine running Linux to
-  try these procedures because the web policy agent is not built for Apache HTTP
-  Server on Mac OS X.</para>
+  <para>If you are using Mac OS X, set up a virtual machine running Linux to
+   try these procedures because the web policy agent is not built for Apache HTTP
+   Server on Mac OS X.</para>
  </important>
 
  <section xml:id="how-openam-helps-manage-access">
-  <title>How OpenAM Helps Manage Access to Resources</title>
+  <title>About OpenAM</title>
 
   <indexterm>
    <primary>OpenAM</primary>
@@ -66,52 +68,60 @@
   </indexterm>
 
   <para>OpenAM provides a service called <firstterm>access management</firstterm>,
-  which involves managing access to resources available over the network.
-  Once you set up OpenAM to manage access, you have a centralized service to
-  take control of who can access what resources, when, and under what
-  conditions. In this chapter you manage access to a single web page. Yet, a
-  resource can be just about anything accessible over the network from a
-  web page, to an application, to a web service.</para>
+   which manages access to resources, such as a web page, an application, or web
+   service, available over the network.
+   Once it is set up, OpenAM provides an infrastructure for managing users, roles,
+   and access to resources.
+   In this chapter, you manage access to a single web page.
+  </para>
 
   <para>OpenAM centralizes access control by handling both
-  <firstterm>authentication</firstterm> and also
-  <firstterm>authorization</firstterm>. Authentication is confirming an
-  identity, for example confirming that a user has successfully logged in.
-  Authorization is determining whether to grant access to someone who has
-  authenticated.</para>
+   <firstterm>authentication</firstterm> and
+   <firstterm>authorization</firstterm>. Authentication is the process of identifying
+   an individual, for example, by confirming a successful login.
+   Authorization is the process of granting access to resources to authenticated
+   individuals.
+  </para>
 
   <para>OpenAM centralizes authentication by using a variety of authentication
-  modules. Authentication modules connect to identity repositories that store
-  identities and provide authentication services. The identity repositories can
-  be implemented as LDAP directories, relational databases, RADIUS, Windows
-  authentication, one-time password services, other standards-based access
-  management systems and much more. OpenAM lets you chain together the
-  authentication services used. Authentication chains let you configure
-  stronger authentication for more sensitive resources for example. They also
-  let you set up modules that remember a device when the user logs in
-  successfully. Or that evaluate the risk given the login circumstances and
-  therefore can require more credentials when a user is logging in from an
-  unusual location. This chapter uses OpenAM's built-in identity repository
-  and authentication modules to make it easier to get started.</para>
+   modules. Authentication modules connect to identity repositories that store
+   identities and provide authentication services. The identity repositories can
+   be implemented as LDAP directories, relational databases, RADIUS, Windows
+   authentication, one-time password services, and other standards-based access
+   management systems.
+  </para>
+
+  <para>
+   OpenAM lets you chain together the
+   authentication services used. Authentication chains let you configure
+   stronger authentication for more sensitive resources for example. They also
+   let you set up modules that remember a device when the user logs in
+   successfully. Or that evaluate the risk given the login circumstances and
+   therefore can require more credentials when a user is logging in from an
+   unusual location. This chapter uses OpenAM's built-in identity repository
+   and authentication modules to make it easier to get started.
+  </para>
 
   <para>OpenAM centralizes authorization by letting you use OpenAM to manage
-  access policies separate from applications and resources. Instead of building
-  access policy into a web application, you install a policy agent with the
-  web application to request policy decisions from OpenAM. This way you can
-  avoid issues that could arise when developers must embed policy decisions
-  into their applications. With OpenAM, if policy changes or an issue is found
-  after the application is deployed, you have only to change the policy
-  definition in OpenAM, not deploy a new version of the application. OpenAM
-  makes the authorization decisions, and policy agents enforce the decisions
-  on OpenAM's behalf.</para>
+   access policies separate from applications and resources. Instead of building
+   access policy into a web application, you install a policy agent with the
+   web application to request policy decisions from OpenAM. This way you can
+   avoid issues that could arise when developers must embed policy decisions
+   into their applications. With OpenAM, if policy changes or an issue is found
+   after the application is deployed, you have only to change the policy
+   definition in OpenAM, not deploy a new version of the application. OpenAM
+   makes the authorization decisions, and policy agents enforce the decisions
+   on OpenAM's behalf.
+  </para>
 
   <para>The rest of this chapter has you demonstrate OpenAM access management
-  by installing OpenAM, creating a policy, and installing a policy agent on
-  a web server to enforce the policy for a web page.</para>
+   by installing OpenAM, creating a policy, and installing a policy agent on
+   a web server to enforce the policy for a web page.
+  </para>
  </section>
 
  <section xml:id="software-you-need">
-  <title>Software Required To Try Out OpenAM</title>
+  <title>Software Requirements To Try Out OpenAM</title>
 
   <indexterm>
    <primary>OpenAM</primary>
@@ -121,10 +131,13 @@
    <primary>required software</primary>
   </indexterm>
 
-  <para>In order to set up OpenAM to protect a web page, you install the
-  following software, all of which is freely available. This chapter covers
-  how to install the software, with the exception of the Java Development
-  Kit.</para>
+  <para>
+   This chapter shows you how to install the software OpenAM needs to protect a
+   web page. You will learn how to install Apache HTTP Server, Apache Tomcat,
+   OpenAM core server with OpenAM Console, and OpenAM Apache Policy Agent.
+   Installation instructions for Java Development Kit (JDK) are not included in this
+   chapter, as OpenAM is a Java web application, and the JDK is pre-installed.
+  </para>
 
   <itemizedlist>
    <listitem>
@@ -133,44 +146,48 @@
     <para>OpenAM is a Java web application, and requires a Java Development Kit
     installed on the system where it runs.</para>
 
-    <para>The web policy agent installer is also a Java program.</para>
+    <para>The OpenAM web policy agent installer is also a Java program.</para>
    </listitem>
 
    <listitem>
     <para>Apache HTTP Server</para>
 
-    <para>Apache HTTP Server serves the web page to protect with OpenAM.</para>
+    <para>Apache HTTP Server serves the web page OpenAM protects.</para>
    </listitem>
 
    <listitem>
     <para>Apache Tomcat</para>
 
-    <para>As a Java web web application OpenAM runs inside a web container,
-    in this case Apache Tomcat.</para>
+    <para>Because OpenAM is a Java web application, it runs in a web container,
+    in this case, Apache Tomcat.</para>
    </listitem>
 
    <listitem>
     <para>OpenAM core server with OpenAM Console</para>
 
     <para>This is the main web application for OpenAM. OpenAM sets up an OpenDJ
-    directory server at configuration time to use in this case both to hold
-    OpenAM's configuration and also to serve as an identity store and
-    authentication service.</para>
+     directory server at configuration time to use, in this case, to hold
+     OpenAM's configuration and to serve as an identity store and
+     authentication service.
+    </para>
    </listitem>
 
    <listitem>
     <para>OpenAM Apache Policy Agent</para>
 
-    <para>You install a policy agent in Apache HTTP Server. The policy agent
-    intercepts requests from users, and enforces access policy decisions made
-    by OpenAM. The policy agent enforces policy both by redirecting users to
-    OpenAM for authentication and by contacting OpenAM to get authorization
-    decisions for resources such as the web page to protect.</para>
+    <para>Install a policy agent in Apache HTTP Server to intercept requests from
+     users and enforce access policy decisions OpenAM makes. The policy agent
+     intercepts requests from users, and enforces access policy decisions made
+     by OpenAM. The policy agent enforces policy by redirecting users to
+     OpenAM for authentication and by contacting OpenAM to get authorization
+     decisions for resources such as the web page to protect.
+    </para>
    </listitem>
   </itemizedlist>
 
-  <para>Follow the steps in the next sections of this chapter to see how
-  OpenAM can protect a web site without changing the web site itself.</para>
+  <para>Follow the steps in the following sections of this chapter to learn how
+   OpenAM protects a web site without changing the web site itself.
+  </para>
  </section>
 
  <section xml:id="software-setup">
@@ -182,7 +199,7 @@
   </indexterm>
 
   <para>This section includes the following procedures that detail how to
-  set up OpenAM to protect a web page.</para>
+   set up OpenAM to protect a web page.</para>
 
   <itemizedlist>
    <listitem><para><xref linkend="prepare-etc-hosts" /></para></listitem>
@@ -195,9 +212,8 @@
   </itemizedlist>
 
   <para>The procedures in this section are written for use on a Linux system.
-  If you are running Microsoft Windows, adapt the examples accordingly.</para>
+   If you are running Microsoft Windows, adapt the examples accordingly.</para>
 
-  <?hard-pagebreak?>
   <procedure xml:id="prepare-etc-hosts">
    <title>To Prepare Your Hosts File</title>
 
@@ -211,19 +227,19 @@
    </indexterm>
 
    <para>OpenAM requires that you use fully qualified domain names when
-   protecting web resources. This is because OpenAM uses <link xlink:show="new"
-   xlink:href="http://en.wikipedia.org/wiki/HTTP_cookie">HTTP cookies</link>
-   to keep track of sessions for single sign on, and setting and reading
-   cookies depends on the server name and domain.</para>
+    protecting web resources. This is because OpenAM uses <link xlink:show="new"
+    xlink:href="http://en.wikipedia.org/wiki/HTTP_cookie">HTTP cookies</link>
+    to keep track of sessions for single sign-on (SSO), and setting and reading
+    cookies depends on the server name and domain.</para>
 
-   <para>You can get started with OpenAM however without setting up separate
-   systems for each fully qualified domain name. Instead, give your system
-   <literal>openam.example.com</literal> and <literal>www.example.com</literal>
-   aliases by editing your <link xlink:href="http://en.wikipedia.org/wiki/Hosts_(file)"
-   xlink:show="new">hosts file</link>.</para>
+   <para>You can get started with OpenAM without setting up separate
+    systems for each fully qualified domain name. Give your system
+    <literal>openam.example.com</literal> and <literal>www.example.com</literal>
+    aliases by editing your <link xlink:href="http://en.wikipedia.org/wiki/Hosts_(file)"
+    xlink:show="new">hosts file</link>.</para>
 
-   <para>Alternatively, if you already have DNS set up, you can use that
-   instead of using your hosts file.</para>
+   <para>Alternatively, if you already have a DNS set up, you can use that
+    instead of your hosts file.</para>
 
    <step>
     <para>Add the aliases to your hosts file using your preferred text
@@ -253,32 +269,31 @@ $ <userinput>cat /etc/hosts | grep openam</userinput>
     <secondary>installing</secondary>
    </indexterm>
 
-   <para>Apache HTTP Server is a popular web server, and one that is well
-   supported by OpenAM's web policy agents. Apache HTTP Server might already
-   be installed on your system, but since you are installing software only
-   to get started with OpenAM, install the web server separately rather than
-   modify any existing installations.</para>
+   <para>Apache HTTP Server is a popular web server that is supported by OpenAM's
+    web policy agents. Apache HTTP Server might already
+    be installed on your system, but since you are installing software for the sole
+    purpose of getting started with OpenAM, install the web server separately
+    instead of modifying any existing installations.
+   </para>
 
    <para>Full installation instructions are available <link xlink:show="new"
-   xlink:href="http://httpd.apache.org/docs/2.2/install.html">online</link>.
-   The following steps are inspired by the <citetitle>Overview for the
-   impatient</citetitle> for Apache HTTP Server 2.2 in the online
-   documentation.</para>
+    xlink:href="http://httpd.apache.org/docs/2.2/install.html">online</link>.
+   </para>
 
    <step>
-    <para>Make sure you have the tools installed to build Apache HTTP Server
+    <para>Verify the correct tools are installed to build Apache HTTP Server
     2.2 from source.</para>
 
-    <para>On Linux distributions, you need development tools including the C
+    <para>For Linux distributions, you need development tools including the C
     compiler. How you install these depends on your distribution.</para>
 
-    <para>This might work for Red Hat and CentOS distributions:</para>
+    <para>For Red Hat and CentOS distributions:</para>
 
     <screen>
 # <userinput>yum groupinstall 'Development Tools'</userinput>
     </screen>
 
-    <para>This might work for Ubuntu distributions:</para>
+    <para>For Ubuntu distributions:</para>
 
     <screen>
 $ <userinput>sudo apt-get install build-essential checkinstall</userinput>
@@ -301,8 +316,9 @@ $ <userinput>sudo apt-get install build-essential checkinstall</userinput>
    <step>
     <para>Configure the sources for compilation.</para>
 
-    <para>The <option>--prefix</option> option can be used so that the
-    web server is installed in a location where you can write files.</para>
+    <para>The <option>--prefix</option> option can be used to install the Web
+     server in a location where you can write files.
+    </para>
 
     <screen>
 $ <userinput>cd ~/Downloads/httpd-2.2.25</userinput>
@@ -340,7 +356,7 @@ ServerName www.example.com:8000</computeroutput>
    </step>
 
    <step>
-    <para>Test that Apache HTTP Server is working.</para>
+    <para>Test the installation to ensure Apache HTTP Server is working.</para>
     
     <substeps>
      <step>
@@ -353,7 +369,7 @@ ServerName www.example.com:8000</computeroutput>
        See the documentation for your version of your system regarding
        how to allow traffic through the firewall on a specific port.
        A variety of firewalls are in use on Linux systems.
-       Which one is in use depends on your specific distribution.
+       The one in use depends on your specific distribution.
       </para>
      </step>
 
@@ -375,13 +391,13 @@ $ <userinput>/path/to/apache/bin/apachectl -k start</userinput>
         <imagedata fileref="images/web-server-home-page.png" format="PNG"/>
        </imageobject>
        <textobject>
-        <para>If the web server works correctly, it displays a page stating,
-        "It works!"</para>
+        <para>If the web server works correctly, the "It works!" page appears.</para>
        </textobject>
       </mediaobject>
 
-      <para>This is the page to protect with OpenAM. Make sure you have
-      successfully gotten to this point before you proceed.</para>
+      <para>This is the page to protect with OpenAM. Do not proceed with the next
+       steps unless this page appears.
+      </para>
      </step>
     </substeps>
    </step>
@@ -400,34 +416,34 @@ $ <userinput>/path/to/apache/bin/apachectl -k start</userinput>
    </indexterm>
 
    <para>OpenAM runs as a Java web application inside an application container.
-   Apache Tomcat is one such application container that runs on a variety of
-   platforms. The following instructions are loosely based on the
-   <filename>RUNNING.txt</filename> file delivered with Tomcat.</para>
+    Apache Tomcat is an application container that runs on a variety of
+    platforms. The following instructions are loosely based on the
+    <filename>RUNNING.txt</filename> file delivered with Tomcat.
+   </para>
 
    <step>
-    <para>Make sure you have a recent Java Development Kit release installed.</para>
+    <para>Make sure you have a recent JDK release installed.</para>
 
-    <para>One way of checking the version of the Java Development Kit is to
-    list the version of the <command>javac</command> compiler.</para>
+    <para>One way of checking the version of the JDK is to
+     list the version of the <command>javac</command> compiler.</para>
 
     <screen>
 $ <userinput>javac -version</userinput>
     </screen>
 
     <para>If the <command>javac</command> compiler is not found, then either
-    you do not have a Java Development Kit installed, or it is installed but
-    not on your <literal>PATH</literal>.</para>
+     you do not have a Java Development Kit installed, or it is installed, but
+     not on your <literal>PATH</literal>.</para>
 
     <para>The <link xlink:show="new" xlink:href="release-notes#java-requirements"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OpenAM Release
-    Notes</citetitle></link> indicate what versions of Java Development Kit
-    are supported. Supported Java Development Kit versions also work for Apache
-    Tomcat.</para>
+     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OpenAM Release
+     Notes</citetitle></link> indicate what JDK versions
+     are supported. Supported JDK versions also work for Tomcat.</para>
    </step>
 
    <step>
     <para>Download Apache Tomcat 7 from its <link xlink:show="new"
-    xlink:href="http://tomcat.apache.org/download-70.cgi">download page</link>.</para>
+     xlink:href="http://tomcat.apache.org/download-70.cgi">download page</link>.</para>
    </step>
 
    <step>
@@ -452,7 +468,7 @@ $ <userinput>chmod +x /path/to/tomcat/bin/*.sh</userinput>
     <para>Set the <literal>JAVA_HOME</literal> environment variable to the
     file system location of the Java Development Kit.</para>
 
-    <para>On Linux, you might set <literal>JAVA_HOME</literal> as follows.</para>
+    <para>On Linux, set <literal>JAVA_HOME</literal> as follows.</para>
     <literallayout class="monospaced">export JAVA_HOME=/path/to/jdk</literallayout>
    </step>
 
@@ -476,10 +492,10 @@ $ <userinput>chmod +x /path/to/tomcat/bin/*.sh</userinput>
     </para>
 
     <para>
-     See the documentation for your version of your system regarding
-     how to allow traffic through the firewall on a specific port.
+     See the Apache documentation for instructions for allowing traffic through
+     the firewall on a specific port for the version of Tomcat on your system.
      A variety of firewalls are in use on Linux systems.
-     Which one is in use depends on your specific distribution.
+     The version your system uses depends on your specific distribution.
     </para>
    </step>
 
@@ -491,9 +507,9 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
     </screen>
 
     <para>It might take Tomcat several seconds to start. When Tomcat has
-    successfully started, you should see an informational message indicating
-    how long startup took in the
-    <filename>/path/to/tomcat/logs/catalina.out</filename> log file:</para>
+     successfully started, you should see information indicating
+     how long startup took in the
+     <filename>/path/to/tomcat/logs/catalina.out</filename> log file.</para>
 
     <literallayout class="monospaced"
     >INFO: Server startup in 4655 ms</literallayout>
@@ -509,14 +525,14 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
       <imagedata fileref="images/tomcat-home-page.png" format="PNG"/>
      </imageobject>
      <textobject>
-      <para>If Apache Tomcat works correctly, it displays a page stating,
-      "If you're seeing this, you've successfully installed Tomcat.
-      Congratulations!"</para>
+      <para>If Apache Tomcat works correctly, the
+       "If you're seeing this, you've successfully installed Tomcat.
+       Congratulations!" page appears.</para>
      </textobject>
     </mediaobject>
 
-    <para>Apache Tomcat is going to serve the OpenAM web application. Make sure
-    you have successfully gotten to this point before you proceed.</para>
+    <para>Tomcat will serve the OpenAM web application. Make sure
+     you have successfully gotten to this point before you proceed.</para>
    </step>
   </procedure>
 
@@ -528,37 +544,36 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
     <secondary>installing</secondary>
    </indexterm>
 
-   <para>OpenAM is a web application that you deploy into Apache Tomcat and then
-   configure for use.</para>
+   <para>Deploy OpenAm into Tomcat and then configure it for use.</para>
 
    <step>
-    <para>Download the OpenAM .war (web archive) file either from the ForgeRock
-    <link xlink:show="new" xlink:href="http://forgerock.com/download-stack/"
-    ><citetitle>Enterprise Downloads</citetitle></link> page, or from the
-    project nightly <link xlink:href="http://forgerock.org/openam.html"
-    xlink:show="new"><citetitle>Builds</citetitle></link> page.</para>
+    <para>Download the OpenAM <literal>.war</literal> (web archive) file either from the ForgeRock
+     <link xlink:show="new" xlink:href="http://forgerock.com/download-stack/"
+     ><citetitle>Enterprise Downloads</citetitle></link> page, or from the
+     project nightly <link xlink:href="http://forgerock.org/openam.html"
+     xlink:show="new"><citetitle>Builds</citetitle></link> page.</para>
 
     <para>Enterprise downloads are tested, stable releases.</para>
 
     <para>Nightly builds include the very latest features, but are not
-    thoroughly tested. Some functionality might not be finished.</para>
+     thoroughly tested. Some functionality might not be finished.</para>
    </step>
 
    <step>
-    <para>Deploy the .war file in Tomcat as <filename>openam.war</filename>.</para>
+    <para>Deploy the <literal>.war</literal> file in Tomcat as <filename>openam.war</filename>.</para>
 
     <screen>
 $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</userinput>
     </screen>
 
     <para>Tomcat deploys OpenAM under the
-    <filename>/path/to/tomcat/webapps/openam/</filename> directory, and you can
-    access the web application in a browser at
-    <literal>http://openam.example.com:8080/openam/</literal>.</para>
+     <filename>/path/to/tomcat/webapps/openam/</filename> directory. You can
+     access the web application in a browser at
+     <literal>http://openam.example.com:8080/openam/</literal>.</para>
    </step>
 
    <step>
-    <para>Browse to OpenAM where it is deployed in Tomcat, for example
+    <para>Browse to OpenAM where it is deployed in Tomcat, in this example,
     <literal>http://openam.example.com:8080/openam/</literal>, to configure
     the application.</para>
    </step>
