@@ -60,7 +60,7 @@
 
  <xinclude:include href="../shared/sec-kinds-of-agent-profiles.xml" />
 
- <xinclude:include href="sec-create-agent-profiles.xml" />
+ <xinclude:include href="../shared/sec-create-agent-profiles.xml" />
 
  <xinclude:include href="../shared/sec-delegate-agent-profile-creation.xml" />
 
