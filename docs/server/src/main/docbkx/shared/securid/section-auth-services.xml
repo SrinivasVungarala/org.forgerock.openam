@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2014 ForgeRock AS
+  !      Copyright 2014-2015 ForgeRock AS.
   !
 -->
 <section xml:id="securid-module-conf-hints"
@@ -37,10 +37,12 @@
 
  <orderedlist>
   <para>
-   In order to use the SecurID authentication module,
+   To use the SecurID authentication module,
    you must first build an OpenAM war file
    that includes the supporting library,
-   <filename>authapi-2005-08-12.jar</filename>.
+   <filename>authapi-2005-08-12.jar</filename>, which you must obtain from
+   RSA. The <filename>authapi-2005-08-12.jar</filename> file also requires a
+   dependency file, <literal>crypto.jar</literal>, which you can also obtain from RSA.
   </para>
 
   <listitem>
@@ -57,7 +59,10 @@ $ <userinput>jar -xf ~/Downloads/openam/${coreWarFile}</userinput>
 
   <listitem>
    <para>
-    Copy <filename>authapi-2005-08-12.jar</filename>
+    Obtain the <literal>authapi.jar</literal> (for example, <filename>authapi-2005-08-12.jar</filename>)
+    and its dependency file,
+    <literal>crypto.jar</literal> from RSA. Then,
+    copy <filename>authapi-2005-08-12.jar</filename>
     into the <filename>WEB-INF/lib</filename> directory.
    </para>
 
