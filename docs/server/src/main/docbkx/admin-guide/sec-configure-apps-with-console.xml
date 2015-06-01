@@ -26,7 +26,7 @@
 
 <section xml:id="configure-apps-with-console"
           xmlns='http://docbook.org/ns/docbook'
-          version='5.0' xml:lang='en' xml:base="../"
+          version='5.0' xml:lang='en'
           xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
           xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -71,7 +71,7 @@
             </para>
 
             <xinclude:include
-             href="shared/para-special-characters.xml"><xinclude:fallback>
+             href="../shared/para-special-characters.xml"><xinclude:fallback>
              <para>
               Special Characters in Policies, Resource Types or Applications missing:
               shared/para-special-characters.xml
