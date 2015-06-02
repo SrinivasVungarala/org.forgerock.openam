@@ -2571,13 +2571,24 @@ $ <userinput>jar cvf ../openam.war *</userinput>
 
    <orderedlist>
     <para>
-     Edit the WebLogic domain configuration
-     to allow basic authentication credentials to be passed back to OpenAM.
+     To prepare Oracle WebLogic 11g or earlier for an OpenAM deployment,
+     edit the WebLogic domain configuration to allow basic authentication
+     credentials to be passed back to OpenAM.
      By default, WebLogic attempts to resolve authentication credentials itself.
      When you change the WebLogic domain configuration, you ensure that
      the OpenAM OAuth 2.0 providers receive basic authentication credentials
      for OAuth 2.0 grants that rely on basic authentication.
     </para>
+
+    <note>
+     <para>WebLogic uses its own classes if a class exists in both the parent
+      and child classloaders by default.
+      To map resources defined for OpenAM, OpenAM bundles its own
+      WebLogic 11g and 12c deployment descriptor file <literal>weblogic.xml</literal>
+      and places it in the <literal>/WEB-INF</literal> directory automatically.
+     </para>
+    </note>
+
     <para>To edit the WebLogic domain configuration:</para>
 
     <listitem>
@@ -2600,29 +2611,36 @@ $ <userinput>jar cvf ../openam.war *</userinput>
     &lt;/enforce-valid-basic-auth-credentials>
  &lt;/security-configuration></programlisting>
     </listitem>
-    </orderedlist>
 
-    <orderedlist>
-        <para>Weblogic uses its own classes if a class exists in both the parent
-         and child classloaders by default.
-         To use OpenAM and its classes on WebLogic 11g,
-            create a WebLogic deployment descriptor file <literal>weblogic.xml</literal>
-            and place it in the <literal>/WEB-INF</literal> directory.
-            The descriptor file maps resources defined for OpenAM.
-        </para>
     <listitem>
-        <para>Create a WebLogic descriptor file, <literal>/WEB-INF/weblogic.xml</literal>.</para>
-        <programlisting language="xml">
- &lt;?xml version="1.0" encoding="UTF-8"?>
-   &lt;weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-web-app
-      http://xmlns.oracle.com/weblogic/weblogic-web-app/1.3/weblogic-web-app.xsd">
-         &lt;context-root>/openam&lt;/context-root>
-         &lt;container-descriptor>
-            &lt;prefer-web-inf-classes>true&lt;/prefer-web-inf-classes>
-         &lt;/container-descriptor>
-   &lt;/weblogic-web-app></programlisting>
+     <para>
+      When deploying OpenAM on WebLogic 11g (version 10.3.x),
+      use the SOAP with Attachments API for Java (SAAJ) implementation
+      from the Java Runtime Environment, rather than the WebLogic implementation.
+
+      The WebLogic implementation can cause OpenAM to throw exceptions with the
+      message <literal>java.lang.UnsupportedOperationException:
+      This class does not support SAAJ 1.1</literal>,
+      and to fail to authenticate users in some cases.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      To use the Sun/Oracle Java SAAJ implementation,
+      edit the WebLogic start up script for the domain where OpenAM runs, such as
+      <filename>/path/to/weblogic/user_projects/domains/wlsdomain/startWebLogic.sh</filename>.
+
+      Change the following line:
+
+      <programlisting language="shell">${DOMAIN_HOME}/bin/startWebLogic.sh $*</programlisting>
+
+      To set the <literal>javax.xml.soap.MessageFactory</literal> property:
+
+      <programlisting language="shell">${DOMAIN_HOME}/bin/startWebLogic.sh \
+       -Djavax.xml.soap.MessageFactory=\
+       com.sun.xml.internal.messaging.saaj.soap.ver1_1.SOAPMessageFactory1_1Impl $*</programlisting>
+     </para>
     </listitem>
 
     <listitem>
@@ -2632,35 +2650,10 @@ $ <userinput>jar cvf ../openam.war *</userinput>
     </listitem>
    </orderedlist>
 
-    <para>
-     When deploying OpenAM on WebLogic 11g (version 10.3.x),
-     use the SOAP with Attachments API for Java (SAAJ) implementation
-     from the Java Runtime Environment, rather than the WebLogic implementation.
-
-     The WebLogic implementation can cause OpenAM to throw exceptions with the
-     message <literal>java.lang.UnsupportedOperationException:
-     This class does not support SAAJ 1.1</literal>,
-     and to fail to authenticate users in some cases.
-    </para>
-
-    <para>
-     To use the Sun/Oracle Java SAAJ implementation,
-     edit the WebLogic start up script for the domain where OpenAM runs, such as
-     <filename>/path/to/weblogic/user_projects/domains/wlsdomain/startWebLogic.sh</filename>.
-
-     Change the following line:
-
-     <programlisting language="shell">${DOMAIN_HOME}/bin/startWebLogic.sh $*</programlisting>
-
-     To set the <literal>javax.xml.soap.MessageFactory</literal> property:
-
-     <programlisting language="shell">${DOMAIN_HOME}/bin/startWebLogic.sh \
- -Djavax.xml.soap.MessageFactory=\
- com.sun.xml.internal.messaging.saaj.soap.ver1_1.SOAPMessageFactory1_1Impl $*</programlisting>
-    </para>
    </section>
- <section xml:id="prepare-oracle-weblogic-12c-or-later">
-  <title>Preparing Oracle WebLogic 12c or Later</title>
+
+   <section xml:id="prepare-oracle-weblogic-12c-or-later">
+    <title>Preparing Oracle WebLogic 12c or Later</title>
     <para>
      When using WebLogic 12.1.1 with Java 6,
      if you plan to use the <command>ssoadm</command> command to configure OpenAM,
