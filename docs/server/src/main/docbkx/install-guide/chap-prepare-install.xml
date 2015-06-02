@@ -2584,8 +2584,9 @@ $ <userinput>jar cvf ../openam.war *</userinput>
      <para>WebLogic uses its own classes if a class exists in both the parent
       and child classloaders by default.
       To map resources defined for OpenAM, OpenAM bundles its own
-      WebLogic 11g and 12c deployment descriptor file <literal>weblogic.xml</literal>
+      WebLogic deployment descriptor file <literal>weblogic.xml</literal>
       and places it in the <literal>/WEB-INF</literal> directory automatically.
+      The descriptor file works for WebLogic 11g and 12c deployments.
      </para>
     </note>
 
