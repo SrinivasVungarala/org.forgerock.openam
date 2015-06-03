@@ -150,15 +150,26 @@
     </textobject>
 </mediaobject>
 
-    <para>A client points his browser to a protected resource application. An agent on the
-    application checks the client browser cookies for the presence of a session ID, a component of
-    an SSO Token. If such a Session ID exists and is valid, the agent requests validation  (see arrow 8).</para>
+    <para>A client points their browser to a protected resource application. An agent on the
+    application checks the client browser cookies for the presence of a session.
+    If a session cookie exists and is valid, the agent requests validation (see arrow 8).</para>
 
-    <para>If no valid session ID currently exists, the agent redirects the client to OpenAM for authentication (AuthN).
+    <para>If no valid session cookie exists, the agent redirects the client to OpenAM for authentication (AuthN).
     The client is then sent to OpenAM for AuthN. If the client submits valid credentials, the AuthN service
-    creates a session cookie. The SSO Token and configured domain name is embedded in that cookie. OpenAM issues an HTTP
-    redirect to send the client browser back to the protected resource. The SSO Token is actually a Java Object.</para>
-
+    creates a session cookie for the configured domain. The contents of the session cookie varies,
+    depending on the configuration of the realm to which the user authenticates:
+    </para>
+     <itemizedlist>
+      <listitem>
+       <para>If the realm is configured for stateful sessions, an SSOToken is embedded in the cookie.</para>
+      </listitem>
+      <listitem>
+       <para>If the realm is configured for stateless sessions, the session itself is embedded in the cookie.</para>
+      </listitem>
+     </itemizedlist>
+    <para>
+     OpenAM issues an HTTP redirect to send the client browser back to the protected resource.
+    </para>
     <para>The agent then verifies the validity of the session with the OpenAM session service, before granting access.
     </para>
 
@@ -217,6 +228,28 @@
         browser may differ from the requirements for other standard browsers such as Firefox and Chrome. Based on
         anecdotal reports, IE does not recognize domain names that start with a number. In addition, IE reportedly
         refuses cookies that include the underscore (_) character in the FQDN.</para>
+    </listitem>
+
+    <indexterm>
+        <primary>Session state</primary>
+        <secondary>iPlanetDirectoryPro cookie</secondary>
+    </indexterm>
+
+    <listitem>
+        <para>
+         When a stateless session cookie exceeds the maximum size permitted by the browser
+        </para>
+        <para>
+         As described in <link xlink:show="new"
+                               xlink:href="admin-guide#session-state-cookies"
+                               xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
+         Cookies</citetitle></link>, the default size of the <literal>iPlanetDirectoryPro</literal> cookie
+         is approximately 2,000 bytes. When you customize OpenAM sessions by adding attributes, the cookie
+         size grows. Browsers allow cookie sizes between 4,000 and 5,200 bytes, depending on the browser.
+         OpenAM single sign on does not function correctly when the cookie size exceeds the maximum
+         size allowed by the browser.
+        </para>
+
     </listitem>
 
 </itemizedlist>

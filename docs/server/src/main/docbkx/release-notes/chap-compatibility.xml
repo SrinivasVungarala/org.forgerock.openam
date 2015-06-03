@@ -259,7 +259,7 @@ $ <userinput>curl \
    <title>Functionality Deprecated in OpenAM 13</title>
 
    <para>The following functionality is deprecated in OpenAM
-    <?eval ${serverDocTargetVersion}?>, and is likely to be removed in a future
+    ${serverDocTargetVersion}, and is likely to be removed in a future
     release.
    </para>
 
@@ -299,14 +299,14 @@ $ <userinput>curl \
      <para>Older REST services relying on the following endpoints are
       deprecated.</para>
 
-     <simplelist type="vert" columns="2">
-      <member>/identity/authorize</member>
-      <member>/identity/isTokenValid</member>
-      <member>/ws/1/entitlement/decision</member>
-      <member>/ws/1/entitlement/decisions</member>
-      <member>/ws/1/entitlement/entitlement</member>
-      <member>/ws/1/entitlement/entitlements</member>
-     </simplelist>
+     <itemizedlist>
+      <listitem><para><literal>/identity/authorize</literal></para></listitem>
+      <listitem><para><literal>/identity/isTokenValid</literal></para></listitem>
+      <listitem><para><literal>/ws/1/entitlement/decision</literal></para></listitem>
+      <listitem><para><literal>/ws/1/entitlement/decisions</literal></para></listitem>
+      <listitem><para><literal>/ws/1/entitlement/entitlement</literal></para></listitem>
+      <listitem><para><literal>/ws/1/entitlement/entitlements</literal></para></listitem>
+     </itemizedlist>
 
      <para>The following table shows how legacy and newer endpoints
       correspond.</para>
@@ -330,74 +330,78 @@ $ <userinput>curl \
        <tbody>
 
         <row>
-         <entry>/identity/authorize</entry>
-         <entry>/json/policies?_action=evaluate, /json/policies?_evaluateTree</entry>
+         <entry><literal>/identity/authorize</literal></entry>
+         <entry><literal>/json/policies?_action=evaluate</literal>,
+          <literal>/json/policies?_evaluateTree</literal></entry>
         </row>
 
         <row>
-         <entry>/identity/isTokenValid</entry>
-         <entry>/json/sessions/<replaceable>tokenId</replaceable>?_action=validate</entry>
+         <entry><literal>/identity/isTokenValid</literal></entry>
+         <entry><literal>/json/sessions/<replaceable>tokenId</replaceable>?_action=validate</literal></entry>
         </row>
 
         <row>
-         <entry>/ws/1/entitlement/decision, /ws/1/entitlement/decisions,
-          /ws/1/entitlement/entitlement, /ws/1/entitlement/entitlements</entry>
-         <entry>/json/policies?_action=evaluate, /json/policies?_evaluateTree</entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry>/json/applications</entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry>/json/applicationtypes</entry>
+         <entry><literal>/ws/1/entitlement/decision</literal>,
+          <literal>/ws/1/entitlement/decisions</literal>,
+          <literal>/ws/1/entitlement/entitlement</literal>,
+          <literal>/ws/1/entitlement/entitlements</literal></entry>
+         <entry><literal>/json/policies?_action=evaluate</literal>,
+          <literal>/json/policies?_evaluateTree</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/conditiontypes</entry>
+         <entry><literal>/json/applications</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/dashboard</entry>
+         <entry><literal>/json/applicationtypes</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/decisionscombiners</entry>
+         <entry><literal>/json/conditiontypes</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/policies</entry>
+         <entry><literal>/json/dashboard</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/referrals</entry>
+         <entry><literal>/json/decisionscombiners</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/serverinfo</entry>
+         <entry><literal>/json/policies</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/subjectattributes</entry>
+         <entry><literal>/json/referrals</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/json/subjecttypes</entry>
+         <entry><literal>/json/serverinfo</literal></entry>
         </row>
 
         <row>
          <entry>N/A</entry>
-         <entry>/xacml/policies</entry>
+         <entry><literal>/json/subjectattributes</literal></entry>
+        </row>
+
+        <row>
+         <entry>N/A</entry>
+         <entry><literal>/json/subjecttypes</literal></entry>
+        </row>
+
+        <row>
+         <entry>N/A</entry>
+         <entry><literal>/xacml/policies</literal></entry>
         </row>
        </tbody>
       </tgroup>
@@ -525,16 +529,16 @@ $ <userinput>curl \
      <para>Older REST services relying on the following endpoints are
       deprecated.</para>
 
-     <simplelist type="vert" columns="2">
-      <member>/identity/attributes</member>
-      <member>/identity/authenticate</member>
-      <member>/identity/create</member>
-      <member>/identity/delete</member>
-      <member>/identity/logout</member>
-      <member>/identity/read</member>
-      <member>/identity/search</member>
-      <member>/identity/update</member>
-     </simplelist>
+     <itemizedlist>
+      <listitem><para><literal>/identity/attributes</literal></para></listitem>
+      <listitem><para><literal>/identity/authenticate</literal></para></listitem>
+      <listitem><para><literal>/identity/create</literal></para></listitem>
+      <listitem><para><literal>/identity/delete</literal></para></listitem>
+      <listitem><para><literal>/identity/logout</literal></para></listitem>
+      <listitem><para><literal>/identity/read</literal></para></listitem>
+      <listitem><para><literal>/identity/search</literal></para></listitem>
+      <listitem><para><literal>/identity/update</literal></para></listitem>
+     </itemizedlist>
 
      <para>The following table shows how legacy and newer endpoints
       correspond.</para>
@@ -557,24 +561,26 @@ $ <userinput>curl \
 
        <tbody>
         <row>
-         <entry>/identity/attributes</entry>
-         <entry>/json/users</entry>
+         <entry><literal>/identity/attributes</literal></entry>
+         <entry><literal>/json/users</literal></entry>
         </row>
 
         <row>
-         <entry>/identity/authenticate</entry>
-         <entry>/json/authenticate</entry>
+         <entry><literal>/identity/authenticate</literal></entry>
+         <entry><literal>/json/authenticate</literal></entry>
         </row>
 
         <row>
-         <entry>/identity/create, /identity/delete, /identity/read,
-          /identity/search, /identity/update</entry>
-         <entry>/json/agents, /json/groups, /json/realms, /json/users</entry>
+         <entry><literal>/identity/create</literal>, <literal>/identity/delete</literal>,
+          <literal>/identity/read</literal>, <literal>/identity/search</literal>,
+          <literal>/identity/update</literal></entry>
+         <entry><literal>/json/agents</literal>, <literal>/json/groups</literal>,
+          <literal>/json/realms</literal>, <literal>/json/users</literal></entry>
         </row>
 
         <row>
-         <entry>/identity/logout</entry>
-         <entry>/json/sessions/?_action=logout</entry>
+         <entry><literal>/identity/logout</literal></entry>
+         <entry><literal>/json/sessions/?_action=logout</literal></entry>
         </row>
 
        </tbody>

@@ -29,9 +29,9 @@
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'>
- <title>What's New in OpenAM <?eval ${serverDocTargetVersion}?></title>
+ <title>What's New in OpenAM ${serverDocTargetVersion}</title>
 
- <para>OpenAM <?eval ${serverDocTargetVersion}?> fixes a number of issues, and
+ <para>OpenAM ${serverDocTargetVersion} fixes a number of issues, and
  provides the following additional features.</para>
 
  <section xml:id="major-new-features">
@@ -66,9 +66,41 @@
 
  <itemizedlist>
 
+  <!-- Epic: AME-3549 -->
   <listitem>
+   <para><emphasis role="bold">Stateless Sessions</emphasis></para>
    <para>
-    TODO: Update for the next release
+    OpenAM supports two types of sessions: <firstterm>stateful</firstterm> and
+    <firstterm>stateless</firstterm>.
+   </para>
+   <para>
+    Stateful sessions are sessions that reside in the OpenAM server's memory
+    and, if session failover is enabled, are also persisted in the Core Token
+    Service's token store. Stateful sessions have been the only session type
+    supported in previous OpenAM releases.
+   </para>
+   <para>
+    OpenAM ${serverDocTargetVersion} also supports a new type of
+    session: the stateless session. Stateless sessions are sessions in which
+    state information is encoded in OpenAM and sent to clients, but the
+    information from the sessions is not retained in OpenAM's memory.
+    For browser-based clients, OpenAM sets a cookie in the browser that
+    contains the session state. When the browser transmits the cookie back to
+    OpenAM, OpenAM decodes the session state from the cookie.
+   </para>
+   <para>
+    Stateless sessions can be used for deployments when elasticity is required,
+    for example, cloud deployments in which the server load varies. You can add
+    and remove OpenAM servers to and from a site and the stateless session load
+    should balance horizontally.
+   </para>
+   <para>
+    For more information, see the <link
+     xlink:show="new"
+     xlink:href="admin-guide#chap-session-state"
+     xlink:role="http://docbook.org/xlink/role/olink"
+    ><citetitle>Configuring Session State</citetitle></link>
+    chapter in the <citetitle>Administration Guide</citetitle>.
    </para>
   </listitem>
 

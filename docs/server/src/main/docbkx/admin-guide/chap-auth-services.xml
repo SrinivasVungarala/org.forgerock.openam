@@ -2205,6 +2205,21 @@ $ ssoadm set-realm-svc-attrs \
       <literal>iplanet-am-auth-default-auth-level</literal></para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term>Enable Stateless Sessions?</term>
+     <listitem>
+      <para>When selected, specifies that OpenAM users authenticating to this
+       realm are assigned stateless sessions. Otherwise, OpenAM users authenticating
+       to this realm are assigned stateful sessions.</para>
+      <para>For more information about session state,
+       see <link xlink:show="new"
+                 xlink:href="admin-guide#chap-session-state"
+                 xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
+       Session State</citetitle></link>.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>openam-auth-stateless-sessions</literal></para>
+     </listitem>
+    </varlistentry>
 
     </variablelist>
     </section>
@@ -2430,6 +2445,14 @@ $ ssoadm set-realm-svc-attrs \
       an <literal>SSOException</literal>. Multi-value attributes, such as
       <literal>memberOf</literal>, are listed as a single session variable
       with a <literal>|</literal> separator.</para>
+      <para>When configuring authentication for a realm that uses stateless
+       sessions, be careful not to add so many session attributes that the
+       session cookie size exceeds the maximum allowable cookie size. For more
+       information about stateless session cookies,
+      see <link xlink:href="admin-guide#session-state-cookies"
+                xlink:show="new"
+                xlink:role="http://docbook.org/xlink/role/olink"
+       ><citetitle>Session Cookies</citetitle></link>.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMUserAttributesSessionMapping</literal></para>
      </listitem>
@@ -5916,6 +5939,13 @@ ssoadm \
    ><citetitle>Authentication &amp; Logout</citetitle></link>,
    for indications on how to handle advices and session upgrade.
   </para>
+
+  <para>
+   OpenAM's support for session upgrades requires stateful sessions. Be sure that
+   OpenAM is configured for stateful sessions&#x2014;the default configuration&#x2014;before
+   attempting to upgrade OpenAM sessions.
+  </para>
+
  </section>
 
  <section xml:id="configure-account-lockout">
@@ -6001,6 +6031,12 @@ ssoadm \
   setting session quotas. You also configure session quota exhaustion actions
   so that when a user goes beyond the session quota, OpenAM takes the
   appropriate action.</para>
+
+  <para>
+   OpenAM's support for session quotas requires stateful sessions. Be sure that
+   OpenAM is configured for stateful sessions&#x2014;the default configuration&#x2014;before
+   attempting to configure session quotas.
+  </para>
 
   <important>
    <para>To enforce session quotas across multiple servers in a site, configure

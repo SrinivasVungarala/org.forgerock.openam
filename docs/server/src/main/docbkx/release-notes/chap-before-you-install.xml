@@ -28,7 +28,7 @@
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
- <title>Before You Install OpenAM <?eval ${serverDocTargetVersion}?> Software</title>
+ <title>Before You Install OpenAM ${serverDocTargetVersion} Software</title>
 
  <para>
   This chapter covers software and hardware prerequisites

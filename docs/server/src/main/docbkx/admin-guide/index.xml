@@ -97,6 +97,7 @@
  <xinclude:include href='chap-audit-logging.xml' />
  <xinclude:include href='chap-mobile.xml' />
  <xinclude:include href='chap-pwd-reset.xml' />
+ <xinclude:include href='chap-session-state.xml' />
  <xinclude:include href='chap-sso.xml' />
  <xinclude:include href='chap-cdsso.xml' />
  <xinclude:include href='chap-federation.xml' />

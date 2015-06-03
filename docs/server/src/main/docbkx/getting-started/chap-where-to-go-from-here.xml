@@ -185,6 +185,11 @@
    xlink:href="admin-guide#chap-cdsso"
    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
    Cross-Domain Single Sign On</citetitle></link>.</para>
+
+  <note>
+   <para>CDSSO only works with <emphasis>stateful</emphasis> sessions.
+    CDSSO does not work with <emphasis>stateless</emphasis> sessions.</para>
+  </note>
  </section>
 
  <section xml:id="federation">

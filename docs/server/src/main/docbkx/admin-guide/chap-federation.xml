@@ -104,6 +104,12 @@
     service providers.</para>
    </listitem>
    <listitem>
+    <para>Determine whether your session state configuration limits your
+    usage of certain SAML v2.0 profiles. For more information,
+    see <xref linkend="saml2-and-session-state" />.
+    </para>
+   </listitem>
+   <listitem>
     <para>Agree with other providers on a synchronized time service.</para>
    </listitem>
    <listitem>
@@ -3411,7 +3417,7 @@ $ <userinput>ssoadm \
   </section>
 
   <section xml:id="saml2-authentication">
-   <title>Authentication &amp; Linked Accounts</title>
+   <title>Authentication and Linked Accounts</title>
 
    <para>
     In a SAML v2.0 federation where accounts are durably linked,
@@ -3551,4 +3557,42 @@ $ <userinput>ssoadm \
   </procedure>
 
  </section>
+
+<section xml:id="saml2-and-session-state">
+  <title>SAML 2.0 and Session State</title>
+
+  <para>
+   All of the SAML 2.0 single sign-on and single logout profiles
+   with HTTP redirect, HTTP POST, and HTTP artifact bindings
+   described in <xref linkend="using-saml2-sso-slo" /> are available to users
+   who have logged in to OpenAM and received stateful sessions.
+  </para>
+
+  <para>
+   The following SAML 2.0 profiles are not available to users
+   who have logged in to OpenAM and received stateless sessions:
+   <itemizedlist>
+    <listitem>
+     <para>
+      Single logout
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Single sign-on with the HTTP POST artifact binding
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <para>
+   For more information about stateful and stateless sessions,
+   see <link
+      xlink:href="admin-guide#chap-session-state"
+      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:show="new"><citetitle>Configuring Session State</citetitle></link>.
+  </para>
+
+ </section>
+
 </chapter>

@@ -350,8 +350,6 @@
    </para>
 
    <para>
-    OpenAM and the policy agent use cookies set in the user's browser
-    to share an opaque reference to the session with OpenAM.
     While the user has a valid session with OpenAM,
     the user can go away to another page in the browser,
     come back to the profile page,

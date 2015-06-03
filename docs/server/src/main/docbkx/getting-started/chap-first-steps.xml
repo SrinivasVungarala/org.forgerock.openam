@@ -1104,4 +1104,31 @@ $ <userinput>tail /path/to/apache/logs/error_log</userinput>
     OpenAM can do much more than protect web pages. Read the next chapter
     to learn more.</para>
  </section>
+
+ <section xml:id="try-out-stateless">
+  <title>Trying Out Stateless Sessions</title>
+  <para>
+   In the <xref linkend="try-it-out"/> section, you successfully configured
+   OpenAM and viewed the <literal>iPlanetDirectoryPro</literal> session cookie.
+   The session cookie contains information for OpenAM or a policy agent to locate
+   the session data object on the server from which the session originated.
+   Sessions that are stored in a server's memory are called <emphasis>stateful</emphasis>, which is
+   the default configuration at the realm level.
+  </para>
+  <para>
+   OpenAM also supports <emphasis>stateless</emphasis> sessions, in which the
+   authenticated user's session is stored on the client-side (for example, in a browser),
+   not in memory.
+   The session cookie cannot be updated until the session ends, when the
+   user logs out or the session expires.
+  </para>
+  <para>
+   To try out stateless sessions, see
+   <link xlink:href="admin-guide#chap-session-state"
+         xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink">
+   <citetitle>Configuring Session State</citetitle></link>.
+  </para>
+ </section>
+
+
 </chapter>

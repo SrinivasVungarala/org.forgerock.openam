@@ -37,7 +37,7 @@ box "OpenAM" #FAFAFA
         participant "AuthN Service" as AuthN
 end box
 
-UA->App: Browse to protected resource. If\nSSOToken is present, skip to 8.\nOtherwise...
+UA->App: Browse to protected resource. If\na session is present, skip to 8.\nOtherwise...
 
 App->UA: Redirect...
 
@@ -47,13 +47,13 @@ AuthN->UA: Authentication page
 
 UA->AuthN: Submit credentials.
 
-AuthN->UA: Set valid SSOToken with the configured domain name, and redirect...
+AuthN->UA: Set valid session for the configured domain name, and redirect...
 
 UA->App: ...to the application.
 
-App->PS: Request SSOToken validation
+App->PS: Request session validation
 
-PS->App: Response for SSOToken validation
+PS->App: Response for session validation
 
 App->PS: Request policy decision
 

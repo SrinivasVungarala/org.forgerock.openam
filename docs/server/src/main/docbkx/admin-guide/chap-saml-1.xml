@@ -39,7 +39,12 @@
  </indexterm>
 
  <para>
-  SAML v1.x describes an XML and SOAP based framework that allows
+  This chapter describes OpenAM's support for the SAML v1.x
+  framework for exchanging security data.
+ </para>
+
+ <para>
+  SAML v1.x is an XML and SOAP-based framework that allows
   online trusted partners to exchange security information.
   In particular, SAML v1.x defines mechanisms for
   browser based web single sign-on (SSO) across independent organizations
@@ -69,6 +74,15 @@
    >Managing OpenID Connect 1.0 Authorization</citetitle></link>.
   </para>
  </important>
+ 
+ <indexterm>
+  <primary>Session state</primary>
+  <secondary>and SAML 1.x</secondary>
+ </indexterm>
+
+ <para>OpenAM's support for SAML 1.x requires stateful sessions. Be sure that
+  OpenAM is configured for stateful sessions&#x2014;the default configuration&#x2014;before
+  attempting to use SAML 1.x functionality in OpenAM.</para>
 
  <section xml:id="saml-1-about">
   <title>About SAML v1.x</title>
