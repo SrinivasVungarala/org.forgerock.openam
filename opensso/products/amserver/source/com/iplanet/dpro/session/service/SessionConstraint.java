@@ -152,7 +152,7 @@ public class SessionConstraint {
 			}
 		}
 	}
-	protected static boolean checkQuotaAndPerformAction(InternalSession is) {
+	protected static boolean checkQuotaAndPerformAction0(InternalSession is) {
 		if (is!=null && is.getID()!=null)
 			tpQuota.execute(new AsyncQuota(is));
 		return false;
@@ -165,7 +165,7 @@ public class SessionConstraint {
      * @return true if the session activation request should be rejected, false
      *         otherwise
      */
-    protected static boolean checkQuotaAndPerformAction0(InternalSession is) {
+    protected static boolean checkQuotaAndPerformAction(InternalSession is) {
         boolean reject = false;
         int sessionCount = -1;
 
@@ -217,14 +217,16 @@ public class SessionConstraint {
 	 }
 
 	 if (sessions != null) {
+		sessions.remove(is.getID().toString()); //remove self session
 	    sessionCount = sessions.size();
 	}
 
 	// Step 3: checking the constraints
-	if (sessionCount >= quota) {
+	if (sessions!=null && sessionCount >= quota) {
 	    // If the session quota is exhausted, invoke the
 	    // pluggin to determine the desired behavior.
-	    reject = getQuotaExhaustionAction().action(is, sessions);
+		is.setObject("quota", quota); //save quota for later use
+		reject = getQuotaExhaustionAction().action(is, sessions);
 	    if (debug.messageEnabled()) {
 			debug.message("SessionConstraint." +
                         "checkQuotaAndPerformAction: " +

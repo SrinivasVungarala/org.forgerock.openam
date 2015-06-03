@@ -35,6 +35,7 @@ import com.iplanet.dpro.session.service.InternalSession;
 import com.iplanet.dpro.session.service.QuotaExhaustionAction;
 import com.iplanet.dpro.session.service.SessionService;
 import com.sun.identity.shared.debug.Debug;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -51,27 +52,25 @@ public class DestroyAllAction implements QuotaExhaustionAction {
 
     @Override
     public boolean action(InternalSession is, Map sessions) {
-        Set<String> sids = sessions.keySet();
-        debug.message("there are " + sids.size() + " sessions");
-        //synchronized (sessions) 
-        {
-            for (String sid : sids) {
-            	SessionID sessID = new SessionID(sid);
-                
-                try {
-                	if (!sessID.equals(is.getID())){
-	                    Session s = Session.getSession(sessID);
-	                    debug.error("destroy " + sessID+" "+s.getClientID());
-	                    s.destroySession(s);
-                	}
-                } catch (SessionException se) {
-                    if (debug.messageEnabled()) {
-                        debug.message("Failed to destroy the next "
-                                + "expiring session.", se);
-                    }
+    	final Long quota=(Long)is.getObject("quota");
+    	
+    	if (sessions.size()<quota)
+    		return false;
+        
+    	while (sessions.size()>=quota){
+   		 	SessionID sessID = new SessionID((String)sessions.keySet().iterator().next());
+            try {
+                Session s = Session.getSession(sessID);
+                debug.error("DestroyNextExpiringAction destroy "+s.getIdleTime()+" "+sessions.size()+"/"+quota +" "+ sessID+" "+s.getClientID());
+                s.destroySession(s);
+            } catch (SessionException e) {
+                if (debug.messageEnabled()) {
+                    debug.message("Failed to destroy the next expiring session.", e);
                 }
+            }finally{
+            	sessions.remove(sessID.toString());
             }
-        }
+    	}
         return false;
     }
 }
