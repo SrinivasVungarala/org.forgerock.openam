@@ -84,7 +84,7 @@
   </para>
 
   <para>OpenAM centralizes authentication by using a variety of authentication
-   modules. Authentication modules connect to identity repositories that store
+   modules that connect to identity repositories that store
    identities and provide authentication services. The identity repositories can
    be implemented as LDAP directories, relational databases, RADIUS, Windows
    authentication, one-time password services, and other standards-based access
@@ -621,18 +621,20 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      </textobject>
     </mediaobject>
 
-    <para>If you were configuring OpenAM for real-world use, you would not use
-    either of those passwords, but this is only to get started with OpenAM. The
-    <literal>amadmin</literal> user is the OpenAM administrator, who is like
-    a super user in that <literal>amadmin</literal> has full control over
-    the OpenAM configuration.</para>
+    <note>
+     <para>If you were configuring OpenAM for real-world use, you would not use
+      either of those passwords, but this is only to get started with OpenAM. The
+      <literal>amadmin</literal> user is the OpenAM administrator, who is like
+      a super user in that <literal>amadmin</literal> has full control over
+      the OpenAM configuration.</para>
+    </note>
 
     <para>The <literal>UrlAccessAgent</literal> is not used in this guide.</para>
    </step>
 
    <step>
-    <para>When you see the Configuration Complete! dialog, click the Proceed to
-    Login link, and then log in as <literal>amadmin</literal> with password
+    <para>Click the Proceed to Login,
+     then log in as <literal>amadmin</literal> with password
     <literal>password</literal>.</para>
 
     <para>After login, OpenAM should direct you to the console at
@@ -650,15 +652,16 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      </textobject>
     </mediaobject>
 
-    <para>In your home directory, you find that OpenAM has stored its
-    configuration, including the embedded OpenDJ directory server, in a
-    folder named after the server instance, <filename>~/openam/</filename>. It
-    has also added a hidden folder, <filename>~/.openamcfg/</filename>, with
-    a file used by OpenAM when it starts up. If you ruin your configuration
-    of OpenAM somehow, the quickest way to start over is to stop Tomcat,
-    delete these two folders, and configure OpenAM again.</para>
+    <para>
+     OpenAM stores its configuration, including the embedded OpenDJ directory
+     server in the folder named <filename>~/openam/</filename> in your home
+     directory. The folder shares the same name as your server instance.
+     It also has a hidden folder, <filename>~/.openamcfg/</filename>, with
+     a file used by OpenAM when it starts up. If you ruin your configuration
+     of OpenAM somehow, the quickest way to start over is to stop Tomcat,
+     delete these two folders, and configure OpenAM again.</para>
 
-    <para>OpenAM core server and OpenAM Console is now configured. Make sure
+    <para>OpenAM core server and OpenAM Console are now configured. Make sure
     you have successfully logged in to OpenAM Console before you proceed.</para>
    </step>
   </procedure>
@@ -675,18 +678,18 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
     <secondary>configuring</secondary>
    </indexterm>
 
-
-   <para>OpenAM authenticates users and then makes authorization decisions.
-   The authorization decisions are based on access policies that indicate
-   who can do what, when, and under what conditions. Follow these steps to
-   create a policy that allows all authenticated users to perform an HTTP GET
-   (for example, to browse) the Apache HTTP home page that you set up
-   earlier.</para>
+   <para>
+    OpenAM authenticates users and then makes authorization decisions based on
+    access policies that indicate user entitlements.
+    Follow these steps to
+    create a policy that allows all authenticated users to perform an HTTP GET
+    (for example, to browse) the Apache HTTP home page that you set up
+    earlier.</para>
 
    <step>
-    <para>In OpenAM Console, click the Access Control tab,
-     then in the Realms table click the link to
-     <literal>/ (Top Level Realm)</literal>.</para>
+    <para>In OpenAM Console, click the Access Control,
+     then click
+     <literal>/ (Top Level Realm)</literal> in the Realms table.</para>
 
     <para>OpenAM allows you to organize identities, policies, and policy agent
     profiles into realms as described in the <citetitle>Administration
@@ -719,8 +722,8 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
     <literal>*://*:*/*</literal> to move the pattern to the
      Create your resources section. Then, replace the
      asterisks so that the pattern reads:
-     <literal>http://www.example.com:8000/*</literal>, and then click the
-     Add icon.</para>
+     <literal>http://www.example.com:8000/*</literal>, and then click
+     Add.</para>
 
     <mediaobject xml:id="figure-openam-policy-rule">
      <alt>OpenAM Policy Rule</alt>
@@ -732,7 +735,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      </textobject>
     </mediaobject>
 
-    <para>Click Next to proceed.</para>
+    <para>Click Next.</para>
    </step>
    <step><para>In the Select Actions step, select the
     <literal>GET</literal> and
@@ -742,10 +745,9 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
 
    <step>
     <para>In the Define Subject Conditions step, click
-     Subject Condition, from the
-     type drop-down choose <literal>Authenticated
-      Users</literal>and then drag the grey block into the green
-     <literal>AND</literal> logical block above.</para>
+     Subject Condition and choose <literal>Authenticated
+      Users</literal> from the Type drop-down menu. Drag the grey block into the green
+     <literal>AND</literal> logical block.</para>
 
     <mediaobject xml:id="figure-openam-policy-subjects">
      <alt>OpenAM Policy Subjects</alt>
@@ -757,7 +759,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      </textobject>
     </mediaobject>
 
-    <para>Click Next to proceed.</para>
+    <para>Click Next.</para>
    </step>
    <step>
     <para>In the Define Environment Conditions and
@@ -780,14 +782,14 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
       <emphasis>maximized</emphasis> link.</para></tip>
 
      <para>To make changes to the configuration, either click the relevant step,
-      or click the item to jump to the relevant step and make amendments to
+      or click the item to jump to the relevant step and amend
       the configuration.</para>
 
      <para>When the configuration is completed, click Finish.</para>
     </step>
   </procedure>
 
-  <para>Next you must create a web policy agent profile before installing
+  <para>Next, you must create a web policy agent profile before installing
    the agent in Apache HTTP Server to enforce your new policy.</para>
 
   <procedure xml:id="create-web-policy-agent-profile">
@@ -803,12 +805,13 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
    </indexterm>
 
 
-   <para>OpenAM stores profile information about policy agents centrally by
-   default. You can then manage the policy agent profile through OpenAM Console.
-   The policy agent can retrieve its configuration from its OpenAM profile at
-   installation time and when it starts up, and OpenAM can notify the policy
-   agent of changes to its configuration. Following these steps before
-   installing the policy agent itself.</para>
+   <para>
+    By default, OpenAM stores profile information about policy agents centrally by
+    default. You can manage the policy agent profile through OpenAM Console.
+    The policy agent retrieves its configuration from its OpenAM profile at
+    installation and start up, and OpenAM notifies the policy
+    agent of changes to its configuration. Follow these steps before
+    installing the policy agent itself.</para>
 
    <step>
     <para>In OpenAM Console, browse to Access Control > / (Top Level Realm) >
@@ -873,7 +876,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
    <step>
     <para>Click Create to save the new web policy agent profile in OpenAM.</para>
 
-    <para>Next you must install a policy agent in Apache HTTP Server to enforce
+    <para>Next, install a policy agent in Apache HTTP Server to enforce
     your new policy.</para>
    </step>
   </procedure>
@@ -890,18 +893,20 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
     <secondary>installing</secondary>
    </indexterm>
 
-   <para>OpenAM policy agents enforce policies defined in OpenAM. The agent's
-   job is to make sure that users have the right to access resources they
-   request. And yet the agent does not make the policy decisions. Instead, the
-   agent calls on OpenAM for policy decisions, using the information presented
-   by the user (or the user's client application), such as the single sign on
-   token in the HTTP cookie that OpenAM uses to keep track of user sessions.
-   In essence the agent is a gatekeeper for OpenAM.</para>
+   <para>
+    OpenAM policy agents enforce policies defined in OpenAM.
+    While the policy agent's job is to verify that uses have the appropriate
+    privileges to the resources they request, the policy agents do not make
+    policy decisions. They call on OpenAM to make policy decisions using information
+    presented by the user (or the user's client application), such as, the SSO
+    token in the HTTP cookie, which OpenAM uses to manage user sessions.
+    A policy agent is, in essence, a gatekeeper for OpenAM.</para>
 
-   <para>The agent runs inside of Apache HTTP Server as a library that the
-   server loads at startup time. When a request comes in, the agent redirects
-   users to OpenAM for authentication and calls on OpenAM for policy decisions
-   as necessary.</para>
+   <para>
+    The agent runs inside of Apache HTTP Server as a library, which the
+    server loads at startup time. When a request comes in, the agent redirects
+    users to OpenAM for authentication and calls on OpenAM for policy decisions
+    as necessary.</para>
 
    <step>
     <para>Download the OpenAM policy agent for your version of Apache HTTP
@@ -930,7 +935,7 @@ $ <userinput>chmod 400 /tmp/pwd.txt</userinput>
    <step>
     <para>Make sure OpenAM is running.</para>
 
-    <para>You can check for example by logging into OpenAM Console.</para>
+    <para>You can verify this by logging into OpenAM Console.</para>
    </step>
 
    <step>
@@ -976,8 +981,8 @@ Agent Profile Password file name : /tmp/pwd.txt
    </step>
 
    <step>
-    <para>Start Apache HTTP Server, and check that the web policy agent seems
-    to be correctly configured.</para>
+    <para>Start Apache HTTP Server, and verify that the web policy agent is configured
+     correctly.</para>
 
     <screen>
 $ <userinput>/path/to/apache/bin/apachectl -k start</userinput>
@@ -986,8 +991,8 @@ $ <userinput>tail /path/to/apache/logs/error_log</userinput>
  normal operations</computeroutput>
     </screen>
 
-    <para>Assuming everything up to now has worked correctly, you can now try
-    your installation to see OpenAM in action.</para>
+    <para>
+     You can now try your installation to see OpenAM in action.</para>
    </step>
   </procedure>
  </section>
@@ -997,16 +1002,15 @@ $ <userinput>tail /path/to/apache/logs/error_log</userinput>
 
   <indexterm>
    <primary>OpenAM</primary>
-   <secondary>trying it out</secondary>
+   <secondary>Verifying the installation</secondary>
   </indexterm>
 
   <orderedlist>
    <para>Now that you have completed <xref linkend="software-setup" />,
-   you can try accessing the protected web page to see OpenAM at work.</para>
+   you can access the protected web page to see OpenAM at work.</para>
 
    <listitem>
-    <para>Log out of OpenAM Console so that you can see the need to login when
-    you try to access the Apache "It works!" page.</para>
+    <para>Log out of OpenAM Console.</para>
    </listitem>
 
    <listitem>
@@ -1036,35 +1040,36 @@ $ <userinput>tail /path/to/apache/logs/error_log</userinput>
     <para>On successful login, OpenAM sets a session cookie named
     <literal>iPlanetDirectoryPro</literal> in your browser for the domain
     <literal>.example.com</literal>. The cookie is then returned to servers
-    in the <literal>example.com</literal> domain such as
+    in the <literal>example.com</literal> domain, such as,
     <literal>openam.example.com</literal> and
     <literal>www.example.com</literal>.</para>
 
-    <para>If you examine this cookie in your browser, you notice that it has
-    a value such as
-    <literal>AQIC5wM2LY4SfcwciyfvJcQDUIB7kIWEH187Df_txqLdAVc.*AAJTSQACMDEAAlNLABMxMDYwNzY1MjQ0NTE0ODI2NTkx*</literal>.
-    This is the SSO Token value. The value is in fact an encrypted reference to
-    the session that is stored only by OpenAM. So only OpenAM can determine
-    whether you are actually logged in, or instead that the session is no longer
-    valid and you need to authenticate again.</para>
+    <para>If you examine this cookie in your browser, you see that it has
+     a value such as
+     <literal>AQIC5wM2LY4SfcwciyfvJcQDUIB7kIWEH187Df_txqLdAVc.*AAJTSQACMDEAAlNLABMxMDYwNzY1MjQ0NTE0ODI2NTkx*</literal>.
+     This is the SSO Token value. The value is in fact an encrypted reference to
+     the session that is stored only by OpenAM. So, only OpenAM can determine
+     whether you are actually logged in, or instead, that the session is no longer
+     valid and you need to authenticate again.</para>
 
-    <para>The OpenAM session is used for single sign on. When the browser
-    presents the cookie to a server in the domain, the agent on the server can
-    check with OpenAM using the SSO Token as a reference to the session. This
-    allows OpenAM to make policy decisions based on who is authenticated, or
-    to prompt for additional authentication as necessary.</para>
+    <para>The OpenAM session is used for SSO. When the browser
+     presents the cookie to a server in the domain, the agent on the server can
+     check with OpenAM using the SSO Token as a reference to the session. This
+     lets OpenAM make policy decisions based on who is authenticated, or
+     prompt for additional authentication, if necessary.</para>
 
-    <para>Your single sign on session can end in a few ways.  For example, when
-    examining the cookie in your browser, you should notice that it expires when
-    the browser session ends (when you shut down your browser). Alternatively,
-    you can log out of OpenAM explicitly. Sessions can also expire. OpenAM
-    sets two limits, one that causes your session to expire if it remains
-    inactive for a configurable period of time (default: 30 minutes), and
-    another that caps the session lifetime (default: 2 hours).</para>
+    <para>
+     Your SSO session can end in a few ways. For example, when
+     examining the cookie in your browser, you should notice that it expires when
+     the browser session ends (when you shut down your browser). Alternatively,
+     you can log out of OpenAM explicitly. Sessions can also expire. OpenAM
+     sets two limits, one that causes your session to expire if it remains
+     inactive for a configurable period of time (default: 30 minutes), and
+     another that caps the session lifetime (default: 2 hours).</para>
    </listitem>
 
    <listitem>
-    <para>After successful login, notice that you are redirected to the Apache
+    <para>After successful login, you are redirected to the Apache
     "It works!" page.</para>
 
     <mediaobject xml:id="figure-web-server-home-page-again">
@@ -1073,28 +1078,30 @@ $ <userinput>tail /path/to/apache/logs/error_log</userinput>
       <imagedata fileref="images/web-server-home-page.png" format="PNG"/>
      </imageobject>
      <textobject>
-      <para>If everything works correctly you see the "It works!" page after
-      successful login.</para>
+      <para>The "It works!" page displays after successful login.</para>
      </textobject>
     </mediaobject>
 
-    <para>In the background, OpenAM redirected your browser again to the page
-    you tried to access originally, <literal>http://www.example.com:8000</literal>.
-    This time the web policy agent intercepted the request and found the SSO
-    Token, so it could request a policy decision from OpenAM regarding whether
-    the user with the SSO Token has access to get
-    <literal>http://www.example.com:8000/</literal>. OpenAM replied to the policy
-    agent that it could allow access, and the policy agent allowed Apache HTTP
-    Server to send back the web page.</para>
+    <para>
+     In the background, OpenAM redirected your browser again to the page
+     you tried to access originally, <literal>http://www.example.com:8000</literal>.
+     This time, the web policy agent intercepted the request and found the SSO
+     Token so it could request a policy decision from OpenAM regarding whether
+     the user with the SSO Token has access to get
+     <literal>http://www.example.com:8000/</literal>. OpenAM replied to the policy
+     agent that it could allow access, and the policy agent allowed Apache HTTP
+     Server to send back the web page.</para>
    </listitem>
   </orderedlist>
 
-   <para>Congratulations on protecting your first web site with OpenAM! Notice
-   that you had only to install software and to configure things in OpenAM. You
-   did not have to change your web site at all in order to add single sign on
-   and to set up access policies.</para>
+   <para>
+    Congratulations on protecting your first web site with OpenAM! Notice
+    that you had only to install software and to configure OpenAM. You
+    did not have to change your web site at all in order to add SSO
+    and to set up access policies.</para>
 
-   <para>OpenAM can do much more than protect web pages. Read the next chapter
-   to learn more.</para>
+   <para>
+    OpenAM can do much more than protect web pages. Read the next chapter
+    to learn more.</para>
  </section>
 </chapter>

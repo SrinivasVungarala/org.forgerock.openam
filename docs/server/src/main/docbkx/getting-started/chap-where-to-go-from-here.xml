@@ -40,9 +40,9 @@
 
  <para>OpenAM can do much more than protect web pages. In addition to being
  the right foundation for building highly available, Internet-scale access
- management services, OpenAM has a rich set of features that make it the right
- choice for a variety of different deployments. This chapter describes some of
- the features of OpenAM and indicates where in the documentation you can find
+ management services, OpenAM has a rich set of features that make it a strong
+ choice for a variety of different deployments. This chapter presents the key
+ features of OpenAM and indicates where in the documentation you can find
  out more about them.</para>
 
  <section xml:id="user-self-service-features">
@@ -57,10 +57,10 @@
    <secondary>about</secondary>
   </indexterm>
 
-  <para>The easier it is for users to handle their own registration, to reset
-  forgotten passwords, and to access the applications they need without a call
-  to your help desk, the more you save when supporting them for these
-  tasks.</para>
+  <para>
+   OpenAM provides user self-registration and password reset services that allow
+   users access to applications without the need to call your help desk.
+  </para>
 
   <para>OpenAM has access to the identity repositories where user profiles are
   stored. OpenAM is therefore well placed to help you manage self-service
@@ -70,9 +70,9 @@
    <listitem>
     <para><emphasis role="bold">User Self-Registration</emphasis>.
      OpenAM provides user self-registration as
-     a feature of OpenAM's REST APIs. New users can safely sign up
-     in OpenAM without your administrators or help desk having to get
-     involved.
+     a feature of OpenAM's REST APIs.
+     New users can easily self-register in OpenAM without assistance from
+     administrators or help desk staff.
     </para>
 
     <para>
@@ -93,8 +93,9 @@
 
    <listitem>
     <para><emphasis role="bold">Password Reset</emphasis>.
-     OpenAM can help users reset their passwords on their own. OpenAM
-     handles both the case where a user knows their password and wants to change
+     With OpenAM's self-service password reset, users can help reset passwords
+     passwords, as well as update their existing passwords.
+     OpenAM handles both the case where a user knows their password and wants to change
      it, and also the case where the user has forgotten their password and needs
      to reset it, possibly after answering security questions.</para>
 
@@ -115,12 +116,12 @@
    <listitem>
     <para><emphasis role="bold">Dashboard Service</emphasis>.
      Users often have a number of applications assigned to them, especially
-     if your organization has standardized on software as a service, for example
+     if your organization has standardized SaaS, for example
      for email, document sharing, support ticketing, customer relationship
-     management, web conferencing, and so forth. It can be handy to present these
-     applications on a user's web-based dashboard with the user's profile, and
-     to assign applications to the user's dashboard automatically based on the
-     user's profile.</para>
+     management, web conferencing, and so forth. You can create an interface
+     for users to access these web-based and internal applications using OpenAM's
+     dashboard service.
+    </para>
 
     <para>The OpenAM cloud dashboard service makes this relatively easy to
     set up. For basic information on using the service, see the
@@ -140,48 +141,50 @@
  </section>
 
  <section xml:id="sso-features">
-  <title>Single Sign On</title>
+  <title>Single Sign-On</title>
 
   <indexterm>
    <primary>OpenAM</primary>
    <secondary>Single sign-on</secondary>
   </indexterm>
   <indexterm>
-   <primary>Single sign on</primary>
+   <primary>Single sign-on</primary>
    <secondary>about</secondary>
   </indexterm>
 
-  <para>Single sign on (SSO) is a core feature of OpenAM. Once you have set up
-  OpenAM you protect as many applications in the network domain as you want.
-  Simply install policy agents for the additional servers, and add policies
-  for the resources served by the applications. Users can then authenticate
-  to start a session on any site in the domain, and they remain authenticated
-  for all sites in the domain. No need to log in again (unless the session
-  ends, or unless a policy requires stronger authentication). See the
-  <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
-  xlink:href="admin-guide#chap-sso"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-  Single Sign-On within One Domain</citetitle></link> for details.</para>
+  <para>
+   Single sign-on (SSO) is a core feature of OpenAM. Once you have set up
+   OpenAM, you protect as many applications in the network domain as you want.
+   Simply install policy agents for the additional servers, and add policies
+   for the resources served by the applications.
+   Users can authenticate to start a session on any site in the domain and stay
+   authenticated for all sites in the domain without needing to log in again
+   (unless the session ends, or unless a policy requires stronger authentication.
+   See the <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
+   xlink:href="admin-guide#chap-sso"
+   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
+   Single Sign-On within One Domain</citetitle></link> for details.</para>
 
-  <para>Many organizations manage more than one domain. When you have multiple
-  distinct domains in a single organization, cookies set in one domain are not
-  returned to servers in another domain. Also in many organizations, sub-domains
-  are controlled independently, leading to the need to protect against someone
-  setting up a rogue sub-domain to hijack session cookies. OpenAM's cross
-  domain single sign on (CDSSO) provides a safe mechanism for your OpenAM
-  servers in one domain to work with policy agents from other domains,
-  protecting against potential session cookie hijacking. CDSSO allows users to
-  sign on in one of your domains and not have to sign on again when they visit
-  another of your domains.</para>
+  <para>
+   Many organizations manage more than one domain. When you have multiple
+   distinct domains in a single organization, cookies set in one domain are not
+   returned to servers in another domain. In many organizations, sub-domains
+   are controlled independently. These domains need to be protected from
+   surreptitious takeovers like session cookie hijacking. OpenAM's cross-domain
+   single sign-on (CDSSO) provides a safe mechanism for your OpenAM
+   servers in one domain to work with policy agents from other domains, while
+   allowing users to sign-on once across many domains without needing to reauthenticate.
+   CDSSO allows users to sign on in one of your domains and not have to sign on
+   again when they visit another of your domains.</para>
 
   <para>CDSSO works through cooperation between policy agents and the
-  <literal>CDCServlet</literal> in OpenAM. Together, the policy agents and
-  OpenAM use federation capabilities to translate from one domain to another.
-  For details on how to configure policy agents for CDSSO, see the
-  <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
-  xlink:href="admin-guide#chap-cdsso"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-  Cross-Domain Single Sign On</citetitle></link>.</para>
+   <literal>CDCServlet</literal> in OpenAM. Together, the policy agents and
+   OpenAM use federation capabilities to translate from one domain to another.
+   For details on how to configure policy agents for CDSSO, see the
+   <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
+   xlink:href="admin-guide#chap-cdsso"
+   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
+   Cross-Domain Single Sign On</citetitle></link>.</para>
  </section>
 
  <section xml:id="federation">
@@ -196,12 +199,13 @@
    <secondary>about</secondary>
   </indexterm>
 
-  <para>When you need to federate identities across not just different domains
-  but instead across different organizations with separate access management
-  solutions, then you need interoperable federation technologies. Perhaps your
+  <para>
+   When you need to federate identities across different domains and
+   different organizations with separate access management
+   solutions, then you need interoperable federation technologies. Perhaps your
   organization acts as an identity provider for other organizations providing
   services. Perhaps you provide the services and allow users to use their
-  identity from another organization to access your services. Either way OpenAM
+  identity from another organization to access your services. Either way, OpenAM
   has the capability to integrate well in federated access management
   scenarios.</para>
 
@@ -209,17 +213,18 @@
    <para>OpenAM supports standards-based federation technologies.</para>
 
    <listitem>
-    <para>Security Assertion Markup Language (SAML) 2.0 grew out of earlier
-    work on SAML v1.x and in the Liberty Alliance. SAML defines XML-based,
-    standard formats and profiles for federating identities. SAML v2.0 is
-    supported by a wide range of applications including major software as a
-    service (SaaS) offerings. OpenAM supports SAML v2.0 and earlier standards,
-    and can function as a hub in deployments where different standards are
-    used. For details on OpenAM's SAML v2.0 capabilities, see the
-    <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
-    xlink:href="admin-guide#chap-federation"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing SAML
-    2.0 Federation</citetitle></link>.</para>
+    <para>
+     Security Assertion Markup Language (SAML) 2.0 grew out of earlier
+     work on SAML v1.x and the Liberty Alliance. SAML defines XML-based,
+     standard formats and profiles for federating identities. SAML v2.0 is
+     supported by a wide range of applications including major software as a
+     service (SaaS) offerings. OpenAM supports SAML v2.0 and earlier standards,
+     and can function as a hub in deployments where different standards are
+     used. For details on OpenAM's SAML v2.0 capabilities, see the
+     <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
+     xlink:href="admin-guide#chap-federation"
+     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing SAML
+     2.0 Federation</citetitle></link>.</para>
 
     <para>When your deployment serves as an identity provider for a SAML
     federation, OpenAM makes it easy to develop applications called Fedlets that
@@ -234,27 +239,30 @@
    </listitem>
 
    <listitem>
-    <para>OAuth 2.0 and OpenID Connect 1.0 are open standards for authorization
-    using REST APIs to allow users to authorize third-party access to their
-    resources. These standards make it easier to federate modern web
-    applications. OAuth for example is widely used in social applications.</para>
+    <para>
+     OAuth 2.0 and OpenID Connect 1.0 are open standards for authorization
+     using REST APIs to allow users to authorize third-party access to their
+     resources. These standards make it easier to federate modern web
+     applications. OAuth for example is widely used in social applications.</para>
 
-    <para>OpenAM offers support both for OAuth 2.0 and also for OpenID Connect
-    1.0. OpenAM can play the roles of authorization server and of client in
-    OAuth 2.0, while managing the profiles of the resource owners. When acting
-    as a client, OpenAM policy agents can be used on resource servers to enforce
-    authorization. For details see the <citetitle>Administration Guide</citetitle>
-    chapter, <link xlink:show="new" xlink:href="admin-guide#chap-oauth2"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing OAuth
-    2.0 Authorization</citetitle></link>.</para>
+    <para>
+     OpenAM offers support for both OAuth 2.0 and OpenID Connect
+     1.0. OpenAM can servce as an authorization server and as a client of
+     OAuth 2.0, while managing the profiles of the resource owners. When acting
+     as a client, OpenAM policy agents can be used on resource servers to enforce
+     authorization. For details see the <citetitle>Administration Guide</citetitle>
+     chapter, <link xlink:show="new" xlink:href="admin-guide#chap-oauth2"
+     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing OAuth
+     2.0 Authorization</citetitle></link>.</para>
 
-    <para>OpenAM can play the OpenID Connect 1.0 provider role as well, with
-    support for Basic and Implicit client profiles as well as discovery,
-    dynamic registration, and session management. For details see the
-    <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
-    xlink:href="admin-guide#chap-openid-connect"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing OpenID
-    Connect 1.0 Authorization</citetitle></link>.</para>
+    <para>
+     OpenAM can serve as the OpenID Connect 1.0 provider with
+     support for Basic and Implicit client profiles as well as discovery,
+     dynamic registration, and session management. For details see the
+     <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
+     xlink:href="admin-guide#chap-openid-connect"
+     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing OpenID
+     Connect 1.0 Authorization</citetitle></link>.</para>
    </listitem>
   </itemizedlist>
  </section>
@@ -271,14 +279,15 @@
    <secondary>accessing</secondary>
   </indexterm>
 
-  <para>In the first chapter of this guide you created an OpenAM access policy
-  and saw how it worked. OpenAM can handle large numbers of access policies,
-  each of which gives you centralized control over who can access what
-  resources, when, and under what circumstances. For details see the
-  <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
-  xlink:href="admin-guide#chap-authz-policy"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Defining
-  Authorization Policies</citetitle></link>.</para>
+  <para>
+   In the first chapter of this guide you created an OpenAM access policy
+   and saw how it worked. OpenAM can handle large numbers of access policies,
+   each of which gives you control over user provisioning and user entitlements.
+   For details see the
+   <citetitle>Administration Guide</citetitle> chapter, <link xlink:show="new"
+   xlink:href="admin-guide#chap-authz-policy"
+   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Defining
+   Authorization Policies</citetitle></link>.</para>
 
   <para>OpenAM also supports standards-based access policies defined using the
   eXtensible Access Control Markup Language (XACML). XACML defines an XML
@@ -389,16 +398,17 @@
    </listitem>
   </itemizedlist>
 
-  <para>OpenAM provides built-in support for many identity repositories,
-  web servers and web application containers, access management standards,
-  and all the flexible, configurable capabilities mentioned in this chapter.
-  Yet, for some deployments you might still need to extend what OpenAM can do.
-  For such cases OpenAM defines Service Provider Interfaces (SPIs) where you
-  can integrate your own plugins. See the <citetitle>Developer's Guide</citetitle>
-  section, <link xlink:show="new" xlink:href="dev-guide#openam-spis"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OpenAM
-  SPIs</citetitle></link>, for a list of extension points, and the related
-  documentation in that guide for examples.</para>
+  <para>
+   OpenAM provides built-in support for many identity repositories,
+   web servers and web application containers, access management standards,
+   and all the flexible, configurable capabilities mentioned in this chapter.
+   Yet, for some deployments you might still need to extend what OpenAM's capabilities.
+   For such cases, OpenAM defines Service Provider Interfaces (SPIs) where you
+   can integrate your own plugins. See the <citetitle>Developer's Guide</citetitle>
+   section, <link xlink:show="new" xlink:href="dev-guide#openam-spis"
+   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OpenAM
+   SPIs</citetitle></link>, for a list of extension points, and the related
+   documentation in that guide for examples.</para>
  </section>
 
  <section xml:id="getting-help">
@@ -419,11 +429,12 @@
    <primary>training</primary>
   </indexterm>
 
-  <para>You can purchase OpenAM support subscriptions and training courses
-  from ForgeRock and from consulting partners around the world and in your
-  area. To contact ForgeRock, send mail to <link
-  xlink:href="mailto:info@forgerock.com">info@forgerock.com</link>. To find a
-  partner in your area, see <link xlink:show="new"
-  xlink:href="http://forgerock.com/partners/find-a-partner/" />.</para>
+  <para>
+   You can purchase OpenAM support subscriptions and training courses
+   from ForgeRock and from consulting partners around the world and in your
+   area. To contact ForgeRock, send mail to <link
+   xlink:href="mailto:info@forgerock.com">info@forgerock.com</link>. To find a
+   partner in your area, see <link xlink:show="new"
+   xlink:href="http://forgerock.com/partners/find-a-partner/" />.</para>
  </section>
 </chapter>
