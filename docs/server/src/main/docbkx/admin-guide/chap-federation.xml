@@ -3579,7 +3579,7 @@ $ <userinput>ssoadm \
     </listitem>
     <listitem>
      <para>
-      Single sign-on with the HTTP POST artifact binding
+      Single sign-on with the HTTP POST binding
      </para>
     </listitem>
    </itemizedlist>
