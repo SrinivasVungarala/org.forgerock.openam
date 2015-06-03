@@ -61,7 +61,7 @@ public class DestroyNextExpiringAction implements QuotaExhaustionAction {
 	
     @Override
     public boolean action(InternalSession is, Map<String, Long> sessions) {
-    	final Long quota=(Long)is.getObject("quota");
+    	final Integer quota=(Integer)is.getObject("quota");
     	
     	if (sessions.size()<quota)
     		return false;
