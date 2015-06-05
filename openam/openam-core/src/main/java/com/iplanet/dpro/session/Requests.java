@@ -122,8 +122,6 @@ public class Requests {
                 }
                 // send request again
                 sres = pllSender.sendPLLRequest(svcurl, sreq);
-                if (sres.getException() != null && session.getContext() instanceof SSOToken)
-                	appSSOToken=(SSOToken)session.getContext();
             }
         } catch (Exception e) {
             throw new SessionException(e);
