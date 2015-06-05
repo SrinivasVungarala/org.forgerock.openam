@@ -57,15 +57,11 @@ define("org/forgerock/openam/ui/policy/policies/PoliciesListView", [
             Policies = Backbone.PageableCollection.extend({
                 url: URLHelper.substitute("__api__/policies"),
                 model: PolicyModel,
-                queryParams: {
-                    _sortKeys: BackgridUtils.sortKeys,
-                    _queryFilter: function () {
-                        return BackgridUtils.queryFilter.bind(self.data.items)(['applicationName+eq+"' + args[0] + '"']);
-                    },
-                    pageSize: null,  // todo implement pagination
-                    _pagedResultsOffset: null //todo implement pagination
-                },
-
+                state: BackgridUtils.getState(),
+                queryParams: BackgridUtils.getQueryParams({
+                    _queryFilter: 'applicationName+eq+"' + args[0] + '"'
+                }),
+                parseState: BackgridUtils.parseState,
                 parseRecords: BackgridUtils.parseRecords,
                 sync: function (method, model, options) {
                     options.beforeSend = function (xhr) {
@@ -107,23 +103,21 @@ define("org/forgerock/openam/ui/policy/policies/PoliciesListView", [
                     label: $.t("policy.policies.list.grid.1"),
                     cell: "string",
                     headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    sortable: false,
                     editable: false
                 },
                 {
                     name: "resources",
                     label: $.t("policy.policies.list.grid.2"),
                     cell: BackgridUtils.ArrayCell,
-                    headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    sortable: false,
                     editable: false
                 },
                 {
                     name: "actionValues",
                     label: $.t("policy.policies.list.grid.3"),
                     cell: BackgridUtils.ObjectCell,
-                    headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    sortable: false,
                     editable: false
                 }
                 // TODO: add other columns
@@ -160,11 +154,11 @@ define("org/forgerock/openam/ui/policy/policies/PoliciesListView", [
                 this.$el.find("#backgridContainer").append(grid.render().el);
                 this.$el.find("#paginationContainer").append(paginator.render().el);
 
-                this.data.items.fetch({reset: true});
-
-                if (callback) {
-                    callback();
-                }
+                this.data.items.fetch({reset: true}).done(function () {
+                    if (callback) {
+                        callback();
+                    }
+                });
             });
         }
     });

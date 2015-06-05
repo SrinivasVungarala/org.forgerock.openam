@@ -65,7 +65,7 @@ define("org/forgerock/openam/ui/editor/util/BackgridUtils", [
 
     // todo: candidate for commons, placeholder is the only difference with UMA
     obj.FilterHeaderCell = Backgrid.HeaderCell.extend({
-        className: 'filter-header-cell', // todo
+        className: 'filter-header-cell',
         render: function () {
             var filter = new Backgrid.Extension.ServerSideFilter({
                 name: this.column.get("name"),
@@ -102,25 +102,28 @@ define("org/forgerock/openam/ui/editor/util/BackgridUtils", [
         }
     });
 
-    // todo: candidate for commons, have not changed it, using UMA version
-    obj.queryFilter = function () {
+    obj.queryFilter = function (customFilters) {
         var params = [];
+
+        customFilters = customFilters || [];
+
         _.each(this.state.filters, function (filter) {
             if (filter.query() !== '') {
-                // todo: No server side support for 'co' ATM, this is effectively an 'eq'
                 params.push(filter.name + '+co+' + encodeURIComponent('"' + filter.query() + '"'));
             }
         });
+
+        params = params.concat(customFilters);
+
         return params.length === 0 || params.join('+AND+');
     };
 
-    // todo not working properly yet
     obj.sync = function (method, model, options) {
         var params = [],
-            excludeList = ['page', 'total_pages', 'total_entries', 'order', 'per_page', 'sort_by'];
+            includeList = ['_pageSize', '_pagedResultsOffset', '_sortKeys', '_queryFilter'];
 
         _.forIn(options.data, function (val, key) {
-            if (!_.include(excludeList, key)) {
+            if (_.include(includeList, key)) {
                 params.push(key + '=' + val);
             }
         });
@@ -135,6 +138,67 @@ define("org/forgerock/openam/ui/editor/util/BackgridUtils", [
     // todo: candidate for commons, have not changed it, using UMA version
     obj.parseRecords = function (data, options) {
         return data.result;
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    obj.sortKeys = function () {
+        return this.state.order === 1 ? '-' + this.state.sortKey : this.state.sortKey;
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    // FIXME: Workaround to fix "Double sort indicators" issue
+    // @see https://github.com/wyuenho/backgrid/issues/453
+    obj.doubleSortFix = function (model) {
+        // No ids so identify model with CID
+        var cid = model.cid,
+            filtered = model.collection.filter(function (model) {
+                return model.cid !== cid;
+            });
+
+        _.each(filtered, function (model) {
+            model.set('direction', null);
+        });
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    obj.parseState = function (resp, queryParams, state, options) {
+        if (!this.state.totalRecords) {
+            this.state.totalRecords = resp.remainingPagedResults + resp.resultCount;
+        }
+        if (!this.state.totalPages) {
+            this.state.totalPages = Math.ceil(this.state.totalRecords / this.state.pageSize);
+        }
+        return this.state;
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    obj.pagedResultsOffset = function () {
+        return (this.state.currentPage - 1) * this.state.pageSize;
+    };
+
+    obj.getQueryParams = function (data) {
+        data = data || {};
+
+        return {
+            _sortKeys: this.sortKeys,
+            _queryFilter: function () {
+                return obj.queryFilter.call(this, data._queryFilter);
+            },
+            pageSize: "_pageSize",
+            _pagedResultsOffset: this.pagedResultsOffset
+        };
+    };
+
+    obj.getState = function (data) {
+        var state = {
+            pageSize: 10,
+            sortKey: "name"
+        };
+
+        if (data && typeof data === 'object') {
+            _.extend(state, data);
+        }
+        return state;
     };
 
     return obj;

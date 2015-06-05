@@ -22,29 +22,6 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
 ], function (Backgrid, UIUtils) {
     var obj = {};
 
-    // TODO: the difference between this implementation and the one used for UMA is that here the cell is not clickable
-    obj.UriExtCell = Backgrid.UriCell.extend({
-        render: function () {
-            this.$el.empty();
-            var rawValue = this.model.get(this.column.get("name")),
-                formattedValue = this.formatter.fromRaw(rawValue, this.model),
-                href = _.isFunction(this.column.get("href")) ? this.column.get('href')(rawValue, formattedValue, this.model) : this.column.get('href');
-
-            this.$el.append($("<a>", {
-                href: href || rawValue,
-                title: this.title || formattedValue
-            }).text(formattedValue));
-
-            if (href) {
-                this.$el.data('href', href);
-                this.$el.prop('title', this.title || formattedValue);
-            }
-
-            this.delegateEvents();
-            return this;
-        }
-    });
-
     /**
      * Handlebars Template Cell Renderer
      * <p>
@@ -54,14 +31,34 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
      *     template: "templates/MyTemplate.html"
      * });
      */
-     // TODO: difference from UMA: using fillTemplateWithData() instead of render() to pass data to the template
+    // TODO: difference from UMA: using fillTemplateWithData() instead of render() to pass data to the template
     obj.TemplateCell = Backgrid.Cell.extend({
         className: 'template-cell',
+
+        events: {
+            'click': '_onClick'
+        },
+
         render: function () {
             this.$el.html(UIUtils.fillTemplateWithData(this.template, this.model.attributes));
+
+            if (this.additionalClassName) {
+                this.$el.addClass(this.additionalClassName);
+            }
+
+            if (this.callback) {
+                this.callback();
+            }
+
             this.delegateEvents();
 
             return this;
+        },
+
+        _onClick: function (e) {
+            if (this.onClick) {
+                this.onClick(e, this.model.id);
+            }
         }
     });
 
@@ -96,23 +93,27 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
     obj.ArrayCell = Backgrid.Cell.extend({
         className: 'array-formatter-cell',
 
-        render: function () {
-            this.$el.empty();
-
-            var arrayVal = this.model.get(this.column.attributes.name),
-                result = '<ul>',
+        buildHtml: function (arrayVal) {
+            var result = '<ul>',
                 i = 0;
 
             for (; i < arrayVal.length; i++) {
-                if (_.isString(arrayVal[i])){
+                if (_.isString(arrayVal[i])) {
                     result += '<li>' + arrayVal[i] + '</li>';
-                } else{
+                } else {
                     result += '<li>' + JSON.stringify(arrayVal[i]) + '</li>';
                 }
             }
             result += '</ul>';
 
-            this.$el.append(result);
+            return result;
+        },
+
+        render: function () {
+            this.$el.empty();
+
+            var arrayVal = this.model.get(this.column.attributes.name);
+            this.$el.append(this.buildHtml(arrayVal));
 
             this.delegateEvents();
             return this;
@@ -121,7 +122,7 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
 
     // TODO: candidate for commons, placeholder is the only difference with UMA
     obj.FilterHeaderCell = Backgrid.HeaderCell.extend({
-        className: 'filter-header-cell', // todo
+        className: 'filter-header-cell',
         render: function () {
             var filter = new Backgrid.Extension.ServerSideFilter({
                 name: this.column.get("name"),
@@ -136,17 +137,15 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
         }
     });
 
-    // TODO: candidate for commons, have not changed it, using UMA version
     obj.queryFilter = function (customFilters) {
-        var params = [],
-            i = 0;
+        var params = [];
 
         customFilters = customFilters || [];
 
         _.each(this.state.filters, function (filter) {
             if (filter.query() !== '') {
-                // todo: No server side support for 'co' ATM, this is effectively an 'eq'
-                params.push(filter.name + '+co+' + encodeURIComponent('"' + filter.query() + '"'));
+                // todo: No server side support for 'co' ATM
+                params.push(filter.name + '+eq+' + encodeURIComponent('"*' + filter.query() + '*"'));
             }
         });
 
@@ -155,13 +154,12 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
         return params.length === 0 || params.join('+AND+');
     };
 
-    // TODO: not working properly yet
     obj.sync = function (method, model, options) {
         var params = [],
-            excludeList = ['page', 'total_pages', 'total_entries', 'order', 'per_page', 'sort_by'];
+            includeList = ['_pageSize', '_pagedResultsOffset', '_sortKeys', '_queryFilter'];
 
         _.forIn(options.data, function (val, key) {
-            if (!_.include(excludeList, key)) {
+            if (_.include(includeList, key)) {
                 params.push(key + '=' + val);
             }
         });
@@ -180,7 +178,7 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
      *     callback: myCallback
      * });
      */
-    //TODO: commons candidate
+        //TODO: commons candidate
     obj.ClickableRow = Backgrid.Row.extend({
         events: {
             "click": "onClick"
@@ -199,23 +197,64 @@ define("org/forgerock/openam/ui/policy/util/BackgridUtils", [
     };
 
     // TODO: candidate for commons, have not changed it, using UMA version
-    obj.sortKeys = function() {
+    obj.sortKeys = function () {
         return this.state.order === 1 ? '-' + this.state.sortKey : this.state.sortKey;
     };
 
     // TODO: candidate for commons, have not changed it, using UMA version
     // FIXME: Workaround to fix "Double sort indicators" issue
     // @see https://github.com/wyuenho/backgrid/issues/453
-    obj.doubleSortFix = function(model) {
+    obj.doubleSortFix = function (model) {
         // No ids so identify model with CID
         var cid = model.cid,
-            filtered = model.collection.filter(function(model) {
+            filtered = model.collection.filter(function (model) {
                 return model.cid !== cid;
             });
 
-        _.each(filtered, function(model) {
+        _.each(filtered, function (model) {
             model.set('direction', null);
         });
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    obj.parseState = function (resp, queryParams, state, options) {
+        if (!this.state.totalRecords) {
+            this.state.totalRecords = resp.remainingPagedResults + resp.resultCount;
+        }
+        if (!this.state.totalPages) {
+            this.state.totalPages = Math.ceil(this.state.totalRecords / this.state.pageSize);
+        }
+        return this.state;
+    };
+
+    // TODO: candidate for commons, have not changed it, using UMA version
+    obj.pagedResultsOffset = function () {
+        return (this.state.currentPage - 1) * this.state.pageSize;
+    };
+
+    obj.getQueryParams = function (data) {
+        data = data || {};
+
+        return {
+            _sortKeys: this.sortKeys,
+            _queryFilter: function () {
+                return obj.queryFilter.call(this, data._queryFilter);
+            },
+            pageSize: "_pageSize",
+            _pagedResultsOffset: this.pagedResultsOffset
+        };
+    };
+
+    obj.getState = function (data) {
+        var state = {
+            pageSize: 10,
+            sortKey: "name"
+        };
+
+        if (data && typeof data === 'object') {
+            _.extend(state, data);
+        }
+        return state;
     };
 
     return obj;

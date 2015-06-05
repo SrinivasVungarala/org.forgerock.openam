@@ -1,41 +1,40 @@
 /**
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015 ForgeRock AS.
- *
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the License). You may not use this file except in
- * compliance with the License.
- *
- * You can obtain a copy of the License at
- * http://forgerock.org/license/CDDLv1.0.html
- * See the License for the specific language governing
- * permission and limitations under the License.
- *
- * When distributing Covered Code, include this CDDL
- * Header Notice in each file and include the License file
- * at http://forgerock.org/license/CDDLv1.0.html
- * If applicable, add the following below the CDDL Header,
- * with the fields enclosed by brackets [] replaced by
- * your own identifying information:
- * "Portions Copyrighted [year] [name of copyright owner]"
  */
 
 /*global define, $, _, Backbone*/
 
 define("org/forgerock/openam/ui/editor/views/ScriptListView", [
     "backgrid",
+    "org/forgerock/commons/ui/common/components/Messages",
     "org/forgerock/commons/ui/common/main/AbstractView",
+    "org/forgerock/commons/ui/common/main/EventManager",
     "org/forgerock/commons/ui/common/main/Router",
+    "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/util/UIUtils",
     "org/forgerock/openam/ui/common/util/URLHelper",
     "org/forgerock/openam/ui/editor/util/BackgridUtils",
     "org/forgerock/openam/ui/editor/models/ScriptModel"
-], function (Backgrid, AbstractView, Router, UIUtils, URLHelper, BackgridUtils, Script) {
+], function (Backgrid, Messages, AbstractView, EventManager, Router, Constants, UIUtils, URLHelper, BackgridUtils, Script) {
 
     var ScriptListView = AbstractView.extend({
-        template: "templates/editor/views/ScriptListTemplate.html",
+        template: 'templates/editor/views/ScriptListTemplate.html',
+        toolbarTemplate: 'templates/editor/views/ScriptListBtnToolbarTemplate.html',
+        events: {
+            'click #deleteRecords': 'deleteRecords'
+        },
 
         render: function (args, callback) {
             var self = this,
@@ -50,12 +49,9 @@ define("org/forgerock/openam/ui/editor/views/ScriptListView", [
             Scripts = Backbone.PageableCollection.extend({
                 url: URLHelper.substitute("__api__/scripts"),
                 model: Script,
-                queryParams: {
-                    _queryFilter: BackgridUtils.queryFilter,
-                    pageSize: null,  // todo implement pagination
-                    _pagedResultsOffset: null //todo implement pagination
-                },
-
+                state: BackgridUtils.getState(),
+                queryParams: BackgridUtils.getQueryParams(),
+                parseState: BackgridUtils.parseState,
                 parseRecords: BackgridUtils.parseRecords,
                 sync: BackgridUtils.sync
             });
@@ -69,11 +65,9 @@ define("org/forgerock/openam/ui/editor/views/ScriptListView", [
                 {
                     name: "name",
                     label: $.t("scripts.list.grid.0"),
-                    cell: BackgridUtils.UriExtCell,
+                    cell: "string",
                     headerCell: BackgridUtils.FilterHeaderCell,
-                    href: function (rawValue, formattedValue, model) {
-                        return "#edit/" + model.get('_id');
-                    },
+                    sortType: "toggle",
                     editable: false
                 },
                 {
@@ -81,6 +75,7 @@ define("org/forgerock/openam/ui/editor/views/ScriptListView", [
                     label: $.t("scripts.list.grid.1"),
                     cell: "string",
                     headerCell: BackgridUtils.FilterHeaderCell,
+                    sortType: "toggle",
                     editable: false
                 },
                 {
@@ -88,12 +83,14 @@ define("org/forgerock/openam/ui/editor/views/ScriptListView", [
                     label: $.t("scripts.list.grid.2"),
                     cell: "string",
                     headerCell: BackgridUtils.FilterHeaderCell,
+                    sortType: "toggle",
                     editable: false
                 },
                 {
-                    name: "script",
+                    name: "description",
                     label: $.t("scripts.list.grid.3"),
                     cell: "string",
+                    sortable: false,
                     editable: false
                 }
             ];
@@ -110,11 +107,13 @@ define("org/forgerock/openam/ui/editor/views/ScriptListView", [
                 }
             });
 
-            self.data.scripts = new Scripts();
+            this.data.scripts = new Scripts();
 
-            self.data.scripts.on("backgrid:selected", function (model, selected) {
+            this.data.scripts.on("backgrid:selected", function (model, selected) {
                 self.onRowSelect(model, selected);
             });
+
+            this.data.scripts.on("backgrid:sort", BackgridUtils.doubleSortFix);
 
             grid = new Backgrid.Grid({
                 columns: columns,
@@ -142,6 +141,39 @@ define("org/forgerock/openam/ui/editor/views/ScriptListView", [
             });
         },
 
+        deleteRecords: function (e) {
+            e.preventDefault();
+
+            var self = this,
+                i = 0,
+                item,
+                onDestroy = function () {
+                    self.data.selectedUUIDs = [];
+                    self.data.scripts.fetch({reset: true});
+
+                    UIUtils.fillTemplateWithData(self.toolbarTemplate, self.data, function (tpl) {
+                        self.$el.find('#gridToolbar').html(tpl);
+                    });
+                },
+                onSuccess = function (model, response, options) {
+                    onDestroy();
+                    EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, 'scriptDeleted');
+                },
+                onError = function (model, response, options) {
+                    onDestroy();
+                    Messages.messages.addMessage({message: response.responseJSON.message, type: 'error'});
+                };
+
+            for (; i < this.data.selectedUUIDs.length; i++) {
+                item = this.data.scripts.get(this.data.selectedUUIDs[i]);
+
+                item.destroy({
+                    success: onSuccess,
+                    error: onError
+                });
+            }
+        },
+
         onRowSelect: function (model, selected) {
             if (selected) {
                 if (!_.contains(this.data.selectedUUIDs, model.id)) {
@@ -155,8 +187,7 @@ define("org/forgerock/openam/ui/editor/views/ScriptListView", [
         },
 
         renderToolbar: function () {
-            this.$el.find('#gridToolbar').html(UIUtils.fillTemplateWithData(
-                "templates/editor/views/ScriptListBtnToolbarTemplate.html", this.data));
+            this.$el.find('#gridToolbar').html(UIUtils.fillTemplateWithData(this.toolbarTemplate, this.data));
         }
     });
 

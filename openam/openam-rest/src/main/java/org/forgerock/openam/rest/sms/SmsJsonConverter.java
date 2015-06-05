@@ -28,6 +28,7 @@ import org.forgerock.guava.common.collect.HashBiMap;
 import org.forgerock.json.fluent.JsonException;
 import org.forgerock.json.fluent.JsonPointer;
 import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.resource.Resource;
 import org.forgerock.util.Pair;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -115,6 +116,8 @@ public class SmsJsonConverter {
             attributeSchemaConverter = new IntegerAttributeSchemaValue();
         } else if (isScript(syntax)) {
             attributeSchemaConverter = new ScriptAttributeSchemaValue();
+        } else if (isPassword(syntax)) {
+            attributeSchemaConverter = new PasswordAttributeSchemaValue();
         } else {
             attributeSchemaConverter = new StringAttributeSchemaValue();
         }
@@ -243,6 +246,10 @@ public class SmsJsonConverter {
         return syntax.equals(AttributeSchema.Syntax.SCRIPT);
     }
 
+    private boolean isPassword(AttributeSchema.Syntax syntax) {
+        return syntax.equals(AttributeSchema.Syntax.PASSWORD);
+    }
+
     /**
      * Will validate the Json representation of the service configuration against the serviceSchema and return a
      * corresponding Map representation
@@ -262,6 +269,11 @@ public class SmsJsonConverter {
         Map<String, Object> translatedAttributeValuePairs = getTranslatedAttributeValuePairs(jsonValue.asMap());
 
         for (String attributeName : translatedAttributeValuePairs.keySet()) {
+
+            // Ignore _id field used to name resource when creating
+            if (Resource.FIELD_CONTENT_ID.equals(attributeName)) {
+                continue;
+            }
 
             if (shouldBeIgnored(attributeName)) {
                 continue;
@@ -408,6 +420,18 @@ public class SmsJsonConverter {
         @Override
         public Object toJson(String value) {
             return value;
+        }
+
+        @Override
+        public String fromJson(Object json) {
+            return (String) json;
+        }
+    }
+
+    private static class PasswordAttributeSchemaValue implements AttributeSchemaConverter {
+        @Override
+        public Object toJson(String value) {
+            return null;
         }
 
         @Override

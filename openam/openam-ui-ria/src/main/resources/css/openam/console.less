@@ -14,76 +14,13 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-
-.back-bar {
-    border-bottom: 1px solid #ddd;
-    background-color: #EAEAEA;
-
-    .breadcrumb {
-        background-color: transparent;
-        padding:  10px 0 10px;
-        margin-bottom: 0;
-
-        a {
-            color: #666;
-        }
-
-        &>li+li.back-button:before {
-            content: " ";
-        }
-
-        &>.active {
-            color: #8E8E8E;
-        }
-    }
+.nav-tab-content .btn-action-group{
+    margin-left: -2px;
 }
 
-.console-tabs {
-
-    .nav-tabs>li>a {
-        color: #777;
-        padding: 10px 20px;
-        font-weight: 600;
-    }
-
-    .tab-menu {
-        margin-bottom: -1px;
-    }
-
-    .tab-content {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        margin-bottom: 50px;
-    }
-
-    .tab-pane-footer{
-        padding:25px;
-    }
-
-    .panel-body {
-        padding: 30px 30px 20px 30px;
-    }
-
-    .panel-description {
-        margin-bottom: 20px;
-    }
-
-    .row {
-        margin-bottom: 10px;
-    }
-
-    div.active-config {
-        color: #647077;
-        font-size: 12px;
-    }
-}
-
-.panel-body {
-    padding: 15px;
-}
-
-.table > tbody > tr > td {
-    vertical-align: middle;
+div.active-config {
+    color: #647077;
+    font-size: 12px;
 }
 
 // json-editor
@@ -104,6 +41,9 @@ div[data-schemaid] {
         margin-left: -15px;
         background-color:transparent;
         border-color:transparent;
+        box-shadow: none;
+
+        color:#519387;
 
         &:hover{
             background-color:transparent;
@@ -123,5 +63,81 @@ div[data-schemaid] {
         margin-bottom: -5px;
     }
 
+}
 
+
+
+.page-header-min {
+
+    margin-bottom:40px;
+
+    h3 {
+        border: none;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #666;
+        padding: 30px 0 10px;
+        margin-top: 0;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 0;
+
+        a {
+            color: #666;
+
+            &:hover, &:focus {
+                color: @base-theme-color;
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+.sidenav {
+
+    a {
+        color: #666;
+        transition: color 0.1s linear;
+        text-decoration:none;
+        font-size: 13px;
+    }
+
+    li.active > a, a:hover {
+        color: @base-theme-color;
+    }
+
+    > ol > li > a {
+        padding: 0 0 15px 0;
+        display: block;
+
+        &:hover {
+            color: @base-theme-color;
+            text-decoration:none;
+        }
+
+        > .fa {
+            margin-right: 5px;
+            width: 20px;
+            text-align: center;
+        }
+    }
+
+    .sidenav-submenu {
+
+        margin: 0 0 10px 20px;
+
+        li {
+            &:before {
+                .fa-icon();
+                content: @fa-var-angle-right;
+                width: 8px;
+                color: #999;
+            }
+            a {
+                padding: 0 0 10px 5px;
+                display: inline-block;
+            }
+        }
+    }
 }

@@ -623,7 +623,7 @@ $ <userinput>ssoadm \
    </indexterm>
 
    <para>
-    You can monitor session statistics over SNMP.
+    You can monitor stateful session statistics over SNMP.
     OpenAM records statistics for up to
     a configurable number of recent sessions.
     (You can configure the number in OpenAM Console
@@ -634,6 +634,10 @@ $ <userinput>ssoadm \
      xlink:role="http://docbook.org/xlink/role/olink"
      xlink:show="new"
      ><citetitle>Monitoring</citetitle></link>.)
+   </para>
+
+   <para>
+    SNMP monitoring is not available for stateless sessions.
    </para>
 
    <para>
@@ -1131,15 +1135,18 @@ $ <userinput>ssoadm \
   <title>Session Management</title>
   <indexterm><primary>Sessions</primary></indexterm>
   
-  <para>OpenAM console lets the administrator view and manage current
-  user sessions under the Sessions tab page.</para>
+  <para>The OpenAM console lets the administrator view and manage active
+  user sessions on the Sessions tab page.</para>
+  <para>Session management from the OpenAM console is only available for
+  stateful sessions. Stateless sessions do not appear in the Sessions tab page.
+  </para>
   
   <mediaobject xml:id="figure-session-management">
    <alt>Session management tab page</alt>
    <imageobject>
     <imagedata fileref="images/session-management.png" format="PNG" />
    </imageobject>
-   <textobject><para>The OpenAM Administrator can view and end user
+   <textobject><para>The OpenAM Administrator can view stateful end user
    sessions.</para></textobject>
   </mediaobject>
   

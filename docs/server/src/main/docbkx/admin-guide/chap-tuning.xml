@@ -45,13 +45,38 @@
   extent on your requirements, on your workload, and on what resources you have
   available. Test suggestions before rolling them out into production.</para>
  </note>
+
+ <para>
+  The suggestions in this chapter pertain to OpenAM deployments with the
+  following characteristics:
+  <itemizedlist>
+   <listitem>
+    <para>
+     The host running the OpenAM server has a large amount of memory.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     The deployment has a dedicated OpenDJ directory server for the Core Token
+     Service. The host running this directory server is a high-end server with
+     a large amount of memory and multiple CPUs.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     The OpenAM server is configured to use stateful sessions.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </para>
  
- <para>As a rule of thumb, an OpenAM server in production with a 3 GB heap can
- handle 100,000 sessions. Although you might be tempted to use a larger heap
- with a 64-bit JVM, smaller heaps are easier to manage. Thus, rather than
- scaling single servers up to increase the total number of simultaneous
- sessions, consider scaling out by adding more servers instead. The suggestions
- that follow pertain to production servers.</para>
+ <para>As a rule of thumb, an OpenAM server in production with a 3 GB heap
+  configured to use stateful sessions can handle 100,000 sessions. Although
+  you might be tempted to use a larger heap with a 64-bit JVM, smaller heaps
+  are easier to manage. Thus, rather than scaling single servers up to increase
+  the total number of simultaneous sessions, consider scaling out by adding more
+  servers instead.
+ </para>
  
  <!-- The following is lifted from the OpenAM wiki work done by Steve Ferris,
  https://wikis.forgerock.org/confluence/display/openam/OpenAM+Performance+Tuning+Guide
@@ -422,6 +447,11 @@
   <section xml:id="tuning-notification-settings">
    <title>Notification Settings</title>
    
+   <indexterm>
+    <primary>Notifications</primary>
+    <secondary>Service configuration changes</secondary>
+   </indexterm>
+
    <para>OpenAM has two thread pools used to send notifications to clients. The
    Service Management Service thread pool can be tuned in OpenAM console under
    Configuration &gt; Servers and Sites &gt; Default Server Settings &gt;
@@ -454,8 +484,14 @@
      </tbody>
     </tgroup>
    </table>
-   
-   <para>The session service has its own thread pool to send notifications.
+
+   <indexterm>
+    <primary>Notifications</primary>
+    <secondary>Stateful session changes</secondary>
+   </indexterm>
+
+   <para>The session service has its own thread pool to send notifications
+   to listeners about changes to stateful sessions.
    This is configured under Configuration &gt; Servers and Sites &gt; Default
    Server Settings &gt; Session.</para>
    
@@ -502,7 +538,8 @@
   
    <para>The session service has additional properties to tune, which are
    configured under Configuration &gt; Servers and Sites &gt; Default
-   Server Settings &gt; Session.</para>
+   Server Settings &gt; Session. The following suggestions apply to deployments
+   using stateful sessions.</para>
    
    <table xml:id="tuning-session-service-settings" pgwide="1">
     <title>Session Settings</title>

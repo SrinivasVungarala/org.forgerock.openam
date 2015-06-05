@@ -49,13 +49,13 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
                 columns,
                 grid,
                 paginator,
-                ClickableRow;
+                ClickableRow,
+                resourceTypesPromise = PolicyDelegate.listResourceTypes();
 
             this.data.realm = Configuration.globalData.auth.realm;
             this.data.selectedItems = [];
 
             _.extend(this.events, {
-                'click .fa-pencil': 'editApplication',
                 'click #importPolicies': 'startImportPolicies',
                 'click #exportPolicies': 'exportPolicies',
                 'change #realImport': 'readImportFile'
@@ -64,13 +64,11 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
             Apps = Backbone.PageableCollection.extend({
                 url: URLHelper.substitute("__api__/applications"),
                 model: ApplicationModel,
-                queryParams: {
-                    _sortKeys: BackgridUtils.sortKeys,
-                    _queryFilter: self.getDefaultFilter,
-                    pageSize: null,  // todo implement pagination
-                    _pagedResultsOffset: null //todo implement pagination
-                },
-
+                state: BackgridUtils.getState(),
+                queryParams: BackgridUtils.getQueryParams({
+                    _queryFilter: self.getDefaultFilter()
+                }),
+                parseState: BackgridUtils.parseState,
                 parseRecords: BackgridUtils.parseRecords,
                 sync: function (method, model, options) {
                     options.beforeSend = function (xhr) {
@@ -85,10 +83,11 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
                     var $target = $(e.target);
 
                     if ($target.is('a') || $target.is('input') || $target.is('.select-row-cell') ||
-                        $target.parents('.template-cell').length === 1) {
+                        $target.is('.fa') || $target.is('.template-cell')) {
                         return;
                     }
-                    Router.routeTo(Router.configuration.routes.managePolicies, {args: [encodeURIComponent(this.model.id)], trigger: true});
+                    Router.routeTo(Router.configuration.routes.managePolicies, {args: [encodeURIComponent(this.model.id)],
+                        trigger: true});
                 }
             });
 
@@ -102,6 +101,14 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
                     name: "",
                     label: $.t("policy.applications.list.grid.0"),
                     cell: BackgridUtils.TemplateCell.extend({
+                        onClick: function (e, modelId) {
+                            Router.routeTo(Router.configuration.routes.editApp, {args: [encodeURIComponent(modelId)],
+                                trigger: true});
+                        },
+                        callback: function () {
+                            this.$el.find('.fa[data-toggle="popover"]').popover();
+                        },
+                        additionalClassName: 'edit-cell',
                         template: "templates/policy/applications/ApplicationsListActionsCellTemplate.html"
                     }),
                     sortable: false,
@@ -110,11 +117,8 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
                 {
                     name: "name",
                     label: $.t("policy.applications.list.grid.1"),
-                    cell: BackgridUtils.UriExtCell,
+                    cell: "string",
                     headerCell: BackgridUtils.FilterHeaderCell,
-                    href: function (rawValue, formattedValue, model) {
-                        return "#app/" + encodeURIComponent(model.id);
-                    },
                     sortType: "toggle",
                     editable: false
                 },
@@ -123,15 +127,31 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
                     label: $.t("policy.applications.list.grid.2"),
                     cell: "string",
                     headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    sortable: false,
                     editable: false
                 },
                 {
                     name: "resourceTypeUuids",
                     label: $.t("policy.applications.list.grid.3"),
-                    cell: BackgridUtils.ArrayCell,
-                    headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    cell: BackgridUtils.ArrayCell.extend({
+                        render: function () {
+                            this.$el.empty();
+
+                            var uuids = this.model.get(this.column.attributes.name),
+                                names = [],
+                                i = 0;
+
+                            for (; i < uuids.length; i++) {
+                                names.push(_.findWhere(self.data.resTypes, {uuid: uuids[i]}).name);
+                            }
+
+                            this.$el.append(this.buildHtml(names));
+
+                            this.delegateEvents();
+                            return this;
+                        }
+                    }),
+                    sortable: false,
                     editable: false
                 }
                 // TODO: add other columns
@@ -161,19 +181,16 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
                 this.$el.find("#backgridContainer").append(grid.render().el);
                 this.$el.find("#paginationContainer").append(paginator.render().el);
 
-                this.data.items.fetch({reset: true}).done(function (xhr) {
-                    self.$el.find('.fa[data-toggle="popover"]').popover();
+                resourceTypesPromise.done(function (xhr) {
+                    self.data.resTypes = xhr.result;
 
-                    if (callback) {
-                        callback();
-                    }
+                    self.data.items.fetch({reset: true}).done(function () {
+                        if (callback) {
+                            callback();
+                        }
+                    });
                 });
             });
-        },
-
-        editApplication: function (e) {
-            Router.routeTo(Router.configuration.routes.editApp, {args: [encodeURIComponent($(e.target).data('appName'))],
-                trigger: true});
         },
 
         getDefaultFilter: function () {
@@ -194,7 +211,7 @@ define("org/forgerock/openam/ui/policy/applications/ApplicationsListView", [
                 returnList.push('name+eq+"^(?!' + string + '$).*"');
             });
 
-            return returnList.join('+AND+');
+            return returnList;
         },
 
         startImportPolicies: function () {

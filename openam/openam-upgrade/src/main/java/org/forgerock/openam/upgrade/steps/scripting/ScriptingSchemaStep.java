@@ -86,7 +86,7 @@ public class ScriptingSchemaStep extends AbstractUpgradeStep {
         try {
             ServiceSchemaManager schemaManager = new ServiceSchemaManager(AUTH_MODULE_SERVICE_NAME, getAdminToken());
             ServiceSchema globalSchema = schemaManager.getGlobalSchema();
-            if (globalSchema == null) {
+            if (globalSchema == null || globalSchema.getAttributeDefaults().isEmpty()) {
                 DEBUG.message("No upgrade required for {}; no global schema found.", AUTH_MODULE_SERVICE_NAME);
                 return;
             }
@@ -133,6 +133,9 @@ public class ScriptingSchemaStep extends AbstractUpgradeStep {
             scriptAttributes.put(DEFAULT_SCRIPT, Collections.singleton(serverScript));
         }
         String scriptLanguage = getMapAttr(orgAttributes, SERVER_SCRIPT_TYPE);
+        if (StringUtils.isBlank(scriptLanguage)) {
+            scriptLanguage = "JAVASCRIPT"; //set default to JS if no default provided as per scripting.xml schema
+        }
         scriptAttributes.put(DEFAULT_LANGUAGE, Collections.singleton(scriptLanguage.toUpperCase()));
         contextScriptConfigurations.put(ScriptContext.AUTHENTICATION_SERVER_SIDE, scriptAttributes);
     }

@@ -92,7 +92,7 @@
      </para>
 
      <para>
-      Create maps to HTTP PUT (or POST).
+      Create maps to HTTP POST (or PUT).
      </para>
     </listitem>
    </varlistentry>
@@ -377,14 +377,15 @@
   <section xml:id="rest-api-versioning-supported-versions">
    <title>Supported REST API Versions</title>
 
-   <para>The REST API version numbers supported in OpenAM 12.0.0
+   <para>The REST API version numbers supported in
+    OpenAM ${serverDocTargetVersion}
     are as follows:</para>
 
   <variablelist>
    <varlistentry>
     <term><emphasis>Supported protocol versions</emphasis></term>
     <listitem>
-     <para>The <emphasis>protocol</emphasis> versions supported in OpenAM 12.0.0
+     <para>The <emphasis>protocol</emphasis> versions supported in OpenAM ${serverDocTargetVersion}
       are:</para>
       <simplelist>
        <member><literal>1.0</literal></member>
@@ -394,7 +395,7 @@
    <varlistentry>
     <term><emphasis>Supported resource versions</emphasis></term>
     <listitem>
-     <para>The <emphasis>resource</emphasis> versions supported in OpenAM 12.0.0
+     <para>The <emphasis>resource</emphasis> versions supported in OpenAM ${serverDocTargetVersion}
       are shown in the following table.</para>
      <table xml:id="rest-api-supported-resource-versions" pgwide="1">
       <title>Supported <emphasis>resource</emphasis> Versions</title>
@@ -467,12 +468,17 @@
         <row>
          <entry> </entry>
          <entry>/applications</entry>
+         <entry>1.0, 2.0</entry>
+        </row>
+        <row>
+         <entry> </entry>
+         <entry>/resourcetypes</entry>
          <entry>1.0</entry>
         </row>
         <row>
          <entry> </entry>
          <entry>/policies</entry>
-         <entry>1.0</entry>
+         <entry>1.0, 2.0</entry>
         </row>
         <row>
          <entry> </entry>
@@ -1099,6 +1105,189 @@ $ <userinput>curl \
 {"result":"Successfully logged out"}</computeroutput>
    </screen>
   </section>
+ </section>
+
+ <section xml:id="rest-api-filter-sort-page" >
+  <title>Filtering, Sorting, and Paging Results</title>
+  <para>Some OpenAM endpoints support additional query string parameters when
+   querying the REST APIs to manipulate the returned data.
+  </para>
+
+  <variablelist>
+   <para>The query string parameters for manipulating
+    returned results are:</para>
+   <varlistentry>
+    <term><literal>_queryFilter</literal></term>
+    <listitem>
+     <para>
+    The <literal>_queryFilter</literal> parameter can take
+    <literal>true</literal> to return every result,
+    <literal>false</literal> to return no results,
+    or a filter of the following form to match field values:
+    <literal><replaceable>field</replaceable> <replaceable>operator</replaceable> <replaceable>value</replaceable></literal>
+    where <replaceable>field</replaceable> represents the field name,
+    <replaceable>operator</replaceable> is the operator code,
+    <replaceable>value</replaceable> is the value to match,
+    and the entire filter is URL-encoded.</para>
+    <note><para>Supported fields and operator codes vary depending on the
+     endpoint.</para></note>
+    <para>
+        The operators codes are as follows:
+    </para>
+
+   <itemizedlist>
+    <listitem>
+     <para>
+      <literal>co</literal>: contains
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      <literal>eq</literal>: equals.
+     </para>
+     <para>Used for matching strings, and supports regular expression pattern
+      matching.</para>
+    </listitem>
+
+    <listitem>
+     <para>
+      <literal>ge</literal>: greater than or equal to
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      <literal>gt</literal>: greater than
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      <literal>le</literal>: less than or equal to
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      <literal>lt</literal>: less than
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      <literal>pr</literal>: <replaceable>field</replaceable> exists,
+      <replaceable>field</replaceable> is present
+     </para>
+
+     <note><para>
+      Do not set a <replaceable>value</replaceable> when using this operator.
+     </para></note>
+    </listitem>
+
+    <listitem>
+     <para>
+      <literal>sw</literal>: starts with
+     </para>
+    </listitem>
+   </itemizedlist>
+     <para>
+    Filters can be composed of multiple expressions
+    by a using boolean operator <literal>AND</literal>,
+     <literal>OR</literal>, or <literal>!</literal> (NOT)
+    and by using parentheses, <literal>(<replaceable>expression</replaceable>)</literal>
+    to group expressions.</para>
+     <para>Regular expressions are implemented for some operators, so you can
+      create a filter that includes or excludes certain records.</para>
+     <para>You must URL encode the <replaceable>filter</replaceable> expression
+    in <literal>_queryFilter=<replaceable>filter</replaceable></literal>.
+   </para>
+   <para>The following example returns resource types with a <emphasis>name</emphasis>
+      that contains <literal>"Service"</literal> and also has a
+      <emphasis>pattern</emphasis> that starts with <literal>"http"</literal>:</para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--get \
+--data-urlencode '_queryFilter=name co "Service"' \
+--data-urlencode 'and patterns sw "http"' \
+https://openam.example.com:8443/openam/json/resourcetypes</userinput></screen>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>_fields</literal></term>
+    <listitem>
+        <para>You can use <literal>_fields=<replaceable>field-name</replaceable>[,<replaceable>field-name</replaceable>...]</literal>
+    to limit the fields returned in the output.
+   </para>
+     <para>The following example returns the <emphasis>name</emphasis> and
+      <emphasis>creationDate</emphasis> of all policies in the top level realm:</para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--get \
+--data-urlencode '_queryFilter=true' \
+--data-urlencode '_fields=name,creationDate' \
+https://openam.example.com:8443/openam/json/policies</userinput></screen>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>_prettyPrint</literal></term>
+    <listitem>
+        <para>
+    You can use the query string parameters <literal>_prettyPrint=true</literal>
+         to make the output easier to read.
+   </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>_pageSize</literal></term>
+    <listitem>
+     <para>
+    You can use <literal>_pageSize=<replaceable>integer</replaceable></literal>
+    to limit the number of results returned.
+   </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>_pagedResultsOffset</literal></term>
+    <listitem>
+        <para> You can use <literal>_pagedResultsOffset=<replaceable>integer</replaceable></literal>
+    to return results starting at a specified result when using paged
+         results.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>_sortKeys</literal></term>
+    <listitem>
+     <para>
+      You can use <literal>_sortKeys=[+-]<replaceable>field-name</replaceable>[,<replaceable>field-name</replaceable>...]</literal>
+      to sort the results returned, where <replaceable>field-name</replaceable>
+      represents a field in the returned JSON.
+      Optionally use the <literal>+</literal> prefix to sort in ascending order
+      (the default), or <literal>-</literal> to sort in descending order.
+     </para>
+     <para>The following example returns all applications in the top level
+      realm, sorted in descending <emphasis>creationDate</emphasis> order:
+     </para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--get \
+--data-urlencode '_queryFilter=true' \
+--data-urlencode '_sortKeys=-creationDate' \
+https://openam.example.com:8443/openam/json/applications</userinput></screen>
+    </listitem>
+   </varlistentry>
+
+  </variablelist>
+
+
  </section>
 
  <section xml:id="rest-api-serverinfo">

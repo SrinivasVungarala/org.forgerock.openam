@@ -97,7 +97,7 @@ public class AccessManager {
 
   @SubCommandInfo(
           implClassName="com.sun.identity.cli.SessionCommand",
-          description="List Sessions.",
+          description="List stateful sessions.",
           webSupport="false",
           mandatoryOptions={
                   "host|t|s|Host Name."},
@@ -1457,7 +1457,7 @@ public class AccessManager {
                   "realm|e|s|Name of realm.",
                   "idname|i|s|Name of identity.",
                   "idtype|t|s|Type of Identity such as Role and Group.",
-                  "privileges|g|m|Name of privileges to be added. Privilege names are AgentAdmin, EntitlementRestAccess, FederationAdmin, LogAdmin, LogRead, LogWrite, PolicyAdmin, PrivilegeRestAccess, PrivilegeRestReadAccess, RealmAdmin."},
+                  "privileges|g|m|Name of privileges to be added. Privilege names are AgentAdmin, ApplicationModifyAccess, ApplicationReadAccess, ApplicationTypesReadAccess, ConditionTypesReadAccess, DecisionCombinersReadAccess, EntitlementRestAccess, FederationAdmin, LogAdmin, LogRead, LogWrite, PolicyAdmin, PrivilegeRestAccess, PrivilegeRestReadAccess, RealmAdmin, RealmReadAccess, ReferralsModifyAccess, ReferralsReadAccess, ResourceTypeModifyAccess, ResourceTypeReadAccess, SubjectAttributesReadAccess, and SubjectTypesReadAccess."},
           optionAliases={},
           macro="authentication",
           optionalOptions={},
@@ -1475,7 +1475,7 @@ public class AccessManager {
                   "realm|e|s|Name of realm.",
                   "idname|i|s|Name of identity.",
                   "idtype|t|s|Type of Identity such as Role and Group.",
-                  "privileges|g|m|Name of privileges to be removed. Privilege names are AgentAdmin, EntitlementRestAccess, FederationAdmin, LogAdmin, LogRead, LogWrite, PolicyAdmin, PrivilegeRestAccess, PrivilegeRestReadAccess, RealmAdmin."},
+                  "privileges|g|m|Name of privileges to be removed. Privilege names are AgentAdmin, ApplicationModifyAccess, ApplicationReadAccess, ApplicationTypesReadAccess, ConditionTypesReadAccess, DecisionCombinersReadAccess, EntitlementRestAccess, FederationAdmin, LogAdmin, LogRead, LogWrite, PolicyAdmin, PrivilegeRestAccess, PrivilegeRestReadAccess, RealmAdmin, RealmReadAccess, ReferralsModifyAccess, ReferralsReadAccess, ResourceTypeModifyAccess, ResourceTypeReadAccess, SubjectAttributesReadAccess, and SubjectTypesReadAccess."},
           optionAliases={},
           macro="authentication",
           optionalOptions={},
@@ -1502,12 +1502,17 @@ public class AccessManager {
 
   @SubCommandInfo(
           implClassName="com.sun.identity.cli.authentication.CreateAuthInstance",
-          description="Create authentication instance",
+          description="Create authentication module instance",
           webSupport="true",
           mandatoryOptions={
                   "realm|e|s|Name of realm.",
-                  "name|m|s|Name of authentication instance.",
-                  "authtype|t|s|Type of authentication instance e.g. LDAP, DataStore."},
+                  "name|m|s|Name of authentication module instance.",
+                  "authtype|t|s|Type of authentication module instance. "
+                          + "Possible values include AD, Adaptive, Anonymous, Cert, DataStore, "
+                          + "DeviceIdMatch, DeviceIdSave, Federation, HOTP, HTTPBasic, JDBC, "
+                          + "LDAP, Membership, MSISDN, OATH, OAuth, OpenIdConnect, "
+                          + "PersistentCookie, RADIUS, SAE, Scripted, WindowsDesktopSSO, "
+                          + "NT, and WSSAuthModule." },
           optionAliases={},
           macro="authentication",
           optionalOptions={},

@@ -35,7 +35,7 @@
  xlink:href='https://bugster.forgerock.org/jira/browse/OPENAM'
  >https://bugster.forgerock.org/jira/browse/OPENAM</link>. This chapter
  covers the status of key issues and limitations at release
- <?eval ${serverDocTargetVersion}?>.</para>
+ ${serverDocTargetVersion}.</para>
 
  <!-- TODO: Note for the final release
  <important>
@@ -51,7 +51,7 @@
   <title>Key Fixes</title>
 
   <para>The following bugs were fixed in release
-  <?eval ${serverDocTargetVersion}?>. For details, see the <link
+  ${serverDocTargetVersion}. For details, see the <link
   xlink:show="new" xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM"
   >OpenAM issue tracker</link>.</para>
 
@@ -70,6 +70,18 @@
 
   <itemizedlist>
    <listitem>
+    <para><emphasis role="bold">Limitations on Deployments Using Stateless
+     Sessions</emphasis>. Several OpenAM features require stateful sessions,
+     and do not work in realms configured for stateless sessions.
+     See <link
+          xlink:show="new"
+          xlink:href="admin-guide#session-state-stateless-limitations"
+          xlink:role="http://docbook.org/xlink/role/olink"
+    >Limitations When Using Stateless Sessions</link>
+    in the <citetitle>Administration Guide</citetitle> for details.
+
+     </para>
+   </listitem><listitem>
     <para><emphasis role="bold">Different OpenAM Version within a Site</emphasis>.
      Do not run different versions of OpenAM together in the same OpenAM
      site.</para>
@@ -180,7 +192,7 @@
   <title>Known Issues</title>
 
   <para>The following important known issues remained open at the time
-  release <?eval ${serverDocTargetVersion}?> became available. For details and
+  release ${serverDocTargetVersion} became available. For details and
   information on other issues, see the <link xlink:show="new"
   xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM">OpenAM issue
   tracker</link>.</para>

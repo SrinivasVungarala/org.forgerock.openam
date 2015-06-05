@@ -53,13 +53,9 @@ define("org/forgerock/openam/ui/policy/resourcetypes/ResourceTypesListView", [
             ResourceTypes = Backbone.PageableCollection.extend({
                 url: URLHelper.substitute("__api__/resourcetypes"),
                 model: ResourceTypeModel,
-                queryParams: {
-                    _sortKeys: BackgridUtils.sortKeys,
-                    _queryFilter: BackgridUtils.queryFilter,
-                    pageSize: null,  // todo implement pagination
-                    _pagedResultsOffset: null //todo implement pagination
-                },
-
+                state: BackgridUtils.getState(),
+                queryParams: BackgridUtils.getQueryParams(),
+                parseState: BackgridUtils.parseState,
                 parseRecords: BackgridUtils.parseRecords,
                 sync: function (method, model, options) {
                     options.beforeSend = function (xhr) {
@@ -99,23 +95,21 @@ define("org/forgerock/openam/ui/policy/resourcetypes/ResourceTypesListView", [
                     label: $.t("policy.resourceTypes.list.grid.1"),
                     cell: "string",
                     headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    sortable: false,
                     editable: false
                 },
                 {
                     name: "patterns",
                     label: $.t("policy.resourceTypes.list.grid.2"),
                     cell: BackgridUtils.ArrayCell,
-                    headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    sortable: false,
                     editable: false
                 },
                 {
                     name: "actions",
                     label: $.t("policy.resourceTypes.list.grid.3"),
                     cell: BackgridUtils.ObjectCell,
-                    headerCell: BackgridUtils.FilterHeaderCell,
-                    sortType: "toggle",
+                    sortable: false,
                     editable: false
                 }
             ];

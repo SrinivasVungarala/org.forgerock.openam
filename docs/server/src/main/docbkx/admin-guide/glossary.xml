@@ -551,13 +551,12 @@
  <glossentry>
   <glossterm>Session</glossterm>
   <glossdef>
-   <para>In OpenAM a user session is the interval that starts with the user
-   authenticating through OpenAM and ends when the user logs out, or when her
-   session is terminated. OpenAM manages user sessions across one or more
-   applications by issuing a session token used to identify the session and by
-   tracking the session state in order to handle session events like logout and
-   timeout, to permit session constraints, and to notify applications involved
-   in SSO when a session ends.</para>
+   <para>The interval that starts with the user
+   authenticating through OpenAM and ends when the user logs out, or when their
+   session is terminated. For browser-based clients, OpenAM manages user
+   sessions across one or more applications by setting a session cookie.
+   See also <xref linkend="def-stateful-session" />
+   and <xref linkend="def-stateless-session" />.</para>
   </glossdef>
  </glossentry>
 
@@ -573,8 +572,9 @@
  <glossentry>
   <glossterm>Session token</glossterm>
   <glossdef>
-   <para>Unique identifier issued by OpenAM after successful authentication,
-   used to track a principal's session</para>
+   <para>Unique identifier issued by OpenAM after successful authentication.
+   For a <xref linkend="def-stateful-session" />, the session token is used to
+   track a principal's session.</para>
   </glossdef>
  </glossentry>
 
@@ -619,6 +619,27 @@
   <glossdef>
    <para>Standard federation configuration information that you can share with
    other access management software</para>
+  </glossdef>
+ </glossentry>
+
+ <glossentry xml:id="def-stateful-session">
+  <glossterm>Stateful session</glossterm>
+  <glossdef>
+   <para>An OpenAM session that resides in the OpenAM server's memory and,
+    if session failover is enabled, is also persisted in the Core Token
+    Service's token store. OpenAM tracks stateful sessions in order to handle
+    events like logout and timeout, to permit session constraints, and to notify
+    applications involved in SSO when a session ends.</para>
+  </glossdef>
+ </glossentry>
+
+ <glossentry xml:id="def-stateless-session">
+  <glossterm>Stateless session</glossterm>
+  <glossdef>
+   <para>An OpenAM session for which state information is encoded in OpenAM and
+    stored on the client. The information from the session is not retained in
+    OpenAM's memory. For browser-based clients, OpenAM sets a cookie in the
+    browser that contains the session information.</para>
   </glossdef>
  </glossentry>
 

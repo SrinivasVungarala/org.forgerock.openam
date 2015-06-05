@@ -137,7 +137,7 @@
 
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  <frDocPluginVersion>3.0.0-SNAPSHOT</frDocPluginVersion>
+  <frDocPluginVersion>3.0.0</frDocPluginVersion>
 
   <serverDocTargetVersion>13.0.0-SNAPSHOT</serverDocTargetVersion>
   <agentsDocTargetVersion>${project.version}</agentsDocTargetVersion>

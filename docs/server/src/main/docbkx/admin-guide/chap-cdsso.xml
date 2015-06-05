@@ -37,15 +37,24 @@
  your OpenAM servers in one domain work with policy agents from other
  domains.</para>
 
- <para>CDSSO is an OpenAM-specific capability. For single sign on across
- multiple organizations or when integrating with other access management
- software, use OpenAM's federation capabilities.</para>
-
  <indexterm><primary>Cross-domain single sign on (CDSSO)</primary></indexterm>
  <para><firstterm>Cross-domain single sign on</firstterm> provides
  a safe mechanism for managing access across multiple different domains that
  you control. CDSSO lets OpenAM authenticate users redirected by policy agents
  in other DNS domains.</para>
+
+ <para>CDSSO is an OpenAM-specific capability. For single sign on across
+ multiple organizations or when integrating with other access management
+ software, use OpenAM's federation capabilities.</para>
+
+ <indexterm>
+  <primary>Session state</primary>
+  <secondary>and cross-domain single sign on</secondary>
+ </indexterm>
+
+ <para>CDSSO requires stateful OpenAM sessions. Be sure that OpenAM is
+  configured for stateful sessions&#x2014;the default configuration&#x2014;before
+  attempting to use CDSSO.</para>
 
  <para>Single sign on depends on cookies to store session information. Yet for
  security reasons, browsers do not let a web site in one domain to get

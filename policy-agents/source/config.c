@@ -94,6 +94,9 @@ enum {
     AM_CONF_PDP_LBCOOKIE,
     AM_CONF_PDP_CACHE,
     AM_CONF_PDP_JS,
+    AM_CONF_PDP_SMODE,
+    AM_CONF_PDP_SVALUE,
+    AM_CONF_PDP_PREFIX,
     AM_CONF_IP_VALIDATE,
     AM_CONF_COOKIE_PREFIX,
     AM_CONF_COOKIE_MAXAGE,
@@ -126,7 +129,10 @@ enum {
     AM_CONF_ATTR_SEP,
     AM_CONF_WIN_LOGON,
     AM_CONF_WIN_PASS_HEADER,
-    AM_CONF_JSON_URL_MAP
+    AM_CONF_JSON_URL_MAP,
+    AM_CONF_NEF_REGEX_ENABLE,
+    AM_CONF_NEF_EXT_REGEX_ENABLE,
+    AM_CONF_LOGOUT_REGEX_ENABLE
 };
 
 struct am_instance {
@@ -537,11 +543,29 @@ static int am_create_instance_entry_data(am_shm_t *cf, struct offset_list *h, am
                 }
             }
         }
+        if (c->not_enforced_regex_enable > 0) {
+            SAVE_NUM_VALUE(cf, h, MAKE_TYPE(AM_CONF_NEF_REGEX_ENABLE, 0), c->not_enforced_regex_enable);
+        }
+        if (c->not_enforced_ext_regex_enable > 0) {
+            SAVE_NUM_VALUE(cf, h, MAKE_TYPE(AM_CONF_NEF_EXT_REGEX_ENABLE, 0), c->not_enforced_ext_regex_enable);
+        }
+        if (c->logout_regex_enable > 0) {
+            SAVE_NUM_VALUE(cf, h, MAKE_TYPE(AM_CONF_LOGOUT_REGEX_ENABLE, 0), c->logout_regex_enable);
+        }
         if (c->pdp_enable > 0) {
             SAVE_NUM_VALUE(cf, h, MAKE_TYPE(AM_CONF_PDP, 0), c->pdp_enable);
         }
         if (ISVALID(c->pdp_lb_cookie)) {
             SAVE_CHAR_VALUE(cf, h, MAKE_TYPE(AM_CONF_PDP_LBCOOKIE, 0), c->pdp_lb_cookie);
+        }
+        if (ISVALID(c->pdp_sess_mode)) {
+            SAVE_CHAR_VALUE(cf, h, MAKE_TYPE(AM_CONF_PDP_SMODE, 0), c->pdp_sess_mode);
+        }
+        if (ISVALID(c->pdp_sess_value)) {
+            SAVE_CHAR_VALUE(cf, h, MAKE_TYPE(AM_CONF_PDP_SVALUE, 0), c->pdp_sess_value);
+        }
+        if (ISVALID(c->pdp_uri_prefix)) {
+            SAVE_CHAR_VALUE(cf, h, MAKE_TYPE(AM_CONF_PDP_PREFIX, 0), c->pdp_uri_prefix);
         }
         if (c->pdp_cache_valid > 0) {
             SAVE_NUM_VALUE(cf, h, MAKE_TYPE(AM_CONF_PDP_CACHE, 0), c->pdp_cache_valid);
@@ -964,6 +988,15 @@ static am_config_t *am_get_stored_agent_config(struct am_instance_entry *c) {
                     m->value = m->name + i->size[0] + 1;
                 }
                 break;
+            case AM_CONF_NEF_REGEX_ENABLE:
+                r->not_enforced_regex_enable = i->num_value;
+                break;
+            case AM_CONF_NEF_EXT_REGEX_ENABLE:
+                r->not_enforced_ext_regex_enable = i->num_value;
+                break;
+            case AM_CONF_LOGOUT_REGEX_ENABLE:
+                r->logout_regex_enable = i->num_value;
+                break;
             case AM_CONF_PDP:
                 r->pdp_enable = i->num_value;
                 break;
@@ -975,6 +1008,15 @@ static am_config_t *am_get_stored_agent_config(struct am_instance_entry *c) {
                 break;
             case AM_CONF_PDP_JS:
                 r->pdp_js_repost = i->num_value;
+                break;
+            case AM_CONF_PDP_SMODE:
+                r->pdp_sess_mode = strndup(i->value, i->size[0]);
+                break;
+            case AM_CONF_PDP_SVALUE:
+                r->pdp_sess_value = strndup(i->value, i->size[0]);
+                break;
+            case AM_CONF_PDP_PREFIX:
+                r->pdp_uri_prefix = strndup(i->value, i->size[0]);
                 break;
             case AM_CONF_IP_VALIDATE:
                 r->client_ip_validate = i->num_value;

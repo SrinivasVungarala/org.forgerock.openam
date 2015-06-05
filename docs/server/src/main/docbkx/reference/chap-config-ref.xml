@@ -409,7 +409,7 @@
          <varlistentry>
              <term>com.iplanet.am.session.client.polling.enable</term>
              <listitem>
-                 <para>Enables or disables the client-side session polling. If set to <literal>true</literal>,
+                 <para>Enables or disables the client-side polling of stateful sessions. If set to <literal>true</literal>,
                      enable session polling. If set to <literal>false</literal>, disable session polling.</para>
              </listitem>
          </varlistentry>
@@ -1542,7 +1542,7 @@
     <term>Session monitoring history size</term>
     <listitem>
      <para>
-      Maximum number of sessions on which to base
+      Maximum number of session operations on which to base
       the data exposed through the monitoring system
      </para>
 
@@ -3967,7 +3967,7 @@
     <listitem>
      <para>If on, then OpenAM notifies other applications participating in
      SSO when a session property in the Notification Properties list
-     changes.</para>
+     changes on a stateful session.</para>
 
      <para><command>ssoadm</command> attribute:
      <literal>iplanet-am-session-property-change-notification</literal></para>
@@ -3977,7 +3977,7 @@
    <varlistentry>
     <term>Enable Quota Constraints</term>
     <listitem>
-     <para>If on, then OpenAM allows you to set constraints on user
+     <para>If on, then OpenAM allows you to set constraints on stateful
      sessions.</para>
 
      <para><command>ssoadm</command> attribute:
@@ -4025,7 +4025,8 @@
     <term>Notification Properties</term>
     <listitem>
      <para>Lists session properties for which OpenAM can send notifications
-     upon modification</para>
+     upon modification. Session notification applies to stateful
+     sessions only.</para>
 
      <para><command>ssoadm</command> attribute:
      <literal>iplanet-am-session-notification-property-list</literal></para>
@@ -4078,8 +4079,8 @@
    <varlistentry>
     <term>Maximum Idle Time</term>
     <listitem>
-     <para>Maximum minutes a session can remain idle before OpenAM requires
-     the user to authenticate again</para>
+     <para>Maximum minutes a stateful session can remain idle before OpenAM
+      requires the user to authenticate again</para>
 
      <para><command>ssoadm</command> attribute:
      <literal>iplanet-am-session-max-idle-time</literal></para>
@@ -4100,7 +4101,7 @@
    <varlistentry>
     <term>Active User Sessions</term>
     <listitem>
-     <para>Maximum number of concurrent sessions OpenAM allows a user to
+     <para>Maximum number of concurrent stateful sessions OpenAM allows a user to
      have</para>
 
      <para><command>ssoadm</command> attribute:
@@ -4832,7 +4833,7 @@
    <varlistentry>
     <term>Maximum Sessions</term>
     <listitem>
-     <para>Maximum concurrent sessions OpenAM permits</para>
+     <para>Maximum concurrent stateful sessions OpenAM permits</para>
 
      <para>property:
      <literal>com.iplanet.am.session.maxSessions</literal></para>
@@ -4842,7 +4843,7 @@
    <varlistentry>
     <term>Invalidate Session Max Time</term>
     <listitem>
-     <para>Minutes after which invalid sessions are removed from the session
+     <para>Minutes after which invalid stateful sessions are removed from the session
      table</para>
 
      <para>property:
@@ -4853,7 +4854,7 @@
    <varlistentry>
     <term>Sessions Purge Delay</term>
     <listitem>
-     <para>Minutes OpenAM delays session purging</para>
+     <para>Minutes OpenAM delays purging of stateful sessions</para>
 
      <para>property:
      <literal>com.iplanet.am.session.purgedelay</literal></para>
@@ -5621,9 +5622,9 @@
    <varlistentry>
     <term><literal>com.iplanet.am.session.client.polling.enable</literal></term>
     <listitem>
-     <para>Whether client applications such as policy agents poll for
-     configuration changes. If <literal>false</literal>, then OpenAM notifies
-     clients about changes.</para>
+     <para>Whether client applications such as policy agents poll for stateful
+     session changes. If <literal>false</literal>, then client applications
+     register listeners for notifications about changes to stateful sessions.</para>
      <para>Default: false</para>
     </listitem>
    </varlistentry>

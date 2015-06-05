@@ -28,9 +28,8 @@
  * @author yaromin
  */
 define("config/AppConfiguration", [
-    "org/forgerock/commons/ui/common/util/Constants",
-    "org/forgerock/commons/ui/common/main/EventManager"
-], function(constants, eventManager) {
+    "org/forgerock/commons/ui/common/util/Constants"
+], function(Constants) {
     var obj = {
             moduleDefinition: [
                 {
@@ -54,9 +53,12 @@ define("config/AppConfiguration", [
                     configuration: {
                         routes: { },
                         loader: [
-                            {"routes":"config/routes/AMRoutesConfig"},
-                            {"routes":"config/routes/CommonRoutesConfig"},
-                            {"routes":"config/routes/UserRoutesConfig"}
+                            { "routes": "config/routes/AMRoutesConfig" },
+                            { "routes": "config/routes/CommonRoutesConfig" },
+                            { "routes": "config/routes/UserRoutesConfig" },
+                            { "routes": "config/routes/admin/AdminRoutes" },
+                            { "routes": "config/routes/admin/RealmsRoutes" },
+                            { "routes": "config/routes/user/UMARoutes" }
                         ]
                     }
                 },
@@ -139,7 +141,7 @@ define("config/AppConfiguration", [
                                 "i18nKey": "common.user.profile"
                             }, {
                                 "id": "changePasswordLink",
-                                "event" : constants.EVENT_SHOW_CHANGE_SECURITY_DIALOG,
+                                "event" : Constants.EVENT_SHOW_CHANGE_SECURITY_DIALOG,
                                 "i18nKey": "common.user.changePassword"
                             }, {
                                 "id": "logoutLink",
@@ -151,10 +153,41 @@ define("config/AppConfiguration", [
                             "admin": {
                                 "role": "ui-admin",
                                 "urls": {
-                                    "console": {
-                                        "url": "#console",
-                                        "name": "config.AppConfiguration.Navigation.links.console",
-                                        "icon": "fa fa-cubes"
+                                    "commonTasks": {
+                                        "url": "#commonTasks",
+                                        "name": "config.AppConfiguration.Navigation.links.commonTasks",
+                                        "icon": "fa fa-check"
+                                    },
+                                    "realms": {
+                                        "url": "#realms",
+                                        "name": "config.AppConfiguration.Navigation.links.realms",
+                                        "icon": "fa fa-cloud",
+                                        "dropdown" : true,
+                                        "urls": [{
+                                            "url": "#realms",
+                                            "name": "Show All",
+                                            "icon": "fa fa-th"
+                                        },
+                                        {
+                                            "event": "New Realm BS Event triggered here",
+                                            "name": "New Realm",
+                                            "icon": "fa fa-plus"
+                                        }]
+                                    },
+                                    "federation": {
+                                        "url": "#federation",
+                                        "name": "config.AppConfiguration.Navigation.links.federation",
+                                        "icon": "fa fa-building-o"
+                                    },
+                                    "configuration": {
+                                        "url": "#configuration",
+                                        "name": "config.AppConfiguration.Navigation.links.configuration",
+                                        "icon": "fa fa-cog"
+                                    },
+                                    "sessions": {
+                                        "url": "#sessions",
+                                        "name": "config.AppConfiguration.Navigation.links.sessions",
+                                        "icon": "fa fa-users"
                                     }
                                 }
                             },
