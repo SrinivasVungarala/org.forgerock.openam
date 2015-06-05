@@ -1143,7 +1143,7 @@ public class Session extends GeneralTaskRunnable {
          } else {
                  sessionDebug.message("Session."
                      + "createContext():, "
-                     + "setting context to  application SSO token");
+                     + "setting context to  application SSO token "+appSSOToken.getTokenID().toString());
                  context = appSSOToken;
          }
      }
@@ -1175,7 +1175,7 @@ public class Session extends GeneralTaskRunnable {
                     "appTokenInvalid")) != -1)  {
                 if (sessionDebug.messageEnabled()) {
                     sessionDebug.message("Session."
-                        + "processSessionResponseException: AppTokenInvalid = TRUE");
+                        + "processSessionResponseException: AppTokenInvalid = TRUE "+appSSOToken.getTokenID().toString());
                 }
 
                 if (!SystemProperties.isServerMode()) {
@@ -1201,7 +1201,7 @@ public class Session extends GeneralTaskRunnable {
                     if (sessionDebug.messageEnabled()) {
                         sessionDebug.message("Session."
                             + "processSessionResponseException: creating New AppToken"
-                            + " TokenID = " + newAppSSOToken);
+                            + " TokenID = " + ((newAppSSOToken==null)?newAppSSOToken:newAppSSOToken.getTokenID().toString()));
                     }
                     createContext(newAppSSOToken);
                 } else {
