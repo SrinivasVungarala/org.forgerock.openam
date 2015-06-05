@@ -99,7 +99,7 @@ public class AdminTokenAction implements PrivilegedAction<SSOToken> {
     private SSOToken internalAppSSOToken;
 
     private boolean authInitialized;
-    private final boolean validateSession;
+   // private final boolean validateSession;
 
     /**
      * Returns a cached instance <code>AdminTokenAction</code>.
@@ -133,7 +133,7 @@ public class AdminTokenAction implements PrivilegedAction<SSOToken> {
                 AdminTokenAction.reset();
             }
         });
-        validateSession = SystemProperties.getAsBoolean(VALIDATE_SESSION);
+        //validateSession = SystemProperties.getAsBoolean(VALIDATE_SESSION);
     }
 
     /**
@@ -197,12 +197,12 @@ public class AdminTokenAction implements PrivilegedAction<SSOToken> {
         // Check if we have a valid cached SSOToken
         if (appSSOToken != null && tokenManager.isValidToken(appSSOToken)) {
             try {
-                if (validateSession) {
+                if (SystemProperties.getAsBoolean(VALIDATE_SESSION)) {
                     tokenManager.refreshSession(appSSOToken);
                 }
-                if (tokenManager.isValidToken(appSSOToken)) {
+//                if (tokenManager.isValidToken(appSSOToken)) {
                     return appSSOToken;
-                }
+//                }
             } catch (SSOException ssoe) {
                 debug.error("AdminTokenAction.reset: couldn't retrieve valid token.", ssoe);
             }
