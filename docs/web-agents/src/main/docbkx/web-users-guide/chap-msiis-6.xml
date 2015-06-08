@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock, Inc.
+  !      Copyright 2011-2015 ForgeRock, AS.
   !    
 -->
 <chapter xml:id='chap-msiis-6'
@@ -107,6 +107,14 @@
   </indexterm>
 
   <para>Complete the following procedures to install the policy agent.</para>
+
+  <note>
+   <para>If the agent is in a different domain than the server, refer to
+    the <citetitle>Administration Guide</citetitle> procedure, <link
+     xlink:href="${serverDocBase}/admin-guide/#chap-cdsso"
+     xlink:show="new"><citetitle>Configuring Cross-Domain
+     Single Sign On</citetitle></link>.</para>
+  </note>
 
   <xinclude:include href="../shared/procedure-create-web-agent-profile.xml">
    <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
@@ -227,22 +235,18 @@ Completed Configuring the IIS 6.0 Agent</computeroutput>
    <step>
     <para>Restart IIS 6.</para>
 
-    <screen>
-C:\web_agents\iis6_agent\bin><userinput>iisreset</userinput>
-<computeroutput>
-Attempting stop...
-Internet services successfully stopped
-Attempting start...
-Internet services successfully restarted</computeroutput>
+    <screen><userinput>
+net stop w3svc
+net start w3svc</userinput>
     </screen>
 
     <note>
-     <para>If the agent is in a different domain than the server, refer to
-      the <citetitle>Administration Guide</citetitle> procedure, <link
-   xlink:href="${serverDocBase}/admin-guide/#chap-cdsso"
-   xlink:show="new"><citetitle>Configuring Cross-Domain
-   Single Sign On</citetitle></link>.</para>
+     <para>
+      Do not use <command>IISReset.exe</command> as it is not supported in
+      IIS 6.0, IIS 7.0, and IIS 7.5.
+     </para>
     </note>
+
    </step>
    <step>
     <para>Take note of the configuration files and log locations.</para>
