@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2012-2014 ForgeRock, Inc.
+  !      Copyright 2012-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-apache-24'
@@ -41,57 +41,13 @@
 
  <para>This chapter covers installation of the policy agent for Apache
  HTTP Server 2.4.x.</para>
- 
- <section xml:id="before-apache24-agent-install">
-  <title>Before You Install</title>
 
-  <indexterm>
-   <primary>Apache 2.4 policy agent</primary>
-   <secondary>before you install</secondary>
-  </indexterm>
-  
-  <para>Make sure OpenAM is installed, running, that you can contact OpenAM
-  from the system running the policy agent. Next, create a profile for your
-  policy agent as described in the <citetitle>Administration Guide</citetitle>
-  section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
-  xlink:show="new"><citetitle>Creating Agent
-  Profiles</citetitle></link>. To protect resources with the agent also create
-  at least one policy as described in the section on <link
-  xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
-  xlink:show="new"><citetitle>Configuring
-  Policies</citetitle></link>. Consider creating a simple policy, such as a
-  policy that allows only authenticated users to access your resources, in order
-  to test your policy agent after installation.</para>
+ <indexterm>
+  <primary>Apache 2.4 policy agent</primary>
+  <secondary>before you install</secondary>
+ </indexterm>
 
-  <para>You must install Apache HTTP Server before you install the policy
-  agent, and you must stop the server during installation.</para>
-
-  <!-- 
-   I had to install PCRE, and add APR and APR-util to the Apache HTTPD
-   sources in order to get 2.4 installed. See the notes at
-   http://httpd.apache.org/docs/2.4/install.html. This was on Ubuntu
-   12.04 desktop.
-  -->
-  <xinclude:include href="../shared/para-java-support.xml" />
-
-  <xinclude:include href="../shared/para-download-agent.xml" />
-
-  <para>Unzip the file in the directory where you plan to install the web
-  policy agent. The agent you install stores its configuration and logs
-  under this directory.</para>
-
-  <para>When you unzip the policy agent .zip download, you find the following
-   directories under the <filename>web_agents/apache24_agent</filename>
-   directory.</para>
-
-  <xinclude:include href="../shared/variablelist-agentadmin-folders.xml">
-   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
-  </xinclude:include>
-
-  <xinclude:include href="../shared/sec-apache-mpm-tuning.xml">
-   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
-  </xinclude:include>
- </section>
+ <xinclude:include href="../shared/sec-apache-before-you-install.xml" />
 
  <section xml:id="install-apache24-web-agent">
   <title>Installing Apache 2.4 Web Policy Agent</title>
