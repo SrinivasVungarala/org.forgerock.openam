@@ -37,10 +37,6 @@ enum {
     AM_SCOPE_RESPONSE_ATTRIBUTE_ONLY
 };
 
-typedef enum {
-    ok = 0, fail, retry, quit
-} am_return_t;
-
 typedef am_return_t(*am_state_func_t)(am_request_t *);
 
 typedef enum {
@@ -61,26 +57,26 @@ struct transition {
 };
 
 static struct transition state_transitions[] = {
-    {setup_request_data_c, ok, validate_url_c},
-    {setup_request_data_c, fail, handle_exit_c},
+    {setup_request_data_c, AM_OK, validate_url_c},
+    {setup_request_data_c, AM_FAIL, handle_exit_c},
 
-    {validate_url_c, ok, handle_notification_c},
-    {validate_url_c, fail, handle_exit_c},
+    {validate_url_c, AM_OK, handle_notification_c},
+    {validate_url_c, AM_FAIL, handle_exit_c},
 
-    {handle_notification_c, ok, handle_exit_c},
-    {handle_notification_c, fail, validate_fqdn_access_c},
+    {handle_notification_c, AM_OK, handle_exit_c},
+    {handle_notification_c, AM_FAIL, validate_fqdn_access_c},
 
-    {validate_fqdn_access_c, ok, validate_token_c},
-    {validate_fqdn_access_c, fail, handle_exit_c},
+    {validate_fqdn_access_c, AM_OK, validate_token_c},
+    {validate_fqdn_access_c, AM_FAIL, handle_exit_c},
 
-    {handle_not_enforced_c, ok, validate_policy_c},
-    {handle_not_enforced_c, quit, handle_exit_c},
+    {handle_not_enforced_c, AM_OK, validate_policy_c},
+    {handle_not_enforced_c, AM_FAIL, handle_exit_c},
 
-    {validate_token_c, ok, handle_not_enforced_c},
-    {validate_token_c, fail, handle_exit_c},
+    {validate_token_c, AM_OK, handle_not_enforced_c},
+    {validate_token_c, AM_FAIL, handle_exit_c},
 
-    {validate_policy_c, retry, validate_policy_c},
-    {validate_policy_c, ok, handle_exit_c}
+    {validate_policy_c, AM_RETRY, validate_policy_c},
+    {validate_policy_c, AM_OK, handle_exit_c}
 };
 
 #define EXIT_STATE handle_exit_c
@@ -111,10 +107,10 @@ static am_bool_t is_json_request(am_request_t *request) {
             return AM_TRUE;
         }
 
-        /*compare_status = match(request->instance_id, request->overridden_url, m->value);
+        /* compare_status = match(request->instance_id, request->overridden_url, m->value);
         if (compare_status == AM_SUCCESS) {
             return AM_TRUE;
-        }*/
+        } */
     }
     return AM_FALSE;
 }
@@ -126,19 +122,19 @@ static am_return_t setup_request_data(am_request_t *r) {
     struct url u, au;
 
     if (r == NULL || r->ctx == NULL || r->conf == NULL) {
-        return fail;
+        return AM_FAIL;
     }
 
     AM_LOG_DEBUG(r->instance_id, "%s", thisfunc);
 
     if (r->am_get_request_url_f == NULL) {
         AM_LOG_ERROR(r->instance_id, "%s could not get request url", thisfunc);
-        return fail;
+        return AM_FAIL;
     }
 
     if (!ISVALID(r->client_ip)) {
         AM_LOG_ERROR(r->instance_id, "%s could not get client ip address", thisfunc);
-        return fail;
+        return AM_FAIL;
     }
 
     s = strstr(r->client_ip, AM_COMMA_CHAR);
@@ -147,7 +143,7 @@ static am_return_t setup_request_data(am_request_t *r) {
     if (v == NULL) {
         AM_LOG_ERROR(r->instance_id, "%s memory allocation failure", thisfunc);
         r->status = AM_ENOMEM;
-        return fail;
+        return AM_FAIL;
     }
     r->client_ip = v;
 
@@ -194,12 +190,12 @@ static am_return_t setup_request_data(am_request_t *r) {
     status = r->am_get_request_url_f(r);
     if (status != AM_SUCCESS) {
         AM_LOG_ERROR(r->instance_id, "%s failed to get request url", thisfunc);
-        return fail;
+        return AM_FAIL;
     }
     if (parse_url(r->orig_url, &r->url)) {
         AM_LOG_ERROR(r->instance_id, "%s failed to normalize request url: %s (%s)",
                 thisfunc, r->orig_url, am_strerror(r->url.error));
-        return fail;
+        return AM_FAIL;
     }
 
     am_asprintf(&r->normalized_url, "%s://%s:%d%s%s", r->url.proto, r->url.host,
@@ -207,10 +203,10 @@ static am_return_t setup_request_data(am_request_t *r) {
     if (r->normalized_url == NULL) {
         AM_LOG_ERROR(r->instance_id, "%s memory allocation failure", thisfunc);
         r->status = AM_ENOMEM;
-        return fail;
+        return AM_FAIL;
     }
 
-    /*re-format normalized request url depending on override parameter values*/
+    /* re-format normalized request url depending on override parameter values */
     memcpy(&u, &r->url, sizeof (struct url));
     if (parse_url(r->conf->agenturi, &au) == 0) {
         if (r->conf->override_protocol) {
@@ -231,7 +227,7 @@ static am_return_t setup_request_data(am_request_t *r) {
     if (r->overridden_url == NULL) {
         AM_LOG_ERROR(r->instance_id, "%s memory allocation failure", thisfunc);
         r->status = AM_ENOMEM;
-        return fail;
+        return AM_FAIL;
     }
 
     /* check if this request url (normalized) matches any of 
@@ -259,11 +255,11 @@ static am_return_t setup_request_data(am_request_t *r) {
 
     if (r->method == AM_REQUEST_POST && !ISVALID(r->content_type)) {
         AM_LOG_ERROR(r->instance_id, "%s HTTP POST requires a valid Content-Type header value", thisfunc);
-        return fail;
+        return AM_FAIL;
     }
 
     r->status = status;
-    return ok;
+    return AM_OK;
 }
 
 static am_return_t validate_url(am_request_t *r) {
@@ -276,22 +272,22 @@ static am_return_t validate_url(am_request_t *r) {
         if (s != 0) {
             AM_LOG_ERROR(r->instance_id, "%s request url validation failed", thisfunc);
             r->status = AM_FORBIDDEN;
-            return fail;
+            return AM_FAIL;
         }
         AM_LOG_DEBUG(r->instance_id, "%s request url validation succeeded", thisfunc);
-        return ok;
+        return AM_OK;
     }
     AM_LOG_DEBUG(r->instance_id, "%s request url validation feature is not enabled", thisfunc);
-    return ok;
+    return AM_OK;
 }
 
 static am_return_t handle_notification(am_request_t *r) {
     static const char *thisfunc = "handle_notification():";
-    am_return_t status = fail;
+    am_return_t status = AM_FAIL;
 
     AM_LOG_DEBUG(r->instance_id, "%s", thisfunc);
 
-    /*check if notifications are enabled*/
+    /* check if notifications are enabled */
     if (r->method == AM_REQUEST_POST && r->conf->notif_enable && ISVALID(r->conf->notif_url)) {
         struct notification_worker_data *wd;
         /* is override.notification.url set? */
@@ -299,9 +295,9 @@ static am_return_t handle_notification(am_request_t *r) {
         //TODO: asp.net eurl.axd/xyz ?
         int compare_status = r->conf->url_eval_case_ignore ?
                 strcasecmp(url, r->conf->notif_url) : strcmp(url, r->conf->notif_url);
-        /*int compare_status = r->conf->url_eval_case_ignore == AM_TRUE ?
+        /* int compare_status = r->conf->url_eval_case_ignore == AM_TRUE ?
                 (stristr((char *) url, r->conf->notif_url) != NULL ? 0 : 1) :
-                (strstr(url, r->conf->notif_url) != NULL ? 0 : 1);*/
+                (strstr(url, r->conf->notif_url) != NULL ? 0 : 1); */
         if (compare_status != 0) {
             AM_LOG_DEBUG(r->instance_id, "%s %s is not an agent notification url %s", thisfunc, url, r->conf->notif_url);
             return status;
@@ -322,7 +318,7 @@ static am_return_t handle_notification(am_request_t *r) {
             wd->post_data = r->post_data != NULL ? strdup(r->post_data) : NULL;
             wd->post_data_sz = r->post_data_sz;
         }
-        status = ok;
+        status = AM_OK;
         /* process notification message */
         if (am_worker_dispatch(notification_worker, wd) != 0) {
             am_free(wd->post_data);
@@ -343,69 +339,69 @@ static am_return_t handle_notification(am_request_t *r) {
 static am_return_t validate_fqdn_access(am_request_t *r) {
     static const char *thisfunc = "validate_fqdn_access():";
     int i;
-    am_return_t status = ok;
+    am_return_t status = AM_OK;
 
     AM_LOG_DEBUG(r->instance_id, "%s", thisfunc);
 
     if (!r->conf->fqdn_check_enable) {
         AM_LOG_DEBUG(r->instance_id, "%s feature is not enabled", thisfunc);
-        return ok;
+        return AM_OK;
     }
 
     if (!ISVALID(r->conf->fqdn_default)) {
         AM_LOG_WARNING(r->instance_id,
                 "%s failed - default fqdn value is not set", thisfunc);
-        return fail;
+        return AM_FAIL;
     }
 
-    status = fail;
+    status = AM_FAIL;
 
     /* check if its the default fqdn */
     if (r->conf->url_eval_case_ignore) {
-        status = (strcasecmp(r->url.host, r->conf->fqdn_default) == 0) ? ok : fail;
+        status = (strcasecmp(r->url.host, r->conf->fqdn_default) == 0) ? AM_OK : AM_FAIL;
     } else {
-        status = (strcmp(r->url.host, r->conf->fqdn_default) == 0) ? ok : fail;
+        status = (strcmp(r->url.host, r->conf->fqdn_default) == 0) ? AM_OK : AM_FAIL;
     }
 
-    if (status == ok) {
+    if (status == AM_OK) {
         r->client_fqdn = r->conf->fqdn_default;
     }
 
     /* if not, check if its another valid fqdn */
-    if (status != ok && r->conf->fqdn_map_sz > 0) {
+    if (status != AM_OK && r->conf->fqdn_map_sz > 0) {
         for (i = 0; i < r->conf->fqdn_map_sz; i++) {
             am_config_map_t *m = &r->conf->fqdn_map[i];
             AM_LOG_DEBUG(r->instance_id, "%s comparing a valid host name %s with %s",
                     thisfunc, LOGEMPTY(m->value), r->url.host);
             if (r->conf->url_eval_case_ignore) {
-                status = (strcasecmp(r->url.host, NOTNULL(m->value)) == 0) ? ok : fail;
+                status = (strcasecmp(r->url.host, NOTNULL(m->value)) == 0) ? AM_OK : AM_FAIL;
             } else {
-                status = (strcmp(r->url.host, NOTNULL(m->value)) == 0) ? ok : fail;
+                status = (strcmp(r->url.host, NOTNULL(m->value)) == 0) ? AM_OK : AM_FAIL;
             }
 
             /* still no match? look into a key value ('invalid') */
-            if (status != ok) {
+            if (status != AM_OK) {
                 AM_LOG_DEBUG(r->instance_id,
                         "%s comparing an invalid host name %s with %s",
                         thisfunc, LOGEMPTY(m->name), r->url.host);
                 if (r->conf->url_eval_case_ignore) {
-                    status = (strcasecmp(r->url.host, NOTNULL(m->name)) == 0) ? ok : fail;
+                    status = (strcasecmp(r->url.host, NOTNULL(m->name)) == 0) ? AM_OK : AM_FAIL;
                 } else {
-                    status = (strcmp(r->url.host, NOTNULL(m->name)) == 0) ? ok : fail;
+                    status = (strcmp(r->url.host, NOTNULL(m->name)) == 0) ? AM_OK : AM_FAIL;
                 }
             }
 
-            if (status == ok) {
+            if (status == AM_OK) {
                 r->client_fqdn = m->value;
                 break;
             }
         }
     }
 
-    if (status == ok) {
+    if (status == AM_OK) {
         AM_LOG_DEBUG(r->instance_id, "%s host name %s is valid (maps to %s)",
                 thisfunc, r->url.host, LOGEMPTY(r->client_fqdn));
-        return ok;
+        return AM_OK;
     }
 
     AM_LOG_WARNING(r->instance_id,
@@ -463,7 +459,7 @@ static am_return_t handle_not_enforced(am_request_t *r) {
         r->is_dummypost_url = r->not_enforced = AM_TRUE;
         r->status = AM_SUCCESS;
         free(pdp_path);
-        return ok;
+        return AM_OK;
     }
     am_free(pdp_path);
 
@@ -476,9 +472,9 @@ static am_return_t handle_not_enforced(am_request_t *r) {
                 r->not_enforced = r->is_logout_url = AM_TRUE;
                 if (!r->conf->not_enforced_fetch_attr) {
                     r->status = AM_SUCCESS;
-                    return quit;
+                    return AM_QUIT;
                 }
-                return ok;
+                return AM_OK;
             }
         }
     } else {
@@ -493,9 +489,9 @@ static am_return_t handle_not_enforced(am_request_t *r) {
             r->not_enforced = AM_TRUE;
             if (!r->conf->not_enforced_fetch_attr) {
                 r->status = AM_SUCCESS;
-                return quit;
+                return AM_QUIT;
             }
-            return ok;
+            return AM_OK;
         }
     }
 
@@ -512,9 +508,9 @@ static am_return_t handle_not_enforced(am_request_t *r) {
                     r->not_enforced = AM_TRUE;
                     if (!r->conf->not_enforced_fetch_attr) {
                         r->status = AM_SUCCESS;
-                        return quit;
+                        return AM_QUIT;
                     }
-                    return ok;
+                    return AM_OK;
                 }
                 AM_LOG_DEBUG(r->instance_id, "%s client ip address %s does not match %s",
                         thisfunc, r->client_ip, LOGEMPTY(m->value));
@@ -529,9 +525,9 @@ static am_return_t handle_not_enforced(am_request_t *r) {
                             r->not_enforced = AM_TRUE;
                             if (!r->conf->not_enforced_fetch_attr) {
                                 r->status = AM_SUCCESS;
-                                return quit;
+                                return AM_QUIT;
                             }
-                            return ok;
+                            return AM_OK;
                         }
                         AM_LOG_DEBUG(r->instance_id, "%s client ip address %s does not match %s (%s)",
                                 thisfunc, r->client_ip, LOGEMPTY(m->value), am_method_num_to_str(mtn));
@@ -581,9 +577,9 @@ static am_return_t handle_not_enforced(am_request_t *r) {
             r->not_enforced = AM_TRUE;
             if (!r->conf->not_enforced_fetch_attr) {
                 r->status = AM_SUCCESS;
-                return quit;
+                return AM_QUIT;
             }
-            return ok;
+            return AM_OK;
         }
 
     } else {
@@ -626,9 +622,9 @@ static am_return_t handle_not_enforced(am_request_t *r) {
                 r->not_enforced = AM_TRUE;
                 if (!r->conf->not_enforced_fetch_attr) {
                     r->status = AM_SUCCESS;
-                    return quit;
+                    return AM_QUIT;
                 }
-                return ok;
+                return AM_OK;
             }
         }
     } else {
@@ -636,12 +632,12 @@ static am_return_t handle_not_enforced(am_request_t *r) {
     }
 
     AM_LOG_DEBUG(r->instance_id, "%s %s is enforced", thisfunc, url);
-    return ok;
+    return AM_OK;
 }
 
 static am_return_t validate_token(am_request_t *r) {
     static const char *thisfunc = "validate_token():";
-    am_return_t return_status = ok; /* fail only on non-recoverable error (will quit processing) */
+    am_return_t return_status = AM_OK; /* fail only on non-recoverable error (will quit processing) */
     am_status_t status = AM_ERROR;
 
     AM_LOG_DEBUG(r->instance_id, "%s", thisfunc);
@@ -717,7 +713,7 @@ static am_return_t validate_token(am_request_t *r) {
         if (status != AM_SUCCESS && status != AM_NOT_FOUND) {
             AM_LOG_ERROR(r->instance_id, "%s error while getting sso token "
                     "from a cookie header: %s", thisfunc, am_strerror(status));
-            return_status = fail;
+            return_status = AM_FAIL;
         } else if (status == AM_SUCCESS && !ISVALID(r->token)) {
             status = AM_NOT_FOUND;
         }
@@ -822,28 +818,28 @@ static am_return_t validate_policy(am_request_t *r) {
              * headers/cookies will be cleared in handle_exit->set_user_attributes
              */
             r->status = AM_SUCCESS;
-            return ok;
+            return AM_OK;
         }
         scope = AM_SCOPE_RESPONSE_ATTRIBUTE_ONLY;
     }
 
     if (r->status == AM_NOT_FOUND) {
         r->status = AM_INVALID_SESSION;
-        return ok;
+        return AM_OK;
     }
 
     if (r->retry >= MAX_VALIDATE_POLICY_RETRY) {
         AM_LOG_ERROR(r->instance_id,
                 "%s validate policy for '%s' failed (max %d retries exhausted)",
                 thisfunc, url, MAX_VALIDATE_POLICY_RETRY);
-        /*status = AM_RETRY_ERROR;*/
+        /* status = AM_RETRY_ERROR; */
         r->response_attributes = NULL;
         r->response_decisions = NULL;
         r->policy_advice = NULL;
         r->pattr = NULL;
         r->sattr = NULL;
         r->status = AM_ACCESS_DENIED;
-        return ok;
+        return AM_OK;
     }
 
     /* look for an entry in a session cache */
@@ -936,15 +932,15 @@ static am_return_t validate_policy(am_request_t *r) {
         AM_LOG_WARNING(r->instance_id,
                 "%s agent session is invalid, trying to fetch new configuration/session",
                 thisfunc);
-        /*delete all cached data for this agent instance*/
+        /* delete all cached data for this agent instance */
         remove_agent_instance_byname(r->conf->user);
-        /*fetch and update with the new configuration*/
+        /* fetch and update with the new configuration */
         rv = am_get_agent_config(r->instance_id, r->conf->config, &boot);
         if (rv == AM_SUCCESS && boot != NULL) {
             am_config_free(&r->conf);
             AM_LOG_DEBUG(r->instance_id, "%s agent configuration/session updated",
                     thisfunc);
-            r->conf = boot; /*set new agent configuration for this request*/
+            r->conf = boot; /* set new agent configuration for this request */
             r->response_attributes = NULL;
             r->response_decisions = NULL;
             r->policy_advice = NULL;
@@ -954,7 +950,7 @@ static am_return_t validate_policy(am_request_t *r) {
             r->sattr = NULL;
             r->status = entry_status;
             r->retry++;
-            return retry;
+            return AM_RETRY;
         }
         AM_LOG_ERROR(r->instance_id, "%s failed to fetch new agent configuration/session",
                 thisfunc);
@@ -965,7 +961,7 @@ static am_return_t validate_policy(am_request_t *r) {
         r->response_decisions = NULL;
         r->policy_advice = NULL;
         r->status = AM_INVALID_SESSION;
-        return ok;
+        return AM_OK;
     }
 
     if (session_cache != NULL && is_valid) {
@@ -978,14 +974,14 @@ static am_return_t validate_policy(am_request_t *r) {
     if (r->sattr != NULL && r->pattr != NULL) {
 
         if (r->conf->client_ip_validate) {
-            /*check if client ip read from the environment matches token ip found in the session*/
+            /* check if client ip read from the environment matches token ip found in the session */
             const char *remote_ip = get_attr_value(r, "Host", AM_SESSION_ATTRIBUTE);
             if (!ISVALID(r->client_ip) || !ISVALID(remote_ip) || strcmp(remote_ip, r->client_ip) != 0) {
                 r->status = AM_ACCESS_DENIED;
                 AM_LOG_WARNING(r->instance_id,
                         "%s decision: deny, reason: client ip %s does not match sso token ip %s",
                         thisfunc, LOGEMPTY(r->client_ip), LOGEMPTY(remote_ip));
-                return ok;
+                return AM_OK;
             }
         }
 
@@ -998,8 +994,8 @@ static am_return_t validate_policy(am_request_t *r) {
                         pattern, url, am_policy_strerror(policy_status));
 
                 if (remote) {
-                    /*in case its a fresh policy response, store it in a cache (resource name only)*/
-                    am_add_policy_cache_entry(r, pattern, 300); /*5 minutes*/
+                    /* in case its a fresh policy response, store it in a cache (resource name only) */
+                    am_add_policy_cache_entry(r, pattern, 300); /* 5 minutes */
                 } else {
                     int rv = am_get_policy_cache_entry(r, pattern, e->created);
                     AM_LOG_DEBUG(r->instance_id, "%s pattern: %s, cache status: %s", thisfunc,
@@ -1019,7 +1015,7 @@ static am_return_t validate_policy(am_request_t *r) {
 
                         r->status = entry_status;
                         r->retry++;
-                        return retry;
+                        return AM_RETRY;
                     }
                 }
 
@@ -1038,7 +1034,7 @@ static am_return_t validate_policy(am_request_t *r) {
                         r->response_attributes = e->response_attributes;
                         r->response_decisions = e->response_decisions;
                         r->status = AM_SUCCESS;
-                        return ok;
+                        return AM_OK;
                     }
 
                     if (e->action_decisions == NULL) {
@@ -1049,7 +1045,7 @@ static am_return_t validate_policy(am_request_t *r) {
 
                     AM_LIST_FOR_EACH(e->action_decisions, ae, at) {
 
-                        /*time_t ts = ae->ttl;
+                        /* time_t ts = ae->ttl;
                         if (difftime(time(NULL), ts) >= 0) {
                             char tsu[32];
                             struct tm until;
@@ -1058,15 +1054,15 @@ static am_return_t validate_policy(am_request_t *r) {
                             AM_LOG_WARNING(r->instance_id, "%s cache data is obsolete (valid until: %s)",
                                     thisfunc, tsu);
                             continue;
-                        }*/
+                        } */
 
                         if (ae->method == r->method) {
                             if (ae->action /*allow*/) {
-                                r->response_attributes = e->response_attributes; /*will be used by set header/cookie later*/
+                                r->response_attributes = e->response_attributes; /* will be used by set header/cookie later */
                                 r->response_decisions = e->response_decisions;
                                 r->status = AM_SUCCESS;
 
-                                /*fetch user parameter value*/
+                                /* fetch user parameter value */
                                 if (ISVALID(r->conf->userid_param) &&
                                         ISVALID(r->conf->userid_param_type)) {
                                     if (strcasecmp(r->conf->userid_param_type, "SESSION") == 0) {
@@ -1079,17 +1075,17 @@ static am_return_t validate_policy(am_request_t *r) {
 
                                 AM_LOG_DEBUG(r->instance_id, "%s method: %s, decision: allow",
                                         thisfunc, am_method_num_to_str(ae->method));
-                                return ok;
+                                return AM_OK;
                             }
-                            /*deny*/
-                            /*set the pointer to the policy advice(s) if any*/
+                            /* deny */
+                            /* set the pointer to the policy advice(s) if any */
                             r->policy_advice = ae->advices;
                             r->status = AM_ACCESS_DENIED;
                             AM_LOG_DEBUG(r->instance_id,
                                     "%s method: %s, decision: deny, advice: %s",
                                     thisfunc, am_method_num_to_str(ae->method),
                                     ae->advices == NULL ? "n/a" : "available");
-                            return ok;
+                            return AM_OK;
                         }
                     }
                 }
@@ -1112,18 +1108,18 @@ static am_return_t validate_policy(am_request_t *r) {
             am_remove_cache_entry(r->instance_id, r->token);
 
             r->status = entry_status;
-            /*technically, this is still a retry*/
+            /* technically, this is still a retry */
             r->retry++;
-            return retry;
+            return AM_RETRY;
         }
     }
 
     r->response_attributes = NULL;
     r->response_decisions = NULL;
     r->policy_advice = NULL;
-    /*nothing is found in a policy response - respond with a default access denied*/
+    /* nothing is found in a policy response - respond with a default access denied */
     r->status = AM_ACCESS_DENIED;
-    return ok;
+    return AM_OK;
 }
 
 /**
@@ -1137,7 +1133,6 @@ static am_return_t validate_policy(am_request_t *r) {
  * @param path, cookie path value, can be NULL
  * @param maxage, cookie max-age value in seconds, can be NULL
  */
-
 static void do_cookie_set_generic(am_request_t *r, const char *prefix, const char *name,
         const char *value, const char *domain, const char *path, const char *maxage) {
     static const char *thisfunc = "do_cookie_set_generic():";
@@ -1146,15 +1141,31 @@ static void do_cookie_set_generic(am_request_t *r, const char *prefix, const cha
     time_t raw;
     long sec;
     char *cookie_value, *cookie = NULL;
+    int sep_count = 0;
 
     if (r == NULL || r->conf == NULL || r->am_add_header_in_response_f == NULL || !ISVALID(name)) return;
+
+    /* cookie-reset list can contain the following values:
+     *  cookiename
+     *  cookiename[=value][;Domain=value]
+     * 
+     * sep_count with a value of:
+     *  0 ==> just a cookie name
+     *  1 ==> name and value
+     *  2 ==> name, value and domain
+     *  3 ==> name and domain
+     */
+    sep_count = ISVALID(value) ? 0 : char_count(name, '=', NULL);
+    if (sep_count == 1 && strstr(name, ";Domain=") != NULL) {
+        sep_count = 3;
+    }
 
     /* set cookie prefix */
     am_asprintf(&cookie, "%s", NOTNULL(prefix));
 
     /* set cookie name */
     if (cookie != NULL) {
-        am_asprintf(&cookie, "%s%s=", cookie, name);
+        am_asprintf(&cookie, "%s%s%s", cookie, name, sep_count == 0 ? "=" : "");
     }
 
     /* set cookie value */
@@ -1199,7 +1210,7 @@ static void do_cookie_set_generic(am_request_t *r, const char *prefix, const cha
     }
 
     /* set cookie domain value */
-    if (cookie != NULL && ISVALID(domain)) {
+    if (cookie != NULL && ISVALID(domain) && sep_count < 2) {
         am_asprintf(&cookie, "%s;Domain=%s", cookie, domain);
     }
 
@@ -1253,10 +1264,15 @@ static void do_cookie_set(am_request_t *r, char cookie_reset_list_enable, char c
     if (cookie_reset_list_enable && r->conf->cookie_reset_enable
             && r->conf->cookie_reset_map_sz > 0) {
         /* process cookie reset list (agents.config.cookie.reset[0]) */
+        const char *default_domain = strchr(NOTNULL(r->conf->fqdn_default), '.');
+        if (default_domain != NULL) {
+            /* move past the dot */
+            default_domain++;
+        }
         for (i = 0; i < r->conf->cookie_reset_map_sz; i++) {
             am_config_map_t *v = &r->conf->cookie_reset_map[i];
-            AM_LOG_DEBUG(r->instance_id, "do_cookie_set(): clearing %s", v->value);
-            do_cookie_set_generic(r, NULL, v->value, NULL, NULL, NULL, NULL);
+            AM_LOG_DEBUG(r->instance_id, "do_cookie_set(): login resetting %s", v->value);
+            do_cookie_set_generic(r, NULL, v->value, NULL, default_domain, NULL, NULL);
         }
     }
     if (r->conf->profile_attr_fetch == AM_SET_ATTRS_AS_COOKIE ||
@@ -1454,7 +1470,7 @@ static char *find_active_login_server(am_request_t *r, char add_goto_value) {
                     free(cl);
                     continue;
                 }
-                /*try to locate given pattern in a request url*/
+                /* try to locate given pattern in a request url */
                 compare_status = r->conf->url_eval_case_ignore ?
                         (stristr((char *) url, cl) != NULL ? AM_TRUE : AM_FALSE) :
                         (strstr(url, cl) != NULL ? AM_TRUE : AM_FALSE);
@@ -1463,10 +1479,10 @@ static char *find_active_login_server(am_request_t *r, char add_goto_value) {
                         thisfunc, cl, url, compare_status ? "match" : "no match");
 
                 if (compare_status) {
-                    /*found a match*/
+                    /* found a match */
                     char *tk, *tmp = strdup(cl + strlen(cl) + 1), *o = tmp;
                     if (tmp == NULL) break;
-                    /*set up url list*/
+                    /* set up url list */
                     map_sz = char_count(tmp, ',', NULL) + 1;
                     map = (am_config_map_t *) malloc(map_sz * sizeof (am_config_map_t));
                     if (map != NULL) {
@@ -1489,7 +1505,7 @@ static char *find_active_login_server(am_request_t *r, char add_goto_value) {
         }
     }
 
-    /*use url-validator confirmed (index) value*/
+    /* use url-validator confirmed (index) value */
     if (map_sz > 0 && map != NULL) {
         am_config_map_t *m = (valid_idx >= map_sz) ? &map[0] : &map[valid_idx];
         if (add_goto_value) {
@@ -1532,16 +1548,16 @@ static am_return_t handle_exit(am_request_t *r) {
 
     if (r == NULL || r->ctx == NULL || r->conf == NULL) {
         if (r != NULL) r->status = AM_ERROR;
-        return fail;
+        return AM_FAIL;
     }
 
     status = r->status;
     AM_LOG_DEBUG(r->instance_id, "%s (entry status: %s)", thisfunc, am_strerror(status));
 
     if (status == AM_NOTIFICATION_DONE) {
-        /*fast exit for notification events*/
+        /* fast exit for notification events */
         r->status = AM_DONE;
-        return ok;
+        return AM_OK;
     }
 
     if (status != AM_SUCCESS && r->conf->cache_control_enable &&
@@ -1559,24 +1575,30 @@ static am_return_t handle_exit(am_request_t *r) {
             if (r->is_logout_url) {
                 if (r->am_add_header_in_response_f != NULL &&
                         r->conf->logout_cookie_reset_map_sz > 0) {
-                    /*process logout cookie reset list (logout.cookie.reset)*/
+                    /* process logout cookie reset list (logout.cookie.reset) */
+                    const char *default_domain = strchr(NOTNULL(r->conf->fqdn_default), '.');
+                    if (default_domain != NULL) {
+                        /* move past the dot */
+                        default_domain++;
+                    }
                     for (i = 0; i < r->conf->logout_cookie_reset_map_sz; i++) {
                         am_config_map_t *m = &r->conf->logout_cookie_reset_map[i];
-                        do_cookie_set_generic(r, NULL, m->value, NULL, NULL, NULL, NULL);
+                        AM_LOG_DEBUG(r->instance_id, "do_cookie_set(): logout resetting %s", m->value);
+                        do_cookie_set_generic(r, NULL, m->value, NULL, default_domain, NULL, NULL);
                     }
                 }
 
-                /*reset headers/cookies*/
+                /* reset headers/cookies */
                 do_header_set(r, AM_FALSE);
                 do_cookie_set(r, AM_FALSE, AM_TRUE);
 
                 if (ISVALID(r->token) && !ISVALID(r->conf->logout_redirect_url)) {
-                    /*logout.redirect.url is not set - do background logout and cache cleanup*/
+                    /* logout.redirect.url is not set - do background logout and cache cleanup */
                     struct logout_worker_data *wd = malloc(sizeof (struct logout_worker_data));
                     if (wd != NULL) {
                         const char *oam = get_valid_openam_url(r);
                         wd->instance_id = r->instance_id;
-                        /*find active OpenAM service URL*/
+                        /* find active OpenAM service URL */
                         if (oam != NULL) {
                             wd->token = strdup(r->token);
                             wd->openam = strdup(oam);
@@ -1601,7 +1623,7 @@ static am_return_t handle_exit(am_request_t *r) {
                     }
 
                     r->status = AM_SUCCESS;
-                    break; /*early exit - we're done with this resource*/
+                    break; /* early exit - we're done with this resource */
                 }
 
                 /* do OpenAM logout redirect with a goto value if logout_redirect_url is set. 
@@ -1948,9 +1970,9 @@ static am_return_t handle_exit(am_request_t *r) {
                      * advice, redirect to the OpenAM login page. If not, redirect to the
                      * configured access denied url if any 
                      */
-                    if (status == AM_INVALID_SESSION || r->policy_advice != NULL /*|| session advice? */) {
+                    if (status == AM_INVALID_SESSION || r->policy_advice != NULL /* || session advice? */) {
 
-                        url = find_active_login_server(r, AM_TRUE); /*contains goto value*/
+                        url = find_active_login_server(r, AM_TRUE); /* contains goto value */
 
                         AM_LOG_DEBUG(r->instance_id, "%s find_active_login_server value: %s", thisfunc,
                                 LOGEMPTY(url));
@@ -2028,7 +2050,7 @@ static am_return_t handle_exit(am_request_t *r) {
             break;
     }
 
-    return ok;
+    return AM_OK;
 }
 
 static am_state_func_t const am_request_state[] = {
@@ -2044,7 +2066,7 @@ static am_state_func_t const am_request_state[] = {
 
 void am_process_request(am_request_t *r) {
     am_state_t cur_state = ENTRY_STATE;
-    am_return_t rc = fail;
+    am_return_t rc = AM_FAIL;
     am_state_func_t fn;
     for (;;) {
         fn = am_request_state[cur_state];

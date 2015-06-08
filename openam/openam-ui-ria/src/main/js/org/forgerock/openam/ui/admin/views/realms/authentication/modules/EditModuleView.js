@@ -15,39 +15,32 @@
  */
 
 /*global, define*/
-define("org/forgerock/openam/ui/admin/views/realms/authentication/AdvancedView", [
-    'jquery',
+define("org/forgerock/openam/ui/admin/views/realms/authentication/modules/EditModuleView", [
+    "jquery",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "org/forgerock/commons/ui/common/main/Configuration",
+    "org/forgerock/commons/ui/common/main/EventManager",
+    "org/forgerock/commons/ui/common/main/Router",
     "org/forgerock/commons/ui/common/util/Constants",
+    "org/forgerock/openam/ui/admin/delegates/SMSDelegate",
     "org/forgerock/openam/ui/admin/models/Form",
-    "org/forgerock/openam/ui/admin/utils/FormHelper",
-    "org/forgerock/openam/ui/admin/delegates/SMSDelegate"
-], function ($, AbstractView, Configuration, Constants, Form, FormHelper, SMSDelegate) {
-    var AdvancedView = AbstractView.extend({
-        template: "templates/admin/views/realms/authentication/AdvancedTemplate.html",
+    "org/forgerock/openam/ui/admin/utils/FormHelper"
+], function ($, AbstractView, Configuration, EventManager, Router, Constants, SMSDelegate, Form, FormHelper) {
+    var EditModuleView = AbstractView.extend({
+        template: "templates/admin/views/realms/authentication/modules/EditModuleViewTemplate.html",
         events: {
-            'click #revert': 'revert',
+            'click #revertChanges': 'revert',
             'click #saveChanges': 'save',
             'show.bs.tab ul.nav.nav-tabs a': 'renderTab'
         },
-        data: {},
-
         render: function (args, callback) {
             var self = this;
-
-            this.data.realm = Configuration.globalData.auth.subRealm || "Top level Realm";
-            this.data.consolePath = Constants.CONSOLE_PATH;
-
-            SMSDelegate.RealmAuthentication.get()
+            SMSDelegate.RealmAuthenticationModule.getMock(args[1])
             .done(function (data) {
                 self.data.formData = data;
-
                 self.parentRender(function () {
-                    self.$el.find("div.tab-pane").show(); // FIXME: To remove
                     self.$el.find('ul.nav a:first').tab('show');
-
-                    self.$el.find('.tab-menu .nav-tabs').tabdrop();
+                    self.$el.find('.console-tabs .nav-tabs').tabdrop();
 
                     if (callback) {
                         callback();
@@ -58,24 +51,25 @@ define("org/forgerock/openam/ui/admin/views/realms/authentication/AdvancedView",
                 // TODO: Add failure condition
             });
         },
-        renderTab: function (event) {
-            this.$el.find("#tabpanel").empty();
 
-            var id = $(event.target).attr('href').slice(1),
-                schema = this.data.formData.schema.properties[id],
-                element = this.$el.find("#tabpanel").get(0);
-
-            this.data.form = new Form(element, schema, this.data.formData.values);
+        save: function (event) {
+            var promise = SMSDelegate.RealmAuthenticationModule.save(this.data.form.data());
+            FormHelper.bindSavePromiseToElement(promise, event.target);
         },
         revert: function () {
             this.data.form.reset();
         },
-        save: function (event) {
-            var promise = SMSDelegate.RealmAuthentication.save(this.data.form.data());
 
-            FormHelper.bindSavePromiseToElement(promise, event.target);
+        renderTab: function (event) {
+            var tabId = $(event.target).attr("href"),
+                schema = this.data.formData.schema.properties[tabId.slice(1)],
+                element = $(tabId).get(0);
+
+            this.$el.find(tabId).empty();
+            this.data.form = new Form(element, schema, this.data.formData.values);
         }
+
     });
 
-    return AdvancedView;
+    return EditModuleView;
 });

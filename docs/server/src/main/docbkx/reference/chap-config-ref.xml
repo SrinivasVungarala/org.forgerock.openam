@@ -471,9 +471,11 @@
          <varlistentry>
              <term>com.iplanet.am.jssproxy.SSLTrustHostList</term>
              <listitem>
-                 <para>Specifies if the JSS proxy should check the server list of FQDNs against the host.
-                 If the FQDNs of the servers on the list match, continue the SSL handshake.
-                 You may specify a comma-delimited list of server FQDNs as property values.
+                 <para>Specifies if the JSS proxy should check the subject CNs
+                  (or Subject Alt Name extension values in the
+                  <literal>com.iplanet.am.jssproxy.checkSubjectAltName</literal>
+                  property) of the certificate on the server to which the connections
+                  are established.
                  </para>
              </listitem>
          </varlistentry>

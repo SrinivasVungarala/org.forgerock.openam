@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ! CCPL HEADER START
+ !
+ ! This work is licensed under the Creative Commons
+ ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ ! To view a copy of this license, visit
+ ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+ ! or send a letter to Creative Commons, 444 Castro Street,
+ ! Suite 900, Mountain View, California, 94041, USA.
+ !
+ ! You can also obtain a copy of the license at
+ ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+ ! See the License for the specific language governing permissions
+ ! and limitations under the License.
+ !
+ ! If applicable, add the following below this CCPL HEADER, with the fields
+ ! enclosed by brackets "[]" replaced with your own identifying information:
+ !      Portions Copyright [yyyy] [name of copyright owner]
+ !
+ ! CCPL HEADER END
+ !
+ !      Copyright 2015 ForgeRock AS.
+ !
+-->
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://docbook.org/ns/docbook
+                          http://docbook.org/xml/5.0/xsd/docbook.xsd"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+
+ <title>Before You Install</title>
+
+ <para>
+  First, avoid installing the web server and the web policy agent
+  as root. Instead, create a web server user and install as that user.
+ </para>
+ <para>
+  If you cannot avoid installing the web server and web policy agent as root,
+  then you must give all users read and write permissions to the
+  <filename>logs</filename> and <filename>logs/debug</filename> directories under
+  the agent instance directory
+  (<filename>/path/to/web_agents/<replaceable>type</replaceable>/Agent_<replaceable>number</replaceable>/logs/</filename>).
+  Otherwise, the web policy agent fails with an error when attempting to rotate
+  log files.
+ </para>
+
+ <para>Next, make sure OpenAM is installed and running, so that you can contact OpenAM
+  from the system running the policy agent.
+ </para>
+
+ <para>
+  Next, create a profile for your policy agent as described in
+  <link
+   xlink:show="new"
+   xlink:href="web-users-guide#chap-web-agents"
+   xlink:role="http://docbook.org/xlink/role/olink"
+   ><citetitle>Configuring Web Policy Agent Profiles</citetitle></link>.
+ </para>
+
+ <para>
+  To protect resources with the agent, create
+  at least one policy as described in the section on <link
+  xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
+  xlink:show="new"><citetitle>Configuring
+  Policies</citetitle></link>. Consider creating a simple policy, such as a
+  policy that allows only authenticated users to access your resources.
+  This allows you to test your policy agent after installation.</para>
+
+ <para>You must install Apache HTTP Server before you install the policy
+  agent, and you must stop the server during installation.</para>
+
+ <!--
+  I had to install PCRE, and add APR and APR-util to the Apache HTTPD
+  sources in order to get 2.4 installed. See the notes at
+  http://httpd.apache.org/docs/2.4/install.html. This was on Ubuntu
+  12.04 desktop.
+ -->
+ <xinclude:include href="../shared/para-java-support.xml" />
+
+ <xinclude:include href="../shared/para-download-agent.xml" />
+
+ <para>Unzip the file in the directory where you plan to install the web
+  policy agent. The agent you install stores its configuration and logs
+  under this directory.</para>
+
+ <para>When you unzip the policy agent .zip download, you find the following
+  directories:</para>
+
+ <xinclude:include href="../shared/variablelist-agentadmin-folders.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+ <xinclude:include href="../shared/sec-apache-mpm-tuning.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+</section>

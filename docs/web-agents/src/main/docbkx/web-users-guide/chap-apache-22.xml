@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock, Inc.
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-apache-22'
@@ -41,60 +41,13 @@
 
  <para>This chapter covers installation of the policy agent for Apache
  HTTP Server 2.2.x.</para>
- 
- <section xml:id="before-apache22-agent-install">
-  <title>Before You Install</title>
 
-  <indexterm>
-   <primary>Apache 2.2 policy agent</primary>
-   <secondary>before you install</secondary>
-  </indexterm>
+ <indexterm>
+  <primary>Apache 2.2 policy agent</primary>
+  <secondary>before you install</secondary>
+ </indexterm>
 
-  <para>Make sure OpenAM is installed, running, that you can contact OpenAM
-  from the system running the policy agent. Next, create a profile for your
-  policy agent as described in
-  <link
-   xlink:show="new"
-   xlink:href="web-users-guide#chap-web-agents"
-   xlink:role="http://docbook.org/xlink/role/olink"
-  ><citetitle>Configuring Web Policy Agent Profiles</citetitle></link>.
-  To protect resources with the agent also create
-  at least one policy as described in the section on <link
-  xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
-  xlink:show="new"><citetitle>Configuring
-  Policies</citetitle></link>. Consider creating a simple policy, such as a
-  policy that allows only authenticated users to access your resources, in order
-  to test your policy agent after installation.</para>
-
-  <para>You must install Apache HTTP Server before you install the policy
-  agent, and you must stop the server during installation.</para>
-
-  <xinclude:include href="../shared/para-java-support.xml" />
-
-      <screen>
-$ <userinput>echo $JAVA_HOME</userinput>
-<computeroutput>/path/to/java</computeroutput>
-      </screen>
-  
-  <xinclude:include href="../shared/para-download-agent.xml" />
-  
-  <para>Unzip the file in the directory where you plan to install the web
-  policy agent. The agent you install stores its configuration and logs
-  under this directory.</para>
-  
-
-  <para>When you unzip the policy agent .zip download, you find the following
-   directories under the <filename>web_agents/apache22_agent</filename>
-   directory.</para>
-
-  <xinclude:include href="../shared/variablelist-agentadmin-folders.xml">
-   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
-  </xinclude:include>
-
-  <xinclude:include href="../shared/sec-apache-mpm-tuning.xml">
-   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
-  </xinclude:include>
- </section>
+ <xinclude:include href="../shared/sec-apache-before-you-install.xml" />
 
  <section xml:id="install-apache22-web-agent">
   <title>Installing Apache 2.2 Web Policy Agent</title>

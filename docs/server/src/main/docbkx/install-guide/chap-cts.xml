@@ -110,7 +110,7 @@
     <citetitle>Reference</citetitle></link> document. You can set a root suffix for CTS tokens in either the
     configuration store or an external token store.</para>
 
-    <para>If you select <literal>Default Token Store</literal>, OpenAM will use the embedded configuration
+    <para>If you select <literal>Default Token Store</literal>, OpenAM uses the configuration
     store for CTS tokens.</para>
 
     <note><para>If desired, you could make these changes from the command line with variations on the
