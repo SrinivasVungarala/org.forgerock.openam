@@ -749,7 +749,35 @@ $ <userinput>curl \
 
    <para>The simplest user name/password authentication returns a
    <literal>tokenId</literal> that applications can present as a cookie
-   value for other operations that require authentication. In this case use
+   value for other operations that require authentication. The type of
+   <literal>tokenId</literal> returned varies depending on whether stateless
+   sessions are enabled in the realm to which the user authenticates:
+    <itemizedlist>
+     <listitem>
+      <para>
+       If stateless sessions are not enabled, the <literal>tokenId</literal>
+       is an OpenAM SSOToken.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       If stateless sessions are enabled, the <literal>tokenId</literal> is
+       an OpenAM SSOToken that includes an encoded OpenAM session.
+      </para>
+     </listitem>
+    </itemizedlist>
+   Developers should be aware that the size of the <literal>tokenId</literal>
+   for stateless sessions&#x2014;two thousand bytes or greater&#x2014;is
+   considerably longer than for stateful sessions&#x2014;several hundred bytes.
+   For more information about stateful and stateless session tokens,
+   see <link xlink:show="new"
+             xlink:href="admin-guide#session-state-cookies"
+             xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
+   Cookies</citetitle></link> in the
+   <citetitle>Administration Guide</citetitle>.
+   </para>
+
+   <para> When authenticating with a user name and password, use
    HTTP POST to prevent the web container from logging the credentials.
    Pass the user name in an <literal>X-OpenAM-Username</literal> header, and
    the password in an <literal>X-OpenAM-Password</literal> header.</para>
@@ -1456,25 +1484,25 @@ $ <userinput>curl \
      </listitem>
      <listitem>
       <para>
-       Determine the length of time a session has been idle
+       Determine the length of time a stateful session has been idle
       </para>
      </listitem>
      <listitem>
       <para>
-       Reset a session's idle time to 0
+       Reset a stateful session's idle time to 0
       </para>
      </listitem>
     </itemizedlist>
    </para>
 
    <para>
-    For these REST endpoints, specify two SSO tokens. Provide the SSO token for the
+    For these REST endpoints, specify two token IDs. Provide the token ID for the
     current authenticated user as the value of a header whose name is the name
     of the SSO token cookie, by default <literal>iPlanetDirectoryPro</literal>.
-    Specify the SSO token about which you want information as the
+    Specify the token ID you want information about as the
     <literal>tokenId</literal> query string parameter of the REST URL.
-    In the examples in this section, <literal>AQIC5w...NTcy*</literal> is the SSO
-    token for the current authenticated user, while <literal>BXCCq...NX*1*</literal>
+    In the examples in this section, <literal>AQIC5w...NTcy*</literal> is the
+    token ID for the current authenticated user, while <literal>BXCCq...NX*1*</literal>
     is the token being queried.
    </para>
 
@@ -1515,7 +1543,7 @@ $ <userinput>curl \
 </screen>
 
    <para>
-    To check the amount of time (in seconds) that a session has been idle,
+    To check the amount of time (in seconds) that a stateful session has been idle,
     perform an HTTP POST to the resource URL,
     <literal>/json/sessions/</literal>,
     using the <literal>getIdle</literal> action
@@ -1533,7 +1561,13 @@ $ <userinput>curl \
 </screen>
 
    <para>
-    To reset a session's idle time,
+    Because OpenAM does not monitor idle time for stateless sessions,
+    do not use the <literal>tokenId</literal> of a
+    stateless session when using the <literal>getIdle</literal> action.
+   </para>
+
+   <para>
+    To reset a stateful session's idle time,
     perform an HTTP POST to the resource URL,
     <literal>/json/sessions/</literal>,
     using the <literal>isActive</literal> action with the
@@ -1551,8 +1585,13 @@ $ <userinput>curl \
 <computeroutput>{"active":true}</computeroutput>
 </screen>
 
-  </section>
+   <para>
+    Because OpenAM does not monitor idle time for stateless sessions,
+    do not use the <literal>tokenId</literal> of a
+    stateless session when refreshing a session's idle time.
+   </para>
 
+  </section>
 
  </section>
 
