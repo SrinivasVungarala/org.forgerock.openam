@@ -35,7 +35,8 @@
  <para>
   This section demonstrates a custom session quota exhaustion action plugin.
   OpenAM calls a session quota exhaustion action plugin
-  when a user tries to open more sessions than their quota allows.
+  when a user tries to open more stateful sessions than their quota allows.
+  Note that session quotas are not available for stateless sessions.
  </para>
 
  <para>
