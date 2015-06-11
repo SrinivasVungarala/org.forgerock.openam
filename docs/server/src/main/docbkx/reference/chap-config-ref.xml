@@ -4866,7 +4866,7 @@
    <varlistentry>
     <term>Logging Interval</term>
     <listitem>
-     <para>Seconds OpenAM delays between logging sessions statistics</para>
+     <para>Seconds OpenAM delays between logging stateful session statistics</para>
 
      <para>property:
      <literal>com.iplanet.am.stats.interval</literal></para>
@@ -4898,7 +4898,7 @@
    <varlistentry>
     <term>Enable Host Lookup</term>
     <listitem>
-     <para>If yes, then OpenAM performs host lookup during session
+     <para>If yes, then OpenAM performs host lookup during stateful session
      logging.</para>
 
      <para>property:
@@ -4909,7 +4909,10 @@
    <varlistentry>
     <term>Notification Pool Size</term>
     <listitem>
-     <para>Number of threads in the notification pool</para>
+     <para>
+      Number of threads in the session change notification pool.
+      Session notification applies to stateful sessions only.
+     </para>
 
      <para>property:
      <literal>com.iplanet.am.notification.threadpool.size</literal></para>
@@ -4919,8 +4922,10 @@
    <varlistentry>
     <term>Notification Thread Pool Threshold</term>
     <listitem>
-     <para>Maximum number of tasks in the queue for serving notification
-     threads</para>
+     <para>Maximum number of tasks in the queue for serving session change
+      notification threads. Session notification applies to stateful sessions
+      only.
+     </para>
 
      <para>property:
      <literal>com.iplanet.am.notification.threadpool.threshold</literal></para>
