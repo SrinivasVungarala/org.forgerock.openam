@@ -61,7 +61,11 @@
  <literal>addSSOTokenListener()</literal> method. OpenAM then calls your
  <literal>SSOTokenListener</literal> <literal>ssoTokenChanged()</literal>
  method when the session times out, is disposed of, or has a property that
- changes.</para>
+ changes. Applications can receive notifications about changes to
+ <emphasis>stateful sessions only</emphasis>. Adding an
+ <literal>SSOTokenListener</literal> for a stateless session token does
+ <emphasis>not</emphasis> generate notifications.
+ </para>
 
  <para>The sample client takes an SSO token ID to get the token from OpenAM,
  and then displays some information from the SSO token. The implementation of
@@ -194,8 +198,8 @@ Property: County: SantaClara</computeroutput>
   <title>Receiving Notifications</title>
 
   <para>If your application implements a listener for change notification, such
-  as a <literal>SessionListener</literal> to handle notification when a session
-  is invalidated, then you must configure the following settings in the
+  as a <literal>SessionListener</literal> to handle notification when a stateful
+  session is invalidated, then you must configure the following settings in the
   <filename>AMConfig.properties</filename> configuration file for your
   application.</para>
 
