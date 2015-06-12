@@ -288,9 +288,9 @@
         <varlistentry>
          <term>Active Session Time</term>
          <listitem>
-          <para>Make the policy depend on how long the user's session has been
-           active, as specified in Max Session Time. To
-           terminate the session if it has been active for longer than the
+          <para>Make the policy depend on how long the user's stateful or
+           stateless session has been active, as specified in Max Session Time.
+           To terminate the session if it has been active for longer than the
            specified time, set Terminate Sessions to
            <literal>True</literal>. The user will need to re-authenticate.</para>
          </listitem>
@@ -330,7 +330,8 @@
         <varlistentry>
          <term>Current Session Properties</term>
          <listitem>
-          <para>Make the policy depend on properties set in the user's session.</para>
+          <para>Make the policy depend on properties set in the user's
+           stateful or stateless session.</para>
           <para>Type the value to search for in Properties,
            and set Ignore Value Case to <literal>True</literal>
            to make the search case-insensitive.</para>

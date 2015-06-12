@@ -619,9 +619,9 @@ $ <userinput>curl \
     <literal>"Session"</literal>
     condition failure can result in advice
     showing that access has been denied because
-    the user's session has been active
+    the user's stateful or stateless session has been active
     longer than allowed by the condition.
-    The advice will also show if the the user's session
+    The advice will also show if the user's session
     was terminated and reauthentication is required.
     For example, failure against the following condition:
    </para>
@@ -3008,9 +3008,15 @@ https://openam.example.com:8443/openam/json/applications/myapplication</userinpu
       <listitem>
        <para>
         <literal>"Session"</literal>
-        to specify how long the user's session has been active,
-        and to terminate the session if deemed too old,
-        such that the user must authenticate again.
+        to specify how long the user's stateful or stateless session has been
+        active, and to terminate the session if deemed too old,
+        such that the user must authenticate again. Note that OpenAM terminates
+        stateless sessions only if session blacklisting is in effect.
+        See <link xlink:show="new"
+                  xlink:href="admin-guide#session-state-session-termination"
+                  xlink:role="http://docbook.org/xlink/role/olink">Session
+        Termination</link> in the <citetitle>Administration Guide</citetitle>
+        for more information about session blacklisting.
        </para>
        <programlisting language="javascript">{
     "type": "Session",
@@ -3022,7 +3028,7 @@ https://openam.example.com:8443/openam/json/applications/myapplication</userinpu
       <listitem>
        <para>
         <literal>"SessionProperty"</literal>
-        to specify attributes set in the user's session.
+        to specify attributes set in the user's stateful or stateless session.
        </para>
        <programlisting language="javascript">{
     "type": "SessionProperty",
