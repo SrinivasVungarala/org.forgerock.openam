@@ -1096,19 +1096,33 @@ $ dsconfig \
   </indexterm>
 
   <para>
-   OpenAM stores its configuration, session, and token data in an LDAP
+   OpenAM stores its configuration in an LDAP
    directory server. OpenAM ships with an embedded OpenDJ directory server
    that you can install as part of the OpenAM configuration process.
-   By default, OpenAM installs the embedded directory server alongside its
-   configuration settings under the $HOME directory of the user running OpenAM
-   and runs the embedded directory server in the same JVM memory space as OpenAM.
+   By default, OpenAM installs the embedded directory server and its
+   configuration settings in the <filename>$HOME</filename> directory of the
+   user running OpenAM and runs the embedded directory server in the same JVM
+   memory space as OpenAM.
   </para>
 
   <para>
-   With the embedded OpenDJ directory and the default configuration
-   settings, OpenAM connects as directory super user, bypassing access control
-   evaluation because OpenAM manages the directory as its private store. Be aware
-   that failover and replication cannot be controlled when using the embedded store.
+   OpenAM connects to the embedded OpenDJ directory as directory super user,
+   bypassing access control evaluation because OpenAM manages the directory as
+   its private store. Be aware that you cannot configure directory failover and
+   replication when using the embedded store.
+  </para>
+
+  <para>
+   By default, OpenAM also stores data managed by the Core Token Service (CTS)
+   pertaining to user logins&#x2014;OpenAM stateful sessions, logout blacklists,
+   and several types of authentication tokens&#x2014;in the same embedded OpenDJ
+   directory that holds the OpenAM configuration. You can choose to create a
+   separate directory store for CTS data. For information about creating a
+   separate directory store for CTS data, see
+   the chapter, <link xlink:show="new"
+                        xlink:href="install-guide#chap-cts"
+                        xlink:role="http://docbook.org/xlink/role/olink">
+    <citetitle>Configuring the Core Token Service</citetitle></link>.
   </para>
 
   <para>
@@ -1116,22 +1130,8 @@ $ dsconfig \
    using the embedded directory not only for relatively static configuration
    data, but also for volatile session and token data. Your tests should subject
    OpenAM to the same load patterns you expect in production. If it looks like
-   a better choice to use an external directory server, then use one of the
-   supported external configuration stores listed in the
-   <link xlink:show="new"
-         xlink:href="release-notes#chap-before-you-install"
-         xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Release
-    Notes</citetitle></link>, such as OpenDJ.
-  </para>
-
-  <para>
-   OpenAM supports the Core Token Service (CTS),
-   a centralized token repository for OpenAM session tokens, OpenID Connect ID tokens, and
-   SAML v2.0 tokens, which can be stored in a locally embedded or external
-   directory store together or separately from OpenAM configuration data. For more information,
-   see the chapter on <link xlink:show="new" xlink:href="install-guide#chap-cts"
-                            xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Configuring the Core Token Service</citetitle></link>.
+   a better choice to use an external directory server, then deploy OpenAM with
+   an external configuration store.
   </para>
 
   <tip>
