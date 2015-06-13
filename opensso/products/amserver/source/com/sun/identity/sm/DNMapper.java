@@ -233,7 +233,7 @@ public class DNMapper {
         String[] rdns = LDAPDN.explodeDN(answer, true);
         int size = rdns.length;
         for (int i = 0; i < size; i++) {
-            buf.append(orgAttr).append(SMSEntry.EQUALS).append(rdns[i]);
+            buf.append(orgAttr).append(rdns[i]);
             buf.append(',');
         }
         // Append baseDN and return
