@@ -1,10 +1,6 @@
 /* Edit Script */
 .script-area {
-    margin: 0 0 15px 0;
-
-    .script-text {
-        margin: 15px 0 0 0;
-    }
+    margin: 15px 0;
 }
 
 .validation-message {
@@ -27,6 +23,10 @@
             color: @failure-color;
         }
     }
+
+    .alert {
+        margin-bottom: 15px;
+    }
 }
 
 .change-context {
@@ -35,4 +35,8 @@
         -webkit-box-shadow: none;
         border: 1px solid #e5e5e5;
     }
+}
+
+#upload {
+    display: none;
 }

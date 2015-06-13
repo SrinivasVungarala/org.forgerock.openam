@@ -415,7 +415,7 @@ static am_return_t validate_fqdn_access(am_request_t *r) {
 static am_bool_t url_matches_pattern(am_request_t *r, const char *pattern,
         const char *url, am_bool_t regex_enable) {
     if (regex_enable) {
-        return match(r->instance_id, url, pattern) == AM_SUCCESS;
+        return match(r->instance_id, url, pattern) == AM_OK;
     } else {
         return policy_compare_url(r, pattern, url) != AM_NO_MATCH;
     }
@@ -463,7 +463,17 @@ static am_return_t handle_not_enforced(am_request_t *r) {
     }
     am_free(pdp_path);
 
-    /* check if the request url (normalized) is in an application logout url list */
+    /* check if the request url (normalized) is an application logout url */
+    if (ISVALID(r->conf->logout_url_regex) && /* check legacy com.forgerock.agents.agent.logout.url.regex option first */
+            url_matches_pattern(r, r->conf->logout_url_regex, url, AM_TRUE)) {
+        AM_LOG_DEBUG(r->instance_id, "%s %s is an application logout url (not enforced)", thisfunc, url);
+        r->not_enforced = r->is_logout_url = AM_TRUE;
+        if (!r->conf->not_enforced_fetch_attr) {
+            r->status = AM_SUCCESS;
+            return AM_QUIT;
+        }
+        return AM_OK;
+    }
     if (r->conf->logout_map_sz > 0) {
         for (i = 0; i < r->conf->logout_map_sz; i++) {
             am_config_map_t *m = &r->conf->logout_map[i];
@@ -823,6 +833,12 @@ static am_return_t validate_policy(am_request_t *r) {
         scope = AM_SCOPE_RESPONSE_ATTRIBUTE_ONLY;
     }
 
+    if (r->conf->sso_only) {
+        /* sso_only mode is interested only in user attributes (ignoring policy result) */
+        scope = AM_SCOPE_RESPONSE_ATTRIBUTE_ONLY;
+        AM_LOG_DEBUG(r->instance_id, "%s running in sso-only mode", thisfunc);
+    }
+
     if (r->status == AM_NOT_FOUND) {
         r->status = AM_INVALID_SESSION;
         return AM_OK;
@@ -868,7 +884,7 @@ static am_return_t validate_policy(am_request_t *r) {
                     r->conf->token, r->token,
                     url,
                     r->conf->notif_url, am_scope_to_str(scope), r->client_ip, pattrs,
-                    &info,
+                    r->conf->lb_enable && ISVALID(r->si.si) ? r->si.si : NULL, &info,
                     &session_cache_new,
                     &policy_cache_new);
             if (status == AM_SUCCESS && session_cache_new != NULL && policy_cache_new != NULL) {
@@ -1019,21 +1035,30 @@ static am_return_t validate_policy(am_request_t *r) {
                     }
                 }
 
-                //TODO: sso_only?
-
                 if (policy_status == AM_EXACT_MATCH || policy_status == AM_EXACT_PATTERN_MATCH) {
                     struct am_action_decision *ae, *at;
 
-                    if (r->not_enforced && (r->conf->not_enforced_fetch_attr || r->is_dummypost_url) &&
-                            e->scope == AM_SCOPE_RESPONSE_ATTRIBUTE_ONLY) {
-                        /* allow, in case this is not-enforced url and attribute fetch is enabled or this is a dummypost_url
-                         * (ignoring policy result) */
+                    if (((r->not_enforced && (r->conf->not_enforced_fetch_attr || r->is_dummypost_url))
+                            || r->conf->sso_only) && e->scope == AM_SCOPE_RESPONSE_ATTRIBUTE_ONLY) {
+                        /* allow, in case this is a) not-enforced url and attribute fetch is enabled or this is a dummypost_url
+                         * or b) agent is running in sso-only mode (ignoring policy result) */
                         AM_LOG_DEBUG(r->instance_id,
-                                "%s method: %s, decision: allow, not enforced url with attribute fetch enabled",
-                                thisfunc, am_method_num_to_str(r->method));
+                                "%s method: %s, decision: allow, %s",
+                                thisfunc, am_method_num_to_str(r->method),
+                                r->conf->sso_only ? "running sso-only mode" : "not enforced url with attribute fetch enabled");
                         r->response_attributes = e->response_attributes;
                         r->response_decisions = e->response_decisions;
                         r->status = AM_SUCCESS;
+
+                        /* fetch user parameter value */
+                        if (ISVALID(r->conf->userid_param) && ISVALID(r->conf->userid_param_type)) {
+                            if (strcasecmp(r->conf->userid_param_type, "SESSION") == 0) {
+                                r->user = get_attr_value(r, r->conf->userid_param, AM_SESSION_ATTRIBUTE);
+                            } else {
+                                r->user = get_attr_value(r, r->conf->userid_param, AM_POLICY_ATTRIBUTE);
+                            }
+                            r->user_password = get_attr_value(r, "sunIdentityUserPassword", AM_SESSION_ATTRIBUTE);
+                        }
                         return AM_OK;
                     }
 
@@ -1063,8 +1088,7 @@ static am_return_t validate_policy(am_request_t *r) {
                                 r->status = AM_SUCCESS;
 
                                 /* fetch user parameter value */
-                                if (ISVALID(r->conf->userid_param) &&
-                                        ISVALID(r->conf->userid_param_type)) {
+                                if (ISVALID(r->conf->userid_param) && ISVALID(r->conf->userid_param_type)) {
                                     if (strcasecmp(r->conf->userid_param_type, "SESSION") == 0) {
                                         r->user = get_attr_value(r, r->conf->userid_param, AM_SESSION_ATTRIBUTE);
                                     } else {
@@ -1081,8 +1105,7 @@ static am_return_t validate_policy(am_request_t *r) {
                             /* set the pointer to the policy advice(s) if any */
                             r->policy_advice = ae->advices;
                             r->status = AM_ACCESS_DENIED;
-                            AM_LOG_DEBUG(r->instance_id,
-                                    "%s method: %s, decision: deny, advice: %s",
+                            AM_LOG_DEBUG(r->instance_id, "%s method: %s, decision: deny, advice: %s",
                                     thisfunc, am_method_num_to_str(ae->method),
                                     ae->advices == NULL ? "n/a" : "available");
                             return AM_OK;
@@ -1592,21 +1615,22 @@ static am_return_t handle_exit(am_request_t *r) {
                 do_header_set(r, AM_FALSE);
                 do_cookie_set(r, AM_FALSE, AM_TRUE);
 
-                if (ISVALID(r->token) && !ISVALID(r->conf->logout_redirect_url)) {
-                    /* logout.redirect.url is not set - do background logout and cache cleanup */
+                if (ISVALID(r->token) && r->conf->logout_redirect_disable) {
+                    /* logout.redirect.disable is set - do a background logout and cache cleanup */
                     struct logout_worker_data *wd = malloc(sizeof (struct logout_worker_data));
                     if (wd != NULL) {
                         const char *oam = get_valid_openam_url(r);
                         wd->instance_id = r->instance_id;
-                        /* find active OpenAM service URL */
+                        /* find an active OpenAM service URL */
                         if (oam != NULL) {
                             wd->token = strdup(r->token);
                             wd->openam = strdup(oam);
+                            wd->server_id = r->conf->lb_enable && ISVALID(r->si.si) ? strdup(r->si.si) : NULL;
 
                             am_net_set_ssl_options(r->conf, &wd->info);
 
                             if (am_worker_dispatch(session_logout_worker, wd) != 0) {
-                                AM_FREE(wd->token, wd->openam);
+                                AM_FREE(wd->token, wd->openam, wd->server_id);
                                 free(wd);
                                 r->status = AM_ERROR;
                                 AM_LOG_WARNING(r->instance_id, "%s failed to dispatch logout worker", thisfunc);
@@ -1626,8 +1650,8 @@ static am_return_t handle_exit(am_request_t *r) {
                     break; /* early exit - we're done with this resource */
                 }
 
-                /* do OpenAM logout redirect with a goto value if logout_redirect_url is set. 
-                 * will land here if no session token is available and logout_redirect_url is not set too.
+                /* do OpenAM logout redirect with a goto value of logout_redirect_url; 
+                 * will land here if no session token is available too.
                  */
                 valid_idx = get_valid_url_index(r->instance_id);
                 if (r->conf->openam_logout_map_sz > 0) {
@@ -1706,7 +1730,7 @@ static am_return_t handle_exit(am_request_t *r) {
                         /* reset pdp sticky-session load-balancer cookie */
                         if (ISVALID(r->conf->pdp_sess_mode) && ISVALID(r->conf->pdp_sess_value)
                                 && strcmp(r->conf->pdp_sess_mode, "COOKIE") == 0
-                                && match(r->instance_id, r->conf->pdp_sess_value, "^(\\w+)=([^\\s]+)$") == AM_SUCCESS) {
+                                && match(r->instance_id, r->conf->pdp_sess_value, "^(\\w+)=([^\\s]+)$") == AM_OK) {
                             char *sess_cookie = strdup(r->conf->pdp_sess_value);
                             if (sess_cookie != NULL) {
                                 char *eq = strchr(sess_cookie, '=');
@@ -1895,7 +1919,7 @@ static am_return_t handle_exit(am_request_t *r) {
 
                         /* pdp sticky session value, if set, has to be in a correct format: param=value */
                         pdp_sess_mode = ISVALID(r->conf->pdp_sess_mode) && ISVALID(r->conf->pdp_sess_value)
-                                && match(r->instance_id, r->conf->pdp_sess_value, "^(\\w+)=([^\\s]+)$") == AM_SUCCESS;
+                                && match(r->instance_id, r->conf->pdp_sess_value, "^(\\w+)=([^\\s]+)$") == AM_OK;
 
                         pdp_sess_mode_url = pdp_sess_mode && strcmp(r->conf->pdp_sess_mode, "URL") == 0;
                         pdp_sess_mode_cookie = pdp_sess_mode && strcmp(r->conf->pdp_sess_mode, "COOKIE") == 0;
@@ -2041,9 +2065,8 @@ static am_return_t handle_exit(am_request_t *r) {
                 r->status = AM_REDIRECT;
                 r->am_set_custom_response_f(r, url, NULL);
                 free(url);
-                break;
             }
-
+            break;
         default:
             AM_LOG_ERROR(r->instance_id, "%s status: %s", thisfunc,
                     am_strerror(r->status));
@@ -2078,12 +2101,12 @@ void am_process_request(am_request_t *r) {
 
 /**
  * Returns a pointer to the "process state" functions into the callers space and sets the number of pointers.
- * This is used to provide access to the porcess state functions for testing.
+ * This is used to provide access to the process state functions for testing.
  *
  * @param func_array_ptr address of pointer to be set
  * @param array_len_ptr the number of functions returned
  */
-extern void am_test_get_state_funcs(am_state_func_t const ** func_array_ptr, int * array_len_ptr) {
+void am_test_get_state_funcs(am_state_func_t const ** func_array_ptr, int * array_len_ptr) {
     * func_array_ptr = am_request_state;
     * array_len_ptr = (&am_request_state)[1] - am_request_state;
 }

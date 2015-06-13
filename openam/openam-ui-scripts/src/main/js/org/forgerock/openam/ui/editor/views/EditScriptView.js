@@ -14,10 +14,13 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-/*global define, $, _*/
+/*global define, $, _, window, FileReader*/
 
 define("org/forgerock/openam/ui/editor/views/EditScriptView", [
     "bootstrap-dialog",
+    "libs/codemirror/lib/codemirror",
+    "libs/codemirror/mode/groovy/groovy",
+    "libs/codemirror/mode/javascript/javascript",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "org/forgerock/commons/ui/common/main/EventManager",
     "org/forgerock/commons/ui/common/util/Base64",
@@ -25,7 +28,7 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
     "org/forgerock/commons/ui/common/util/UIUtils",
     "org/forgerock/openam/ui/editor/models/ScriptModel",
     "org/forgerock/openam/ui/editor/delegates/ScriptsDelegate"
-], function (BootstrapDialog, AbstractView, EventManager, Base64, Constants, UIUtils, Script, ScriptsDelegate) {
+], function (BootstrapDialog, CodeMirror, Groovy, Javascript, AbstractView, EventManager, Base64, Constants, UIUtils, Script, ScriptsDelegate) {
 
     var EditScriptView = AbstractView.extend({
         initialize: function (options) {
@@ -35,12 +38,17 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
         template: "templates/editor/views/EditScriptTemplate.html",
         data: {},
         events: {
+            'click #upload': 'uploadScript',
+            'keyup #upload': 'uploadScript',
+            'change [name=upload]': 'readUploadedFile',
             'click #validateScript': 'validateScript',
             'keyup #validateScript': 'validateScript',
             'click #changeContext': 'openDialog',
             'keyup #changeContext': 'openDialog',
             'click input[name=save]': 'submitForm',
-            'keyup input[name=save]': 'submitForm'
+            'keyup input[name=save]': 'submitForm',
+            'change input[name=language]': 'changeLanguage',
+            'submit form': 'submitForm'
         },
 
         onModelError: function (model, response) {
@@ -112,8 +120,12 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
             }
 
             this.parentRender(function () {
+                this.showUploadButton();
+
                 if (this.data.newScript) {
                     this.openDialog();
+                } else {
+                    this.initScriptEditor();
                 }
 
                 if (this.renderCallback) {
@@ -138,9 +150,13 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
                     app[dataField] = field.value;
                 }
             });
+
+            app.script = this.scriptEditor.getValue();
         },
 
         submitForm: function (e) {
+            e.preventDefault();
+
             if (e.type === 'keyup' && e.keyCode !== 13) {
                 return;
             }
@@ -161,7 +177,6 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
                     });
                 } else {
                     savePromise.done(function (e) {
-                        console.log(e);
                         EventManager.sendEvent(Constants.EVENT_HANDLE_DEFAULT_ROUTE);
                         EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "scriptCreated");
                     });
@@ -197,12 +212,12 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
                 return;
             }
 
-            var scriptText = this.$el.find('#script').val(),
+            var scriptText = this.scriptEditor.getValue(),
                 language = this.$el.find('input[name=language]:checked'),
                 script,
                 self = this;
 
-            if (scriptText === '') {
+            if (scriptText.trim() === '') {
                 EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "validationNoScript");
                 return;
             }
@@ -215,6 +230,24 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
             ScriptsDelegate.validateScript(script).done(function (result) {
                 self.$el.find('#validation').html(UIUtils.fillTemplateWithData("templates/editor/views/ScriptValidationTemplate.html", result));
             });
+        },
+
+        uploadScript: function (e) {
+            this.$el.find("[name=upload]").trigger("click");
+        },
+
+        readUploadedFile: function (e) {
+            var self = this,
+                file = e.target.files[0],
+                reader = new FileReader();
+
+            reader.onload = (function (file) {
+                return function (e) {
+                    self.scriptEditor.setValue(e.target.result);
+                };
+            }(file));
+
+            reader.readAsText(file);
         },
 
         openDialog: function (e) {
@@ -230,7 +263,7 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
             }
         },
 
-        renderDialog: function() {
+        renderDialog: function () {
             var self = this,
                 footerButtons = [],
                 options = {
@@ -239,7 +272,7 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
                     cssClass: "change-context",
                     closable: !self.data.newScript,
                     message: $('<div></div>'),
-                    onshow: function(dialog){
+                    onshow: function (dialog) {
                         this.message.append(UIUtils.fillTemplateWithData('templates/editor/views/ChangeContextTemplate.html', self.data));
                         dialog.$modalContent.find('[name=changeContext]:checked');
                     }
@@ -263,6 +296,10 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
                     if (self.data.entity.context !== newContext) {
                         self.data.entity.context = newContext;
                         self.changeContext();
+                        self.parentRender(function () {
+                            self.showUploadButton();
+                            self.initScriptEditor();
+                        });
                     }
                     dialog.close();
                 }
@@ -282,10 +319,32 @@ define("org/forgerock/openam/ui/editor/views/EditScriptView", [
 
             this.data.languages = selectedContext.languages;
 
-            this.data.entity.script =  Base64.decodeUTF8(selectedContext.defaultScript);
-            this.data.entity.language =  selectedContext.defaultLanguage;
+            this.data.entity.script = Base64.decodeUTF8(selectedContext.defaultScript);
+            this.data.entity.language = selectedContext.defaultLanguage;
+        },
 
-            this.parentRender();
+        initScriptEditor: function () {
+            this.scriptEditor = CodeMirror.fromTextArea(this.$el.find("#script")[0], {
+                lineNumbers: true,
+                autofocus: true,
+                viewportMargin: Infinity,
+                mode: this.data.entity.language.toLowerCase(),
+                theme: 'forgerock'
+            });
+        },
+
+        changeLanguage: function (e) {
+            this.data.entity.language = e.target.value;
+            this.scriptEditor.setOption('mode', this.data.entity.language.toLowerCase());
+        },
+
+        showUploadButton: function () {
+            // Show the Upload button for modern browsers only. Documented feature.
+            // File: Chrome 13; Firefox (Gecko) 3.0 (1.9) (non standard), 7 (7) (standard); Internet Explorer 10.0; Opera 11.5; Safari (WebKit) 6.0
+            // FileReader: Firefox (Gecko) 3.6 (1.9.2);	Chrome 7; Internet Explorer 10; Opera 12.02; Safari 6.0.2
+            if (window.File && window.FileReader && window.FileList) {
+                this.$el.find('#upload').show();
+            }
         }
     });
 

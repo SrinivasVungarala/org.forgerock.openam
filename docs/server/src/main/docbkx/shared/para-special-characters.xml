@@ -33,6 +33,7 @@ Editor or REST endpoints as OpenAM returns a 400 Bad Request error.
 The special characters are: double quotes (<keycap>"</keycap>), plus
 sign (<keycap>+</keycap>), comma (<keycap>,</keycap>),
 less than (<keycap>&lt;</keycap>), equals (<keycap>=</keycap>), greater
-than (<keycap>&gt;</keycap>), backslash (<keycap>\</keycap>), and
+than (<keycap>&gt;</keycap>), backslash (<keycap>\</keycap>), forward slash
+ (<keycap>/</keycap>), semicolon (<keycap>;</keycap>), and
 null (<keycap>\u0000</keycap>).
 </para>

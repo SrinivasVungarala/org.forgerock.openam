@@ -744,11 +744,16 @@ $ <userinput>curl \
 <computeroutput>{"success":"true"}</computeroutput>
    </screen>
 
-  <note>
-    <para>Deleting a user does not automatically remove any of the user's sessions.
-    After deleting a user, check for any sessions for the user and remove them under the Console's Sessions tab.
+   <note>
+    <para>
+     Deleting a user does not automatically remove any of the user's sessions.
+     If you are using stateful sessions, you can remove a user's sessions by
+     checking for any sessions for the user and then removing them using the
+     console's Sessions tab. If you are using stateless sessions, you cannot
+     remove users' sessions; you must wait for the sessions to expire.
     </para>
   </note>
+   
   </section>
 
   <section xml:id="rest-api-query-identity">

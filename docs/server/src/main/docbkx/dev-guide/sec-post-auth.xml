@@ -44,6 +44,62 @@
  session properties, and then the policy agent injects the custom properties
  into the request header to the protected application.</para>
 
+ <para>
+  Two issues should be considered when writing a post authentication
+  plugin for an OpenAM deployment that uses stateless sessions:
+  <variablelist>
+   <varlistentry>
+    <term>Cookie size</term>
+    <listitem>
+     <para>
+      You can set an unlimited number of session properties in a post
+      authentication plugin. When OpenAM creates a stateless session,
+      it writes the session properties into the session cookie, increasing
+      the size of the cookie. Very large session cookies can exceed browser
+      limitations. Therefore, when implementing a post authentication plugin
+      in a deployment with stateless sessions, be sure to monitor the session
+      cookie size and verify that you have not exceeded browser cookie
+      size limits.
+     </para>
+     <para>
+      For more information about stateless session cookies,
+      see <link xlink:show="new"
+                xlink:href="admin-guide#session-state-cookies"
+                xlink:role="http://docbook.org/xlink/role/olink">Session Cookies</link>
+      in the <citetitle>Administration Guide</citetitle>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Cookie security</term>
+    <listitem>
+     <para>
+      The OpenAM administrator secures custom session properties residing on the
+      OpenAM server for stateful sessions by using firewalls and other typical
+      security techniques.
+     </para>
+     <para>
+      However, when using stateless sessions, custom session properties are
+      written in cookies and reside on end users' systems. Cookies can be
+      long-lasting and might represent a security issue if any session
+      properties are of a sensitive nature. When developing a post
+      authentication plugin for a deployment that uses stateless sessions,
+      be sure that you are aware of the measures securing the session contained
+      within the cookie.
+     </para>
+     <para>
+      For more information about stateless session cookie security,
+      see <link xlink:show="new"
+                xlink:href="admin-guide#session-state-stateless-cookie-security"
+                xlink:role="http://docbook.org/xlink/role/olink">Stateless
+      Session Cookie Security</link>
+      in the <citetitle>Administration Guide</citetitle>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </para>
+
  <para>This section explains how to create a post authentication plugin.</para>
 
  <!-- Taken from Steve's wiki article,

@@ -417,7 +417,7 @@
 
    <indexterm>
     <primary>Core Token Service</primary>
-    <secondary>access control instructions</secondary>
+    <secondary>ACIs</secondary>
    </indexterm>
 
     <para>
@@ -449,10 +449,6 @@ aci: (targetattr="*")(version 3.0;acl "Modify entries";
  "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)
 aci: (version 3.0;acl "Delete entries";
  allow (delete)(userdn =
- "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)
-aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
- persistent search";
- allow (search, read)(userdn =
  "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)</programlisting>
 
     <para>For detailed information on ACIs, with examples showing how you can use
@@ -461,6 +457,14 @@ aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
      see the OpenDJ chapter on
     <link xlink:show="new" xlink:href="${opendjDocBase}/admin-guide/#chap-privileges-acis"
     ><citetitle>Configuring Privileges &amp; Access Control</citetitle></link>.
+    </para>
+
+    <para>
+     The Core Token Service performs search operations that use the
+     simple paged results control, specified by the
+     OID <literal>1.2.840.113556.1.4.319</literal>. OpenDJ's default global ACIs
+     allow3 access to this control. Be sure not to change the global ACIs to
+     deny access.
     </para>
 
   </section>

@@ -1344,4 +1344,15 @@ public interface Constants {
      * in OpenAM, for example, in the JATO framework
      */
     public static final String DESERIALISATION_CLASSES_WHITELIST = "openam.deserialisation.classes.whitelist";
+
+    /**
+     * Property used by the XML builder to retrieve a configuration specific name for an attribute schema.
+     */
+    public static final String CONFIGURATION_NAME = "configuration_name";
+
+    /**
+     * Heartbeat timeout in seconds of the HeartBeatConnectionFactory
+     * The heartbeat timeout after which a connection will be marked as failed
+     */
+    public static final String LDAP_HEARTBEAT_TIMEOUT = "org.forgerock.openam.ldap.heartbeat.timeout";
 }
