@@ -188,9 +188,10 @@
     LDAP,
     Membership,
     RADIUS,
-    <xinclude:include href="../shared/securid/phrase-scripted-auth-module.xml${skipSecurID}">
+    <xinclude:include
+     href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
      <xinclude:fallback>
-      <!-- Module not present in nightly builds -->
+      <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
      </xinclude:fallback>
     </xinclude:include>
     Windows Desktop SSO,
@@ -264,9 +265,9 @@
          LDAP,
          Membership,
          RADIUS,
-         <xinclude:include href="../shared/securid/phrase-scripted-auth-module${skipSecurID}.xml">
+         <xinclude:include href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
           <xinclude:fallback>
-           <!- - Module not present in nightly builds - ->
+           <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
           </xinclude:fallback>
          </xinclude:include>
          Windows Desktop SSO,
@@ -295,9 +296,9 @@
          LDAP,
          Membership,
          RADIUS,
-         <xinclude:include href="../shared/securid/phrase-scripted-auth-module${skipSecurID}.xml">
+         <xinclude:include href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
           <xinclude:fallback>
-           <!- - Module not present in nightly builds - ->
+           <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
           </xinclude:fallback>
          </xinclude:include>
          &amp; Windows NT

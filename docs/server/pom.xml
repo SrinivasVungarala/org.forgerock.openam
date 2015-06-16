@@ -166,9 +166,6 @@
 
         <products-basedir>${basedir}</products-basedir>
 
-        <!-- Empty this property to build release docs, e.g. -DskipSecurID="" -->
-        <skipSecurID>yes</skipSecurID>
-
         <!--
           Release date and publication date are set at release build time.
             -D"releaseDate=Software release date: January 1, 1970"
@@ -232,6 +229,11 @@
                         <projectName>${projectName}</projectName>
                         <projectVersion>${serverDocTargetVersion}</projectVersion>
                         <releaseVersion>${serverDocTargetVersion}</releaseVersion>
+                        <!-- Edit the inclusions/exclusions below when building release versions. -->
+                        <exclusions>
+                            <!-- SecurId is not released in nightly documentation. -->
+                            <condition>securid</condition>
+                        </exclusions>
                     </configuration>
                     <executions>
                         <execution>

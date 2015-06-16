@@ -6433,9 +6433,9 @@
     </listitem>
    </varlistentry>
 
-   <xinclude:include href="../shared/securid/varlistentry-config-ref.xml${skipSecurID}">
+   <xinclude:include href="../shared/securid/varlistentry-config-ref.xml" condition="securid">
     <xinclude:fallback>
-     <!-- Module not present in nightly builds -->
+     <para>Could not include "../shared/securid/varlistentry-config-ref.xml".</para>
     </xinclude:fallback>
    </xinclude:include>
 

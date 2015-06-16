@@ -1822,6 +1822,9 @@ $ <userinput>jar -cf ../openam.war *</userinput>
   </orderedlist>
  </section>
 
+  <xinclude:include href='../shared/securid/section-enable-securid.xml'
+                    condition="securid"/>
+
  <section xml:id="prepare-apache-tomcat">
   <title>Preparing Apache Tomcat</title>
 

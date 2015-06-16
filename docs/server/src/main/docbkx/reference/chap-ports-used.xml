@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-ports-used'
@@ -91,9 +91,9 @@
                  <entry>Supports LDAP communication between embedded OpenAM data stores.</entry>
              </row>
 
-             <xinclude:include href="../shared/securid/row-ports-used${skipSecurID}.xml">
+             <xinclude:include href="../shared/securid/row-ports-used.xml" condition="securid">
               <xinclude:fallback>
-               <!-- Module not present in nightly builds -->
+               <para>Could not include "../shared/securid/row-ports-used.xml".</para>
               </xinclude:fallback>
              </xinclude:include>
 
