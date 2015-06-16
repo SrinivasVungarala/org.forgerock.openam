@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2014 ForgeRock AS
+  !      Copyright 2014-2015 ForgeRock AS.
   !
 -->
 <chapter xml:id='chap-install-multiple'
@@ -30,7 +30,7 @@
          xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
          xmlns:xlink='http://www.w3.org/1999/xlink'>
- <title>Installing Multiple Servers</title>
+ <title>Installation Considerations for Multiple Servers</title>
 
  <indexterm>
   <primary>Installing</primary>
@@ -63,16 +63,17 @@
     <para>
      You generally install multiple servers to provide service availability.
      If one server is down for any reason, another server can respond instead.
-     This means that you need something between incoming traffic and OpenAM
-     to route around servers that are down.
+     This means that you need some type of component, such as, a load balancer or
+     a proxying server, between incoming traffic and OpenAM to route around servers
+     that are down.
     </para>
 
     <para>
-     OpenAM has the concept of OpenAM <firstterm>site</firstterm> for this purpose.
+     OpenAM uses a <firstterm>site</firstterm> for this purpose.
      In an OpenAM site, multiple OpenAM servers are configured in the same way,
      and accessed through a load balancer layer.<footnote>
       <para>
-       Technically it is possible to configure a site with only one OpenAM server.
+       Technically, it is possible to configure a site with only one OpenAM server.
       </para>
      </footnote>
      The load balancer can be implemented in hardware or software,
@@ -122,7 +123,7 @@
       such as the IP address where the request originated.
       When OpenAM is accessed through a load balancer or proxy layer,
       pass this information along using request headers.
-      Also configure OpenAM to consume and to forward the headers as necessary.
+      Also, configure OpenAM to consume and to forward the headers as necessary.
       See <xref linkend="handle-request-headers" /> for details.
     </para>
    </listitem>
@@ -163,12 +164,7 @@
   </itemizedlist>
 
   <procedure xml:id="configure-site-after-installation">
-   <title>To Configure a Site with a First OpenAM Server</title>
-
-   <para>
-    You might already have configured an OpenAM server before realizing
-    that a site is what you want.
-   </para>
+   <title>To Configure a Site With a First OpenAM Server</title>
 
    <para>
     The following steps show how to set up the site for the first OpenAM server.
@@ -193,7 +189,7 @@
      On the New Site page enter the site name,
      and set the Primary URL to the load balancer URL
      that is the entry point for the site,
-     such as <literal>https://lb.example.com/openam</literal>.
+     such as, <literal>https://lb.example.com/openam</literal>.
     </para>
 
     <para>
@@ -201,7 +197,7 @@
      the OpenAM servers in the site.
      For example, if your load balancer listens for
      HTTPS on host <literal>lb.example.com</literal>
-     and port <literal>443</literal>,
+     and port <literal>443</literal>
      with OpenAM under <literal>/openam</literal>,
      then your site URL is <literal>https://lb.example.com/openam</literal>.
     </para>
@@ -233,7 +229,7 @@
     </para>
 
     <para>
-     At this point the server is part of the new site you have configured.
+     At this point, the server is part of the new site you have configured.
     </para>
 
     <para>
@@ -274,11 +270,11 @@
 
     <para>
      In an OpenAM site, the server that authenticated a user
-     is the server that continues to manage that user's session,
+     is the server that continually manages that user's session,
      unless the server is no longer available.
-     The load balancer should send subsequent requests to that server
-     to avoid overhead resulting from the server that gets the
-     request being different from the server that authenticated the user.
+     The load balancer should send subsequent requests to the authenticating server
+     to avoid the overhead resulting from the differences between the server
+     that received the request and the server that authenticated user.
     </para>
 
     <para>
@@ -310,9 +306,6 @@
      <step>
       <para>
        Restart each OpenAM server where you changed the cookie value.
-      </para>
-
-      <para>
        You can then check the cookie value by logging in to OpenAM console,
        and examining the <literal>amlbcookie</literal> cookie in your browser.
       </para>
@@ -339,6 +332,7 @@
     </para>
    </step>
   </procedure>
+
   <note>
    <para>Sticky load balancing based on the value of the
     <literal>amlbcookie</literal> cookie does not guarantee request forwarding
@@ -377,18 +371,18 @@
    </para>
    <para>
     Requests to update sessions, such as requests to log out, reset the session
-    idle time, or set a session attribute always use crosstalk to ensure the
+    idle time, or set a session attribute, always use crosstalk to ensure the
     integrity of the update requests.
    </para>
    <para>
-   See
-   <link
-    xlink:show="new"
-    xlink:href="install-guide#chap-session-failover"
-    xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Setting Up OpenAM Session Failover</citetitle></link>
-   for information about configuring remote session location options.
-  </para>
+    See
+    <link
+     xlink:show="new"
+     xlink:href="install-guide#chap-session-failover"
+     xlink:role="http://docbook.org/xlink/role/olink"
+     ><citetitle>Setting Up OpenAM Session Failover</citetitle></link>
+    for information about configuring remote session location options.
+   </para>
   </note>
  </section>
 
@@ -425,7 +419,7 @@
 
   <para>
    Also configure OpenAM to consume and to forward the headers as necessary.
-   When configuring OpenAM through the console, you set the following properties
+   When configuring OpenAM through the Console, you set the following properties
    under Configuration > Servers and Sites > Servers
    > <replaceable>Server Name</replaceable> > Advanced.
   </para>
