@@ -694,7 +694,9 @@ $ <userinput>curl \
 
  </section>
  
- <section xml:id="rest-api-auth">
+ <xinclude:include href="../shared/sec-realms-rest.xml" />
+
+  <section xml:id="rest-api-auth">
   <title>Authentication &amp; Logout</title>
   <indexterm>
    <primary>Authentication</primary>

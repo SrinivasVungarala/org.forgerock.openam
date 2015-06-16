@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !    
+-->
+<section xml:id='realms-rest'
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+
+ <title>Specifying Realms in REST API Calls</title>
+
+ <indexterm>
+  <primary>Realms</primary>
+  <secondary>REST</secondary>
+ </indexterm>
+
+ <para>This section describes how to work with realms when
+  making REST API calls to OpenAM.</para>
+
+ <para>Realms can be specified in three ways when making a REST API call to
+  OpenAM:</para>
+ <variablelist>
+  <varlistentry>
+   <term>DNS Alias</term>
+   <listitem>
+    <para>When making a REST API call, the DNS alias of a realm can be
+     specified in the subdomain and domain name components of the REST endpoint.</para>
+    <para>To list all users in the top-level realm use the DNS alias of the
+     OpenAM instance, for example the REST endpoint would be:
+     <screen>https://openam.example.com:8443/openam/json/users?_queryID=*</screen>
+    </para>
+    <para>To list all users in a realm with DNS alias
+     <literal>suppliers.example.com</literal> the REST endpoint would be:
+     <screen>https://<replaceable>suppliers.example.com</replaceable>:8443/openam/json/users?_queryID=*</screen>
+    </para>
+   </listitem>
+  </varlistentry>
+    <varlistentry>
+   <term>Path</term>
+   <listitem>
+    <para>When making a REST API call, the realm, or realm alias, can be
+     specified in the path component of the REST endpoint.</para>
+    <para>To authenticate a user in the top-level realm the REST endpoint
+     would be:
+     <screen>https://openam.example.com:8443/openam/json/authenticate</screen>
+    </para>
+    <para>To authenticate a user in a realm named
+     <literal>customers</literal> the REST endpoint would be:
+     <screen>https://openam.example.com:8443/openam/json<replaceable>/customers</replaceable>/authenticate</screen>
+    </para>
+     <para>Subrealms are supported and should be separated with a forward slash (<keycap>/</keycap>).</para>
+ <para>For example, to authenticate to a subrealm named <literal>europe</literal>
+  of a realm named <literal>partners</literal>, the REST endpoint would be:
+  <screen>https://openam.example.com:8443/openam/json<replaceable>/partners/europe</replaceable>/authenticate</screen></para>
+   </listitem>
+  </varlistentry>
+    <varlistentry>
+   <term>Query Parameter</term>
+   <listitem>
+    <para>When making a REST API call the realm, or realm alias, can be
+     specified as the value of a query parameter named <literal>realm</literal>.</para>
+    <para>To list the groups in the top-level realm the REST endpoint would be:
+     <screen>https://openam.example.com:8443/openam/json/groups?_queryID=*</screen>
+    </para>
+    <para>To list the groups in a realm named
+     <literal>partners</literal> the REST endpoint would be:
+     <screen>https://openam.example.com:8443/openam/json/groups?<replaceable>realm=/partners</replaceable>&amp;_queryID=*</screen>
+    </para>
+    <important><para>When working with a named subrealm of the top-level
+     realm a forward slash preceeding the realm name is required.
+     You should not use a forward slash when using a realm alias.</para></important>
+     <para>Subrealms are supported and should be separated with a forward slash (<keycap>/</keycap>).</para>
+ <para>To authenticate a user in a subrealm named <literal>europe</literal> of a
+  realm named <literal>partners</literal> the REST endpoint would be:
+  <screen>https://openam.example.com:8443/openam/json/authenticate?<replaceable>realm=/partners/europe</replaceable></screen></para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+<para>If more than one of the above methods is used to specify realms in a
+ REST endpoint, OpenAM applies the following rules to determine the realm
+ to use.
+</para>
+ <orderedlist>
+  <listitem>
+   <para>If realms are specified using both the DNS alias and path
+    methods, they are concatenated together.</para>
+   <para>For example, the following REST endpoint returns users in a
+    subrealm named <literal>europe</literal> of a realm with DNS alias
+    <literal>suppliers</literal>.
+    <screen>https://<replaceable>suppliers.example.com</replaceable>:8443/openam/json<replaceable>/europe</replaceable>/users?_queryID=*</screen></para>
+  </listitem>
+  <listitem>
+   <para>If realms are specified using the <literal>realm</literal> query
+    parameter, they override anything specified in either the DNS alias or path
+    method.</para>
+   <para>For example, the following REST endpoint returns users in a
+    subrealm of the <literal>customers</literal> realm, named <literal>asia</literal>.
+    <screen>https://<replaceable>suppliers.example.com</replaceable>:8443/openam/json<replaceable>/europe</replaceable>/users?<replaceable>realm=/customers/asia</replaceable>&amp;_queryID=*</screen></para>
+  </listitem>
+ </orderedlist>
+</section>
