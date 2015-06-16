@@ -119,9 +119,45 @@
                             <include>org.json:json</include>
                             <include>commons-collections:commons-collections</include>
                             <include>org.forgerock.openam:openam-license-core</include>
+                            <include>org.forgerock.commons:forgerock-guice-core</include>
+                            <include>org.slf4j:slf4j-api</include>
+                            <include>com.google.inject:guice</include>
+                            <include>javax.inject:javax.inject</include>
                         </includes>
                     </artifactSet>
                     <filters>
+                       	<filter>
+                            <artifact>javax.inject:javax.inject</artifact>
+                            <includes>
+                                <include>**/**</include>
+                            </includes>
+                            <excludes>
+                            </excludes>
+                        </filter>
+                       	<filter>
+                            <artifact>com.google.inject:guice</artifact>
+                            <includes>
+                                <include>**/**</include>
+                            </includes>
+                            <excludes>
+                            </excludes>
+                        </filter>
+                       	<filter>
+                            <artifact>org.slf4j:slf4j-api</artifact>
+                            <includes>
+                                <include>**/**</include>
+                            </includes>
+                            <excludes>
+                            </excludes>
+                        </filter>
+                    	<filter>
+                            <artifact>org.forgerock.commons:forgerock-guice-core</artifact>
+                            <includes>
+                                <include>**/**</include>
+                            </includes>
+                            <excludes>
+                            </excludes>
+                        </filter>
                     	<filter>
                             <artifact>org.forgerock.openam:openam-license-core</artifact>
                             <includes>
