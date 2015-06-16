@@ -646,7 +646,12 @@ $ <userinput>curl \
   <itemizedlist>
    <listitem>
     <para>
-     No functionality has been removed in this release.
+     The "Persistent Cookie (Legacy)" settings in the Core Authentication
+     module have been removed. Configure persistent cookies with the
+     <link
+      xlink:href="admin-guide#persistent-cookie"
+      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:show="new"><citetitle>Persistent Cookie module</citetitle></link>.
     </para>
    </listitem>
   </itemizedlist>

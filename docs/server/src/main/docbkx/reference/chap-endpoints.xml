@@ -1117,9 +1117,10 @@
             <varlistentry>
                 <term><literal>CoreAttributes.jsp</literal></term>
                 <listitem>
-                    <para>Associated with the Core section of the Authentication tab of a specific or the top-level
-                        realm. Includes options for Realm Attributes, Persistent Cookies, Account Lockout, and
-                    Post-Authentication Processing.</para>
+                    <para>Associated with the Core section of the
+                     Authentication tab of a specific or the top-level
+                     realm. Includes options for Realm Attributes, Account
+                     Lockout, and Post-Authentication Processing.</para>
                 </listitem>
             </varlistentry>
 
