@@ -48,7 +48,7 @@
    <holder>ForgeRock AS</holder>
   </copyright>
 
-  <xinclude:include href="../shared/authorgroup-mc-gh-mj.xml" />
+  <xinclude:include href="../shared/authorgroup-mc-gh.xml" />
 
   <xinclude:include href="../legal.xml" />
 
