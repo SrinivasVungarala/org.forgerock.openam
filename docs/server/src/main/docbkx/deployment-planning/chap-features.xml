@@ -1,0 +1,1840 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<chapter xml:id='chap-features'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+ <title>Choosing Features For Deployment</title>
+
+ <para>
+  This chapter describes OpenAM software features in each component,
+  so that you can decide which OpenAM software to deploy
+  and which services to configure.
+  When reviewing the following sections covering features for each component,
+  make note of the features that your deployment must implement.
+ </para>
+
+<section xml:id="server-overview">
+ <title>OpenAM Server Overview</title>
+
+ <para>OpenAM is an open source centralized access management server, securing
+  protected resources across the network and providing authentication,
+  authorization, Web security, and federation services in a single, integrated solution.
+  OpenAM manages access to the protected resources by controlling who has access,
+  when, how long, and under what conditions by centralizing disparate hardware and
+  software services for cloud, enterprise, mobile, and business-to-business (B2B)
+  systems.</para>
+
+ <figure xml:id="figure-openam-apis" >
+  <title>OpenAM Architecture</title>
+  <mediaobject >
+   <alt>OpenAM Architecture</alt>
+   <imageobject>
+    <imagedata fileref="images/openam-architecture.png"
+               format="PNG" />
+   </imageobject>
+   <textobject>
+    <para>OpenAM has a highly modular and flexible architecture, centralizing
+     access management and securing protected resource across the network.</para>
+   </textobject>
+  </mediaobject>
+ </figure>
+
+ <para>OpenAM features a highly modular and flexible architecture with
+  multiple plug-in points to meet any customer deployment. It leverages industry
+  standard protocols, such as HTTP, XML, SOAP, REST, SAML, Oauth, OpenID Connect
+  and others to deliver a high performance, highly scalable and highly available
+  access management solution over the network. OpenAM services are 100% Java-based, proven
+  across multiple platforms and containers in many production deployments.</para>
+
+ <para>OpenAM core server can be deployed and integrated within existing network
+   infrastructures. OpenAM provides the following distribution files:</para>
+
+ <itemizedlist>
+  <listitem>
+   <para><emphasis role="bold">Default</emphasis>. OpenAM's default distribution
+    war file includes the core server code with an embedded OpenDJ directory
+    server, which stores configuration data and simplifies deployments.
+    The distribution includes an administrative graphical user
+    interface (GUI) Web console. During installation, the .war file
+    accesses a bootstrap file to obtain the fully qualified domain name, port,
+    context path and the location of the configuration folder.</para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">Core Server Only</emphasis>. OpenAM provides a core
+    server-only war file without the OpenAM Console. Administrators use the
+    <command>ssoadm</command> command-line tool to manage the server. The OpenAM
+    server installs with the embedded OpenDJ directory server.</para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">Distributed Authentication UI</emphasis>. OpenAM
+    provides a secure, remote interface to allow distributed authentication from
+    the client across two firewalls to the OpenAM core server. The distributed
+    authentication UI (DAS) is presented in detail in a later section.</para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">Identity Provider (IdP) Discovery Service</emphasis>.
+    OpenAM provides an Identity Provider Discovery Profile (SAMLv2 binding profile)
+    for its Identity Provider Discovery service. The profile keeps track of the
+    identity providers for each user.</para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">OpenAM Client Java SDK</emphasis>. OpenAM provides a
+    smaller sub-set of the OpenAM SDK, providing client-side API to OpenAM services.
+    The Client SDK allows you to write remote standalone or Web applications to
+    access OpenAM and run its core services.</para>
+  </listitem>
+  </itemizedlist>
+
+ <para>ForgeRock's OpenAM product is built on open source code.
+  ForgeRock maintains the OpenAM product, providing the community an open source
+  code repository, issue tracking, mailing lists, Web sites, and continuous
+  integration as well as nightly builds from the latests code.
+  ForgeRock also provides commercial releases of fully tested builds.
+  ForgeRock offers the services you need to deploy OpenAM commerical builds into
+  production, including training, consulting, and support.</para>
+
+ </section>
+
+ <section xml:id="openam-overview-tools">
+  <title>OpenAM Administrative and Command-Line Tools</title>
+  <para>OpenAM's default distribution zip file contains the core server code, an
+   embedded OpenDJ directory server for its configuration store and the OpenAM
+   Web-based graphical user interface, <emphasis>OpenAM Console</emphasis>.</para>
+
+  <para>When you log in as the OpenAM Administrator, you have full access to the
+   OpenAM Console, which allows you to configure any number of OpenAM features and
+   services. Non-administrator users do not have access to the console and will
+   see their own user configuration page.</para>
+
+  <figure xml:id="figure-openam-admin-console">
+   <title>OpenAM Administration Console</title>
+   <mediaobject >
+    <alt>OpenAM Administration Console</alt>
+    <imageobject>
+     <imagedata fileref="images/openam-admin-console.png"
+               format="PNG" />
+    </imageobject>
+    <textobject>
+     <para>OpenAM provides a Web administration console that allows you to
+      configure many of the OpenAM features and services.</para>
+    </textobject>
+   </mediaobject>
+  </figure>
+
+  <para>Non-administrator users do not have access to the console and will
+   see their own user configuration page. OpenAM exposes end-user pages, such as
+   login, logout, federation, self-service registration, password change,
+   forgotten password reset, and user dashboards).</para>
+
+  <figure xml:id="figure-openam-user-page">
+   <title>OpenAM User Page</title>
+   <mediaobject >
+    <alt>OpenAM User Page</alt>
+    <imageobject>
+     <imagedata fileref="images/openam-user-page.png"
+               format="PNG" />
+    </imageobject>
+    <textobject>
+     <para>Non-administrator users do not have access to the Web admin console but will
+      instead view their own user configuration page.</para>
+    </textobject>
+   </mediaobject>
+  </figure>
+
+  <para>Deployers need to decide how they will protect the adminstration pages of
+   the OpenAM Console, while exposing the user pages.</para>
+
+  <!-- TODO: Update for cloud dashboard -->
+  <section xml:id="openam-cloud-dashboard">
+   <title>Dashboard Service</title>
+   <para>The Dashboard service provides the end-user with an interface to access
+    applications secured by OpenAM. The Dashboard service is meant to provide
+    end users a single place to access their applications.
+    You can add cloud-based applications like SalesForce or any application
+    protected by a policy agent.
+    </para>
+
+   <figure xml:id="figure-user-dashboard">
+    <title>OpenAM Dashboard Service</title>
+    <mediaobject>
+     <alt>OpenAM Dashboard Service</alt>
+     <imageobject>
+      <imagedata fileref="images/user-dashboard.png"
+                format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>The Dashboard Service is a widget-type interface to access
+       applications secured by OpenAM.</para>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+   <para>The Dashboard service is configured using the OpenAM Console or
+    <command>ssoadm</command> command-line tool.</para>
+
+   <para>For more information on the Dashboard service, see
+    <link xlink:href="${docSetBaseURL}/admin-guide#chap-dashboard"
+          xlink:show="new">
+     <citetitle>Configuring the Dashboard Service</citetitle></link>.
+   </para>
+
+  </section>
+
+  <section xml:id="openam-command-line-tools">
+   <title>OpenAM Command-Line Tools</title>
+   <para>OpenAM download also
+    provides several zip files for its OpenAM command-line Tools, which allow you
+    to configure scripts for silent installs or other tasks. The command-line tools
+    communicate with the OpenAM configuration over HTTP or HTTPS. </para>
+
+   <para>OpenAM provides a number of command-line tools, but three of them are
+    worthy of note: <command>ssoadm</command>, <command>agentadmin</command> and
+    the configurator jar file, ${configJarFile}.</para>
+
+   <itemizedlist>
+    <listitem>
+     <!--  TODO: Replace jar file name with variable ssoconfigZipFile -->
+     <para><command>ssoadm</command>. The <command>ssoadm</command> tool is a
+      feature-rich command-line tool for OpenAM component configuration. The tool
+      provides a superset of features compared to the OpenAM Console and is available
+      in the ${ssoadminZipFile} file, which can be obtained from the OpenAM zip
+      distribution file.
+     </para>
+    </listitem>
+    <listitem>
+     <para><command>agentadmin</command>. The <command>agentadmin</command> tool is
+      distributed as part of the Policy Agent installation and lets you manage
+      OpenAM policy agent installations. A <emphasis>policy agent</emphasis> is
+      an OpenAM component that protects access to resources and enforces single
+      sign-on capabilities. The policy agent is installed on Web and application
+      server and communicates with OpenAM through HTTP or HTTPS.</para>
+    </listitem>
+    <listitem>
+     <!--  TODO: Replace jar file name with variable ssoconfigJarFile -->
+     <para><emphasis role="bold">configurator.jar</emphasis>.
+      The Configurator file is an executable jar that lets you run a silent
+      installation of the OpenAM core server. The file is run together with a configuration
+      properties file for any custom installs.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>For more information on the full command-line tool offerings, see
+    <link xlink:href="${docSetBaseURL}/admin-guide#openam-cli-overview"
+         xlink:show="new">
+    <citetitle>OpenAM Command-Line Tools</citetitle></link>.
+   </para>
+
+  </section>
+ </section>
+
+
+
+  <section xml:id="openam-multiple-servers">
+   <title>Multiple OpenAM Server Deployment</title>
+
+   <para>You should deploy multiple OpenAM servers in production for
+    high availability purposes.
+    Multiple OpenAM servers are typically deployed behind a load balancer,
+    which spreads traffic loads and facilitates failover should a server
+    go down for any reason. The servers are configured together
+    within a <firstterm>site</firstterm>, similar to a server cluster, sharing
+    identical configuration data and location. The servers can be colocated
+    within the same geographical region or business unit, or span your entire
+    organization.
+   </para>
+
+   <figure xml:id="figure-openam-session-failover">
+    <title>OpenAM Session Failover</title>
+    <mediaobject >
+     <alt>Session Failover</alt>
+     <imageobject>
+      <imagedata fileref="images/openam-session-failover.png"
+               format="PNG"/>
+     </imageobject>
+     <textobject>
+      <para>OpenAM supports session failover should one server go down for
+       any reason, the session will pick up on the failover server.</para>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+  <section xml:id="openam-sticky-loadbalancing">
+   <title>Sticky Load Balancing</title>
+   <para>OpenAM supports <emphasis>sticky load balancing</emphasis> to ensure
+    that the load balancer properly routes requests to the OpenAM servers.
+    When the client sends an access request to a resource, the policy agent
+    forwards the request via the load balancer to one of the OpenAM servers.</para>
+
+   <para>On successful authentication, the OpenAM server that authenticated a user
+    becomes the authoritative server during that user's session with OpenAM.
+    Each authentication and authorization request related to the user's session
+    is then decided by the authorizative server as long as that server is
+    available. It is therefore important, when load balancing, to send requests
+    concerning the user to the authoritative server directly in order to avoid
+    other servers having to contact the authoritative server, thus generating the
+    additional traffic you tried to avoid by using load balancing as cross-talk
+    between OpenAM servers.</para>
+
+   <para>To direct requests directly to the authoritative OpenAM server, the load
+    balancer should use the value of the OpenAM load balancer cookie,
+    <literal>amlbcookie</literal>, which you can configure to uniquely identity
+    a server within a site.</para>
+
+   <para>The OpenAM Client SDK uses the <literal>SSOTokenID</literal> to route requests
+    to the load balancer, which inspects the sticky cookie to determine which
+    OpenAM server should receive the request.
+    This ensures that all subsequent requests
+    involving the session be routed to correct server.</para>
+
+  </section>
+ </section>
+
+ <section xml:id="openam-sdk">
+  <title>OpenAM SDK</title>
+  <para>OpenAM provides Java, C,
+   and REST application programming interfaces (APIs) to allow your Java,
+   native, or REST clients an integration path to OpenAM.
+   OpenAM also provides service provider interfaces (SPIs)
+   to extend the core services for particular deployment requirements.
+   For more information about OpenAM's SDK, Client API, and SPI offerings, see the
+   <link xlink:href="${docSetBaseURL}/dev-guide" xlink:show="new">
+    <citetitle>OpenAM Developer's Guide</citetitle></link>.</para>
+
+ </section>
+
+ <section xml:id="openam-agents">
+  <title>OpenAM Policy Agents</title>
+  <para>Policy agents are OpenAM components that are installed on Web and application
+   containers to protect the resources deployed there. Policy agents functions as
+   a type of "gatekeeper" to ensure clients are authenticated and authorized to
+   access the resource as well as enforce single sign-on (SSO) with registered
+   devices.
+  </para>
+
+  <para>OpenAM provides two main policy agents, Web Policy Agent (WPA) and J2EE
+   Policy Agent. The Web Policy Agent is a native plug-in to a Web server, distributed
+   as a zip file. Web policy agents filter requests for Web server resources without
+   any changes to the resources.
+   The J2EE Policy Agent is set up as an application filter within
+   the application server. Protected Java EE application configurations must be
+   changed to filter requests through the Java EE policy agent.</para>
+
+  <para>Both policy agents have the following features: </para>
+
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Cookie Reset</emphasis>. The Policy Agents can
+     be configured to reset any number of cookies in the session before the client
+     is redirected for authentication.
+     Make sure that the <literal>name</literal>, <literal>domain</literal>, and
+     <literal>path</literal> properties are defined.
+     This feature is typically used when the
+     policy agent is deployed together with a parallel authentication mechanism
+     and cookies need to be reset.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Disable Policy Evaluation</emphasis>.
+     Policy agents act as Policy Enforcement Points (PEPs) during the authorization
+     phase for a client application. This feature is typically used when the
+     policy agent is only used for SSO and does not require a policy evaluation
+     request be made to OpenAM.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Not-Enforced URLs/URIs List</emphasis>.
+     Policy agents protect all resources on the Web server or in a Web application
+     that it serves and grants access only if the client has been authenticated and
+     authorized to access the resources. However, there may be some resources
+     such as public HTML pages, graphics, or stylesheet files that do not require
+     policy evaluation.
+     To account for such files, the Policy Agent maintains a Not-Enforced URL list,
+     specifying the URLs or resources that are available to any user. J2EE agents
+     use a Not-Enforced URI list.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">URL Correction</emphasis>. OpenAM is aware of the
+     access management network and its registered clients. It also holds
+     a list of invalid URLs and compares them to
+     the URL the Policy Agent is attempting to access. OpenAM implements a fully
+     qualified domain name (FQDN) mapper that can be configured to correct
+     invalid URLs.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Attribute Injection into Requests</emphasis>.
+     Policy agents have the capability to inject configurable attributes into
+     cookies, requests, and HTTP headers. These attributes can be obtained from
+     user profiles.</para>
+   </listitem>
+  </itemizedlist>
+
+  <section xml:id="openam-policy-agent-types">
+   <title>Policy Agent Types</title>
+   <para>All policy agents have a profile defined on the OpenAM
+    server. OpenAM provides the following types of policy agents:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para><emphasis role="bold">Web</emphasis>. Installs on Web servers to protect
+      Web sites.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">J2EE</emphasis>. Installs on Web application
+      containers to protect Web applications.</para>
+    </listitem>
+
+    <!--  TODO: Update WSS and WSC for new STS Implementation -->
+    <listitem>
+     <para><emphasis role="bold">Web Service Provider</emphasis>. Used for
+      Web Services Security (WSS).</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Web Service Client</emphasis>. Also used for
+      WSS.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Discovery</emphasis>. Used for Liberty Discovery
+      Service.</para>
+    </listitem>
+
+    <!--  TODO: Update STS Client for new STS Implementation -->
+    <listitem>
+     <para><emphasis role="bold">STS Client</emphasis>. Used to secure requests
+      to the Security Token Service (STS).</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">OAuth 2.0 Client Agent</emphasis>. Used to
+      register OAuth 2.0 clients with the OpenAM OAuth 2.0 authorization service
+      on OpenAM.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Agent Authenticator</emphasis>. Used to obtain
+      read-only data from selected agent profiles from the same realm. Agent
+      authenticator cannot modify agent configuration like an agent profile
+      administrator.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>If you have a legacy or custom system that you want to protect but cannot
+    be supported by an existing policy agent type, you can implement the OpenIG
+    Gateway, which provides reverse-proxy functionality to enforce single sign-on
+    or protect those resources on the legacy and custom systems. See
+    <xref linkend="gateway-features" /> for more
+    information.</para>
+
+  </section>
+
+  <section xml:id="openam-web-policy-agents">
+   <title>Web Policy Agents</title>
+   <para>A Web policy agent is an installable component on the Web server and configured
+    to be called by the Web server when a client requests access to a protected
+    resource in a Web site. The Web policy agent runs authentication and
+    authorization services to allow the user access to a protected resource.</para>
+
+   <figure xml:id="figure-openam-web-policy-agent">
+    <title>OpenAM Web Policy Agent</title>
+    <mediaobject >
+     <alt>OpenAM Web Policy Agent</alt>
+     <imageobject>
+      <imagedata fileref="images/openam-web-policy-agent.png"
+                format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>The Web policy agent acts as a gatekeeper to a protected resource,
+       running authentication and authorization services by redirecting to OpenAM
+       and back.</para>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+   <para>Web Policy Agents are supported on different architectures although
+    not all Web server type and architecture combinations are supported.
+    You can view the list of
+    supported Web Policy Agents in the
+    <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements"
+          xlink:show="new">
+     <citetitle>OpenAM Release Notes</citetitle></link>. </para>
+
+   </section>
+
+   <section xml:id="j2ee-policy-agents">
+    <title>Java EE Policy Agents</title>
+    <para>The Java Platform Enterprise Edition (J2EE) policy agent is made up of a
+     servlet filter and a J2EE realm. The servlet filter manages authentication
+     and URL-based authorization to the protected application and implements
+     single sign-on (SSO).
+     The filter must be integrated into the application using the application's Web
+     deployment descriptor. The J2EE realm is configured into the security settings
+     of the application server and maps J2EE roles to OpenAM users and groups.</para>
+
+    <figure xml:id="figure-openam-j2ee-policy-agent">
+     <title>OpenAM Java EE Policy Agent</title>
+     <mediaobject>
+      <alt>OpenAM Java EE Policy Agent</alt>
+      <imageobject>
+       <imagedata fileref="images/openam-j2ee-policy-agent.png"
+                 format="PNG" />
+      </imageobject>
+      <textobject>
+       <para>The Java EE policy agent is deployed on the application server and
+        carries out authentication and authorization services.</para>
+      </textobject>
+     </mediaobject>
+    </figure>
+
+    <para>
+     OpenAM provides a variety of Java Platform Enterprise Edition (J2EE) Policy
+     Agents for application servers. You can view the list of
+     supported Java EE policy agents in the
+     <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements"
+           xlink:show="new">
+      <citetitle>OpenAM Release Notes</citetitle></link>. </para>
+
+   </section>
+  </section>
+
+
+ <section xml:id="openam-key-functions">
+  <title>OpenAM Core Services</title>
+
+  <para>OpenAM provides a wide range of services to secure access
+   to your resources. OpenAM requires that you prepare your server environment
+   with the software packages required to run OpenAM. For example, OpenAM requires
+   Java, Apache HTTP Server, a Web container like Apache Tomcat, and an OpenAM policy
+   agent, which is installed on the Apache HTTP server.</para>
+
+  <para>The OpenAM core services are contained in the ${coreWarFile}>
+   file and contains a <literal>openam.war</literal> file, which you deploy
+   within the Web container.
+   For more information on installing OpenAM and its services,
+   see <link xlink:href="${docSetBaseURL}/getting-started"
+                     xlink:show="new">
+    <citetitle>Getting Started With OpenAM</citetitle></link>.</para>
+
+
+  <para>The following sections summarize OpenAM's core services and features.</para>
+
+ </section>
+
+
+  <section xml:id="openam-services-authentication">
+   <title>Authentication Service</title>
+
+   <para>OpenAM provides a flexible and centralized authentication framework
+    to identify the client who requests access to a protected resource.
+    Authentication systems vary due to the
+    disparate system network configurations, requiring different approaches to
+    obtain and validate credentials. For example, many authentication
+    systems are interactive and ask for a username and password, while other
+    systems require non-interactive authentications mechanisms, such as passing a
+    Kerberos ticket on a Windows Desktop SSO system, or using an X.509 certificate.</para>
+
+   <para>For more information, see
+    <link xlink:href="${docSetBaseURL}/admin-guide#chap-auth-services"
+          xlink:show="new"><citetitle>Defining Authentication Services</citetitle>.
+    </link></para>
+
+   <section xml:id="openam-authentication-modules">
+    <title>Authentication Modules</title>
+    <para>
+     OpenAM uses <emphasis>authentication modules</emphasis> to support the
+     many types of authentication systems in production.
+     OpenAM provides out-of-the-box authentication modules plus
+     customization options to account for the different systems used in production.
+     You can configure the modules in such a way so that OpenAM can request
+     different credentials from different clients within the same instance.
+     Each module maintains its own XML file that defines the callbacks required to
+     accomplish the authentication.</para>
+
+    <para>
+     For example, OpenAM provides an LDAP Authentication Module that requires
+     the client to submit an attribute value that OpenAM uses to look up the DN
+     (by default, <literal>uid</literal> or <literal>cn</literal> for Active Directory)
+     for authentication against an LDAP data store. If the credentials match those
+     in the LDAP directory, the client is authenticated and a session token
+     called <literal>SSOToken</literal> is created.
+     </para>
+
+   <para>
+    OpenAM provides the following authentication modules, which can be applied
+    globally or per realm:</para>
+
+   <itemizedlist>
+    <listitem><para><emphasis role="bold">Active Directory</emphasis> - Supports
+     user authentication for Microsoft Active Directory over LDAP.</para></listitem>
+
+    <listitem><para><emphasis role="bold">Anonymous</emphasis> - Supports the
+     management of anonymous users who can access portions of a Web site or
+     application without login credentials.</para> </listitem>
+    <listitem><para><emphasis role="bold">Certificate Authentication</emphasis>
+     - Supports X.509 certificates.</para></listitem>
+    <listitem><para><emphasis role="bold">Data Store</emphasis> - Supports login
+     using a realm's User data store to authenticate users.</para></listitem>
+
+    <listitem><para><emphasis role="bold">Federation</emphasis> - Supports SAML,
+     SAMLv2, ID-FF, and WS-Federation protocols.</para></listitem>
+    <listitem><para><emphasis role="bold">HMAC One-Time Password (HOTP)</emphasis>
+     - Supports one-time passwords by looking up the
+     user's mail address or telephone number in the user's profile.
+     This module is used together with the Data Store module.</para></listitem>
+    <listitem><para><emphasis role="bold">HTTP Basic</emphasis> - Supports
+     HTTP Basic authentication (user name and password).</para></listitem>
+    <listitem><para><emphasis role="bold">JDBC</emphasis> - Supports MySQL or
+     Oracle to authenticate users.</para></listitem>
+    <listitem><para><emphasis role="bold">LDAP</emphasis> - Supports the
+     Lightweight Directory Access Protocol (LDAP) protocol, including
+     Samba 4 LDAP response codes.</para></listitem>
+
+    <!-- TODO: Remove this when XUI + REST gets done -->
+    <listitem><para><emphasis role="bold">Membership</emphasis> - Supports
+     self-registration for new users.</para></listitem>
+
+    <listitem><para><emphasis role="bold">Mobile Station Integrated Services
+     Digital Network (MSISDN)</emphasis> - Supports
+     non-interactive authentication using mobile subscriber ISDNs.</para></listitem>
+
+    <listitem><para><emphasis role="bold">Open Authentication (OATH)</emphasis> -
+     Supports HMAC-based One-Time Passwords (OTPs) and Time-based One-Time
+     Password (TOTPs). This module also allows OpenAM to support YubiKey authentication.
+     The YubiKey is inserted into a USB port on any computer, from which an OTP is
+     generated and entered by pressing a YubiKey button. The advantage of this
+     system is that no client drivers or software is required for authentication.
+     The module allows the sharing of keys and counters. Also, the minimum password
+     length is configurable.</para></listitem>
+
+    <listitem><para><emphasis role="bold">OAuth 2.0</emphasis> - Supports the
+     client authentication for OAuth 2.0 identity providers, such as Google, Facebook,
+     MSN, and others. OpenAM also supports the WebFinger, JWT and other
+     related and emerging standards. OpenAM can be configured to act as an OAuth 2.0
+     client and resource server in addition to an authorization server.
+     OpenAm also supports the OpenID Connect 1.0 protocol, which is a layer on
+     top of the OAuth 2.0 protocol.
+     OpenAM can verify claims about the identity of the user, obtain profile
+     information, and manage user sessions. OpenAM acts as the OpenID Provider.</para></listitem>
+
+    <listitem><para><emphasis role="bold">Remote Authentication Dial-In User
+     Service (RADIUS)</emphasis> - Supports user
+     authentication against RADIUS servers. </para></listitem>
+    <listitem><para><emphasis role="bold">Secure Attribute Exchange (SAE)</emphasis>
+     - Similar to the Federation
+     authentication module, it allows you to use a SAML 2.0 provider as a gateway
+     to a legacy application.</para></listitem>
+    <listitem><para><emphasis role="bold">SecurID</emphasis> - Supports RSA
+     Authentication Manager and RSA SecurID
+     authenticators.</para></listitem>
+    <listitem><para><emphasis role="bold">Windows Desktop SSO</emphasis> - Supports
+     Kerberos Single Sign-On using the
+     Simple and Protected GSS-API negotiation mechanism (SPNEGO).</para></listitem>
+    <listitem><para><emphasis role="bold">Windows NT</emphasis> - Supports authentication
+     against a Windows NT server.</para></listitem>
+    <listitem><para><emphasis role="bold">Web Service Security (WSSAuth)</emphasis> -
+     Supports validation of a username with an authentication token, obtained
+     from the service request from the client to the service provider.</para></listitem>
+    <listitem><para><emphasis role="bold">Custom</emphasis> -
+     If the out-of-the-box authentication modules do not meet your requirements,
+     you can create custom authentication modules using the OpenAM SDK.</para></listitem>
+   </itemizedlist>
+
+
+   <para>Three module are helper modules that do not authenticate the end user along,
+    but must be used with other modules for
+    added functionality:
+   </para>
+
+   <itemizedlist>
+    <listitem><para><emphasis role="bold">Adaptive Authentication</emphasis> - Supports
+     the use of adaptive risk scores and threshold levels to determine if further
+     authentication is required.</para></listitem>
+    <listitem><para><emphasis role="bold">Device Print</emphasis> - Supports a
+     device fingerprinter that collects client device information, such as screen
+     resolution, installed fonts, timezone, and geolocation of the installed device.
+     This module is similar to the HOTP module but must be used with another
+     authentication module to validate usernames.</para></listitem>
+    <listitem><para><emphasis role="bold" >Persistent Cookie</emphasis> - Supports
+     the configuration of cookie lifetimes, idle timeout, and the option to enforce
+     that persistent cookies can only be used with the same client IP from which
+     the cookie was created. This module does not interact with
+     persistent cookie options with the Core Authentication module and is typically
+     the second module in a chain.</para></listitem>
+   </itemizedlist>
+
+   <para>For more information on authentication modules, see
+    <link xlink:href="${docSetBaseURL}/admin-guide#configure-authn-modules"
+          xlink:show="new">
+     <citetitle>Configuring Authentication Modules</citetitle></link>.</para>
+
+   </section>
+
+   <section xml:id="openam-authentication-chains">
+    <title>Authentication Chains</title>
+    <para>Each module accounts for one type of authentication method
+     to validate the user or client application.
+     OpenAM groups the authentication module instances
+     into <emphasis>chains</emphasis>, an abstraction layer that controls the
+     flow and order of each module. Modules cannot be directly
+     called due to security restrictions but can only be configured using chains.
+    </para>
+
+    <figure xml:id="figure-openam-authentication-chains">
+     <title>OpenAM Authentication Chains</title>
+     <mediaobject>
+      <alt>OpenAM Authentication Chains</alt>
+      <imageobject>
+       <imagedata fileref="images/openam-authentication-chains.png"
+                 format="PNG" />
+      </imageobject>
+      <textobject>
+       <para>An authentication chain is an abstraction layer that controls the
+        flow and execution of its configured authentication modules.</para>
+      </textobject>
+     </mediaobject>
+    </figure>
+
+    <para>Chains put authentication modules in sequence.
+     Each chain can be configured with <emphasis>chain criteria</emphasis>, which
+     uses semantic flags (required, optional,
+     requisite, and sufficient) to control the processing flow of the modules.
+     For detailed information on chain criteria, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#what-is-authn"
+           xlink:show="new"><citetitle>About Authentication in OpenAM</citetitle></link>.</para>
+
+    <para>
+     When a module succeeds authentication, OpenAM may access
+     the next module, return control to the application or fail the process
+     completely, depending on how the chain criteria are configured.</para>
+
+    <para>Each realm defines its own default authentication
+     chain, which can be overridden if configured.
+     You configure authentication chains on the OpenAM Console or
+     the <command>ssoadm</command> command-line tool.
+     The following options are available:</para>
+
+     <itemizedlist>
+      <listitem>
+       <para><emphasis role="bold">Share Credentials</emphasis>. You can configure
+        the chain to share credentials among the modules in the chain. This option
+        is convenient if the user has successfully authenticated to the first module
+        in the chain. The user's credentials are shared with the rest of the modules
+        in the chain so that credentials do not need to be requested multiple
+        times. </para>
+      </listitem>
+      <listitem>
+       <para><emphasis role="bold">Configure the default chain for users</emphasis>.
+        You can set the default chain for the Organization Authentication
+        Configuration when users access <literal>/openam/UI/Login</literal>.</para>
+      </listitem>
+      <listitem>
+       <para><emphasis role="bold">Configure the default chain for administrators</emphasis>.
+        You can set the default chain
+        for the Administrator Authentication Configuration when administrators
+        access <literal>/openam/console</literal>. Be careful with this configuration
+        as you can lock yourself out as administrator. Note also that, by default,
+        <literal>amadmin</literal> can log in at <literal>/openam/UI/Login</literal>.
+        This is also configurable.</para>
+      </listitem>
+     </itemizedlist>
+
+    <para>For more information on configuring authentication chains, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#configure-authn-chains"
+           xlink:show="new">
+      <citetitle>Configuring Authentication Chains</citetitle></link>.</para>
+
+   </section>
+
+   <section xml:id="openam-post-auth-plugins">
+    <title>Post Authentication Plugins</title>
+    <para>At the end of OpenAM's authentication process and before the user is
+     authorized, OpenAM includes custom post-authentication plug-ins to extend
+     the default functionality of a module, regardless whether authentication succeeded
+     or failed.</para>
+
+    <para>The Post Authentication Plugins are called at the end of the authentication
+     process and again at Logout if the authentication was successful.
+     The plug-in has access to the session token object, the client request, and
+     response objects. When the module runs an operation, the result will be
+     written to the cookie, from which the plug-in can retrieve.</para>
+
+    <para>Typical applications of the Post Authentication plug-ins include setting
+     cookies, prefetching data, and inserting it in the user's session.
+     Note that multiple plug-ins can be configured on a realm or on an authentication
+     chain. While each module is executed in isolation, the plug-ins are executed
+     synchronously as part of each module's process, add a bit more time to the
+     authentication process.</para>
+
+    <para>OpenAM provides the following plug-ins in the standard distribution, which
+     can be used as a model for your custom plug-ins:</para>
+
+    <itemizedlist>
+     <listitem>
+      <para><emphasis role="bold">Adaptive Authentication Plugin</emphasis>. Saves
+       cookies and profile attributes after a successful authentication using the
+       Adaptive Authentication module.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">OAuth2 Post Authentication Plugin</emphasis>.
+       Builds a global logout URL at <literal>/oauth2c/OAuthLogout.jsp</literal>
+       after a successful authentication using the OAuth 2.0 client authentication module.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Account Expiration Post Authentication Plugin</emphasis>.
+       Sets an account expiration date after a successful authentication. This plug-in
+       prevents expired accounts to authenticate.</para>
+     </listitem>
+    </itemizedlist>
+
+    <para>For more information, see
+     <link xlink:href="${docSetBaseURL}/dev-guide#chap-post-auth"
+           xlink:show="new"><citetitle>Creating a Post Authentication Plugin</citetitle></link>.</para>
+   </section>
+
+   <section xml:id="openam-adaptive-risk">
+    <title>Adaptive Authentication</title>
+    <para>The Adaptive Authentication Module is powerful feature that implements
+     adaptive risk authentication, providing companies a way to set up two-factor
+     authentication.
+     The module itself does
+     not authenticate users but, when deployed within an authentication chain, it
+     checks each attempted login for specific data points,
+     such as IP address, IP range, IP history, cookie values, last login,
+     login time of day, geolocation (country). and request header.
+     Each data point has a pre-assigned risk score.</para>
+
+    <para>Next, the Adaptive Authentication module calculates the combined
+     total of the risk scores and determines if the total exceeds a pre-defined
+     risk threshold.
+     If risk total exceeds the threshold, the module triggers another
+     authentication module, such as the HOTP module, which issues a one-time password
+     or SMS text via mobile.</para>
+
+    <para>For example, the OpenAM administrator at an online banking company
+     configures an authentication chain that includes the LDAP, Adaptive
+     Authentication, and HOTP Authentication modules with the respective criteria
+     of <literal>required</literal>, <literal>sufficient</literal>, and
+     <literal>required</literal> using the
+     OpenAM Console.
+     The administrator sets up risk scores fo the IP address, IP range, IP history,
+     last login, login time of day, and geolocation.
+    </para>
+
+    <para>If a hacker with a stolen username and password attempts to
+     log in to the application at a different device from a different IP address
+     and country, the Adaptive Authentication Module evaluates the attempted login,
+     and calculates the total risk score. If the risk threshold is exceeded, then
+     the HOTP authentication module is run, requiring the user to log in again
+     with a one-time password.</para>
+
+    <figure xml:id="figure-openam-adaptive-risk-authentication">
+     <title>Adaptive Risk Authentication</title>
+     <mediaobject xml:id="figure-openam-adaptive-risk">
+      <alt>Adaptive Risk Authentication</alt>
+      <imageobject>
+       <imagedata fileref="images/openam-adaptive-risk-authentication.png"
+                 format="PNG" />
+       </imageobject>
+      <textobject>
+       <para>Adaptive risk authentication assesses and calculates the risk scores
+        of certain authentication parameters and determines if the client should
+        authenticate to another module when the risk threshold has been exceeded.</para>
+      </textobject>
+     </mediaobject>
+    </figure>
+
+    <para>For more information, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#what-is-authn"
+           xlink:show="new"><citetitle>About Authentication in OpenAM</citetitle></link>.</para>
+
+   </section>
+
+   <section xml:id="core-authentication-settings">
+    <title>Core Authentication Settings</title>
+   <para>OpenAM
+    provides some key functionality configuration settings for authentication.
+    You can view these settings on the Authentication tab of the OpenAM Console.</para>
+
+   <itemizedlist>
+    <listitem><para><emphasis role="bold">User Profile</emphasis>.
+     OpenAM supports three options on how the authentication modules implement user
+     profiles in the User data store.</para>
+     <itemizedlist>
+      <listitem>
+       <para><emphasis role="bold">ignored</emphasis>. Ignore user profiles by the
+        authentication modules. The User data store effectively becomes
+        a Credentials data store only.</para>
+      </listitem>
+      <listitem>
+       <para><emphasis role="bold">required</emphasis>. Require user profiles so
+        that the user profiles must be available in the User data store.
+       </para>
+      </listitem>
+      <listitem>
+       <para><emphasis role="bold">dynamic</emphasis>. Create the user profile
+        if it is missing in the User data store.</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+    <listitem><para><emphasis role="bold">Persistent Login</emphasis>.
+     Supports the use of a permanent cookie,
+     allowing users to return to the Web site after restarting the browser.
+     <link xlink:href="${docSetBaseURL}/admin-guide#persistent-cookie"
+           xlink:show="new"><citetitle>Hints for the Persistent Cookie Module</citetitle></link>.</para>
+    </listitem>
+    <listitem><para><emphasis role="bold">Account Lockout</emphasis>.
+     Supports account lockout, where the user is
+     no longer able to log in after a configured number of failed authentication
+     attempts.
+     Account lockout can be configured to temporarily lock out after a specific
+     time, or deactivated where the user must contact the administrator for
+     assistance. For more information, see
+      <link xlink:href="${docSetBaseURL}/admin-guide#configure-account-lockout"
+            xlink:show="new"><citetitle>Configuring Account Lockout</citetitle></link>.</para>
+    </listitem>
+    <listitem><para><emphasis role="bold">Security Controls</emphasis>.
+     Allows you to disable modules and the URL redirection list.</para></listitem>
+    <listitem><para><emphasis role="bold">Session Attribute Mapping</emphasis>.
+     Allows you to automatically map user
+     profile attributes into the user's OpenAM session.</para></listitem>
+   </itemizedlist>
+
+   </section>
+
+   <section xml:id="openam-distributed-authentication">
+    <title>Distributed Authentication Service</title>
+   <para>OpenAM provides a distributed authentication service (DAS) that forwards user
+    login authentication requests through a single firewall or a network
+    demilitarized zone (DMZ) to the OpenAM core server. The DAS uses the OpenAM
+    Client SDK JAX-RPC interfaces to effectively limit the OpenAM core server's
+    exposure to the Internet.</para>
+
+    <figure xml:id="figure-openam-das">
+     <title>OpenAM Distributed Authentication Service</title>
+     <mediaobject>
+      <alt>OpenAM Distributed Authentication Service</alt>
+      <imageobject>
+       <imagedata fileref="images/openam-das.png"
+                 format="PNG" />
+      </imageobject>
+      <textobject>
+       <para>The Distributed Authentication Service (DAS) is a login authentication
+        interface that sends its requests through a network demilitarized zone (DMZ)
+        to the OpenAM server.</para>
+      </textobject>
+     </mediaobject>
+    </figure>
+
+    <para>DAS does not support federation directly. However, you can use a
+     reverse proxy in front of the OpenAM to work with federation.</para>
+
+    <para>For more information, see
+     <link xlink:href="${docSetBaseURL}/install-guide#chap-install-das"
+           xlink:show="new"><citetitle>Installing OpenAM Distributed Authentication</citetitle></link>.
+    </para>
+
+   </section>
+
+   <section xml:id="openam-overview-sdk">
+    <title>OpenAM SDK</title>
+    <para>OpenAM provides Java, C,
+     SOAP, Direct XML, and REST APIs to allow applications to request
+     authentication services programmatically.
+     Service Provider Interfaces (SPIs) are available to extend the authentication
+     service to meet the needs of your deployment.</para>
+
+    <para>For more information, see
+     <link xlink:href="${docSetBaseURL}/dev-guide#chap-authentication"
+           xlink:show="new"><citetitle>Authenticating Using OpenAM Java SDK</citetitle></link>.</para>
+
+   </section>
+ </section>
+
+  <section xml:id="openam-services-authorization">
+   <title>Authorization Service</title>
+
+   <para>OpenAM provides a powerful centralized authorization framework based upon
+    access control through <emphasis>policies</emphasis>.
+    Policies are authorization rules that determine
+    if a user or group has permission to access a resource.
+    This functionality allows OpenAM to separate policies from applications and
+    resources.</para>
+
+   <para>OpenAM interacts with policy agents for authentication and authorization
+    services.
+    An administrator installs a policy agent on a Web application to send policy
+    evaluation requests to OpenAM. OpenAM evaluates the request and returns a decision
+    allowing or denying the client access to the resource. One advantage to
+    this implementation is that if the policy changes in the future,
+    only the policy definition in OpenAM needs to be modified; re-deploying a
+    new version of the application is unnecessary.
+    Another advantage is that application developers are not entrusted to
+    implement policy. Instead of error prone, programmatic policy code in every
+    application, you get declarative policy in OpenAM.</para>
+
+   <para>The policy agent functions as authorization policy
+    enforcement point (PEP) to determine if the client has permissions to
+    access a resource. OpenAM functions as a Policy Decision Point (PDP), evaluating
+    policy requests and returning the policy decision.</para>
+
+   <para>A policy decision can be one of three types:</para>
+    <itemizedlist>
+     <listitem>
+      <para><emphasis role="bold">ALLOW</emphasis> - The client has permission
+       to access the resource.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">DENY</emphasis> - The client does not have
+       permission to access the resource.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">DENY WITH ADVICE</emphasis> - The client does
+       not pass a policy condition but may be able to do so after taking some
+       recommended action, such as authenticating at a higher level.</para>
+     </listitem>
+    </itemizedlist>
+
+   <para>OpenAM also supports the ability to set the policy agent in SSO-only mode and
+    disable Policy Evaluation. Other configuration settings allow you to exclude
+    content from policy evaluation for specific URLs, where wildcards are allowed
+    in the FQDN and path to filter those URLs that match it. Certain IP addresses
+    can be excluded from policy evaluation.</para>
+
+   <section xml:id="openam-entitlements">
+    <title>Entitlements</title>
+    <para>Underlying the OpenAM Authorization Framework is an Entitlements engine
+     that runs policy evaluation.
+     The Entitlement engine uses eXtensible Access Control Markup Language (XACML)
+     to define which applications has access to which resources and under
+     what conditions.
+     XACML is an industry standard access control policy language. It
+     allows OpenAM to support legacy systems that use Role-Based Access Control
+     RBAC or Attribute-Based Access Control (ABAC) systems.
+     </para>
+
+    <para>Entitlements can be accessed through the RESTful Web interface.</para>
+
+    <!-- TODO: Entitlements Editor -->
+    <para>Currently, policies are created in the OpenAM Console or using the
+     <command>ssoadm</command> command-line tool and can be exported as XACML.
+     The <command>ssoadm</command> tool can also import a XACML file, but the
+     OpenAM Console cannot currently display any XACML.</para>
+
+    <!--figure xml:id="figure-openam-entitlements-editor">
+     <title>OpenAM Entitlements Editor</title>
+     <mediaobject>
+      <alt>OpenAM Entitlements Editor</alt>
+      <imageobject>
+       <imagedata fileref="images/openam-entitilements-editor.png"
+                  format="PNG" />
+      </imageobject>
+     </mediaobject>
+    </figure-->
+
+    <!-- TODO: Check on the Release of the Policy Editor -->
+    <!--para>Currently, ForgeRock is working on a Policy Editor, which will allow
+     developers to create and modify XACML policies.</para-->
+
+   </section>
+
+   <section xml:id="openam-policy-types">
+    <title>Policy Types</title>
+    <para>OpenAM supports the policy administration delegation, providing two
+     types of policies that you can use in your deployments: policy and referral.</para>
+     <itemizedlist>
+      <listitem>
+       <para><emphasis role="bold">Policy</emphasis>. A policy specifies the normal
+        rules definitions that grant clients access to a resource.</para>
+      </listitem>
+      <listitem>
+       <para><emphasis role="bold">Referral</emphasis>. A referral enables delegation
+        of policy definitions and decisions to peer realms or sub realms.
+        Referral policies are stored at the
+        root or top-level realm, where evaluation requests begin.
+        OpenAM also supports <emphasis>custom referrals</emphasis>, which specify
+        how internal policy evaluation is processed and how policy administration
+        delegation occurs.</para>
+      </listitem>
+     </itemizedlist>
+
+   </section>
+
+   <section xml:id="openam-policy-components">
+    <title>Policy Components</title>
+    <para>OpenAM policies are made up of five main components that must be configured:</para>
+    <itemizedlist>
+     <listitem>
+      <para><emphasis role="bold">Subjects</emphasis>. Subjects refers to the
+       users, groups, and organization to whom the policy applies.</para>
+     </listitem>
+    </itemizedlist>
+    <itemizedlist>
+     <listitem>
+      <para><emphasis role="bold">Rules</emphasis>. A rule defines the actions
+       and permissions the client can take on a resource. Rules are made up of
+       three properties: resource, actions, and associated action values.
+       <emphasis>Resource</emphasis> refers to the target application that the
+       client wishes to access.
+       <emphasis>Actions</emphasis> refer to what type of things the client can
+       do with the resource. For example, HTTP GET and POST.
+       <emphasis>Associate action values</emphasis> refer to the
+       permission for an action, which is <literal>ALLOW</literal> or
+       <literal>DENY</literal>, or <literal>DENY WITH ADVICE</literal>.
+       A policy can have any number of rules as long as they are unique within
+       the policy.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Service Types</emphasis>. Service types are the
+       type of resources to which the policy applies.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Condition</emphasis>. Conditions are the constraints
+       specified in a rule. An authenticated user in a realm must meet the conditions
+       in a rule for the policy to be applicable. If the condition is not met,
+       OpenAM may send a <emphasis>Policy Advice</emphasis> to the policy agent
+       indicating that some type of corrective action may be required, such as
+       the client authenticating at a higher trust level. A list of conditions is
+       presented in a later section.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Response Providers</emphasis>. Response providers
+       are plug-ins that populate a policy response with additional information,
+       such as the reason access was denied or information regarding additional
+       policy enforcement. OpenAM sends the response back to the policy agent who
+       then passes the information to the application through HTTP headers or
+       cookies.</para>
+     </listitem>
+    </itemizedlist>
+
+   </section>
+
+   <section xml:id="openam-policy-service-types">
+    <title>Policy Service Types</title>
+    <para>OpenAM protects three types of service resources with a policy.</para>
+
+   <itemizedlist>
+    <listitem>
+     <para><emphasis role="bold">Discovery Service</emphasis>. Used in Federation,
+      the Discovery Service locates the Web service providing the data
+      needed to complete an operation. The policy protects what clients can query
+      and modify.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Liberty Personal Profile Service</emphasis>. Used
+      in Federation, the Liberty Personal Profile Service provides an
+      identity's basic profile information. The policy protects what clients can query
+      and modify.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">URL Policy Agent</emphasis>. Used on a specific
+      Web site or Web application, the URL Policy Agent protects what URLs the
+      client can access using HTTP GET and POST operations.</para>
+    </listitem>
+
+    <!-- TODO: Add the CREST Policy Agent -->
+    <listitem>
+     <para><emphasis role="bold">Custom Service Types</emphasis>. OpenAM allows the
+      creation of custom service types that can be defined in an XML file. The
+      XML file holds the valid actions and their possible decisions. Service types
+      also use a <emphasis>Resource Comparator</emphasis>, which determines if the
+      targeted resource matches the resource defined in the policy rule.
+      If your custom service type is not
+      a Web URL, then you will need to create a custom resource comparator.</para>
+    </listitem>
+   </itemizedlist>
+  </section>
+
+  <section xml:id="openam-policy-conditions">
+   <title>Policy Conditions</title>
+   <para>OpenAM allows you to add the following conditions to a policy. Conditions
+    are constraints that must be passed for a policy rule to apply.</para>
+
+   <itemizedlist>
+    <listitem>
+     <para><emphasis role="bold">Active Session Time</emphasis>. Sets a condition
+      based on how long the user's session has been active. If the session is
+      considered "too old", the session can be terminated so that the user must
+      re-authenticate.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Authentication by Module Chain</emphasis>. Sets a condition
+      based on the realm to which the user authenticated and the chain.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Authentication by Module Instance</emphasis>.
+      Sets a condition
+      based on the realm to which the user authenticated and the module.
+      </para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Authentication Level (greater than or equal to)</emphasis>.
+      Sets a condition based on the realm to which the user authenticated and the
+      minimum acceptable authentication level.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Authentication Level (less than or equal to)</emphasis>.
+      Sets a condition based on the realm to which the user authenticated and the
+      maximum acceptable authentication level.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Authentication to a Realm</emphasis>.
+      Sets a condition based on the realm to which the user authenticated.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Current Session Properties</emphasis>.
+      Sets a condition based on the attributes set in the user's session.
+     </para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Identity Membership</emphasis>. Sets a condition
+      based on the authenticated subject and their membership to a group.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">IP Address/DNS Name</emphasis>. Sets a condition
+      based on specific IP address ranges (IPv4 or IPv6) or coming from a DNS domain.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">LDAP Filter Condition</emphasis>. Sets a condition
+      based on if the user profile matches an LDAP search filter in the directory
+      configured for the policy service.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">OAuth 2.0 Scopes</emphasis>. Sets a condition based
+      whether the specified OAuth 2.0 scopes are present.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Resource/Environment/IP Address</emphasis>. Sets
+      a condition based on whether the user is making a request from the localhost,
+      authenticated with the LDAP module, etc. IPv4 and IPv6 are supported.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Time (day, date, time, and timezone)</emphasis>.
+      Sets a condition based upon when the policy is evaluated.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>For more information, see
+    <link xlink:href="${docSetBaseURL}/admin-guide#chap-authz-policy"
+          xlink:show="new"><citetitle>Defining Authorization Policies</citetitle></link>.</para>
+  </section>
+ </section>
+
+ <section xml:id="openam-sessions">
+  <title>Session Service</title>
+  <para>OpenAM provides an extensive Session Service framework, capable of
+   managing a client's interactions across the Web applications,
+   domains, and containers participating in the network.</para>
+
+  <para>When a client's identity is validated, OpenAM creates a session in the form
+   of a token object called <literal>SSOToken</literal>. The token stores information about
+   the user's identity, authentication information,
+   maximum lifetime,  and idle timeout settings.
+   OpenAM creates a unique token identifier, <literal>SSOTokenID</literal> to identify
+   the <literal>SSOToken</literal> object and is stored
+   in the Policy Agent as a cookie labelled <literal>iPlanetDirectoryPro</literal>
+   by default. Cookies are configurable.
+  </para>
+
+  <para>The Session Service manages a number of operations: it tracks how long
+   the user has been logged in, enforces timeout limits, generates life cycle
+   event notifications, enables failover between OpenAM servers,
+   enables single sign-on (SSO).
+   The Session Service also enforces
+   timeout limits, implements session termination, and notifies all registered
+   devices of session state changes. Note that OpenAM manages its own session and
+   does not implement J2EE's HTTP session.</para>
+
+ <section xml:id="openam-session-key-features">
+  <title>Session Service Key Features</title>
+
+  <para>OpenAM's Session Service offers the following key features:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Session Failover</emphasis>. Supports
+     session failover from one OpenAM instance to another OpenAM instance within
+     a site. See the next section on <xref linkend="openam-sfo" />.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Session Timeouts</emphasis>. Supports
+     configurable Session timeouts on a global, per realm or per user basis.
+     Timeouts determine the enforced idle and timeout limits for the configuration.
+     By default, OpenAM sets the idle timeout, the inactivity time after
+     which the session gets deactivated, to 30 minutes.
+     The default maximum timeout is set to 120 minutes,
+     indicating that the session will be deactived after 120 minutes even if still
+     active.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Session Caching</emphasis>. Supports
+     configurable session caching to decrease the <literal>SSOTokenID</literal>
+     validation traffic occurring between OpenAM and policy enforcement points,
+     such as policy agents.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Session Notifications</emphasis>. Supports
+     notifications of session events, such as timeouts or session terminations.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Session Quotas</emphasis>. Supports configurable
+     session quotas to determine the maximum number of active sessions per user.
+     This configuration can be set on a global, realm or per user basis. When
+     a quota has been reached, four possible actions take place: 1) the oldest session
+     is destroyed, 2) the next expiring session is destroyed, 3) all previous
+     sessions are destroyed, 4) deny login. For more information, see
+      <link xlink:href="${docSetBaseURL}/admin-guide#configure-session-quotas"
+            xlink:show="new"><citetitle>Configuring Session Quotas</citetitle></link>.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Session Upgrades</emphasis>. Supports automated
+     session upgrades when the client authenticates at a higher level. When a
+     client requests access to a resource set at a higher authentication level, the client
+     may need to re-authenticate at this new level. When the authentication is
+     successful, the session is upgraded and the client may have access to the
+     new resource if authorized.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">REST Support</emphasis>. Supports session REST
+     endpoints for token validity and session attribute queries.</para>
+   </listitem>
+  </itemizedlist>
+ </section>
+
+ <section xml:id="openam-sfo">
+  <title>Session Failover</title>
+  <para>In a multiple OpenAM server deployment, if a server in the site goes down
+   due to server failure or maintenance, a request will properly fail over to
+   another server in the site. However, the existing client's session will be
+   terminated, and the client must re-authenticate. This could be disruptive
+   to the user's experience.</para>
+
+  <para>To ensure session continuity, session failover (SFO)
+   should configured on the OpenAM servers.
+   With session failover, sessions are persisted in the configuration datastore
+   and replicated across OpenAM servers.
+   If the authoritative server goes down, the session is retrieved from the
+   secondary server without any disruption to the client.</para>
+
+  <para>Deployers should note that SFO can possibly reduce performance and
+   increase network complexity if configured. Also, SFO can be a problem in
+   very high throughput or geographically dispersed deployments.</para>
+  </section>
+ </section>
+
+ <section xml:id="openam-services-federation">
+   <title>Federation Service</title>
+   <para>OpenAM supports <emphasis>Federation</emphasis>,
+    the process of linking separate partners across access management products based on
+    a trust relationship between the Service Provider and Identity Provider.
+    Federation unifies a group of self-governing organizations who have agreed
+    to trust each other and share securit information across organizational
+    boundaries.
+    Federation enables features like Single Sign-on and Single Logout between
+    partners and allows basic identity data sharing (as permitted by policies),
+    sharing of services, providing access grants to trusted third parties, and
+    carrying out actions on behalf of the user. </para>
+
+   <section xml:id="openam-federation-protocols">
+    <title>OpenAM Supported Federation Protocols</title>
+    <para>OpenAM supports the following federation protocols:</para>
+
+    <itemizedlist>
+     <listitem>
+      <para><emphasis role="bold">SAML 2.0</emphasis>. Security Assertion Markup Language 2.0
+       (SAML 2.0) is an XML-based protocol for exchanging authentication and
+       authorization  data through the use of security tokens. The security tokens
+       contain assertions, information about a subject, and passed between an
+       Identity Provider and a Service Provider. SAML2 is often used in Web browser
+       SSO and identity data sharing. OpenAM also provides support for SAML 1.0 and
+       SAML 1.1.
+      </para>
+     </listitem>
+     <listitem>
+      <!--  TODO: Rework this part -->
+      <para><emphasis role="bold">WS-Federation</emphasis>. WS-Federation is another protocol,
+       similar to SAML 2.0 but incompatible to it.
+       WS-Federation is part of the Web Services Security framework.
+       ForgeRock prefers SAML 2.0, but supports those deployments that implement
+       WS-Federation.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">OAuth 2.0</emphasis>.
+       OAuth 2.0 is a popular lightweight REST-based authorization protocol
+       communicated over HTTPS and specifies four types of grant types: authorization code for
+       applications running on a Web browser, implicit grant for browser-based or mobile
+       applications, password grant for username and password exchange for an access token,
+       and client credentials grant for application access.  OpenAM supports
+       OAuth 2.0 for companies that want to their users
+       to connect to their site by having them authenticate using an existing
+       Identity Provider, such as Google, Facebook, Twitter, and others with a
+       service provider.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">OpenID Connect</emphasis>.
+       OAuth 2.0 is an authorization protocol,
+       but has been used in many implementations to assert identities, which
+       is not part of the protocol. As a result, OpenID Connect was developed
+       as a layer on top of the OAuth 2.0 protocol to verify a user's identity based
+       on authentication provided by an authorization server.
+       OpenID Connect can also be used for identity delegation, allowing a third
+       party to access a resource on behalf of the user.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Liberty Alliance ID-FF 1.2</emphasis>. OpenAM provides support for
+       Liberty Alliance ID-FF protocol, which was an initial extension of SAML 1.0 and
+       SAML 1.1. OpenAM supports ID-FF specifications for federated single sign-on,
+       auto-federation, bulk federation, notifications of the principal's defederation.</para>
+     </listitem>
+    </itemizedlist>
+   </section>
+
+   <section xml:id="openam-idp-sp">
+    <title>Identity Providers and Service Providers</title>
+   <para>
+    OpenAM's Federation service can be configured as an Identity Provider and
+    a Service Provider. As an Identity Provider, OpenAM can be configured as a
+    multi-protocol hub, leveraging its protocol support, to provide SSO or
+    data sharing among the systems that make up a circle of trust (CoT).</para>
+
+   <!-- TODO: Clarify what the SAML 2.0 Idapter Plugin does -->
+   <!--para>OpenAM provides a SAML 2.0 Idp Adapter plug-in
+    to execute code and interact with the user before releasing the SAML2 assertion.
+    OpenAM's flexible architecture allows it to function as either a service provider
+    AND an identity provider. In some deployments, it is possible to have OpenAM
+    function as an Identity Provider for some entities in the same instance as it
+    functions as a Service Provider for other entities.
+   </para-->
+
+   <para>Federation is configured on the OpenAM OpenAM Console or using
+    the <command>ssoadm</command> command-line tool.
+    For more information, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#chap-federation"
+           xlink:show="new"><citetitle>Managing SAML 2.0 Federation</citetitle></link>.</para>
+   </section>
+
+   <section xml:id="openam-fedlet">
+    <title>OpenAM Fedlet</title>
+   <para>OpenAM provides a <emphasis>Fedlet</emphasis>,
+    a small SAML 2.0 application that an Identity Provider provides to its Service
+    Providers, enabling Service Providers to quickly add SAML 2.0 support to their
+    Java or .NET applications.
+    Fedlets are used when the Service Provider does not have a SAML2 infrastructure
+    and yet requires inclusion within a circle of trust network.
+   </para>
+
+    <figure xml:id="figure-openam-fedlet">
+     <title>OpenAM Fedlet</title>
+     <mediaobject>
+      <alt>OpenAM Fedlet</alt>
+      <imageobject>
+       <imagedata fileref="images/openam-fedlet.png"
+                 format="PNG" />
+      </imageobject>
+      <textobject>
+       <para>A Fedlet is a small SAML 2.0 application, deployed on the service
+        provider container to support SAML 2.0 features for Java
+        or .NET applications.
+        The service provider can interact with an Identity Provider, a part of its
+        circle of trust, without deploying a full-blown SAML 2.0 system.</para>
+      </textobject>
+     </mediaobject>
+    </figure>
+
+    <para>The Fedlet validates server provider connections and receives communication
+     from the Identity Provider at a single endpoint, which must be integrated
+     into the Service Provider application. For Java Web applications, the JSP
+     page must be registerd with the application's <literal>web.xml</literal> file.
+     After that, the Fedlet jar and meta files must be installed into the Web application.
+    </para>
+
+    <para>Developers can customize the Fedlet using the OpenAM Client SDK.
+     The Fedlet .war file contains a sample Fedlet application,
+     <filename>fedletSampleApp.jsp</filename>, which can be modified with your
+     own application logic. For more information, see
+     <link xlink:href="${docSetBaseURL}/dev-guide#chap-fedlet-java"
+           xlink:show="new"><citetitle>Using Fedlets in Java Web Applications</citetitle></link>.
+    </para>
+
+   <para>A Fedlet provides the following available features. The features
+    apply to both the Java Fedlet and the .NET Fedlet unless otherwise specified.</para>
+
+    <itemizedlist>
+    <listitem>
+     <para><emphasis role="bold">IDP and SP-Initiated Single Sign-On (HTTP Artifact)</emphasis>.
+      Supports both IDP- and SP-initiated single sign-on (SSO) via an HTTP artifact. </para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">IDP and SP-Initiated Single Sign-On (HTTP POST)</emphasis>.
+      Supports both IDP- and SP-initiated single sign-on (SSO) via an HTTP POST.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">IDP and SP-Initiated Single Logout (HTTP POST)</emphasis>.
+      Supports both IDP- and SP-initiated single logout (SLO) via an HTTP POST.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">IDP and SP-Initiated Single Logout (HTTP Redirect)</emphasis>.
+      Supports both IDP- and SP-initiated single logout (SLO) via an HTTP Redirect.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Sign Requests and Responses</emphasis>. Supports
+      digital signing and verification of XML signatures. By default, digital
+      signing is not enabled.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Encrypt Assertion, Attribute and NameID Elements</emphasis>.
+      Supports the encryption and decryption of data, such as assertions, attributes,
+      and nameID elements. By default, encryption is not enabled.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Export SP Metadata</emphasis>. Supports export
+      of the service provider metadata in XML format.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Attribute Queries</emphasis>. Support attribute
+      queries on the identity provider.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">XACML Requests</emphasis>. Supports XACML requests.
+      Not supported for .NET fedlets.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Multiple IDPs</emphasis>. Supports multiple identity
+      providers. In some cases, you may want two SAML v2 identity providers hosted
+      in the same instance, one per realm, or other configurations where you have
+      more than one identity provider in your circle of trust.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">External IDP Discovery Service</emphasis>. Supports
+      external identity provider discovery service where the preferred IdP is selected
+      among multiple IdPs in the circle of trust.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Bundled IDP Reader Service for Discovery</emphasis>.
+      Supports the bundled identity provider discovery service (reader service-only)
+      to determine the Federation IdP partner. Not supported for .NET fedlets.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>For more information on Java Fedlets, see
+    <link xlink:href="${docSetBaseURL}/dev-guide#chap-fedlet-java"
+          xlink:show="new"><citetitle>Using Fedlets in Java Web Applications</citetitle></link>.
+   </para>
+
+   <para>For information on .NET Fedlets, see
+    <link xlink:href="${docSetBaseURL}/dev-guide#chap-fedlet-dotnet"
+          xlink:show="new"><citetitle>Using Fedlets in .NET Applications</citetitle></link>.</para>
+
+   </section>
+  </section>
+
+ <!-- TODO: FIX this section -->
+ <section xml:id="openam-sts">
+  <title>Security Token Service</title>
+  <para>OpenAM supports Security Token Service (STS), part of the WS-Trust
+   extensions to the Oasis WS-Security standard, dealing with the management of
+   security tokens in secure message exchange.
+   STS is hosted as a servlet endpoint and secures communication between Web
+   service clients and the STS server itself.
+   STS can acts as a stand-alone security token service or a Web services security provider.
+   OpenAM STS framework is deployed in a .war file, which can be implemented
+   alongside OpenAM or in a distinct Jetty or Tomcat Web container instance.
+  </para>
+
+  <para>In a typical operation, a client requests access to a protected resource,
+   the STS Web agent re-directs the client to the STS server, which is the OpenAM
+   server and authenticates the client. If the client's identity is validated,
+   OpenAM issues an STS token to the client. The client can then issue the token
+   to access the resource.</para>
+
+  <!-- TODO: Create a STS graphic -->
+  <!--mediaobject xml:id="figure-openam-sts">
+   <imageobject>
+    <imagedata fileref="images/openam-sts.png"
+               format="PNG" />
+   </imageobject>
+  </mediaobject-->
+
+  <para>
+   The OpenAM STS framework can function as an identity bridge using a directory
+   to map validated token type claims to a transformed token returned during the
+   WS-Trust validate operation. It can effectively bridge Web and enterprise
+   identity access management (IAM) networks. For example, STS validates an OAuth2
+   access token and then issues a SAML 2.0 token asserting claims mapped in the
+   Oauth2 access token scope.</para>
+
+  <para>OpenAM, as the token authority, issues the following types of tokens:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>SSOToken</para>
+   </listitem>
+   <listitem>
+    <para>SAML tokens</para>
+   </listitem>
+   <listitem>
+    <para>JWT</para>
+   </listitem>
+   <listitem>
+    <para>OAuth 2.0</para>
+   </listitem>
+   <listitem>
+    <para>Kerberos</para>
+   </listitem>
+   <listitem>
+    <para>x509</para>
+   </listitem>
+   <listitem>
+    <para>Username</para>
+   </listitem>
+  </itemizedlist>
+
+  <para>STS supports REST endpoints for token authentication and validation.
+   OpenAM provides a REST API supporting token transformation. The following
+   token transformations are supported:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para>Username token to OpenAM</para>
+    </listitem>
+    <listitem>
+     <para>OpenAM to SAML 2.0</para>
+    </listitem>
+    <listitem>
+     <para>X509 to OpenAM</para>
+    </listitem>
+    <listitem>
+     <para>OAuth2 to OpenAM</para>
+    </listitem>
+   </itemizedlist>
+ </section>
+
+ <section xml:id="openam-logging">
+  <title>Logging Service</title>
+  <para>OpenAM provides a comprehensive, distributed
+   Logging Service that records status and error messages for a wide range
+   of operations and services.
+  </para>
+
+  <para>By default, OpenAM stores its logs in flat files in the
+   <filename>$HOME/openam/log</filename> directory.
+   You can also write logs to a relational database, such as MySQL or Oracle DB.</para>
+
+  <para>OpenAM provides three basic types of log files:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Access Logs</emphasis>. OpenAM writes
+     access logs for its services. For example, <literal>amPolicy.access</literal>
+     records access data for the Policy Service. Access logs are stored in the
+     <filename>$HOME/openam/log</filename> directory.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Error Logs</emphasis>. OpenAM writes
+     error logs for its services. For example, <literal>amPolicy.error</literal>
+     records any error messages for the Policy Service. Error logs are stored in the
+     <filename>$HOME/openam/log</filename> directory.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Debug Logs</emphasis>. Debug logs record
+     timestamp, thread ID, error message, and Java stack trace for a component
+     or service.
+     The debug files reside in the <filename>$HOME/openam/debug</filename> directory.
+     OpenAM supports the ability to merge debug log messaging into a single file.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>The Logging Service supports a wide array of features for your particular
+   system:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Log Rotation</emphasis>. Supports log rotation
+     based on size.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Log Signing and Encryption</emphasis>. Supports
+     digitally-signing and encrypting logs.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Configurable Content</emphasis>. Supports the
+     exclusion of certain data. By default, log files record timestamp,
+     log message, context ID, admin log ID, IP/domain of OpenAM user and other
+     information. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Directory Logs</emphasis>. The Directory Server
+     backend stores configuration data for OpenAM. OpenAM stores logs for the
+     directory server in the <emphasis>$config_dir/opends/logs</emphasis> file.
+     The directory server logs include access, error, replication, and
+     audit log to monitor the datastore backend.</para>
+   </listitem>
+  </itemizedlist>
+
+  <para>For more information, see
+   <link xlink:href="${docSetBaseURL}/admin-guide#log-mgmt"
+         xlink:show="new"><citetitle>Log Management</citetitle></link>.</para>
+ </section>
+
+ <section xml:id="openam-identity-store">
+  <title>Identity Repository Service</title>
+  <para>OpenAM supports the creation of the Identity Repository Plugin, allowing
+   companies to integrate existing user data stores into their OpenAM system. By default,
+   OpenAM includes built-in support for LDAP and RDBMS databases.
+   If you require specific functions that are not covered by the build-in OpenAM
+   functionality, you can create an Identity Repository plug-in to account for
+   these special features.</para>
+
+  <para>For more information, see
+   <link xlink:href="${docSetBaseURL}/dev-guide#chap-identity-repo-spi"
+         xlink:show="new"><citetitle>Customizing Identity Data Storage</citetitle></link>.</para>
+ </section>
+
+ <section xml:id="openam-features-sso">
+  <title>Single Sign-On</title>
+  <para>OpenAM provides single
+   sign-on (SSO) capabilities allowing you to sign on once and to gain access to
+   all resources permitted.
+   OpenAM easily integrates with a network's existing authentication and
+   SSO infrastructures.
+  </para>
+
+  <para>OpenAM uses browser cookies to transmit the session identifier, SSOTokenID,
+   to the agent. Typically, when a user accesses a Web site via the browser, the
+   Web site sets a cookie to define its scope.
+   For example, for a Web site <literal>web.example.com</literal>,
+   OpenAM sets a cookie called a <literal>iPlanetDirectoryPro</literal>, which is
+   a <emphasis>domain</emphasis>cookie on <literal>.example.com</literal>
+   and stores the value of SSOTokenID.</para>
+
+  <section xml:id="openam-cdsso">
+   <title>Cross-Domain Single Sign-On</title>
+   <para>If a user wants to access another
+    trusted domain, such as <literal>example.org</literal>, the domain cookie will not
+    work at this site, and the policy agent will re-authenticate the user
+    to this site. </para>
+
+   <para>In this case, OpenAM supports a cross-domain single
+    sign-on (CDSSO) capability across trusted DNS domains, managed by an
+    organization. When you cross organizational boundaries, you need to set up
+    SAML 2.0 federation, or an alternate technology, such as OAuth 2.0 or OpenID
+    Connect 1.0 to get SSO functionality.</para>
+
+   <para>For more information, see
+    <link xlink:href="${docSetBaseURL}/admin-guide#chap-cdsso"
+          xlink:show="new"><citetitle>Configuring Cross-Domain Single Sign On</citetitle>.</link></para>
+  </section>
+
+  <section xml:id="openam-restricted-tokens">
+   <title>Restricted Tokens</title>
+   <para>OpenAM supports mechanisms for protecting the system against
+    cookie hijacking, which may occur between policy agents and CDSSO
+    through the use of <emphasis>restricted</emphasis> tokens.
+    Restricted tokens are distinct SSOTokenIDs assigned by OpenAM to the
+    fully qualified domain of each edge device, which are stored on the policy
+    agent as host cookies.</para>
+
+   <para>OpenAM stores a master domain token to which only administrators can gain
+    possible access. Each policy agent stores a different restricted token.
+    Registered Policy agents are able to validate the resource requests on these
+    edge devices using master token mapping on OpenAM.</para>
+
+  </section>
+
+  <section xml:id="openam-slo">
+   <title>Single Logout</title>
+   <para>OpenAM also supports Single Logout (SLO) capabilities, which effectively
+    logs you out of your previous sessions in fully managed SSO, CDSSO, and
+    federated deployments. </para>
+
+  </section>
+ </section>
+
+ <!-- TODO: Expand section -->
+ <section xml:id="gateway-features">
+  <title>OpenIG Gateway</title>
+
+  <para>The Open Identity Gateway
+   (OpenIG) is a new member of the OpenAM family of components and is a
+   separate Java EE servlet-based reverse proxy to a targeted application.
+   OpenIG enables SSO for your Web-based legacy systems and in-house custom
+   applications. OpenIG can be configured as an identity and authentication
+   reverse proxy, offering password replay and the ability to push attributes
+   through HTTP headers straight to applications, and can act as a federation
+   reverse proxy.</para>
+
+  <figure xml:id="figure-openig">
+   <title>OpenIG</title>
+   <mediaobject>
+    <alt>OpenIG</alt>
+    <imageobject>
+     <imagedata fileref="images/openig.png"
+                format="PNG" />
+    </imageobject>
+    <textobject>
+     <para>OpenIG is a Java EE servlet-based reverse proxy, enabling single sign-on
+      capabilities for your Web-based legacy or in-house custom applications.
+      OpenIG is flexible and can be deployed in a number of configurations.</para>
+    </textobject>
+   </mediaobject>
+  </figure>
+
+  <para>Some key features of OpenIG are the following:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Reverse Proxy Functionality</emphasis>.
+     OpenIG intercepts HTTP requests to provide SAML 2.0 federation to resources
+     unable to support a full SAML 2.0 environment. OpenIG is a fully independent
+     federation solution without modifying the application or installing a plug-ins or
+     agents on the application container. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Form-Filter Replay</emphasis>. OpenIG provides
+     an Form-Filter Reply module that, when enabled, automatically logs in the
+     clients when a timeout or authentication page is enabled.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">SAML 2.0 Service</emphasis>. When enabled, OpenIG
+     acts as a SAML 2.0 endpoint where it can act as a Service Provider in a
+     Circle of Trust with another SAML 2.0-compliant Identity Provider.
+     OpenIG intercepts the SAML 2.0 request and logs
+     in the client directly into the target application.</para>
+   </listitem>
+  </itemizedlist>
+
+  <para>Many production environments may have legacy, custom or unsupported
+   resources that may not support a policy agent. OpenIG acts as an independent
+   policy enforcement point, replacing the policy agents and providing SAML 2.0-based
+   features, such as single sign-on (SSO), federation of applications, or
+   standards-based policy enforcement.</para>
+
+  <para>For more information on installing and configuring OpenIG, see
+   <link xlink:href="${openigDocBaseURL}/gateway-guide#chap-overview"
+         xlink:show="new"><citetitle>Guide to OpenIG</citetitle></link>.</para>
+
+  </section>
+ </chapter>

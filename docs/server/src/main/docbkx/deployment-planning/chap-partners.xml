@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2014 ForgeRock AS. All Rights Reserved.
+-->
+<chapter xml:id='chap-partners'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'>
+ <title>Reaching Agreements With Partners</title>
+
+ <para>
+  When you have important dependencies on outside partners,
+  you must reach agreement with them before completing your deployment.
+  This chapter addresses reaching agreement with partners
+  concerning federations and deployments where multiple actors share control.
+  This chapter does not address business goals nor legal considerations
+  though you must of course consider those aspects when planning the deployment.
+ </para>
+
+ <section xml:id="service-owners">
+  <title>Working With Service Owners</title>
+
+  <para>
+   TODO: For each service owner, discuss need to agree on service levels,
+   and on how the service levels will be met, monitored, supported.
+   Discuss planning to meet their needs for training and documentation.
+   Discuss planning for them to meet deployment service levels,
+   including implementation of any changes to their service
+   in order to accommodate the deployment.
+  </para>
+ </section>
+
+ <section xml:id="protected-applications">
+  <title>Working With Application Owners</title>
+
+  <para>
+   TODO: Discuss how to understand and set expectations about service levels.
+   Consider how service levels are monitored and supported.
+   Discuss planning to meet their needs for training and documentation.
+   Discuss how to handle agent and client application registration and profiles,
+   including agent installation, dynamic registration for OpenID Connect, etc.
+   Discuss how policies are defined and managed.
+   Discuss delegated administration and separation of duties.
+  </para>
+ </section>
+
+ <section xml:id="operations">
+  <title>Working With Operations</title>
+
+  <para>
+   TODO: If you own the architecture and planning,
+   but others own the service in production, or even in the labs,
+   you must reach agreement with those in production operations.
+   Discuss planning to meet their needs for training and documentation.
+   Consider how they meet service level and support needs for the deployment,
+   and how service levels will be met, monitored, supported.
+  </para>
+ </section>
+
+ <section xml:id="build-federations">
+  <title>Building Federations</title>
+
+  <para>
+   TODO: Briefly discuss circles of trust and IDP, SP, Fedlet roles.
+   Consider what must be defined for transient, closed, open federations.
+   Consider agreements not only on for functional aspects (roles, mappings),
+   but also for implementation and testing, and for service levels.
+  </para>
+ </section>
+<!--
+
+ <section xml:id="build-multitenancy">
+  <title>Building Multitenant Deployments</title>
+
+  <para>
+   TODO: In a multitenant deployment, you provide access management services
+   to each tenant, who then administers (parts of) their own services.
+   You delegate administration to tenants, and they in turn
+   delegate some administration to their customers.
+   Discuss ways to implement multitenancy (mainly with realms,
+   though what about a large number of different tenant domains?).
+   Discuss planning to meet their needs for training and documentation.
+   Discuss how to tenant registration, and how to plan terms
+   (realm creation, privileges, service creation, further delegation...).
+   Discuss delegated administration and separation of duties.
+   In a multitenant deployment, planning for growth is obviously key.
+   Consider the growth implications for data stores.
+   Consider the growth implications for securing OpenAM.
+   Consider the growth implications for performance testing.
+  </para>
+ </section>
+-->
+</chapter>

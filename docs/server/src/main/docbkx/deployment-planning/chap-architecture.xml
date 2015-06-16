@@ -1,0 +1,1775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<chapter xml:id='chap-deployments'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+ <title>Planning the Deployment Architecture</title>
+
+
+ <para>This chapter presents the elements involved in planning an OpenAM deployment
+  architecture.
+ </para>
+
+ <section xml:id="importance-planning">
+  <title>Importance of Deployment Planning</title>
+
+  <indexterm>
+   <primary>deployment planning</primary>
+   <secondary>importance of</secondary>
+  </indexterm>
+
+  <para>Deployment planning is critical to ensuring your OpenAM system
+   is properly implemented within the time frame determined by your requirements.
+   The more thoroughly you plan your deployment, the more solid your configuration will be,
+   and you will meet timelines and milestones while staying within budget.
+  </para>
+
+  <para>
+   A deployment plan defines the goals, scope, roles, and responsibilities of key stakeholders,
+   architecture, implementation, and testing of your OpenAM deployment.
+   A good plan ensures that a smooth
+   transition to a new product or service is configured and all possible
+   contingencies are addressed to quickly troubleshoot and solve any
+   issue that may occur during the deployment process.
+   The deployment plan also defines a training schedule for your employees, procedural
+   maintenance plans, and a service plan to support your OpenAM system.
+  </para>
+ </section>
+
+ <?hard-pagebreak?>
+ <section xml:id="deployment-considerations">
+  <title>Deployment Planning Considerations</title>
+
+  <indexterm>
+   <primary>deployment planning</primary>
+   <secondary>considerations</secondary>
+  </indexterm>
+
+  <para>When planning a deployment, you must consider some important questions
+   regarding your system.
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">What are you protecting?</emphasis>
+     You must determine which applications, resources, and
+     levels of access to protect? Are there plans for additional services, either
+     developed in-house or through future acquisitions that also require
+     protected access?
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">How many users are supported?</emphasis>
+     It is important to determine the number of users supported in your
+     deployment based on system usage.
+     Once you have determined the number of users, it is important to
+     project future growth.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">What are your product service-level agreements?</emphasis>
+     In addition to planning for the growth of your user base, it is important
+     to determine the production service-level agreements (SLAs) that help determine
+     the current load requirements on your system and for future loads.
+     The SLAs help define your scaling and high-availability requirements.</para>
+
+    <para>For example, suppose you have 100,000 active users today, and each user
+     has an average of two devices (laptop, phone) that get a session each day.
+     Suppose that you also have 20 protected applications, with each device
+     hitting an average of seven protected resources an average of 1.4 times daily.
+     Let's say that works out to about 200,000 sessions per day with 7 x 1.4 = ~10 updates
+     to each session object. This can result in 200K session creations,
+     200K session deletions, and 2M session updates.</para>
+
+    <para>
+     Now, imagine next year you still have the same number of active users, 100K,
+     but each has an average of three devices (laptop, phone, tablet), and you have
+     added another 20 protected applications. Assume the same average usage per
+     application per device, or even a little less per device. You can see
+     that although the number of users is unchanged, the whole system needs to
+     scale up considerably.</para>
+
+    <para>
+     You can scale your deployment using vertical or horizontal scaling.
+     Vertical scaling involves increasing components to a single host
+     server, such as increasing the number of CPUs or increasing heap memory
+     to accommodate the number of users in your system.
+     Horizontal scaling involves adding additional host servers, possibly
+     behind a load balancer, so that the servers can function as a single unit.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para><emphasis role="bold">What are your high availability requirements?</emphasis>
+     High availability refers to your system's ability to operate continuously
+     for a specified length of time. It is important to design your system to prevent
+     single points of failure and for continuous availability.
+     Based on the size of your deployment, you can create an architecture using
+     a single-site configuration. For larger deployments, consider implementing a
+     multi-site configuration with replication over WAN, sticky load-balancing,
+     and session failover.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Which type of clients will be supported?</emphasis>
+     The type of client determines the components required for the deployment.
+     For example, applications supported in a Web server require the use of a
+     Web policy agent. Applications
+     deployed in Java EE containers require the use of a Java EE policy agent.
+     An AJAX application can use the OpenAM's RESTful API.
+     Legacy or custom applications can use the OpenIG Identity Gateway.
+     Applications in an unsupported application server can use a reverse proxy with
+     a policy agent. Third party applications can use federation or a fedlet, or
+     an OpenID Connect or an OAuth 2.0 component.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">What are your SSL/TLS requirements?</emphasis>
+     There are two common approaches to handling SSL. First, using SSL through
+     to the application servers themselves, for example, using SSL on the
+     containers. Or second, using SSL offloading via a network device and
+     running HTTP clear internally. You must determine the appropriate approach
+     as each method requires different configurations.
+     Determining SSL use early in the planning process is vitally
+     <emphasis>important</emphasis>, as adding SSL later in the process is more
+     complicated and could result in delays in your deployment.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">What are your other security requirements?</emphasis>
+     The use of firewalls provides an additional layer of security for your deployment.
+     If you are planning to deploy the OpenAM server behind a firewall, you
+     can implement the DAUI that provides a
+     login page deployed in a demilitarized zone (DMZ), or you can deploy a
+     reverse proxy.
+     For another level of security, consider using multiple DNS
+     infrastructures using zones; one zone for internal clients, another zone for
+     external clients.
+     To provide additional performance, you can deploy the DNS zones behind a
+     load balancer.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Ensure all stakeholders are engaged during the
+     planning phase</emphasis>. This effort includes but is not limited to
+     delivery resources, such as project managers, architects, designers,
+     implementers, testers, and service resources, such as service managers,
+     production transition managers, security, support, and sustaining personnel.
+     Input from all stakeholders ensures all viewpoints are considered at
+     project inception, rather than downstream, when it may be too late.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <indexterm>
+   <primary>deployment planning</primary>
+   <secondary>considerations</secondary>
+  </indexterm>
+ </section>
+
+ <section xml:id="deployment-steps">
+  <title>Deployment Planning Steps</title>
+
+  <indexterm>
+   <primary>deployment planning</primary>
+   <secondary>steps</secondary>
+  </indexterm>
+
+  <para>The general deployment planning steps can be summarized as follows:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Project Initiation</emphasis>. The Project
+     Initiation phase begins by defining the overall scope and requirements
+     of the deployment. The following items can be planned:</para>
+    <itemizedlist>
+     <listitem>
+      <para>Determine the scope, roles and responsibilities of key stakeholders
+       and resources required for the deployment.
+       <indexterm>
+        <primary>project initiation</primary>
+        <secondary>scope and responsibilities</secondary>
+       </indexterm></para>
+     </listitem>
+     <listitem>
+    <para>Determine critical path planning including any dependencies and
+     their assigned expectations.
+     <indexterm>
+      <primary>project initiation</primary>
+      <secondary>critical path planning</secondary>
+     </indexterm>
+    </para>
+   </listitem>
+     <listitem>
+    <para>Run a pilot to test the functionality and
+     features of OpenAM and uncover any possible issues early in
+     the process.
+     <indexterm>
+      <primary>project initiation</primary>
+      <secondary>pilot</secondary>
+     </indexterm>
+    </para>
+   </listitem>
+     <listitem>
+      <para>Determine training for administrators of the environment and
+       training for developers, if needed.
+       <indexterm>
+        <primary>project initiation</primary>
+        <secondary>training</secondary>
+       </indexterm>
+      </para>
+    </listitem>
+    </itemizedlist>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Architecting</emphasis>. The Architecting
+     phase involves designing the deployment. The following items
+     can be planned:</para>
+    <itemizedlist>
+     <listitem>
+      <para>Determine the use of products, map requirements to
+       features, and ensure the architecture meets the functional requirements.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>determine products</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Ensure that the architecture is designed for ease of management and
+       scale.
+       TCO is directly proportional to the complexity
+       of the deployment.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>ease-of-managing</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine how the Identity, Configuration, and Core Token Service (CTS)
+       data stores are to be configured.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>data stores</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine the Sites and Session Failover configuration.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>sites</secondary>
+       </indexterm>
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>session failover</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine where SSL is used in the configuration and how to maintain
+       and update the certificate keystore and truststore for
+       OpenAM's components, such as the agent installer,
+       <command>ssoadm</command> tool, agent server, and other OpenAM servers.
+       Planning for SSL at this point can avoid more difficulty later in the process.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>SSL</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine if OpenAM will be deployed behind a load balancer with SSL
+       offloading. If this is the case, you must ensure that the load balancer
+       rewrites the protocol during redirection. If you have a policy agent
+       behind a load balancer with SSO offloading, ensure that you set the
+       policy agent's override request URL properties.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>load balancers</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>For multiple OpenAM deployments, there is a requirement to deploy a
+       layer 7 cookie-based load balancer and intelligent keep-alives (for example,
+       <literal>/openam/isAlive.jsp</literal>). The network teams should design the appropriate
+       solution in the architecting phase.
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine requirements for vertical scaling, which involves increasing
+       the Java heap based on anticipated session, policy cache, federation
+       session, and restricted token usage. Note that vertical scaling could come
+       with performance cost, so this must be planned accordingly.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>vertical scaling</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine requirements for horizontal scaling, which involves adding
+       additional OpenAM servers and load balancers for scalability and
+       availability purposes.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>horizontal scaling</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine if any coding is required including extensions and plug-ins.
+       Unless it is absolutely necessary, leverage the product features
+       instead of implementing custom code.
+       OpenAM provides numerous plug-in points and REST endpoints.
+       <indexterm>
+        <primary>architecting</primary>
+        <secondary>coding requirements</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Implementation</emphasis>. The Implementation
+     phase involves deploying your OpenAM system. The following items should be
+     considered:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       Install and configure the OpenAM server, datastores, and components.
+       For information on installing OpenAM, see
+       <link xlink:href="${docSetBaseURL}/install-guide#install-guide"
+             xlink:show="new"><citetitle>OpenAM Installation Guide</citetitle></link>.
+       <indexterm>
+        <primary>deployment implementation</primary>
+        <secondary>installing</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Maintain a record and history of the deployment to maintain consistency
+       across the project.
+       <indexterm>
+        <primary>deployment implementation</primary>
+        <secondary>recording history</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Tune OpenAM's JVM, caches, LDAP connection pools, container thread pools,
+       and other items.
+       For information on tuning OpenAM, see
+       <link xlink:href="${docSetBaseURL}/admin-guide#chap-tuning"
+             xlink:show="new"><citetitle>Tuning OpenAM</citetitle></link>.
+       <indexterm>
+        <primary>deployment implementation</primary>
+        <secondary>tuning</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Tune the OpenDJ directory server. Consider tuning the database back end,
+       replication purge delays, garbage collection, JVM memory, and disk space
+       considerations.
+       For more information, see
+       <link xlink:show="new"
+             xlink:href="http://docs.forgerock.org/en/opendj/2.6.0/admin-guide#chap-tuning"
+        ><citetitle>Tuning Servers for Performance</citetitle></link> in the
+       <citetitle>OpenDJ Administration Guide</citetitle>.
+       <indexterm>
+        <primary>deployment implementation</primary>
+        <secondary>tuning OpenDJ</secondary>
+       </indexterm>
+       <indexterm>
+        <primary>OpenDJ</primary>
+        <secondary>tuning</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Consider implementing separate file systems for both OpenAM and OpenDJ, so that
+       you can keep log files on a different
+       disk, separate from data or operational files, to prevent device contention
+       should the log files fill up the file system.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Automation and Continuous Integration</emphasis>.
+     The Automation and Continuous Integration phase involves using tools for testing:</para>
+    <itemizedlist>
+     <listitem>
+      <para>Set up a continuous integration server, such as Jenkins,
+       to ensure that builds are consistent by running
+       unit tests and publishing Maven artifacts. Perform continuous integration
+       unless your deployment includes no customization.
+       <indexterm>
+        <primary>Automation and Continuous Integration</primary>
+        <secondary>continuous integration</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Ensure your custom code has unit tests to ensure nothing is broken.
+       <indexterm>
+        <primary>Automation and Continuous Integration</primary>
+        <secondary>custom code unit tests</secondary>
+       </indexterm>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Functional Testing</emphasis>. The Functional
+     Testing phase should test all functionality to deliver the solution without
+     any failures. You must ensure that your customizations and configurations
+     are covered in the test plan.
+     <indexterm>
+      <primary>functional testing</primary>
+      <secondary>planning</secondary>
+     </indexterm>
+     <indexterm>
+      <primary>planning</primary>
+      <secondary>functional testing</secondary>
+     </indexterm>
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Non-Functional Testing</emphasis>.
+     The Non-Functional Testing phase tests failover and disaster recovery
+     procedures. Run load testing to determine the demand of the
+     system and measure its responses. You can anticipate peak load conditions
+     during the phase.
+     <indexterm>
+      <primary>non-functional testing</primary>
+      <secondary>planning</secondary>
+     </indexterm>
+     <indexterm>
+      <primary>planning</primary>
+      <secondary>non-functional testing</secondary>
+     </indexterm>
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Supportability</emphasis>. The Supportability
+     Phase involves creating the runbook for system administrators including
+     procedures for backup and restores, debugging, change control, and other
+     processes. If you have a ForgeRock Support contract, it ensures everything
+     is in place prior to your deployment.
+     <indexterm>
+      <primary>supportability</primary>
+      <secondary>creating the runbook</secondary>
+     </indexterm>
+     <indexterm>
+      <primary>supportability</primary>
+      <secondary>obtaining a ForgeRock Support contract</secondary>
+     </indexterm>
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <indexterm>
+   <primary>deployment planning</primary>
+   <secondary>steps</secondary>
+  </indexterm>
+ </section>
+
+ <section xml:id="prepare-deployment-plans">
+  <title>Preparing Deployment Plans</title>
+
+  <indexterm>
+   <primary>deployment planning</primary>
+   <secondary>preparing</secondary>
+  </indexterm>
+
+  <para>
+   When you create a good concrete deployment plan, it ensures that a change
+   request process is in place and utilized, which is essential for a
+   successful deployment.
+   This section looks at planning the full deployment process.
+   When you have addressed everything in this section,
+   then you should have a concrete plan for deployment.
+  </para>
+
+  <section xml:id="plan-training">
+   <title>Planning Training</title>
+
+   <indexterm>
+    <primary>training</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>training</primary>
+    <secondary>ForgeRock University</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>training</secondary>
+   </indexterm>
+
+   <para>
+    Training provides common understanding, vocabulary,
+    and basic skills for those working together on the project.
+    Depending on previous experience with access management and with OpenAM,
+    both internal teams and project partners might need training.
+   </para>
+
+   <itemizedlist>
+    <para>
+     The type of training team members need depends on their involvement
+     in the project:
+    </para>
+
+    <listitem>
+     <para>
+      All team members should take at least some training
+      that provides an overview of OpenAM.
+      This helps to ensure a common understanding and vocabulary
+      for those working on the project.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Team members planning the deployment should take an
+      OpenAM deployment training before finalizing your plans,
+      and ideally before starting to plan your deployment.
+     </para>
+
+     <para>
+      OpenAM not only offers a broad set of features with many choices,
+      but the access management it provides tends to be business critical.
+      OpenAM deployment training pays for itself
+      as it helps you to make the right initial choices
+      to deploy more quickly and successfully.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Team members involved in designing and developing
+      OpenAM client applications or custom extensions
+      should take training in OpenAM development
+      in order to help them make the right choices.
+      This includes developers customizing the OpenAM UI for your organization.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Team members who have already had been trained in the past might
+      need to refresh their knowledge
+      if your project deploys newer or significantly changed features,
+      or if they have not worked with OpenAM for some time.
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <para>
+    ForgeRock University regularly offers training courses for OpenAM topics,
+    including OpenAM development and deployment.
+    For a current list of available courses, see
+    <link xlink:show="new" xlink:href="http://forgerock.com/services/university/" />.
+   </para>
+
+   <para>
+    When you have determined who needs training
+    and the timing of the training during the project,
+    prepare a training schedule based on team member and course availability.
+    Include the scheduled training plans in your deployment project plan.
+   </para>
+
+   <para>
+    ForgeRock also offers an accreditation program for partners, offering an
+    in-depth assessment of business and technical skills for each ForgeRock
+    product. This program is open to the partner community and ensures that best
+    practices are followed during the design and deployment phases.
+   </para>
+  </section>
+
+  <section xml:id="plan-customization">
+   <title>Planning Customization</title>
+
+   <indexterm>
+    <primary>customization</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>customization</secondary>
+   </indexterm>
+
+   <para>
+    When you customize OpenAM,
+    you can improve how the software fits your organization.
+    OpenAM customizations can also add complexity to your system as
+    you increase your test load and potentially change components that could
+    affect future upgrades.
+    Therefore, a best practice is to deploy OpenAM
+    with a minimum of customizations.
+   </para>
+
+   <para>
+    Most deployments require at least some customization,
+    like skinning end user interfaces
+    for your organization, rather than using the OpenAM defaults.
+    If your deployment is expected to include additional client applications,
+    or custom extensions (authentication modules, policy conditions, and so forth),
+    then have a team member involved in the development
+    help you plan the work.
+    The <citetitle>OpenAM Developer's Guide</citetitle> can be useful
+    when scoping a development project.
+   </para>
+
+   <para>
+    Although some customizations involve little development work,
+    it can require additional scheduling and coordination with others in your organization.
+    An example is adding support for profile attributes
+    in the identity repository.
+   </para>
+
+   <para>
+    The more you customize, the more important it is
+    to test your deployment thoroughly before going into production.
+    Consider each customization as sub-project
+    with its own acceptance criteria,
+    and consider plans for unit testing, automation, and continuous integration.
+    See <xref linkend="plan-tests" /> for details.
+   </para>
+
+   <para>
+    When you have prepared plans for each customization sub-project,
+    you must account for those plans in your overall deployment project plan.
+    Functional customizations
+    such as custom authentication modules or policy conditions
+    might need to reach the pilot stage
+    before you can finish an overall pilot implementation.
+   </para>
+  </section>
+
+  <?hard-pagebreak?>
+  <section xml:id="plan-pilot">
+   <title>Planning a Pilot Implementation</title>
+
+   <indexterm>
+    <primary>pilots</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>pilots</secondary>
+   </indexterm>
+
+   <para>
+    Unless you are planning a maintenance upgrade,
+    consider starting with a pilot implementation, which is a long term project
+    that is aligned with customer-specific requirements.
+   </para>
+
+   <para>
+    A pilot shows that you can achieve your goals with OpenAM
+    plus whatever customizations and companion software you expect to use.
+    The idea is to demonstrate feasibility by focusing on solving key use cases
+    with minimal expense, but without ignoring real-world constraints.
+    The aim is to fail fast before you have too much invested
+    so that you can resolve any issues that threaten the deployment.
+   </para>
+
+   <para>
+    Do not expect the pilot to become the first version of your deployment.
+    Instead, build the pilot as something you can afford to change easily,
+    and to throw away and start over if necessary.
+   </para>
+
+   <para>
+    The cost of a pilot should remain low compared to overall project cost.
+    Unless your concern is primarily the scalability of your deployment,
+    you run the pilot on a much smaller scale than the full deployment.
+    Scale back on anything not necessary to validating a key use case.
+   </para>
+
+   <para>
+    Smaller scale does not necessarily mean a single-server deployment, though.
+    If you expect your deployment to be highly available, for example,
+    one of your key use cases should be continued smooth operation
+    when part of your deployment becomes unavailable.
+   </para>
+
+   <para>
+    The pilot is a chance to try and test features and services
+    before finalizing your plans for deployment.
+    The pilot should come early in your deployment plan,
+    leaving appropriate time to adapt your plans based on the pilot results.
+    Before you can schedule the pilot, team members might need training
+    and you might require prototype versions of functional customizations.
+   </para>
+
+   <para>
+    Plan the pilot around the key use cases that you must validate.
+    Make sure to plan the pilot review with stakeholders.
+    You might need to iteratively review pilot results
+    as some stakeholders refine their key use cases based on observations.
+   </para>
+  </section>
+
+  <section xml:id="plan-security">
+   <title>Planning Security Hardening</title>
+
+   <indexterm>
+    <primary>Security Hardening</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>security and hardening</secondary>
+   </indexterm>
+
+   <para>
+    When you first configure OpenAM, there are many options to evaluate, plus a
+    number of ways to further increase levels of security. You can change the
+    following default configuration properties:
+   </para>
+
+   <itemizedlist>
+    <listitem>
+     <para>
+      The main OpenAM administrative account has a default user name,
+      <literal>amadmin</literal>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      You can set up OpenAM using HTTPS rather than HTTP.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      An OpenAM policy agent administrative account exists
+      and has a default user name,
+      <literal>UrlAccessAgent</literal>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      The primary session cookie has a default name,
+      <literal>iPlanetDirectoryPro</literal>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Initially, only the top-level realm exists.
+      Other realms and fully qualified domain name realm/DNS aliases
+      must be configured separately.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      The top-level realm includes a demo user, <literal>demo</literal>,
+      with the default password <literal>changeit</literal>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      A default key store exists in
+      <filename><replaceable>config-dir</replaceable>/openam/keystore.jks</filename>
+      with identical default store and private key passwords,
+      <literal>changeit</literal>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      By default, OpenAM connects to directory servers
+      as the directory root user, <literal>cn=Directory Manager</literal>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      By default, the list of
+      <literal>goto</literal> and <literal>gotoOnFail</literal> URLs
+      is not restricted.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      On a server that includes OpenAM Console,
+      all the endpoints defined in the Web application descriptor,
+      <filename>WEB-INF/web.xml</filename>,
+      are available for use.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      To prevent cross-site scripting attacks, you can configure session cookies
+      as HTTP Only by setting the property <literal>com.sun.identity.cookie.httponly=true</literal>.
+      This property prevents third-party scripts from accessing the session cookie.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      You can deploy a DAUI
+      within delimitarized zone (DMZ) firewalls to limit exposure of
+      service URLs to the end user as well as block access to back end configuration
+      and user data stores to unauthorized users.
+     </para>
+    </listitem>
+
+   </itemizedlist>
+
+   <para>
+    You must therefore plan to secure the deployment
+    as described in the <citetitle>Administration Guide</citetitle> chapter on
+    <link
+     xlink:href="${docSetBaseURL}/admin-guide#chap-securing"
+     xlink:show="new"
+    ><citetitle>Securing OpenAM</citetitle></link>.
+   </para>
+
+   <itemizedlist>
+    <para>
+     At minimum, make sure you include the following tasks in the overall plan:
+    </para>
+
+    <listitem>
+     <para>
+      Change default settings and administrative user credentials.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Protect service ports (using firewalls,
+      install OpenAM DAUI servers,
+      or install a reverse proxy).
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Disable unused endpoints.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Separate administrative access from client access.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Secure communications
+      so that OpenAM clients access services over HTTPS.
+     </para>
+     </listitem>
+    <listitem>
+     <para>
+      Use secure cookies with cookie hijacking protection for CDSSO,
+      so messages for federated configurations
+      perform signing and encryption as necessary,
+      and OpenAM accesses providers securely
+      (for example using LDAP + StartTLS, or LDAPS to access directory services).
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Secure processes and files
+      (for example with SELinux,
+      using a dedicated non-privileged user and port forwarding,
+      and so forth).
+     </para>
+    </listitem>
+   </itemizedlist>
+  </section>
+
+  <section xml:id="plan-with-providers">
+   <title>Planning With Providers</title>
+
+   <indexterm>
+    <primary>providers</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>providers</secondary>
+   </indexterm>
+
+   <para>
+    OpenAM delegates authentication and profile storage to other services.
+    OpenAM can store configuration, policies, session, and other tokens in an
+    external directory service.
+    OpenAM can also participate in a circle of trust with other SAML entities.
+    In each of these cases, a successful deployment depends
+    on coordination with service providers,
+    potentially outside of your organization.
+   </para>
+
+   <para>
+    The infrastructure you need to run OpenAM services might be managed
+    outside your own organization.
+    Hardware, operating systems, network, and software installation
+    might be the responsibility of providers with which you must coordinate.
+   </para>
+
+   <itemizedlist>
+    <para>
+     When working with providers, take the following points into consideration.
+    </para>
+
+    <listitem>
+     <para>
+      Shared authentication and profile services might have been sized
+      prior to or independently from your access management deployment.
+     </para>
+
+     <para>
+      An overall outcome of your access management deployment
+      might be to decrease the load on shared authentication services
+      (and replace some authentication load with single-sign on
+      that is managed by OpenAM),
+      or it might be to increase the load
+      (if, for example, your deployment enables many new applications or devices,
+      or enables controlled access to resources that were previously unavailable).
+     </para>
+
+     <para>
+      Identity repositories are typically backed by shared directory services.
+      Directory services might need
+      to provision additional attributes for OpenAM.
+      This could affect not only directory schema and access for OpenAM,
+      but also sizing for the directory services that your deployment uses.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      If your deployment uses an external directory service
+      for OpenAM configuration data and OpenAM policies,
+      then the directory administrator must include attributes in the schema
+      and provide access rights to OpenAM.
+      The number of policies depends on the deployment.
+      For deployments with thousands or millions of policies to store,
+      OpenAM's use of the directory could affect sizing.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      If your deployment uses an external directory service
+      as a backing store for the OpenAM Core Token Service (CTS),
+      then the directory administrator must include attributes in the schema
+      and provide access rights to OpenAM.
+     </para>
+
+     <para>
+      CTS load tends to involve more write operations
+      than configuration and policy load, as CTS data tend to be more volatile,
+      especially if most tokens concern short-lived sessions.
+      This can affect directory service sizing.
+     </para>
+
+     <para>
+      CTS can enable cross-site session failover
+      by allowing a remote OpenAM server to retrieve a user session
+      from the directory service backing the CTS.
+      For this feature to work quickly
+      in the event of a failure or network partition,
+      CTS data must be replicated rapidly including across WAN links.
+      This can affect network sizing for the directory service.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      SAML federation circles of trust require organizational and legal coordination
+      before you can determine what the configuration looks like.
+      Organizations must agree on which security data they share and how,
+      and you must be involved to ensure that
+      their expectations map to the security data that is actually available.
+     </para>
+     <para>
+      There also needs to be coordination between all SAML parties, (that is, agreed-upon
+      SLAs, patch windows, points of contact and escalation paths). Often, the
+      technical implementation is considered, but not the <emphasis>business requirements</emphasis>.
+      For example, a common scenario occurs when a service provider takes down their
+      service for patching without informing the identity provider or vice-versa.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      When working with infrastructure providers,
+      realize that you are likely to have better sizing estimates
+      after you have tried a test deployment under load.
+      Even though you can expect to revise your estimates,
+      take into account the lead time necessary
+      to provide infrastructure services.
+     </para>
+
+     <para>
+      Estimate your infrastructure needs not only for the final deployment,
+      but also for the development, pilot, and testing stages.
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <para>
+    For each provider you work with,
+    add the necessary coordinated activities to your overall plan,
+    as well as periodic checks to make sure
+    that parallel work is proceeding according to plan.
+   </para>
+  </section>
+
+  <section xml:id="plan-integration-with-apps">
+   <title>Planning Integration With Client Applications</title>
+
+   <indexterm>
+    <primary>integration with client apps</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>integration with client apps</secondary>
+   </indexterm>
+
+   <para>
+    When planning integration with OpenAM client applications,
+    the applications that are most relevant are those that register with OpenAM; therefore,
+    you should make note of the following types of client applications registering
+    with OpenAM:
+   </para>
+
+   <itemizedlist>
+
+    <listitem>
+     <para>
+      OpenAM policy agents reside with the applications they protect.
+     </para>
+
+     <para>
+      By default,
+      OpenAM policy agents store their configuration profiles in OpenAM.
+      OpenAM then sends policy agents notifications
+      when their configurations change.
+     </para>
+
+     <para>
+      Policy agents authenticate to OpenAM with a user name and password.
+     </para>
+
+     <para>
+      To delegate administration of multiple policy agents,
+      OpenAM lets you create a group profile for each realm to register the
+      policy agent profiles.
+     </para>
+
+     <para>
+      While the OpenAM administration manages policy agent configuration,
+      application administrators are often the ones who install policy agents.
+      You must coordinate installation and upgrades with them.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      OAuth 2.0 clients and OpenID Connect 1.0 relying parties
+      also register profiles with OpenAM.
+     </para>
+
+     <para>
+      OpenAM optionally allows registration of such applications
+      without prior authentication.
+      By default, however, registration requires an access token
+      granted to an OAuth 2.0 client with access to register profiles.
+     </para>
+
+     <para>
+      If you expect to allow dynamic registration,
+      or if you have many clients registering with your deployment,
+      then consider clearly documenting how to register the clients,
+      and building a client to register clients.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      You must configure Circles of Trust for SAML 2.0 federations,
+      so registration happens at configuration time, rather than at runtime.
+     </para>
+
+     <para>
+      Address the necessary configuration as described in
+      <xref linkend="plan-with-providers" />.
+     </para>
+
+     <para>
+      If your deployment functions as a SAML 2.0 Identity Provider (IDP)
+      and shares Fedlets with Service Providers (SP),
+      the SP administrators must install the Fedlets,
+      and must update their Fedlets for changes in your IDP configuration.
+      Consider at least clearly documenting how to do so,
+      and if necessary, build installation and upgrade capabilities.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      If you have custom client applications,
+      consider how they are configured
+      and how they must register with OpenAM.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      REST API client applications authenticate based on a user profile.
+     </para>
+
+     <para>
+      REST client applications can therefore authenticate
+      using whatever authentication mechanisms you configure in OpenAM,
+      and therefore do not require additional registration.
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <para>
+    For each client application
+    whose integration with OpenAM requires coordination,
+    add the relevant tasks to your overall plan.
+   </para>
+  </section>
+
+  <section xml:id="plan-integration-with-audit">
+   <title>Planning Integration With Audit Tools</title>
+
+   <indexterm>
+    <primary>integration with audit tools</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>integration with audit tools</secondary>
+   </indexterm>
+
+   <para>
+    OpenAM and policy agents can log audit information to flat files
+    or alternatively, to a relational database.
+    Log volumes depend on usage and on logging levels.
+    By default, OpenAM generates both access and error messages for each service,
+    providing the raw material for auditing the deployment.
+    The OpenAM <citetitle>Reference</citetitle> covers
+    what you can expect to find in log messages.
+   </para>
+
+   <para>
+    In order to analyze the raw material, however, you must use other software,
+    such as
+    <link xlink:href="http://www.splunk.com" xlink:show="new">Splunk</link>,
+    which indexes machine-generated data for analysis.
+   </para>
+
+   <para>
+    If you require integration with an audit tool,
+    plan the tasks of setting up logging to work with the tool,
+    and analyzing and monitoring the data once it has been indexed.
+    Consider how you must retain and rotate log data once it has been consumed,
+    as a high volume service can produce large volumes of log data.
+   </para>
+
+   <para>
+    Include these plans in the overall plan.
+   </para>
+  </section>
+
+  <section xml:id="plan-tests">
+   <title>Planning Tests</title>
+
+   <indexterm>
+    <primary>tests</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>testing</secondary>
+   </indexterm>
+
+   <para>
+    In addition to planning tests for each customized component,
+    test the functionality of each service you deploy,
+    such as authentication, policy decisions, and federation.
+    You should also perform non-functional testing
+    to validate that the services hold up under load in realistic conditions.
+    Perform penetration testing to check for security issues.
+    Include acceptance tests for the actual deployment.
+    The data from the acceptance tests help you to make an informed decision
+    about whether to go ahead with the deployment or to roll back.
+   </para>
+
+   <section xml:id="plan-functional-tests">
+    <title>Planning Functional Testing</title>
+
+    <para>
+     Functional testing validates that specified test cases work
+     with the software considered as a black box.
+    </para>
+
+    <para>
+     As ForgeRock already tests OpenAM and policy agents functionally,
+     focus your functional testing on customizations and service-level functions.
+     For each key service, devise automated functional tests.
+     Automated tests make it easier to integrate new deliveries
+     to take advantage of recent bug fixes
+     and to check that fixes and new features do not cause regressions.
+    </para>
+
+    <para>
+     Tools for running functional testing include
+     <link xlink:href="http://jmeter.apache.org/" xlink:show="new">Apache JMeter</link>
+     and
+     <link xlink:href="http://seleniumhq.org/" xlink:show="new">Selenium</link>.
+     Apache JMeter is a load testing tool for Web applications.
+     Selenium is a test framework for Web applications, particularly for UIs.
+    </para>
+
+    <para>
+     As part of the overall plan,
+     include not only tasks to develop and maintain your functional tests,
+     but also to provision and to maintain a test environment
+     in which you run the functional tests
+     before you significantly change anything in your deployment.
+     For example, run functional tests whenever you upgrade
+     OpenAM, OpenAM policy agents, or any custom components,
+     and analyze the output to understand the effect on your deployment.
+    </para>
+   </section>
+
+   <section xml:id="plan-service-performance-tests">
+    <title>Planning Service Performance Testing</title>
+
+    <para>
+     For written service-level agreements and objectives,
+     even if your first version consists of guesses,
+     you turn performance plans from an open-ended project
+     to a clear set of measurable goals
+     for a manageable project with a definite outcome.
+     Therefore, start your testing with clear definitions of success.
+    </para>
+
+    <para>
+     Also, start your testing with a system for load generation
+     that can reproduce the traffic you expect in production,
+     and provider services that behave as you expect in production.
+     To run your tests, you must therefore generate representative
+     load data and test clients based on what you expect in production.
+     You can then use the load generation system to
+     perform iterative performance testing.
+    </para>
+
+    <para>
+     Iterative performance testing consists in
+     identifying underperformance and the bottlenecks that cause it,
+     and discovering ways to eliminate or work around those bottlenecks.
+     Underperformance means that the system under load
+     does not meet service level objectives.
+     Sometimes re-sizing and/or tuning the system or provider services
+     can help remove bottlenecks that cause underperformance.
+    </para>
+
+    <para>
+     Based on service level objectives and availability requirements,
+     define acceptance criteria for performance testing,
+     and iterate until you have eliminated underperformance.
+    </para>
+
+    <para>
+     Tools for running performance testing include
+     <link xlink:href="http://jmeter.apache.org/" xlink:show="new">Apache JMeter</link>,
+     for which your loads should mimic what you expect in production, and
+     <link xlink:href="http://gatling.io" xlink:show="new">Gatling</link>,
+     which records load using a domain specific language for load testing.
+     To mimic the production load, examine both the access patterns
+     and also the data that OpenAM stores.
+     The representative load should reflect
+     the expected random distribution of client access,
+     so that sessions are affected as in production.
+     Consider authentication, authorization, logout, and session timeout events,
+     and the lifecycle you expect to see in production.
+    </para>
+
+    <para>
+     Although you cannot use actual production data for testing,
+     you can generate similar test data using
+     tools such as the OpenDJ <command>makeldif</command> command, which
+     generates user profile data for directory services.
+     OpenAM REST APIs can help with test provisioning
+     for policies, users, and groups.
+    </para>
+
+    <para>
+     As part of the overall plan,
+     include not only tasks to develop and maintain performance tests,
+     but also to provision and to maintain a pre-production test environment
+     that mimics your production environment.
+     Security measures in your test environment
+     must also mimic your production environment,
+     as changes to secure OpenAM
+     as described in <xref linkend="plan-security" />,
+     such as using HTTPS rather than HTTP,
+     can impact performance.
+    </para>
+
+    <para>
+     Once you are satisfied that the baseline performance is acceptable,
+     run performance tests again when something in your deployment
+     changes significantly with respect to performance.
+     For example, if the load or number of clients changes significantly,
+     it could cause the system to underperform.
+     Also, consider the thresholds that you can monitor in the production system
+     to estimate when your system might start to underperform.
+    </para>
+   </section>
+
+   <section xml:id="plan-penetration-tests">
+    <title>Planning Penetration Testing</title>
+
+    <para>
+     Penetration testing involves attacking a system to expose security issues
+     before they show up in production.
+    </para>
+
+    <para>
+     When planning penetration testing,
+     consider both white box and black box scenarios.
+     Attackers can know something about how OpenAM works internally,
+     and not only how it works from the outside.
+     Also, consider both internal attacks from within your organization,
+     and external attacks from outside your organization.
+    </para>
+
+    <para>
+     As for other testing, take time to define acceptance criteria.
+     Know that ForgeRock has performed penetration testing
+     on the software for each enterprise release.
+     Any customization, however, could be the source of security weaknesses,
+     as could configuration to secure OpenAM.
+    </para>
+
+    <para>
+     You can also plan to perform penetration tests
+     against the same hardened, pre-production test environment
+     also used for performance testing.
+    </para>
+   </section>
+
+   <section xml:id="plan-deployment-tests">
+    <title>Planning Deployment Testing</title>
+
+    <para>
+     Deployment testing is used as a description, and not a term in the context of
+     this guide.
+     It refers to the testing implemented within the deployment window
+     after the system is deployed to the production environment,
+     but before client applications and users access the system.
+    </para>
+
+    <para>
+     Plan for minimal changes between the pre-production test environment
+     and the actual production environment.
+     Then test that those changes have not cause any issues,
+     and that the system generally behaves as expected.
+    </para>
+
+    <para>
+     Take the time to agree upfront with stakeholders
+     regarding the acceptance criteria for deployment tests.
+     When the production deployment window is small,
+     and you have only a short time to deploy and test the deployment,
+     you must trade off thorough testing for adequate testing.
+     Make sure to plan enough time in the deployment window
+     for performing the necessary tests and checks.
+    </para>
+
+    <para>
+     Include preparation for this exercise in your overall plan,
+     as well as time to check the plans close to the deployment date.
+    </para>
+   </section>
+  </section>
+
+  <section xml:id="plan-documentation">
+   <title>Planning Documentation and Tracking Changes</title>
+
+   <indexterm>
+    <primary>documentation</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>documentation</secondary>
+   </indexterm>
+
+   <para>
+    The OpenAM product documentation is written for readers like you,
+    who are architects and solution developers,
+    as well as for OpenAM developers
+    and for administrators who have had OpenAM training.
+    The people operating your production environment need
+    concrete documentation specific to your deployed solution,
+    with an emphasis on operational policies and procedures.
+   </para>
+
+   <para>
+    Procedural documentation can take the form of a runbook
+    with procedures that emphasize maintenance operations,
+    such as backup, restore, monitoring and log maintenance,
+    collecting data pertaining to an issue in production,
+    replacing a broken server or policy agent,
+    responding to a monitoring alert, and so forth.
+    Make sure in particular that you document procedures
+    for taking remedial action in the event of a production issue.
+   </para>
+
+   <para>
+    Furthermore, to ensure that everyone understands your deployment
+    and to speed problem resolution in the event of an issue,
+    changes in production must be documented and tracked as a matter of course.
+    When you make changes, always prepare to roll back to the previous state
+    if the change does not perform as expected.
+   </para>
+
+   <para>
+    Include documentation tasks in your overall plan.
+    Also, include the tasks necessary to put in place and to maintain
+    change control for updates to the configuration.
+   </para>
+  </section>
+
+  <section xml:id="plan-maintenance">
+   <title>Planning Maintenance and Support in Production</title>
+
+   <indexterm>
+    <primary>maintenance and support</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>maintenance and support</secondary>
+   </indexterm>
+
+   <para>
+    If you own the architecture and planning,
+    but others own the service in production, or even in the labs,
+    then you must plan coordination with those who own the service.
+   </para>
+
+   <itemizedlist>
+    <para>
+     Start by considering the service owners' acceptance criteria.
+     If they have defined support readiness acceptance criteria,
+     you can start with their acceptance criteria.
+     You can also ask yourself the following questions:
+    </para>
+
+    <listitem>
+     <para>
+      What do they require in terms of training in OpenAM?
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      What additional training do they require to support your solution?
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Do your plans for documentation and change control,
+      as described in <xref linkend="plan-documentation" />,
+      match their requirements?
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Do they have any additional acceptance criteria for deployment tests,
+      as described in <xref linkend="plan-deployment-tests" />?
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <para>
+    Also, plan back line support with ForgeRock or a qualified partner.
+    The aim is to define clearly who handles production issues,
+    and how production issues are escalated to a product specialist if necessary.
+   </para>
+
+   <para>
+    Include a task in the overall plan to define the hand off to production,
+    making sure there is clarity on who handles monitoring and issues.
+   </para>
+  </section>
+
+  <section xml:id="plan-rollout">
+   <title>Planning Rollout Into Production</title>
+
+   <indexterm>
+    <primary>production rollout</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>production rollout</secondary>
+   </indexterm>
+
+   <para>
+    In addition to planning for the hand off of the production system,
+    also prepare plans to roll-out the system into production.
+    Rollout into production calls for a well-choreographed operation,
+    so these are likely the most detailed plans.
+   </para>
+
+   <itemizedlist>
+    <para>
+     Take at least the following items into account when planning the rollout:
+    </para>
+
+    <listitem>
+     <para>
+      Availability of all infrastructure that OpenAM depends upon the following
+      elements:
+     </para>
+
+     <itemizedlist>
+      <listitem><para>Server hosts and operating systems</para></listitem>
+      <listitem><para>Web application containers</para></listitem>
+      <listitem><para>Network links and configurations</para></listitem>
+      <listitem><para>Load balancers</para></listitem>
+      <listitem><para>Reverse proxy services to protect OpenAM</para></listitem>
+      <listitem><para>Data stores such as directory services</para></listitem>
+      <listitem><para>Authentication providers</para></listitem>
+     </itemizedlist>
+    </listitem>
+
+    <listitem>
+     <para>
+      Installation for all OpenAM services.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Installation of OpenAM client applications:
+     </para>
+
+     <itemizedlist>
+      <listitem><para>Policy agents</para></listitem>
+      <listitem><para>Fedlets</para></listitem>
+      <listitem><para>SDK applications</para></listitem>
+      <listitem><para>OAuth 2.0 applications</para></listitem>
+      <listitem><para>OpenID Connect 1.0 applications</para></listitem>
+     </itemizedlist>
+    </listitem>
+
+    <listitem>
+     <para>
+      Final tests and checks.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Availability of the personnel involved in the rollout.
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <para>
+    In your overall plan, leave time and resources
+    to finalize rollout plans toward the end of the project.
+   </para>
+  </section>
+
+  <section xml:id="plan-growth">
+   <title>Planning for Growth</title>
+
+   <indexterm>
+    <primary>growth</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>growth</secondary>
+   </indexterm>
+
+   <para>
+    Before rolling out into production,
+    plan how to monitor the system to know when you must grow,
+    and plan the actions to take when you must add capacity.
+   </para>
+
+   <para>
+    Unless your system is embedded or otherwise very constrained,
+    after your successful rollout of access management services,
+    you can expect to add capacity at some point in the future.
+    Therefore, you should plan to monitor system growth.
+   </para>
+
+   <para>
+    You can grow many parts of the system by adding servers or adding clients.
+    The parts of the system that you cannot expand so simply
+    are those parts that depend on writing to the directory service,
+    and those that can result in crosstalk between OpenAM servers.
+   </para>
+
+   <para>
+    The directory service eventually replicates each write to all other servers.
+    Therefore, adding servers simply adds the number of writes to perform.
+    One simple way of getting around this limitation to
+    working with the hierarchical nature of directory data
+    to split a monolithic directory service into several.
+    That said, directory services often are not a bottleneck for growth.
+   </para>
+
+   <para>
+    Crosstalk between OpenAM servers can result
+    when one OpenAM server authenticates a user,
+    and a subsequent request regarding that user
+    is sent to a second OpenAM server.
+    In that case, the second server can communicate with the first server
+    to handle the request, resulting in
+    crosstalk from one server to another.
+    A load balancing solution that offers server affinity or stickiness reduces crosstalk
+    and contributes to a system that grows more smoothly.
+   </para>
+
+   <para>
+    When should you expand the deployed system?
+    The time to expand the deployed system is when
+    growth in usage causes the system to approach performance threshold levels
+    that cause the service to underperform.
+    For that reason, devise thresholds that can be monitored in production,
+    and plan to monitor the deployment with respect to the thresholds.
+    In addition to programming appropriate alerts to react to thresholds,
+    also plan periodic reviews of system performance
+    to uncover anything missing from regular monitoring results.
+   </para>
+  </section>
+
+  <section xml:id="plan-upgrades">
+   <title>Planning for Upgrades</title>
+
+   <indexterm>
+    <primary>upgrades</primary>
+    <secondary>planning</secondary>
+   </indexterm>
+
+   <indexterm>
+    <primary>planning</primary>
+    <secondary>upgrades</secondary>
+   </indexterm>
+
+   <para>
+    In this section, "upgrade" means moving to a more recent release,
+    whether it is a patch, maintenance release, minor release, or major release.
+    (See the OpenAM
+    <link xlink:href="${docSetBaseURL}/admin-guide#chap-tuning"
+          xlink:show="new"><citetitle>Administration Guide</citetitle></link>
+    for definitions of the types of release.)
+   </para>
+
+   <para>
+    Upgrades generally bring fixes, or new features, or both.
+    For each upgrade, you must build a new plan.
+    Depending on the scope of the upgrade,
+    that plan might include almost all of the original overall plan,
+    or it might be abbreviated,
+    for example, for a patch that fixes a single issue.
+    In any case, adapt deployment plans, as each upgrade is a new deployment.
+   </para>
+
+   <para>
+    When planning an upgrade, pay particular attention
+    to testing and to any changes necessary in your customizations.
+    For testing, consider compatibility issues
+    when not all agents and services are upgraded simultaneously.
+    Choreography is particularly important,
+    as upgrades are likely to happen in constrained low usage windows,
+    and as users already have expectations about how the service should behave.
+   </para>
+
+   <para>
+    When preparing your overall plan,
+    include a regular review task to determine whether to upgrade,
+    not only for patches or regular maintenance releases,
+    but also to consider whether to upgrade to new minor and major releases.
+   </para>
+  </section>
+
+  <section xml:id="plan-disaster-recovery">
+   <title>Planning for Disaster Recovery</title>
+   <para>
+    Disaster recovery planning and a robust backup strategy is essential when
+    server hardware fails, network connections go down, a site fails, and so on.
+    Your team must determine the disaster recovery procedures to recover from such
+    events.
+   </para>
+  </section>
+
+ </section>
+</chapter>

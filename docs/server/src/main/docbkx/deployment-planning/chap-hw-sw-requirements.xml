@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<chapter xml:id='chap-hw-sw-requirements'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+
+ <title>OpenAM Hardware and Software Requirements</title>
+
+ <para>
+  You can configure OpenAM in a wide variety of deployments depending on your
+  security requirements and network infrastructure.
+ </para>
+
+ <!--para>
+  Future versions of this guide will present additional reference architectures
+  such as SAML 2.0 provider, cloud-based multi-domain SSO, OAuth 2.0/OpenID Connect
+  1.0, and multitenant deployments.
+ </para-->
+
+ <section xml:id="storage-requirements">
+  <title>Storage Requirements</title>
+
+  <indexterm>
+   <primary>storage</primary>
+   <secondary>requirements</secondary>
+  </indexterm>
+
+  <indexterm>
+   <primary>OpenAM</primary>
+   <secondary>storage requirements</secondary>
+  </indexterm>
+
+  <para>
+   This section considers storage requirements
+   for OpenAM server, OpenAM policy agents, and OpenIG gateway.
+  </para>
+
+  <section xml:id="storage-requirements-server">
+   <title>Server Storage Requirements</title>
+
+   <indexterm class="startofrange" xml:id="idx-svr-storage">
+    <primary>storage requirements</primary>
+    <secondary>server storage</secondary>
+   </indexterm>
+
+   <para>
+    Storage requirements for OpenAM servers depend
+    partly on OpenAM itself and partly on your deployment. Storage requirements
+    also depend on the
+    space needed for binaries and configuration data,
+    space for log files and rate of writes for logs,
+    space for directory data and file system requirements
+    when using an embedded OpenDJ directory server.
+   </para>
+
+   <itemizedlist>
+    <para>
+     For initial installation, a few hundred MB is sufficient,
+     not including the downloaded files.
+    </para>
+
+    <listitem>
+     <para>
+      The OpenAM <literal>.war</literal> file size varies from release to release,
+      but if your container holds one <literal>.war</literal> file
+      and one directory with the contents of the <literal>.war</literal> file,
+      the disk space required is on the order of 300 MB.
+     </para>
+
+     <para>
+      This space requirement remains stable as you use OpenAM.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      The OpenAM configuration directory initially fits
+      in approximately 50 MB of disk spaces
+      including the embedded OpenDJ directory server.
+     </para>
+
+     <para>
+      This space requirement grows as you use OpenAM.
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <para>
+    By default, OpenAM servers write logs to flat files under
+    <filename><replaceable>config-dir</replaceable>/openam/logs/</filename>
+    and <filename><replaceable>config-dir</replaceable>/openam/debug/</filename>.
+    Alternatively, OpenAM servers can write logs to a database.
+    For details, see the <citetitle>Administration Guide</citetitle> section,
+    <link
+     xlink:show="new"
+     xlink:href="${docSetBaseURL}admin-guide/#log-mgmt"
+     ><citetitle>Log Management</citetitle></link>.
+   </para>
+
+   <para>
+    When using flat-file logging,
+    OpenAM lets you configure rotation and purging
+    for logs under <filename>openam/logs/</filename>,
+    so you can effectively cap the maximum disk space used for logs.
+    For details, see the configuration <citetitle>Reference</citetitle> section,
+    <link
+     xlink:show="new"
+     xlink:href="${docSetBaseURL}reference/#system-logging"
+     ><citetitle>Logging</citetitle></link>.
+    Make sure, however, that you retain the information you need
+    before logs are purged.
+    Also make sure that your disk can keep pace with the volume of logging,
+    which can be significant in high volume deployments,
+    as OpenAM logs not only errors, but also access messages.
+   </para>
+
+   <para>
+    OpenAM also lets you configure rotation
+    for logs under <filename>openam/logs/debug</filename>.
+    As you can change debug log levels at runtime when investigating issues,
+    debug log volume is not as predictable as for regular logs.
+    Leave a margin in production environments,
+    so that you can turn up debug log levels to diagnose problems.
+   </para>
+
+   <itemizedlist>
+    <para>
+     When using the embedded OpenDJ directory server, take the following into
+     account:
+    </para>
+
+    <listitem>
+     <para>
+      OpenDJ is designed to work with local storage for the database, but
+      not for network file system (NFS) nor network-attached storage (NAS) due
+      to some file system locking functions that OpenDJ needs.
+      High performance storage, like solid state drives (SSD), is essential
+      if you need to handle high write throughput.
+     </para>
+
+     <para>
+      By default, OpenAM's configuration directory resides
+      under the $HOME directory of the user running the container.
+      $HOME directories can be mounted over the network.
+     </para>
+
+     <para>
+      This is not an issue if you are using OpenDJ mainly for configuration data.
+      It can however be a serious problem
+      when you use OpenDJ to back the CTS
+      in a high-volume deployment.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Embedded OpenDJ directory server log files are stored under
+      <filename><replaceable>config-dir</replaceable>/opends/logs/</filename>.
+      As for OpenAM, you can configure OpenDJ directory server
+      log rotation and purging.
+      The default cap for access logs is 2 GB.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      OpenAM stores policy information in the configuration directory.
+      The space this takes up depends on the policies you have.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      By default, OpenAM stores CTS information in the configuration directory.
+      The space this takes up depends on the volume of traffic to the server.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      With the default database implementation,
+      OpenDJ database files handling sustained writes
+      can grow to about double their initial size on disk.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      For OpenDJ on Linux systems,
+      enable file system write barriers and ensure the file system
+      journaling mode is ordered to avoid directory database file corruption
+      after crashes or power failures.
+      For details on enabling write barriers
+      and setting the journaling mode for data,
+      see the options for your file system
+      in the <command>mount</command> command manual page.
+     </para></listitem>
+
+    <listitem>
+     <para>
+      OpenDJ directory server uses file descriptors when handling connections.
+     </para>
+
+     <para>
+      Defaults can be limited to 1024 file descriptors per user on Linux systems.
+      Consider increasing this limit to at least 64K.
+      For details, see the <citetitle>Installation Guide</citetitle> section,
+      <link
+       xlink:show="new"
+       xlink:href="${docSetBaseURL}install-guide/#prerequisites-file-descriptors"
+       ><citetitle>Setting Maximum File Descriptors</citetitle></link>.
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <indexterm class="endofrange" startref="idx-svr-storage">
+    <primary>storage requirements</primary>
+    <secondary>server storage</secondary>
+   </indexterm>
+
+  </section>
+
+  <section xml:id="storage-requirements-pa">
+   <title>Policy Agent Storage Requirements</title>
+
+   <indexterm>
+    <primary>policy agents</primary>
+    <secondary>storage requirements</secondary>
+   </indexterm>
+
+   <para>
+    Policy agents are implemented as libraries or Web applications,
+    and so tend to be small on disk, not more than a few MB.
+   </para>
+
+   <para>
+    You can configure policy agents to perform local logging to files,
+    or to send log messages to OpenAM for remote logging.
+    For details, see the <citetitle>Configuration Reference</citetitle>
+    for your policy agent.
+   </para>
+
+   <para>
+    Debug messages are logged to local files, however, not remotely.
+    Debug logging volume depends on log level.
+    As for OpenAM, leave a margin in production environments
+    so that you can turn up debug log levels to diagnose problems.
+   </para>
+  </section>
+
+  <section xml:id="storage-requirements-openig">
+   <title>OpenIG Storage Requirements</title>
+
+   <indexterm>
+    <primary>OpenIG</primary>
+    <secondary>storage requirements</secondary>
+   </indexterm>
+
+   <para>
+    The OpenIG Web application can vary in size from release to release.
+    On disk the <literal>.war</literal> file is under 50 MB.
+    For containers that keep both the <literal>.war</literal> file and an unpacked version,
+    the total size is under 100 MB.
+   </para>
+
+   <para>
+    By default, OpenIG configuration resides
+    under the $HOME directory of the user who runs the container.
+   </para>
+
+   <para>
+    If you use the default log sink,
+    messages are sent to the container logs.
+    Manage those as you would any container logs.
+   </para>
+
+   <para>
+    Capture logging and any logging you perform from scriptable filters and handlers
+    can potentially generate significant write traffic.
+    Furthermore, OpenIG does not run rotation or purging for such logs.
+    You must manage any logs OpenIG generates
+    using a <literal>CaptureFilter</literal> or log messages from scriptable
+    filters and handlers.
+   </para>
+
+   <para>
+    Both normal log messages and debug messages go to the log sink.
+    As for other components, debug logging volume depends on log level.
+    Leave a margin in production environments
+    so that you can turn up debug log levels to diagnose problems.
+   </para>
+  </section>
+
+  <section xml:id="storage-requirements-recommendations">
+   <title>Storage Recommendations</title>
+
+   <indexterm>
+    <primary>OpenAM</primary>
+    <secondary>storage requirements</secondary>
+   </indexterm>
+
+   <itemizedlist>
+    <para>
+     The following are based on the preceding information in this section.
+     When deciding on storage, keep the following recommendations in mind:
+    </para>
+
+    <listitem>
+     <para>
+      Plan enough space and enough disk I/O
+      to comfortably absorb the load for logs.
+     </para>
+
+     <para>
+      Check your assumptions in testing.
+      For example, make sure that logs are cleaned up
+      so that they do not exceed your space threshold
+      even in long-duration testing.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      For deployments where an embedded OpenDJ directory service
+      handles high throughput,
+      make sure you use a local file system
+      and that the user running the container has enough file descriptors.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      When using local policy agent logs,
+      make sure you have a mechanism in place to clean them up.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      For OpenIG, make sure you turn off <literal>CaptureFilter</literal> logging,
+      scriptable filter, and handler debug logging
+      before moving to production.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </section>
+ </section>
+
+ <section xml:id="hw-and-sw-requirements">
+  <title>Hardware and Software Requirements</title>
+
+  <indexterm>
+   <primary>OpenAM</primary>
+   <secondary>hardware requirements</secondary>
+  </indexterm>
+
+  <indexterm>
+   <primary>OpenAM</primary>
+   <secondary>software requirements</secondary>
+  </indexterm>
+
+  <para>
+   The following sections list hardware and software
+   requirements for deploying OpenAM server and policy agent software.
+  </para>
+
+  <para>
+   OpenAM core services require a minimum JVM heap size of 1 GB, and a permanent
+   generation size of 256 MB. If you are including the embedded OpenDJ directory,
+   OpenAM requires at least a 2 GB heap, as 50% of that space is allocated to OpenDJ.
+  </para>
+
+  <note>
+   <para>
+    Ensure that the <literal>Xms</literal> and <literal>Xmx</literal> JVM
+    parameters are set to the same value to prevent a large garbage collection
+    as the memory profile increases from the default up to the <literal>Xms</literal> value.
+    Also, setting <literal>Xms</literal> and <literal>Xmx</literal> to the same value
+    ensures that small controlled garbage collection events minimize
+    application unresponsiveness.
+   </para>
+  </note>
+
+  <xinclude:include href="../shared/sec-openam-os-requirements.xml">
+   <xinclude:fallback>
+    <section>
+     <para>
+      hw-sw-prerequisites missing shared/sec-openam-os-requirements.xml
+     </para>
+    </section>
+   </xinclude:fallback>
+  </xinclude:include>
+
+  <section xml:id="java-requirements">
+   <title>Java Requirements</title>
+
+   <indexterm>
+    <primary>Java</primary>
+    <secondary>requirements</secondary>
+   </indexterm>
+
+   <itemizedlist>
+    <para>
+     OpenAM server and policy agent software relies on Java in the following ways.
+    </para>
+
+    <listitem>
+     <para>
+      OpenAM server software runs in a Java EE Web container,
+      and requires a Java Development Kit.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Java EE policy agents run in a Java EE Web container,
+      and require a Java Development Kit.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      All Web policy agents except those associated with <!--Varnish Cache and-->
+      Microsoft IIS require a Java runtime environment for installation.
+     </para>
+    </listitem>
+   </itemizedlist>
+
+   <xinclude:include href="../shared/itemizedlist-java-requirements.xml">
+    <xinclude:fallback>
+     <para>
+      hw-sw-prerequisites missing shared/itemizedlist-java-requirements.xml
+     </para>
+    </xinclude:fallback>
+   </xinclude:include>
+  </section>
+
+  <xinclude:include href="../shared/sec-openam-web-container-requirements.xml">
+   <xinclude:fallback>
+    <section>
+     <para>
+      hw-sw-prerequisites missing shared/sec-openam-web-container-requirements.xml
+     </para>
+    </section>
+   </xinclude:fallback>
+  </xinclude:include>
+
+  <xinclude:include href="../shared/sec-openam-data-store-requirements.xml">
+   <xinclude:fallback>
+    <section>
+     <para>
+      hw-sw-prerequisites missing shared/sec-openam-data-store-requirements.xml
+     </para>
+    </section>
+   </xinclude:fallback>
+  </xinclude:include>
+
+  <xinclude:include href="../shared/sec-browser-requirements.xml">
+   <xinclude:fallback>
+    <section>
+     <para>
+      hw-sw-prerequisites missing shared/sec-browser-requirements.xml
+     </para>
+    </section>
+   </xinclude:fallback>
+  </xinclude:include>
+
+  <xinclude:include href="../shared/sec-native-application-platforms.xml">
+   <xinclude:fallback>
+    <section>
+     <para>
+      hw-sw-prerequisites missing shared/sec-native-application-platforms.xml
+     </para>
+    </section>
+   </xinclude:fallback>
+  </xinclude:include>
+
+  <xinclude:include href="../shared/sec-jee-pa-platform-requirements.xml">
+   <xinclude:fallback>
+    <section>
+     <para>
+      hw-sw-prerequisites missing shared/sec-jee-pa-platform-requirements.xml
+     </para>
+    </section>
+   </xinclude:fallback>
+  </xinclude:include>
+
+  <xinclude:include href="../shared/sec-web-pa-platform-requirements.xml">
+   <xinclude:fallback>
+    <section>
+     <para>
+      hw-sw-prerequisites missing shared/sec-web-pa-platform-requirements.xml
+     </para>
+    </section>
+   </xinclude:fallback>
+  </xinclude:include>
+ </section>
+
+</chapter>

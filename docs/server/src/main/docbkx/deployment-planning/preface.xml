@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<preface xml:id='preface'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+ <title>Preface</title>
+
+ <para>
+  This guide helps you plan an OpenAM deployment,
+  including performing the following high-level tasks:
+ </para>
+
+ <itemizedlist>
+
+  <listitem>
+   <para>
+    Choose OpenAM software features for your deployment. OpenAM offers a wide-variety
+    of features to meet the needs of any deployment.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Plan any customizations or extensions that are absolutely required.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Gather information about the services that your OpenAM deployment uses,
+    and define what those services must provide for your deployment.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Gather information about the resources that OpenAM protects as well as
+    the consumers of your OpenAM deployment.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Reach agreement with partners concerning federation
+    and other deployments where multiple actors share control.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Define your objectives in terms of service levels
+    including availability and security for different services.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Determine performance requirements and testing procedures to assure
+    performance requirements are met.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Specify logical and physical deployment topologies,
+    including site and multiple data center deployments.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    Plan the deployment process,
+    including implementing training teams and partners,
+    customization and hardening, and
+    development of a proof-of-concept implementation.
+    Other tasks include performing integration with client applications,
+    integration with auditing tools,
+    automation and continuous integration when necessary,
+    running functional and non-functional testing,
+    documenting procedures and tracking changes,
+    acceptance in production, maintaining and
+    supporting the solution in production,
+    and planning for expansion and upgrade.
+   </para>
+  </listitem>
+ </itemizedlist>
+
+  <section xml:id="preface-who-should-use">
+  <title>Who Should Use This Guide</title>
+
+  <para>
+   This guide is written for access management architects and project managers
+   who plan OpenAM software deployments within their organizations.
+  </para>
+
+  <para>
+   This guide focuses on the tasks that need to be completed for successful OpenAM deployment.
+   It does not show how to accomplish each individual technical task, such as
+   installation, configuration, and maintenance.
+  </para>
+
+  <para>
+   Before using this guide, you should have a firm grounding in
+   software deployment, in access management, and in OpenAM software itself.
+   OpenAM deployment training from ForgeRock can help you get started.
+  </para>
+ </section>
+
+ <section xml:id="where-to-get-help">
+  <title>Getting Deployment Training, Help, and Support</title>
+
+  <para>
+   Formal training can help you and your colleagues come up to speed quickly
+   on OpenAM deployment, development, administration, maintenance, and tuning.
+   ForgeRock University regularly offers training courses for OpenAM topics,
+   including OpenAM deployment.
+   For a current list of available courses, see
+   <link xlink:show="new"
+         xlink:href="http://forgerock.com/services/university/" />.
+  </para>
+
+  <para>
+   ForgeRock Professional Services offers the support plans for every deployment.
+   For more information about ForgeRock Support offerings, see
+   <link xlink:show="new"
+         xlink:href="http://forgerock.com/services/professional-services/" />.
+  </para>
+
+  <para>
+   When your success depends on OpenAM access management services,
+   you want to know that product experts are standing by ready to help
+   should anything go wrong.
+   ForgeRock offers the right support plans for every deployment.
+   For more information about ForgeRock Support offerings, see
+   <link xlink:show="new"
+         xlink:href="http://forgerock.com/services/support/" />.
+  </para>
+
+  <para>
+   For more information, email us at
+   <link xlink:href="mailto:info@forgerock.com">info@forgerock.com</link>.
+  </para>
+ </section>
+</preface>
