@@ -243,6 +243,20 @@ $ <userinput>curl \
       xlink:role="http://docbook.org/xlink/role/olink">Managing Policies</link>.
     </para>
    </listitem>
+     <listitem>
+    <para>
+     The <literal>users</literal> REST endpoint has changed.
+    </para>
+    <para>
+     Versions 1.2 and 2.1 of the endpoint include a new <literal>roles</literal>
+     field in the JSON representation of a user, with a value of
+     <literal>ui-admin</literal>, if an administrator is querying their own user
+     details. Versions 1.1 and 2.0 of the endpoint are unchanged.
+    </para>
+    <para>For more information, see
+     <olink targetdoc="dev-guide" targetptr="rest-api-read-identity" />.
+    </para>
+   </listitem>
   </itemizedlist>
  </section>
 
