@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-realms'
@@ -345,6 +345,22 @@
      <row>
       <entry>REST calls for modifying policy applications</entry>
       <entry><literal>ApplicationModifyAccess</literal></entry>
+      <entry>
+       Subset of the <literal>RealmAdmin</literal> and
+       <literal>PolicyAdmin</literal> privileges.
+      </entry>
+     </row>
+     <row>
+      <entry>REST calls for modifying policy resource types</entry>
+      <entry><literal>ResourceTypeModifyAccess</literal></entry>
+      <entry>
+       Subset of the <literal>RealmAdmin</literal> and
+       <literal>PolicyAdmin</literal> privileges.
+      </entry>
+     </row>
+     <row>
+      <entry>REST calls for reading policy resource types</entry>
+      <entry><literal>ResourceTypeReadAccess</literal></entry>
       <entry>
        Subset of the <literal>RealmAdmin</literal> and
        <literal>PolicyAdmin</literal> privileges.
