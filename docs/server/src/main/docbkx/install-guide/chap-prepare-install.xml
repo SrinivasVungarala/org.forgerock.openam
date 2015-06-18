@@ -2044,6 +2044,7 @@ esac
    <listitem><para><xref linkend="prep-jboss-710-711" /></para></listitem>
    <listitem><para><xref linkend="prep-jboss-600-601" /></para></listitem>
    <listitem><para><xref linkend="prep-jboss-61x" /></para></listitem>
+   <listitem><para><xref linkend="prep-jboss-EAP-for-JDK8" /></para></listitem>
    <listitem><para><xref linkend="prep-jboss-for-openam" /></para></listitem>
    <listitem><para><xref linkend="prep-openam-for-jboss" /></para></listitem>
   </itemizedlist>
@@ -2300,6 +2301,86 @@ $ <userinput>jar cvf ../openam.war *</userinput>
    </step>
   </procedure>
 
+   <procedure xml:id="prep-jboss-EAP-for-JDK8">
+ 	 	  	            <title>To Prepare JBoss EAP 6.3.3 or Greater for use with JDK 8</title>
+
+ 	 	  	         <indexterm>
+ 	 	  	          <primary>JBoss EAP 6.3.3 and JDK 8</primary>
+ 	 	  	          <secondary>preparing</secondary>
+ 	 	  	         </indexterm>
+
+ 	 	  	            <para>JBoss EAP 6.3.3 and newer support JDK 8. The same techniques
+ 	 	  	                described in the <xref linkend="prep-jboss-710-711" /> section work here as well. One alternative
+ 	 	  	                method is available, as described in this section.</para>
+
+ 	 	  	            <step>
+ 	 	  	                <para>Stop JBoss.</para>
+ 	 	  	            </step>
+
+ 	 	  	            <step>
+ 	 	  	                <para>Update the <filename>openam.war</filename>
+                        file before deploying OpenAM.</para>
+
+ 	 	  	                <orderedlist numeration="arabic">
+ 	 	  	                    <listitem>
+ 	 	  	                        <para>Create a temporary directory and expand
+                                the <filename>openam.war</filename> file.</para>
+
+<screen>$ <userinput>mkdir /tmp/openam ; cd /tmp/openam</userinput>
+$ <userinput>jar xvf /path/to/${coreWarFile}</userinput></screen>
+ 	 	  	                    </listitem>
+ 	 	  	                    <listitem>
+ 	 	  	                        <para>Create a new <filename>jboss-deployment-structure.xml</filename> file in the
+ 	 	  	                            <filename>WEB-INF</filename> subdirectory so that it appears as follows, and save
+ 	 	  	                            the change.</para>
+
+<programlisting language="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+ &lt;jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2"&gt;
+  &lt;deployment&gt;
+   &lt;exclusions&gt;
+    &lt;module name="sun.jdk" /&gt;
+   &lt;/exclusions&gt;
+   &lt;exclude-subsystems&gt;
+    &lt;subsystem name="jaxrs" /&gt;
+    &lt;subsystem name="webservices" /&gt;
+   &lt;/exclude-subsystems&gt;
+  &lt;dependencies&gt;
+   &lt;module name="sun.jdk" &gt;
+    &lt;imports&gt;
+     &lt;exclude-set&gt;
+      &lt;path name="com/sun/org/apache/xml/internal/security/transforms/implementations"/&gt;
+     &lt;/exclude-set&gt;
+    &lt;/imports&gt;
+   &lt;/module&gt;
+   &lt;system&gt;
+    &lt;paths&gt;
+     &lt;path name="sun/security/tools/keytool" /&gt;
+     &lt;path name="sun/security/x509" /&gt;
+     &lt;path name="com/sun/org/apache/xpath/internal" /&gt;
+     &lt;path name="com/sun/org/apache/xerces/internal/dom" /&gt;
+     &lt;path name="com/sun/org/apache/xml/internal/utils" /&gt;
+    &lt;/paths&gt;
+   &lt;/system&gt;
+  &lt;/dependencies&gt;
+ &lt;/deployment&gt;
+&lt;/jboss-deployment-structure&gt;</programlisting>
+ 	 	  	                    </listitem>
+ 	 	  	                    <listitem>
+ 	 	  	                        <para>Rebuild the <filename>openam.war</filename> file.</para>
+
+ 	 	  	                     <screen>$ <userinput>jar cvf ../openam.war *</userinput></screen>
+ 	 	  	                    </listitem>
+ 	 	  	                </orderedlist>
+
+ 	 	  	            </step>
+ 	 	  	            <step>
+ 	 	  	                <para>You will want to make at least one more change to the <filename>openam.war</filename> file before
+ 	 	  	                    deployment, as described in <xref linkend="prep-openam-for-jboss" />.</para>
+ 	 	  	            </step>
+
+ 	 	  	        </procedure>
+
   <procedure xml:id="prep-jboss-for-openam">
    <title>To Prepare JBoss for OpenAM</title>
 
@@ -2480,7 +2561,7 @@ $ <userinput>jar cvf ../openam.war *</userinput>
       <filename>/path/to/wlsdomain/config/config.xml</filename>,
       setting <literal>&lt;enforce-valid-basic-auth-credentials></literal>
       to <literal>false</literal> in the
-      <literal>&lt;security-configuration</literal> element.
+      <literal>&lt;security-configuration></literal> element.
      </para>
 
       <programlisting language="xml">&lt;security-configuration>
