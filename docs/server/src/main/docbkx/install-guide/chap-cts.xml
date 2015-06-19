@@ -1000,13 +1000,10 @@ $ <userinput>backup \
    </indexterm>
 
    <para>
-    CTS processes all requests asynchronously in the background, allowing
-    callers (entities that call CTS) to send subsequent requests
-    without waiting for a previous request to finish processing.
     The following OpenAM components make CTS requests:
    </para>
 
-    <orderedlist>
+    <itemizedlist>
      <listitem>
       <para>Session service for stateful session failover</para>
      </listitem>
@@ -1025,12 +1022,13 @@ $ <userinput>backup \
      <listitem>
       <para>REST API for functions like forgotten passwords</para>
      </listitem>
-    </orderedlist>
+    </itemizedlist>
 
    <para>
-    All create, read, update, delete, query (CRUDQ) requests to CTS are placed
-    into an asynchronous buffer before being handled by an asynchronous processor.
-    This ensures the caller can continue without waiting for CTS to complete processing.
+    All create, update, and delete requests to CTS are placed into an
+    asynchronous buffer before being handled by an asynchronous processor.
+    This ensures that callers performing write operations can continue without
+    waiting for CTS to complete processing.
    </para>
 
    <para>
