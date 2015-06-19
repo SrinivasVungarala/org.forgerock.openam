@@ -41,9 +41,12 @@
  <para>
   The Core Token Service (CTS) provides persistent and highly available
   token storage for OpenAM session, OAuth 2.0, SAML v2.0, and UMA tokens.
+ </para>
+ <para>
   CTS is set up in a generalized token storage format, which by default is
   always used for OAuth 2.0 and UMA tokens.
-  If configured, it can also be used to persist session and SAML v2.0 tokens.
+  If configured, it can also be used to persist session, session blacklist,
+  and SAML v2.0 tokens.
  </para>
 
  <para>
@@ -76,7 +79,7 @@
  </para>
 
   <para>
-   If you need to install OpenDJ separately from OpenAM, you will
+   If you want to deploy an external store for CTS, you will
    have to install OpenDJ separately from OpenAM.
    For more information, see the
    <!-- Change this link after AME-3876 is fixed -->
@@ -112,7 +115,8 @@
      any reconfiguration orphans currently stored tokens, which
      may require users to log in again.
      To keep this from happening, disable client access to OpenAM before making
-     any changes. Remember to restrt your server to put the changes into effect.
+     any changes. Remember to restart your server to put the changes into
+     effect.
     </para>
 
     <para>
@@ -149,8 +153,8 @@
     </mediaobject>
 
     <para>
-     <xref linkend="cts-default-store"/> displays example options.
-     If the <literal>External Token Store</literal> is selected, entries are
+     Possible options have been entered in the figure.
+     If the <literal>External Token Store</literal> option is selected, entries are
      required in all text boxes. The options shown in the figure are the following.
     </para>
 
@@ -1004,7 +1008,10 @@ $ <userinput>backup \
 
     <orderedlist>
      <listitem>
-      <para>Session service for session failover</para>
+      <para>Session service for stateful session failover</para>
+     </listitem>
+     <listitem>
+      <para>Session service for stateless session blacklisting</para>
      </listitem>
      <listitem>
       <para>OAuth 2.0 for token persistence</para>
@@ -1102,17 +1109,17 @@ $ <userinput>backup \
 
    <para>
     When properly configured, CTS can help your deployment avoid single points
-    of failure (SPOF). Session and SAML v2.0 tokens which are normally stored
-    only in the memory of a single server are also written to the
-    CTS as a secondary token store. If the OpenAM instance that owns the session
-    or SAML v2.0 token fails, a second instance of OpenAM can allow access to the
-    session or token. To reduce the impact of any given failure,
-    consider the following options:</para>
+    of failure (SPOF). Stateful sessions and SAML v2.0 tokens, which are normally
+    stored only in the memory of a single server, are also written to the
+    CTS as a secondary token store. If the OpenAM instance that owns the
+    stateful session or SAML v2.0 token fails, a second instance of OpenAM can
+    allow access to the session or token. To reduce the impact of any given
+    failure, consider the following options:</para>
 
    <itemizedlist>
     <listitem>
      <para>
-      <emphasis role="bold">First look at embedded</emphasis>.
+      <emphasis role="bold">First, look at embedded</emphasis>.
       Start your implementation, if possible, with the CTS options available
       with the OpenDJ instance embedded in OpenAM, which is the simplest deployment
       option to implement.
