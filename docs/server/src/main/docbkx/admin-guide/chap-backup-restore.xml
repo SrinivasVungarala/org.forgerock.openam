@@ -187,9 +187,10 @@
     </para>
 
     <para>
-     For deployments with long-lived sessions,
-     you can limit the extent of reauthentication by using session failover.
-     For details, see the <citetitle>Installation Guide</citetitle> chapter,
+     If your deployment has long-lived sessions and you do not currently use
+     session failover, you can limit the extent of reauthentication by
+     implementing session failover. For details, see the
+     <citetitle>Installation Guide</citetitle> chapter,
      <link
       xlink:href="install-guide#chap-session-failover"
       xlink:show="new"
@@ -313,9 +314,10 @@ $ <userinput>ls /path/to/backup-2014-12-01-12-00.zip</userinput>
     </para>
 
     <para>
-     For deployments with long-lived sessions,
-     you can limit the extent of reauthentication by using session failover.
-     For details, see the <citetitle>Installation Guide</citetitle> chapter,
+     If your deployment has long-lived sessions and you do not currently use
+     session failover, you can limit the extent of reauthentication by
+     implementing session failover. For details, see the
+     <citetitle>Installation Guide</citetitle> chapter,
      <link
       xlink:href="install-guide#chap-session-failover"
       xlink:show="new"
