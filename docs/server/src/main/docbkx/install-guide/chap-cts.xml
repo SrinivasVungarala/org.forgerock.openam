@@ -1114,7 +1114,7 @@ $ <userinput>backup \
     CTS as a secondary token store. If the OpenAM instance that owns the
     stateful session or SAML v2.0 token fails, a second instance of OpenAM can
     allow access to the session or token. To reduce the impact of any given
-    failure, consider the following options:</para>
+    failure, consider the following options.</para>
 
    <itemizedlist>
     <listitem>
