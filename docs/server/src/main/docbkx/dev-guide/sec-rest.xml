@@ -1464,6 +1464,14 @@ $ <userinput>curl \
  http://openam.example.com:8080/openam/json/sessions/AQIC5...?_action=validate</userinput>
 <computeroutput>{"valid":false}</computeroutput>
    </screen>
+
+
+   <para>
+    Validating a session has a tangential effect of resetting the idle timeout
+    for a stateful session. Note that OpenAM does not reset the idle timeout for
+    a stateless session.
+   </para>
+
   </section>
 
   <section xml:id="rest-api-session-information">
