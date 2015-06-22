@@ -464,14 +464,14 @@
          <varlistentry>
              <term>com.iplanet.am.jssproxy.resolveIPAddress</term>
              <listitem>
-                 <para>Specifies if the JSS proxy should resolve IP addresses.
+                 <para>Specifies if the JSS or JSSE proxy should resolve IP addresses.
                      Default value is <literal>false</literal>.</para>
              </listitem>
          </varlistentry>
          <varlistentry>
              <term>com.iplanet.am.jssproxy.SSLTrustHostList</term>
              <listitem>
-                 <para>Specifies if the JSS proxy should check the subject CNs
+                 <para>Specifies if the JSS or JSSE proxy should check the subject CNs
                   (or Subject Alt Name extension values in the
                   <literal>com.iplanet.am.jssproxy.checkSubjectAltName</literal>
                   property) of the certificate on the server to which the connections
@@ -5529,7 +5529,7 @@
    <varlistentry>
     <term><literal>com.iplanet.am.jssproxy.checkSubjectAltName</literal></term>
     <listitem>
-     <para>When using JSS, check whether the name values in the
+     <para>When using JSS or JSSE, check whether the name values in the
      <literal>SubjectAltName</literal> certificate match the server FQDN.</para>
      <para>Default: <literal>false</literal></para>
     </listitem>
@@ -5538,7 +5538,7 @@
    <varlistentry>
     <term><literal>com.iplanet.am.jssproxy.resolveIPAddress</literal></term>
     <listitem>
-     <para>When using JSS, check that the IP address of the server resolves
+     <para>When using JSS or JSSE, check that the IP address of the server resolves
      to the host name.</para>
      <para>Default: <literal>false</literal></para>
     </listitem>
@@ -5547,7 +5547,7 @@
    <varlistentry>
     <term><literal>com.iplanet.am.jssproxy.SSLTrustHostList</literal></term>
     <listitem>
-     <para>When using JSS, comma-separated list of server FQDNs to trust if
+     <para>When using JSS or JSSE, comma-separated list of server FQDNs to trust if
      they match the certificate CN, even if the domain name is not
      correct.</para>
         </listitem>
@@ -5556,7 +5556,7 @@
    <varlistentry>
     <term><literal>com.iplanet.am.jssproxy.trustAllServerCerts</literal></term>
     <listitem>
-     <para>When using JSS, set to <literal>true</literal> to trust whatever
+     <para>When using JSS or JSSE, set to <literal>true</literal> to trust whatever
      certificate is presented without checking.</para>
      <para>Default: <literal>true</literal></para>
     </listitem>
