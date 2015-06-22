@@ -1190,18 +1190,9 @@
    <listitem>
     <para>
      <link xlink:show="new"
-           xlink:href="admin-guide#using-saml2-sso-slo"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>SAML 2.0
-      single logout</citetitle></link>
-    </para>
-   </listitem>
-
-   <listitem>
-    <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#chap-federation"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>SAML 2.0
-      browser POST profile</citetitle></link>
+           xlink:href="admin-guide#saml2-and-session-state"
+           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>SAML v2.0
+      single sign-on and single logout</citetitle></link>
     </para>
    </listitem>
 

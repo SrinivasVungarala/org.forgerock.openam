@@ -3559,18 +3559,16 @@ $ <userinput>ssoadm \
  </section>
 
 <section xml:id="saml2-and-session-state">
-  <title>SAML 2.0 and Session State</title>
+  <title>SAML v2.0 and Session State</title>
 
   <para>
-   All of the SAML 2.0 single sign-on and single logout profiles
-   with HTTP redirect, HTTP POST, and HTTP artifact bindings
-   described in <xref linkend="using-saml2-sso-slo" /> are available to users
-   who have logged in to OpenAM and received stateful sessions.
+   ForgeRock recommends that you configure OpenAM to use stateful sessions when
+   deploying OpenAM as a SAML v2.0 IdP or SP.
   </para>
 
   <para>
-   The following SAML 2.0 profiles are not available to users
-   who have logged in to OpenAM and received stateless sessions:
+   The following SAML v2.0 profiles are not supported when you
+   configure OpenAM to use stateless sessions:
    <itemizedlist>
     <listitem>
      <para>
@@ -3583,6 +3581,11 @@ $ <userinput>ssoadm \
      </para>
     </listitem>
    </itemizedlist>
+  </para>
+
+  <para>
+   The other SAML v2.0 single sign-on profiles are not guaranteed to work with
+   stateless sessions.
   </para>
 
   <para>
