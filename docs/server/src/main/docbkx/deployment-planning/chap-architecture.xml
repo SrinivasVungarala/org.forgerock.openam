@@ -165,9 +165,7 @@
     <para><emphasis role="bold">What are your other security requirements?</emphasis>
      The use of firewalls provides an additional layer of security for your deployment.
      If you are planning to deploy the OpenAM server behind a firewall, you
-     can implement the DAUI that provides a
-     login page deployed in a demilitarized zone (DMZ), or you can deploy a
-     reverse proxy.
+     can deploy a reverse proxy, such as, OpenIG.
      For another level of security, consider using multiple DNS
      infrastructures using zones; one zone for internal clients, another zone for
      external clients.
@@ -851,7 +849,7 @@
 
     <listitem>
      <para>
-      You can deploy a DAUI
+      You can deploy a reverse proxy
       within delimitarized zone (DMZ) firewalls to limit exposure of
       service URLs to the end user as well as block access to back end configuration
       and user data stores to unauthorized users.
@@ -883,8 +881,7 @@
     <listitem>
      <para>
       Protect service ports (using firewalls,
-      install OpenAM DAUI servers,
-      or install a reverse proxy).
+      install a reverse proxy).
      </para>
     </listitem>
 

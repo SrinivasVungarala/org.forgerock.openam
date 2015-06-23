@@ -135,7 +135,8 @@
   
  </section>
 
- <section xml:id="das-configuration">
+ <!-- Need to check if all of these properties are exclusive to DAS before I remove them -->
+ <!-- <section xml:id="das-configuration">
     <title>Distributed Authentication UI Configuration</title>
     <indexterm>
         <primary>Configuration</primary>
@@ -820,7 +821,8 @@
              </listitem>
          </varlistentry>
      </variablelist>
- </section>
+ </section> -->
+
  <section xml:id="console-configuration">
   <title>Console Configuration</title>
   <indexterm>

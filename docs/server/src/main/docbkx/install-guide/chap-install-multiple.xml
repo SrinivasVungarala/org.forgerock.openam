@@ -90,18 +90,8 @@
      The load balancer can restrict access to OpenAM services,
      throttle traffic, offload HTTPS encryption, and so forth.
     </para>
-
     <para>
-     As an alternative, or in addition,
-     you can use a separate reverse proxy service,
-     or the OpenAM distributed authentication UI.
-     The distributed authentication UI exposes a subset of OpenAM functionality.
-     For instructions on setting up the distributed authentication UI, see
-     <link
-      xlink:show="new"
-      xlink:href="install-guide#chap-install-das"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Installing OpenAM Distributed Authentication</citetitle></link>.
+     As an alternative, or in addition, you can use a separate reverse proxy.
     </para>
    </listitem>
 
@@ -110,9 +100,6 @@
      When you are protecting OpenAM with a load balancer or proxy service,
      configure your container so that OpenAM can trust
      the load balancer or proxy service.
-     OpenAM trusts the distributed authentication UI
-     as the distributed authentication UI uses
-     credentials registered with OpenAM.
     </para>
    </listitem>
 

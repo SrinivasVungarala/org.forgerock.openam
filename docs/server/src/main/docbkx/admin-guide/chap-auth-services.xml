@@ -1669,9 +1669,8 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     <varlistentry>
      <term>Trusted Remote Hosts</term>
      <listitem>
-      <para>Hosts trusted to send certificates to OpenAM, such as load balancers
-      doing SSL termination, or OpenAM distributed authentication UI
-      instances.</para>
+      <para>Hosts trusted to send certificates to OpenAM, such as, load balancers
+      doing SSL termination.</para>
       <para><command>ssoadm</command> attribute:
       <literal>iplanet-am-auth-cert-gw-cert-auth-enabled</literal></para>
      </listitem>

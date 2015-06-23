@@ -181,10 +181,6 @@
      <entry>Install OpenAM server without OpenAM Console</entry>
      <entry><filename><?eval ${serveronlyWarFile}?></filename></entry>
     </row>
-    <row>
-     <entry>Install OpenAM distributed authentication UI</entry>
-     <entry><filename><?eval ${distauthWarFile}?></filename></entry>
-    </row>
    </tbody>
   </tgroup>
  </table>

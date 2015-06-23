@@ -4582,7 +4582,8 @@ $ <userinput>curl \
    <para>
     Additional query strings can be specified to alter the returned results.
     For more information, see <xref linkend="rest-api-filter-sort-page" />.
-   </para></section>
+   </para>
+  </section>
 
    <section xml:id="rest-api-authz-decision-combiner-read">
    <title>Reading a Specific Decision Combiner</title>

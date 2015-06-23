@@ -156,6 +156,7 @@ $ <userinput>curl \
      <link xlink:show="new" xlink:href="dev-guide#rest-api-authz-applications"
       xlink:role="http://docbook.org/xlink/role/olink">Managing Applications</link>.</para>
    </listitem>
+
    <listitem>
     <para>
      The <literal>policies</literal> REST endpoint has changed.
@@ -243,7 +244,8 @@ $ <userinput>curl \
       xlink:role="http://docbook.org/xlink/role/olink">Managing Policies</link>.
     </para>
    </listitem>
-     <listitem>
+
+   <listitem>
     <para>
      The <literal>users</literal> REST endpoint has changed.
     </para>
@@ -668,6 +670,20 @@ $ <userinput>curl \
       xlink:show="new"><citetitle>Persistent Cookie module</citetitle></link>.
     </para>
    </listitem>
+
+   <listitem>
+    <para>
+     The Distributed Authentication User Interface (DAUI) has been removed from
+     OpenAM ${serverDocTargetVersion}. You can deploy OpenIG or another reverse proxy
+     to secure OpenAM in a firewall.
+     For more information, see
+     <link
+      xlink:href="admin-guide#protect-network-access"
+      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:show="new"><citetitle>Protecting Network Access</citetitle></link>.
+    </para>
+   </listitem>
+
   </itemizedlist>
  </section>
 

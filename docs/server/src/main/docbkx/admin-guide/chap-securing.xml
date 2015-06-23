@@ -142,46 +142,18 @@
         xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Determine Which
         War File to Deploy</citetitle></link>.</para>
 
-    <para>You can further limit what is exposed through the firewall by using one of two strategies:</para>
+    <para>You can further limit what is exposed through the firewall using the
+     following strategy:</para>
 
     <itemizedlist>
         <listitem>
-            <para>Set up a distributed authentication user interface (UI) in a DMZ between firewalls.</para>
-            <para>The distributed authentication UI is essentially a small subset of the OpenAM server with
-            just enough login logic to receive user authentication requests. Those requests are forwarded
-            to the core OpenAM servers.</para>
-            <para>See <link xlink:href="install-guide#chap-install-das"
-                  xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Installing
-                    OpenAM Distributed Authentication</citetitle></link> for installation
-                instructions. The following figure shows the recommended architecture.</para>
-            <mediaobject xml:id="figure-securing-openam-daui">
-                <alt>Exposing only the Distributed Authentication UI to the Internet</alt>
-                <imageobject>
-                    <imagedata fileref="images/securing-openam-daui.png" format="PNG" />
-                </imageobject>
-                <textobject><para>The OpenAM Distributed Authentication UI can hide many
-                    OpenAM administrative capabilities from the Internet. Notice that OpenAM
-                    installed with the console is inside your infrastructure as well.</para></textobject>
-            </mediaobject>
-        </listitem>
-
-        <listitem>
-            <para>Alternatively, use a reverse proxy in front of OpenAM to allow
+            <para>Use a reverse proxy in front of OpenAM to allow
              access only to the necessary URLs.
-             The distributed authentication user interface
-             only exposes the authentication UI, while a reverse proxy can expose
+             A reverse proxy exposes only
              those endpoints needed for an application. For example, if you
-             need to expose the OAuth2/OpenID Connect endpoints and REST interface
-             in addition to the authentication UI,
-             then you should implement a reverse proxy. If you only need to expose
-             a login page, then use the DAUI.
+             need to expose the OAuth2/OpenID Connect endpoints and REST interface,
+             then you should implement a reverse proxy.
             </para>
-            <para>
-             Also note that the DAUI does not support SAML v2.0, so in applications
-             that require access to SAML v2.0 endpoints, you must implement
-             a reverse proxy.
-            </para>
-
 
             <para>
             The following figure shows the recommended architecture with a
