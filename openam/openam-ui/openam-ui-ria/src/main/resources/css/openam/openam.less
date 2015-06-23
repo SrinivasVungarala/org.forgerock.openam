@@ -1,0 +1,328 @@
+/**
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2014-2015 ForgeRock AS.
+ *
+ * The contents of this file are subject to the terms of the Common Development and Distribution License (the License).
+ * You may not use this file except in compliance with the License.
+ *
+ * You can obtain a copy of the License at http://forgerock.org/license/CDDLv1.0.html. See the License for the specific
+ * language governing permission and limitations under the License.
+ *
+ * When distributing Covered Code, include this CDDL Header Notice in each file and include the License file at
+ * http://forgerock.org/license/CDDLv1.0.html. If applicable, add the following below the CDDL Header, with the fields
+ * enclosed by brackets [] replaced by your own identifying information:
+ * "Portions Copyrighted [year] [name of copyright owner]"
+ */
+
+ /* Candidate for Commons */
+
+#wrapper{
+    padding-bottom: 50px;
+}
+
+.float-right{
+    float:right;
+}
+
+ a[data-toggle="popover"] {
+    &:hover, &:focus{
+        box-shadow:none;
+        text-decoration:none;
+        cursor: pointer;
+        outline:none;
+        color: darken(@base-theme-color,5%);
+    }
+ }
+ .popover{
+    max-width: 500px;
+    .popover-title {
+        background-color: @base-theme-color;
+        border-bottom: 1px solid darken(@base-theme-color,5%);
+        color: white;
+        font-weight: normal;
+    }
+ }
+
+ .dropdown-menu>li>a {
+     padding: 3px 10px;
+ }
+
+ .dropdown-menu li .fa {
+     width:20px;
+     text-align: center;
+ }
+ /* END of Candidate for Commons */
+
+
+ /* Candidate for Commons - table */
+
+ .table > tbody > tr > td {
+     vertical-align: middle;
+ }
+
+ .table > thead > tr > th {
+    background-color: transparent;
+    border-bottom: 2px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: -1px;
+    padding: 10px 8px;
+    position: relative;
+    text-transform: uppercase;
+    vertical-align: bottom;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    border-color: #eee;
+}
+
+
+.table-striped {
+    th.col-check, td.col-check {
+        width: 13px;
+        text-align:center;
+    }
+
+    th.col-btn {
+        width: auto;
+    }
+
+    .btn-transparent {
+        color: #777;
+        padding: 1px 6px;
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+
+    > tbody > tr.selected{
+        background-color: #d9edf7;
+    }
+
+    > tbody > tr:nth-of-type(odd).tr-row{
+        background:transparent;
+    }
+
+    .btn-transparent:hover, .btn-transparent:focus {
+        color: #555;
+    }
+}
+
+.table>tbody>tr.tr-row>td{
+   padding-left:0;
+   border-top: none;
+   &:last-of-type{
+       padding-right:2px;
+   }
+}
+
+.table>tbody>tr>td{
+  vertical-align: middle;
+}
+
+
+
+.page-toolbar, .panel-toolbar {
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 10px;
+
+    .btn .fa {
+        width: 18px;
+        display: inline-block;
+        text-align: left;
+    }
+}
+
+
+.btn-secondary {
+    background-color:  #fff;
+    border-color: @base-theme-color;
+    color: @base-theme-color;
+    .fa{
+        color: @base-theme-color;
+    }
+
+    &:hover{
+        border-color: darken(@base-theme-color, 5%);
+        background-color: #eee;
+        color: darken(@base-theme-color, 5%);
+        .fa{
+            color: darken(@base-theme-color, 5%);
+        }
+    }
+}
+/* END of Candidate for Commons */
+
+
+.page-header{
+
+    h3.page-header-titles {
+        margin-top:10px;
+    }
+
+    h1 {
+        margin: 0;
+    }
+
+    h4.page-type {
+
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 1px;
+        margin: 5px 0 0;
+        color: #666;
+        font-weight: 600;
+
+    }
+
+    h3.page-subtitle {
+        font-size: 16px;
+        font-weight: 300;
+        color: #777;
+        margin:10px 0 0;
+    }
+
+    .header-icon {
+        display: table;
+        background: @base-theme-color;
+        color: #fff;
+        text-align: center;
+        width: 64px;
+        height: 64px;
+        border-radius: 64px;
+        line-height: 64px;
+        font-size: 32px;
+        font-size: 32px;
+        margin: -2px 10px 0 0;
+        overflow: hidden;
+    }
+
+    .fa-question-circle {
+        font-size: 15px;
+        vertical-align: top;
+        color:grey;
+    }
+}
+
+#realmsPageContent .page-header{
+    margin: 0 0 11px;
+    border-bottom:none;
+}
+
+
+.remember-forgot{
+    padding: 0 0 0;
+    .pull-right, .pull-left, .checkbox {
+        margin-top: 0;
+    }
+}
+
+#login-base, .bootstrap-dialog.loginDialog {
+    .page-header {
+        h1 {
+            text-transform: uppercase;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+    }
+
+    .btn-group-justified {
+        padding-top: 5px;
+    }
+
+    .btn-block+.btn-block {
+        margin-top: 15px;
+    }
+
+    label.choice-callback{
+        padding-right: 10px;
+        font-weight: normal;
+    }
+
+     .btn-default.active {
+        cursor:auto;
+    }
+}
+
+#dialogs .validationRules{
+    margin-left: 0;
+}
+
+.modal-dialog .modal-body .page-header {
+    margin: 0 0 20px;
+}
+
+.bootstrap-dialog.loginDialog {
+    .container {
+        width: auto;
+    }
+}
+
+.am-device-card {
+    height: 220px;
+}
+
+.am-device-card-circle {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 90px;
+    background-color: #519387;
+    color: #fff;
+    font-size: 60px;
+    height: 90px;
+    margin: 0 auto;
+    display: table;
+    text-align: center;
+ }
+
+.am-device-card-content-title {
+    font-size: 18px;
+}
+
+
+// FIXME: Commons Candidate
+.card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 30px;
+
+    &:hover {
+        border: 1px solid #519387;
+        transition: border-color 0.3s ease-in-out;
+    }
+}
+
+.card-menu {
+    position: absolute;
+    right: 14px;
+}
+
+.card-icon {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.card-icon-symbol {
+    padding-top: 40px;
+}
+
+.card-content {
+    text-align: center;
+}
+
+.card-menu-icon {
+    color: #777;
+}

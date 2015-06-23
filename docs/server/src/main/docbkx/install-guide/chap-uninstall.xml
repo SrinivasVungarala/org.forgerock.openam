@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-uninstall'
@@ -56,17 +56,23 @@
  <procedure xml:id="uninstall-OpenAM-core">
   <title>To Remove OpenAM Core Software</title>
   
-  <para>After you have deployed and configured OpenAM core services, you have
-  at least two, perhaps three or four, locations where OpenAM files are stored
-  on your system.</para>
+  <para>
+   After you have deployed and configured OpenAM core services, you may have
+   at least two to four locations where OpenAM files are stored
+   on your system.
+  </para>
   
-  <para>You remove the internal OpenAM configuration store when you follow
-  the procedure below. If you used an external configuration store, you can
-  remove OpenAM configuration data after removing all the software.</para>
+  <para>
+   You remove the internal OpenAM configuration store when you follow
+   the procedure below. If you used an external configuration store, you can
+   remove OpenAM configuration data after removing all the software.
+  </para>
   
   <step>
-   <para>Shut down the web application container in which you deployed
-   OpenAM.</para>
+   <para>
+    Shut down the web application container in which you deployed
+    OpenAM.
+   </para>
 
    <screen>
 $ <userinput>/etc/init.d/tomcat stop</userinput>
@@ -78,29 +84,43 @@ Using JRE_HOME:        /path/to/jdk/jre
 Using CLASSPATH:       /path/to/tomcat/bin/bootstrap.jar:
  /path/to/tomcat/bin/tomcat-juli.jar</computeroutput>
    </screen>
-
   </step>
+
   <step>
-   <para>Unconfigure OpenAM by removing configuration files found in the $HOME
-   directory of the user running the web application container.</para>
+   <para>
+    Unconfigure OpenAM by removing configuration files found in the $HOME
+    directory of the user running the web application container.
+   </para>
+
    <itemizedlist>
-    <para>For a full install of OpenAM core services, configuration files
-    include the following.</para>
+    <para>
+     For a full install of OpenAM core services, configuration files
+     include the following.
+    </para>
+
     <listitem>
-     <para>The configuration directory, by default
-     <filename>$HOME/openam</filename>. If you did not use the default
-     configuration location, then check in the OpenAM console under
-     Configuration &gt; Servers and Sites &gt; <replaceable>Server
-     Name</replaceable> &gt; General &gt; System &gt; Base installation
-     directory.</para>
+     <para>
+      The configuration directory, by default
+      <filename>$HOME/openam</filename>. If you did not use the default
+      configuration location, then check in the OpenAM console under
+      Configuration &gt; Servers and Sites &gt; <replaceable>Server
+      Name</replaceable> &gt; General &gt; System &gt; Base installation
+      directory.
+     </para>
     </listitem>
+
     <listitem>
-     <para>The hidden file that points to the configuration directory.</para>
-     <para>For example, if you are using Apache Tomcat as the web container,
-     this file could be
-     <filename>$HOME/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</filename>
-     OR
-     <filename>$HOME/.openssocfg/AMConfig_path_to_tomcat_webapps_openam_</filename>.</para>
+     <para>
+      The hidden file that points to the configuration directory.
+     </para>
+
+     <para>
+      For example, if you are using Apache Tomcat as the web container,
+      this file could be
+      <filename>$HOME/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</filename>
+      OR
+      <filename>$HOME/.openssocfg/AMConfig_path_to_tomcat_webapps_openam_</filename>.
+     </para>
     </listitem>
    </itemizedlist>
 
@@ -115,19 +135,30 @@ $ <userinput>rm -rf $HOME/openam $HOME/.openssocfg</userinput>
    </screen>
 
    <note>
-    <para>At this point, you can restart the web container and configure
-    OpenAM anew if you only want to start over with a clean configuration
-    rather than removing OpenAM completely.</para>
+    <para>
+     At this point, you can restart the web container and configure
+     OpenAM anew if you only want to start over with a clean configuration
+     rather than removing OpenAM completely.
+    </para>
    </note>
-   <para>If you used an external configuration store you must also remove
-   the configuration manually from your external directory server. The default
-   base DN for the OpenAM configuration is
-   <literal><?eval ${defaultRootSuffix}?></literal>.</para>
+
+   <para>
+    If you used an external configuration store, you must also remove
+    the configuration manually from your external directory server. The default
+    base DN for the OpenAM configuration is
+    <literal><?eval ${defaultRootSuffix}?></literal>.
+   </para>
   </step>
+
   <step>
-   <para>Undeploy the OpenAM web application.</para>
-   <para>For example, if you are using Apache Tomcat as the web container,
-   remove the .war file and expanded web application from the container.</para>
+   <para>
+    Undeploy the OpenAM web application.
+   </para>
+
+   <para>
+    For example, if you are using Apache Tomcat as the web container,
+    remove the <literal>.war</literal> file and expanded web application from the container.
+   </para>
 
    <screen>
 $ <userinput>cd /path/to/tomcat/webapps/</userinput>

@@ -1726,9 +1726,6 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
               <para><xref linkend="auth-core-realm-attributes" /></para>
           </listitem>
           <listitem>
-              <para><xref linkend="auth-core-persistent-cookie" /></para>
-          </listitem>
-          <listitem>
               <para><xref linkend="auth-core-account-lockout" /></para>
           </listitem>
           <listitem>
@@ -1886,76 +1883,6 @@ $ ssoadm set-realm-svc-attrs \
     </varlistentry>
 
     </variablelist>
-    </section>
-
-    <section xml:id="auth-core-persistent-cookie">
-     <title>Core - Persistent Cookie (Legacy)</title>
-
-     <indexterm>
-      <primary>Authentication</primary>
-      <secondary>Core</secondary>
-      <tertiary>persistent cookie (legacy)</tertiary>
-     </indexterm>
-     <indexterm>
-      <primary>Core authentication</primary>
-      <secondary>persistent cookie (legacy)</secondary>
-     </indexterm>
-
-     <para>This section of the Core Authentication module covers the Persistent Cookie options.</para>
-
-     <note><para>Two methods are available in OpenAM to configure persistent cookies. The options described
-     here and in <xref linkend="authn-from-browser" /> specify one method. There is also a new module,
-     described in <xref linkend="persistent-cookie" />. If you want to set up persistent cookies, you are
-     encouraged to use the new module. The options described here have no effect on that module.</para></note>
-
-    <variablelist>
-    <varlistentry>
-     <term>Persistent Cookie Mode</term>
-     <listitem>
-      <para>Determines whether users can return to their authenticated session
-      after restarting the browser. When enabled, the persistent cookie can be
-      used to reauthenticate until the persistent cookie expires (as specified
-      by the value of the Persistent Cookie Maximum Time attribute), or until
-      the user explicitly logs out. By default, the Authentication Service uses
-      only memory cookies (expires when the browser is closed).</para>
-      <para>The client must explicitly request a persistent cookie by adding
-      <literal>iPSPCookie=yes</literal> as a parameter to the login URL. OpenAM
-      sets a <literal>DProPCookie</literal> as described in
-      <xref linkend="authn-from-browser" />.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-persistent-cookie-mode</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Persistent Cookie Maximum Time</term>
-     <listitem>
-      <para>Specifies the interval after which a persistent cookie expires.
-      The interval begins when the user's session is successfully authenticated.
-      The maximum value is 2147483647 (in seconds, so a bit more than 68 years).
-      The field accepts any integer value less than the maximum.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-persistent-cookie-time</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-      <term>Persistent Cookie Authentication Level</term>
-        <listitem>
-          <para>Sets the authentication level used to indicate the level of security
-          associated with the module. The value can range from 0 to any positive integer.</para>
-          <para><command>ssoadm</command> attribute:
-          <literal>openam-auth-pcookie-auth-level</literal></para>
-        </listitem>
-    </varlistentry>
-    </variablelist>
-     <note>
-      <para>
-       The distributed authentication service (DAS) and cross-domain single sign-on
-       (CDSSO) do not support the <literal>iPSPCookie/DProPCookie</literal>
-       query string parameter to set a <literal>DProPCookie</literal> in the
-       user-agent as a mechanism for cookie persistence. Neither DAS nor CDSSO retains
-       <literal>iPSPCookie=yes</literal>.
-      </para>
-     </note>
     </section>
 
     <section xml:id="auth-core-account-lockout">
@@ -4633,11 +4560,8 @@ the '%' character is not included in the properties.
    </indexterm>
 
    <para>The Persistent Cookie module supports the configuration of cookie lifetimes,
-    based on requests and a maximum time. It is the preferred method for creating
-    a persistent cookie. If you choose this method, be aware that it does not
-    interact with the persistent cookie options associated with the Core
-    Authentication module.
-    Note that, by default, the persistent cookie is called <literal>session-jwt</literal>.
+    based on requests and a maximum time. Note that, by default, the persistent
+    cookie is called <literal>session-jwt</literal>.
    </para>
 
    <important>
@@ -4772,9 +4696,6 @@ the '%' character is not included in the properties.
 
       <para>You should now be able to authenticate automatically, as long as the cookie exists
       for the associated domain.</para>
-
-      <note><para>Unlike the legacy Core Authentication module, the Persistent Cookie module does not
-      support the iPSPCookie option described in <xref linkend="authn-from-browser" /></para></note>
   </section>
 
   <section xml:id="radius-module-conf-hints">
@@ -5186,7 +5107,7 @@ ssoadm \
    </variablelist>
   </section>
 
-  <xinclude:include href="../shared/securid/section-auth-services.xml">
+  <xinclude:include href="../shared/securid/section-auth-services.xml" condition="securid">
    <xinclude:fallback>
     <!-- Module not present in nightly builds -->
    </xinclude:fallback>
@@ -5751,61 +5672,6 @@ ssoadm \
      depends on the callbacks in login page for the module;
      <literal>IDTokenN</literal> represents the N<superscript>th</superscript>
      callback of the login page.</para>
-    </listitem>
-   </varlistentry>
-   <varlistentry>
-    <term>iPSPCookie=yes</term>
-    <listitem>
-     <para>Applicable only if you configure persistent cookies based on
-     <xref linkend="auth-core-persistent-cookie" /></para>
-     <para>Request that OpenAM return a persistent cookie that remains in the
-     browser after the browser is closed, allowing the user to login again
-     without being prompted for credentials. This only works if you have
-     configured persistent cookie mode for the realm where the user logs
-     in.</para>
-     <para>OpenAM sets an <literal>DProPCookie</literal> that persists until
-     expiry. The following screen shot shows an example.</para>
-     <mediaobject xml:id="figure-persistent-dpropcookie">
-      <alt>DProPCookie shown in the browser</alt>
-      <imageobject>
-       <imagedata fileref="images/persistent-dpropcookie.png" format="PNG" />
-      </imageobject>
-     </mediaobject>
-     <para>An alternative persistent cookie mechanism extends the lifetime of
-     the normal <literal>iPlanetDirectoryPro</literal> using the advanced
-     server settings, <literal>openam.session.persist_am_cookie</literal>
-     or <literal>openam.session.allow_persist_am_cookie</literal>, and
-     <literal>com.iplanet.am.cookie.timeToLive</literal>.</para>
-     <para>To set the mechanism globally for the server, browse in the OpenAM
-     console to Configuration &gt; Servers and Sites &gt; <replaceable>Server
-     Name</replaceable> &gt; Advanced, and then set
-     <literal>openam.session.persist_am_cookie</literal> to
-     <literal>true</literal> and
-     <literal>com.iplanet.am.cookie.timeToLive</literal> to the cookie lifetime
-     in seconds.</para>
-     <para>To allow users to use this mechanism on a per-session basis,
-     browse in the OpenAM console to Configuration &gt; Servers and
-     Sites &gt; <replaceable>Server Name</replaceable> &gt; Advanced, and then
-     set <literal>openam.session.allow_persist_am_cookie</literal> to
-     <literal>true</literal> and
-     <literal>com.iplanet.am.cookie.timeToLive</literal> to the cookie lifetime
-     in seconds. (If the OpenAM .war deployed does not include the console, set
-     these properties in the .properties configuration file.) Also configure
-     the session properties either globally under Configuration &gt; Global
-     &gt; Session &gt; Dynamic Attributes, or per realm under Access Control
-     &gt; <replaceable>Realm Name</replaceable> &gt; Services &gt; Session.
-     Then, to request the cookie, use
-     <literal>openam.session.persist_am_cookie=Yes</literal> as one of the
-     query string parameters in the login URL.</para>
-
-     <note>
-      <para>
-       Neither the XUI, Persistent Cookie module, distributed authentication
-       service (DAS), nor cross-domain single sign-on (CDSSO) support the deprecated
-       <literal>iPSPCookie</literal>. Similarly, DAS and CDSSO do not support
-       <literal>DProPCookie</literal>.
-      </para>
-     </note>
     </listitem>
    </varlistentry>
    <varlistentry>

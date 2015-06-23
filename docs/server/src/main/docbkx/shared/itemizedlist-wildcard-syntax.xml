@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2014 ForgeRock AS
+  !      Copyright 2014-2015 ForgeRock AS.
   !
 -->
 <itemizedlist xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
@@ -75,30 +75,52 @@
    Wildcards do not match <literal>?</literal>.
    You must explicitly add patterns to match URLs with query strings.
   </para>
+  <itemizedlist>
+   <listitem>
 
-  <!-- The following is very likely to change before 12.0.0,
-       meaning wildcards will match 0 or more characters.
-       TBC -->
   <para>
-   When used at the end of a pattern after a <literal>?</literal> character,
-   <literal>*</literal> matches one or more characters,
-   not zero or more characters.
+   When matching URLs sent from a web policy or J2EE agent, an asterisk
+   (<keycap>*</keycap>) used at the end of a pattern after a <literal>?</literal> character
+    matches one or more characters, not zero or more characters.
   </para>
-
-  <para>
+      <para>
    For example, <literal>http://www.example.com/*?*</literal> matches
    <literal>http://www.example.com/users?_action=create</literal>, but not
    <literal>http://www.example.com/users?</literal>.
   </para>
 
   <para>
-   For example, to match everything under
+   To match everything under
    <literal>http://www.example.com/</literal> specify three patterns,
    one for <literal>http://www.example.com/*</literal>,
    one for <literal>http://www.example.com/*?</literal>, and
    one for <literal>http://www.example.com/*?*</literal>.
   </para>
+  </listitem>
 
+  <listitem>
+  <para>
+   When matching resources by using the <literal>policies?_action=evaluate</literal>
+   REST endpoint, an asterisk (<keycap>*</keycap>) used at the end of a pattern
+   after a <literal>?</literal> character matches zero or more characters.
+  </para>
+
+  <para>
+   For example, <literal>http://www.example.com/*?*</literal> matches
+   <literal>http://www.example.com/users?_action=create</literal>, as well as
+   <literal>http://www.example.com/users?</literal>.
+  </para>
+
+   <para>
+   To match everything under
+   <literal>http://www.example.com/</literal> specify two patterns,
+   one for <literal>http://www.example.com/*</literal>,
+   one for <literal>http://www.example.com/*?*</literal>.
+  </para>
+   </listitem>
+</itemizedlist>
+ </listitem>
+  <listitem>
   <para>
    When defining patterns to match URLs with query strings, OpenAM sorts the
    query string field-value pairs alphabetically by field name

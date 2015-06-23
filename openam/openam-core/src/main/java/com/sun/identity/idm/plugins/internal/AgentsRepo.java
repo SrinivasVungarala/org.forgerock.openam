@@ -1,4 +1,4 @@
-/**
+/*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright (c) 2007 Sun Microsystems Inc. All Rights Reserved
@@ -27,6 +27,7 @@
  * Portions Copyrighted 2012-2015 ForgeRock AS.
  * Portions Copyrighted 2012 Open Source Solution Technology Corporation
  */
+
 package com.sun.identity.idm.plugins.internal;
 
 import static org.forgerock.openam.utils.CollectionUtils.*;
@@ -77,8 +78,7 @@ import com.sun.identity.sm.ServiceConfig;
 import com.sun.identity.sm.ServiceConfigManager;
 import com.sun.identity.sm.ServiceListener;
 import com.sun.identity.sm.ServiceSchemaManager;
-import com.sun.identity.shared.ldap.LDAPDN;
-import com.sun.identity.shared.ldap.util.DN;
+import org.forgerock.openam.ldap.LDAPUtils;
 
 public class AgentsRepo extends IdRepo implements ServiceListener {
 
@@ -242,13 +242,16 @@ public class AgentsRepo extends IdRepo implements ServiceListener {
             }
         }
         try {
-            Set vals = (Set) attrMap.get("userpassword");
+            Set<String> vals = (Set) attrMap.get("userpassword");
             if ((vals != null) && !AgentConfiguration.AGENT_TYPE_OAUTH2.equals(agentType)) {
-                Set hashedVals = new HashSet();
-                Iterator it = vals.iterator();
-                while (it.hasNext()) {
-                    String val = (String) it.next();
-                    hashedVals.add(hashAlgStr + Hash.hash(val));
+                Set<String> hashedVals = new HashSet<String>(vals.size());
+                for (String val : vals) {
+                    // If the password is already a hashed value, leave as is.
+                    if (val.startsWith(hashAlgStr)) {
+                        hashedVals.add(val);
+                    } else {
+                        hashedVals.add(hashAlgStr + Hash.hash(val));
+                    }
                 }
                 attrMap.remove("userpassword");
                 attrMap.put("userpassword", hashedVals);
@@ -1336,8 +1339,8 @@ public class AgentsRepo extends IdRepo implements ServiceListener {
              * not the agents with IdType.AGENTGROUP.
              * AGENTGROUP is for storing common properties.
              */
-            if (DN.isDN(username)) {
-                userid = LDAPDN.explodeDN(username, true)[0];
+            if (LDAPUtils.isDN(username)) {
+                userid = LDAPUtils.rdnValueFromDn(username);
             }
             Set pSet = new HashSet(2);
             pSet.add("userpassword");

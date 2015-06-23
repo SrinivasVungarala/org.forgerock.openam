@@ -11,7 +11,8 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
+ * Portions Copyrighted 2015 Nomura Research Institute, Ltd.
  */
 
 package org.forgerock.oauth2.core;
@@ -43,6 +44,8 @@ public interface ScopeValidator {
      * @param scope The requested scope.
      * @param request The OAuth2 request.
      * @return The updated scope used in the remaining OAuth2 process.
+     * @throws InvalidScopeException If the requested scope is invalid, unknown, or malformed.
+     * @throws ServerException If any internal server error occurs.
      */
     Set<String> validateAuthorizationScope(ClientRegistration clientRegistration, Set<String> scope,
             OAuth2Request request) throws InvalidScopeException, ServerException;
@@ -55,6 +58,8 @@ public interface ScopeValidator {
      * @param scope The requested scope.
      * @param request The OAuth2 request.
      * @return The updated scope used in the remaining OAuth2 process.
+     * @throws InvalidScopeException If the requested scope is invalid, unknown, or malformed.
+     * @throws ServerException If any internal server error occurs.
      */
     Set<String> validateAccessTokenScope(ClientRegistration clientRegistration, Set<String> scope,
             OAuth2Request request) throws InvalidScopeException, ServerException;
@@ -68,6 +73,8 @@ public interface ScopeValidator {
      * @param tokenScope The scope from the access token.
      * @param request The OAuth2 request.
      * @return The updated scope used in the remaining OAuth2 process.
+     * @throws InvalidScopeException If the requested scope is invalid, unknown, or malformed.
+     * @throws ServerException If any internal server error occurs.
      */
     Set<String> validateRefreshTokenScope(ClientRegistration clientRegistration, Set<String> requestedScope,
             Set<String> tokenScope, OAuth2Request request) throws ServerException, InvalidScopeException;

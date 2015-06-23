@@ -124,7 +124,7 @@
         <forgerock.bloomfilter.version>1.0.0-SNAPSHOT</forgerock.bloomfilter.version>
         <commons.authfilter.version>1.5.1</commons.authfilter.version>
         <forgerock.json.version>2.5.0-SNAPSHOT</forgerock.json.version>
-        <forgerock-ui.version>2.0.6-SNAPSHOT</forgerock-ui.version>
+        <forgerock-ui.version>2.0.7-SNAPSHOT</forgerock-ui.version>
         <restlet.version>2.1.7</restlet.version>
         <xercesj.version>2.11.0</xercesj.version>
         <powermock.version>1.5</powermock.version>
@@ -343,9 +343,7 @@
 
         <module>openam-server-auth-ui</module>
 
-        <module>openam-ui-policy</module>
-        <module>openam-ui-ria</module>
-        <module>openam-ui-scripts</module>
+        <module>openam-ui</module>
 
         <module>openam-server-only</module>
 
@@ -357,7 +355,6 @@
 
         <!-- Java Client SDK Artifacts -->
         <module>openam-clientsdk</module>
-        <module>openam-distauth</module>
 
         <!-- Documentation -->
         <module>openam-documentation</module>
@@ -374,6 +371,7 @@
         <module>openam-oauth2-saml2</module>
         <module>openam-http-client</module>
         <module>openam-tokens</module>
+        <module>openam-certs</module>
         <module>openam-upgrade</module>
     </modules>
 
@@ -769,6 +767,11 @@
                 <artifactId>openam-installtools-launcher</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.forgerock.openam</groupId>
+                <artifactId>openam-certs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- OpenAM schema projects -->
             <dependency>
@@ -1000,12 +1003,6 @@
                 <groupId>org.forgerock.openam</groupId>
                 <artifactId>openam-clientsdk</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.forgerock.openam</groupId>
-                <artifactId>openam-distauth</artifactId>
-                <version>${project.version}</version>
-                <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.forgerock.openam</groupId>

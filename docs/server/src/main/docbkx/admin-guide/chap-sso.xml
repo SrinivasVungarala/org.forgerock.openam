@@ -230,12 +230,13 @@
         refuses cookies that include the underscore (_) character in the FQDN.</para>
     </listitem>
 
-    <indexterm>
+    <listitem>
+
+     <indexterm>
         <primary>Session state</primary>
         <secondary>iPlanetDirectoryPro cookie</secondary>
-    </indexterm>
+     </indexterm>
 
-    <listitem>
         <para>
          When a stateless session cookie exceeds the maximum size permitted by the browser
         </para>

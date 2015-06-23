@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2014 ForgeRock AS. All Rights Reserved.
+-->
+<chapter xml:id='chap-objectives'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'>
+  <title>Defining Service Level Objectives</title>
+
+  <para>
+   Your deployment exists to provide service to clients and customers.
+   In order to be successful, therefore, you must set your objectives
+   based on what service levels you provide.
+   This chapter looks at defining your objectives in terms of service levels
+   including availability for different services.
+  </para>
+
+  <section xml:id="identify-services">
+   <title>Identifying Key Services</title>
+
+   <para>
+    TODO: Consider the features in chap-features#server-features.
+    Which of those features are critical to success for the deployment?
+    (Key features are the critical ones.)
+   </para>
+  </section>
+
+  <section xml:id="define-service-levels">
+   <title>Defining Service Levels</title>
+
+   <para>
+    TODO: For each key service, consider appropriate measurements.
+    For example, throughput for authn, authz decisions,
+    response times for authn, authz decisions,
+    average and peak levels of active sessions and tokens.
+    Also discuss support levels provided to clients using key services.
+    Discuss what levels of security must be provided,
+    as extra network hops, HTTPS, signing and encryption, etc.
+    should be taken into account when testing service performance.
+   </para>
+  </section>
+
+  <section xml:id="define-availability-levels">
+   <title>Defining Availability Levels</title>
+
+   <para>
+    TODO: For each key service, consider availability levels.
+    Consider when services must be available.
+    Do you really require session-level availability?
+    (Users must not have to authenticate again until their session runs out.)
+    Or do you only require service-level availability?
+    (Users must authenticate again if session is lost.)
+    Are there low usage times when services can go offline for maintenance?
+    Do you require fail over across data centers?
+    Or only within data centers?
+    If services must be highly available, what does highly available mean
+    in concrete terms?
+    Define the minimum peak level at which a service is still available.
+   </para>
+  </section>
+
+  <section xml:id="usage-expectations">
+   <title>Defining Usage Expectations</title>
+
+   <para>
+    TODO: Consider the usage levels you expect,
+    and for which you design the deployment.
+    Consider what level of growth is manageable
+    before the deployment must be expanded to meet service level expectations.
+   </para>
+  </section>
+
+  <section xml:id="monitor-service-levels">
+   <title>Monitoring Service Levels</title>
+
+   <para>
+    TODO: For each key service,
+    consider how to measure uptime, throughput, response times
+    at the granularity expected by clients.
+    Consider how you measure and monitor usage, and how you set thresholds
+    to identify when usage looks like it will soon exceed expectations.
+    Consider how you monitor the production deployment
+    in order to react when service levels drop below thresholds.
+   </para>
+  </section>
+ </chapter>

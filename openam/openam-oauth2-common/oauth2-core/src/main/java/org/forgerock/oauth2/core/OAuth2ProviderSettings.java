@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2014-2015 ForgeRock AS.
+ * Portions Copyrighted 2015 Nomura Research Institute, Ltd.
  */
 
 package org.forgerock.oauth2.core;
@@ -68,6 +69,7 @@ public interface OAuth2ProviderSettings {
      * @param scope The requested scope.
      * @return The updated scope used in the remaining OAuth2 process.
      * @throws ServerException If any internal server error occurs.
+     * @throws InvalidScopeException If the requested scope is invalid, unknown, or malformed.
      */
     Set<String> validateAuthorizationScope(ClientRegistration clientRegistration, Set<String> scope,
             OAuth2Request request) throws ServerException, InvalidScopeException;
@@ -81,6 +83,7 @@ public interface OAuth2ProviderSettings {
      * @param request The OAuth2 request.
      * @return The updated scope used in the remaining OAuth2 process.
      * @throws ServerException If any internal server error occurs.
+     * @throws InvalidScopeException If the requested scope is invalid, unknown, or malformed.
      */
     Set<String> validateAccessTokenScope(ClientRegistration clientRegistration, Set<String> scope,
             OAuth2Request request) throws ServerException, InvalidScopeException;
@@ -95,6 +98,7 @@ public interface OAuth2ProviderSettings {
      * @param request The OAuth2 request.
      * @return The updated scope used in the remaining OAuth2 process.
      * @throws ServerException If any internal server error occurs.
+     * @throws InvalidScopeException If the requested scope is invalid, unknown, or malformed.
      */
     Set<String> validateRefreshTokenScope(ClientRegistration clientRegistration, Set<String> requestedScope,
             Set<String> tokenScope, OAuth2Request request) throws ServerException, InvalidScopeException;

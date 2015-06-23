@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2014 ForgeRock AS. All Rights Reserved.
+-->
+<chapter xml:id='chap-upstream'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+ <title>Gathering Information About Providers</title>
+
+ <para>
+  This chapter covers gathering information about the services
+  that your OpenAM deployment consumes,
+  and defining what those services must provide for your deployment.
+ </para>
+
+ <section xml:id="authentication-services">
+  <title>Accessing Authentication Services</title>
+
+  <para>OpenAM's authentication service follows a consistent lifecycle, beginning
+   with the client entering an access request for a protected resource.
+   A policy agent is installed on the server with the protected resource and acts
+   as a gatekeeper to ensure that the client has the proper privileges to access
+   the data.
+   After the client makes an access request to the protected resource,
+   the policy agent initiates the authentication process by redirecting the client
+   to an OpenAM authentication interface.
+   For Federated deployments, federated applications can redirect the client to the OpenAM
+   authentication interface as a sub-process if additional authentication is required.</para>
+
+  <para>OpenAM provides authentication modules that allow you to configure how the
+   client gets authenticated. Each module is defined within an abstraction layer called
+   an authentication chain, which has one or more modules that can be processed for
+   each client. The chain allows you to sequentially process the modules in such
+   a way to provide step-up authentication or additional authentication like HMAC
+   one-time password (HOTP), requiring
+   additional credentials to access certain restricted resources. </para>
+
+  <para>The OpenAM authentication framework is an extension of the Java Authentication
+   and Authorization Service (JAAS) APIs with additional features that allow
+   centralized authentication configuration, account lockout,
+   callback object definitions, and distributed authentication support.</para>
+
+  <para>OpenAM delegates authentication for single sign-on (SSO)
+   to a range or applications from LDAP to Windows, RADIUS to SAML identity
+   providers to X.509 certificates. The framework for chaining authentication
+   modules is very flexible and configurable providing additional features, such
+   as adaptive risk and others. Once SSO has been configured, OpenAM can
+   potentially reduce the load on its authentication services, since SSO takes care of
+   session management and only goes back to authenticate when a user's session is
+   over.</para>
+
+  <para>
+   You configure authentication chains per realm, allowing different authentication
+   methods for specific sets of users, clients, or domains. You can also set an
+   authentication chain to the top realm (labelled as "/"), which applies
+   globally to all sub-realms.
+  </para>
+
+  <para>Each authentication module is made up of a callbacks XML file that defines
+   the properties required by JAAS, authentication service that registers the module
+   in OpenAM, properties file that allows text or localized text to be displayed
+   in the OpenAM console, and any pluggable extensions written in Java.</para>
+
+  <figure xml:id="figure-openam-authentication-components">
+   <title>OpenAM Authentication Components</title>
+   <mediaobject>
+    <alt>OpenAM Authentication Components</alt>
+    <imageobject>
+     <imagedata fileref="images/openam-authentication-plugins.png"
+                format="PNG" />
+    </imageobject>
+    <textobject>
+     <para>An OpenAM authentication contains a callbacks XML file that define
+      the data consumed by JAAS, pluggable authentication module, OpenAM authentication
+      service that registers the module with the OpenAM server, and a properties
+      file that allows the text or localized text of the modules to be displayed
+      in the OpenAM console.</para>
+    </textobject>
+   </mediaobject>
+  </figure>
+
+  <para>The out-of-the-box authentication modules provides the following
+   properties, which you can read about in more detail at
+   <link xlink:href="${docSetBaseURL}/admin-guide#configure-authn-modules"
+         xlink:show="new">
+    <citetitle>Configuring Authentication Modules</citetitle></link>.</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Active Directory Authentication Module</emphasis>.
+     Supports the use of Active
+     Directory as a directory service. You specify the primary and secondary
+     servers, where the default LDAP port is 389;
+     636 if LDAPS is implemented.
+     You also specify the DN to start user searches, bind user DN (the default
+     bindDN is <literal>amldapuser</literal>) and password, attributes to
+     retrieve user profile, SSL/TLS access, return user DN to datastore,
+     user creation attributes, LDAP connection heartbeat interval, LDAP connection
+     heartbeat time unit, and authentication level.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Adaptive Risk Authentication Module</emphasis>.
+     Supports risk assessment during
+     authentication to determine whether a higher authentication level is required
+     to access a resource. The module is typically used as a second module in a
+     chain with a criteria of <literal>sufficient</literal>, indicating that
+     the module is not required to succeed. You specify authentication level and
+     risk threshold, plus the following types of properties and their scores:
+     failed authentications, IP address range, IP address history, known cookie,
+     device cookie, time since last login, profile attribute, geo location, and
+     request header.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Anonymous Authentication Module</emphasis>.
+     Allows anonymous users to log in to
+     your Web site without login credentials. You specify the <command>ssoadm</command>
+     service name and realm attributes: valid anonymous users, default user name,
+     case sensitive user IDs, and authentication level.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Certificate Authentication Module</emphasis>.
+     Supports the use of X.509 digital
+     certificates. When you store certificates and certificate revocation lists
+     (CRL) in an LDAP directory service, you must configure both to determine how
+     they will access the directory service and also how they will look up the
+     certificates and CRLs, based on the fields in the certificates that
+     the clients present to OpenAM for authentication.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Core Authentication Module</emphasis>. The core
+     module is a meta-module that lets you set up lists of modules and the types of client
+     appplications that can authenticate with the modules. You can define
+     global attributes, realm attributes, persistent cookie (legacy implementation),
+     account lockout, general options like default authentication locale and identity
+     types, security, and post-authentication processing.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Data Store Authentication Module</emphasis>. Supports
+     authentication via a login using the Identity repository. The Data Store module
+     is generic and does not implement data store-specific capabilities like
+     password policies but is often used to look up user profile information, such as
+     email or telephone number in conjunction with other modules in the chain.
+     You specify the authentication level with this module.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Device Print Authentication Module</emphasis>. Supports
+     the collection of client device locations, fonts, plug-ins and other data via a
+     browswer to validate additional characteristics of the client's system.
+     The module is not a standalone system and must be used with another
+     authentication module, so that it can use the authentication information to validate
+     the username. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Federation Authentication Module</emphasis>. Supports
+     authentication for SAML, SAMLv2, ID-FF, and WS-Federation. The modules is
+     used by the server provider to create a user session after validating single
+     sign-on protocol messages. You specify the authentication level for the module.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">HOTP Authentication Module</emphasis>. Supports HMAC
+     one-time password authentication. Typically, this module is used with the
+     Data Store module to retrieve a user's mail address or telephone number and
+     send a one-time password via email or SMS for authentication validation.
+     You can specify a list of properties, such as authentication level, mail server
+     host name, port, username and password, email from address, one-time password
+     validity length, OTP password length, delivery, mobile phone number attribute names,
+     mobile carrier attribute name, email attribute name, and others.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">HTTP Basic Authentication Module</emphasis>. Supports
+     HTTP Basic authentication where the client enters a username and password.
+     The credentials are authenticated against the backend module in OpenAM. You
+     specify the backend module name and authentication level for this module.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">JDBC Authentication Module</emphasis>. Supports
+     authentication against a database such as MySQL or Oracle DB. You specify
+     the connection type, connection pool JNDI name, JDBC driver and URL, database
+     password, password column name, prepared statement, class to transform
+     password syntax, and authentication level.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">LDAP Authentication Module</emphasis>. Supports
+     authentication against an LDAP directory server. You specify the primary
+     and secondary LDAP server, DN to start user search, bind user DN and password,
+     attributes to retrieve user profile, and others.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Membership Authentication Module</emphasis>. Supports
+     self-registration for new users, which is stored in the Identity repository.
+     You specify the minimum password length, default user role DNs, user status
+     after registration and authentication level.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">MSISDN Authentication Module</emphasis>. Supports
+     non-interactive authentication using a mobile subscriber ISDN number against
+     the value on a user's entry in an LDAP directory service. You specify the
+     trusted gateway IP address, MSISDN number search parameter name, LDAP server
+     and port, LDAP start search DN, attribute to use to search LDAP, LDAP server
+     authentication user and password, SSL/TLS for LDAP access, MSISDN header search
+     attribute, LDAP attribute used to retrieve user profile, return user DN to datastore,
+     and authentication level.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">OATH Module</emphasis>. Supports HOTP and Time-Based
+     One-Time Password (HOTP) authentication.The module allow user to access their
+     accounts with a device, such as a mobile phone or Yubikey. You specify the
+     authentication level, one-time password length, minimum secret key length,
+     secret key attribute name, OATH algorithm to use, HOTP window size, counter
+     attribute name, add checksum digit, truncation offset, TOTP time step interval,
+     TOTP time steps, last login time attribute. Yubikey implementations require
+     some time to set it up prior to deploying the OATH module.
+     You may need a cross-platform personalization tool with this implementation.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">OAuth 2.0 Authentication Module</emphasis>. Supports
+     authentication of OAuth 2.0 resource server clients. OpenAM provides an option
+     to create a user account if none exists. If the user creation option is enabled,
+     then you must provide valid SMTP settings, so that OpenAM can send an
+     account activation code in an email. You specify the client ID and secret,
+     authentication endpoint URL, access token endpoint URL, user profile service URL,
+     scope, proxy URL, account mapper and configuration, attribute mapper and
+     configuration, SMTP properties, and others.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">OpenID Connect Token Authentication Module</emphasis>.
+     Supports authentication by the OpenAM server, acting as a relying party
+     to an OpenID Connect 1.0 provider. OpenAM uses an OpenID Connect provider's
+     ID token to authenticate the end user.
+     You configure the module to specify how OpenAM gets the information needed to
+     validate the ID token, which request header contains the ID token, the issuer
+     identifier for the provider who issed the ID token and how to map the ID token
+     claims to an OpenAM user profile. You can specify the configuration type,
+     discovery url, jwk url or client secret, name of header referencing the
+     ID token, name of the OpenID Connect ID token issuer, mapping of local LDAP
+     attributes to jwt attributes, and principal mapper class.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Persistent Cookie Module</emphasis>.
+     Supports the configuration of cookie lifetimes.
+     The persistent cookie is called <literal>session-jwt</literal>. You need to
+     make sure the public key alias is defined in OpenAM before you set up the
+     module. Specify the idle timeout and
+     max life of the cookie. The module typically is the second module in an
+     authentication chain.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">RADIUS Authentication Module</emphasis>.
+     Supports authentication against RADIUS
+     servers. Specify the IP address or FQDN of the  RADIUS servers (default is
+     the localhost loopback: 127.0.0.1), shared secret, port number, timeout,
+     health check interval, and authentication level.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">SAE Authentication Module</emphasis>.
+     Supports virtual federation, where an existing
+     entity instructs the local OpenAM instance to use federation protocols to
+     transfer authentication and attribute information to a partner application.
+     Specify the authentication level for the module.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">SecurID Authentication Module</emphasis>.
+     Supports authentication with RSA
+     Authentication Manager software and RSA SecurID authenticators. Specify the
+     ACE/Server configuration path and authentication level.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Windows Desktop SSO Authentication Module</emphasis>.
+     Supports Kerberos authentication.
+     The Windows Desktop SSO authentication module enables desktop single sign-on
+     such that a user who has already authenticated with a Kerberos Key Distribution
+     Center can authenticate to OpenAM without having to provide the login
+     information again. Users may need to set up Integrated Windows Authentcation
+     in Internet Explorer to benefit from single sign-on when logged on to a
+     Windows desktop. Specify the service principal, keytab file name, Kerberos
+     realm, Kerberos server name, return principal with domain name, and
+     authentication level.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Windows NT Authentication Module</emphasis>.
+     Supports authentication against a
+     Microsoft Windows NT server. The module requires that you install a Samba
+     client in the <filename>bin</filename> directory in the OpenAM
+     configuration. You specify the authentication domain, host, Samba configuration
+     file name, and authentication level.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">WSSAuth Authentication Module</emphasis>.
+     Validates a user name and password
+     received as an authentication token in a request from a Web
+     Service Client. You specify the user search attribute, user realm,
+     user password attribute, and authentication level.</para>
+   </listitem>
+  </itemizedlist>
+
+ </section>
+
+ <section xml:id="identity-repositories">
+  <title>Accessing and Storing Identity Data</title>
+
+  <para>
+   In typical deployments, OpenAM uses an external LDAP server for its Identity
+   data store. The Identity data store maps identities into a realm,
+   so that OpenAM can access the user or group data for authentication and
+   authorization purposes. Multiple Identity data stores can
+   be mapped to a realm or across multiple realms.</para>
+
+  <para>It is important to note that OpenAM is not a provisioning solution.
+   There are cases where an authentication module can create a new user account
+   if not present in the Identity data store.
+   For example, if enabled, the OAuth 2.0 authentication module provides
+   the ability to create user accounts if not present.
+   The module sets the account's <literal>uid</literal> attribute from a
+   dynamically created UUID, and then configures the profile attributes in the
+   attribute mapper configuration.
+   However, in most scenarios, it may be better to use a
+   more robust provisioning solution, such as the OpenIDM Identity Management System, where
+   user accounts can be managed more easily and with more control.
+   </para>
+
+   <para>An Identity data store is only required when a client or
+    application needs to read or write to a user's account.
+    OpenAM can function properly if no Identity data store is configured as
+    long as the client does not need to read or write to any user entries.
+    If an Identity data store is only checking for credentials, then it is called
+    a <emphasis>Credentials data store</emphasis>. If you want the Identity store
+    to do more than just store entries, such as function as an authentication provider,
+    you will need to extend the schema, add indexes and access control instructions,
+    and an account for OpenAM to access the Identity store.
+   </para>
+
+  <para>OpenAM installs with an embedded OpenDJ directory server, which you can
+   use to test your configuration given a small number of Identity entries.
+   You should be aware the default embedded directory server also stores configuration
+   data, CTS tokens, and policy data required by the OpenAM server to process
+   operations.</para>
+
+   <para>In actual deployments, multiple external Identity data stores could be
+    configured with OpenAM. Each data store (LDAP) can
+    also be configured for replication to ensure for high availability.
+    There are numerous possible deployment options depending on your existing
+    network infrastructure and scalability planning requirements.</para>
+
+  <para>OpenAM provides various out-of-the box and custom plug-ins to connect and
+   map identities to a data store, housed on an LDAP or Oracle server.
+   OpenAM supports a number of data store types, which can be viewed in the
+   <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements" xlink:show="new">
+    <citetitle>OpenAM Release Notes</citetitle></link>.</para>
+
+   <figure xml:id="figure-openam-external-identity-store">
+    <title>OpenAM External Identity Store</title>
+    <mediaobject>
+     <alt>OpenAM External Identity Store</alt>
+     <imageobject>
+      <imagedata fileref="images/openam-external-identity-store.png"
+                 format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>OpenAM supports a variety of identity data store vendors to interact
+       with your existing existing identity repository.</para>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+  <section xml:id="openam-opendj-configurations">
+   <title>Identity Data Store Configuration</title>
+   <para>OpenAM allows you to configure the LDAP connection pool sizes, setting
+    the minimum and maximum number of LDAP connections to the directory server
+    for LDAP and Membership authentication modules only.
+    We recommend you set the minimum and maximum number of LDAP connections to
+    10 and 65, respectively as a start, then tune the server appropriately.
+   </para>
+
+   <para>To test SSL or TLS connections to the directory server, you can enable
+    the embedded OpenDJ directory server to generate a self-signed
+    certificate, which is only recommended for use in test environments and not in
+    production environments.
+   </para>
+  </section>
+ </section>
+
+ <section xml:id="openam-configuration-data">
+  <title>OpenAM Configuration</title>
+  <para>
+   OpenAM stores global, organizational, user, policy, and operational
+   data in its Configuration data store.
+  </para>
+
+  <para>In release 10.1, OpenAM introduced the Core Token Service (CTS), a persistent
+   and highly available token storage for session, OAuth 2.0, and SAML 2.0 tokens.
+   By default, these tokens are stored in the Configuration data store together
+   with other data.</para>
+
+  <para>
+   Colocating configuration and token data simplifies deployment.
+   For very high throughput or geographically dispersed deployements, you can also
+   opt to separate configuration and token data by configuring the Core Token
+   Service (CTS), stored in an external OpenDJ directory server. For more information,
+   see <xref linkend="openam-config-store-options" />.
+  </para>
+
+  <section xml:id="openam-realms">
+   <title>Realms</title>
+   <para>The Configuration data store stores its data into a unit called a
+    <emphasis>realm</emphasis>, which allows
+    the delegation of administrative functions into different configuration
+    domains.
+    When OpenAM is installed and configured, the top realm ("/") is created,
+    functioning as a root realm for the server.
+    Administrators set up realms using the OpenAM Console, <command>ssoadm</command>
+    command-line tool and through CRUD (Create Read Update Delete) methods
+    using REST endpoints.</para>
+
+   <para>OpenAM supports <emphasis>multiple</emphasis> realms,
+    where each realm controls the methods that clients use
+    to interact with protected resources.
+    New realms inherit from the global configuration but can also be modified for
+    each realm.
+    For example, many companies require the segmentation of sensitive data from
+    more generic data,
+    such as Payroll and Human Resources information from general IT or application
+    data.
+    Realms enable such configuration segmentation and provides a means for
+    multiple administrators to manage certain segments of the OpenAM infrastructure.</para>
+
+   <para>To deploy this scenario, you can configure a realm
+    for each group, or you can subdivide a single group
+    into smaller sub-groups with varying trust levels and
+    authentication mechanisms.</para>
+
+   <para>Realms are stored as its own entry in
+    the data store with the following types of information:</para>
+
+   <itemizedlist>
+    <listitem>
+     <para><emphasis role="bold">Authentication</emphasis>. Each realm
+      defines the authentication mechanism to which users provide their
+      credentials. Different realms can inherit authentication mechanisms from
+      parent realms or alternatively have their own, independently configured
+      authentication mechanisms.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Authorization</emphasis>. Each realm defines its
+      authorization policies to determine if users can access certain resources.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Federation</emphasis>. Each realm defines the
+      type of federation mechanism deployed if any configured circle of
+      trust groups.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Identities</emphasis>. Each realm defines the
+      subjects of a realm, which can be the defined users and groups. Additionally,
+      each realm defines the Identity repository that stores user data. A realm
+      can inherit from parent realms or define its own users and groups.</para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Service Configuration</emphasis>. Each realm
+      has administration data for users who can manage the realm.</para>
+    </listitem>
+   </itemizedlist>
+
+   <para>For more information, see
+    <link xlink:href="${docSetBaseURL}/admin-guide#chap-realms"
+          xlink:show="new"><citetitle>Configuring Realms</citetitle>.
+    </link></para>
+
+  </section>
+ </section>
+
+
+ <section xml:id="openam-overview-repositories">
+  <title>Where OpenAM Stores Data</title>
+
+  <para>OpenAM interacts with three general types of data stores: Configuration,
+   CTS, and User. This section provides a brief overview of the configuration and
+   CTS stores.</para>
+
+  <section xml:id="openam-config-repo">
+   <title>Where OpenAM Stores Configuration Data</title>
+
+   <para>OpenAM stores global, realm, administrative user, and policy configuration
+    data in its Configuration data store.
+    Configuration data includes server settings (host name, port, URIs),
+    services, policy data for authentication services, realm settings,
+    policy agent settings, admin settings, and operational data needed by OpenAM
+    to process its services. </para>
+
+   <para>OpenAM's Core Token Service (CTS) stores its tokens with the configuration
+    store by default.
+    However, due to the short-lived nature of tokens and the volatility of its data
+    in a replicated directory server topology,
+    you can separate the CTS store into its own external directory server.</para>
+
+   <para>OpenAM also supports Short Message Service (SMS) notifications of any
+    service configuration changes made using the Administration Console,
+    command-line tools, or Client API.</para>
+
+   <para>OpenAM supports a number directory servers and a relational database
+    for its configuration store, which can be viewed in the
+    <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements"
+          xlink:show="new">
+     <citetitle>OpenAM Release Notes</citetitle></link>.</para>
+
+  </section>
+
+  <section xml:id="openam-config-store-options">
+   <title>Configuration Data Store Deployment Options</title>
+
+   <para>For its default configuration data store, OpenAM installs with its
+    own embedded OpenDJ directory server, which stores configuration data
+    together with CTS tokens. This type of deployment is best suited for
+    systems with a fixed number of policies and where CTS replication loads
+    across a fully-meshed topology of embedded OpenDJ directory servers does not
+    impact OpenAM server performance as both share OpenAM's Java virtual machine (VM) memory
+    space.</para>
+
+   <figure xml:id="figure-openam-embedded-config">
+    <title>OpenAM Embedded Configuration Store</title>
+    <mediaobject >
+     <alt>OpenAM Embedded Configuration Store</alt>
+     <imageobject>
+      <imagedata fileref="images/openam-embedded-config.png"
+                 format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>OpenAM installs with its own embedded OpenDJ Directory Server as its
+       default configuration store.</para>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+   <para>Another deployment option is to deploy both the configuration store and
+    the CTS store externally. This type of deployment is suited for larger systems
+    with a large number of policies. If you are configuring the external
+    CTS store, you will need to add some schema definitions, indexes, and
+    access control rules to provide the proper privileges for OpenAM to communicate
+    and interact with the external data store.
+   </para>
+
+   <figure xml:id="figure-openam-external-cts-config-store">
+    <title>OpenAM External CTS Configuration Store</title>
+    <mediaobject >
+     <alt>OpenAM External CTS Configuration Store</alt>
+     <imageobject>
+      <imagedata fileref="images/openam-external-cts-config-store.png"
+                 format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>OpenAM's Core Token Service (CTS) centrally holds tokens and session
+       data in its configuration store. You can configure an external CTS store
+       if you anticipate volatile replication traffic.</para>
+     </textobject>
+    </mediaobject>
+   </figure>
+
+   <para>Actual productions deploy multiple OpenAM servers for failover purposes.
+    In such cases, OpenAM's flexible architecture allows for a shared external
+    configuration or CTS store if required.</para>
+
+   <!-- Determine if this is necessary -->
+   <!--para>The following figure shows multiple OpenAM servers
+    with embedded configuration stores, sharing multiple replicated external
+    CTS stores behind a load balancer. This type of deployment can also extend
+    to multiple data centers in different regions or countries that want
+    to minimize WAN traffic.</para>
+
+   <mediaobject xml:id="figure-multiple-openam-external-cts-store">
+    <imageobject>
+     <imagedata fileref="images/multiple-openam-external-cts-store.png"
+                format="PNG" />
+    </imageobject>
+   </mediaobject-->
+
+   <para>Ultimately, the decision to externalize the configuration and CTS data
+    stores comes down to whether the data is easier to manage in the embedded
+    directory server (assuming a fully-meshed replication topology and shared
+    OpenAM memory space) or an external service with a potentially more-WAN
+    friendly replication topology involving stand-alone replication servers and
+    stand-alone directory server replicas, but requiring management of a distinct
+    directory service.</para>
+  </section>
+
+  <section xml:id="openam-caches">
+   <title>OpenAM Data Store Caches</title>
+   <para>OpenAM enables two primary independent caches for configuration and Identity data.
+    Both cache types use LDAP persistent search to receive notifications of any
+    changes to cached data. The Identity cache has two levels: global and local.
+    The global cache is used by the LDAP persistent search. You can disable the global
+    cache and use the local caches.
+    You can disable one or both caches depending on your requirements.
+    You can also set the size and expiration time of the cache.
+   </para>
+
+   <!-- TODO: recreate cache graphic -->
+   <!--figure xml:id="figure-openam-caches">
+    <title>OpenAM Caches</title>
+    <mediaobject >
+     <alt>OpenAM Caches</alt>
+     <imageobject>
+      <imagedata fileref="images/openam-caches.png"
+                 format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>OpenAM has two primary types of caches: one for the configuration data,
+       the other for the Identity data.</para>
+     </textobject>
+    </mediaobject>
+   </figure-->
+
+  </section>
+ </section>
+
+ <!-- TODO: Need to write this up -->
+ <!--section xml:id="accessing-openam">
+  <title>Accessing OpenAM Services</title>
+
+  <para>
+   TODO: cover considerations for network and load balancing,
+   in particular how to avoid exposing all services to external networks.
+   Consider whether to terminate HTTPS on the load balancer
+   and then run HTTP to OpenAM, or whether to continue HTTPS to OpenAM.
+   Discuss expectations about network links, particularly WAN links.
+   Discuss considerations for policy agents behind load balancers.
+  </para>
+ </section-->
+
+ <!-- TODO: Revisit this section -->
+ <section xml:id="integrating-with-other-am-software">
+  <title>Integrating With Other Access Management Software</title>
+
+  <para>
+   OpenAM offers a powerful way to set up a multi-protocol hub through OpenAM with
+   varioud third-party applications.
+   OpenAM provides numerous integration points to interact with other access
+   management systems. OpenAM's Federation Service provides a means to
+   set up OpenAM as an identity provider and establish a circle of trust relationship
+   with a service provider.
+  </para>
+
+  <para>
+   OpenAM provides integration endpoints for both service provider and identity
+   provider. An application can redirect the user to these endpoints to initiate
+   the federation process.
+   For tighter integration, you can add the endpoint code directly into the application.
+  </para>
+
+  <para>OpenAM endpoints reside in the Web application folder at
+   <filename>$WEB_APP/saml2/jsp</filename>:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">spSSOInit.jsp</emphasis>. Used to start Federated
+     SSO from the Service Provider.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">idpSSOInit.jsp</emphasis>. Used to start Federated
+     SSO from the Identity Provider.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">spSingleLogoutInit.jsp</emphasis>. Used to start Federated
+     SLO from the Service Provider.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">idpSingleLogoutInit.jsp</emphasis>. Used to start Federated
+     SLO from the Identity Provider.</para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   OpenAM also supports the following OAuth 2.0 endpoints that can be implemented
+   with a resource server:
+  </para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Authorization/Authentication Endpoint</emphasis>.
+     Used to exchange an authorization grant for an access token.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Access Token Endpoint</emphasis>.
+     Used to exchange an authorization grant for an access token. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">User Profile Service URL</emphasis>.
+     Used to retrieve user profile information.</para>
+   </listitem>
+  </itemizedlist>
+ </section>
+
+ <section xml:id="running-openam">
+  <title>Running OpenAM Software</title>
+
+  <para>OpenAM is a Web application and is supported by most J2EE Web containers,
+   such as Apache Tomcat, JBoss, IBM WebSphere, Oracle WebLogic, Oracle GlassFish
+   and JBoss App Server.
+   Check the OpenAM Release Notes for the list of supported J2EE Web containers.</para>
+
+  <para>OpenAM is supported on a number of popular operating systems (OS), such as
+   Linux, Microsoft Windows Server 2008, and Oracle Solaris.
+   See the OpenAM Release Notes for the list of supported operating systems.</para>
+
+  <para>The policy agent can be configured to recognize any host or virtual host
+   name by using the Fully Qualified Domain Name (FQDN) Virtual Host map on OpenAM.
+   There are two possible deployment options available: you can install one agent
+   per Web server. You will have one agent profile in OpenAM under the root realm.
+   Or you can have several Web servers with an agent deployed on each server,
+   each has their own separate profiles in OpenAM, serving each client on the
+   specific host.
+  </para>
+
+  <!-- TODO: Talk about JVM Heap and Sizing -->
+
+ </section>
+
+ <section xml:id="monitoring-openam">
+  <title>Monitoring OpenAM Software</title>
+
+  <para>OpenAM supports a monitoring framework that exposes configuration, operational,
+   and performance MBean metrics accessible through various tools such as SNMP
+   network management devices, JConsole, or a Web browser.
+   The monitoring framework is based upon the Java Dynamic Monitoring Kit
+   (JDMK) API and tools that create Java Management Extensions (JMX) Management Beans
+   (MBeans) to collect monitoring data. The JMX MBeans can also be used to
+   monitor the embedded OpenDJ directory server instance in addition to the OpenAM
+   core server.
+   </para>
+
+  <para>OpenAM can monitor the following types of data:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Operational Data</emphasis>. Maintains information on each of OpenAM's functional
+     components, such as Authentication, Identity Repository, Logging, Policy,
+     Session, and SAML2.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Configuration Data</emphasis>. Maintains information on the servers, ports, sites,
+     virtual IPs, hostnames and other data in the OpenAM infrastructure.
+     OpenAM also provides monitoring support for its Core Token Service (CTS),
+     which is best tracked using SNMP.
+     </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Deployment Data</emphasis>. Maintains information on the configured realm(s),
+     policy agents, and services.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Federation Data</emphasis>. Maintains information on the entire federation configuration
+     across all protocols, such as SAML2 circle of trust configurations,
+     WS-Federation entities, ID-FF entities and others.</para>
+   </listitem>
+  </itemizedlist>
+
+  <section xml:id="openam-logging-service">
+   <title>OpenAM Logging</title>
+
+   <para>OpenAM provides a distributed Logging Service, recording operational data about
+    its services and components. The Logging Services writes to an access log and an
+    error log with on-the-fly configurable logging levels.
+    The Logging Service also supports debug logging for specific services to help
+    you troubleshooet any problems.
+    Log records are buffered in memory and write asynchronously.</para>
+
+   <para>The Logging Service receives logs from the OpenAM server,
+    OpenAM policy agents, Web applications running in the same container as the
+    OpenAM server, and non-Web application running on the same host as the OpenAM
+    server. Additionally, you can view log files (access, error, replication, and
+    audit) from the embedded OpenDJ directory server, which generally stores
+    configuration data.</para>
+
+   <para>
+    The Logging Service provides the following features:
+   </para>
+   <itemizedlist>
+    <listitem>
+     <para><emphasis role="bold">Flat Files or Database Files</emphasis>.
+      The Logging Service writes to flat files
+      by default. You can also configure the service to write databases,
+      such as MySQL and Oracle DB using JDBC drivers.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Log Rotation</emphasis>.
+       You can configure automatic log rotation based on a configurable
+       maximum log size or time interval. By default, debug logs are not automatically
+       rotated, but you can configure OpenAM to enable debug log rotation.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Configurable Log Content</emphasis>.
+       By default, log files contain timestamp, log
+       message, context ID, OpenAM Admin Log ID, and IP and domain of the OpenAM
+       user. You can exclude some of these items in the log files.</para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">Digitally-Signed and Encrypted</emphasis>.
+       The Logging Service supports digital-signing
+       and encryption of its log files. </para>
+     </listitem>
+   </itemizedlist>
+
+  </section>
+ </section>
+
+</chapter>

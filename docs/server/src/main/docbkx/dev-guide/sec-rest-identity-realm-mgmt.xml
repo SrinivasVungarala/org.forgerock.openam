@@ -393,10 +393,17 @@ $ <userinput>curl \
    down the correct information and add it using <xref linkend="rest-api-update-identity" />.
    To read a profile on the Top Level Realm, you do not need to specify the realm.</para>
    
-   <para>Users can review the data associated with their accounts and administrators 
-   can read other user's profiles. The following example shows an administrator 
-   accessing user data. Users can view their information by changing
-   <literal>username=amadmin</literal> to <literal><replaceable>user-id</replaceable></literal>.</para>
+   <para>Users can review the data associated with their own accounts, and
+    administrators can also read other user's profiles.</para>
+
+   <note><para>If an administrator user is reading their own profile,
+    an additional <literal>roles</literal> element, with a value of
+    <literal>ui-admin</literal> is returned in the JSON response.
+    The XUI verifies this element to grant or deny access to the OpenAM
+    Console.</para></note>
+
+    <para>The following example shows an administrator
+    accessing user data belonging to <literal>demo</literal>.</para>
 
     <screen>
 $ <userinput>curl \

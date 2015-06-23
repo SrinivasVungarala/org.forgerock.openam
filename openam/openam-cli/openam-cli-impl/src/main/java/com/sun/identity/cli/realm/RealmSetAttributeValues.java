@@ -25,8 +25,10 @@
  * $Id: RealmSetAttributeValues.java,v 1.7 2008/08/26 21:13:15 veiming Exp $
  */
 
+/*
+ * Portions copyright 2015 ForgeRock AS.
+ */
 package com.sun.identity.cli.realm;
-
 
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.cli.AttributeValues;
@@ -112,7 +114,7 @@ public class RealmSetAttributeValues extends AuthenticatedCommand {
                     (Object[])params));
             }
         } catch (SMSException e) {
-            String[] args = {realm, e.getMessage()};
+            String[] args = {realm, serviceName, e.getMessage()};
             debugError("RealmSetAttributeValues.handleRequest", e);
             writeLog(LogWriter.LOG_ERROR, Level.INFO,
                 "FAILED_SET_ATTR_VALUES_REALM", args);

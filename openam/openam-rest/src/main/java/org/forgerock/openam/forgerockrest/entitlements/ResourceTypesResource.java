@@ -230,8 +230,12 @@ public class ResourceTypesResource extends RealmAwareResource {
                 throw new EntitlementException(MISSING_RESOURCE_TYPE_NAME);
             }
 
+            ResourceType resourceTypeToUpdate = jsonWrapper.getResourceType(false);
+            if (!StringUtils.isEqualTo(resourceId, resourceTypeToUpdate.getUUID())) {
+                throw new EntitlementException(RESOURCE_TYPE_ID_MISMATCH);
+            }
             final ResourceType updatedResourceType = resourceTypeService.updateResourceType(subject, getRealm(context),
-                    jsonWrapper.getResourceType(false));
+                    resourceTypeToUpdate);
 
             if (logger.messageEnabled()) {
                 logger.message("ResourceTypeResource :: UPDATE by "
@@ -328,6 +332,9 @@ public class ResourceTypesResource extends RealmAwareResource {
             final String realm = getRealm(context);
 
             ResourceType resourceType = resourceTypeService.getResourceType(theSubject, realm, resourceId);
+            if (resourceType == null) {
+                throw new EntitlementException(NO_SUCH_RESOURCE_TYPE, resourceId, realm);
+            }
             JsonResourceType wrapper = new JsonResourceType(resourceType);
 
             final Resource resource = new Resource(resourceId,

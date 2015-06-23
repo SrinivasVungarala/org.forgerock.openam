@@ -1509,7 +1509,7 @@
    <varlistentry>
     <term>Idle Session Timeout Page URL</term>
     <listitem>
-     <para>URL of the local idle session timeout page.</para>
+     <para>This property is no longer used.</para>
      <para>Property: <literal>com.sun.identity.agents.config.iis.owa.enable.session.timeout.url</literal></para>
     </listitem>
    </varlistentry>

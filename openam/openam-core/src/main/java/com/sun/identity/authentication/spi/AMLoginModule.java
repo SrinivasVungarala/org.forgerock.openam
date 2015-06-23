@@ -61,6 +61,8 @@ import javax.security.auth.spi.LoginModule;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.forgerock.openam.ldap.LDAPUtils;
+
 import com.iplanet.am.sdk.AMException;
 import com.iplanet.am.sdk.AMUser;
 import com.iplanet.am.sdk.AMUserPasswordValidation;
@@ -94,7 +96,6 @@ import com.sun.identity.shared.Constants;
 import com.sun.identity.sm.OrganizationConfigManager;
 import com.sun.identity.sm.ServiceSchema;
 import com.sun.identity.sm.ServiceSchemaManager;
-import com.sun.identity.shared.ldap.util.DN;
 
 /**
  * An abstract class which implements JAAS LoginModule, it provides
@@ -366,14 +367,25 @@ public abstract class AMLoginModule implements LoginModule {
                     debug.message("clone #" + i + " is PagePropertiesCallback");
                 }
             } else if (original[i] instanceof ChoiceCallback) {
-                int selection =
-                    ((ChoiceCallback)original[i]).getDefaultChoice();
-                copy[i] = new ChoiceCallback(
-                ((ChoiceCallback) original[i]).getPrompt(),
-                ((ChoiceCallback) original[i]).getChoices(),
-                selection,
-                ((ChoiceCallback) original[i]).allowMultipleSelections());
-                ((ChoiceCallback) copy[i]).setSelectedIndex(selection);
+
+                ChoiceCallback originalChoiceCallback = (ChoiceCallback) original[i];
+
+                ChoiceCallback clone = new ChoiceCallback(
+                    originalChoiceCallback.getPrompt(),
+                    originalChoiceCallback.getChoices(),
+                    originalChoiceCallback.getDefaultChoice(),
+                    originalChoiceCallback.allowMultipleSelections());
+
+                if (originalChoiceCallback.getSelectedIndexes() != null
+                        && originalChoiceCallback.getSelectedIndexes().length > 0) {
+                    if (originalChoiceCallback.allowMultipleSelections()) {
+                        clone.setSelectedIndexes(originalChoiceCallback.getSelectedIndexes());
+                    } else {
+                        clone.setSelectedIndex(originalChoiceCallback.getSelectedIndexes()[0]);
+                    }
+                }
+
+                copy[i] = clone;
                 extCallbacks.add(copy[i]);
                 if (debug.messageEnabled()) {
                     debug.message("clone #" + i + " is ChoiceCallback");
@@ -836,7 +848,6 @@ public abstract class AMLoginModule implements LoginModule {
             ((ChoiceCallback) callback).getChoices(),
             selection,
             ((ChoiceCallback) callback).allowMultipleSelections());
-            ((ChoiceCallback) newCallback).setSelectedIndex(selection);
         } else {
             // should never come here since only above three will be supported
             debug.error("Unsupported call back instance " + callback);
@@ -2504,7 +2515,7 @@ public abstract class AMLoginModule implements LoginModule {
     /* returns the normalized DN  */
     private String normalizeDN(String userDN) {
         String normalizedDN = userDN;
-        if ((userDN != null) && DN.isDN(userDN)) {
+        if ((userDN != null) && LDAPUtils.isDN(userDN)) {
             normalizedDN = DNUtils.normalizeDN(userDN);
         }
         if (ad.debug.messageEnabled()) {

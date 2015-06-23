@@ -27,7 +27,8 @@
          xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://docbook.org/ns/docbook
-                             http://docbook.org/xml/5.0/xsd/docbook.xsd">
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd"
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
  <title>Hints For the SecurID Authentication Module</title>
 
  <para>
@@ -35,61 +36,13 @@
   with RSA Authentication Manager software and RSA SecurID authenticators.
  </para>
 
- <orderedlist>
-  <para>
-   To use the SecurID authentication module,
-   you must first build an OpenAM war file
-   that includes the supporting library,
-   <filename>authapi-2005-08-12.jar</filename>, which you must obtain from
-   RSA. The <filename>authapi-2005-08-12.jar</filename> file also requires a
-   dependency file, <literal>crypto.jar</literal>, which you can also obtain from RSA.
-  </para>
-
-  <listitem>
-   <para>
-    Unpack the OpenAM .war file.
-   </para>
-
-   <screen>
-$ <userinput>mkdir /tmp/openam</userinput>
-$ <userinput>cd /tmp/openam/</userinput>
-$ <userinput>jar -xf ~/Downloads/openam/${coreWarFile}</userinput>
-   </screen>
-  </listitem>
-
-  <listitem>
-   <para>
-    Obtain the <literal>authapi.jar</literal> (for example, <filename>authapi-2005-08-12.jar</filename>)
-    and its dependency file,
-    <literal>crypto.jar</literal> from RSA. Then,
-    copy <filename>authapi-2005-08-12.jar</filename>
-    into the <filename>WEB-INF/lib</filename> directory.
-   </para>
-
-   <screen>
-$ <userinput>cp /path/to/authapi-2005-08-12.jar WEB-INF/lib/</userinput>
-   </screen>
-  </listitem>
-
-  <listitem>
-   <para>
-    Pack up the OpenAM .war file to deploy.
-   </para>
-
-   <screen>
-$ <userinput>jar -cf ../openam.war *</userinput>
-   </screen>
-  </listitem>
-
-  <listitem>
-   <para>Deploy the new .war file.</para>
-
-   <para>
-    In this example the .war file to deploy is
-    <filename>/tmp/openam.war</filename>.
-   </para>
-  </listitem>
- </orderedlist>
+ <important><para>To use the SecurID authentication module, you must first
+  build an
+  OpenAM war file that includes the supporting library. For more information,
+  see <link xlink:href="install-guide#sec-enable-securid"
+        xlink:role="http://docbook.org/xlink/role/olink">
+   <citetitle>Enabling RSA SecurID Support</citetitle></link> in the
+  <citetitle>OpenAM Installation Guide</citetitle>.</para></important>
 
  <indexterm>
   <primary>Authentication</primary>

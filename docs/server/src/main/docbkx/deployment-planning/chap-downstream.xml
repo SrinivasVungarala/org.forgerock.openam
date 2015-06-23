@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2014 ForgeRock AS. All Rights Reserved.
+-->
+<chapter xml:id='chap-downstream'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+ <title>Gathering Information About Consumers</title>
+
+ <!-- TODO: Points to be addressed
+ Is there any new data that needs to be gathered and managed to serve OpenAM customers?
+ If so, what new data needs to be managed if we deploy OpenAM services?
+ How, generally, would it have to be managed?
+ If we deploy OpenAM services, what sort of load will be put on the service
+ and on the services OpenAM consumers (upstream services), based on the features we choose to deploy?
+ What sort of expectations will OpenAM consumers have around service levels?
+ (Extent of SSO, access from multiple devices, how long an SSO session lasts,
+ how often does the end user have to log in again, are there any times when the service is down, etc.)
+-->
+
+ <para>
+  OpenAM provides a number of services for consumption by different actors.
+  In fact it might not be possible to identify all consumers in advance.
+  You must nevertheless identify the main consumers
+  in order to estimate the service level objectives for the deployment.
+  This chapter covers gathering information about applications that are consumers of your OpenAM deployment.
+ </para>
+
+ <section xml:id="end-user-consumers">
+  <title>End User Consumers</title>
+
+  <para>The consumers of an OpenAM-protected service are typically
+   those users requesting access to a a Web-based application by inputting their
+   credentials on the authentication UI.
+   The authentication module determines which credentials are required for
+   user authentication.</para>
+
+  <para>OpenAM's interactive authentication modules, such as LDAP or RSA SecurID,
+   require that the client or end user provide credentials and possibly additional
+   information to authenticate to the system. </para>
+
+  <para>OpenAM offers non-interactive authentication methods,
+   such as an X.509 certificate, Kerberos ticket, mobile subscriber ISDN, or
+   programmatic login.
+   For example, the Certification Authentication Module retrieves
+   the user identifier from the certificate that the client application presents,
+   and uses the identifier to search the backend LDAP directory.
+   The Windows Desktop SSO Authentication module supports single sign-on for a user
+   who has already authenticated with a Kerberos Key Distribution Center.
+   The MSISDN Authentication module uses a mobile subscriber's ISDN associated with
+   a device, such as a mobile phone. The module checks the subscriber ISDN against
+   the value found in the user's entry in the LDAP directory server, allowing
+   authentication without the need of a username and password.
+   OpenAM supports programmatic login methods, for example, where a client
+   application authenticates using a session ID.
+  </para>
+
+  <!-- TODO
+  In trying to guesstimate the load that end users will put on the service,
+  what do I need to keep track of?  (token storage, profile storage)
+  -->
+  <para>After the end user has been authenticated successfully (or unsuccessfully),
+   OpenAM can process specific post-authentication plug-ins.
+   If the authentication was successful, the plug-in has access to the
+   client request and response objects as well as the user's session <literal>SSOToken</literal>.
+   The plug-in can then update session cookies and variables.
+   The post-authentication plug-ins are invoked after the authentication phase
+   is completed and at user logout. </para>
+
+  <!-- TODO
+  identify the operations on system and upstream resources that result from end users using OpenAM.
+  -->
+  <para>OpenAM also provides self-service features, such as password reset and
+   self-registration. You can easily configure password reset using the OpenAM
+   Console, which sends email notifications to users who self-register or
+   reset their passwords.
+   OpenAM suppports user self registration, allowing
+   users to register for an application without assistance from the administrator.
+   You can implement self-registration using the membership authentication module,
+   or using the OpenAM REST API, which also supports password reset and self-registration
+   plus many other features. For more information, see
+   <link xlink:href="${docSetBaseURL}/dev-guide#chap-rest"
+         xlink:show="new"><citetitle>Using RESTful Web Services</citetitle></link>.
+
+  </para>
+
+  <!-- TODO: determine self-service loads -->
+
+ </section>
+
+ <section xml:id="agent-consumers">
+  <title>Policy Enforcement Consumers</title>
+
+  <para>The OpenAM Policy Service acts a Policy Administration Point (PAP),
+   Policy Evaluation Point (PEP), and Policy Decision Point (PDP) to generate
+   policy decisions that authorize or deny the client access to the protected
+   resource based on the parameters associated with the request. The Policy Service
+   also issues <emphasis>advices</emphasis>, which are hints to the Policy Evaluation
+   Point (PEP) that may require additional information or some action necessary
+   to complete the decision. </para>
+
+  <para>Policies apply to different types of users:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Authenticated Users</emphasis>. Applies to any
+     user with a valid session token, <literal>SSOToken</literal>.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">OpenAM Identity Subjects</emphasis>. Applies to
+     identities you create and manage under the Realms Subject tab.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">LDAP Users</emphasis>. Applies to any LDAP user.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">LDAP Groups</emphasis>. Applies to any member of an LDAP group.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Organization</emphasis>. Applies to any member in a realm.</para>
+   </listitem>
+  </itemizedlist>
+
+  <para>To allow users or groups to access the resources, you implement OpenAM policy
+   agents as gatekeeper components that protect applications
+   and services. The policy agents manage the integration and connections with
+   the hosted containers or servers in addition to redirecting the user to the
+   OpenAM server for its authentication and authorization services.</para>
+
+  <para>Policy agents can be installed on the following:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Web Servers</emphasis>. If an application resides
+     on a Web server, you can install a Web policy agent on the server, so that
+     it can intercept requests from users who are attempting to access a protected
+     resource. Users must first submit their credentials for authentication.
+     Then, OpenAM acting as a policy decision point (PDP), evaluates the policy
+     rules, and returns a decision. If the decision is a "Allow" then
+     authorized access is granted. Web policy agents are a light-touch integration
+     option requiring no extra coding, other than plug-ins, for proper operation.</para>
+   </listitem>
+   <listitem>
+    <!-- TODO
+    How much coding needs to be done (other than adding the filter description
+    to the Web deployment descriptor file)?
+    -->
+    <para><emphasis role="bold">Application Containers</emphasis>.
+     If an application resides on a J2EE application server, you can install
+     Java EE policy agent on the server. A Java EE policy agent involves tighter
+     integration with the application server due to the required coding that needs to
+     be implemented for proper operation.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Reverse Proxies</emphasis>.
+     If an application resides behind a reverse proxy, you can protect the backend
+     resource servers by installing a policy agent on the proxy server itself if the
+     protected servers are configured uniformly. If there are some configuration
+     variations in the protected servers, you can install multiple policy agents
+     on each of the backend servers, which are behind the proxy server.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Legacy Applications</emphasis>.
+     If you have a legacy or custom system that you want to protect but cannot
+     be supported by an existing policy agent type, you can use the OpenIG
+     Gateway, which provides reverse-proxy functionality to enforce single sign-on
+     or protect those resources on the legacy and custom systems.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">XACML-protected Applications.</emphasis> OpenAM's
+     current Policy Engine uses a proprietary policy format. For XACML-based
+     systems, you can request XACML policy decisions using the OpenAM Java SDK. </para>
+   </listitem>
+  </itemizedlist>
+ </section>
+
+ <section xml:id="rest-consumers">
+  <title>REST Consumers</title>
+
+  <!-- TODO
+  For REST clients, this section should address the question of how they're registered and managed.
+  -->
+  <para>OpenAM provides extensive support for RESTful Web architectures.
+   All REST interfaces require a valid session token, <literal>SSOToken</literal>, to
+   access a REST endpoint, except for the authentication endpoint, which requires a
+   username and password.</para>
+
+  <para>ForgeRock has recently developed a Common REST (CREST) API that is shared among
+   its OpenAM, OpenDJ, OpenIG, and OpenIDM products. The CREST APIs provide CREATE,
+   READ, UPDATE, DELETE (CRUD) methods plus PATCH, ACTION, and QUERY.</para>
+
+  <para>OpenAM exposes a number of endpoints for its various services:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Authentication</emphasis>. Exposes a REST endpoint
+     using a username and password to receive a <literal>tokenId</literal> that
+     applications present as a cookie value for additional authentication at the
+     <literal>/json/authenticate</literal> endpoint.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Logout</emphasis>. Exposes REST endpoints to
+     invalidate or logout the session. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Cookie Information</emphasis>. Exposes a REST endpoint
+     using a GET method to retrieve cookie domain information including the cookie name and
+     session cookie token.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Token Validation and Attribute Retrieval</emphasis>.
+     Exposes a REST endpoint to validate a token and retrieve subject attributes
+     with a valid token.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Authorization</emphasis>. Exposes REST endpoints
+     to request policy decisions and CRUD methods for policies.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">OAuth 2.0 Authorization</emphasis>. Exposes REST endpoints
+     for OAuth 2.0 clients and resource servers, OAuth 2.0 token administration (CRUD),
+     OAuth 2.0 client administration (CREATE and DELETE), and a <literal>/tokeninfo</literal>
+     endpoint for resource servers.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">OpenID Connect 1.0</emphasis>. Exposes REST
+     endpoints for discovering provider configuration information, static and dynamic
+     registration of OpenID connect client applications, and authorizing clients
+     using Basic Client and Implicit Client grant types. Additional endpoints exist
+     to access end-user information at the <literal>/userinfo</literal> endpoint and manage
+     OpenID Connect 1.0 sessions.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">User Self-Registration</emphasis>. Exposes an endpoint
+     action for user self-registration by sending an HTTP POST request with an email
+     address.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Password Reset</emphasis>. Exposes REST APIs
+     to perform an HTTP POST with the user's ID. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Logging</emphasis>. Exposes REST APIs to
+     create logging messages.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Identity Management (CRUD)</emphasis>. Exposes
+     REST APIs to create, read, update, and delete user, group or
+     agent identities.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Realm Management (CRUD)</emphasis>. Exposes REST
+     APIs to create, read, update, and delete realms. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Dashboard Applications</emphasis>. Exposes REST
+     APIs to display information about the dashboard applications.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">STS</emphasis>. Exposes REST
+     endpoints to validate tokens for the Secure Token Service (STS).</para>
+   </listitem>
+  </itemizedlist>
+ </section>
+
+ <section xml:id="oauth-client-consumers">
+  <title>OAuth 2.0 and OpenID Connect 1.0 Consumers</title>
+
+  <para>OpenAM supports the popular OAuth 2.0 and the OpenID Connect 1.0 protocols that
+   integrate mobile, social, cloud, and enterprise applications.
+  </para>
+
+  <para>OAuth 2.0 is an authorization protocol that grants access to third parties
+   by issuing bearer tokens, such as access tokens and refresh tokens.
+   Access tokens are short-lived tokens that allow the client to access a resource.
+   Refresh tokens are long-lived tokens that allow the client to receive another
+   access token should the original token be compromised.
+   Using tokens, the participating parties do not need to share credentials and
+   other sensitive data. </para>
+
+  <para>The OAuth 2.0 specification defines certain roles that take part in the
+   OAuth2 process:</para>
+
+  <itemizedlist>
+   <listitem>
+    <para>The <emphasis>client application</emphasis> is defined as the entity requesting access to a
+     protected resource.</para>
+   </listitem>
+   <listitem>
+    <para>The <emphasis>resource owner</emphasis> is
+     the entity who owns or controls the resources. Typically, the resource owner is
+     the end-user but can also be an application.</para>
+   </listitem>
+   <listitem>
+    <para>The <emphasis>resource server</emphasis>
+     is the server hosting the resources.</para>
+   </listitem>
+   <listitem>
+    <para>The <emphasis>authorization server</emphasis>
+     is the server authorizing the client application access to the resources.
+     The authorization server issues an access token to the client application granting
+     it access to the resource with the approval by the resource owner.</para>
+   </listitem>
+  </itemizedlist>
+
+  <para>OpenAM can function in a number of configurations depending on your system
+   requirements. You can configure OpenAM as an OAuth 2.0 authorization server,
+   OAuth 2.0 client and authorization server, and OAuth 2.0 client and resource server.
+
+   For more information,
+   see <link xlink:href="${docSetBaseURL}/admin-guide#chap-oauth2"
+             xlink:show="new"><citetitle>Managing OAuth 2.0 Authorization</citetitle></link>.</para>
+
+  <para>OpenAM supports all of the OAuth 2.0 grant types (authorization code grant,
+   implicit code grant, client credentials grant, and resource owner password
+   credentials grant).
+   You can use the OAuth 2.0 grant types to implement the following applications:</para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Web Server Applications</emphasis>. Supports
+     the authorization code flow grant for Web applications.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Browser-based Applications</emphasis>. Supports
+     the implicit code flow grant for browser-based applications. Here the browser
+     is a user agent, which may be stored on a Web server, but is only running
+     the user agent application, such as a Javascript program.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Mobile Applications</emphasis>. Supports the resource
+     owner password grant as well as implicit grant for mobile applications. If a
+     native application is installed on a computer, mobile phone, or tablet, the
+     client password will be store on that device.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Application to Application</emphasis>. Supports the
+     client credentials flow to implement application to application operations.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>For more information on the grant types, see
+  <link xlink:href="${docSetBaseURL}/admin-guide#openam-oauth2-authz-server"
+        xlink:show="new"><citetitle>OpenAM as OAuth 2.0 Authorization Server</citetitle>.</link>.</para>
+
+  <para>OpenAM provides the following OAuth 2.0 endpoints that can be implemented
+   with a resource server:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Authorization/Authentication Endpoint</emphasis>.
+     Used to exchange an authorization grant for an access token.</para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Access Token Endpoint</emphasis>.
+     Used to exchange an authorization grant for an access token. </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">User Profile Service URL</emphasis>.
+     Used to retrieve user profile information.</para>
+   </listitem>
+  </itemizedlist>
+
+  <para>OpenAM supports the OpenID Connect 1.0 protocol suite including the core
+   (Basic Client Profile and Implicit Client Profile)
+   and optional specifications (Discovery, Client Registration, and Session
+   Management). OpenID Connect is an identity layer on top of
+   the OAuth 2.0 protocol, enabling the exchange access tokens for a valid
+   grant to a protected resource.
+   </para>
+
+  <para>The specification enables Web-based, social Web sites,
+   mobile and connected client applications to authenticate the client identity by an
+   authorization server, such as OpenAM, which allows the client or user access
+   to a third-party resource.
+   For more information, see
+   <link xlink:href="${docSetBaseURL}/admin-guide#oauth2-openid-connect"
+         xlink:show="new"><citetitle>Managing OpenID Connect 1.0 Authorization</citetitle></link>.
+
+  </para>
+
+  <para>OpenAM also supports the Internet-Draft, SAML 2.0 Bearer Assertion Profiles
+   for OAuth 2.0 that provides a means to use SAML 2.0 assertions to authenticate
+   OAuth 2.0 clients. OpenAM implements these assertion profiles to request OAuth2
+   access tokens. For more information,
+   see <link xlink:href="${docSetBaseURL}/admin-guide#oauth2-saml2-bearer"
+             xlink:show="new"><citetitle>SAML 2.0 Bearer Assertion Profiles</citetitle></link>.</para>
+
+ </section>
+
+ <section xml:id="web-service-consumers">
+  <title>Web Service Consumers</title>
+
+  <para>OpenAM supports the WS* specifications that make up the Web services framework
+    in support of the Simple Object Access Protocol (SOAP), Web Services Desscription
+    Language (WSDL) and Universal Description Discovery and Integration (UDDI)
+    standards. There are many WS* standards but a few security standard to take note
+    of are the following:
+   </para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">WS-Security</emphasis>.
+     Web Services Security (WS-Security) specification is an enhancement to the Simple Object Access Protocol
+     (SOAP) standard whose focus is to sign and encrypt messages. It also allows
+     the transmission of security tokens in SOAP message headers supporting various token
+     formats, such as Security Assertion Markup Language (SAML),
+     Kerberos, and X.509 certificates to ensure the integrity the sender's identity.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">WS-Trust</emphasis>. The WS-Trust specification introduces
+     the Security Token Service (STS), which specifies the issuance and validation
+     of security tokens to broker trust relationships between Web service clients
+     and providers. Because the STS does not specify a specific token format but
+     supports various formats, it acts as a universal token translator that converts
+     locally issued tokens (e.g., SSOToken) into a token format shared
+     with Web services providers (e.g., an OAuth2 token).
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">WS-Federation</emphasis>. The WS-Federation specification
+     extends the functionality of the WS-Trust specification describing the exchange
+     of security tokens across organizational boundaries and Web services. It also
+     specifies the brokering and management of trust relationships as a result of
+     the token exchanges.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>OpenAM's STS component can be deployed alongside OpenAM or externally in
+   a Jetty/Tomcat instance. OpenAM supports REST API endpoints for the STS to
+   issue, validate or renew different sets of tokens in JSON Web Token (JWT) format.
+   OpenAM acts as the token authority to validate the STS tokens and enforce
+   any policies related to the token exchange.</para>
+
+  <para>The main advantage to OpenAM's STS component is that it enables OpenAM to
+   act as a token broker, for example, validating an OAuth2 access token and issuing a
+   SAML token mapping assertion claims to the scopes defined in the OAuth2 access
+   token. STS issues session SSOToken, SAML tokens, and JWT-based tokens.</para>
+
+ </section>
+
+ <section xml:id="fedlet-consumers">
+  <title>Fedlet Consumers</title>
+
+  <para>OpenAM provides extensive Federation support, allowing different
+   access management systems to deliver single sign-on capabilities and permissable
+   identity data exchange.
+   Before federated single sign-on (SSO) can exist, the
+   participants, an identity provider (IDP) and a service provider (SP), must establish a
+   trust relationship called a <emphasis>circle of trust</emphasis>.
+   </para>
+
+  <para>OpenAM supports a number of federation protocols, such as SAML 2.0,
+   Liberty ID-FF, WS-Federation, OAuth 2.0 and OpenID Connect 1.0.
+  </para>
+
+  <para>The typical Federation use cases are as follows:</para>
+  <itemizedlist>
+   <listitem>
+    <para>Allows rapid merging of company systems after an acquisition.</para>
+   </listitem>
+   <listitem>
+    <para>Allows combining of services between two different companies.</para>
+   </listitem>
+   <listitem>
+    <para>Allows mobile applications to access user online data.</para>
+   </listitem>
+   <listitem>
+    <para>Allows third-party applications to access end-user resources.</para>
+   </listitem>
+   <listitem>
+    <para>Allows third-party applications to act on behalf of a user.</para>
+   </listitem>
+  </itemizedlist>
+
+
+
+  <para>OpenAM provides integration endpoints for both service provider and identity
+   provider. An application can redirect the user to these endpoints to initiate
+   the federation process.
+   For tighter integration, you can add the endpoint code directly into the application.
+  </para>
+
+  <para>OpenAM endpoints reside in the Web application folder at
+   <filename>$WEB_APP/saml2/jsp</filename>:</para>
+
+  <itemizedlist>
+   <listitem>
+   <para><emphasis role="bold">spSSOInit.jsp</emphasis>. Used to start Federated
+    SSO from the Service Provider.</para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">idpSSOInit.jsp</emphasis>. Used to start Federated
+    SSO from the Identity Provider.</para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">spSingleLogoutInit.jsp</emphasis>. Used to start Federated
+    SLO from the Service Provider.</para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">idpSingleLogoutInit.jsp</emphasis>. Used to start Federated
+   SLO from the Identity Provider.</para>
+   </listitem>
+ </itemizedlist>
+
+
+
+  <para>OpenAM also works together with another component,
+  the Fedlet, which provides a SAML2 compliant enforcement point
+  allowing businesses to quickly add SAML2 support without deploying a full-blown
+  SAML2 environment.</para>
+
+ <para>The Fedlet has a single endpoint that receives communications from
+  the IDP and can be integrated into the Service Provider application.
+  Fedlets are available in Java and .net versions.
+ </para>
+
+  <para>Note that OpenAM can act as a centralized hub that integrates
+   SAML 2.0 systems with OAuth 2.0 plus OpenID Connect 1.0
+   deployments. Existing systems that have complex SAML 2.0 XML-based deployments
+   can use OpenAM as an Identity Provider or as a Service Provider. Systems that
+   require more lightweight deployments based on REST and JSON can use OAuth 2.0
+   and OpenID Connect.
+   OpenAM supports extension mechanisms, such as SAML2 Token Insertion, which
+   can exchange a SAML2 token directly for an OAuth2 access token.</para>
+
+ </section>
+
+</chapter>

@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<chapter xml:id='chap-high-level-start'
+         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+
+ <title>Getting Started for Architects and Deployers</title>
+
+ <para>
+  The following section provides general instructions to get started with an
+  OpenAM deployment.
+ </para>
+
+ <section xml:id="plan-the-deployment">
+  <title>Plan the Deployment</title>
+
+  <indexterm>
+   <primary>deployment planning</primary>
+  </indexterm>
+
+  <indexterm>
+   <primary>OpenAM</primary>
+   <secondary>deployment planning</secondary>
+  </indexterm>
+
+  <para>
+   The initial process is the planning phase of your project.
+  </para>
+  <itemizedlist>
+   <listitem>
+    <para>
+     <emphasis role="bold">Learn about OpenAM</emphasis>. You can access online
+     information, meet with your ForgeRock Sales representative, go to a seminar,
+     or call ForgeRock about OpenAM's capabilities.
+    </para>
+    <para>
+    The following are some general questions that you may want to have answered:
+   </para>
+    <!-- from the forgerock wiki -->
+    <table xml:id="table-openam-initial-tasks">
+     <title>OpenAM Initial Questions</title>
+     <tgroup cols="3">
+      <colspec colnum="1" colname="col1" colwidth="6*"/>
+      <colspec colnum="2" colname="col2" colwidth="0.5*"/>
+      <colspec colnum="3" colname="col3" colwidth="0.5*"/>
+      <thead>
+       <row><?dbfo bgcolor="#EEEEEE" ?>
+        <entry>OpenAM Initial Tasks</entry>
+        <entry namest="col2" nameend="col3" align="center">Done ?</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         Understand the access management problems that OpenAM helps to solve
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Learn how to protect a Web site with OpenAM</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Get to know the OpenAM software deliverables</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Get to know the tools for administering OpenAM</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Get to know the APIs for OpenAM client applications</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Find out how to get help and support from ForgeRock and partners</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Find out how to get training from ForgeRock and partners</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Find out how to keep up to date on new development and new releases</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Find out how to report problems</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </listitem>
+   <listitem>
+   <para>
+    <emphasis role="bold">Set up a Demo or Pilot</emphasis>.
+    View an OpenAM demo or set up a pilot to determine how you
+    want to use OpenAM to protect your site(s). ForgeRock Sales representatives
+    can assist you with a demo or pilot.
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <emphasis role="bold">Attend a Training Class</emphasis>. ForgeRock presents
+    effective training classes to deploy OpenAM in your environment.
+    See <link xlink:href="http://forgerock.com/services/university"
+              xlink:show="new">ForgeRock University</link> for more information.
+   </para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">Complete the Accreditation Program</emphasis>.
+    Complete the product-specific ForgeRock Accreditation Program to gain
+    in-depth design and deployment expertise or seek partners who are
+    ForgeRock Accredited Partners.
+   </para>
+  </listitem>
+  <listitem>
+   <para><emphasis role="bold">Determine Your Service Level Agreements</emphasis>.
+    ForgeRock provides a set of standard service level agreements that you can
+    sign up for. ForgeRock also provides custom service level agreements if the
+    standard set does not meet your needs.
+   </para>
+   <!-- TODO: add a link from the forgerock wiki -->
+   <table xml:id="table-openam-standard-slas">
+    <title>OpenAM Standard SLAs</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="1*"/>
+     <colspec colnum="2" colwidth="1*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="1*"/>
+     <thead>
+      <row><?dbfo bgcolor="#EEEEEE" ?>
+       <entry>Priority</entry>
+       <entry>Gold</entry>
+       <entry>Silver</entry>
+       <entry>Bronze</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>Urgent (P1)</entry>
+       <entry>2 Hour</entry>
+       <entry>4 Hour</entry>
+       <entry>Next Business Day</entry>
+      </row>
+      <row>
+       <entry>High (P2)</entry>
+       <entry>4 Hour</entry>
+       <entry>8 Hour</entry>
+       <entry>2 Business Days</entry>
+      </row>
+      <row>
+       <entry>Normal (P3)</entry>
+       <entry>6 Hour</entry>
+       <entry>Next Business Day</entry>
+       <entry>3 Business Days</entry>
+      </row>
+      <row>
+       <entry>Low (P4)</entry>
+       <entry>Next Business Day</entry>
+       <entry>2 Business Days</entry>
+       <entry>4 Business Days</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </listitem>
+   <listitem>
+    <para><emphasis role="bold">Determine Your Services</emphasis>. ForgeRock
+     provides a full, proven-production Identity Management stack to meet
+     your requirements.
+    </para>
+    <table xml:id="table-openam-services">
+     <title>OpenAM Services</title>
+     <tgroup cols="3">
+      <colspec colnum="1" colname="col1" colwidth="6*"/>
+      <colspec colnum="2" colname="col2" colwidth="0.5*"/>
+      <colspec colnum="3" colname="col3" colwidth="0.5*"/>
+      <thead>
+       <row><?dbfo bgcolor="#EEEEEE" ?>
+        <entry>Services Task</entry>
+        <entry namest="col2" nameend="col3" align="center">Done ?</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>Understand the services OpenAM software provides</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Determine which services to deploy</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Determine which services the deployment consumes (load balancing,
+         application container, authentication services, configuration storage,
+         profile storage, token/session storage, policy storage, log storage)
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Determine which services the deployment provides (SSO, CDSSO,
+         SAML Federation IDP/SP, XACML PDP, REST STS, OAuth 2.0/OpenID Connect 1.0, etc.)
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Determine which resources OpenAM protects (who consumes OpenAM services)</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Determine Your Deployment Objectives</emphasis>.
+     OpenAM provides proven performance and security in many production deployments.
+     You should determine your overall deployment objectives.
+    </para>
+    <table xml:id="table-openam-deployment-objectives">
+     <title>OpenAM Deployment Objectives</title>
+     <tgroup cols="3">
+      <colspec colnum="1" colname="col1" colwidth="6*"/>
+      <colspec colnum="2" colname="col2" colwidth="0.5*"/>
+      <colspec colnum="3" colname="col3" colwidth="0.5*"/>
+      <thead>
+       <row><?dbfo bgcolor="#EEEEEE" ?>
+        <entry>Deployment Objectives</entry>
+        <entry namest="col2" nameend="col3" align="center">Done ?</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>Define deployment objectives in terms of service levels
+         (expectations for authentication rates, active sessions maintained,
+         session life cycles, policies managed, authorization decision rates,
+         response times, throughput, etc.)
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Define deployment objectives in terms of service availability
+         (OpenAM service availability, authentication availability, authorization
+         decision availability, session availability)
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Understand how OpenAM services scale for high availability</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Plan for availability (number of sites and servers, load balancing and
+         OpenAM software configuration)
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Define the domains managed and domains involved in the deployment</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Define deployment objectives for <!--multitenancy and--> delegated administration
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Agree with partners for federated deployments on circles of trust and terms</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Plan Sizing</emphasis>. At this stage, you should
+     determine the sizing estimates for your deployment. ForgeRock Sales Engineers
+     can assist you in this task.
+    </para>
+    <table xml:id="table-openam-sizing">
+     <title>OpenAM Sizing</title>
+     <tgroup cols="3">
+      <colspec colnum="1" colname="col1" colwidth="6*"/>
+      <colspec colnum="2" colname="col2" colwidth="0.5*"/>
+      <colspec colnum="3" colname="col3" colwidth="0.5*"/>
+      <thead>
+       <row><?dbfo bgcolor="#EEEEEE" ?>
+        <entry>Sizing</entry>
+        <entry namest="col2" nameend="col3" align="center">Done ?</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>Derive sizing estimates from service levels and availability</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry> Understand how to test sizing estimates (load generation tools?)</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Size servers for OpenAM deployment: CPU</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Size servers for OpenAM deployment: Memory</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Size servers for OpenAM deployment: Network</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Size servers for OpenAM deployment: I/O</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Size servers for OpenAM deployment: Storage</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Quantify impact on external services consumed (LDAP, other auth
+         services, load balancing, etc.)</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Plan testing and acceptance criteria for sizing</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Plan the Topology</emphasis>. Plan your logical
+     and physical deployment.
+    </para>
+    <table xml:id="table-plan-the-topology">
+   <title>OpenAM Topology Planning</title>
+   <tgroup cols="3">
+    <colspec colnum="1" colname="col1" colwidth="6*"/>
+    <colspec colnum="2" colname="col2" colwidth="0.5*"/>
+    <colspec colnum="3" colname="col3" colwidth="0.5*"/>
+    <thead>
+     <row><?dbfo bgcolor="#EEEEEE" ?>
+      <entry>Topology</entry>
+      <entry namest="col2" nameend="col3" align="center">Done ?</entry>
+     </row>
+
+    </thead>
+    <tbody>
+     <row>
+      <entry>Specify the logical and physical deployment topology (show examples
+       of each)</entry>
+      <entry>Y</entry>
+      <entry>N</entry>
+     </row>
+     <row>
+      <entry>Determine whether to use the embedded or external directory service
+       for configuration, CTS, and user data</entry>
+      <entry>Y</entry>
+      <entry>N</entry>
+     </row>
+     <row>
+      <entry>Plan installation of OpenAM services (including external dependencies)</entry>
+      <entry>Y</entry>
+      <entry>N</entry>
+     </row>
+     <row>
+      <entry>Plan installation of OpenAM policy agents, Fedlets, and OpenIG
+       (might be done by partner service providers)</entry>
+      <entry>Y</entry>
+      <entry>N</entry>
+     </row>
+     <row>
+      <entry>Plan integration with client applications</entry>
+      <entry>Y</entry>
+      <entry>N</entry>
+     </row>
+     <row>
+      <entry>Plan customization of OpenAM (classic UI or XUI, user profile attributes,
+       authentication modules, identity repositories, OAuth 2.0 scope handling,
+       OAuth 2.0 response types,
+       post-authentication actions, policy evaluation, session quota exhaustion actions,
+       policy evaluation, identity data storage, OpenAM service, custom logger,
+       custom Web policy agents).
+      </entry>
+      <entry>Y</entry>
+      <entry>N</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Plan Security</emphasis>. At this stage, you
+    must plan how to secure your deployment.
+   </para>
+    <table xml:id="table-plan-security">
+     <title>OpenAM Security</title>
+     <tgroup cols="3">
+      <colspec colnum="1" colname="col1" colwidth="6*"/>
+      <colspec colnum="2" colname="col2" colwidth="0.5*"/>
+      <colspec colnum="3" colname="col3" colwidth="0.5*"/>
+      <thead>
+       <row><?dbfo bgcolor="#EEEEEE" ?>
+        <entry>Security</entry>
+        <entry namest="col2" nameend="col3" align="center">Done ?</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>Understand security guidelines, including legal requirements</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Change default settings and administrative user credentials</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Protect service ports (Firewall, Dist Auth UI, reverse proxy)</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Turn off unused service endpoints</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Separate administrative access from client access</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Secure communications (HTTPS, LDAPS, secure cookies, cookie
+         hijacking protection, key management for signing and encryption)
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Determine if components handle SSL acceleration or termination
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Securing processes and files (e.g. with SELinux, dedicated
+         non-privileged user and port forwarding, etc.)
+        </entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Post-Deployment Tasks</emphasis>. At this stage,
+     you should plan your post-deployment tasks to sustain and monitor your
+     system.
+    </para>
+    <table xml:id="table-post-deployment">
+     <title>OpenAM Post-Deployment Tasks</title>
+     <tgroup cols="3">
+      <colspec colnum="1" colname="col1" colwidth="6*"/>
+      <colspec colnum="2" colname="col2" colwidth="0.5*"/>
+      <colspec colnum="3" colname="col3" colwidth="0.5*"/>
+      <thead>
+       <row><?dbfo bgcolor="#EEEEEE" ?>
+        <entry>Post Deployment Tasks</entry>
+        <entry namest="col2" nameend="col3" align="center">Done ?</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>Plan administration following OpenAM deployment (services,
+         agents/OpenIG, delegated administration)</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Plan monitoring following deployment</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Plan how to expand the deployment</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+       <row>
+        <entry>Plan how to upgrade the deployment</entry>
+        <entry>Y</entry>
+        <entry>N</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </listitem>
+
+  </itemizedlist>
+ </section>
+
+ <section xml:id="install-openam">
+  <title>Install the Components</title>
+
+  <indexterm class="startofrange" xml:id="idx-components-install">
+   <primary>OpenAM</primary>
+   <secondary>components</secondary>
+   <tertiary>installing checklist</tertiary>
+  </indexterm>
+
+  <para>
+   The installation process requires that you implement your deployment plan.
+  </para>
+  <itemizedlist>
+   <listitem>
+    <para><emphasis role="bold">Plan the Overall Deployment</emphasis>. The initial
+     planning step involves establishing the overall deployment. You should
+     determine who is responsible for each task and any external dependencies.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Determine What To Install</emphasis>.
+     Based on your deployment plan, determine what you need to install.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Determine Your System Requirements</emphasis>.
+     Based on your deployment plan, determine your system requirements.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Prepare the Operating System</emphasis>.
+     Prepare your operating system, depending on the OS: Linux, Solaris,
+     Windows, Cloud (Amazon EC2, OpenStack, etc.), Virtual Machines (VMWare,
+     Xen, Hyper-V, etc.)
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Prepare the Java Environment</emphasis>.
+     Prepare your Java environment, depending on your vendor type: Oracle, IBM,
+     OpenJDK.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Prepare the App Server</emphasis>. Prepare
+     your application server, depending on type: Apache Tomcat, JBoss 4/5,
+     WildFly, Jetty, Oracle WebLogic, IBM WebSphere. Also, prepare each
+     app server for HTTPS.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Prepare the Directory Servers</emphasis>.
+     Prepare the configuration directory server, OpenDJ for the core token service
+     (CTS), and the LDAP identity repository.
+     For information on installing data repositories, see
+     <link xlink:href="${docSetBaseURL}/install-guide#chap-prepare-install"
+           xlink:show="new"><citetitle>Prepare for Installation</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Obtain the OpenAM Software</emphasis>.
+     You should obtain a supported ForgeRock release of OpenAM, a nightly build,
+     or an archive build.
+     For the latest stable version of OpenAM, click
+     <link xlink:show="new" xlink:href="http://forgerock.com/download-stack/"
+      ><citetitle>Enterprise Downloads</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Configure OpenAM</emphasis>. Install and configure
+     OpenAM with or without the console, the
+     Distributed Authentication Service UI (DAS), setup tools (configurator),
+     configuration tools (<literal>ssoadm</literal>, <literal>ampassword</literal>,
+     <literal>amverifyarchive</literal>), or set up your
+     scripted install and configuration of OpenAM.
+     For information on installing OpenAM, see
+     <link xlink:href="${docSetBaseURL}/install-guide#install-guide"
+           xlink:show="new"><citetitle>OpenAM Installation Guide</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Set up your Realms</emphasis>. Within OpenAM,
+     set up your realms and realm administrators if any.
+     For more information on realms, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#chap-realms"
+           xlink:show="new"><citetitle>Configuring Realms</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Install Another OpenAM Instance</emphasis>.
+     Set up an identical instance of your first OpenAM instance.
+     For information on installing multiple OpenAM servers, see
+     <link xlink:href="${docSetBaseURL}/install-guide#configure-sites"
+           xlink:show="new"><citetitle>Installing Multiple Servers</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Secure OpenAM</emphasis>. Configure OpenAM to
+     access external resources over HTTPS and LDAPS. Set up secure cookies and
+     certificates.
+     For more information, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#chap-securing"
+           xlink:show="new"><citetitle>Securing OpenAM</citetitle></link>.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para><emphasis role="bold">Configure High Availability</emphasis>.
+     Configure the load balancers, reverse proxies, and site(s).
+     Configure OpenAM for session failover and server failover.
+     For simple instructions to deploy OpenAM behind a load balancer, see
+     <link xlink:href="https://wikis.forgerock.org/confluence/display/openam/Deploying+OpenAM+behind+a+load+balancer"
+           xlink:show="new"><citetitle>Deploying OpenAM behind a load balancer</citetitle></link>.
+     For an example of a reverse proxy with OpenAM, see
+     <link xlink:href="https://wikis.forgerock.org/confluence/display/openam/Simple+Apache+Reverse+Proxy+For+OpenAM+With+Certificate-Based+Authentication"
+           xlink:show="new"><citetitle>Simple Apache Reverse Proxy for OpenAM with
+     Certificate-Based Authentication</citetitle></link>.
+     For information on configuring sites, see
+     <link xlink:href="${docSetBaseURL}/install-guide#configure-sites"
+           xlink:show="new"><citetitle>Installing Multiple Servers</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Prepare the Policy Agent Profiles</emphasis>. Prepare
+     the policy agent profile, agent authenticator, policy agent configuration,
+     bootstrap configuration for a Java EE or Web policy agent.
+     For more information, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#chap-agents"
+           xlink:show="new"><citetitle>Configuring Policy Agent Profiles</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Install the Policy Agents</emphasis>. Install the
+     policy agents depending on the app server or Web server type. For app servers,
+     Apache Tomcat, JBoss, Jetty, Oracle WebLogic, IBM WebSphere.
+     For more information, see
+     <link xlink:href="${docSetBaseURL}/jee-users-guide#jee-users-guide"
+           xlink:show="new"><citetitle>OpenAM Java EE Policy Agent User's Guide</citetitle></link>.
+     For Web servers, Apache , Microsoft IIS. Set up any script installations of
+     the policy agents.
+     For more information, see
+     <link xlink:href="${docSetBaseURL}/web-users-guide#web-users-guide"
+           xlink:show="new"><citetitle>OpenAM Web Policy Agent User's Guide</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Customizing OpenAM</emphasis>. Customize
+     OpenAM for your organization.
+     For information on customizing the OpenAM end-user pages, see
+     <link xlink:href="${docSetBaseURL}/install-guide#chap-custom-ui"
+           xlink:show="new"><citetitle>Customizing the OpenAM End User Pages</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Install OpenIG</emphasis>. Determine which OpenIG
+     deliverable to install (whether federation is involved). Prepare the Apache
+     Tomcat, JBoss, Jetty, Oracle WebLogic app servers for installation. Install
+     OpenIG.
+     For more information on OpenIG, see
+     <link xlink:show="new" xlink:href="http://openig.forgerock.org"
+      >OpenIG Project</link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Plan Application and Host Backup</emphasis>.
+     Determine your backup strategy include LDIF exports, file system backups,
+     tar files, etc. Also, consider log rotation and retention policies.
+     For more information on upgrades, see
+     <link xlink:href="${docSetBaseURL}/admin-guide#chap-backup-restore"
+           xlink:show="new">
+      <citetitle>Backing Up and Restoring OpenAM Configurations</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Plan an OpenAM Upgrade</emphasis>. You should know what is
+     new or fixed in an upgrade version as well as the differences and compatibility
+     between the current version and an upgrade. Know the limitations of an upgrade
+     version. Plan a live upgrade without service interruption. Plan an offline
+     upgrade with service interruption. Plan the test of the upgrade and revert
+     a failed upgrade.
+     For more information on upgrades, see
+     <link xlink:href="${docSetBaseURL}/upgrade-guide/#upgrade-guide"
+           xlink:show="new">
+      <citetitle>OpenAM Upgrade Guide</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Upgrade OpenAM</emphasis>. Upgrade OpenAM and other
+     instances with or without the console. Upgrade the Distributed Authentication
+     UI, setup tools (configurator), configuration tools (<literal>ssoadm</literal>,
+     <literal>ampassword</literal>, <literal>amverifyarchive</literal>),
+     Java EE and/or Web policy agents. Upgrade OpenIG.
+     For more information on upgrades, see
+     <link xlink:href="${docSetBaseURL}/upgrade-guide/#upgrade-guide"
+           xlink:show="new">
+      <citetitle>OpenAM Upgrade Guide</citetitle></link>.
+    </para>
+   </listitem>
+   <listitem>
+    <para><emphasis role="bold">Remove OpenAM</emphasis>. If required, remove
+     OpenAM with or without the console. Remove the DAS, setup and configuration tools.
+     Remove the Java EE and/or Web policy agents. Remove OpenIG.
+     For more information on removing OpenAM, see
+     <link xlink:href="${docSetBaseURL}/install-guide/#chap-uninstall"
+           xlink:show="new">
+      <citetitle>Removing OpenAM Software</citetitle></link>.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <indexterm class="endofrange" startref="idx-components-install">
+   <primary>OpenAM</primary>
+   <secondary>components</secondary>
+   <tertiary>installing checklist</tertiary>
+  </indexterm>
+
+ </section>
+</chapter>
