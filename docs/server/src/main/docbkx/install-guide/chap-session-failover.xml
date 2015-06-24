@@ -124,6 +124,32 @@
   ><citetitle>Managing Data Replication</citetitle></link>.
  </para>
 
+ <note>
+  <para>
+   You can configure OpenAM to store sessions <firstterm>statefully</firstterm>
+   or <firstterm>statelessly</firstterm>. Stateful sessions are stored in
+   memory on the OpenAM server, while stateless sessions are stored in HTTP
+   cookies. An OpenAM deployment configured for session failover stores stateful
+   (but <emphasis>not</emphasis> stateless) sessions in the Core Token Service.
+   Therefore, the session failover mechanism described in this section applies
+   to stateful sessions only.
+  </para>
+  <para>
+   Because stateless sessions reside in HTTP cookies, they do not need to be
+   retrieved from a persistent data store in the event of a server
+   failure&#x2014;they can be retrieved from the cookies. Therefore, OpenAM does
+   not store stateless sessions in the CTS store.
+  </para>
+  <para>
+   For more information about stateful and stateless sessions, see
+   <link xlink:show="new"
+         xlink:href="admin-guide#chap-session-state"
+         xlink:role="http://docbook.org/xlink/role/olink">
+   <citetitle>Configuring Session State</citetitle></link> in the
+   <citetitle>Administration Guide</citetitle>.
+  </para>
+ </note>
+
  <procedure xml:id="enable-session-failover">
   <title>To Configure Session Failover After Installation</title>
 
