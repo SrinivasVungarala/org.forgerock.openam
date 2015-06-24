@@ -702,9 +702,29 @@ Using CLASSPATH:
    
    <para>
     If you have a site configuration with a load balancer, you can enable
-    session high availability persistence and failover. OpenAM then stores
-    sessions across server restarts, so that users do not have to login
-    again.
+    session high availability persistence and failover.<footnote>
+      <para>
+       You can configure OpenAM to store sessions <firstterm>statefully</firstterm>
+       or <firstterm>statelessly</firstterm>. Stateful sessions are stored in
+       memory on the OpenAM server. They are also written to disk by the
+       <link xlink:show="new"
+             xlink:href="install-guide#chap-cts"
+             xlink:role="http://docbook.org/xlink/role/olink">
+       <citetitle>Core Token Service</citetitle></link>
+       if you select the Enable Session HA and Persistence and Failover option
+       in the Site Configuration screen. Stateless sessions are stored in HTTP
+       cookies. The Enable Session HA and Persistence and Failover setting does
+       not apply to stateless sessions. For more information about stateful and
+       stateless sessions, see
+       <link xlink:show="new"
+             xlink:href="admin-guide#chap-session-state"
+             xlink:role="http://docbook.org/xlink/role/olink">
+       <citetitle>Configuring Session State</citetitle></link>
+       in the <citetitle>Administration Guide</citetitle>.
+      </para>
+    </footnote>
+    OpenAM then stores sessions across server restarts, so that users do not
+    have to login again.
    </para>
 
    <para>
@@ -738,7 +758,7 @@ Using CLASSPATH:
     configuration, as is described in the chapter on
     <link xlink:show="new" xlink:href="install-guide#chap-session-failover"
           xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Setting Up OpenAM Session Failover</citetitle></link>>.
+    <citetitle>Setting Up OpenAM Session Failover</citetitle></link>.
    </para>
   </step>
 
