@@ -202,11 +202,11 @@
    OpenAM writes a cookie in the authenticated user's browser for both stateful
    and stateless sessions. By default, the cookie's name is
    <literal>iPlanetDirectoryPro</literal>. For stateful sessions, the size of
-   this cookie's value is relatively small&#x2014;several hundred bytes&#x2014;and
+   this cookie's value is relatively small&#x2014;approximately 100 bytes&#x2014;and
    contains a reference to the stateful session on the OpenAM server and
    several other pieces of information. For stateless sessions, the
    <literal>iPlanetDirectoryPro</literal> cookie is considerably
-   larger&#x2014;approximately two thousand bytes or more&#x2014;and contains
+   larger&#x2014;approximately 2000 bytes or more&#x2014;and contains
    all the information that would be held in the OpenAM server's memory if the
    session were stateful.
   </para>

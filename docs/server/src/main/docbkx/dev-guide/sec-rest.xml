@@ -769,8 +769,8 @@ $ <userinput>curl \
      </listitem>
     </itemizedlist>
    Developers should be aware that the size of the <literal>tokenId</literal>
-   for stateless sessions&#x2014;two thousand bytes or greater&#x2014;is
-   considerably longer than for stateful sessions&#x2014;several hundred bytes.
+   for stateless sessions&#x2014;2000 bytes or greater&#x2014;is
+   considerably longer than for stateful sessions&#x2014;approximately 100 bytes.
    For more information about stateful and stateless session tokens,
    see <link xlink:show="new"
              xlink:href="admin-guide#session-state-cookies"
