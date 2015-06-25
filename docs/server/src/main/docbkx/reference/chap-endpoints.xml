@@ -35,7 +35,7 @@
  <indexterm><primary>Endpoints</primary></indexterm>
 
  <para>A service endpoint is a URL which serves as the access port for a web
-  service. It may be a standard HTML-based web page, or it may be a *.jsp page.</para>
+  service. It may be a standard HTML-based web page, or it may be a <filename>*.jsp</filename> page.</para>
 
 <!--
      I'd define an endpoint as the entry point to a web service.
@@ -50,7 +50,7 @@
     
  <para>As every service endpoint is a potential security issue, it may be appropriate
   to restrict access to some of those endpoints that you do not use. But be careful.
-  Some endpoints, such as <literal>isAlive.jsp</literal> in the
+  Some endpoints, such as <filename>isAlive.jsp</filename> in the
   main <filename>/path/to/tomcat/webapps/openam</filename> directory,
   are essential and should not be blocked or changed.</para>
 
@@ -79,24 +79,24 @@
   shown with the <literal>url-pattern</literal> tag. You can find these patterns
   in the <filename>web.xml</filename> file, in the
   <filename>/path/to/tomcat/webapps/openam/WEB-INF</filename> directory.
-  The other type is based on *.jsp pages, starting in the main
+  The other type is based on <filename>*.jsp</filename> pages, starting in the main
   <filename>/path/to/tomcat/webapps/openam</filename> directory, and also
   in many associated subdirectories. If you copied or created a WAR archive to a
-  name other than <literal>openam.war</literal>, as described in the installation
+  name other than <filename>openam.war</filename>, as described in the installation
   guide, substitute for the second <literal>openam</literal> accordingly.</para>
 
- <para>Some of these endpoints can be applied directly to a URL when you've
-  connected to the OpenAM server; for example, if you've configured OpenAM on
+ <para>Some of these endpoints can be applied directly to a URL when you have
+  connected to the OpenAM server; for example, if you have configured OpenAM on
   <literal>http://idp.example.com:8080/openam</literal>, you can log in and
   review debug options by navigating to
   <literal>http://idp.example.com:8080/openam/Debug.jsp</literal>.</para>
 
  <para>Other endpoints can only be used when called by some option in the OpenAM
-  console. For example, while the <literal>AgentAdd.jsp</literal> endpoint exists
-  in the console/agentconfig subdirectory, you would get an error by navigating
+  console. For example, while the <filename>AgentAdd.jsp</filename> endpoint exists
+  in the <filename>console/agentconfig</filename> subdirectory, you would get an error by navigating
   directly to a URL such as
   <literal>http://sp.example.com:8080/openam/console/agentconfig/AgentAdd.jsp</literal>.
-  For that particular endpoint, you'll have click through the options required
+  For that particular endpoint, you will have click through the options required
   to add an agent. (Access Control &gt; <replaceable>realm name</replaceable> &gt;
   Agents &gt; Agent &gt; New)</para>
 
@@ -121,7 +121,7 @@
   </listitem>
 
  <!--
-	  Somewhere in here, you'll need to specify which are safely removable.
+	  Somewhere in here, you will need to specify which are safely removable.
 	  Also, how do we deal with that for upgrades? Sys admins should script this, right?
 	  Or should someone develop a hardening script?
   -->
@@ -133,7 +133,7 @@
 
   <listitem>
    <para>Remove the endpoint file from the configuration. Some endpoint files,
-    such as <literal>proxy.jsp</literal> or <literal>ssoadm.jsp</literal>,
+    such as <filename>proxy.jsp</filename> or <filename>ssoadm.jsp</filename>,
     are not essential to the basic operation of OpenAM.</para>
   </listitem>
  </itemizedlist>
@@ -164,21 +164,21 @@
    <secondary>JSP</secondary>
   </indexterm>
 
-  <para>The OpenAM WAR archive includes *.jsp files in a number of different
+  <para>The OpenAM WAR archive includes <filename>*.jsp</filename> files in a number of different
    categories. Many are associated with the applicable subdirectory, such as
    <literal>console/realm</literal>.
-   The following sections will examine each *.jsp file, divided by subdirectories.</para>
+   The following sections will examine each <filename>*.jsp</filename> file, divided by subdirectories.</para>
 
-  <para>In some highlighted cases, the noted *.jsp file appears in the code for
-   one or more .java files. If you remove the noted *.jsp file from the container,
+  <para>In some highlighted cases, the noted <filename>*.jsp</filename> file appears in the code for
+   one or more <filename>.java</filename> files. If you remove the noted <filename>*.jsp</filename> file from the container,
    there is a risk that will break some functionality within OpenAM. In other
    cases, such as any files related to the GUI installation wizard,
-   the applicable *.jsp file can be safely removed from a production system.
+   the applicable <filename>*.jsp</filename> file can be safely removed from a production system.
   </para>
  </section>
 
     <!-- Mark, I guess I need to do something else to set up tertiary numbering? I was hoping that Main Directory
-    JSP Endpoints would be section 1.1.1, User Interface JSP Endpoints would be section 1.1.2. It's probably not
+    JSP Endpoints would be section 1.1.1, User Interface JSP Endpoints would be section 1.1.2. It is probably not
     a huge flaw... -->
 
  <section xml:id="maindirectory-jsp-endpoints">
@@ -189,10 +189,10 @@
    <tertiary>Main Directory</tertiary>
   </indexterm>
 
-  <para>If you're working in Tomcat, you'll find the endpoints in this subsection
+  <para>If you are working in Tomcat, you will find the endpoints in this subsection
    in the <filename>/path/to/tomcat/webapps/openam</filename> directory.
    For other web application containers, you may find the endpoints in a
-   different <literal>openam</literal> subdirectory.</para>
+   different <filename>openam</filename> subdirectory.</para>
 
   <variablelist>
    <varlistentry>
@@ -207,13 +207,13 @@
     </listitem>
    </varlistentry>
 
-    <!-- Don't close the variablelist for each entry. -->
+    <!-- Do not close the variablelist for each entry. -->
 
    <varlistentry>
     <term><literal>encode.jsp</literal></term>
     <listitem>
      <para>Enables access to a page that encodes text passwords. The algorithm
-      is based on <literal>PBEWithMD5AndDES</literal>, password-based encryption
+      is based on PBEWithMD5AndDES, password-based encryption
       (PBE) using the MD5 message-digest algorithm, configured with the data encryption
       standard (DES)</para>
     </listitem>
@@ -222,8 +222,8 @@
    <varlistentry>
    <term><literal>getServerInfo.jsp</literal></term>
    <listitem>
-    <para>Supports requests for server information. As <literal>getServerInfo.jsp</literal>
-     is encoded in some .java files, you should retain <literal>getServerInfo.jsp</literal>
+    <para>Supports requests for server information. As <filename>getServerInfo.jsp</filename>
+     is encoded in some <filename>.java</filename> files, you should retain <filename>getServerInfo.jsp</filename>
      in your deployment.
     </para>
    </listitem>
@@ -261,11 +261,11 @@
     <term><literal>services.jsp</literal></term>
     <listitem>
      <para>Lists active services within OpenAM. The details shown on this page
-      can be used with the <literal>ssoadm</literal> command to create a second
+      can be used with the <command>ssoadm</command> command to create a second
       OpenAM server with matching services. Be aware, the <literal>amadmin</literal>
       administrative user is hard-coded into this file. If you change the identity
       of the administrative user to something other than <literal>amadmin</literal>,
-      that user won't have access to <literal>services.jsp</literal>.</para>
+      that user will not have access to <filename>services.jsp</filename>.</para>
     </listitem>
    </varlistentry>
 
@@ -281,7 +281,7 @@
     <term><literal>ssoadm.jsp</literal></term>
     <listitem>
      <para>Supports GUI-based access to the options associated with the
-      <literal>ssoadm</literal> command.
+      <command>ssoadm</command> command.
       The <literal>ssoadm.jsp</literal> file is disabled by default.
       Instructions for enabling this feature are available from
       the <citetitle>Administration Guide</citetitle> entry on
@@ -295,8 +295,8 @@
    <varlistentry>
     <term><literal>validateWait.jsp</literal></term>
     <listitem>
-     <para>May be called by the <literal>validator.jsp</literal> or
-      <literal>validatorMain.jsp</literal> files, to display progress in
+     <para>May be called by the <filename>validator.jsp</filename> or
+      <filename>validatorMain.jsp</filename> files, to display progress in
       verifying the status of federation.
      </para>
     </listitem>
@@ -320,7 +320,7 @@
    <varlistentry>
     <term><literal>validatorFooter.jsp</literal></term>
     <listitem>
-     <para>Incorporates a "Back to Login" button in <literal>validatorMain.jsp</literal>.
+     <para>Incorporates a "Back to Login" button in <filename>validatorMain.jsp</filename>.
      </para>
     </listitem>
    </varlistentry>
@@ -328,7 +328,7 @@
    <varlistentry>
     <term><literal>validatorMain.jsp</literal></term>
     <listitem>
-     <para>Sets up a federation connectivity test. If you've set up a Federation
+     <para>Sets up a federation connectivity test. If you have set up a Federation
       Circle of Trust, this file is accessible from the "Test Federation
       Connectivity" option in the main OpenAM console.</para>
     </listitem>
@@ -347,14 +347,14 @@
    <varlistentry>
     <term><literal>validatorStatus.jsp</literal></term>
     <listitem>
-     <para>Adds information to <literal>validator.jsp</literal> and
-     <literal>validatorMain.jsp</literal> with federation status information as
+     <para>Adds information to <filename>validator.jsp</filename> and
+     <filename>validatorMain.jsp</filename> with federation status information as
      it relates to the currently configured circle of trust.</para>
     </listitem>
    </varlistentry>
   </variablelist>
 
-  <para>All of the <literal>validat*.jsp</literal> files near the end of this list
+  <para>All of the <filename>validat*.jsp</filename> files near the end of this list
    relate to testing and verifying federation. It requires at least one identity
    provider (IDP) and one service provider (SP). At least one of these components
    must be configured remotely to set up a valid Circle of Trust (COT).
@@ -376,7 +376,7 @@
    appear to relate to JavaHelp; per OPENAM-806, this functionality was removed
    from OpenAM, starting with version 9.5.3.
    Thus, the endpoints in this section, with one possible exception
-   (<literal>Masthead.jsp</literal> in the <literal>com_sun_web_ui/jsp/version</literal>
+   (<filename>Masthead.jsp</filename> in the <filename>com_sun_web_ui/jsp/version</filename>
    subdirectory) may no longer serve any purpose.
   </para>
 
@@ -386,9 +386,9 @@
    <varlistentry>
     <term><literal>DateTimeWindow.jsp</literal></term>
     <listitem>
-     <para>The only endpoint in the com_sun_web_ui/jsp/datetime subdirectory.
-      May be a legacy endpoint; it calls a DateTimeWindowViewBean class;
-      the corresponding .java file does not exist in the current trunk.
+     <para>The only endpoint in the <filename>com_sun_web_ui/jsp/datetime</filename>
+      subdirectory. May be a legacy endpoint; it calls a <literal>DateTimeWindowViewBean</literal>
+      class; the corresponding <filename>.java</filename> file does not exist in the current trunk.
      </para>
     </listitem>
    </varlistentry>
@@ -396,9 +396,9 @@
    <varlistentry>
     <term><literal>Help.jsp</literal></term>
      <listitem>
-      <para>One of two endpoints in the com_sun_web_ui/jsp/help subdirectory.
-       May be a legacy endpoint; it calls a HelpViewBean class; the
-       corresponding .java file does not exist in the current trunk.
+      <para>One of two endpoints in the <filename>com_sun_web_ui/jsp/help</filename> subdirectory.
+       May be a legacy endpoint; it calls a <literal>HelpViewBean</literal> class; the
+       corresponding <filename>.java</filename> file does not exist in the current trunk.
       </para>
      </listitem>
    </varlistentry>
@@ -406,14 +406,14 @@
    <varlistentry>
     <term><literal>Masthead.jsp</literal></term>
     <listitem>
-     <para>One of two endpoints in the com_sun_web_ui/jsp/help subdirectory.
-      Also exists in a slightly different format in the com_sun_web_ui/jsp/help2
-      subdirectory, as well as the com_sun_web_ui/jsp/version subdirectory.
-      May be a legacy endpoint; it calls a MastheadViewBean class; the
-      Masthead.jsp file and the corresponding MastheadViewBean.java were last
-      changed in 2004. (However, the Masthead.jsp file in the
-      com_sun_web_ui/jsp/version subdirectory includes a VersionViewBean.java
-      file that is used by the Version.jsp endpoint used in the console/base
+     <para>One of two endpoints in the <filename>com_sun_web_ui/jsp/help</filename>,
+      <filename>com_sun_web_ui/jsp/help2</filename>, and <filename>com_sun_web_ui/jsp/version</filename> subdirectories,
+      in slightly different formats.
+      May be a legacy endpoint; it calls a <literal>MastheadViewBean</literal> class; the
+      <filename>Masthead.jsp</filename> file and the corresponding <filename>MastheadViewBean.java</filename> were last
+      changed in 2004. (However, the <filename>Masthead.jsp</filename> file in the
+      <filename>com_sun_web_ui/jsp/version</filename> subdirectory includes a <filename>VersionViewBean.java</filename>
+      file that is used by the <filename>Version.jsp</filename> endpoint used in the <filename>console/base</filename>
       subdirectory.
      </para>
     </listitem>
@@ -422,8 +422,8 @@
    <varlistentry>
     <term><literal>ButtonNav.jsp</literal></term>
     <listitem>
-     <para>Specifies an endpoint in the com_sun_web_ui/jsp/help2 directory.
-      Points to a ButtonNavViewBean class; the associated .java file no longer
+     <para>Specifies an endpoint in the <filename>com_sun_web_ui/jsp/help2</filename> directory.
+      Points to a <literal>ButtonNavViewBean</literal> class; the associated <filename>.java</filename> file no longer
       exists in the trunk.
      </para>
     </listitem>
@@ -432,8 +432,8 @@
    <varlistentry>
     <term><literal>Help2Ie.jsp</literal></term>
     <listitem>
-     <para>Specifies an endpoint in the com_sun_web_ui/jsp/help2 directory.
-      Points to a Help2ViewBean class; the associated .java file no longer exists
+     <para>Specifies an endpoint in the <filename>com_sun_web_ui/jsp/help2</filename> directory.
+      Points to a <literal>Help2ViewBean</literal> class; the associated <filename>.java</filename> file no longer exists
       in the trunk.
      </para>
     </listitem>
@@ -442,8 +442,8 @@
    <varlistentry>
     <term><literal>Help2Nav4.jsp</literal></term>
     <listitem>
-     <para>Specifies an endpoint in the com_sun_web_ui/jsp/help2 directory.
-      Points to a Help2ViewBean class; the associated .java file no longer exists
+     <para>Specifies an endpoint in the <filename>com_sun_web_ui/jsp/help2</filename> directory.
+      Points to a <literal>Help2ViewBean</literal> class; the associated <filename>.java</filename> file no longer exists
       in the trunk.
      </para>
     </listitem>
@@ -452,8 +452,8 @@
    <varlistentry>
     <term><literal>Help2Nav6up.jsp</literal></term>
     <listitem>
-     <para>Specifies an endpoint in the com_sun_web_ui/jsp/help2 directory.
-      Points to a Help2ViewBean class; the associated .java file no longer exists
+     <para>Specifies an endpoint in the <filename>com_sun_web_ui/jsp/help2</filename> directory.
+      Points to a <literal>Help2ViewBean</literal> class; the associated <filename>.java</filename> file no longer exists
       in the trunk.
      </para>
     </listitem>
@@ -462,8 +462,8 @@
    <varlistentry>
     <term><literal>Navigator.jsp</literal></term>
     <listitem>
-     <para>Specifies an endpoint in the com_sun_web_ui/jsp/help2 directory.
-      Points to a NavigatorViewBean class; the associated .java file no longer
+     <para>Specifies an endpoint in the <filename>com_sun_web_ui/jsp/help2</filename> directory.
+      Points to a <literal>NavigatorViewBean</literal> class; the associated <filename>.java</filename> file no longer
       exists in the trunk.
      </para>
     </listitem>
@@ -472,15 +472,15 @@
    <varlistentry>
     <term><literal>AdvancedSort.jsp</literal></term>
     <listitem>
-     <para>Specifies an endpoint in the com_sun_web_ui/jsp/table directory.</para>
+     <para>Specifies an endpoint in the <filename>com_sun_web_ui/jsp/table</filename> directory.</para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
     <term><literal>Table.jsp</literal></term>
     <listitem>
-     <para>Specifies an endpoint in the com_sun_web_ui/jsp/table directory.
-      Points to a TableViewBean class; the associated .java file no longer exists
+     <para>Specifies an endpoint in the <filename>com_sun_web_ui/jsp/table</filename> directory.
+      Points to a <literal>TableViewBean</literal> class; the associated <filename>.java</filename> file no longer exists
       in the trunk.</para>
     </listitem>
    </varlistentry>
@@ -488,9 +488,9 @@
    <varlistentry>
     <term><literal>WizardWindow.jsp</literal></term>
     <listitem>
-     <para>Points to an endpoint in the com_sun_web_ui/jsp/wizard subdirectory.
+     <para>Points to an endpoint in the <filename>com_sun_web_ui/jsp/wizard</filename> subdirectory.
       Points to a WizardWindowViewBean class, which appears to be unused by any
-      other .jsp file.
+      other <filename>.jsp</filename> file.
      </para>
     </listitem>
    </varlistentry>
@@ -512,11 +512,11 @@
 	 <indexterm><primary>Endpoints</primary></indexterm>
  -->
 
-  <para>Many of the .jsp files in this category can be modified to help you modify
+  <para>Many of the <filename>.jsp</filename> files in this category can be modified to help you modify
    the messages that appear to users in the OpenAM console. Standard messages
-   for most of these endpoints can be found in the <literal>amAuth.properties</literal> and
-   <literal>amAuthUI.properties</literal> files.
-   You'll find the endpoints in this subsection in the <literal>config/auth/default</literal>
+   for most of these endpoints can be found in the <filename>amAuth.properties</filename> and
+   <filename>amAuthUI.properties</filename> files.
+   You will find the endpoints in this subsection in the <filename>config/auth/default</filename>
    subdirectory.
   </para>
 
@@ -527,7 +527,7 @@
      <term><literal>account_expired.jsp</literal></term>
      <listitem>
       <para>Specifies an error page for account expiration. The message
-       displayed to the user can be modified in the <literal>amAuthUI.properties</literal>
+       displayed to the user can be modified in the <filename>amAuthUI.properties</filename>
        file.</para>
      </listitem>
     </varlistentry>
@@ -536,7 +536,7 @@
      <term><literal>authException.jsp</literal></term>
      <listitem>
       <para>Option to Exception.jsp; called if there is an existing resource
-       bundle, as specified in <literal>AuthExceptionViewBean.java</literal>.
+       bundle, as specified in <filename>AuthExceptionViewBean.java</filename>.
       </para>
      </listitem>
     </varlistentry>
@@ -545,7 +545,7 @@
      <term><literal>auth_error_template.jsp</literal></term>
      <listitem>
       <para>Specifies an error page for authentication errors. The message
-       displayed to the user can be modified in the <literal>amAuthUI.properties</literal>
+       displayed to the user can be modified in the <filename>amAuthUI.properties</filename>
        file.
       </para>
      </listitem>
@@ -558,7 +558,7 @@
        in the OpenAM Console, under Access Control &gt; Realm Name &gt; Authentication
        &gt; Module Instances.
        The default disclaimer is associated with the <literal>disclaimer.notice</literal>
-       parameter, defined in the <literal>amAuthUI.properties</literal> file.</para>
+       parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
      </listitem>
     </varlistentry>
 
@@ -567,7 +567,7 @@
             <listitem>
                 <para>Associated with the self-registration module, which can be configured in the OpenAM Console, under
                     Access Control > Realm Name > Authentication > Module Instances. The default disclaimer_denied message is
-                    associated with the disclaimer.declined parameter, defined in the amAuthUI.properties file.</para>
+                    associated with the <literal>disclaimer.declined</literal> parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -575,7 +575,7 @@
             <term><literal>Exception.jsp</literal></term>
             <listitem>
                 <para>Includes the following error message: "Authentication Service is not initialized." Cited by several
-                    other .java files in the code, so it should not be removed in a secure deployment..</para>
+                    other <filename>.java</filename> files in the code, so it should not be removed in a secure deployment..</para>
             </listitem>
         </varlistentry>
 
@@ -583,7 +583,7 @@
             <term><literal>invalidAuthlevel.jsp</literal></term>
             <listitem>
                 <para>Used to specify an issue with the authentication level. The default invalidauthlevel and contactadmin
-                    messages can be redefined in the amAuthUI.properties file.</para>
+                    messages can be redefined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -592,7 +592,7 @@
             <listitem>
                 <para>Notes a problem with a specified user name for a cookie, which presumably does not exist in the
                     relevant domain. The default cookie.notpersistent and contactadmin messages can be modified in the
-                    amAuthUI.properties file.</para>
+                    <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -600,7 +600,7 @@
             <term><literal>invalid_domain.jsp</literal></term>
             <listitem>
                 <para>Displays a "No such Organization found" message when a domain is not defined in the OpenAM database.
-                    Refers to the nosuch.domain parameter in the amAuthUI.properties file.</para>
+                    Refers to the <literal>nosuch.domain</literal> parameter in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -608,15 +608,16 @@
             <term><literal>login_denied.jsp</literal></term>
             <listitem>
                 <para>Defines the response of OpenAM to a user who enters an undefined profile. Uses the
-                    userhasnosuchprofile.org and contactadmin parameters in the amAuthUI.properties file.</para>
+                    <literal>userhasnosuchprofile.org</literal> and <literal>contactadmin</literal> parameters
+                    in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
         <varlistentry>
             <term><literal>login_failed_template.jsp</literal></term>
             <listitem>
-                <para>Provides a message in the event of a login failure. The message uses the auth.failed parameter
-                    in the amAuthUI.properties file.</para>
+                <para>Provides a message in the event of a login failure. The message uses the <literal>auth.failed</literal> parameter
+                    in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -628,14 +629,14 @@
                             xlink:href="admin-guide#secure-openam-administration"
                             xlink:role="http://docbook.org/xlink/role/olink">
                         <citetitle>Securing OpenAM Administration</citetitle></link>,
-                    the Login.jsp file may be customized for different deployments.</para>
+                    the <filename>Login.jsp</filename> file may be customized for different deployments.</para>
             </listitem>
         </varlistentry>
 
         <varlistentry>
             <term><literal>Logout.jsp</literal></term>
             <listitem>
-                <para>The Logout.jsp file may also be customized for different deployments.</para>
+                <para>The <filename>Logout.jsp</filename> file may also be customized for different deployments.</para>
             </listitem>
         </varlistentry>
 
@@ -644,8 +645,8 @@
             <listitem>
                 <para>Specifies the message given to users when the number of sessions has hit the preconfigured limit.
                     The default is 5000, defined in the OpenAM console under Configuration > Servers and Sites >
-                    Default Server Settings > Session. The message uses the session.max.limit parameter defined in the
-                    amAuthUI.properties file.</para>
+                    Default Server Settings > Session. The message uses the <literal>session.max.limit</literal> parameter defined in the
+                    <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -667,7 +668,7 @@
             <term><literal>module_denied.jsp</literal></term>
             <listitem>
                 <para>Includes a message to a target user that he does not have access to a specified module. The message
-                    uses the authmodule.denied parameter defined in the amAuthUI.properties file..</para>
+                    uses the <literal>authmodule.denied</literal> parameter defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -681,16 +682,16 @@
         <varlistentry>
             <term><literal>new_org.jsp</literal></term>
             <listitem>
-                <para>Includes a warning when a user is trying to access a different realm. The message uses the newOrg.agree
-                    parameter, as defined in the amAuthUI.properties file.</para>
+                <para>Includes a warning when a user is trying to access a different realm. The message uses the <literal>newOrg.agree</literal>
+                    parameter, as defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
         <varlistentry>
             <term><literal>noConfig.jsp</literal></term>
             <listitem>
-                <para>Specifies the lack of a defined configuration module. The message uses the noconfig.found parameter,
-                    defined in the amAuthUI.properties file.</para>
+                <para>Specifies the lack of a defined configuration module. The message uses the <literal>noconfig.found</literal> parameter,
+                    defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -698,7 +699,7 @@
             <term><literal>OAuthActivate.jsp</literal></term>
             <listitem>
                 <para>Shows a default template for entering an activation code.
-                    Used by OAuth.xml for password changes. As this file is not configured for OAuth2, the file is
+                    Used by <filename>OAuth.xml</filename> for password changes. As this file is not configured for OAuth2, the file is
                     deprecated and may be removed from a future release.</para>
             </listitem>
         </varlistentry>
@@ -722,7 +723,7 @@
             <term><literal>profileError.jsp</literal></term>
             <listitem>
                 <para>Specifies the message that is sent when there's a failure in the use of the self-registration module.
-                    Associated with the profile.error parameter, defined in the amAuthUI.properties file.</para>
+                    Associated with the <literal>profile.error</literal> parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -744,7 +745,7 @@
             <term><literal>session_timeout.jsp</literal></term>
             <listitem>
                 <para>Adds a message to a user when a session has gone past its allocated login time. Uses the
-                    session.timeout parameter, defined in the amAuthUI.properties file.</para>
+                    <literal>session.timeout</literal> parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -752,16 +753,17 @@
             <term><literal>userDenied.jsp</literal></term>
             <listitem>
                 <para>Associated with role-based authentication. Tells a user when the required role has not been configured
-                    for that user. Message defined by the user.not.inrole parameter, defined in the amAuthUI.properties
-                    file.</para>
+                    for that user. The message is defined by the <literal>user.not.inrole</literal> parameter, which is
+                    defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
         <varlistentry>
             <term><literal>user_inactive.jsp</literal></term>
             <listitem>
-                <para>Identifies a message sent to a user that is not currently active in the database. Message defined by
-                    the usernot.active parameter, as shown in the amAuthUI.properties file.</para>
+                <para>Identifies a message sent to a user that is not currently active in the database. The
+                    message is defined by the <literal>usernot.active</literal> parameter, as shown in
+                    the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
 
@@ -777,12 +779,12 @@
    <tertiary>Default Console</tertiary>
   </indexterm>
 
-  <para>Many of the files in this config/federation/default subdirectory use the
-   com.sun.liberty.LibertyManager interface. In general, you'll want to keep these
+  <para>Many of the files in this <filename>config/federation/default</filename> subdirectory use the
+   <literal>com.sun.liberty.LibertyManager</literal> interface. In general, you will want to keep these
    files in a production deployment, to support adding to and deleting users from
    different Circles Of Trust (COT). Many of these files are customizable for
    different organizational interfaces. Interfaces in different languages may be
-   configured in slightly different subdirectories such as config/federation/default_fr.
+   configured in slightly different subdirectories, such as <filename>config/federation/default_fr</filename>.
   </para>
 
         <!-- For each service endpoint sorted alphanumeric: URI, description -->
@@ -808,7 +810,7 @@
    <varlistentry>
     <term><literal>Error.jsp</literal></term>
     <listitem>
-     <para>Sets up an error message, using the com.sun.liberty.LibertyManager
+     <para>Sets up an error message, using the <literal>com.sun.liberty.LibertyManager</literal>
       interface.
      </para>
     </listitem>
@@ -872,8 +874,8 @@
    <varlistentry>
     <term><literal>NameRegistration.jsp</literal></term>
     <listitem>
-     <para>Supports registration with a new remote provider; this endpoint is
-      associated with NameRegistrationDone.jsp.
+     <para>Supports registration with a new remote provider. This endpoint is
+      associated with <filename>NameRegistrationDone.jsp</filename>.
      </para>
     </listitem>
    </varlistentry>
@@ -892,7 +894,7 @@
     <term><literal>Termination.jsp</literal></term>
     <listitem>
      <para>Supports defederation from an existing remote provider; goes with
-      TerminationDone.jsp.
+      <filename>TerminationDone.jsp</filename>.
      </para>
     </listitem>
    </varlistentry>
@@ -918,13 +920,13 @@
             <tertiary>Console Agent Configuration</tertiary>
         </indexterm>
 
-        <para>The JSP files in the console/agentconfig subdirectory relate to the configuration of Web Agents. To see
+        <para>The JSP files in the <filename>console/agentconfig</filename> subdirectory relate to the configuration of Web Agents. To see
         what is done by each JSP file, log into the console as the administrator. Select Access Control >
             <replaceable>[Some Realm]</replaceable> >
         Agents. Several of the options that appear corresponds to the JSP files in the target subdirectory.</para>
 
-        <para>Some of the endpoints include messages from relevant sections of the amConsole.properties file. The agents
-        in this directory are part of the com.sun.identity.console.agentconfig package.</para>
+        <para>Some of the endpoints include messages from relevant sections of the <filename>amConsole.properties</filename> file. The agents
+        in this directory are part of the <literal>com.sun.identity.console.agentconfig</literal> package.</para>
 
         <para>Several endpoints relate to Web Service Client (WSC) policy agents, which secure outgoing requests and
             validate incoming requests from Web Service Providers (WSP). For more information, see the chapter on
@@ -990,7 +992,7 @@
           <term><literal>Agents.jsp</literal></term>
           <listitem>
               <para>Enables access to a form to specify a new agent to add. The same form is used for every category of
-              new agents configured from the OpenAM console, when you navigate to Access Control -> [Realm name] ->
+              new agents configured from the OpenAM console, when you navigate to Access Control > <replaceable>[Realm name]</replaceable> >
               Agents.</para>
           </listitem>
       </varlistentry>
@@ -1068,7 +1070,7 @@
                 <listitem>
                     <para>Specifies an element used by endpoints triggered from
                      the OpenAM console's Common Tasks tab, including
-                     the ConfigureGoogleApps.jsp and ConfigureSalesForceApps.jsp
+                     the <filename>ConfigureGoogleApps.jsp</filename> and <filename>ConfigureSalesForceApps.jsp</filename>
                      endpoints.</para>
                 </listitem>
             </varlistentry>
@@ -1274,7 +1276,7 @@
             <varlistentry>
                 <term><literal>DelegationProperties.jsp</literal></term>
                 <listitem>
-                    <para>Supports changes in properties for group privileges, described in the Delegation.jsp endpoint.
+                    <para>Supports changes in properties for group privileges, described in the <filename>Delegation.jsp</filename> endpoint.
                         To get to these properties, select Access Control &gt; <replaceable>[some realm]</replaceable>
                         &gt; Privileges &gt; <replaceable>[name of group]</replaceable>.</para>
                 </listitem>
@@ -1300,11 +1302,11 @@
         in your Circles of Trust (COT), SAML v2.0 / ID-FF / WS-Federation entity providers, and SAML v1.x configured
             partners.</para>
 
-        <para>If you're not using the legacy elements of federation, such as Liberty ID-FF, WS-Federation, and SAML v1.x,
+        <para>If you are not using the legacy elements of federation, such as Liberty ID-FF, WS-Federation, and SAML v1.x,
             you may be able to delete related service endpoints in a more secure deployment.</para>
 
         <para>Many of the endpoints in this section are accessible from the OpenAM console, under the Federation tab.
-        Some of the endpoints are accessible only after you've created an appropriate entity provider, such as
+        Some of the endpoints are accessible only after you have created an appropriate entity provider, such as
         SAML v2.0, ID-FF, or WS-Federation.</para>
 
         <variablelist>
@@ -1348,7 +1350,7 @@
 <varlistentry>
     <term><literal>FSSAMLSetTrustedPartnerType.jsp</literal></term>
     <listitem>
-        <para>Associated with the FSSAMLSetTrustedPartnersEdit.jsp file; used when you select a configured SAML v1.x
+        <para>Associated with the <filename>FSSAMLSetTrustedPartnersEdit.jsp</filename> file; used when you select a configured SAML v1.x
             Configuration trusted partner.</para>
     </listitem>
 </varlistentry>
@@ -1415,7 +1417,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 <varlistentry>
     <term><literal>FileUploader.jsp</literal></term>
     <listitem>
-        <para>Called by the ImportEntity.jsp file, to support uploads of metadata files associated with a previously
+        <para>Called by the <filename>ImportEntity.jsp</filename> file, to support uploads of metadata files associated with a previously
             configured entity provider.</para>
     </listitem>
 </varlistentry>
@@ -1431,7 +1433,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
     <term><literal>IDFFGeneral.jsp</literal></term>
     <listitem>
         <para>Includes general parameters associated with an IDFF affiliate in a COT. The corresponding
-        IDFFGeneralViewBean parameter is cited only in this and the IDFFGeneralViewBean.java files.</para>
+        <literal>IDFFGeneralViewBean</literal> parameter is cited only in this and the <filename>IDFFGeneralViewBean.java</filename> files.</para>
     </listitem>
 </varlistentry>
 
@@ -1608,11 +1610,11 @@ to a runtime exception with messages that I think suggest that it needed to be c
         </indexterm>
 
         <para>This group of service endpoints are associated with an identity management (IDM) interface from OpenAM.
-        You can find these endpoints in the console/idm subdirectory. You may not need all of the functionality
+        You can find these endpoints in the <filename>console/idm</filename> subdirectory. You may not need all of the functionality
         provided by the endpoints in this section.</para>
 
-        <para>Some of the endpoints in this section include references to UM*.jsp endpoints, User Console JSP Endpoints
-        located in the console/user subdirectory, and described later in this chapter.</para>
+        <para>Some of the endpoints in this section include references to <filename>UM*.jsp</filename> endpoints, User Console JSP Endpoints
+        located in the <filename>console/user</filename> subdirectory, and described later in this chapter.</para>
 
         <variablelist>
 
@@ -1642,7 +1644,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>EntityDiscoveryDescriptionAdd.jsp</literal></term>
                 <listitem>
                     <para>Associated with the Discovery Service. To access that service, select a non-administrative
-                        user and select the Services tab. The EntityDiscoveryDescriptionAdd.jsp file is used when
+                        user and select the Services tab. The <filename>EntityDiscoveryDescriptionAdd.jsp</filename> file is used when
                         selecting a new Security Mechanism ID
                     as a Service Description as a new Discovery Resource Offering.</para>
                 </listitem>
@@ -1686,24 +1688,24 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>EntityResourceOffering.jsp</literal></term>
                 <listitem>
-                    <para>Supports custom resource offering entries for a previously configured user. Also seen when
-                        accessing the UMUserResourceOffering.jsp file.</para>
+                    <para>Supports custom resource offering entries for a previously configured user. Also used when
+                        accessing the <filename>UMUserResourceOffering.jsp</filename> file.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>EntityResourceOfferingAdd.jsp</literal></term>
                 <listitem>
-                    <para>Supports entries of new resource offerings for a previously configured user. Also seen when
-                        accessing the UMUserResourceOfferingAdd.jsp file.</para>
+                    <para>Supports entries of new resource offerings for a previously configured user. Also used when
+                        accessing the <filename>UMUserResourceOfferingAdd.jsp</filename> file.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>EntityResourceOfferingEdit.jsp</literal></term>
                 <listitem>
-                    <para>Supports edits of existing resource offerings for a previously configured user. Also seen when
-                        accessing the UMUserResourceOfferingEdit.jsp file.</para>
+                    <para>Supports edits of existing resource offerings for a previously configured user. Also used when
+                        accessing the <filename>UMUserResourceOfferingEdit.jsp</filename> file.</para>
                 </listitem>
             </varlistentry>
 
@@ -1726,7 +1728,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>ServicesAdd.jsp</literal></term>
                 <listitem>
                     <para>Accessible after adding a new service for a currently configured user; associated with
-                        the EntityServices.jsp file.</para>
+                        the <filename>EntityServices.jsp</filename> file.</para>
                 </listitem>
             </varlistentry>
 
@@ -1762,9 +1764,9 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <tertiary>Console Realm</tertiary>
         </indexterm>
 
-        <para>If you want to know how to configure services and data stores within a realm, you'll want to understand
-        the workings of these service endpoints. If you want to customize realms in production, you'll want to keep
-        these endpoints available on an OpenAM console. You can find these endpoints in the console/realm
+        <para>If you want to know how to configure services and data stores within a realm, you will want to understand
+        the workings of these service endpoints. If you want to customize realms in production, you will want to keep
+        these endpoints available on an OpenAM console. You can find these endpoints in the <filename>console/realm</filename>
         subdirectory.</para>
 
         <variablelist>
@@ -1773,8 +1775,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>HomePage.jsp</literal></term>
                 <listitem>
                     <para>Associated with the main Access Control page in the OpenAM GUI console, which lists configured
-                        realms. If you call realm/HomePage.jsp directly, it cites messages associated with changes for
-                        a specific user, and functions more closely associated with JSP endpoints in the console/idm
+                        realms. If you call <filename>realm/HomePage.jsp</filename> directly, it cites messages associated with changes for
+                        a specific user, and functions more closely associated with JSP endpoints in the <filename>console/idm</filename>
                         subdirectory.</para>
                 </listitem>
             </varlistentry>
@@ -1792,14 +1794,14 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>IDRepoAdd.jsp</literal></term>
                 <listitem>
-                    <para>Appears when you add a data store; associated with the IDRepo.jsp service endpoint.</para>
+                    <para>Appears when you add a data store; associated with the <filename>IDRepo.jsp</filename> service endpoint.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>IDRepoEdit.jsp</literal></term>
                 <listitem>
-                    <para>Appears when you edit an existing data store; associated with the IDRepo.jsp service
+                    <para>Appears when you edit an existing data store; associated with the <filename>IDRepo.jsp</filename> service
                         endpoint.</para>
                 </listitem>
             </varlistentry>
@@ -1808,7 +1810,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>IDRepoSelectType.jsp</literal></term>
                 <listitem>
                     <para>Includes a list of supported data stores, from Active Directory to OpenDJ; associated with
-                        the IDRepo.jsp service endpoint.</para>
+                        the <filename>IDRepo.jsp</filename> service endpoint.</para>
                 </listitem>
             </varlistentry>
 
@@ -1822,14 +1824,14 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>RMRealmAdd.jsp</literal></term>
                 <listitem>
-                    <para>Supports the addition of a new realm; associated with the RMRealm.jsp service endpoint.</para>
+                    <para>Supports the addition of a new realm; associated with the <filename>RMRealm.jsp</filename>service endpoint.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>RealmDiscoveryDescriptionAdd.jsp</literal></term>
                 <listitem>
-                    <para>Supports a new description for a realm; associated with the RealmResourceOffering.jsp service
+                    <para>Supports a new description for a realm; associated with the <filename>RealmResourceOffering.jsp</filename> service
                         endpoint. </para>
                     <!-- based on my reading of RealmResourceOfferingViewBeanBase.java -->
                 </listitem>
@@ -1838,7 +1840,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>RealmDiscoveryDescriptionEdit.jsp</literal></term>
                 <listitem>
-                    <para>Supports an edited description; associated with the RealmResourceOffering.jsp service endpoint.
+                    <para>Supports an edited description; associated with the <filename>RealmResourceOffering.jsp</filename> service endpoint.
                     </para>
                     <!-- based on my reading of RealmResourceOfferingViewBeanBase.java -->
                 </listitem>
@@ -1906,7 +1908,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>ServicesEdit.jsp</literal></term>
                 <listitem>
-                    <para>Supports the editing of an existing service; associated with the Services.jsp endpoint.</para>
+                    <para>Supports the editing of an existing service; associated with the <filename>Services.jsp</filename> endpoint.</para>
                 </listitem>
             </varlistentry>
 
@@ -1941,7 +1943,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
         <para> You can find the JSP files in this category in the console/service subdirectory. Most of the endpoints
             are accessible in the console, from various options associated with the Configuration menu. If you
-        don't use some of the functionality described such as Liberty ID-FF or SOAP binding, you may be able to
+        do not use some of the functionality described such as Liberty ID-FF or SOAP binding, you may be able to
         delete the associated endpoints.</para>
 
         <variablelist>
@@ -2401,7 +2403,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <tertiary>Session Console</tertiary>
         </indexterm>
 
-        <para>There are currently two service endpoints configured in the console/session subdirectory, related to
+        <para>There are currently two service endpoints configured in the <filename>console/session</filename> subdirectory, related to
             login sessions.</para>
 
         <variablelist>
@@ -2432,8 +2434,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <tertiary>Task Console</tertiary>
         </indexterm>
 
-        <para>The service endpoints in the console/task subdirectory relate to the options available from the default
-        start page when an administrator logs into the OpenAM console. If you don't use Google Apps or Salesforce,
+        <para>The service endpoints in the <filename>console/task</filename> subdirectory relate to the options available from the default
+        start page when an administrator logs into the OpenAM console. If you do not use Google Apps or Salesforce,
         you may not need some of the functionality in the associated endpoints.</para>
 
         <variablelist>
@@ -2467,8 +2469,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>ConfigureGoogleAppsWarning.jsp</literal></term>
                 <listitem>
-                    <para>Includes a default warning message related to the ConfigureGoogleApps.jsp endpoint. The
-                    message is self-explanatory, though grammatically questionable: "Unable to configure because there
+                    <para>Includes a default warning message related to the <filename>ConfigureGoogleApps.jsp</filename> endpoint. The
+                    message is: "Unable to configure because there
                     are no circle of trust with Identity Provider."</para>
                 </listitem>
             </varlistentry>
@@ -2504,9 +2506,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>ConfigureSalesForceAppsFinishWarning.jsp</literal></term>
                 <listitem>
-                    <para>Includes a warning message related to the ConfigureSalesForceApps.jsp endpoint. The
-                    message is self-explanatory, though grammatically questionable: "Unable to configure because there
-                    are no circle of trust with Identity Provider."</para>
+                    <para>Includes a warning message related to the <filename>ConfigureSalesForceApps.jsp</filename> endpoint. The
+                    message is: "Unable to configure because there are no circle of trust with Identity Provider."</para>
                 </listitem>
             </varlistentry>
 
@@ -2618,11 +2619,11 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>UMUserDiscoveryDescriptionAdd.jsp</literal></term>
                 <listitem>
                     <para>Relates to the security mechanism identifier associated wih a user. To access from the screen
-                    for an individual user, select Services &gt; Discovery Service &gt; Add &gt; scroll down to the
-                    Service Description box &gt; New Description &gt; select and Add a Security Mechanism ID.
-                    Example IDs include urn:liberty:security:2003-08:ClientTLS:SAML, which relates to the former
-                    Liberty Alliance project, using Transaction Layer Security (TLS) on the client, with SAML
-                    assertions.</para>
+                       for an individual user, select Services &gt; Discovery Service &gt; Add &gt; scroll down to the
+                       Service Description box &gt; New Description &gt; select and Add a Security Mechanism ID.
+                       An example ID is <literal>urn:liberty:security:2003-08:ClientTLS:SAML</literal>, which relates to the former
+                       Liberty Alliance project. The ID also uses Transaction Layer Security (TLS) on the client with SAML
+                       assertions.</para>
                 </listitem>
             </varlistentry>
 
@@ -2630,7 +2631,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>UMUserDiscoveryDescriptionEdit.jsp</literal></term>
                 <listitem>
                     <para>Supports editing of the security mechanism identifier associated with a user. Closely related
-                        to the UMUserDiscoveryDescriptionAdd.jsp endpoint.</para>
+                        to the <filename>UMUserDiscoveryDescriptionAdd.jsp</filename> endpoint.</para>
                 </listitem>
             </varlistentry>
 
@@ -2678,8 +2679,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <tertiary>Web Services Console</tertiary>
         </indexterm>
 
-        <para>Web services include endpoints in the console/webservices subdirectory. You can use them to define legacy
-            options for services such as the Liberty Identity Federation Framework (ID-FF). As such, these endpoints
+        <para>Web services include endpoints in the <filename>console/webservices</filename> subdirectory. You can use them to define legacy
+            options for services, such as the Liberty Identity Federation Framework (ID-FF). As such, these endpoints
             may be less essential to your implementation of OpenAM.
         For more information, see the
             <link xlink:show="new"
@@ -2763,7 +2764,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
          reached by using the path Access Control &gt; <replaceable>Realm Name</replaceable> &gt; STS.
         </para>
         <para>
-         You can find the JSP files in the console/reststs subdirectory.
+         You can find the JSP files in the <filename>console/reststs</filename> subdirectory.
         </para>
 
         <variablelist>
@@ -2805,8 +2806,9 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <tertiary>OAuth</tertiary>
         </indexterm>
 
-        <para>Includes endpoints in the oauth, oauth2, and oauth2c subdirectories. Some of the service endpoints in the
-            oauth subdirectory are based on OAuth 1.0, which may be deprecated in an upcoming release.</para>
+        <para>Includes endpoints in the <filename>oauth</filename>, <filename>oauth2</filename>, and
+            <filename>oauth2c</filename> subdirectories. Some of the service endpoints in the
+            <filename>oauth</filename> subdirectory are based on OAuth 1.0, which may be deprecated in an upcoming release.</para>
 
         <!-- ref OpenAM-1683 , and https://blogs.oracle.com/docteger/entry/opensso_oauth_token_service -->
         <variablelist>
@@ -2830,7 +2832,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>index.jsp</literal></term>
                 <listitem>
                     <para>Specifies an endpoint used to register and delete service consumers, which get resources
-                    from SPs. Provides access to registerconsumer.jsp and deleteconsumer.jsp. Associated with OAuth 1.0.
+                    from SPs. Provides access to <filename>registerconsumer.jsp</filename> and <filename>deleteconsumer.jsp</filename>.
+                    Associated with OAuth 1.0.
                     </para>
                 </listitem>
             </varlistentry>
@@ -2907,11 +2910,11 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <tertiary>Password</tertiary>
         </indexterm>
 
-        <para>The endpoints in this section can be found in the password/ui subdirectory. Each of these endpoints use
-        the PWResetViewBeanBase.java file, as a class to set up messages. You can view some of these endpoints by
-        omitting the <literal>password</literal>. For example, to view the effect of the PWResetUserValidation.jsp
+        <para>The endpoints in this section can be found in the <filename>password/ui</filename> subdirectory. Each of these endpoints use
+        the <filename>PWResetViewBeanBase.java</filename> file, as a class to set up messages. You can view some of these endpoints by
+        omitting the <literal>password</literal>. For example, to view the effect of the <filename>PWResetUserValidation.jsp</filename>
         endpoint on an OpenAM system using an URL of openam.example.org in a standard Tomcat container, navigate to
-        http://openam.exmaple.org/openam/ui/PWResetUserValidation.jsp. You can set associated options from
+        <literal>http://openam.example.org/openam/ui/PWResetUserValidation.jsp</literal>. You can set associated options from
         the main console by selecting Configuration &gt; Global &gt; Password Reset. For more information on the
             process, see the chapter on <link xlink:href="admin-guide#chap-pwd-reset"
                                                   xlink:role="http://docbook.org/xlink/role/olink">
@@ -2923,14 +2926,14 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>PWResetBase.jsp</literal></term>
                 <listitem>
                     <para>This simple endpoint includes a redirection of the ServiceURI, and specifies OpenAM as the
-                    ProductName. It's cited by the other endpoints in the password/ui subdirectory.</para>
+                    ProductName. It is used by the other endpoints in the <filename>password/ui</filename> subdirectory.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>PWResetInvalidURL.jsp</literal></term>
                 <listitem>
-                    <para>This endpoint is called with the PWResetInvalidURLViewBean class, when a module servlet gets
+                    <para>This endpoint is called with the <literal>PWResetInvalidURLViewBean</literal> class, when a module servlet gets
                         an invalid URL.</para>
                 </listitem>
             </varlistentry>
@@ -2981,7 +2984,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <tertiary>SAML2</tertiary>
         </indexterm>
 
-        <para>You can find the endpoints described in this section in the saml2/jsp subdirectory. As of this writing,
+        <para>You can find the endpoints described in this section in the <filename>saml2/jsp</filename> subdirectory. As of this writing,
         some of these endpoints are not used in the current implementation of OpenAM. Active endpoints in this category
             are discussed in the chapter on <link xlink:href="admin-guide#chap-federation"
                                                  xlink:role="http://docbook.org/xlink/role/olink">
@@ -2992,14 +2995,14 @@ to a runtime exception with messages that I think suggest that it needed to be c
            <varlistentry>
                 <term><literal>autologout.jsp</literal></term>
                 <listitem>
-                    <para>May be dispatched to perform a single logout. Invoked by FSSingleLogoutHandler.java.</para>
+                    <para>May be dispatched to perform a single logout.</para>
                 </listitem>
             </varlistentry>
 
            <varlistentry>
                 <term><literal>autologoutwml.jsp</literal></term>
                 <listitem>
-                    <para>May be dispatched to perform a single logout in a WML environment. Invoked by FSSingleLogoutHandler.java.</para>
+                    <para>May be dispatched to perform a single logout in a WML environment.</para>
                 </listitem>
            </varlistentry>
 
@@ -3020,8 +3023,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
            <varlistentry>
                 <term><literal>default.jsp</literal></term>
                 <listitem>
-                    <para>May be used by other files to return a success or failure message. While the default.jsp name
-                        is common in the trunk, the jsp/default.jsp filename is used only by SPSingleLogout.java, which
+                    <para>May be used by other files to return a success or failure message. While the <filename>default.jsp</filename> name
+                        is common in the trunk, the <filename>jsp/default.jsp</filename> filename is used only by <filename>SPSingleLogout.java</filename>, which
                         is not commonly used.</para>
                 </listitem>
             </varlistentry>
@@ -3125,8 +3128,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>idpSSOInit.jsp</literal></term>
                 <listitem>
-                    <para>Specifies an endpoint that starts SSO, either from cache, or by verifying <literal>metaAlias
-                        </literal> and SP identifier data.For more information, see
+                    <para>Specifies an endpoint that starts SSO, either from cache, or by
+                        verifying <literal>metaAlias</literal> and SP identifier data. For more information, see
                         the chapter on <link xlink:href="admin-guide#chap-federation"
                                              xlink:role="http://docbook.org/xlink/role/olink">
                             <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
@@ -3136,7 +3139,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>idpSingleLogoutInit.jsp</literal></term>
                 <listitem>
-                    <para>Starts a <literal>LogoutRequest</literal> from the identity provider.For more information, see
+                    <para>Starts a <literal>LogoutRequest</literal> from the identity provider. For more information, see
                         the chapter on <link xlink:href="admin-guide#chap-federation"
                                              xlink:role="http://docbook.org/xlink/role/olink">
                             <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
@@ -3178,7 +3181,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>saeerror.jsp</literal></term>
                 <listitem>
                     <para>Returns an error message related to Secure Attribute Exchange (SAE). Currently used only by
-                    the SA_IDP.jsp and SA_SP.jsp endpoints.</para>
+                    the <filename>SA_IDP.jsp</filename> and <filename>SA_SP.jsp</filename> endpoints.</para>
                 </listitem>
             </varlistentry>
 
@@ -3192,8 +3195,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>spAssertionConsumer.jsp</literal></term>
                 <listitem>
-                    <para>Used on a SP, to interpret information from an IDP. The request to the IDP is an <literal>
-                        AuthnRequest</literal>; the response from the IDP is read by this endpoint.</para>
+                    <para>Used on a SP, to interpret information from an IDP. The request to the IDP is an
+                        <literal>AuthnRequest</literal>; the response from the IDP is read by this endpoint.</para>
                 </listitem>
             </varlistentry>
 
@@ -3219,7 +3222,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>spMNIRequestInit.jsp</literal></term>
                 <listitem>
                     <para>This particular endpoint supports changes to federation of persistently linked
-                        accounts, in a fashion similar to idpMNIRequestInit.jsp. For an example of this endpoint in
+                        accounts, in a fashion similar to <filename>idpMNIRequestInit.jsp</filename>. For an example of this endpoint in
                         work, see the chapter on <link xlink:href="admin-guide#chap-federation"
                                              xlink:role="http://docbook.org/xlink/role/olink">
                             <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
@@ -3250,7 +3253,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>spSingleLogoutPOST.jsp</literal></term>
                 <listitem>
                     <para>Specifies an endpoint that receives logout requests from SPs and receives logout responses
-                        from IDPs. Also sends logout responses to IDPs. Converse endpoint to idpSingleLogoutPOST.jsp.</para>
+                        from IDPs. Also sends logout responses to IDPs. Converse endpoint to <filename>idpSingleLogoutPOST.jsp</filename>.</para>
                 </listitem>
             </varlistentry>
 
@@ -3259,7 +3262,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Takes the <literal>SAMLRequest</literal> and <literal>SAMLResponse</literal> messages for
                         logouts from the IDP. May also handle the <literal>RelayState</literal> directive. Converse
-                        endpoint to idpSingleLogoutRedirect.jsp.</para>
+                        endpoint to <filename>idpSingleLogoutRedirect.jsp</filename>.</para>
                 </listitem>
             </varlistentry>
 
@@ -3361,9 +3364,9 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/*</literal></term>
                 <listitem>
-                    <para>This entry is more of a filter for all endpoints. It's associated with the
-                        ResponseValidationFilter, which checks for valid URLs. It's also associated with the
-                    AMSetupFilter.java file; on systems not yet configured, it redirects users to the setup wizard.
+                    <para>A filter for all endpoints. It is associated with the
+                        <literal>ResponseValidationFilter</literal>, which checks for valid URLs. It is also associated with the
+                        <filename>AMSetupFilter.java</filename> file. On systems that are not yet configured, it redirects users to the setup wizard.
                     </para>
                 </listitem>
             </varlistentry>
@@ -3372,15 +3375,15 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>ws/*</literal></term>
                 <listitem>
                     <para>Specifies a group of URLs related to authentication endpoints, as it is associated with the
-                    AuthNFilter.java and AuthZFilter.java files. However, those files (and the associated
-                        RestServiceManager.java file) are not called by any other files in the trunk.</para>
+                        <filename>AuthNFilter.java</filename> and <filename>AuthZFilter.java</filename> files. However, those files (and the associated
+                        <filename>RestServiceManager.java</filename> file) are not called by any other files in the trunk.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/login</literal></term>
                 <listitem>
-                    <para>With the help of the LoginLogoutMapping.java file, this would forward to the /UI/Login.jsp
+                    <para>With the help of the <filename>LoginLogoutMapping.java</filename> file, this would forward to the <filename>/UI/Login.jsp</filename>
                         endpoint.</para>
                 </listitem>
             </varlistentry>
@@ -3388,7 +3391,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/logout</literal></term>
                 <listitem>
-                    <para>With the help of the LoginLogoutMapping.java file, this would forward to the /UI/Logout.jsp
+                    <para>With the help of the <filename>LoginLogoutMapping.java</filename> file, this would forward to the <filename>/UI/Logout.jsp</filename>
                         endpoint.</para>
                 </listitem>
             </varlistentry>
@@ -3396,7 +3399,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/UI/*</literal></term>
                 <listitem>
-                    <para>With the help of the LoginServlet.java file, this forwards to the default login page for
+                    <para>With the help of the <filename>LoginServlet.java</filename> file, this forwards to the default login page for
                         an OpenAM system.</para>
                 </listitem>
             </varlistentry>
@@ -3404,8 +3407,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/config/configurator</literal></term>
                 <listitem>
-                    <para>Uses the AMSetupServlet, which as noted in the associated .java file, "is the first class
-                        to get loaded by the Servlet * container"</para>
+                    <para>Uses the <literal>AMSetupServlet</literal>, which is the first class
+                        to get loaded by the Servlet * container (as noted in the associated <filename>.java</filename> file)</para>
                 </listitem>
             </varlistentry>
 
@@ -3426,7 +3429,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ui/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named PWResetServlet,
+                    <para>Associated with the servlet named <literal>PWResetServlet</literal>,
                      associated with password resets.</para>
                 </listitem>
             </varlistentry>
@@ -3434,7 +3437,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/gateway</literal></term>
                 <listitem>
-                    <para>Used with the servlet named GatewayServlet. Associated with the Gateway.java file, which takes
+                    <para>Used with the servlet named <literal>GatewayServlet</literal>. Associated with the <filename>Gateway.java</filename> file, which takes
                         an authentication module and forwards it to a login URL.</para>
                 </listitem>
             </varlistentry>
@@ -3442,7 +3445,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/GetHttpSession</literal></term>
                 <listitem>
-                    <para>The associated .java file is associated with Session Failover (SFO).</para>
+                    <para>The associated <filename>.java</filename> file is associated with Session Failover (SFO).</para>
                 </listitem>
             </varlistentry>
 
@@ -3453,10 +3456,10 @@ to a runtime exception with messages that I think suggest that it needed to be c
                     <para>All of these endpoints are associated with
                         <link xlink:show="new"
                           xlink:href="http://www.forgerock.org/security_advisory1.html">
-                            OpenAM Security Advisory #201203</link>. As suggested in the advisory, if you're using
+                            OpenAM Security Advisory #201203</link>. As suggested in the advisory, if you are using
                     OpenAM version 9.5.4 or 10.0.0, you should be sure to apply the updates required to upgrade your
                     systems to versions 9.5.5 or 10.0.1 (or higher).</para>
-                    <!-- Wild guess on /notificationservice, as it's now redirected to the same OpenSSO output as
+                    <!-- Wild guess on /notificationservice, as it is now redirected to the same OpenSSO output as
                     the other listed endpoints. -->
                 </listitem>
             </varlistentry>
@@ -3475,22 +3478,22 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>/SMSServlet</literal></term>
                 <listitem>
                     <para>Includes system configuration information when available, as documented in the comments to
-                    the AMSystemConfig.java file.</para>
+                    the <filename>AMSystemConfig.java</filename> file.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/notification</literal></term>
                 <listitem>
-                    <para>The associated servlet named notificationservlet appears to be commonly used. When the URL is
-                    entered, the default output is 200, associated with an URL success message.</para>
+                    <para>The associated servlet named <literal>notificationservlet</literal> appears to be commonly used. When the URL is
+                    entered, the default output is 200, which is associated with an URL success message.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/entitlementmonitor</literal></term>
                 <listitem>
-                    <para>Used by the NetworkMonitor.java file, which is essential to the monitoring of OpenAM
+                    <para>Used by the <filename>NetworkMonitor.java</filename> file, which is essential to the monitoring of OpenAM
                         services.</para>
             <!-- I might be going to far with this one -->
                 </listitem>
@@ -3499,8 +3502,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/identity/*</literal></term>
                 <listitem>
-                    <para>Possibly a legacy endpoint. While the associated IdentityServicesHandler servlet is identified
-                        as "REST Endpoint - Identity Services", it is only cited in the IdentityServicesHandler.java
+                    <para>Possibly a legacy endpoint. While the associated <literal>IdentityServicesHandler</literal> servlet is identified
+                        as "REST Endpoint - Identity Services", it is only cited in the <filename>IdentityServicesHandler.java</filename>
                         file.</para>
                 </listitem>
             </varlistentry>
@@ -3509,14 +3512,14 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>/resources/*</literal></term>
                 <listitem>
                     <para>Linked to an oauth servlet. The associated
-                        com.sun.identity.oauth.service.RestService class is rarely used.</para>
+                        <literal>com.sun.identity.oauth.service.RestService</literal> class is rarely used.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/authentication/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named AuthServlet. The associated AuthServer.java file is the
+                    <para>Associated with the servlet named <literal>AuthServlet</literal>. The associated <filename>AuthServer.java</filename> file is the
                     controller servlet for realm authentication pages. When the URL is entered prior to login, it
                     defaults to the standard login page.</para>
                 </listitem>
@@ -3525,99 +3528,98 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/base/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named AMBaseServlet. While the associated AMBaseServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>AMBaseServlet</literal>. While the associated <filename>AMBaseServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/service/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named SCServlet. While the associated SCServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>SCServlet</literal>. While the associated <filename>SCServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/session/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named SMServlet. While the associated SMServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>SMServlet</literal>. While the associated <filename>SMServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/realm/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named RMServlet. While the associated RMServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>RMServlet</literal>. While the associated <filename>RMServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/policy/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named PMServlet. While the associated PMServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>PMServlet</literal>. While the associated <filename>PMServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/idm/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named IDMServlet. While the associated IDMServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>IDMServlet</literal>. While the associated <filename>IDMServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/user/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named UMServlet. While the associated UMServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>UMServlet</literal>. While the associated <filename>UMServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/delegation/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named DelegationServlet. While the associated
-                        DelegationServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>DelegationServlet</literal>. While the associated
+                        <filename>DelegationServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/task/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named TaskServlet. While the associated TaskServlet.java file
-                        is rarely used, the URL prior to login defaults to the standard login page.</para>
+                    <para>Associated with the servlet named <literal>TaskServle</literal>t. While the associated <filename>TaskServlet.java</filename> file
+                        is rarely used, any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/agentconfig/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named AgentConfigurationServlet. The associated
-                        AgentConfigurationServlet class is called by the amAccessControl.xml file, which
-                        suggests that it can be configured from the GUI console, through the Agents section of the
-                        Access Control menu. It is rarely used otherwise. The URL prior to login defaults to the
-                    standard login page.</para>
+                    <para>Associated with the servlet named <literal>AgentConfigurationServlet</literal>. The associated
+                        <literal>AgentConfigurationServlet</literal> class is called by the <filename>amAccessControl.xml</filename> file, which
+                        suggests that it can be configured from the console from the Agents section of the
+                        Access Control menu. It is rarely used otherwise. any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/ccversion/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named click-servlet. There is no associated click-servlet.java
-                        or ClickServlet.java file.</para>
+                    <para>Associated with the servlet named <literal>click-servlet</literal>. There is no associated <filename>click-servlet.java</filename>
+                        or <filename>ClickServlet.java</filename> file.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/federation/*</literal></term>
                 <listitem>
-                    <para>Associated with the servlet named FSServlet. While the associated FSServlet.java file
+                    <para>Associated with the servlet named <literal>FSServlet</literal>. While the associated <filename>FSServlet.java</filename> file
                         is rarely used, the URL prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
@@ -3625,7 +3627,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/webservices</literal></term>
                 <listitem>
-                    <para>Used by the WSServlet.java and SecurityTokenService.java files. If you're using web services
+                    <para>Used by the <filename>WSServlet.java</filename> and <filename>SecurityTokenService.java</filename> files. If you are using web services
                         and/or the Security Token Service (STS), you may want to keep this in place.</para>
                 </listitem>
             </varlistentry>
@@ -3671,17 +3673,17 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPMniSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SPMniSoap; associated with a
-                        com.sun.identity.saml2.servlet.SPManageNameIDServiceSOAP servlet class. The associated .java
+                    <para>Used by a servlet named <literal>SPMniSoap</literal>; associated with a
+                        <literal>com.sun.identity.saml2.servlet.SPManageNameIDServiceSOAP</literal> servlet class. The associated <filename>.java</filename>
                         file works with Manage Name ID communications using SOAP binding from the SP. As the former
-                        spMNISOAP.jsp file no longer exists in the trunk, this may be a legacy endpoint.</para>
+                        <filename>spMNISOAP.jsp</filename> file no longer exists in the trunk, this may be a legacy endpoint.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/SPMniPOST/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spMNIPOST.jsp; previously defined in the SAML2 JSP Endpoints section.
+                    <para>Used by a servlet named <literal>spMNIPOST.jsp</literal>; previously defined in the SAML2 JSP Endpoints section.
                     </para>
                 </listitem>
             </varlistentry>
@@ -3689,7 +3691,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPMniRedirect/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spMNIRedirect.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>spMNIRedirect.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3698,7 +3700,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPMniInit/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spMNIRequestInit.jsp; previously defined in the SAML2 JSP Endpoints section.
+                    <para>Used by a servlet named <literal>spMNIRequestInit.jsp</literal>, which is defined in the SAML2 JSP Endpoints section.
                     </para>
                 </listitem>
             </varlistentry>
@@ -3706,7 +3708,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPECP/*</literal></term>
                 <listitem>
-                    <para>The associated SPECPService class receives and processes single logout (SLO) requests, using
+                    <para>The associated <literal>SPECPService</literal> class receives and processes single logout (SLO) requests, using
                         SOAP bindings on the SP. <!-- The associated SPECService.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3716,7 +3718,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPSloSoap/*</literal></term>
                 <listitem>
-                    <para>The associated SPSingleLogoutServiceSOAP class receives and processes single logout
+                    <para>The associated <literal>SPSingleLogoutServiceSOAP</literal> class receives and processes single logout
                         (SLO) requests, using SOAP bindings on the SP. <!-- The associated SPSingleLogoutServiceSOAP.java
                         file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
@@ -3727,7 +3729,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPSloPOST/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spSingleLogoutPOST.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>spSingleLogoutPOST.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3736,7 +3738,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPSloRedirect/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spSingleLogoutRedirect.jsp; previously defined in the SAML2 JSP
+                    <para>Used by a servlet named <literal>spSingleLogoutRedirect.jsp</literal>, which is defined in the SAML2 JSP
                         Endpoints section.
                     </para>
                 </listitem>
@@ -3745,7 +3747,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SPSloInit/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spSingleLogoutInit.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>spSingleLogoutInit.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3754,7 +3756,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/Consumer/*, /SSORedirect/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spAssertionConsumer.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>spAssertionConsumer.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3763,7 +3765,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SSOPOST/*, /SSORedirect/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpSSOFederate.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpSSOFederate.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3772,7 +3774,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SSORedirect/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpSSOFederate.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpSSOFederate.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3781,7 +3783,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/NIMSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named NameIDMappingServiceSOAP. <!--  The associated NameIDMappingServiceSOAP.java
+                    <para>Used by a servlet named <literal>NameIDMappingServiceSOAP</literal>. <!--  The associated NameIDMappingServiceSOAP.java
                         file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3791,7 +3793,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/AIDReqUri/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named AssertionIDRequestServiceSoap. <!-- The associated
+                    <para>Used by a servlet named <literal>AssertionIDRequestServiceSoap</literal>. <!-- The associated
                         AssertionIDRequestURI.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3801,7 +3803,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/AIDReqSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named AssertionIDRequestServiceSoap. <!-- The associated
+                    <para>Used by a servlet named <literal>AssertionIDRequestServiceSoap</literal>. <!-- The associated
                         AssertionIDRequestSOAP.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3811,7 +3813,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/AuthnQueryServiceSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named AuthnQueryServiceSoap. <!-- The associated
+                    <para>Used by a servlet named <literal>AuthnQueryServiceSoap</literal>. <!-- The associated
                         AuthnQueryServiceSOAP.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3821,7 +3823,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/AttributeServiceSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named AttributeServiceSoap. <!-- The associated
+                    <para>Used by a servlet named <literal>AttributeServiceSoap</literal>. <!-- The associated
                         AttributeServiceSOAP.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be  in less frequent use. -->
                     </para>
@@ -3831,7 +3833,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SSOSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SSOSoap. <!-- The associated
+                    <para>Used by a servlet named <literal>SSOSoap</literal>. <!-- The associated
                         IDPSingleSignOnServiceSOAP.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3841,7 +3843,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPMniSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named IDPMniSoap. <!-- The associated
+                    <para>Used by a servlet named <literal>IDPMniSoap</literal>. <!-- The associated
                         IDPManageNameIDServiceSOAP.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3851,7 +3853,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPMniPOST/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpMNIPOST.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpMNIPOST.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3860,7 +3862,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPMniRedirect/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpMNIRedirect.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpMNIRedirect.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3869,7 +3871,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPMniInit/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpMNIRequestInit.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpMNIRequestInit.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3878,7 +3880,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPSloSoap/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named IDPSloSoap. <!-- The associated
+                    <para>Used by a servlet named <literal>IDPSloSoap</literal>. <!-- The associated
                         IDPSingleLogoutServiceSOAP.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3888,7 +3890,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPSloPOST/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpSingleLogoutPOST.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpSingleLogoutPOST.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3897,7 +3899,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPSloRedirect/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpSingleLogoutRedirect.jsp; previously defined in the SAML2 JSP
+                    <para>Used by a servlet named <literal>idpSingleLogoutRedirect.jsp</literal>, which is defined in the SAML2 JSP
                         Endpoints section.
                     </para>
                 </listitem>
@@ -3906,7 +3908,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IDPSloInit/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpSingleLogoutInit.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpSingleLogoutInit.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3915,7 +3917,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ArtifactResolver/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named IDPArtifactResolver. <!-- The associated
+                    <para>Used by a servlet named <literal>IDPArtifactResolver</literal>. <!-- The associated
                         IDPArtifactResolutionServiceSOAP.java file was deleted from at least one of
                         the trunk directories in September of 2012, so this may be in less frequent use. -->
                     </para>
@@ -3925,7 +3927,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/spssoinit</literal></term>
                 <listitem>
-                    <para>Used by a servlet named spSSOInit.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>spSSOInit.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3934,7 +3936,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/idpssoinit</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpSSOInit.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpSSOInit.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3943,7 +3945,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/idpSSOFederate</literal></term>
                 <listitem>
-                    <para>Used by a servlet named idpSSOFederate.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>idpSSOFederate.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3952,7 +3954,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/idpsaehandler/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SA_IDP.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>SA_IDP.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3961,7 +3963,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/spsaehandler/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named IDP_SP.jsp; previously defined in the SAML2 JSP Endpoints
+                    <para>Used by a servlet named <literal>IDP_SP.jsp</literal>, which is defined in the SAML2 JSP Endpoints
                         section.
                     </para>
                 </listitem>
@@ -3970,8 +3972,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/idpfinder</literal></term>
                 <listitem>
-                    <para>Used by a servlet named IDPFinderService; The associated
-                        FSIDPFinderService.java file can be used to find a preferred IDP with a common domain cookie.
+                    <para>Used by a servlet named <literal>IDPFinderService</literal>; the associated
+                        <filename>FSIDPFinderService.java</filename> file can be used to find a preferred IDP with a common domain cookie.
                     </para>
                 </listitem>
             </varlistentry>
@@ -3979,7 +3981,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/cdcservlet</literal></term>
                 <listitem>
-                    <para>Used by a servlet named CDCServlet. It is associated with a Cross Domain Controller Servlet,
+                    <para>Used by a servlet named <literal>CDCServlet</literal>. It is associated with a Cross Domain Controller Servlet,
                         as described in the
                         the chapter on <link xlink:href="admin-guide#chap-cdsso"
                                              xlink:role="http://docbook.org/xlink/role/olink">
@@ -3992,7 +3994,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SAMLAwareServlet</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SAMLAwareServlet. It is associated with communications between a
+                    <para>Used by a servlet named <literal>SAMLAwareServlet</literal>. It is associated with communications between a
                         client, an SP, and an IDP. The transfer service on the IDP is the SAML Aware Servlet, and is
                         part of the client web browser artifact profile. It validates a session token from a request run
                         through the IDP.
@@ -4004,7 +4006,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SAMLPOSTProfileServlet</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SAMLPOSTProfileServlet. It is associated with communications between a
+                    <para>Used by a servlet named <literal>SAMLPOSTProfileServlet</literal>. It is associated with communications between a
                         client, an SP, and an IDP. The transfer service on the IDP is the SAML Aware Servlet, and is
                         part of the client web browser POST profile, which supplies assertion IDs, and returns the
                         response to the client browser.
@@ -4016,7 +4018,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SAMLSOAPReceiver</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SAMLSOAPReceiver. The servlet extracts a SAML request from a message
+                    <para>Used by a servlet named <literal>SAMLSOAPReceiver</literal>. The servlet extracts a SAML request from a message
                         sent in SOAP format. That message can be a query for authorization, attributes, or
                         authentication. It supports POST messages only.
                         <!-- ref http://docs.oracle.com/cd/E19462-01/819-4674/admer/index.html -->
@@ -4027,7 +4029,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/AssertionManagerServlet/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named AssertionManagerServlet. It supports dynamic substitution, using
+                    <para>Used by a servlet named <literal>AssertionManagerServlet</literal>. It supports dynamic substitution, using
                         the host name, port number, and the deployment location.
                         <!-- ref http://docs.oracle.com/cd/E19854-01/819-2357/gayli/index.html -->
                     </para>
@@ -4037,7 +4039,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/FSAssertionManagerServlet/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named FSAssertionManagerServlet. It provides remote interfaces for the
+                    <para>Used by a servlet named <literal>FSAssertionManagerServlet</literal>. It provides remote interfaces for the
                         assertion manager class.
                     </para>
                 </listitem>
@@ -4046,7 +4048,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SecurityTokenManagerServlet/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SecurityTokenManagerServlet. It supports dynamic substitution, using
+                    <para>Used by a servlet named <literal>SecurityTokenManagerServlet</literal>. It supports dynamic substitution, using
                         session parameters.
                         <!-- ref http://docs.oracle.com/cd/E19316-01/820-3886/ghjez/index.html -->
                     </para>
@@ -4056,7 +4058,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/preLogin</literal></term>
                 <listitem>
-                    <para>Used by a servlet named preLoginHandler. As there is no associated .java or .jsp file, it
+                    <para>Used by a servlet named <literal>preLoginHandler</literal>. As there is no associated <filename>.java</filename> or <literal>.jsp</literal> file, it
                         may be a legacy endpoint.
                     </para>
                 </listitem>
@@ -4065,7 +4067,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/postLogin/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named postLoginHandler. As there is no associated .java or .jsp file, it
+                    <para>Used by a servlet named <literal>postLoginHandler</literal>. As there is no associated <filename>.java</filename> or <literal>.jsp</literal> file, it
                         may be a legacy endpoint.
                     </para>
                 </listitem>
@@ -4074,9 +4076,9 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/federation</literal></term>
                 <listitem>
-                    <para>Used by a servlet named FederationServlet. Associated with the
-                        com.sun.identity.federation.login.FSFederationHandler class. The matching
-                        FSFederationHandler.java file processes requests to initiate a federation.
+                    <para>Used by a servlet named <literal>FederationServlet</literal>. Associated with the
+                        <literal>com.sun.identity.federation.login.FSFederationHandler</literal> class. The matching
+                        <filename>FSFederationHandler.java</filename> file processes requests to initiate a federation.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4084,9 +4086,9 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/consentHandler</literal></term>
                 <listitem>
-                    <para>Used by a servlet named consentHandler. Associated with the
-                        com.sun.identity.federation.login.FSConsentHandler class. The matching
-                        FSConsentHandler.java file processes redirect requests
+                    <para>Used by a servlet named <literal>consentHandler</literal>. Associated with the
+                        <literal>com.sun.identity.federation.login.FSConsentHandler</literal> class. The matching
+                        <filename>FSConsentHandler.java</filename> file processes redirect requests
                         in an existing federation.
                     </para>
                 </listitem>
@@ -4095,9 +4097,9 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ProcessLogout/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named ProcessLogout. Associated with the
-                        FSProcessLogoutServlet class. It is designed to handle single logout requests related to
-                        Kantara / Liberty ID-FF processes.
+                    <para>Used by a servlet named <literal>ProcessLogout</literal>. Associated with the
+                        <literal>FSProcessLogoutServlet</literal> class. It is designed to handle single logout requests related to
+                        Kantara/Liberty ID-FF processes.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4105,10 +4107,10 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ReturnLogout/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named ReturnLogout. Associated with the
-                        FSReturnLogoutServlet class. It is designed to handle single logout responses related to
-                        Kantara / Liberty ID-FF processes. (Note the subtle
-                     difference with the ProcessLogout endpoint which handles logout requests.)
+                    <para>Used by a servlet named <literal>ReturnLogout</literal>. Associated with the
+                        <literal>FSReturnLogoutServlet</literal> class. It is designed to handle single logout responses related to
+                        Kantara/Liberty ID-FF processes. (Note the subtle
+                     difference with the <literal>ProcessLogout</literal> endpoint which handles logout requests.)
                     </para>
                 </listitem>
             </varlistentry>
@@ -4116,9 +4118,9 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/liberty-logout</literal></term>
                 <listitem>
-                    <para>Used by a servlet named LogoutServlet. Associated with the
-                        FSSingleLogoutServlet class. It is designed to start single logout requests related to
-                        Kantara / Liberty ID-FF processes.
+                    <para>Used by a servlet named <literal>LogoutServlet</literal>. Associated with the
+                        <literal>FSSingleLogoutServlet</literal> class. It is designed to start single logout requests related to
+                        Kantara/Liberty ID-FF processes.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4126,8 +4128,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SingleSignOnService/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SingleSignOnService. Associated with the
-                        FSSSOAndFedService class. Configured for SSO on the IDP.
+                    <para>Used by a servlet named <literal>SingleSignOnService</literal>. Associated with the
+                        <literal>FSSSOAndFedService</literal> class. Configured for SSO on the IDP.
  <!-- per http://download.forgerock.org/downloads/openam/javadocs/internal/com/sun/identity/federation/services/fednsso/FSSSOAndFedService.html -->
                     </para>
                 </listitem>
@@ -4136,8 +4138,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/IntersiteTransferService</literal></term>
                 <listitem>
-                    <para>Used by a servlet named IntersiteTransferService. Associated with the
-                        FSIntersiteTransferService class. It is designed to send a <literal>AuthnRequest</literal> to an
+                    <para>Used by a servlet named <literal>IntersiteTransferService</literal>. Associated with the
+                        <literal>FSIntersiteTransferService</literal> class. It is designed to send a <literal>AuthnRequest</literal> to an
                         IDP.
                     </para>
                 </listitem>
@@ -4146,8 +4148,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/AssertionConsumerService/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named AssertionConsumerService. Associated with the
-                        FSAssertionConsumerService class. For more information, see the chapter on
+                    <para>Used by a servlet named <literal>AssertionConsumerService</literal>. Associated with the
+                        <literal>FSAssertionConsumerService</literal> class. For more information, see the chapter on
                        <link xlink:href="admin-guide#chap-federation"  xlink:role="http://docbook.org/xlink/role/olink">
                             <citetitle>Managing SAML v2.0 Federation in the Administration Guide</citetitle></link>.
                     </para>
@@ -4159,8 +4161,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/SOAPReceiver/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named SOAPReceiver. Associated with the
-                        FSSOAPReceiver class. SOAP endpoint that handles federation and specifies a URI to the SP.
+                    <para>Used by a servlet named <literal>SOAPReceiver</literal>. Associated with the
+                        <literal>FSSOAPReceiver</literal> class. SOAP endpoint that handles federation and specifies a URI to the SP.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4168,8 +4170,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/federation-terminate</literal></term>
                 <listitem>
-                    <para>Used by a servlet named FederationTerminationServlet. Associated with the
-                        FSTerminationInitiationServlet.java file, used to initiate termination of a federation
+                    <para>Used by a servlet named <literal>FederationTerminationServlet</literal>. Associated with the
+                        <filename>FSTerminationInitiationServlet.java</filename> file, used to initiate termination of a federation
                         connection. The IDP will send the termination request to the associated URL.
                     </para>
                 </listitem>
@@ -4178,8 +4180,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ProcessTermination/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named ProcessTermination. Associated with the
-                        FSTerminationRequestServlet class. The associated .java file is used when a request is
+                    <para>Used by a servlet named <literal>ProcessTermination</literal>. Associated with the
+                        <literal>FSTerminationRequestServlet</literal> class. The associated <filename>.java</filename> file is used when a request is
                         received by a remote SP.
                     <!-- I think remote SP, not 100% sure, per http://download.forgerock.org/downloads/openam
                  /javadocs/internal/com/sun/identity/federation/services/termination/FSTerminationRequestServlet.html-->
@@ -4190,8 +4192,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ReturnTermination/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named ReturnTermination. Associated with the
-                        FSTerminationReturnServlet class. The associated .java file is used to define a URL used by an
+                    <para>Used by a servlet named <literal>ReturnTermination</literal>. Associated with the
+                        <literal>FSTerminationReturnServlet</literal> class. The associated <filename>.java</filename> file is used to define a URL used by an
                         IP to send termination responses.
                     </para>
                 </listitem>
@@ -4200,8 +4202,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/InitiateRegistration/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named InitiateRegistration. Associated with the
-                        FSRegistrationInitiationServlet class. The associated .java file is used to handle the
+                    <para>Used by a servlet named <literal>InitiateRegistration</literal>. Associated with the
+                        <literal>FSRegistrationInitiationServlet</literal> class. The associated <filename>.java</filename> file is used to handle the
                         registration request from a remote IDP.
                     </para>
                 </listitem>
@@ -4210,8 +4212,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ProcessRegistration/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named ProcessRegistration. Associated with the
-                        FSRegistrationRequestServlet class. Processes registration requests from remote SPs.
+                    <para>Used by a servlet named <literal>ProcessRegistration</literal>. Associated with the
+                        <literal>FSRegistrationRequestServlet</literal> class. Processes registration requests from remote SPs.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4219,8 +4221,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/ReturnRegistration/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named ReturnRegistration. Associated with the
-                        FSRegistrationReturnServlet class. Defines a URL for IDPs to send registration responses.
+                    <para>Used by a servlet named <literal>ReturnRegistration</literal>. Associated with the
+                        <literal>SRegistrationReturnServlet</literal> class. Defines a URL for IDPs to send registration responses.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4228,8 +4230,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/Liberty/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named WSSOAPReceiver. Associated with the
-                        SOAPReceiver class. Defines an endpoint that handles SOAP requests.
+                    <para>Used by a servlet named <literal>WSSOAPReceiver</literal>. Associated with the
+                        <literal>SOAPReceiver</literal> class. Defines an endpoint that handles SOAP requests.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4237,8 +4239,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/WSPRedirectHandler/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named WSPRedirectHandler. Associated with the
-                        WSPRedirectHandlerServlet class. Used by the SP for user redirects.
+                    <para>Used by a servlet named <literal>WSPRedirectHandler</literal>. Associated with the
+                        <literal>WSPRedirectHandlerServlet</literal> class. Used by the SP for user redirects.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4246,8 +4248,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/idffwriter, /saml2writer</literal></term>
                 <listitem>
-                    <para>Used by a servlet with a matching name (idffwriter, saml2writer). Associated with the
-                        CookieWriterServlet class. Used by the IDP to help the web container find app-specific info
+                    <para>Used by a servlet with a matching name (<literal>idffwriter</literal>, <literal>saml2writer</literal>). Associated with the
+                        <literal>CookieWriterServlet</literal> class. Used by the IDP to help the web container find app-specific info,
                         such as Java classes or Java Archives (JARs).
                     </para>
                 </listitem>
@@ -4256,8 +4258,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/idffreader, /saml2reader</literal></term>
                 <listitem>
-                    <para>Used by a servlet with a matching name (idffreader, saml2reader). Associated with the
-                        CookieReaderServlet class. Used by the SP to help find the preferred IDP.
+                    <para>Used by a servlet with a matching name (<literal>idffreader</literal>, <literal>saml2reader</literal>). Associated with the
+                        <literal>CookieReaderServlet</literal> class. Used by the SP to help find the preferred IDP.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4265,9 +4267,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/multiprotocolrelay</literal></term>
                 <listitem>
-                    <para>Used by a servlet named MultiProtocolRelayServlet. Associated with the
-                        MultiProtocolRelayServlet class. Used as a RelayState to continue to the next protocol;
-                        associated with a federation.
+                    <para>Used by a servlet named <literal>MultiProtocolRelayServlet</literal>. Associated with the
+                        <literal>MultiProtocolRelayServlet</literal> class. Also used in federation as a RelayState to continue to the next protocol.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4275,8 +4276,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/WSFederationServlet/*, /FederationMetadata/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named WSFederationServlet. Associated with the
-                        WSFederationServlet class. Used as a service endpoint for WS-Federation.
+                    <para>Used by a servlet named <literal>WSFederationServlet</literal>. Associated with the
+                        <literal>WSFederationServlet</literal> class. Used as a service endpoint for WS-Federation.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4284,7 +4285,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/RealmSelection/*</literal></term>
                 <listitem>
-                    <para>Used by am endpoint named realmSelection.jsp. Previously defined in the WS-Federation
+                    <para>Used by an endpoint named <filename>realmSelection.jsp</filename>filename>, which was defined in the WS-Federation
                         JSP Endpoints section.
                     </para>
                 </listitem>
@@ -4293,8 +4294,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/saml2query/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named saml2query. Associated with the QueryHandlerServlet class. The
-                        corresponding .java file receives and processes SAML2 queries.
+                    <para>Used by a servlet named <literal>saml2query</literal>. Associated with the <literal>QueryHandlerServlet</literal> class. The
+                        corresponding <filename>.java</filename> file receives and processes SAML2 queries.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4302,8 +4303,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/federationws/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named federationrest. Associated with the ServletContainer class. Does not
-                        appear to be included in any current .java or .jsp file, so it may be a legacy endpoint.
+                    <para>Used by a servlet named <literal>federationrest</literal>. Associated with the <literal>ServletContainer</literal> class. Does not
+                        appear to be included in any current <filename>.java</filename> or <literal>.jsp</literal> file, so it may be a legacy endpoint.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4311,7 +4312,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/xacml/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named XACMLContentAdapter. Associated with the XacmlContentHandlerService
+                    <para>Used by a servlet named <literal>XACMLContentAdapter</literal>. Associated with the <literal>XacmlContentHandlerService</literal>
                         class. Provides the main endpoint for all XACML requests. <!--For more information, see the next
                         section on XACML 3 REST Endpoints. -->
                     </para>
@@ -4321,7 +4322,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/frrest/oauth2/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named OAuth2Rest. Associated with the RestTokenDispatcher class.
+                    <para>Used by a servlet named <literal>OAuth2Rest</literal>. Associated with the <literal>RestTokenDispatcher</literal> class.
                         class.  For more information, see the
                         the chapter on <link xlink:href="dev-guide#sec-rest-oauth2-oidc"
                                              xlink:role="http://docbook.org/xlink/role/olink">
@@ -4332,7 +4333,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/oauth2/registerClient.jsp</literal></term>
                 <listitem>
-                    <para>Used by a servlet named OAuth2RegisterClient. For more information, see the
+                    <para>Used by a servlet named <literal>OAuth2RegisterClient</literal>. For more information, see the
                         the Administration Guide chapter on <link xlink:href="admin-guide#chap-oauth2"
                                              xlink:role="http://docbook.org/xlink/role/olink">
                             <citetitle>Managing OAuth 2.0 Authorization</citetitle></link>.</para>
@@ -4342,7 +4343,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/oauth2/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named OAuth2RestletAdapter. Associated with the RestTokenDispatcher class.
+                    <para>Used by a servlet named <literal>OAuth2RestletAdapter</literal>. Associated with the <literal>RestTokenDispatcher</literal> class.
                         For more information, see the chapter on
                         the chapter on <link xlink:href="dev-guide#sec-rest-oauth2-oidc"
                                              xlink:role="http://docbook.org/xlink/role/olink">
@@ -4353,7 +4354,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/json/*</literal></term>
                 <listitem>
-                    <para>Used by a servlet named ForgeRockRest. Associated with the HttpServlet class.
+                    <para>Used by a servlet named <literal>ForgeRockRest</literal>. Associated with the <literal>HttpServlet</literal> class.
                         For more information, see the chapter on
                         <link xlink:href="dev-guide#sec-rest"
                                              xlink:role="http://docbook.org/xlink/role/olink">
