@@ -196,7 +196,8 @@ public class AMSetupDSConfig {
      * @return <code>true</code> if specified suffix exists. 
      */
     public boolean connectDSwithDN(boolean ssl) {
-        String filter = "cn=" + "\"" + suffix + "\"";
+        //String filter = "cn=" + "\"" + suffix + "\"";
+    	String filter = "(objectClass=domain)";
         try (Connection conn = getLDAPConnection(ssl)) {
             ConnectionEntryReader results = conn.search(suffix, SearchScope.BASE_OBJECT, filter);
             return results.hasNext();
@@ -215,7 +216,7 @@ public class AMSetupDSConfig {
      */
     String isDITLoaded(boolean ssl) {
         String baseDN = "ou=services," + suffix;
-        String filter = "(|(ou=DAI) (ou=sunIdentityRepositoryService))";
+        String filter = "(|(ou=DAI)(ou=sunIdentityRepositoryService))";
         try (Connection conn = getLDAPConnection(ssl)){
             ConnectionEntryReader results = conn.search(baseDN, SearchScope.WHOLE_SUBTREE, filter, "dn");
             return Boolean.toString(results.hasNext());
