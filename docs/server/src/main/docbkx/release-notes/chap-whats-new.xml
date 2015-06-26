@@ -58,6 +58,43 @@
     </para>
    </listitem>
 
+   <!-- OPENAM-3714 -->
+   <listitem>
+    <para>
+     You can now use StartTLS to initiate secure connections to an Identity Repository
+     data store.
+     A new property, <literal>sun-idrepo-ldapv3-config-connection-mode</literal>,
+     has been created with the possible values of <literal>LDAP</literal>,
+     <literal>LDAPS</literal>, and <literal>StartTLS</literal> to enable this feature.
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3714"
+      xlink:show="new"
+      >OPENAM-3714</link>.
+    </para>
+   </listitem>
+
+   <!-- OPENAM-5097 -->
+   <listitem>
+    <para>
+     You can now use StartTLS with the Active Directory
+     and LDAP authentication modules to secure OpenAM's connection to the data stores.
+     A new property, <literal>openam-auth-ldap-connection-mode</literal>,
+     has been created with the possible values of <literal>LDAP</literal>,
+     <literal>LDAPS</literal>, and <literal>StartTLS</literal> to enable this
+     feature.
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-5097"
+      xlink:show="new"
+      >OPENAM-5097</link>.
+    </para>
+   </listitem>
+
   </itemizedlist>
 </section>
 

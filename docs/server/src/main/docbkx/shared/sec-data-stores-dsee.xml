@@ -193,7 +193,7 @@
    <listitem>
     <para>
      Whether to use LDAPS or StartTLS to connect to the directory server.
-     If you enable SSL/TLS, OpenAM must be able to trust server certificates,
+     If you enable SSL or StartTLS, OpenAM must be able to trust server certificates,
      either because the server certificates were signed by a CA
      whose certificate is already included in the trust store
      used by the container where OpenAM runs,
@@ -202,12 +202,12 @@
 
     <para>
      <command>ssoadm</command> attribute:
-     <literal>sun-idrepo-ldapv3-config-ssl-enabled</literal>
+     <literal>sun-idrepo-ldapv3-config-connection-mode</literal>
     </para>
 
     <para>
-     Default:
-     false
+     Possible values: <literal>LDAP</literal>, <literal>LDAPS</literal>, and
+     <literal>StartTLS</literal>
     </para>
    </listitem>
   </varlistentry>
