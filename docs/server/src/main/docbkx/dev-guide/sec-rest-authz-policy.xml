@@ -113,6 +113,30 @@
     </para>
    </listitem>
   </itemizedlist>
+
+  <para>
+   Before making a REST API call to request a policy decision or manage a
+   policy component, make sure that you have:
+   <itemizedlist>
+    <listitem>
+     <para>
+      Authenticated successfully to OpenAM as a user with sufficient privileges
+      to make the REST API call
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Obtained the session token returned after successful authentication
+     </para>
+    </listitem>
+   </itemizedlist>
+   When making the REST API call, pass the session token in the HTTP header.
+   For more information about the OpenAM session token and its use in REST API
+   calls, see <link xlink:show="new"
+                    xlink:href="dev-guide#rest-api-ssotoken"
+                    xlink:role="http://docbook.org/xlink/role/olink">Using the
+   Session Token After Authentication</link>.
+  </para>
  </section>
 
  <section xml:id="rest-api-authz-policy-decisions">
@@ -1236,7 +1260,11 @@ https://openam.example.com:8443/openam/json/myrealm/resourcetypes?_queryFilter=t
 
    <para>
     Additional query strings can be specified to alter the returned results.
-    For more information, see <xref linkend="rest-api-filter-sort-page" />.
+    For more information,
+    see <link xlink:show="new"
+              xlink:href="dev-guide#rest-api-filter-sort-page"
+              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
+    Sorting, and Paging Results</link>.
    </para>
 
    <table>
@@ -1651,7 +1679,11 @@ https://openam.example.com:8443/openam/json/applicationtypes?_queryFilter=true</
 
    <para>
     Additional query strings can be specified to alter the returned results.
-    For more information, see <xref linkend="rest-api-filter-sort-page" />.
+    For more information,
+    see <link xlink:show="new"
+              xlink:href="dev-guide#rest-api-filter-sort-page"
+              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
+    Sorting, and Paging Results</link>.
    </para>
   </section>
 
@@ -2074,9 +2106,13 @@ https://openam.example.com:8443/openam/json/applications?_queryFilter=true
 
 
 
-    <para>
+   <para>
     Additional query strings can be specified to alter the returned results.
-    For more information, see <xref linkend="rest-api-filter-sort-page" />.
+    For more information,
+    see <link xlink:show="new"
+              xlink:href="dev-guide#rest-api-filter-sort-page"
+              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
+    Sorting, and Paging Results</link>.
    </para>
 
    <table>
@@ -3232,10 +3268,15 @@ $ <userinput>curl \
     "remainingPagedResults": 0
 }</computeroutput></screen>
 
-      <para>
-    Additional query strings can be specified to alter the returned results.
-    For more information, see <xref linkend="rest-api-filter-sort-page" />.
-   </para>
+     <para>
+      Additional query strings can be specified to alter the returned results.
+      For more information,
+      see <link xlink:show="new"
+                xlink:href="dev-guide#rest-api-filter-sort-page"
+                xlink:role="http://docbook.org/xlink/role/olink">Filtering,
+      Sorting, and Paging Results</link>.
+     </para>
+
 
    <table>
     <title>Supported <literal>_queryFilter</literal> Fields and
@@ -4201,8 +4242,13 @@ $ <userinput>curl \
 
    <para>
     Additional query strings can be specified to alter the returned results.
-    For more information, see <xref linkend="rest-api-filter-sort-page" />.
+    For more information,
+    see <link xlink:show="new"
+              xlink:href="dev-guide#rest-api-filter-sort-page"
+              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
+    Sorting, and Paging Results</link>.
    </para>
+
   </section>
 
   <section xml:id="rest-api-authz-condition-types-read">
@@ -4411,8 +4457,13 @@ $ <userinput>curl \
 
    <para>
     Additional query strings can be specified to alter the returned results.
-    For more information, see <xref linkend="rest-api-filter-sort-page" />.
+    For more information,
+    see <link xlink:show="new"
+              xlink:href="dev-guide#rest-api-filter-sort-page"
+              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
+    Sorting, and Paging Results</link>.
    </para>
+
   </section>
 
   <section xml:id="rest-api-authz-subject-types-read">
@@ -4581,8 +4632,13 @@ $ <userinput>curl \
 
    <para>
     Additional query strings can be specified to alter the returned results.
-    For more information, see <xref linkend="rest-api-filter-sort-page" />.
+    For more information,
+    see <link xlink:show="new"
+              xlink:href="dev-guide#rest-api-filter-sort-page"
+              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
+    Sorting, and Paging Results</link>.
    </para>
+
   </section>
 
    <section xml:id="rest-api-authz-decision-combiner-read">
