@@ -455,16 +455,18 @@
    </indexterm>
 
    <para>Cross domain single sign-on (CDSSO) allows the web policy agent
-    to transfer a validated session ID between an OpenAM domain and an application
-    domain using a proprietary OpenAM mechanism.
+    to transfer a validated stateful session ID between an OpenAM domain and an
+    application domain using a proprietary OpenAM mechanism.
     Normally, single sign-on cannot be implemented across domains as the session
     cookie from one domain (for example, website.com) is not accessible from
     another domain (for example, website.net).
    </para>
    <para>
-    OpenAM's CDSSO solves this cross-domain problem and is best implemented in environments
-    where all the domains are managed ultimately by the same organization.
-   </para>
+    OpenAM's CDSSO solves this cross-domain problem and is best implemented in
+    environments where all the domains are managed by the same
+    organization, and where the OpenAM server is configured to use stateful
+    sessions. OpenAM does not support CDSSO for deployments with stateless
+    sessions.   </para>
    <para>
     The web policy agent works with an OpenAM component called
     a <literal>CDCServlet</literal> that generates a
@@ -504,7 +506,7 @@
    </para>
 
    <para>If the policy agent is running behind a load balancer,
-    you can configure the policy agent to set a stick cookie or a query parameter
+    you can configure the policy agent to set a sticky cookie or a query parameter
     in the URL to ensure
     subsequent requests are routed to the same instance to preserve session
     data.
