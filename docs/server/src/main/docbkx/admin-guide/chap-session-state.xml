@@ -974,6 +974,16 @@
 
    </procedure>
 
+   <para>
+    For detailed information about Session Service configuration attributes,
+    see the entries for
+    <link xlink:show="new"
+          xlink:href="reference#session-configuration-attributes"
+          xlink:role="http://docbook.org/xlink/role/olink"
+    >Session Service attributes</link> in the
+    <citetitle>Reference</citetitle>.
+   </para>
+
   </section>
 
   <section xml:id="session-state-configure-jwt-encryption">
@@ -1028,6 +1038,16 @@
     </step>
 
    </procedure>
+
+   <para>
+    For detailed information about Session Service configuration attributes,
+    see the entries for
+    <link xlink:show="new"
+          xlink:href="reference#session-configuration-attributes"
+          xlink:role="http://docbook.org/xlink/role/olink"
+    >Session Service attributes</link> in the
+    <citetitle>Reference</citetitle>.
+   </para>
 
   </section>
 
@@ -1132,6 +1152,16 @@
    </step>
 
   </procedure>
+
+  <para>
+   For detailed information about Session Service configuration attributes,
+   see the entries for
+   <link xlink:show="new"
+         xlink:href="reference#session-configuration-attributes"
+         xlink:role="http://docbook.org/xlink/role/olink"
+    >Session Service attributes</link> in the
+   <citetitle>Reference</citetitle>.
+  </para>
 
  </section>
 
