@@ -170,8 +170,8 @@
 
    <para>
     You can store custom information in both stateful and stateless sessions
-    with post-authentication plug-ins. For more information about
-    post-authentication plug-ins,
+    with post authentication plug-ins. For more information about
+    post authentication plug-ins,
     see <link xlink:show="new"
               xlink:href="dev-guide#chap-post-auth"
               xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Creating

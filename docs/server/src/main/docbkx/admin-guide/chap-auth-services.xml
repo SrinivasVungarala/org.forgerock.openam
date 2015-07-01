@@ -141,7 +141,7 @@
   <para>With OpenAM, you can further set <firstterm>authentication
   levels</firstterm> per module, with higher levels being used typically
   to allow access to more restricted resources. The OpenAM SPIs also let you
-  develop your own authentication modules, and post-authentication plugins.
+  develop your own authentication modules, and post authentication plugins.
   Client applications can specify the authentication level, module, user, and
   authentication service to use among those you have configured. As described
   later in this guide, you can use <firstterm>realms</firstterm> to organize
@@ -810,9 +810,9 @@
    to her mobile phone.</para>
    <para>When you configure the Adaptive Risk module to save cookies and
    profile attributes after successful authentication, OpenAM performs the
-   save as post-authentication processing, only after the entire authentication
+   save as post authentication processing, only after the entire authentication
    chain returns success. You must set up OpenAM to save the data as part of
-   post-authentication processing by editing the authentication chain to add
+   post authentication processing by editing the authentication chain to add
    <literal>org.forgerock.openam.authentication.modules.adaptive.Adaptive</literal>
    to the list of post authentication plugins.</para>
 
@@ -5450,7 +5450,7 @@ ssoadm \
     <para>Assign appropriate criteria (optional, required, requisite, sufficient)
     as described above in <xref linkend="what-is-authn" />. You can also
     configure where OpenAM redirects the user upon successful and failed
-    authentication, and plug in your post-authentication processing classes
+    authentication, and plug in your post authentication processing classes
     as necessary.</para>
    </step>
    <!-- Fix for OPENAM-1063: Document module-credential sharing properties -->
