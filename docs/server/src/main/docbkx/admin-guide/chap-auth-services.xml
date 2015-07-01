@@ -619,7 +619,7 @@
       configured to include only the Active Directory module, then make sure
       that the password is correct before you logout. If it is incorrect, you
       will be locked out. If you do get locked out, you can login with the
-      super user DN, which by default is
+      superuser DN, which by default is
       <literal>uid=amAdmin,ou=People,<replaceable>OpenAM-deploy-base</replaceable></literal>,
       where <replaceable>OpenAM-deploy-base</replaceable> was set during
       OpenAM configuration.</para>
@@ -3301,7 +3301,7 @@ the '%' character is not included in the properties.
       DN and password to authenticate to the directory.</para>
       <para>The default is <literal>cn=Directory Manager</literal>. Make sure
       that password is correct before you logout. If it is incorrect, you will
-      be locked out. If this should occur, you can login with the super user DN,
+      be locked out. If this should occur, you can login with the superuser DN,
       which by default is
       <literal>uid=amAdmin,ou=People,<replaceable>OpenAM-deploy-base</replaceable></literal>,
       where <replaceable>OpenAM-deploy-base</replaceable> you set during

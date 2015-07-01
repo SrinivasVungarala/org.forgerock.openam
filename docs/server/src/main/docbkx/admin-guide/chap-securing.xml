@@ -317,7 +317,8 @@
 
         <para>You can make changes to the password and user name for the main OpenAM administrative account.</para>
         <para>You can change the user name of the <literal>amadmin</literal> administrative account
-            to something more obscure, such as superroot. However, the capabilities of that alternative administrative
+            to something more obscure, such as <literal>superroot</literal>.
+            However, the capabilities of that alternative administrative
             account would not be complete, due to some hard-coding of <literal>amadmin</literal> in the source files.
             When changing the password for the main OpenAM administrative account, you must make a corresponding change
             to the authentication datastore. That datastore could be OpenDJ. The steps you would take to change

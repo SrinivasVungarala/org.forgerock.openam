@@ -1157,7 +1157,7 @@ $ dsconfig \
   </para>
 
   <para>
-   OpenAM connects to the embedded OpenDJ directory as directory super user,
+   OpenAM connects to the embedded OpenDJ directory as directory superuser,
    bypassing access control evaluation because OpenAM manages the directory as
    its private store. Be aware that you cannot configure directory failover and
    replication when using the embedded store.

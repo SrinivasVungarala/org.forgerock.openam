@@ -625,7 +625,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      <para>If you were configuring OpenAM for real-world use, you would not use
       either of those passwords, but this is only to get started with OpenAM. The
       <literal>amadmin</literal> user is the OpenAM administrator, who is like
-      a super user in that <literal>amadmin</literal> has full control over
+      a superuser in that <literal>amadmin</literal> has full control over
       the OpenAM configuration.</para>
     </note>
 
