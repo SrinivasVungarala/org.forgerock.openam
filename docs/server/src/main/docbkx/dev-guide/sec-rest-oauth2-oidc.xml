@@ -669,13 +669,13 @@ $ <userinput>curl \
 
    <itemizedlist>
     <listitem>
-     <para><literal>/.well-known/openid-configuration</literal> allows clients
+     <para><literal>/oauth2/.well-known/openid-configuration</literal> allows clients
      to retrieve OpenID Provider configuration by HTTP GET as specified by
      OpenID Connect Discovery 1.0.</para>
     </listitem>
 
     <listitem>
-     <para><literal>/.well-known/webfinger</literal> allows clients to retrieve
+     <para><literal>/oauth2/.well-known/webfinger</literal> allows clients to retrieve
      the provider URL for an end user by HTTP GET as specified by OpenID Connect
      Discovery 1.0.</para>
     </listitem>

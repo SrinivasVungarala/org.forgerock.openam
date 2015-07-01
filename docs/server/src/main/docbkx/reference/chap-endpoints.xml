@@ -4485,7 +4485,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
      <variablelist>
       <varlistentry>
-       <term><literal>/.well-known/openid-configuration</literal></term>
+       <term><literal>/oauth2/.well-known/openid-configuration</literal></term>
        <listitem>
         <para>Exposes OpenID Provider configuration by HTTP GET as specified by
         OpenID Connect Discovery 1.0. No query string parameters are
@@ -4505,7 +4505,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><literal>/.well-known/webfinger</literal></term>
+       <term><literal>/oauth2/.well-known/webfinger</literal></term>
        <listitem>
         <para>Allows a client to retrieve the provider URL for an end user by
         HTTP GET as specified by OpenID Connect Discovery 1.0.</para>

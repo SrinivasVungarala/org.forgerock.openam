@@ -4397,7 +4397,7 @@ the '%' character is not included in the properties.
       <variablelist>
        <para>
         By default, the configuration type is
-        <literal>.well-known/openid-configuration_url</literal>.
+        <literal>/oauth2/.well-known/openid-configuration_url</literal>.
         This means the module should retrieve the keys based on
         information in the OpenID Connect Provider Configuration Document.
        </para>
@@ -4411,7 +4411,7 @@ the '%' character is not included in the properties.
        </para>
 
        <varlistentry>
-        <term><literal>.well-known/openid-configuration_url</literal> (Default)</term>
+        <term><literal>oauth2/.well-known/openid-configuration_url</literal> (Default)</term>
         <listitem>
          <para>
           Retrieve the provider keys based on the information provided
