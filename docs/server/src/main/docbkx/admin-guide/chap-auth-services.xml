@@ -141,7 +141,7 @@
   <para>With OpenAM, you can further set <firstterm>authentication
   levels</firstterm> per module, with higher levels being used typically
   to allow access to more restricted resources. The OpenAM SPIs also let you
-  develop your own authentication modules, and post-authentication plugins.
+  develop your own authentication modules, and post authentication plugins.
   Client applications can specify the authentication level, module, user, and
   authentication service to use among those you have configured. As described
   later in this guide, you can use <firstterm>realms</firstterm> to organize
@@ -619,7 +619,7 @@
       configured to include only the Active Directory module, then make sure
       that the password is correct before you logout. If it is incorrect, you
       will be locked out. If you do get locked out, you can login with the
-      super user DN, which by default is
+      superuser DN, which by default is
       <literal>uid=amAdmin,ou=People,<replaceable>OpenAM-deploy-base</replaceable></literal>,
       where <replaceable>OpenAM-deploy-base</replaceable> was set during
       OpenAM configuration.</para>
@@ -676,13 +676,19 @@
     <varlistentry>
      <term>SSL/TLS Access to Active Directory Server</term>
      <listitem>
-      <para>If you enable SSL/TLS, OpenAM must be able to trust Active Directory
+      <para>If you want to initiate secure communications to data stores using
+       SSL or StartTLS, OpenAM must be able to trust Active Directory
       certificates, either because the Active Directory certificates were
       signed by a CA whose certificate is already included in the trust store
       used by the container where OpenAM runs, or because you imported the
       certificates into the trust store.</para>
       <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-ldap-ssl-enabled</literal></para>
+      <literal>openam-auth-ldap-connection-mode</literal>
+      </para>
+      <para>
+       Possible values: <literal>LDAP</literal>, <literal>LDAPS</literal>, and
+       <literal>StartTLS</literal>
+      </para>
      </listitem>
     </varlistentry>
 
@@ -804,9 +810,9 @@
    to her mobile phone.</para>
    <para>When you configure the Adaptive Risk module to save cookies and
    profile attributes after successful authentication, OpenAM performs the
-   save as post-authentication processing, only after the entire authentication
+   save as post authentication processing, only after the entire authentication
    chain returns success. You must set up OpenAM to save the data as part of
-   post-authentication processing by editing the authentication chain to add
+   post authentication processing by editing the authentication chain to add
    <literal>org.forgerock.openam.authentication.modules.adaptive.Adaptive</literal>
    to the list of post authentication plugins.</para>
 
@@ -1669,9 +1675,8 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     <varlistentry>
      <term>Trusted Remote Hosts</term>
      <listitem>
-      <para>Hosts trusted to send certificates to OpenAM, such as load balancers
-      doing SSL termination, or OpenAM distributed authentication UI
-      instances.</para>
+      <para>Hosts trusted to send certificates to OpenAM, such as, load balancers
+      doing SSL termination.</para>
       <para><command>ssoadm</command> attribute:
       <literal>iplanet-am-auth-cert-gw-cert-auth-enabled</literal></para>
      </listitem>
@@ -3220,39 +3225,57 @@ the '%' character is not included in the properties.
     <varlistentry>
      <term>Primary LDAP Server</term>
      <term>Secondary LDAP Server</term>
+
      <listitem>
-      <para>Directory servers generally use built-in data replication for high
-      availability. Thus a directory service likely consists of a pool of
-      replicas to which OpenAM can connect to retrieve and update directory
-      data. You set up primary and secondary servers in case a replica is down
-      due to maintenance or to a problem with a particular server.</para>
-      <para>Set one primary and optionally one secondary directory server for
-      each OpenAM server. For the current OpenAM server, specify each directory
-      server as a
-      <literal><replaceable>host</replaceable>:<replaceable>port</replaceable></literal>
-      combination. For other OpenAM servers in the deployment, you can specify
-      each directory server as
+      <para>
+       Directory servers generally use built-in data replication for high
+       availability. Thus a directory service likely consists of a pool of
+       replicas to which OpenAM can connect to retrieve and update directory
+       data. You set up primary and secondary servers in case a replica is down
+       due to maintenance or to a problem with a particular server.
+      </para>
+      <para>
+       Set one primary and optionally one secondary directory server for
+       each OpenAM server. For the current OpenAM server, specify each directory
+       server as a
+       <literal><replaceable>host</replaceable>:<replaceable>port</replaceable></literal>
+       combination. For other OpenAM servers in the deployment, you can specify
+       each directory server as
 <literal><replaceable>server-name</replaceable>|<replaceable>host</replaceable>:<replaceable>port</replaceable></literal>,
-      where <replaceable>server-name</replaceable> is the FQDN portion of the
-      OpenAM server from the list under Configuration &gt; Servers and
-      Sites, and <replaceable>host</replaceable>:<replaceable>port</replaceable>
-      identifies the directory server.</para>
-      <para>For example, if the <replaceable>server-name</replaceable>
-      that is listed is <literal>http://openam.example.com:8080/openam</literal>
-      and the directory server is accessible at <literal>opendj.example.com:1389</literal>,
-      you would enter <literal>openam.example.com|opendj.example.com:1389</literal>.</para>
+       where <replaceable>server-name</replaceable> is the FQDN portion of the
+       OpenAM server from the list under Configuration &gt; Servers and
+       Sites, and <replaceable>host</replaceable>:<replaceable>port</replaceable>
+       identifies the directory server.
+      </para>
+      <para>
+       For example, if the <replaceable>server-name</replaceable>
+       that is listed is <literal>http://openam.example.com:8080/openam</literal>
+       and the directory server is accessible at <literal>opendj.example.com:1389</literal>,
+       you would enter <literal>openam.example.com|opendj.example.com:1389</literal>.
+      </para>
          <!-- Possible future change per OPENAM-1361 -->
-      <para>When authenticating users from a directory service that is remote
-      from OpenAM, set both the primary and secondary server values.</para>
-      <para>If you want to use SSL or TLS for security, then scroll down to
-      enable SSL/TLS Access to LDAP Server. Make sure that OpenAM
-      can trust the servers' certificates when using this option.</para>
-      <para><command>ssoadm</command> attributes:
-      primary is <literal>iplanet-am-auth-ldap-server</literal>,
-      secondary is <literal>iplanet-am-auth-ldap-server2</literal>, and
-      <literal>iplanet-am-auth-ldap-ssl-enabled</literal></para>
+      <para>
+       When authenticating users from a directory service that is remote
+       from OpenAM, set both the primary and secondary server values.
+      </para>
+      <para>
+       If you want use SSL or StartTLS to initiate a secure connection to a data store,
+       then scroll down to enable SSL/TLS Access to LDAP Server.
+       Make sure that OpenAM can trust the servers' certificates when using this option.
+      </para>
+      <para>
+       <command>ssoadm</command> attributes:
+       primary is <literal>iplanet-am-auth-ldap-server</literal>,
+       secondary is <literal>iplanet-am-auth-ldap-server2</literal>, and
+       <literal>openam-auth-ldap-connection-mode</literal>
+      </para>
+      <para>
+       Possible values: <literal>LDAP</literal>, <literal>LDAPS</literal>, and
+       <literal>StartTLS</literal>
+      </para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>DN to Start User Search</term>
      <listitem>
@@ -3268,6 +3291,7 @@ the '%' character is not included in the properties.
       <literal> iplanet-am-auth-ldap-base-dn</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Bind User DN, Bind User Password</term>
      <listitem>
@@ -3277,7 +3301,7 @@ the '%' character is not included in the properties.
       DN and password to authenticate to the directory.</para>
       <para>The default is <literal>cn=Directory Manager</literal>. Make sure
       that password is correct before you logout. If it is incorrect, you will
-      be locked out. If this should occur, you can login with the super user DN,
+      be locked out. If this should occur, you can login with the superuser DN,
       which by default is
       <literal>uid=amAdmin,ou=People,<replaceable>OpenAM-deploy-base</replaceable></literal>,
       where <replaceable>OpenAM-deploy-base</replaceable> you set during
@@ -3287,6 +3311,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-auth-ldap-bind-passwd</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
         <term>Attributes Used to Retrieve User Profile</term>
         <term>Attributes Used to Search for a User to be Authenticated</term>
@@ -3326,14 +3351,25 @@ the '%' character is not included in the properties.
     <varlistentry>
      <term>SSL/TLS Access to LDAP Server</term>
      <listitem>
-      <para>If you enable SSL/TLS, OpenAM must be able to trust LDAP certificates, either because the certificates were
-      signed by a CA whose certificate is already included in the trust store
-      used by the container where OpenAM runs, or because you imported the
-      certificates into the trust store.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-ldap-ssl-enabled</literal></para>
+      <para>
+       If you want use SSL or StartTLS to initiate a secure connection to a data store,
+       OpenAM must be able to trust LDAP
+       certificates, either because the certificates were
+       signed by a CA whose certificate is already included in the trust store
+       used by the container where OpenAM runs, or because you imported the
+       certificates into the trust store.
+      </para>
+      <para>
+       <command>ssoadm</command> attribute:
+       <literal>openam-auth-ldap-connection-mode</literal>
+      </para>
+      <para>
+       Possible values: <literal>LDAP</literal>, <literal>LDAPS</literal>, and
+       <literal>StartTLS</literal>
+      </para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Return User DN to Authenticate</term>
      <listitem>
@@ -4361,7 +4397,7 @@ the '%' character is not included in the properties.
       <variablelist>
        <para>
         By default, the configuration type is
-        <literal>.well-known/openid-configuration_url</literal>.
+        <literal>/oauth2/.well-known/openid-configuration_url</literal>.
         This means the module should retrieve the keys based on
         information in the OpenID Connect Provider Configuration Document.
        </para>
@@ -4375,7 +4411,7 @@ the '%' character is not included in the properties.
        </para>
 
        <varlistentry>
-        <term><literal>.well-known/openid-configuration_url</literal> (Default)</term>
+        <term><literal>oauth2/.well-known/openid-configuration_url</literal> (Default)</term>
         <listitem>
          <para>
           Retrieve the provider keys based on the information provided
@@ -5414,7 +5450,7 @@ ssoadm \
     <para>Assign appropriate criteria (optional, required, requisite, sufficient)
     as described above in <xref linkend="what-is-authn" />. You can also
     configure where OpenAM redirects the user upon successful and failed
-    authentication, and plug in your post-authentication processing classes
+    authentication, and plug in your post authentication processing classes
     as necessary.</para>
    </step>
    <!-- Fix for OPENAM-1063: Document module-credential sharing properties -->

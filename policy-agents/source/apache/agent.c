@@ -59,6 +59,8 @@ typedef struct {
     char *audit_file;
     int debug_level;
     int audit_level;
+    int debug_size;
+    int audit_size;
     int error;
     unsigned long config_id;
 } amagent_config_t; /*per server config*/
@@ -81,6 +83,8 @@ static const char *am_set_opt(cmd_parms *c, void *cfg, const char *arg) {
             conf->audit_file = ac->audit_file != NULL ? apr_pstrdup(c->pool, ac->audit_file) : NULL;
             conf->debug_level = ac->debug_level;
             conf->audit_level = ac->audit_level;
+            conf->debug_size = ac->debug;
+            conf->audit_size = ac->audit;
             conf->error = AM_SUCCESS;
             am_config_free(&ac);
         } else {
@@ -95,9 +99,8 @@ static const char *am_set_opt(cmd_parms *c, void *cfg, const char *arg) {
 /*Context: either top level or inside VirtualHost*/
 static const command_rec amagent_cmds[] = {
     AP_INIT_TAKE1("AmAgent", am_set_opt, NULL, RSRC_CONF, "Module enabled/disabled"),
-    AP_INIT_TAKE1("AmAgentConf", am_set_opt, NULL, RSRC_CONF, "Module configuration file"), {
-        NULL
-    }
+    AP_INIT_TAKE1("AmAgentConf", am_set_opt, NULL, RSRC_CONF, "Module configuration file"),
+    { NULL }
 };
 
 static apr_status_t amagent_cleanup(void *arg) {
@@ -590,8 +593,8 @@ static int amagent_auth_handler(request_rec *req) {
     /* register and update instance logger configuration (for already registered
      * instances - update logging level only 
      */
-    am_log_register_instance(config->config_id, config->debug_file, config->debug_level,
-            config->audit_file, config->audit_level);
+    am_log_register_instance(config->config_id, config->debug_file, config->debug_level, config->debug_size,
+            config->audit_file, config->audit_level, config->audit_size);
 
     AM_LOG_DEBUG(config->config_id, "%s begin", thisfunc);
 

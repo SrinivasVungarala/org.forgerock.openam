@@ -23,10 +23,9 @@
  */
 
 /*global define*/
-
 define("config/AppConfiguration", [
-    "org/forgerock/commons/ui/common/util/Constants"
-], function(Constants) {
+    "org/forgerock/openam/ui/common/util/Constants"
+], function (Constants) {
     var obj = {
             moduleDefinition: [
                 {
@@ -91,7 +90,7 @@ define("config/AppConfiguration", [
                         defaultHandlers: {
                         },
                         loader: [
-                                {"defaultHandlers":"config/errorhandlers/CommonErrorHandlers"}
+                                { "defaultHandlers": "config/errorhandlers/CommonErrorHandlers" }
                         ]
                     }
                 },
@@ -99,7 +98,11 @@ define("config/AppConfiguration", [
                     moduleClass: "org/forgerock/commons/ui/common/util/UIUtils",
                     configuration: {
                         templateUrls: [
-                            "templates/admin/views/realms/scripts/ScriptListBtnToolbarTemplate.html",
+                            "templates/admin/views/realms/policies/common/StripedListItemTemplate.html",
+                            "templates/admin/views/realms/policies/applications/ApplicationsToolbarTemplate.html",
+                            "templates/admin/views/realms/scripts/ScriptsToolbarTemplate.html",
+                            "templates/admin/views/realms/scripts/ScriptValidationTemplate.html",
+                            "templates/admin/views/realms/scripts/ChangeContextTemplate.html",
                             "templates/uma/backgrid/cell/RevokeCell.html",
                             "templates/uma/backgrid/cell/SelectizeCell.html",
                             "templates/user/ConfirmPasswordDialogTemplate.html"
@@ -112,9 +115,9 @@ define("config/AppConfiguration", [
                         messages: {
                         },
                         loader: [
-                                {"messages":"config/messages/CommonMessages"},
-                                {"messages":"config/messages/UserMessages"},
-                                {"messages":"config/AppMessages"}
+                            { "messages": "config/messages/CommonMessages" },
+                            { "messages": "config/messages/UserMessages" },
+                            { "messages": "config/AppMessages" }
                         ]
                     }
                 },
@@ -151,25 +154,21 @@ define("config/AppConfiguration", [
                             "admin": {
                                 "role": "ui-admin",
                                 "urls": {
-                                    "commonTasks": {
-                                        "url": "#commonTasks",
-                                        "name": "config.AppConfiguration.Navigation.links.commonTasks",
-                                        "icon": "fa fa-check"
-                                    },
                                     "realms": {
                                         "url": "#realms",
-                                        "name": "config.AppConfiguration.Navigation.links.realms",
+                                        "name": "config.AppConfiguration.Navigation.links.realms.title",
                                         "icon": "fa fa-cloud",
                                         "dropdown" : true,
                                         "urls": [{
                                             "url": "#realms",
-                                            "name": "Show All",
+                                            "name": "config.AppConfiguration.Navigation.links.realms.showAll",
                                             "icon": "fa fa-th"
-                                        },
-                                        {
-                                            "event": "New Realm BS Event triggered here",
-                                            "name": "New Realm",
+                                        }, {
+                                            "event": Constants.EVENT_ADD_NEW_REALM_DIALOG,
+                                            "name": "config.AppConfiguration.Navigation.links.realms.newRealm",
                                             "icon": "fa fa-plus"
+                                        }, {
+                                            divider: true
                                         }]
                                     },
                                     "federation": {

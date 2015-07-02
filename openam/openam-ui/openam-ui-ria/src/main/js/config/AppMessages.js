@@ -25,12 +25,31 @@
 /*global define*/
 
 define("config/AppMessages", [
-], function() {
+], function () {
     return {
+        /**
+         * Common Messages.
+         */
         "invalidRealm": {
             msg: "config.messages.AppMessages.invalidRealm",
             type: "error"
         },
+        "duplicateRealm": {
+            msg: "config.messages.AppMessages.duplicateRealm",
+            type: "error"
+        },
+        "deleteFail": {
+            msg: "config.messages.AppMessages.deleteFail",
+            type: "error"
+        },
+        "changesSaved": {
+            msg: "config.messages.AppMessages.changesSaved",
+            type: "info"
+        },
+
+        /**
+         * UMA Messages.
+         */
         "policyCreatedSuccess": {
             msg: "uma.share.messages.success",
             type: "info"
@@ -63,9 +82,33 @@ define("config/AppMessages", [
             msg: "uma.resources.show.revokePolicyFail",
             type: "error"
         },
-        "scriptDeleted": {
-            msg: "config.messages.AdminMessages.scripts.scriptDeleted",
-            type: "info"
+
+        /**
+         * Scripts messages.
+         */
+        "scriptErrorNoName": {
+            msg: "config.messages.AdminMessages.scripts.error.noName",
+            type: "error"
+        },
+        "scriptErrorNoLanguage": {
+            msg: "config.messages.AdminMessages.scripts.error.noLanguage",
+            type: "error"
+        },
+
+        /**
+         * Policies messages.
+         */
+        "applicationErrorCantStartWithHash": {
+            msg: "config.messages.AdminMessages.policies.error.cantStartWithHash",
+            type: "error"
+        },
+        "applicationErrorNoName": {
+            msg: "config.messages.AdminMessages.policies.error.noName",
+            type: "error"
+        },
+        "applicationErrorNoResourceTypes": {
+            msg: "config.messages.AdminMessages.policies.error.noResourceTypes",
+            type: "error"
         }
     };
 });

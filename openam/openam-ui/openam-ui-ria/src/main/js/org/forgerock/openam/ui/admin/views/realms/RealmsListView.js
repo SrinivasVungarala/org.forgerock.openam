@@ -14,14 +14,116 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-/*global, define*/
+/*global define*/
 define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
-    "org/forgerock/commons/ui/common/main/AbstractView"
-], function (AbstractView) {
+    "jquery",
+    "underscore",
+    "org/forgerock/commons/ui/common/main/AbstractView",
+    "backgrid",
+    "org/forgerock/openam/ui/common/util/BackgridUtils",
+    "bootstrap-dialog",
+    "org/forgerock/openam/ui/admin/views/realms/CreateUpdateRealmDialog",
+    "org/forgerock/openam/ui/admin/models/Form",
+    "org/forgerock/openam/ui/admin/utils/FormHelper",
+    "org/forgerock/commons/ui/common/main/Router",
+    "org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate"
+], function ($, _, AbstractView, Backgrid, BackgridUtils, BootstrapDialog, CreateUpdateRealmDialog, Form, FormHelper, Router, SMSGlobalDelegate) {
     var RealmsView = AbstractView.extend({
         template: "templates/admin/views/realms/RealmsListTemplate.html",
+        editDetailsDialogTemplate: "templates/admin/views/realms/RealmPropertiesDialogTemplate.html",
+        events: {
+            "click .delete-realm"        : "deleteRealm",
+            "click #addRealm"            : "addRealm",
+            "click .edit-realm"          : "editRealm",
+            "click .toggle-realm-active" : "toggleRealmActive"
+        },
+        getRealmFromEvent: function (event) {
+            var path = $(event.currentTarget).closest("div[data-realm-path]").data("realm-path"),
+                realm = _.findWhere(this.data.realms, { path: path });
+
+            return realm;
+        },
+        addRealm: function (event) {
+            event.preventDefault();
+
+            CreateUpdateRealmDialog.show();
+        },
+        editRealm: function (event) {
+            event.preventDefault();
+
+            var realm = this.getRealmFromEvent(event);
+
+            CreateUpdateRealmDialog.show(realm.path);
+        },
+        toggleRealmActive: function (event) {
+            event.preventDefault();
+
+            var self = this,
+                realm = this.getRealmFromEvent(event);
+            realm.active = !realm.active;
+
+            SMSGlobalDelegate.realms.update(realm.path, realm).done(function () {
+                self.render();
+            });
+        },
+        deleteRealm: function (event) {
+            event.preventDefault();
+
+            var self = this,
+                realm = this.getRealmFromEvent(event);
+
+            if (realm.active) {
+                BootstrapDialog.show({
+                    title: $.t("console.realms.warningDialog.title", { realmName: realm.name }),
+                    type: BootstrapDialog.TYPE_DANGER,
+                    message: $.t("console.realms.warningDialog.message"),
+                    buttons: [{
+                        label: $.t("common.form.delete"),
+                        cssClass: "btn-danger",
+                        action: function (dialog) {
+                            self.performDeleteRealm(realm.path).done(function () {
+                                dialog.close();
+                            });
+                        }
+                    }, {
+                        label: $.t("common.form.cancel"),
+                        action: function (dialog) {
+                            dialog.close();
+                        }
+                    }]
+                });
+            } else {
+                self.performDeleteRealm(realm.path);
+            }
+        },
+        performDeleteRealm: function (path) {
+            var self = this;
+
+            return SMSGlobalDelegate.realms.remove(path).done(function () {
+                self.render();
+            });
+        },
+        getRealmFromList: function (path) {
+            return _.findWhere(this.data.realms, { path: path });
+        },
         render: function (args, callback) {
-            this.parentRender(callback);
+            var self = this;
+
+            SMSGlobalDelegate.realms.all().done(function (data) {
+                var result = _.findWhere(data.result, { name: "/" });
+                if (result) {
+                    result.name = $.t("console.common.topLevelRealm");
+                }
+                self.data.realms = data.result;
+
+                self.parentRender(function () {
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }).fail(function () {
+                // TODO: Add failure condition
+            });
         }
     });
 

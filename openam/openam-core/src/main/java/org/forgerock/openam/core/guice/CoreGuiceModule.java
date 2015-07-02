@@ -108,7 +108,7 @@ import org.forgerock.openam.sm.datalayer.api.DataLayerConstants;
 import org.forgerock.openam.sm.datalayer.api.DataLayerException;
 import org.forgerock.openam.sm.datalayer.api.QueueConfiguration;
 import org.forgerock.openam.utils.Config;
-import org.forgerock.util.promise.Function;
+import org.forgerock.util.Function;
 import org.forgerock.util.promise.NeverThrowsException;
 import org.forgerock.util.thread.ExecutorServiceFactory;
 
@@ -179,6 +179,8 @@ public class CoreGuiceModule extends AbstractModule {
 
         bind(Debug.class).annotatedWith(Names.named(PolicyMonitor.POLICY_MONITOR_DEBUG))
                 .toInstance(Debug.getInstance(PolicyMonitor.POLICY_MONITOR_DEBUG));
+        bind(Debug.class).annotatedWith(Names.named(OAuth2Constants.DEBUG_LOG_NAME))
+                .toInstance(Debug.getInstance(OAuth2Constants.DEBUG_LOG_NAME));
 
         bind(CoreTokenConstants.class).in(Singleton.class);
         bind(CoreTokenConfig.class).in(Singleton.class);

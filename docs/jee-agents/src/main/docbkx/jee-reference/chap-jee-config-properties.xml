@@ -421,7 +421,9 @@
    <varlistentry>
     <term><literal>com.sun.identity.agents.config.cdsso.enable</literal></term>
     <listitem>
-     <para>Enables Cross Domain Single Sign On.</para>
+     <para>Enables Cross Domain Single Sign On (CDSSO) for OpenAM deployments
+      that use stateful sessions. CDSSO is not supported for OpenAM
+      deployments that use stateless sessions.</para>
      <para>For centralized configurations this property is configured under
      Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
      J2EE &gt; <replaceable>Agent Name</replaceable> &gt; SSO &gt; Cross Domain
@@ -1155,9 +1157,10 @@ com.sun.identity.agents.config.fqdn.mapping[valid3] = xyz.hostname.com</literall
    <varlistentry>
     <term><literal>com.sun.identity.agents.config.notenforced.refresh.session.idletime</literal></term>
     <listitem>
-     <para>When enabled, the agent reset the session idle time when granting
-     access to a not enforced URI, prolonging the time before the user must
-     authenticate again.</para>
+     <para>When enabled, the agent resets the session idle time for stateful
+      sessions when granting access to a not enforced URI, prolonging the time
+      before the user must authenticate again. This property is ignored
+      for stateless sessions.</para>
      <para>For centralized configurations this property is configured under
      Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
      J2EE &gt; <replaceable>Agent Name</replaceable> &gt; Application &gt;

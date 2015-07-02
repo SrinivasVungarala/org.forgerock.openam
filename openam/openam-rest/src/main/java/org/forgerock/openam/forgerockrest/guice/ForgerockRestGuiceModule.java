@@ -329,6 +329,10 @@ public class ForgerockRestGuiceModule extends AbstractModule {
                 .getInstance("evaluate", PrivilegeDefinition.Action.READ);
         definitions.put("evaluate", evaluateDefinition);
         definitions.put("evaluateTree", evaluateDefinition);
+        definitions.put("schema", PrivilegeDefinition
+                .getInstance("schema", PrivilegeDefinition.Action.READ));
+        definitions.put("template", PrivilegeDefinition
+                .getInstance("template", PrivilegeDefinition.Action.READ));
 
         return definitions;
     }
@@ -414,6 +418,7 @@ public class ForgerockRestGuiceModule extends AbstractModule {
             handlers.put(EntitlementException.MISSING_RESOURCE_TYPE, ResourceException.BAD_REQUEST);
             handlers.put(EntitlementException.CONDITION_EVALUATION_FAILED, ResourceException.INTERNAL_ERROR);
             handlers.put(EntitlementException.RESOURCE_TYPE_ID_MISMATCH, ResourceException.BAD_REQUEST);
+            handlers.put(EntitlementException.NO_RESOURCE_TYPE_EXPECTED, ResourceException.BAD_REQUEST);
 
             return handlers;
         }

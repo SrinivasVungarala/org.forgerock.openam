@@ -46,18 +46,18 @@ h3.block-header {
     background-image: none;
     border-color: transparent;
     box-shadow: none;
-    color:#519387;
+    color:@base-theme-color;
 
     &:hover{
         background-color:transparent;
         border-color:transparent;
-        color:#3f7269;
+        color: darken(@base-theme-color, 5%);
     }
 
     &:focus{
         outline:none;
         box-shadow:none;
-        color:#3f7269;
+        color: darken(@base-theme-color, 5%);
 
         background-color: transparent;
         background-image: none;
@@ -162,6 +162,11 @@ div[data-schemaid] {
     }
 }
 
+#sidePageContent .page-header{
+    margin: -6px 0 11px;
+    border-bottom:none;
+}
+
 
 div.default-config {
     color: #647077;
@@ -173,15 +178,36 @@ div.default-config {
     border-top: 1px solid #ddd;
     padding: 10px;
     margin-top: 0;
-
-    .btn .fa {
-        width: 18px;
-        display: inline-block;
-        text-align: left;
-    }
 }
 
+/* TODO: Need to come up with a common solution */
+ul.btn-realms-tab {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
 
+    li {
+        float: left;
+        display: block;
+    }
+
+    li:not(:last-child) a {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    li:last-child a {
+        margin-left: -1px;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+    }
+
+    li.active .btn-default {
+        color: #333;
+        background-color: #e6e6e6;
+        border-color: #adadad;
+    }
+}
 
 @chaining-success-color:#517A93;
 @chaining-failure-color:#FF8784;
@@ -352,7 +378,7 @@ div.default-config {
     .fa-link {
         font-size: 32px;
         color: #FFFFFF;
-        background:  #519387;
+        background:  @base-theme-color;
         border-radius: 50%;
         padding: 17px 14px 13px 14px;
         margin: 0 10px 0 0;
@@ -467,3 +493,32 @@ div.dropdown-subtitle{
         }
     }
 }
+
+.grid-list{
+    padding-top:15px;
+}
+
+
+.realm-card-location{
+    padding-top:8px;
+}
+
+.realm-card-aliases {
+    height: 35px; // 2 lines
+    overflow: hidden;
+    font-size: 85%;
+    color:#666;
+    margin-top: 8px;
+ }
+
+ .dashboard-card-name {
+    height: 60px; // three lines
+ }
+
+ #commonTasksBtn {
+    cursor:pointer;
+    color: @base-theme-color;
+    &:hover, &:focus {
+        color: darken(@base-theme-color, 5%);
+    }
+ }

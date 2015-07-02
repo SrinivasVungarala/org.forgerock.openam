@@ -683,15 +683,18 @@
    </indexterm>
 
    <para>Cross domain single sign-on (CDSSO) allows the Java EE policy agent
-    to transfer a validated session ID between an OpenAM domain and an application
-    domain using a proprietary OpenAM mechanism.
+    to transfer a validated stateful session ID between an OpenAM domain and an
+    application domain using a proprietary OpenAM mechanism.
     Normally, single sign-on cannot be implemented across domains as the session
     cookie from one domain (for example, website.com) is not accessible from
     another domain (for example, website.net).
    </para>
    <para>
-    OpenAM's CDSSO solves this cross-domain problem and is best implemented in environments
-    where all the domains are managed ultimately by the same organization.
+    OpenAM's CDSSO solves this cross-domain problem and is best implemented in
+    environments where all the domains are managed by the same
+    organization, and where the OpenAM server is configured to use stateful
+    sessions. OpenAM does not support CDSSO for deployments with stateless
+    sessions.
    </para>
    <para>
     The Java EE policy agent works with an OpenAM component called

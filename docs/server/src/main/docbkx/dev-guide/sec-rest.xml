@@ -769,8 +769,8 @@ $ <userinput>curl \
      </listitem>
     </itemizedlist>
    Developers should be aware that the size of the <literal>tokenId</literal>
-   for stateless sessions&#x2014;two thousand bytes or greater&#x2014;is
-   considerably longer than for stateful sessions&#x2014;several hundred bytes.
+   for stateless sessions&#x2014;2000 bytes or greater&#x2014;is
+   considerably longer than for stateful sessions&#x2014;approximately 100 bytes.
    For more information about stateful and stateless session tokens,
    see <link xlink:show="new"
              xlink:href="admin-guide#session-state-cookies"
@@ -1135,6 +1135,103 @@ $ <userinput>curl \
 {"result":"Successfully logged out"}</computeroutput>
    </screen>
   </section>
+ </section>
+
+ <section xml:id="rest-api-ssotoken">
+
+  <title>Using the Session Token After Authentication</title>
+  <indexterm>
+   <primary>Session tokens</primary>
+   <secondary>REST API</secondary>
+  </indexterm>
+
+  <para>
+   The following is a common scenario when accessing OpenAM by using REST API
+   calls:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <para>
+     First, call the <literal>/json/authenticate</literal> endpoint to log a
+     user in to OpenAM. This REST API call returns a <literal>tokenID</literal>
+     value, which is used in subsequent REST API calls to identify the user.
+    </para>
+
+<screen>$ <userinput>curl \
+ --request POST \
+ --header "X-OpenAM-Username: demo" \
+ --header "X-OpenAM-Password: changeit" \
+ --header "Content-Type: application/json" \
+ --data "{}" \
+ https://openam.example.com:8443/openam/json/authenticate</userinput>
+ <computeroutput>{ "tokenId": "AQIC5w...NTcy*", "successUrl": "/openam/console" }</computeroutput>
+</screen>
+
+    <para>
+     The returned <literal>tokenID</literal> is known as a session token
+     (also referred to as an SSOToken). REST API calls made after successful
+     authentication to OpenAM must present the session token in the HTTP header
+     as proof of authentication.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Next, call one or more additional REST APIs on behalf of the logged-in
+     user. Each REST API call passes the user's <literal>tokenID</literal> back
+     to OpenAM in the HTTP header as proof of previous authentication.
+    </para>
+    <para>
+     The following is a <emphasis>partial</emphasis> example of
+     a <command>curl</command> command that inserts the token ID
+     returned from a prior successful OpenAM authentication attempt into the
+     HTTP header:
+    </para>
+<screen>$ <userinput>curl \
+    --request POST \
+    --header "iPlanetDirectoryPro: AQIC5w...NTcy*" \
+    --header "Content-Type: application/json" \
+    --data '{
+    ...
+</userinput></screen>
+    <para>
+     Observe that the session token is inserted into a header field named
+     <literal>iPlanetDirectoryPro</literal>. This header field name must
+     correspond to the name of the OpenAM session cookie&#x2014;by
+     default, <literal>iPlanetDirectoryPro</literal>. You can find the
+     cookie name by navigating to Configuration > Servers and Sites >
+     <replaceable>Server Name</replaceable> > Security and locating the Cookie
+     Name field in the OpenAM console.
+    </para>
+    <para>
+     Once a user has authenticated, it is <emphasis>not</emphasis>
+     necessary to insert login credentials in the HTTP header in subsequent
+     REST API calls. Note the absence
+     of <literal>X-OpenAM-Username</literal> and
+     <literal>X-OpenAM-Password</literal> headers in the preceding example.
+    </para>
+    <para>
+     Users are required to have appropriate privileges in order to
+     access OpenAM functionality using the REST API. For example,
+     users who lack administrative privileges cannot create OpenAM realms.
+     For more information on the OpenAM privilege model,
+     see <link xlink:show="new"
+               xlink:href="admin-guide#manage-realms"
+               xlink:role="http://docbook.org/xlink/role/olink">Managing
+     Realms</link> in the <citetitle>Administration Guide</citetitle>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Finally, call the REST API to log the user out of OpenAM as described
+     in <xref linkend="rest-api-auth-json" />. As with
+     other REST API calls made after a user has authenticated, the REST API call
+     to log out of OpenAM requires the user's <literal>tokenID</literal>
+     in the HTTP header.
+    </para>
+   </listitem>
+  </itemizedlist>
+
  </section>
 
  <section xml:id="rest-api-filter-sort-page" >

@@ -274,18 +274,6 @@
       <entry>N</entry>
      </row>
      <row>
-      <entry>Distributed Authentication UI (DAUI)</entry>
-      <entry>
-       OpenAM
-       provides a secure, remote interface to allow distributed authentication
-       from the client across two firewalls to the OpenAM core server.
-       The DAUI is presented in detail in a
-       later section.
-      </entry>
-      <entry>Y</entry>
-      <entry>N</entry>
-     </row>
-     <row>
       <entry>Identity Provider (IdP) Discovery Service</entry>
       <entry>OpenAM provides an IdP Discovery Profile (SAMLv2
        binding profile) for its IdP Discovery service.

@@ -40,8 +40,8 @@
 
   <para>The OpenAM authentication framework is an extension of the Java Authentication
    and Authorization Service (JAAS) APIs with additional features that allow
-   centralized authentication configuration, account lockout,
-   callback object definitions, and distributed authentication support.</para>
+   centralized authentication configuration, account lockout, and
+   callback object definitions support.</para>
 
   <para>OpenAM delegates authentication for single sign-on (SSO)
    to a range or applications from LDAP to Windows, RADIUS to SAML identity

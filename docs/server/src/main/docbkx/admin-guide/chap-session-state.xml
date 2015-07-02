@@ -170,8 +170,8 @@
 
    <para>
     You can store custom information in both stateful and stateless sessions
-    with post-authentication plug-ins. For more information about
-    post-authentication plug-ins,
+    with post authentication plug-ins. For more information about
+    post authentication plug-ins,
     see <link xlink:show="new"
               xlink:href="dev-guide#chap-post-auth"
               xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Creating
@@ -202,11 +202,11 @@
    OpenAM writes a cookie in the authenticated user's browser for both stateful
    and stateless sessions. By default, the cookie's name is
    <literal>iPlanetDirectoryPro</literal>. For stateful sessions, the size of
-   this cookie's value is relatively small&#x2014;several hundred bytes&#x2014;and
+   this cookie's value is relatively small&#x2014;approximately 100 bytes&#x2014;and
    contains a reference to the stateful session on the OpenAM server and
    several other pieces of information. For stateless sessions, the
    <literal>iPlanetDirectoryPro</literal> cookie is considerably
-   larger&#x2014;approximately two thousand bytes or more&#x2014;and contains
+   larger&#x2014;approximately 2000 bytes or more&#x2014;and contains
    all the information that would be held in the OpenAM server's memory if the
    session were stateful.
   </para>
@@ -974,6 +974,16 @@
 
    </procedure>
 
+   <para>
+    For detailed information about Session Service configuration attributes,
+    see the entries for
+    <link xlink:show="new"
+          xlink:href="reference#session-configuration-attributes"
+          xlink:role="http://docbook.org/xlink/role/olink"
+    >Session Service attributes</link> in the
+    <citetitle>Reference</citetitle>.
+   </para>
+
   </section>
 
   <section xml:id="session-state-configure-jwt-encryption">
@@ -1028,6 +1038,16 @@
     </step>
 
    </procedure>
+
+   <para>
+    For detailed information about Session Service configuration attributes,
+    see the entries for
+    <link xlink:show="new"
+          xlink:href="reference#session-configuration-attributes"
+          xlink:role="http://docbook.org/xlink/role/olink"
+    >Session Service attributes</link> in the
+    <citetitle>Reference</citetitle>.
+   </para>
 
   </section>
 
@@ -1132,6 +1152,16 @@
    </step>
 
   </procedure>
+
+  <para>
+   For detailed information about Session Service configuration attributes,
+   see the entries for
+   <link xlink:show="new"
+         xlink:href="reference#session-configuration-attributes"
+         xlink:role="http://docbook.org/xlink/role/olink"
+    >Session Service attributes</link> in the
+   <citetitle>Reference</citetitle>.
+  </para>
 
  </section>
 

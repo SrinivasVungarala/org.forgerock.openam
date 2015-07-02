@@ -1157,7 +1157,7 @@ $ dsconfig \
   </para>
 
   <para>
-   OpenAM connects to the embedded OpenDJ directory as directory super user,
+   OpenAM connects to the embedded OpenDJ directory as directory superuser,
    bypassing access control evaluation because OpenAM manages the directory as
    its private store. Be aware that you cannot configure directory failover and
    replication when using the embedded store.
@@ -1722,15 +1722,6 @@ $ <userinput>unzip ~/Downloads/${coreDirectoryFile}</userinput>
    </varlistentry>
 
    <varlistentry>
-    <term><filename><?eval ${distauthWarFile}?></filename></term>
-    <listitem>
-     <para>
-      The deployable <literal>.war</literal> file for distributed authentication
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
     <term><filename><?eval ${serveronlyWarFile}?></filename></term>
     <listitem>
      <para>
@@ -2091,8 +2082,7 @@ esac
 
    <step>
     <para>
-     When using <command>ssoadm</command> or the distributed
-     authentication service (DAS), also add the following path to the aforementioned
+     When using <command>ssoadm</command>, add the following path to the
      <filename>module.xml</filename> file.
     </para>
 

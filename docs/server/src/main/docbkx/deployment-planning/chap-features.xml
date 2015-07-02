@@ -92,12 +92,6 @@
     server installs with the embedded OpenDJ directory server.</para>
   </listitem>
   <listitem>
-   <para><emphasis role="bold">Distributed Authentication UI</emphasis>. OpenAM
-    provides a secure, remote interface to allow distributed authentication from
-    the client across two firewalls to the OpenAM core server. The distributed
-    authentication UI (DAS) is presented in detail in a later section.</para>
-  </listitem>
-  <listitem>
    <para><emphasis role="bold">Identity Provider (IdP) Discovery Service</emphasis>.
     OpenAM provides an Identity Provider Discovery Profile (SAMLv2 binding profile)
     for its Identity Provider Discovery service. The profile keeps track of the
@@ -919,40 +913,6 @@
      Allows you to automatically map user
      profile attributes into the user's OpenAM session.</para></listitem>
    </itemizedlist>
-
-   </section>
-
-   <section xml:id="openam-distributed-authentication">
-    <title>Distributed Authentication Service</title>
-   <para>OpenAM provides a distributed authentication service (DAS) that forwards user
-    login authentication requests through a single firewall or a network
-    demilitarized zone (DMZ) to the OpenAM core server. The DAS uses the OpenAM
-    Client SDK JAX-RPC interfaces to effectively limit the OpenAM core server's
-    exposure to the Internet.</para>
-
-    <figure xml:id="figure-openam-das">
-     <title>OpenAM Distributed Authentication Service</title>
-     <mediaobject>
-      <alt>OpenAM Distributed Authentication Service</alt>
-      <imageobject>
-       <imagedata fileref="images/openam-das.png"
-                 format="PNG" />
-      </imageobject>
-      <textobject>
-       <para>The Distributed Authentication Service (DAS) is a login authentication
-        interface that sends its requests through a network demilitarized zone (DMZ)
-        to the OpenAM server.</para>
-      </textobject>
-     </mediaobject>
-    </figure>
-
-    <para>DAS does not support federation directly. However, you can use a
-     reverse proxy in front of the OpenAM to work with federation.</para>
-
-    <para>For more information, see
-     <link xlink:href="${docSetBaseURL}/install-guide#chap-install-das"
-           xlink:show="new"><citetitle>Installing OpenAM Distributed Authentication</citetitle></link>.
-    </para>
 
    </section>
 

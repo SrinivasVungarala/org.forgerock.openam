@@ -135,7 +135,8 @@
   
  </section>
 
- <section xml:id="das-configuration">
+ <!-- Need to check if all of these properties are exclusive to DAS before I remove them -->
+ <!-- <section xml:id="das-configuration">
     <title>Distributed Authentication UI Configuration</title>
     <indexterm>
         <primary>Configuration</primary>
@@ -820,7 +821,8 @@
              </listitem>
          </varlistentry>
      </variablelist>
- </section>
+ </section> -->
+
  <section xml:id="console-configuration">
   <title>Console Configuration</title>
   <indexterm>
@@ -4020,6 +4022,142 @@
 
      <para><command>ssoadm</command> attribute:
      <literal>iplanet-am-session-deny-login-if-db-is-down</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Signing Algorithm Type</term>
+    <listitem>
+     <para>Specifies the algorithm that OpenAM uses to sign a Java Web Token
+      (JWT) containing a stateless session. Signing the JWT enables tampering
+      detection. Note that OpenAM stores stateless sessions in a JWT that
+      resides in an HTTP cookie.
+     </para>
+     <para>Valid values are <literal>NONE</literal>,
+      <literal>HS256</literal>, <literal>HS384</literal>,
+      <literal>HS512</literal>, and <literal>RS256</literal>.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-signing-type</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Signing HMAC Shared Secret</term>
+    <listitem>
+     <para>Specifies the shared secret that OpenAM uses when performing HMAC
+      signing on the stateless session JWT. Specify a shared secret when using
+      a Signing Algorithm Type of <literal>HS256</literal>,
+      <literal>HS384</literal>, or <literal>HS512</literal>.
+     </para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-signing-hmac-shared-secret</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Signing RSA Certificate Alias</term>
+    <listitem>
+     <para>Specifies the name of a certificate containing a public/private key
+      pair that OpenAM uses when performing RSA signing on the stateless session
+      JWT. Specify a signing certificate alias when using a Signing
+      Algorithm Type of <literal>RS256</literal>.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-signing-rsa-certificate-alias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption Algorithm Type</term>
+    <listitem>
+     <para>Specifies the algorithm that OpenAM uses to encrypt JWTs
+      containing stateless sessions. Encrypting the JWT hides its contents.
+     </para>
+     <para>Valid values are <literal>NONE</literal> and
+      <literal>RSA</literal>.</para>
+
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-encryption-type</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption RSA Certificate Alias</term>
+    <listitem>
+     <para>Specifies the name of a certificate containing a public/private key
+      pair that OpenAM uses when encrypting a JWT. Specify an encryption
+      certificate alias when using an Encryption Algorithm Type of
+      <literal>RSA</literal>.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-encryption-rsa-certificate-alias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Session Blacklisting</term>
+    <listitem>
+     <para>Enables session blacklisting for logged out stateless sessions.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-enable-session-blacklisting</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Session Blacklist Cache Size</term>
+    <listitem>
+     <para>Specifies the size of the cache of logged out stateless sessions.
+      The cache size should be around the number of logouts expected in the
+      maximum session time.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-blacklist-cache-size</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Blacklist Poll Interval</term>
+    <listitem>
+     <para>Specifies the interval, in seconds, at which OpenAM polls the Core
+      Token Service for changes to logged out sessions. The longer the polling
+      interval, the more time a malicious user has to connect to other OpenAM
+      servers in a cluster and make use of a stolen session cookie. Shortening
+      the polling interval improves the security for logged out sessions, but
+      might incur a minimal decrease in overall OpenAM performance due to
+      increased network activity.</para>
+     <para>Applies only to deployments using stateless sessions and
+      session blacklisting.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-blacklist-poll-interval</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Blacklist Purge Delay</term>
+    <listitem>
+     <para>When added to the maximum session time, specifies the
+      amount of time that OpenAM tracks logged out sessions.
+      Increase the blacklist purge delay if you expect system clock skews in a
+      cluster of OpenAM servers to be greater than one minute. There is no need
+      to increase the blacklist purge delay for servers running a clock
+      synchronization protocol, such as Network Time Protocol.</para>
+     <para>Applies only to deployments using stateless sessions and
+      session blacklisting.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-blacklist-purge-delay</literal></para>
     </listitem>
    </varlistentry>
 

@@ -382,7 +382,7 @@
  </section>
 
  <section xml:id="configure-j2ee-pa-application-props">
-  <title>Configuring Java EE policy agent Application Properties</title>
+  <title>Configuring Java EE Policy Agent Application Properties</title>
 
   <para>This section covers application J2EE agent properties. After creating
    the agent profile, you access these properties in the OpenAM console under
@@ -578,9 +578,11 @@
    <varlistentry>
     <term>Refresh Session Idle Time</term>
     <listitem>
-     <para>When enabled, the agent reset the session idle time when granting
-      access to a not enforced URI, prolonging the time before the user must
-      authenticate again.</para>
+     <para>When enabled, the agent resets the stateful session idle time when
+      granting access to a not enforced URI, prolonging the time before the user
+      must authenticate again. This setting has no effect on users with
+      stateless sessions.
+     </para>
      <para>Property: <literal>com.sun.identity.agents.config.notenforced.refresh.session.idletime</literal></para>
     </listitem>
    </varlistentry>
@@ -868,7 +870,7 @@
  </section>
 
  <section xml:id="configure-j2ee-pa-sso-props">
-  <title>Configuring Java EE policy agent SSO Properties</title>
+  <title>Configuring Java EE Policy Agent SSO Properties</title>
 
   <para>This section covers SSO J2EE agent properties. After creating the
    agent profile, you access these properties in the OpenAM console under
@@ -997,7 +999,7 @@
  </section>
 
  <section xml:id="configure-j2ee-pa-services-props">
-  <title>Configuring Java EE policy agent OpenAM Services Properties</title>
+  <title>Configuring Java EE Policy Agent OpenAM Services Properties</title>
 
   <para>This section covers OpenAM services J2EE agent properties. After
    creating the agent profile, you access these properties in the OpenAM console
@@ -1374,7 +1376,7 @@
  </section>
 
  <section xml:id="configure-j2ee-pa-misc-props">
-  <title>Configuring Java EE policy agent Miscellaneous Properties</title>
+  <title>Configuring Java EE Policy Agent Miscellaneous Properties</title>
 
   <para>This section covers miscellaneous J2EE agent properties. After creating
    the agent profile, you access these properties in the OpenAM console under
@@ -1522,7 +1524,7 @@
  </section>
 
  <section xml:id="configure-j2ee-pa-advanced-props">
-  <title>Configuring Java EE policy agent Advanced Properties</title>
+  <title>Configuring Java EE Policy Agent Advanced Properties</title>
 
   <para>This section covers advanced J2EE agent properties. After creating the
    agent profile, you access these properties in the OpenAM console under

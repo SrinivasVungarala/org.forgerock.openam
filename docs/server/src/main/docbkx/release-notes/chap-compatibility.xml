@@ -156,6 +156,7 @@ $ <userinput>curl \
      <link xlink:show="new" xlink:href="dev-guide#rest-api-authz-applications"
       xlink:role="http://docbook.org/xlink/role/olink">Managing Applications</link>.</para>
    </listitem>
+
    <listitem>
     <para>
      The <literal>policies</literal> REST endpoint has changed.
@@ -243,7 +244,8 @@ $ <userinput>curl \
       xlink:role="http://docbook.org/xlink/role/olink">Managing Policies</link>.
     </para>
    </listitem>
-     <listitem>
+
+   <listitem>
     <para>
      The <literal>users</literal> REST endpoint has changed.
     </para>
@@ -257,6 +259,88 @@ $ <userinput>curl \
      <olink targetdoc="dev-guide" targetptr="rest-api-read-identity" />.
     </para>
    </listitem>
+
+   <!-- OPENAM-3714 -->
+   <listitem>
+    <para>
+     You can now use StartTLS to initiate secure connections to an OpenAM Identity
+     Repository.
+     A new property, <literal>sun-idrepo-ldapv3-config-connection-mode</literal>,
+     has been created and has possible values of <literal>LDAP</literal>,
+     <literal>LDAPS</literal>, and <literal>StartTLS</literal> to enable this
+     feature.
+    </para>
+    <para>
+     The <literal>sun-idrepo-ldapv3-config-connection-mode</literal> property
+     replaces <literal>sun-idrepo-ldapv3-config-ssl-enabled</literal>,
+     which has been removed from the configuration schema
+     (<literal>sunIdentityRepositoryService</literal>).
+    </para>
+    <para>
+     OpenAM automatically updates the <literal>sun-idrepo-ldapv3-config-ssl-enabled</literal>
+     property to the <literal>sun-idrepo-ldapv3-config-connection-mode</literal> property
+     when you upgrade to OpenAM 13. You must manually set the value of
+     the <literal>sun-idrepo-ldapv3-config-connection-mode</literal> to "StartTLS"
+     to initiate a StartTLS connection to the data store.
+     You will also need to update existing <command>ssoadm</command> scripts to
+     use the new property,
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3714"
+      xlink:show="new"
+      >OPENAM-3714</link>.
+    </para>
+   </listitem>
+
+   <!-- OPENAM-4333 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Move of Oauth 2.0 Well-Known Endpoints</emphasis>.
+     The well-known endpoints have been moved from
+     <literal>/openam/.well-known</literal> to <literal>/openam/oauth2/.well-known</literal>.
+     (<link
+     xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-4333"
+     xlink:show="new"
+     >OPENAM-4333</link>).
+    </para>
+   </listitem>
+
+   <!-- OPENAM-5097 -->
+   <listitem>
+    <para>
+     You can now use StartTLS with the Active Directory
+     and LDAP authentication modules to secure OpenAM's connection to the data stores.
+     A new property, <literal>openam-auth-ldap-connection-mode</literal>,
+     has been created with the possible values of <literal>LDAP</literal>,
+     <literal>LDAPS</literal>, and <literal>StartTLS</literal> to enable this
+     feature.
+    </para>
+    <para>
+     The <literal>openam-auth-ldap-connection-mode</literal> property replaces
+     the <literal>iplanet-am-auth-ldap-ssl-enabled</literal> property, which has been
+     removed from the configuration schema (<literal>sunAMAuthADService</literal>
+     and <literal>iPlanetAMAuthLDAPService</literal>).
+    </para>
+    <para>
+     OpenAM automatically updates the <literal>iplanet-am-auth-ldap-ssl-enabled</literal>
+     property to the <literal>openam-auth-ldap-connection-mode</literal> property
+     when you upgrade to OpenAM 13. You must manually set the value of
+     the <literal>openam-auth-ldap-connection-mode</literal> to "StartTLS"
+     to initiate a StartTLS connection to the data store.
+     You will also need to update existing <command>ssoadm</command> scripts to
+     use the new property,
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-5097"
+      xlink:show="new"
+      >OPENAM-5097</link>.
+    </para>
+   </listitem>
+
   </itemizedlist>
  </section>
 
@@ -668,6 +752,55 @@ $ <userinput>curl \
       xlink:show="new"><citetitle>Persistent Cookie module</citetitle></link>.
     </para>
    </listitem>
+
+   <!-- OPENAM-3714 -->
+   <listitem>
+    <para>
+     The <literal>sun-idrepo-ldapv3-config-connection-mode</literal> property
+     replaces <literal>sun-idrepo-ldapv3-config-ssl-enabled</literal>,
+     which has been removed from the configuration schema
+     (<literal>sunIdentityRepositoryService</literal>).
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3714"
+      xlink:show="new"
+      >OPENAM-3714</link>.
+    </para>
+   </listitem>
+
+   <!-- OPENAM-5097 -->
+   <listitem>
+    <para>
+     The <literal>openam-auth-ldap-connection-mode</literal> property replaces
+     <literal>iplanet-am-auth-ldap-ssl-enabled</literal>, which has been
+     removed from the configuration schema (<literal>sunAMAuthADService</literal>
+     and <literal>iPlanetAMAuthLDAPService</literal>).
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-5097"
+      xlink:show="new"
+      >OPENAM-5097</link>.
+    </para>
+   </listitem>
+
+   <!-- AME-6954 -->
+   <listitem>
+    <para>
+     The Distributed Authentication User Interface (DAUI) has been removed from
+     OpenAM ${serverDocTargetVersion}. You can deploy OpenIG or another reverse proxy
+     to secure OpenAM in a firewall.
+     For more information, see
+     <link
+      xlink:href="admin-guide#protect-network-access"
+      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:show="new"><citetitle>Protecting Network Access</citetitle></link>.
+    </para>
+   </listitem>
+
   </itemizedlist>
  </section>
 

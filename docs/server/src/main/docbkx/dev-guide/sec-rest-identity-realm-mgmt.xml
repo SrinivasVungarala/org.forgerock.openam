@@ -41,6 +41,30 @@
  <para>In this section, long URLs are wrapped to fit the printed page, as some
   of the output is formatted for easier reading.</para>
 
+  <para>
+   Before making a REST API call to manage a realm or an identity, make sure
+   that you have:
+    <itemizedlist>
+     <listitem>
+      <para>
+       Authenticated successfully to OpenAM as a user with sufficient privileges
+       to make the REST API call
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Obtained the session token returned after successful authentication
+      </para>
+     </listitem>
+    </itemizedlist>
+    When making the REST API call, pass the session token in the HTTP header.
+    For more information about the OpenAM session token and its use in REST API
+    calls, see <link xlink:show="new"
+                     xlink:href="dev-guide#rest-api-ssotoken"
+                     xlink:role="http://docbook.org/xlink/role/olink">Using the
+    Session Token After Authentication</link>.
+  </para>
+
  <section xml:id="rest-api-crud-identity">
   <title>Identity Management</title>
   <indexterm>

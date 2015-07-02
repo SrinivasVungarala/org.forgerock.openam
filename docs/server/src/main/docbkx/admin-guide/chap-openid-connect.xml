@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2013-2015 ForgeRock AS
+  !      Copyright 2013-2015 ForgeRock AS.
   !      Copyright 2014 Nomura Research Institute, Ltd
   !    
 -->
@@ -398,8 +398,8 @@
   discovery:</para>
 
   <simplelist type="vert" columns="1">
-   <member><literal>/.well-known/webfinger</literal></member>
-   <member><literal>/.well-known/openid-configuration</literal></member>
+   <member><literal>/oauth2/.well-known/webfinger</literal></member>
+   <member><literal>/oauth2/.well-known/openid-configuration</literal></member>
   </simplelist>
   
   <para>
@@ -470,7 +470,7 @@
 
   <screen>
 $ <userinput>curl \
- "https://openam.example.com:8443/openam/.well-known/webfinger\
+ "https://openam.example.com:8443/openam/oauth2/.well-known/webfinger\
 ?resource=acct%3Ademo%40example.com\
 &amp;rel=http%3A%2F%2Fopenid.net%2Fspecs%2Fconnect%2F1.0%2Fissuer"</userinput>
 <computeroutput>{
@@ -496,7 +496,7 @@ $ <userinput>curl \
   <informalexample>
 
   <screen>
-$ <userinput>curl https://openam.example.com:8443/openam/.well-known/openid-configuration</userinput>
+$ <userinput>curl https://openam.example.com:8443/.well-known/openid-configuration</userinput>
 <computeroutput>{
     "response_types_supported": [
         "token id_token",
@@ -540,7 +540,7 @@ $ <userinput>curl https://openam.example.com:8443/openam/.well-known/openid-conf
    When the OpenID Provider is configured in a subrealm,
    then relying parties can get the configuration
    by passing the realm as a query string parameter, as in
-   <literal>https://openam.example.com:8443/openam/.well-known/openid-configuration?realm=<replaceable>realm-name</replaceable></literal>.
+   <literal>https://openam.example.com:8443/.well-known/openid-configuration?realm=<replaceable>realm-name</replaceable></literal>.
   </para>
  </section>
 

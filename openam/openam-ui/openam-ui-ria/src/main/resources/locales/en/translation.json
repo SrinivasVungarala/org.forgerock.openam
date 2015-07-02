@@ -8,7 +8,12 @@
         },
         "messages" : {
             "AppMessages" : {
-                "invalidRealm": "The realm doesn't exist"
+                "invalidRealm": "The realm doesn't exist",
+                "duplicateRealm": "Duplicate realm",
+                "deleteFail": "Failed to delete",
+                "duplicateItem": "Duplicate item",
+                "invalidItem": "Invalid item",
+                "changesSaved": "Changes saved"
             },
             "CommonMessages" : {
                 "authenticationFailed" : "User name/password combination is invalid.",
@@ -59,12 +64,26 @@
                 "unclaimedTask" : "Task has been unclaimed.",
                 "startedProcess" : "Process has been started",
                 "scripts": {
-                    "scriptCreated": "Script created successfully",
-                    "scriptUpdated": "Script updated successfully",
-                    "scriptDeleted": "Script deleted successfully",
                     "error": {
                         "noName": "Name is required",
                         "noLanguage": "Language is required"
+                    }
+                },
+                "policies": {
+                    "ruleErrorFullLogical": "The parent logical container can only accept one child.",
+                    "ruleHelperTryAndOr": "If more than one child is required, try changing<br>the type, or adding a child of type AND or OR.",
+                    "unableToRetrievePolicy": "Unable to retrieve policy",
+                    "invalidResource": "Invalid resource",
+                    "duplicateResource": "Duplicate resource",
+                    "duplicateAttribute": "Duplicate attribute",
+                    "unableToPersistPolicy": "Unable to persist policy in datastore",
+                    "policiesUploaded": "Policies uploaded successfully",
+                    "policiesUploadFailed": "Failed to upload policies",
+                    "importFailed": "Import Failed: __applicationName__ application not found in realm",
+                    "error": {
+                        "cantStartWithHash": "LDAP entity can't start with #",
+                        "noName": "Name is required",
+                        "noResourceTypes": "Please select one or more resource types"
                     }
                 }
             }
@@ -73,7 +92,12 @@
             "Navigation" : {
                 "links" : {
                     "commonTasks": "Common Tasks",
-                    "realms": "Realms",
+                    "realms": {
+                        "title": "Realms",
+                        "showAll": "Show All",
+                        "newRealm": "New Realm",
+                        "viewAll": "View all..."
+                    },
                     "federation": "Federation",
                     "configuration": "Configuration",
                     "sessions": "Sessions",
@@ -262,8 +286,13 @@
             "addValue" : "Add Value",
             "settings" : "Settings",
             "working" : "Working...",
+            "more" : "more...",
             "empty" : "Empty",
             "help" : "Help",
+            "change": "Change",
+            "upload": "Upload",
+            "validate": "Validate",
+            "filter": "Filter...",
             "copyright" : "Copyright &copy; 2010-15 ForgeRock AS. All rights reserved.",
             "sessionExpired" : "Session Expired",
             "enableCookies" : "Cookies must be enabled to login",
@@ -455,11 +484,6 @@
             "advanced" : "Advanced"
         },
         "resources": {
-            "all": {
-                "grid": {
-                    "filter": "Filter by __header__"
-                }
-            },
             "list": {
                 "title": "Resources",
                 "subtitle": "All your shared resources",
@@ -505,13 +529,17 @@
         }
     },
     "console": {
+        "common": {
+            "topLevelRealm" : "Top Level Realm",
+            "realmStatus": "Status",
+            "realmDnsAliases": "Aliases/DNS Aliases",
+            "noResults": "No results to display"
+        },
         "authentication": {
-            "advancedSettings": {
-                "revert": "Revert",
-                "saveChanges": "Save Changes"
-            },
             "settings": {
-                "advancedSettings": "Advanced Settings",
+                "title": "Settings",
+                "description": "Realm Settings",
+                "revert": "Revert",
                 "saveChanges": "Save Changes"
             },
             "modules": {
@@ -555,17 +583,51 @@
                 "criteria" : ["Required","Optional","Requisite","Sufficient"]
             }
         },
+        "dashboard":{
+            "realmProperties" : "Realm Properties",
+            "dashboard" : "Dashboard",
+            "title" : "Realm Overview",
+            "quickStart" : "Common Tasks"
+        },
+        "realms": {
+            "title": "Realms",
+            "newRealm": "New Realm",
+            "actions": {
+                "edit": "Edit",
+                "disable": "Disable",
+                "activate": "Activate",
+                "delete": "Delete"
+            },
+            "active": "Active",
+            "inactive": "Inactive",
+            "realmName": "Realm name",
+            "realmPath": "Path",
+            "realmAliases": "Realm/DNS Aliases",
+            "warningDialog": {
+                "title": "Delete \"__realmName__\"?",
+                "message": "This realm is being used as one of the default realms. Deleting may result in locking out the administrators or the users. Are you sure you want to continue?"
+            },
+            "createUpdateRealmDialog": {
+                "createTitle": "New Realm",
+                "updateTitle": "__realmPath__ - Properties"
+            },
+            "realmStatusPopover": {
+                "title": "Realm Status",
+                "content": "If the realm is disabled, all OpenAM services will be unavailable for all users in this realm."
+            },
+            "realmAliasesPopover": {
+                "title": "Realm/DNS Aliases",
+                "content": "When a request is received by the authentication user interface, OpenAM searches this attribute in all realms to find the matching realm into which the user should be authenticated. <br> OpenAM must only find one matching realm so therefore do not put duplicate entries into multiple realms. <br> Additionally if OpenAM does not find a matching realm, the user is presented with an error screen."
+            }
+        },
         "scripts": {
             "edit": {
-                "editTitle": "Edit Script",
-                "createTitle": "Create Script",
+                "createNew": "Create New",
                 "name": "Name",
                 "description": "Description",
                 "language": "Language",
-                "context": "Context",
+                "context": "Script Type",
                 "script": "Script",
-                "upload": "Upload",
-                "validate": "Validate",
                 "validation": {
                     "line": "line",
                     "column": "column",
@@ -573,24 +635,105 @@
                     "errors": "This script contains errors:",
                     "noErrors": "No errors found."
                 },
-                "changeContext": "Change Context",
                 "dialog": {
                     "title": {
-                        "change": "Change Context",
-                        "select": "Select Context"
+                        "change": "Change Script Type",
+                        "select": "Select Script Type"
                     },
-                    "helper": "To create a new script, first select one of the available scripting contexts.",
-                    "warning": "By changing the context you will lose any unsaved data."
+                    "helper": "To create a new script, first select one of the available script types.",
+                    "warning": "By changing the script type you will lose any unsaved data."
                 }
             },
             "list": {
                 "title": "Scripts List",
-                "addNew": "Add New Script",
-                "deleteSelected": "Delete Selected",
-                "grid": {
-                    "headers": ["Name", "Context", "Language", "Description"],
-                    "filterBy": "Filter by __header__",
-                    "noResults": "No results to display"
+                "addNew": "New Script",
+                "grid": ["Name", "Script Type", "Language", "Description"]
+            }
+        },
+        "policies": {
+            "common": {
+                "realm": "Realm",
+                "realms": "Realms",
+                "application": "Application",
+                "applications": "Applications",
+                "pattern": "Pattern",
+                "patterns": "Patterns",
+                "responseAttributes": "Response attributes",
+                "subjectAttributes": "Subject attributes",
+                "availablePatterns": "Available patterns",
+                "staticAttributes": "Static attributes",
+                "actions": "Actions",
+                "resources": "Resources",
+                "subjects": "Subjects",
+                "environments": "Environments",
+                "resourceTypes": "Resource Types",
+
+                "noRealms": "There are no selected realms...",
+                "noActions": "There are no actions...",
+                "noActionsSelected": "There are no selected actions...",
+                "noResources": "There are no selected resources...",
+                "noResourceTypes": "There are no selected resources types...",
+                "noStaticAttributes": "There are no static attributes...",
+                "noSubjectAttributes": "There are no subject attributes...",
+                "noApplications": "There are no selected applications...",
+                "noPatterns": "There are no patterns...",
+                "noResourceTypesAvailable": "There are no available resource types...",
+                "noApplicationsAvailable": "There are no available applications...",
+
+                "weekdays": {
+                    "Monday": {
+                        "short": "mon",
+                        "full": "Monday"
+                    },
+                    "Tuesday": {
+                        "short": "tue",
+                        "full": "Tuesday"
+                    },
+                    "Wednesday": {
+                        "short": "wed",
+                        "full": "Wednesday"
+                    },
+                    "Thursday": {
+                        "short": "thu",
+                        "full": "Thursday"
+                    },
+                    "Friday": {
+                        "short": "fri",
+                        "full": "Friday"
+                    },
+                    "Saturday": {
+                        "short": "sat",
+                        "full": "Saturday"
+                    },
+                    "Sunday": {
+                        "short": "sun",
+                        "full": "Sunday"
+                    }
+                },
+                "stripedList": {
+                    "filterPlaceholder": "Select or search for available items",
+                    "noItems": "There are no items ..."
+                }
+            },
+
+            "applications":{
+                "edit": {
+                    "name": "Name",
+                    "description": "Description",
+                    "application": "Application",
+                    "createNew": "Create New",
+                    "policies": "Policies",
+                    "resourceTypes": {
+                        "availableResourceTypes": "Available Resource Types",
+                        "selectedResourceTypes": "Selected Resource Types"
+                    }
+                },
+                "list": {
+                    "addNew": "New Application",
+                    "importPolicies": "Import Policies",
+                    "exportPolicies": "Export Policies",
+                    "title": "Applications",
+                    "grid": ["Name", "Description", "Resource Types"]
                 }
             }
         }

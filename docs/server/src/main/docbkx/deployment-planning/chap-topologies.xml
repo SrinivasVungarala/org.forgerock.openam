@@ -199,10 +199,6 @@
     <primary>reverse proxies</primary>
     <secondary>described</secondary>
    </indexterm>
-   <indexterm>
-    <primary>reverse proxies</primary>
-    <secondary>versus DAS</secondary>
-   </indexterm>
 
    <para>
     The reverse proxies work in concert with the load balancers to route the client
@@ -391,89 +387,6 @@
     The other option is to deploy a more secure environment using SSL everywhere
     within your deployment.
    </para>
-  </section>
-
-  <?hard-pagebreak?>
-  <section xml:id="das">
-   <title>Distributed Authentication User Interface</title>
-
-   <indexterm>
-    <primary>deployment topologies</primary>
-    <secondary>example</secondary>
-    <tertiary>distributed authentication UI</tertiary>
-   </indexterm>
-
-   <indexterm>
-    <primary>distributed authentication UI</primary>
-    <secondary>described</secondary>
-   </indexterm>
-
-   <para>
-    ForgeRock provides a DAUI,
-    installed within a DMZ to only expose login
-    authentication across DMZ firewalls. The DAUI effectively allows
-    an application or a policy agent deployed in a public zone to communicate
-    with secured OpenAM servers in the application tier by means of the OpenAM
-    Client SDK.
-   </para>
-
-   <para>
-    You deploy DAUI as a <literal>.war</literal> file into a Web application container.
-    DAUI is based on a JATO framework and is fully customizable.
-    It works with all authentication modules, so that you can route clients to
-    specific UI pages depending on your configured authentication chain.
-    For multiple DAUI interfaces behind load balancers, you can configure your
-    load balancers to inject the client's real IP address into the HTTP header.
-    The DAUI interface registers its credentials with OpenAM so that a trust
-    relationship exists.
-   </para>
-
-   <figure xml:id="figure-active-frontend-lbs-with-das">
-    <title>OpenAM Front End Load Balancers with DAUI</title>
-    <mediaobject>
-     <alt>OpenAM Front End Load Balancers with DAUI</alt>
-     <imageobject>
-      <imagedata fileref="images/active-frontend-lbs-with-das.png"
-                 format="PNG" />
-     </imageobject>
-     <textobject>
-      <para>The example OpenAM deployment using front end load balancers to
-       reverse proxies.
-      </para>
-     </textobject>
-    </mediaobject>
-   </figure>
-
-   <para>
-    Given the choice between a DAUI and a reverse proxy, which should take preference?
-    The DAUI is designed to limit public exposure of an OpenAM environment by only
-    exposing the authentication user interface (that is, a Login page).
-    If this is the only public-facing
-    endpoint needed in your system, then the DAUI should be considered.
-   </para>
-
-   <indexterm>
-    <primary>distributed authentication UI</primary>
-    <secondary>versus reverse proxies</secondary>
-   </indexterm>
-
-   <para>
-    If other endpoints are needed, such as SAML2, OAuth2, or OpenID Connect,
-    then the reverse proxy is a better choice.
-    A reverse proxy exposes only those endpoints required for your applications.
-    The DAUI does not offer this type of flexibility.
-    Also note that the DAUI does not support SAML 2.0, so in applications
-    that require access to SAML 2.0 endpoints, you must implement a reverse
-    proxy.
-   </para>
-
-   <para>
-    For more information on the distributed authentication server, see
-    <link xlink:href="${docSetBaseURL}/install-guide#chap-install-das"
-          xlink:show="new">
-     <citetitle>Installing OpenAM Distributed Authentication</citetitle></link>.
-   </para>
-
   </section>
  </section>
 

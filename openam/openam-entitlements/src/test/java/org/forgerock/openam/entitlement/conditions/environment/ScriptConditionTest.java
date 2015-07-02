@@ -69,9 +69,9 @@ public class ScriptConditionTest extends GuiceTestCase {
     private ScriptCondition scriptCondition;
 
     @Mock
-    private ScriptingServiceFactory<ScriptConfiguration> scriptingServiceFactory;
+    private ScriptingServiceFactory scriptingServiceFactory;
     @Mock
-    private ScriptingService<ScriptConfiguration> scriptingService;
+    private ScriptingService scriptingService;
     @Mock
     private ScriptEvaluator scriptEvaluator;
     @Mock
@@ -101,7 +101,7 @@ public class ScriptConditionTest extends GuiceTestCase {
     @Override
     public void configure(Binder binder) {
         binder
-                .bind(new TypeLiteral<ScriptingServiceFactory<ScriptConfiguration>>() {})
+                .bind(new TypeLiteral<ScriptingServiceFactory>() {})
                 .toInstance(scriptingServiceFactory);
 
         binder
@@ -161,6 +161,7 @@ public class ScriptConditionTest extends GuiceTestCase {
         subject.getPrivateCredentials().add(token);
         subject.getPrincipals().add(new AuthSPrincipal("user"));
         Map<String, Set<String>> env = new HashMap<>();
+        Map<String, Set<String>> advice = new HashMap<>();
 
         given(scriptingServiceFactory.create(subject, "/abc")).willReturn(scriptingService);
 
@@ -193,8 +194,10 @@ public class ScriptConditionTest extends GuiceTestCase {
         assertThat(bindings.get("username")).isEqualTo("user");
         assertThat(bindings.get("resourceURI")).isEqualTo("http://a:b/c");
         assertThat(bindings.get("environment")).isEqualTo(env);
+        assertThat(bindings.get("advice")).isEqualTo(advice);
         assertThat(bindings.get("httpClient")).isEqualTo(restletHttpClient);
-        assertThat(bindings.get("authorised")).isEqualTo(Boolean.FALSE);
+        assertThat(bindings.get("authorized")).isEqualTo(Boolean.FALSE);
+        assertThat(bindings.get("ttl")).isEqualTo(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions = EntitlementException.class,

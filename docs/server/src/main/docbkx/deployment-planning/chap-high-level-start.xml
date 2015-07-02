@@ -631,8 +631,7 @@
    </listitem>
    <listitem>
     <para><emphasis role="bold">Configure OpenAM</emphasis>. Install and configure
-     OpenAM with or without the console, the
-     Distributed Authentication Service UI (DAS), setup tools (configurator),
+     OpenAM with or without the console, the setup tools (configurator),
      configuration tools (<literal>ssoadm</literal>, <literal>ampassword</literal>,
      <literal>amverifyarchive</literal>), or set up your
      scripted install and configuration of OpenAM.
@@ -749,10 +748,10 @@
    </listitem>
    <listitem>
     <para><emphasis role="bold">Upgrade OpenAM</emphasis>. Upgrade OpenAM and other
-     instances with or without the console. Upgrade the Distributed Authentication
-     UI, setup tools (configurator), configuration tools (<literal>ssoadm</literal>,
+     instances with or without the console. Upgrade the setup tools (configurator),
+     configuration tools (<literal>ssoadm</literal>,
      <literal>ampassword</literal>, <literal>amverifyarchive</literal>),
-     Java EE and/or Web policy agents. Upgrade OpenIG.
+     and the Java EE and/or Web policy agents. Upgrade OpenIG.
      For more information on upgrades, see
      <link xlink:href="${docSetBaseURL}/upgrade-guide/#upgrade-guide"
            xlink:show="new">
@@ -761,7 +760,7 @@
    </listitem>
    <listitem>
     <para><emphasis role="bold">Remove OpenAM</emphasis>. If required, remove
-     OpenAM with or without the console. Remove the DAS, setup and configuration tools.
+     OpenAM with or without the console. Remove setup and configuration tools.
      Remove the Java EE and/or Web policy agents. Remove OpenIG.
      For more information on removing OpenAM, see
      <link xlink:href="${docSetBaseURL}/install-guide/#chap-uninstall"

@@ -1,4 +1,4 @@
-/*
+/**
  * The contents of this file are subject to the terms of the Common Development and
  * Distribution License (the License). You may not use this file except in compliance with the
  * License.
@@ -14,15 +14,15 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-/*global, define*/
+/*global define*/
 define("org/forgerock/openam/ui/admin/views/realms/authentication/ChainsView", [
     "jquery",
     "underscore",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "bootstrap-dialog",
     "org/forgerock/commons/ui/common/main/Router",
-    "org/forgerock/openam/ui/admin/delegates/SMSDelegate"
-], function ($, _, AbstractView, BootstrapDialog, Router, SMSDelegate) {
+    "org/forgerock/openam/ui/admin/delegates/SMSRealmDelegate"
+], function ($, _, AbstractView, BootstrapDialog, Router, SMSRealmDelegate) {
     var ChainsView = AbstractView.extend({
         template: "templates/admin/views/realms/authentication/ChainsTemplate.html",
         events: {
@@ -56,18 +56,15 @@ define("org/forgerock/openam/ui/admin/views/realms/authentication/ChainsView", [
                             // TODO - duplicate chain name - message or alert box
                             console.log('invalidName'); // jslinter
                         } else {
-
-                            SMSDelegate.RealmAuthenticationChains.create({_id : chainName})
-                            .done(function(data) {
+                            SMSRealmDelegate.authentication.chains.create(self.data.realmPath, { _id: chainName }).done(function() {
                                 dialog.close();
                                 Router.navigate( href + dialog.getModalBody().find('#newName').val(), { trigger: true });
-                            })
-                            .fail(function() {
+                            }).fail(function() {
                                 // TODO: Add failure condition
                             });
                         }
                     }
-                },{
+                }, {
                     label: $.t("common.form.cancel"),
                     action: function(dialog) {
                         dialog.close();
@@ -91,7 +88,7 @@ define("org/forgerock/openam/ui/admin/views/realms/authentication/ChainsView", [
             var checked = $(event.currentTarget).is(':checked');
             this.$el.find('.sorted-chains input[type=checkbox]:not(:disabled)').prop('checked', checked);
             if (checked) {
-                this.$el.find('.sorted-chains:not(.default-config-row)').addClass('selected'); 
+                this.$el.find('.sorted-chains:not(.default-config-row)').addClass('selected');
             } else {
                 this.$el.find('.sorted-chains').removeClass('selected');
             }
@@ -101,13 +98,9 @@ define("org/forgerock/openam/ui/admin/views/realms/authentication/ChainsView", [
             var self = this,
                 chainName = $(event.currentTarget).attr('data-chain-name');
 
-            SMSDelegate.RealmAuthenticationChain.remove(chainName)
-                .done(function(data) {
-                    self.render([self.data.realmLocation]);
-                })
-                .fail(function() {
-                    // TODO: Add failure condition
-                });
+            SMSRealmDelegate.authentication.chains.remove(this.data.realmPath, chainName).done(function() {
+                self.render([self.data.realmPath]);
+            });
         },
         deleteChains: function() {
             var self = this,
@@ -115,42 +108,37 @@ define("org/forgerock/openam/ui/admin/views/realms/authentication/ChainsView", [
                     return $(element).attr('data-chain-name');
                 }),
                 promises = chainNames.map(function(name) {
-                    return SMSDelegate.RealmAuthenticationChain.remove(name);
+                    return SMSRealmDelegate.authentication.chains.remove(self.data.realmPath, name);
                 });
 
-            $.when(promises)
-                .done(function(data) {
-                    self.render([self.data.realmLocation]);
-                })
-                .fail(function() {
-                    // TODO: Add failure condition
-                });
+            $.when(promises).done(function() {
+                self.render([self.data.realmPath]);
+            });
         },
         render: function (args, callback) {
             var self = this,
                 sortedChains = [];
-            this.data.realmLocation = args[0];
 
-            SMSDelegate.RealmAuthenticationChains.getWithDefaults()
-                .done(function(data) {
-                    _.each(data.values.result, function(obj) {
-                        // Add default chains to top of list.
-                        if ( obj.active) {
-                            sortedChains.unshift(obj);
-                        } else {
-                            sortedChains.push(obj);
-                        }
-                    });
-                    self.data.sortedChains = sortedChains;
-                    self.parentRender(function() {
-                        if (callback) {
-                            callback();
-                        }
-                    });
-                })
-                .fail(function() {
-                    // TODO: Add failure condition
+            this.data.realmPath = args[0];
+
+            SMSRealmDelegate.authentication.chains.all(this.data.realmPath).done(function(data) {
+                _.each(data.values.result, function(obj) {
+                    // Add default chains to top of list.
+                    if ( obj.active) {
+                        sortedChains.unshift(obj);
+                    } else {
+                        sortedChains.push(obj);
+                    }
                 });
+                self.data.sortedChains = sortedChains;
+                self.parentRender(function() {
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }).fail(function() {
+                // TODO: Add failure condition
+            });
         }
     });
 
