@@ -125,6 +125,16 @@
         ><citetitle>Configuring Valid goto URL Resources</citetitle></link>.
      </para>
    </listitem>
+   <listitem>
+    <para>
+     Disable module based authentication for all OpenAM realms. Module based
+     authentication lets users authenticate using the
+     <literal>module=module-name</literal> login parameter. To disable
+     module based authentication for a realm, select the realm in the OpenAM
+     console, then select Authentication > Settings > Security and clear the
+     Module Based Authentication check box.
+    </para>
+   </listitem>
   </itemizedlist>
  </section>
 
