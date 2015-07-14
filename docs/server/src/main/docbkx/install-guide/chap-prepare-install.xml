@@ -671,10 +671,9 @@ aci: (targetattr!="userPassword||authPassword")(version 3.0;
 aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
    persistent search"; allow (search, read)(userdn = "ldap:///
    uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Add identity"; allow (add)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Delete identity"; allow (delete)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
+aci: (version 3.0;acl "Add or delete identities"; allow (add, delete)
+   (userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
+
       </programlisting>
       <para>
        To grant the OpenAM data store administrator account privileges to
@@ -927,10 +926,8 @@ aci: (targetattr!="userPassword||authPassword")(version 3.0;
 aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
    persistent search"; allow (search, read)(userdn = "ldap:///
    uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Add identity"; allow (add)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Delete identity"; allow (delete)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
+aci: (version 3.0;acl "Add or delete identities"; allow (add, delete)
+   (userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
       </programlisting>
       <para>
        To grant the OpenAM data store administrator account privileges to
@@ -1333,11 +1330,11 @@ $ <userinput>bin/dsconfig create-backend \
     </para>
     <para>
      When OpenAM connects as <literal>uid=openam,ou=admins,dc=example,dc=com</literal>
-     to an external directory server to store its data, it requires both read
-     and write access privileges. You add these privileges by means of access control
-     instructions (ACIs) to the base distinguished name (DN) entry
-     (<literal>dc=example,dc=com</literal>). If your OpenAM user has a different
-     DN other than <literal>uid=openam,ou=admins,dc=example,dc=com</literal>,
+     to an external directory server to store its data, it requires both read,
+     write, and persistent search access privileges. You add these privileges by
+     setting access control instructions (ACIs) on the base distinguished name
+     (DN) entry (<literal>dc=example,dc=com</literal>). If your OpenAM user has
+     a DN other than <literal>uid=openam,ou=admins,dc=example,dc=com</literal>,
      adjust the ACIs where appropriate.
     </para>
     <para>
@@ -1362,17 +1359,13 @@ dn: dc=example,dc=com
 objectclass: top
 objectclass: domain
 dc: example
-aci: (targetattr="*")(version 3.0;acl "Allow entry search"; allow (
- search, read)(userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
-aci: (targetattr="*")(version 3.0;acl "Modify config entry"; allow (write)(
- userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
+
+aci: (targetattr="*")(version 3.0;acl "Allow CRUDQ operations";
+ allow (search, read, write, add, delete)
+ (userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
 aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
  persistent search"; allow (search, read)(userdn = "ldap:///uid=openam
  ,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Add config entry"; allow (add)(userdn = "ldap:///
- uuid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Delete config entry"; allow (delete)(userdn = "ldap:///
- uid=openam,ou=admins,dc=example,dc=com");)
 
 dn: ou=admins,dc=example,dc=com
 objectclass: top
