@@ -1531,10 +1531,10 @@ string=amlbcookie</computeroutput>
   </itemizedlist>
 
   <section xml:id="rest-api-token-validation">
-   <title>Token Validation</title>
+   <title>Session Token Validation</title>
 
    <para>
-    To check over REST whether a token is valid,
+    To check over REST whether a session token is valid,
     perform an HTTP POST
     to the resource URL,
     <literal>/json/sessions/<replaceable>tokenId</replaceable></literal>,
@@ -1551,7 +1551,7 @@ $ <userinput>curl \
    </screen>
 
    <para>
-    An invalid token returns only information about the validity.
+    An invalid session token returns only information about the validity.
    </para>
 
    <screen>
@@ -1562,10 +1562,17 @@ $ <userinput>curl \
 <computeroutput>{"valid":false}</computeroutput>
    </screen>
 
-
    <para>
-    Validating a session has a tangential effect of resetting the idle timeout
-    for a stateful session. Note that OpenAM does not reset the idle timeout for
+    Validating a session token has the tangential effect of resetting the idle
+    timeout for a stateful session. If session failover is enabled in your
+    deployment, validating session tokens can trigger write operations to the
+    Core Token Service token store. See
+    <xref linkend="rest-api-session-information" /> for information about
+    how to validate a session token without resetting the idle timeout, thereby
+    avoiding the overhead of writes to the token store.
+   </para>
+   <para>
+    Note that OpenAM does not reset the idle timeout for
     a stateless session.
    </para>
 
@@ -1691,6 +1698,22 @@ $ <userinput>curl \
   </userinput>
 <computeroutput>{"active":true}</computeroutput>
 </screen>
+
+   <para>
+    REST API calls to retrieve session information do not reset a stateful
+    session's idle time if you specify the <literal>refresh=false</literal>
+    parameter, which is the default.
+   </para>
+
+   <para>
+    If you specify the <literal>refresh=true</literal>
+    parameter, OpenAM resets the idle time for stateful sessions.
+    If session failover is enabled in your deployment, resetting a
+    stateful session's idle time can trigger write operations to the Core Token
+    Service token store. Therefore, to avoid the overhead of writes to the
+    token store, be careful to use the <literal>refresh=true</literal> parameter
+    only if you want to reset a stateful session's idle time.
+   </para>
 
    <para>
     Because OpenAM does not monitor idle time for stateless sessions,
