@@ -19,12 +19,14 @@
 
 #include "pcre.h"
 
+#define AM_POLICY_CHANGE_KEY    "AM_POLICY_CHANGE_KEY"
 #define AM_CACHE_TIMEFORMAT     "%Y-%m-%d %H:%M:%S"
 #define ARRAY_SIZE(array)       sizeof(array) / sizeof(array[0])
 #define AM_BASE_TEN             10
 #define AM_SPACE_CHAR           " "
 #define AM_COMMA_CHAR           ","
 #define AM_PIPE_CHAR            "|"
+#define AM_BITMASK_CHECK(v,m)   (((v) & (m)) == (m))             
 
 #define AM_NULL_CHECK(...) \
   do { \
@@ -170,12 +172,15 @@ int am_shm_lock(am_shm_t *);
 am_shm_t *am_shm_create(const char *, size_t);
 void am_shm_shutdown(am_shm_t *);
 void *am_shm_alloc(am_shm_t *am, size_t usize);
+void *am_shm_alloc_and_purge(am_shm_t *am, size_t usize, int (*purge_f)());
 void am_shm_free(am_shm_t *am, void *ptr);
 void *am_shm_realloc(am_shm_t *am, void *ptr, size_t size);
 void am_shm_set_user_offset(am_shm_t *r, size_t s);
 void am_shm_info(am_shm_t *);
+void am_shm_destroy(am_shm_t* am);
 
-int am_create_agent_dir(const char *sep, const char *path, char **created_name, char **created_name_simple, uid_t* uid, gid_t* gid);
+int am_create_agent_dir(const char *sep, const char *path, char **created_name, 
+        char **created_name_simple, uid_t* uid, gid_t* gid, void (*log)(const char *, ...));
 
 int decrypt_password(const char *key, char **password);
 int encrypt_password(const char *key, char **password);
@@ -226,7 +231,7 @@ char* am_strldup(const char* src);
 
 int compare_property(const char *line, const char *property);
 
-int am_make_path(const char *path, uid_t* uid, gid_t* gid);
+int am_make_path(const char *path, uid_t* uid, gid_t* gid, void (*log)(const char *, ...));
 int am_delete_file(const char *fn);
 int am_delete_directory(const char *path);
 
@@ -252,7 +257,8 @@ int am_agent_policy_request(unsigned long instance_id, const char *openam,
         struct am_namevalue **session_list,
         struct am_policy_result **policy_list);
 
-int am_url_validate(unsigned long instance_id, const char *url, struct am_ssl_options *info, int *httpcode);
+int am_url_validate(unsigned long instance_id, const char *url, 
+        struct am_ssl_options *info, int *httpcode, void(*log)(const char *, ...));
 
 void *am_parse_session_xml(unsigned long instance_id, const char *xml, size_t xml_sz);
 void *am_parse_session_saml(unsigned long instance_id, const char *xml, size_t xml_sz);
@@ -278,10 +284,10 @@ void remove_agent_instance_byname(const char *name);
 
 void am_agent_init_set_value(unsigned long instance_id, char lock, int val);
 int am_agent_init_get_value(unsigned long instance_id, char lock);
-int am_agent_instance_init_init();
+int am_agent_instance_init_init(int id);
 void am_agent_instance_init_lock();
 void am_agent_instance_init_unlock();
-void am_agent_instance_init_release(char unlink);
+void am_agent_instance_init_release(int id, char unlink);
 
 void am_agent_init_set_value(unsigned long instance_id, char lock, int val);
 
@@ -303,5 +309,6 @@ void* mem2cpy(void* dest, const void* source1, size_t size1, const void* source2
 void* mem3cpy(void* dest, const void* source1, size_t size1, const void* source2, size_t size2, const void* source3, size_t size3);
 
 void update_agent_configuration_ttl(am_config_t *c);
+char *get_global_name(const char *name, int id);
 
 #endif

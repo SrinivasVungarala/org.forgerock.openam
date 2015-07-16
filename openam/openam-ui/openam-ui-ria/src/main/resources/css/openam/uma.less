@@ -14,10 +14,6 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-/* VARIABLES */
-@table-base-color: #1f6fb1;
-@cell-hover-color: #519387;
-@text-base-color: #1f2223;
 
 .webkit-text-rendering-bugfix{
     -webkit-transform: translateZ(0px);
@@ -167,19 +163,33 @@ span.item-button-panel {
 
 
     .backgrid {
-        .template-cell a {
-            float: right;
-        }
-
         td.uri-cell {
             // TODO: BOOTSTRAP: Removed due to build issues. Will need re-adding
+
+            a {
+                color: @base-theme-color;
+            }
             .transition(background, 0.1s);
             &:hover{
-                background-color: @cell-hover-color;
+                background-color: #eee;
                 cursor:pointer;
 
                 a {
-                    color:#f7f7f7;
+                   color: darken(@base-theme-color, 5%);
+                }
+            }
+        }
+
+        td.permissions-cell {
+            overflow: visible;
+
+            a {
+                background-color: #f7f7f7;
+                color: #1f2223;
+
+                &:hover {
+                    background-color: inherit;
+                    color: inherit;
                 }
             }
         }
@@ -193,12 +203,12 @@ span.item-button-panel {
             text-decoration: underline;
         }
 
-        td.fa-share-alt {
+        td.fa-share {
             font-size:14px;
             text-align:right;
 
             &:hover {
-                color: @cell-hover-color;
+                color: darken(@base-theme-color, 5%);
                 cursor:pointer;
             }
         }

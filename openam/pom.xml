@@ -118,9 +118,10 @@
 
         <commons.forgerock-util.version>2.0.0-SNAPSHOT</commons.forgerock-util.version>
         <forgerock.bloomfilter.version>1.0.0-SNAPSHOT</forgerock.bloomfilter.version>
+        <forgerock.http.version>0.0.1-SNAPSHOT</forgerock.http.version>
         <commons.authfilter.version>1.6.0-SNAPSHOT</commons.authfilter.version>
         <forgerock.json.version>2.5.0-SNAPSHOT</forgerock.json.version>
-        <forgerock-ui.version>2.0.7-SNAPSHOT</forgerock-ui.version>
+        <forgerock-ui.version>2.1.0-SNAPSHOT</forgerock-ui.version>
         <restlet.version>2.1.7</restlet.version>
         <xercesj.version>2.11.0</xercesj.version>
         <powermock.version>1.5</powermock.version>
@@ -184,6 +185,7 @@
         <json.version>20090211</json.version>
         <javax.inject.version>1</javax.inject.version>
         <forgerock.guava.version>18.0.1</forgerock.guava.version>
+        <forgerock.audit.version>0.1.0</forgerock.audit.version>
 
         <openam.version>OpenAM ${project.version}</openam.version>
         <!--  Project web site -->
@@ -369,6 +371,7 @@
         <module>openam-tokens</module>
         <module>openam-certs</module>
         <module>openam-upgrade</module>
+        <module>openam-audit</module>
     </modules>
 
     <!-- Mailing Lists -->
@@ -485,6 +488,16 @@
     <dependencyManagement>
         <dependencies>
             <!-- OpenAM project dependencies -->
+            <dependency>
+                <groupId>org.forgerock.openam</groupId>
+                <artifactId>openam-audit-context</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.openam</groupId>
+                <artifactId>openam-audit-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.forgerock.openam</groupId>
                 <artifactId>openam-shared</artifactId>
@@ -1646,6 +1659,16 @@
 
             <!-- Commons Dependencies -->
             <dependency>
+                <groupId>org.forgerock.http</groupId>
+                <artifactId>chf-http-core</artifactId>
+                <version>${forgerock.http.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.http</groupId>
+                <artifactId>chf-client-apache-sync</artifactId>
+                <version>${forgerock.http.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.forgerock.commons</groupId>
                 <artifactId>json-fluent</artifactId>
                 <version>${forgerock.json.version}</version>
@@ -1719,6 +1742,16 @@
                 <groupId>org.forgerock.commons.guava</groupId>
                 <artifactId>forgerock-guava-cache</artifactId>
                 <version>${forgerock.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons</groupId>
+                <artifactId>forgerock-audit-core</artifactId>
+                <version>${forgerock.audit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.forgerock.commons</groupId>
+                <artifactId>forgerock-audit-handler-csv</artifactId>
+                <version>${forgerock.audit.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -1836,6 +1869,12 @@
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
                 <version>${javax.inject.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jgrapht</groupId>
+                <artifactId>jgrapht-core</artifactId>
+                <version>0.9.1</version>
             </dependency>
 
             <!--
@@ -2130,7 +2169,7 @@
                             <outputDirectory>${project.build.directory}/site/apidocs</outputDirectory>
                             <finalName>openam-${project.version}-public</finalName>
                             <subpackages>
-                                com.iplanet.am.sdk:com.iplanet.am.util:com.iplanet.dpro.parser:com.iplanet.dpro.session.service:com.iplanet.log:com.iplanet.services.cdm:com.iplanet.services.ldap:com.iplanet.services.util:com.iplanet.sso:com.iplanet.ums:com.sun.identity.authentication:com.sun.identity.entitlement:com.sun.identity.federation.accountmgmt:com.sun.identity.federation.common:com.sun.identity.federation.message:com.sun.identity.federation.message.common:com.sun.identity.federation.plugins:com.sun.identity.federation.services:com.sun.identity.idm:com.sun.identity.jaxrpc:com.sun.identity.liberty.ws.authnsvc:com.sun.identity.liberty.ws.authnsvc.mechanism:com.sun.identity.liberty.ws.authnsvc.protocol:com.sun.identity.liberty.ws.common:com.sun.identity.liberty.ws.common.wsse:com.sun.identity.liberty.ws.disco:com.sun.identity.liberty.ws.disco.plugins:com.sun.identity.liberty.ws.dst:com.sun.identity.liberty.ws.dst.service:com.sun.identity.liberty.ws.idpp.common:com.sun.identity.liberty.ws.idpp.plugin:com.sun.identity.liberty.ws.interaction:com.sun.identity.liberty.ws.interfaces:com.sun.identity.liberty.ws.paos:com.sun.identity.liberty.ws.security:com.sun.identity.liberty.ws.soapbinding:com.sun.identity.log:com.sun.identity.plugin.configuration:com.sun.identity.plugin.datastore:com.sun.identity.plugin.log:com.sun.identity.plugin.session:com.sun.identity.policy:com.sun.identity.sae.api:com.sun.identity.saml:com.sun.identity.saml2.assertion:com.sun.identity.saml2.common:com.sun.identity.saml2.ecp:com.sun.identity.saml2.plugins:com.sun.identity.saml2.profile:com.sun.identity.saml2.protocol:com.sun.identity.security:com.sun.identity.shared.debug:com.sun.identity.shared.jaxrpc:com.sun.identity.shared.locale:com.sun.identity.shared.stats:com.sun.identity.shared.whitelist:com.sun.identity.sm:com.sun.identity.wsfederation.common:com.sun.identity.wsfederation.plugins:com.sun.identity.wss.provider:com.sun.identity.wss.security:com.sun.identity.wss.security.handler:com.sun.identity.wss.sts:com.sun.identity.xacml.client:com.sun.identity.xacml.common:com.sun.identity.xacml.context:com.sun.identity.xacml.context.impl:com.sun.identity.xacml.policy:com.sun.identity.xacml.policy.impl:com.sun.identity.xacml.saml2:com.sun.identity.xacml.saml2.impl:com.sun.liberty:org.forgerock.openam.authentication.service:org.forgerock.openam.entitlement:org.forgerock.openam.ldap:org.forgerock.openam.oauth2.provider:org.forgerock.openam.session.service:org.forgerock.openam.upgrade
+                                com.iplanet.am.sdk:com.iplanet.am.util:com.iplanet.dpro.parser:com.iplanet.dpro.session.service:com.iplanet.log:com.iplanet.services.cdm:com.iplanet.services.ldap:com.iplanet.services.util:com.iplanet.sso:com.iplanet.ums:com.sun.identity.authentication:com.sun.identity.entitlement:com.sun.identity.federation.accountmgmt:com.sun.identity.federation.common:com.sun.identity.federation.message:com.sun.identity.federation.message.common:com.sun.identity.federation.plugins:com.sun.identity.federation.services:com.sun.identity.idm:com.sun.identity.jaxrpc:com.sun.identity.liberty.ws.authnsvc:com.sun.identity.liberty.ws.authnsvc.mechanism:com.sun.identity.liberty.ws.authnsvc.protocol:com.sun.identity.liberty.ws.common:com.sun.identity.liberty.ws.common.wsse:com.sun.identity.liberty.ws.disco:com.sun.identity.liberty.ws.disco.plugins:com.sun.identity.liberty.ws.dst:com.sun.identity.liberty.ws.dst.service:com.sun.identity.liberty.ws.idpp.common:com.sun.identity.liberty.ws.idpp.plugin:com.sun.identity.liberty.ws.interaction:com.sun.identity.liberty.ws.interfaces:com.sun.identity.liberty.ws.paos:com.sun.identity.liberty.ws.security:com.sun.identity.liberty.ws.soapbinding:com.sun.identity.log:com.sun.identity.plugin.configuration:com.sun.identity.plugin.datastore:com.sun.identity.plugin.log:com.sun.identity.plugin.session:com.sun.identity.policy:com.sun.identity.sae.api:com.sun.identity.saml:com.sun.identity.saml2.assertion:com.sun.identity.saml2.common:com.sun.identity.saml2.ecp:com.sun.identity.saml2.plugins:com.sun.identity.saml2.profile:com.sun.identity.saml2.protocol:com.sun.identity.security:com.sun.identity.shared.debug:com.sun.identity.shared.jaxrpc:com.sun.identity.shared.locale:com.sun.identity.shared.stats:com.sun.identity.shared.whitelist:com.sun.identity.sm:com.sun.identity.wsfederation.common:com.sun.identity.wsfederation.plugins:com.sun.identity.wss.provider:com.sun.identity.wss.security:com.sun.identity.wss.security.handler:com.sun.identity.wss.sts:com.sun.identity.xacml.client:com.sun.identity.xacml.common:com.sun.identity.xacml.context:com.sun.identity.xacml.context.impl:com.sun.identity.xacml.policy:com.sun.identity.xacml.policy.impl:com.sun.identity.xacml.saml2:com.sun.identity.xacml.saml2.impl:com.sun.liberty:org.forgerock.oauth2.core:org.forgerock.openam.authentication.service:org.forgerock.openam.entitlement:org.forgerock.openam.ldap:org.forgerock.openam.oauth2.provider:org.forgerock.openam.session.service:org.forgerock.openam.upgrade:org.forgerock.openam.authentication.modules.common.mapping
                             </subpackages>
                             <doclet>com.sun.identity.tools.javadocs.SupportedAPIDoclet</doclet>
                             <docletArtifact>

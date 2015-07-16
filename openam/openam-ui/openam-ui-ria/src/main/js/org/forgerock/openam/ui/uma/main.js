@@ -31,10 +31,13 @@ define([
     "./models/UMAResourceSetWithPolicy",
     "./models/User",
 
-    "./views/application/ListApplication",
+    "./views/RequestsView",
+    "./views/backgrid/cells/PermissionsCell",
     "./views/history/ListHistory",
     "./views/resource/EditResource",
     "./views/resource/ListResource",
+    "./views/resource/MyResourcesTab",
+    "./views/resource/SharedResourcesTab",
     "./views/share/BaseShare",
     "./views/share/CommonShare",
     "./views/share/ShareCounter"

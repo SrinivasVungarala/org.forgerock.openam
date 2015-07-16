@@ -56,59 +56,50 @@ public class UmaPolicyTest {
         ));
     }
 
-    private Set<Resource> createUnderlyingPolicies() {
+    private Set<Resource> createUnderlyingPolicies(String resourceOwnerId) {
         Set<Resource> policies = new HashSet<Resource>();
-        policies.add(new Resource("ID_1", "REVISION_1", createUnderlyingScopeAPolicyJson()));
-        policies.add(new Resource("ID_2", "REVISION_2", createUnderlyingScopeBPolicyJson()));
+        policies.add(new Resource("ID_1", "REVISION_1", createUnderlyingSubjectOnePolicyJson(resourceOwnerId)));
+        policies.add(new Resource("ID_2", "REVISION_2", createUnderlyingSubjectTwoPolicyJson(resourceOwnerId)));
         return policies;
     }
 
-    private JsonValue createUnderlyingScopeAPolicyJson() {
-        return createUnderlyingScopeAPolicyJson("POLICY_ID");
+    private JsonValue createUnderlyingSubjectOnePolicyJson(String resourceOwnerId) {
+        return createUnderlyingSubjectOnePolicyJson(resourceOwnerId, "POLICY_ID");
     }
 
-    private JsonValue createUnderlyingScopeAPolicyJson(String id) {
+    private JsonValue createUnderlyingSubjectOnePolicyJson(String resourceOwnerId, String id) {
         return json(object(
-                field("name", "NAME - " + id + "-" + "SCOPE_A".hashCode()),
+                field("name", "NAME - " + resourceOwnerId + " - " + id + "-" + "SUBJECT_ONE".hashCode()),
                 field("applicationName", "client_id"),
                 field("resourceTypeUuid", "RESOURCE_SET_ID"),
                 field("resources", array("uma://POLICY_ID")),
-                field("actionValues", object(field("SCOPE_A", true))),
+                field("actionValues", object(
+                        field("SCOPE_A", true),
+                        field("SCOPE_B", true))),
                 field("subject", object(
-                        field("type", "OR"),
-                        field("subjects", array(
-                                object(
-                                        field("type", "JwtClaim"),
-                                        field("claimName", "sub"),
-                                        field("claimValue", "SUBJECT_ONE")
-                                ), object(
-                                        field("type", "JwtClaim"),
-                                        field("claimName", "sub"),
-                                        field("claimValue", "SUBJECT_TWO")
-                                )))
+                        field("type", "JwtClaim"),
+                        field("claimName", "sub"),
+                        field("claimValue", "SUBJECT_ONE")
                 ))
         ));
     }
 
-    private JsonValue createUnderlyingScopeBPolicyJson() {
-        return createUnderlyingScopeBPolicyJson("POLICY_ID");
+    private JsonValue createUnderlyingSubjectTwoPolicyJson(String resourceOwnerId) {
+        return createUnderlyingSubjectTwoPolicyJson(resourceOwnerId, "POLICY_ID");
     }
 
-    private JsonValue createUnderlyingScopeBPolicyJson(String id) {
+    private JsonValue createUnderlyingSubjectTwoPolicyJson(String resourceOwnerId, String id) {
         return json(object(
-                field("name", "NAME - " + id + "-" + "SCOPE_B".hashCode()),
+                field("name", "NAME - " + resourceOwnerId + " - " + id + "-" + "SUBJECT_TWO".hashCode()),
                 field("applicationName", "client_id"),
                 field("resourceTypeUuid", "RESOURCE_SET_ID"),
                 field("resources", array("uma://POLICY_ID")),
-                field("actionValues", object(field("SCOPE_B", true))),
+                field("actionValues", object(
+                        field("SCOPE_A", true))),
                 field("subject", object(
-                        field("type", "OR"),
-                        field("subjects", array(
-                                object(
-                                        field("type", "JwtClaim"),
-                                        field("claimName", "sub"),
-                                        field("claimValue", "SUBJECT_ONE")
-                                )))
+                        field("type", "JwtClaim"),
+                        field("claimName", "sub"),
+                        field("claimValue", "SUBJECT_TWO")
                 ))
         ));
     }
@@ -347,7 +338,7 @@ public class UmaPolicyTest {
     public void shouldCreateUmaPolicyFromUnderlyingPolicies() throws BadRequestException {
 
         //Given
-        Set<Resource> policies = createUnderlyingPolicies();
+        Set<Resource> policies = createUnderlyingPolicies("RESOURCE_OWNER_ID");
 
         //When
         UmaPolicy umaPolicy = UmaPolicy.fromUnderlyingPolicies(resourceSet, policies);
@@ -385,17 +376,17 @@ public class UmaPolicyTest {
         UmaPolicy umaPolicy = UmaPolicy.valueOf(resourceSet, createUmaPolicyJson());
 
         //When
-        Set<JsonValue> underlyingPolicies = umaPolicy.asUnderlyingPolicies();
+        Set<JsonValue> underlyingPolicies = umaPolicy.asUnderlyingPolicies("RESOURCE_OWNER_ID");
 
         //Then
         boolean foundScopeAPolicy = false;
         boolean foundScopeBPolicy = false;
         for (JsonValue policy : underlyingPolicies) {
-            if (policy.contains("NAME - RESOURCE_SET_ID-" + "SCOPE_A".hashCode())) {
-                assertThat(policy.asMap()).isEqualTo(createUnderlyingScopeAPolicyJson("RESOURCE_SET_ID").asMap());
+            if (policy.contains("NAME - RESOURCE_OWNER_ID - RESOURCE_SET_ID-" + "SUBJECT_ONE".hashCode())) {
+                assertThat(policy.asMap()).isEqualTo(createUnderlyingSubjectOnePolicyJson("RESOURCE_OWNER_ID", "RESOURCE_SET_ID").asMap());
                 foundScopeAPolicy = true;
-            } else if (policy.contains("NAME - RESOURCE_SET_ID-"+ "SCOPE_B".hashCode())) {
-                assertThat(policy.asMap()).isEqualTo(createUnderlyingScopeBPolicyJson("RESOURCE_SET_ID").asMap());
+            } else if (policy.contains("NAME - RESOURCE_OWNER_ID - RESOURCE_SET_ID-"+ "SUBJECT_TWO".hashCode())) {
+                assertThat(policy.asMap()).isEqualTo(createUnderlyingSubjectTwoPolicyJson("RESOURCE_OWNER_ID", "RESOURCE_SET_ID").asMap());
                 foundScopeBPolicy = true;
             }
         }

@@ -288,7 +288,7 @@
         <varlistentry>
          <term>Active Session Time</term>
          <listitem>
-          <para>Make the policy depend on how long the user's stateful or
+          <para>Make the policy test how long the user's stateful or
            stateless session has been active, as specified in Max Session Time.
            To terminate the session if it has been active for longer than the
            specified time, set Terminate Sessions to
@@ -298,14 +298,14 @@
         <varlistentry>
          <term>Authentication by Module Chain</term>
          <listitem>
-          <para>Make the policy depend on the service that was used to
+          <para>Make the policy test the service that was used to
            authenticate the user.</para>
          </listitem>
         </varlistentry>
         <varlistentry>
          <term>Authentication by Module Instance</term>
          <listitem>
-          <para>Make the policy depend on the authentication
+          <para>Make the policy test the authentication
            module used to authenticate, specified in Authentication
             Scheme. Specify a timeout for
            application authentication in Application Idle
@@ -316,25 +316,31 @@
         <varlistentry>
          <term>Authentication Level (greater than or equal to)</term>
          <listitem>
-          <para>Make the policy depend on the minimum acceptable authentication
+          <para>Make the policy test the minimum acceptable authentication
            level specified in Authentication Level.</para>
          </listitem>
         </varlistentry>
         <varlistentry>
          <term>Authentication to a Realm</term>
          <listitem>
-          <para>Make the policy depend on the realm to which the user
+          <para>Make the policy test the realm to which the user
            authenticated.</para>
          </listitem>
         </varlistentry>
         <varlistentry>
          <term>Current Session Properties</term>
          <listitem>
-          <para>Make the policy depend on properties set in the user's
+          <para>Make the policy test property values set in the user's
            stateful or stateless session.</para>
-          <para>Type the value to search for in Properties,
-           and set Ignore Value Case to <literal>True</literal>
-           to make the search case-insensitive.</para>
+          <para>Set Ignore Value Case to <literal>True</literal>
+           to make the test case-insensitive.</para>
+          <para>Specify one or more pairs of session properties and
+           values using the format
+           <literal><replaceable>property</replaceable>:<replaceable>value</replaceable></literal>.
+           For example, specify <literal>clientType:genericHTML</literal> to
+           test whether the value of the <literal>clientType</literal>
+           property is equal to <literal>genericHTML</literal>.
+          </para>
          </listitem>
         </varlistentry>
         <varlistentry>
@@ -350,7 +356,7 @@
         <varlistentry>
          <term>IPv4 Address/DNS Name</term>
          <listitem>
-          <para>Make the policy depend on the IP version 4 address that
+          <para>Make the policy test the IP version 4 address that
            the request originated from.</para>
           <note><para>The IP address is taken from the
            <literal>requestIp</literal> value of policy decision requests. If
@@ -370,7 +376,7 @@
         <varlistentry>
          <term>IPv6 Address/DNS Name</term>
          <listitem>
-          <para>Make the policy depend on the IP version 6 address that
+          <para>Make the policy test the IP version 6 address that
            the request originated from.</para>
           <note><para>The IP address is taken from the
            <literal>requestIp</literal> value of policy decision requests. If
@@ -395,7 +401,7 @@
         <varlistentry>
          <term>LDAP Filter Condition</term>
          <listitem>
-          <para>Make the policy depend on whether
+          <para>Make the policy test whether
            the user's entry can be found using the LDAP search filter you specify
            in the directory configured for the policy service, which by default
            is the identity repository. See Configuration &gt; Global &gt; Policy
@@ -409,7 +415,7 @@
          <term>OAuth2 Scope</term>
          <listitem>
           <para>
-           Make the policy depend on whether an authorization request
+           Make the policy test whether an authorization request
            includes all of the specified OAuth 2.0 scopes.
           </para>
 
@@ -508,7 +514,7 @@
         <varlistentry>
          <term>Time (day, date, time, and timezone)</term>
          <listitem>
-          <para>Make the policy depend on when the policy is evaluated.</para>
+          <para>Make the policy test when the policy is evaluated.</para>
           <para>The values for day, date and time must be set in pairs,
            a start and an end. Incomplete pairings are highlighted
            in red.</para>

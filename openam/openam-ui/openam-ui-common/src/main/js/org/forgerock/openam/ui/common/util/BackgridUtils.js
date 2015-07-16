@@ -14,15 +14,18 @@
  * Copyright 2015 ForgeRock AS.
  */
 
-/*global define, Backbone, _, $*/
+/*global define*/
 
 define("org/forgerock/openam/ui/common/util/BackgridUtils", [
+    "jquery",
+    "underscore",
+    "backbone",
     "backgrid",
     "moment",
     "org/forgerock/commons/ui/common/components/Messages",
     "org/forgerock/commons/ui/common/main/Router",
     "org/forgerock/commons/ui/common/util/UIUtils"
-], function (Backgrid, moment, Messages, Router, UIUtils) {
+], function ($, _, Backbone, Backgrid, moment, Messages, Router, UIUtils) {
     /**
      * @exports org/forgerock/openam/ui/common/util/BackgridUtils
      */
@@ -47,6 +50,11 @@ define("org/forgerock/openam/ui/common/util/BackgridUtils", [
         }
     });
 
+    /**
+     * Array Cell
+     * <p>
+     * Displays cell content as an unordered list. Used for cells which values are arrays
+     */
     obj.ArrayCell = Backgrid.Cell.extend({
         className: "array-formatter-cell",
 
@@ -71,6 +79,37 @@ define("org/forgerock/openam/ui/common/util/BackgridUtils", [
 
             var arrayVal = this.model.get(this.column.attributes.name);
             this.$el.append(this.buildHtml(arrayVal));
+
+            this.delegateEvents();
+            return this;
+        }
+    });
+
+    /**
+     * Object Cell
+     * <p>
+     * Displays cell content as a definition list. Used for cells which values are objects
+     */
+    obj.ObjectCell = Backgrid.Cell.extend({
+        className: "object-formatter-cell",
+
+        render: function () {
+            this.$el.empty();
+
+            var object = this.model.get(this.column.attributes.name),
+                result = '<dl class="dl-horizontal">',
+                prop;
+
+            for (prop in object) {
+                if (_.isString(object[prop])) {
+                    result += "<dt>" + prop + "</dt><dd>" + object[prop] + "</dd>";
+                } else {
+                    result += "<dt>" + prop + "</dt><dd>" + JSON.stringify(object[prop]) + "</dd>";
+                }
+            }
+            result += "</dl>";
+
+            this.$el.append(result);
 
             this.delegateEvents();
             return this;
@@ -123,15 +162,23 @@ define("org/forgerock/openam/ui/common/util/BackgridUtils", [
     obj.TemplateCell = Backgrid.Cell.extend({
         className: "template-cell",
         render: function () {
-            UIUtils.renderTemplate(this.template, this.$el);
-            this.delegateEvents();
+            var self = this;
+
+            UIUtils.fillTemplateWithData(this.template, this.model, function (content) {
+                self.$el.html(content);
+                if (self.rendered) {
+                    self.rendered();
+                }
+
+                self.delegateEvents();
+            });
 
             return this;
         }
     });
 
     obj.ClassHeaderCell = Backgrid.HeaderCell.extend({
-        className: '',
+        className: "",
         render: function () {
             obj.ClassHeaderCell.__super__.render.apply(this);
             this.delegateEvents();
@@ -194,7 +241,10 @@ define("org/forgerock/openam/ui/common/util/BackgridUtils", [
     });
 
     obj.queryFilter = function (data) {
+        if(data === undefined) { data = {}; }
+
         var params = [],
+            additionalFilters = data._queryFilter || [],
             getFilter = (function () {
                 return data && data.filterName && data.filterName === "eq" ?
                     function (filterName, filterQuery) {
@@ -211,6 +261,7 @@ define("org/forgerock/openam/ui/common/util/BackgridUtils", [
                 params.push(getFilter(filter.name, filter.query()));
             }
         });
+        params = params.concat(additionalFilters);
 
         return params.length === 0 ? true : params.join("+AND+");
     };

@@ -27,19 +27,18 @@ define("org/forgerock/openam/ui/admin/views/realms/scripts/ScriptsView", [
     "org/forgerock/commons/ui/common/main/Router",
     "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/util/UIUtils",
-    // TODO: switch to 'org/forgerock/openam/ui/common/util/URLHelper' after PE and SE are deleted
-    "org/forgerock/openam/ui/uma/util/URLHelper",
+    "org/forgerock/openam/ui/common/util/URLHelper",
     "org/forgerock/openam/ui/common/util/BackgridUtils",
     "org/forgerock/openam/ui/admin/models/scripts/ScriptModel",
     "org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate"
-], function ($, _, Backbone, Backgrid, Messages, AbstractView, EventManager, Router, Constants, UIUtils, URLHelper, BackgridUtils, Script, SMSGlobalDelegate) {
+], function ($, _, Backbone, Backgrid, Messages, AbstractView, EventManager, Router, Constants, UIUtils, URLHelper,
+             BackgridUtils, Script, SMSGlobalDelegate) {
 
     return AbstractView.extend({
         template: "templates/admin/views/realms/scripts/ScriptsTemplate.html",
         toolbarTemplate: "templates/admin/views/realms/scripts/ScriptsToolbarTemplate.html",
         events: {
             "click #addNewScript": "addNewScript",
-            "keyup #addNewScript": "addNewScript",
             "click #deleteRecords": "deleteRecords"
         },
 
@@ -173,14 +172,11 @@ define("org/forgerock/openam/ui/admin/views/realms/scripts/ScriptsView", [
                             callback();
                         }
                     });
-
                 });
             });
         },
 
         deleteRecords: function (e) {
-            e.preventDefault();
-
             var self = this,
                 i = 0,
                 item,
@@ -228,10 +224,6 @@ define("org/forgerock/openam/ui/admin/views/realms/scripts/ScriptsView", [
         },
 
         addNewScript: function (e) {
-            if (e.type === "keyup" && e.keyCode !== 13) {
-                return;
-            }
-
             Router.routeTo(Router.configuration.routes.realmsScriptEdit, {
                 args: [encodeURIComponent(this.realmPath)],
                 trigger: true

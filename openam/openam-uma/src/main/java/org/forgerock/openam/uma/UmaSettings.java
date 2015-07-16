@@ -139,4 +139,38 @@ public interface UmaSettings {
      * @throws ServerException If there is a problem reading the configuration.
      */
     boolean onDeleteResourceServerDeleteResourceSets() throws ServerException;
+
+    /**
+     * Gets whether the Resource Owner should be emailed when a Pending Request
+     * is created when a Requesting Party requests authorization for a resource.
+     *
+     * @return {@code true} if the Resource Owner should be emailed.
+     * @throws ServerException If there is a problem reading the configuration.
+     */
+    boolean isEmailResourceOwnerOnPendingRequestCreationEnabled() throws ServerException;
+
+    /**
+     * Gets whether the Requesting Party should be emailed when a Pending Request
+     * is approved by the Resource Owner.
+     *
+     * @return {@code true} if the Requesting Party should be emailed.
+     * @throws ServerException If there is a problem reading the configuration.
+     */
+    boolean isEmailRequestingPartyOnPendingRequestApprovalEnabled() throws ServerException;
+
+    /**
+     * Gets the attribute on the user's profile which stores the user's preferred locale.
+     *
+     * @return The user profile attribute for the user's preferred locale.
+     * @throws ServerException If there is a problem reading the configuration.
+     */
+    String getUserProfilePreferredLocaleAttribute() throws ServerException;
+
+    /**
+     * Gets the configured re-sharing mode.
+     *
+     * @return The re-sharing mode.
+     * @throws ServerException If there is a problem reading the configuration.
+     */
+    ResharingMode getResharingMode() throws ServerException;
 }

@@ -671,10 +671,9 @@ aci: (targetattr!="userPassword||authPassword")(version 3.0;
 aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
    persistent search"; allow (search, read)(userdn = "ldap:///
    uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Add identity"; allow (add)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Delete identity"; allow (delete)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
+aci: (version 3.0;acl "Add or delete identities"; allow (add, delete)
+   (userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
+
       </programlisting>
       <para>
        To grant the OpenAM data store administrator account privileges to
@@ -881,8 +880,7 @@ ADD operation successful for DN uid=openam,ou=admins,dc=example,dc=com</computer
   --port 1389 \
   --bindDN "cn=Directory Manager" \
   --bindPassword <replaceable>password</replaceable> \
-  --filename opendj_dashboard.ldif
-      </userinput></screen>
+  --filename opendj_dashboard.ldif</userinput></screen>
      </step>
 
      <step>
@@ -928,10 +926,8 @@ aci: (targetattr!="userPassword||authPassword")(version 3.0;
 aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
    persistent search"; allow (search, read)(userdn = "ldap:///
    uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Add identity"; allow (add)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
-aci: (version 3.0;acl "Delete identity"; allow (delete)(userdn = "ldap:///
-   uid=openam,ou=admins,dc=example,dc=com");)
+aci: (version 3.0;acl "Add or delete identities"; allow (add, delete)
+   (userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
       </programlisting>
       <para>
        To grant the OpenAM data store administrator account privileges to
@@ -1208,8 +1204,8 @@ $ dsconfig \
     directory server instance as an external configuration data store.
     The OpenDJ instance implements a single backend for the OpenAM
     configuration data.
-    The procedure assumes that you have also prepared an external identity repository
-    and an external CTS store,
+    The procedure assumes that you have also prepared an external identity
+    repository and an external CTS store,
     separate from the configuration data store.
    </para>
 
@@ -1223,8 +1219,8 @@ $ dsconfig \
     </para>
 
     <screen>
-     $ <userinput>cd /path/to/opendj</userinput>
-     $ <userinput>./setup --cli</userinput>
+$ <userinput>cd /path/to/opendj</userinput>
+$ <userinput>./setup --cli</userinput>
     </screen>
 
     <para>Example options are as follows:</para>
@@ -1303,7 +1299,7 @@ $ dsconfig \
      Change to the OpenDJ directory.
     </para>
     <screen>
-     $ <userinput>cd /path/to/opendj</userinput>
+$ <userinput>cd /path/to/opendj</userinput>
     </screen>
    </step>
 
@@ -1312,15 +1308,15 @@ $ dsconfig \
      Create a directory server backend, and call it <literal>cfgStore</literal>.
     </para>
     <screen>
-     $ <userinput>bin/dsconfig create-backend \
-     --backend-name cfgStore \
-     --set base-dn:dc=example,dc=com \
-     --set enabled:true \
-     --type local-db \
-     --port 4444 \
-     --bindDN "cn=Directory Manager" \
-     --bindPassword pwd \
-     --no-prompt</userinput>
+$ <userinput>bin/dsconfig create-backend \
+--backend-name cfgStore \
+--set base-dn:dc=example,dc=com \
+--set enabled:true \
+--type local-db \
+--port 4444 \
+--bindDN "cn=Directory Manager" \
+--bindPassword pwd \
+--no-prompt</userinput>
     </screen>
    </step>
 
@@ -1334,11 +1330,11 @@ $ dsconfig \
     </para>
     <para>
      When OpenAM connects as <literal>uid=openam,ou=admins,dc=example,dc=com</literal>
-     to an external directory server to store its data, it requires both read
-     and write access privileges. You add these privileges by means of access control
-     instructions (ACIs) to the base distinguished name (DN) entry
-     (<literal>dc=example,dc=com</literal>). If your OpenAM user has a different
-     DN other than <literal>uid=openam,ou=admins,dc=example,dc=com</literal>,
+     to an external directory server to store its data, it requires both read,
+     write, and persistent search access privileges. You add these privileges by
+     setting access control instructions (ACIs) on the base distinguished name
+     (DN) entry (<literal>dc=example,dc=com</literal>). If your OpenAM user has
+     a DN other than <literal>uid=openam,ou=admins,dc=example,dc=com</literal>,
      adjust the ACIs where appropriate.
     </para>
     <para>
@@ -1359,39 +1355,34 @@ $ dsconfig \
     </para>
 
     <programlisting language="ldif">
-     dn: dc=example,dc=com
-     objectclass: top
-     objectclass: domain
-     dc: example
-     aci: (targetattr="*")(version 3.0;acl "Allow entry search"; allow (
-     search, read)(userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
-     aci: (targetattr="*")(version 3.0;acl "Modify config entry"; allow (write)(
-     userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
-     aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
-     persistent search"; allow (search, read)(userdn = "ldap:///uid=openam
-     ,ou=admins,dc=example,dc=com");)
-     aci: (version 3.0;acl "Add config entry"; allow (add)(userdn = "ldap:///
-     uid=openam,ou=admins,dc=example,dc=com");)
-     aci: (version 3.0;acl "Delete config entry"; allow (delete)(userdn = "ldap:///
-     uid=openam,ou=admins,dc=example,dc=com");)
+dn: dc=example,dc=com
+objectclass: top
+objectclass: domain
+dc: example
 
-     dn: ou=admins,dc=example,dc=com
-     objectclass: top
-     objectclass: organizationalUnit
-     ou: admins
+aci: (targetattr="*")(version 3.0;acl "Allow CRUDQ operations";
+ allow (search, read, write, add, delete)
+ (userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)
+aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
+ persistent search"; allow (search, read)(userdn = "ldap:///uid=openam
+ ,ou=admins,dc=example,dc=com");)
 
-     dn: uid=openam,ou=admins,dc=example,dc=com
-     objectclass: top
-     objectclass: person
-     objectclass: organizationalPerson
-     objectclass: inetOrgPerson
-     cn: openam
-     sn: openam
-     uid: openam
-     userPassword: secret12
-     ds-privilege-name: subentry-write
-     ds-privilege-name: update-schema
-    </programlisting>
+dn: ou=admins,dc=example,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: admins
+
+dn: uid=openam,ou=admins,dc=example,dc=com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: openam
+sn: openam
+uid: openam
+userPassword: secret12
+ds-privilege-name: subentry-write
+ds-privilege-name: update-schema</programlisting>
    </step>
 
    <step>
@@ -1401,14 +1392,14 @@ $ dsconfig \
     </para>
 
     <screen>
-     $ <userinput>bin/ldapmodify \
-     --port 4444 \
-     --bindDN "cn=Directory Manager" \
-     --bindPassword pwd \
-     --defaultAdd \
-     --useStartTLS \
-     --trustAll \
-     --filename add-config-entries.ldif</userinput>
+$ <userinput>bin/ldapmodify \
+--port 4444 \
+--bindDN "cn=Directory Manager" \
+--bindPassword pwd \
+--defaultAdd \
+--useStartTLS \
+--trustAll \
+--filename add-config-entries.ldif</userinput>
     </screen>
    </step>
 
@@ -1431,16 +1422,15 @@ $ dsconfig \
      attribute, try doing so without any line breaks.
     </para>
     <screen>
-     $ <userinput>bin/dsconfig \
-     set-access-control-handler-prop \
-     --add global-aci:'(target = "ldap:///cn=schema")(targetattr = "attributeTypes || \
+$ <userinput>bin/dsconfig set-access-control-handler-prop \
+--add global-aci:'(target = "ldap:///cn=schema")(targetattr = "attributeTypes || \
      objectClasses")(version 3.0; acl "Modify schema"; allow (write) \
      (userdn = "ldap:///uid=openam,ou=admins,dc=example,dc=com");)' \
-     --port 4444 \
-     --bindDN "cn=Directory Manager" \
-     --bindPassword pwd \
-     --trustAll \
-     --no-prompt</userinput>
+--port 4444 \
+--bindDN "cn=Directory Manager" \
+--bindPassword pwd \
+--trustAll \
+--no-prompt</userinput>
     </screen>
    </step>
 
@@ -1455,90 +1445,186 @@ $ dsconfig \
 
    <step>
     <para>
-     OpenAM requires specific directory schema definitions for the object
-     classes and attribute types that describe its data. For the configuration
-     store, the directory administrator should let OpenAM update the directory
-     schema at configuration time.
-    </para>
-    <para>
-     Copy the schema files, located at
-     <literal>/path/to/tomcat/webapps/openam/WEB-INF/template/ldif/sfha</literal>
-     to a local file, <literal>cts-add-schema.ldif</literal>.
+     OpenAM requires additional schema definitions for
+     attributes used to search for user and configuration data:
     </para>
 
-    <screen>
-     $ <userinput>cp /path/to/tomcat/webapps/openam/WEB-INF/template/ldif/sfha/cts-add-schema.ldif /tmp/ldif</userinput>
-    </screen>
-   </step>
+    <table xml:id="prepare-configuration-store-attributes">
+     <title>Configuration Data Store Attributes</title>
 
-   <step>
-    <para>
-     Add the schema to the directory server.
-    </para>
-    <screen>
-     $ <userinput>bin/ldapmodify \
-     --port 4444 \
-     --bindDN "cn=Directory Manager" \
-     --bindPassword pwd \
-     --useStartTLS \
-     --trustAll \
-     --fileName cts-add-schema.ldif</userinput>
-    </screen>
-   </step>
-
-   <step>
-    <para>
-     OpenAM uses certain attributes to search for configuration data. You must
-     set some indexes on these attributes for the configuration store.
-    </para>
-
-    <table xml:id="prepare-configuration-store-indexes">
-     <title>Configuration Data Store Indexes</title>
-
-     <tgroup cols="2">
+     <tgroup cols="3">
       <colspec colnum="1" colwidth="2*"/>
       <colspec colnum="2" colwidth="1*"/>
+      <colspec colnum="3" colwidth="2*"/>
 
       <thead>
-       <row><?dbfo bgcolor="#EEEEEE" ?>
+       <row>
         <entry>Attribute</entry>
-        <entry>Indexes Required</entry>
+        <entry>Index Type</entry>
+        <entry>Description</entry>
        </row>
       </thead>
 
       <tbody>
        <row>
+        <entry>CTS attributes</entry>
+        <entry></entry>
+        <entry>Specifies the CTS attributes required for stateful session high availability and persistence.
+         Located in the <filename>WEB-INF/template/ldif/sfha/cts-add-schema.ldif</filename> file.
+        </entry>
+       </row>
+       <row>
         <entry><literal>iplanet-am-user-federation-info-key</literal></entry>
         <entry>equality</entry>
+        <entry>Specifies a configuration setting to store an account's federation
+         information key, which is used internally. Located
+         in <filename>WEB-INF/template/ldif/opendj/opendj_user_schema.ldif</filename> file.
+        </entry>
        </row>
        <row>
         <entry><literal>sun-fm-saml2-nameid-infokey</literal></entry>
         <entry>equality</entry>
+        <entry>
+         Specifies an information key common to an IdP and SP to link accounts.
+         Located
+         in <filename>WEB-INF/template/ldif/opendj/opendj_user_schema.ldif</filename> file.
+        </entry>
        </row>
        <row>
         <entry><literal>sunxmlkeyvalue</literal></entry>
         <entry>equality, substring</entry>
+        <entry>
+         Stores configuration values that may be looked up through searches.
+         Located in <filename>WEB-INF/template/ldif/opendj/opendj_config_schema.ldif</filename>.
+        </entry>
        </row>
       </tbody>
      </tgroup>
     </table>
+
     <para>
-     On the OpenDJ directory server, use <literal>dsconfig</literal> to add
-     these indexes to your external configuration store. Repeat for each
-     attribute in <xref linkend="prepare-configuration-store-indexes"/>.
+     Add the required CTS schema definitions.
+     You can find the CTS schema definitions at
+     <literal>/path/to/tomcat/webapps/openam/WEB-INF/template/ldif/sfha/cts-add-schema.ldif</literal>.
     </para>
     <screen>
-     $ <userinput>bin/dsconfig \
-     create-local-db-index \
-     --port 4444 \
-     --hostname opendj.example.com \
-     --bindDN "cn=Directory Manager" \
-     --bindPassword password \
-     --backend-name cfgstore \
-     --index-name iplanet-am-user-federation-info-key \
-     --set index-type:equality \
-     --trustAll \
-     --no-prompt</userinput>
+$ <userinput>cp /path/to/tomcat/webapps/openam/WEB-INF/template/ldif/sfha/cts-add-schema.ldif /tmp</userinput>
+    </screen>
+   </step>
+
+   <step>
+     <para>
+      Add the schema file to the directory server.
+     </para>
+     <screen>
+$ <userinput>bin/ldapmodify \
+--port 4444 \
+--bindDN "cn=Directory Manager" \
+--bindPassword pwd \
+--useStartTLS \
+--trustAll \
+--fileName /tmp/cts-add-schema.ldif</userinput>
+     </screen>
+    </step>
+
+    <step>
+     <para>Add the required user store schema definitions.
+      You can find the schema definitions at
+      <literal>/path/to/tomcat/webapps/openam/WEB-INF/template/ldif/opendj/opendj_user_schema.ldif</literal>.
+     </para>
+     <screen>
+$ <userinput>cp /path/to/tomcat/webapps/openam/WEB-INF/template/ldif/opendj/opendj_user_schema.ldif /tmp</userinput>
+     </screen>
+    </step>
+
+    <step>
+     <para>
+      Add the schema file to the directory server.
+     </para>
+     <screen>
+$ <userinput>bin/ldapmodify \
+--port 4444 \
+--bindDN "cn=Directory Manager" \
+--bindPassword pwd \
+--useStartTLS \
+--trustAll \
+--fileName /tmp/opendj_user_schema.ldif</userinput>
+     </screen>
+    </step>
+
+    <step>
+    <para>
+     Add the schema definitions to the configuration repository.
+     You can find the schema definitions at
+     <literal>/path/to/tomcat/webapps/openam/WEB-INF/template/ldif/opendj/opendj_config_schema.ldif</literal>.
+    </para>
+    <screen>
+$ <userinput>cp /path/to/tomcat/webapps/openam/WEB-INF/template/ldif/opendj/opendj_config_schema.ldif /tmp</userinput>
+    </screen>
+   </step>
+
+   <step>
+    <para>
+     Add the schema file to the directory server.
+    </para>
+    <screen>
+$ <userinput>bin/ldapmodify \
+--port 4444 \
+--bindDN "cn=Directory Manager" \
+--bindPassword pwd \
+--useStartTLS \
+--trustAll \
+--fileName /tmp/opendj_config_schema.ldif</userinput>
+    </screen>
+   </step>
+
+   <step>
+    <para>
+     OpenAM uses the attributes in <xref linkend="prepare-configuration-store-attributes"/>
+     to search for configuration data. Set the indexes on these attributes.
+    </para>
+
+    <para>
+     On the OpenDJ directory server, use <literal>dsconfig</literal> to add
+     these indexes to your external configuration store. Repeat this step to index the
+     <literal>iplanet-am-user-federation-info-key</literal> and
+     <literal>sun-fm-saml2-nameid-infokey</literal> attributes, respectively, if you are
+     deploying Federation.
+    </para>
+    <screen>
+$ <userinput>bin/dsconfig create-local-db-index \
+--port 4444 \
+--hostname opendj.example.com \
+--bindDN "cn=Directory Manager" \
+--bindPassword password \
+--backend-name cfgstore \
+--index-name sunxmlkeyvalue \
+--set index-type:equality \
+--set index-type:substring \
+--trustAll \
+--no-prompt</userinput>
+
+$ <userinput>bin/dsconfig create-local-db-index \
+--port 4444 \
+--hostname opendj.example.com \
+--bindDN "cn=Directory Manager" \
+--bindPassword password \
+--backend-name cfgstore \
+--index-name iplanet-am-user-federation-info-key \
+--set index-type:equality \
+--trustAll \
+--no-prompt</userinput>
+
+$ <userinput>bin/dsconfig create-local-db-index \
+--port 4444 \
+--hostname opendj.example.com \
+--bindDN "cn=Directory Manager" \
+--bindPassword password \
+--backend-name cfgstore \
+--index-name sun-fm-saml2-nameid-infokey \
+--set index-type:equality \
+--trustAll \
+--no-prompt</userinput>
     </screen>
    </step>
 
@@ -1551,10 +1637,10 @@ $ dsconfig \
     </para>
 
     <screen>
-     $ <userinput>bin/rebuild-index --port 4444 --hostname opendj.example.com \
-     --bindDN "cn=Directory Manager" --bindPassword password \
-     --baseDN dc=example,dc=com --rebuildAll \
-     --start 0</userinput>
+$ <userinput>bin/rebuild-index --port 4444 --hostname opendj.example.com \
+--bindDN "cn=Directory Manager" --bindPassword password \
+--baseDN dc=example,dc=com --rebuildAll \
+--start 0</userinput>
     </screen>
    </step>
 
@@ -1564,7 +1650,7 @@ $ dsconfig \
     </para>
 
     <screen>
-     $ <userinput>bin/verify-index --baseDN dc=example,dc=com</userinput>
+$ <userinput>bin/verify-index --baseDN dc=example,dc=com</userinput>
     </screen>
 
     <para>

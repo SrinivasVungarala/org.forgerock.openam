@@ -23,6 +23,7 @@ define([
     "./models/Form",
     "./models/FormCollection",
 
+    "./utils/AdministeredRealmsHelper",
     "./utils/FormHelper",
     "./utils/JSONEditorTheme",
     "./utils/RedirectToLegacyConsole",
@@ -37,6 +38,7 @@ define([
 
     "./views/realms/authentication/chains/CriteriaView",
     "./views/realms/authentication/chains/EditChainView",
+    "./views/realms/authentication/chains/EditLinkView",
     "./views/realms/authentication/chains/LinkView",
     "./views/realms/authentication/chains/LinkInfoView",
     "./views/realms/authentication/chains/PostProcessView",
@@ -50,7 +52,10 @@ define([
 
     "./views/realms/policies/applications/ApplicationsView",
     "./views/realms/policies/applications/EditApplicationView",
+
     "./views/realms/policies/common/AbstractListView",
+    "./views/realms/policies/common/Helpers",
+
     "./views/realms/policies/resourceTypes/ResourceTypesView",
     "./views/realms/policies/resourceTypes/EditResourceTypeView",
 

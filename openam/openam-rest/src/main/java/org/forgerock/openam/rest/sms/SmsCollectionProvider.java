@@ -102,12 +102,10 @@ public class SmsCollectionProvider extends SmsResourceProvider implements Collec
                 return;
             }
             config.addSubConfig(name, lastSchemaNodeName(), 0, attrs);
-            ServiceConfig created = checkedInstanceSubConfig(name, config);
+            ServiceConfig created = checkedInstanceSubConfig(context, name, config);
 
-            String dn = created.getDN();
             JsonValue result = getJsonValue(created);
-            handler.handleResult(new Resource(dn.substring(dn.lastIndexOf("=") + 1), String.valueOf(result.hashCode()),
-                    result));
+            handler.handleResult(new Resource(created.getName(), String.valueOf(result.hashCode()), result));
         } catch (ServiceAlreadyExistsException e) {
             debug.warning("::SmsCollectionProvider:: ServiceAlreadyExistsException on create", e);
             handler.handleError(new ConflictException("Unable to create SMS config: " + e.getMessage()));
@@ -132,8 +130,12 @@ public class SmsCollectionProvider extends SmsResourceProvider implements Collec
         try {
             ServiceConfigManager scm = getServiceConfigManager(context);
             ServiceConfig config = parentSubConfigFor(context, scm);
-            checkedInstanceSubConfig(resourceId, config);
-            config.removeSubConfig(resourceId);
+            checkedInstanceSubConfig(context, resourceId, config);
+            if (isDefaultCreatedAuthModule(context, resourceId)) {
+                scm.removeOrganizationConfiguration(realmFor(context), null);
+            } else {
+                config.removeSubConfig(resourceId);
+            }
 
             Resource resource = new Resource(resourceId, "0", json(object(field("success", true))));
             handler.handleResult(resource);
@@ -161,7 +163,7 @@ public class SmsCollectionProvider extends SmsResourceProvider implements Collec
         try {
             ServiceConfigManager scm = getServiceConfigManager(context);
             ServiceConfig config = parentSubConfigFor(context, scm);
-            ServiceConfig item = checkedInstanceSubConfig(resourceId, config);
+            ServiceConfig item = checkedInstanceSubConfig(context, resourceId, config);
 
             JsonValue result = getJsonValue(item);
             handler.handleResult(new Resource(resourceId, String.valueOf(result.hashCode()), result));
@@ -188,7 +190,7 @@ public class SmsCollectionProvider extends SmsResourceProvider implements Collec
         try {
             ServiceConfigManager scm = getServiceConfigManager(context);
             ServiceConfig config = parentSubConfigFor(context, scm);
-            ServiceConfig node = checkedInstanceSubConfig(resourceId, config);
+            ServiceConfig node = checkedInstanceSubConfig(context, resourceId, config);
 
             node.setAttributes(attrs);
             JsonValue result = getJsonValue(node);

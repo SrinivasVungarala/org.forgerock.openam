@@ -649,15 +649,19 @@
       <entry>Session Security</entry>
       <entry>
        Sessions are not accessible to users because they reside in memory
-       on the OpenAM server
+       on the OpenAM server.
       </entry>
-      <entry>Sessions should be signed and encrypted</entry>
+      <entry>Sessions should be signed and encrypted.</entry>
      </row>
 
      <row>
       <entry>Policy Agents</entry>
-      <entry>Support session caching</entry>
-      <entry>Do not support session caching</entry>
+      <entry>
+       Sessions cached in the Policy Agent can receive change notification.
+      </entry>
+      <entry>
+       Sessions cached in the Policy Agent cannot receive change notification.
+      </entry>
      </row>
 
     </tbody>

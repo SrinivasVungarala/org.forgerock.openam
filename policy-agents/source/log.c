@@ -126,6 +126,8 @@ struct am_log {
 
 #ifndef _WIN32
 
+/*****************************************************************************************/
+
 static am_bool_t should_exit(pthread_mutex_t *mtx) {
     switch (pthread_mutex_trylock(mtx)) {
         case 0:
@@ -136,6 +138,8 @@ static am_bool_t should_exit(pthread_mutex_t *mtx) {
     }
     return AM_TRUE;
 }
+
+/*****************************************************************************************/
 
 static void rename_file(const char *file_name) {
     unsigned int idx = 1;
@@ -149,7 +153,9 @@ static void rename_file(const char *file_name) {
     }
 }
 
-#endif
+#endif /* _WIN32 */
+
+/*****************************************************************************************/
 
 static am_bool_t should_rotate_time(time_t ct) {
     time_t ts = ct;
@@ -159,6 +165,8 @@ static am_bool_t should_rotate_time(time_t ct) {
     }
     return AM_FALSE;
 }
+
+/*****************************************************************************************/
 
 static void *am_log_worker(void *arg) {
     struct am_log *log = AM_LOG();
@@ -207,14 +215,14 @@ static void *am_log_worker(void *arg) {
                 }
             }
         }
-#endif
+#endif  /* _WIN32 */
 
         log->bucket[index].ready_to_read = AM_FALSE;
 #ifdef _WIN32
         ReleaseMutex(am_log_lck.lock);
 #else
         pthread_mutex_unlock(&log->lock);
-#endif
+#endif  /* _WIN32 */
 
         data = log->bucket[index].data;
         data_sz = log->bucket[index].size;
@@ -232,7 +240,21 @@ static void *am_log_worker(void *arg) {
         }
 
         if (f != NULL) {
-
+            
+            if (ISINVALID(f->name_debug)) {
+                fprintf(stderr, "am_log_worker(): the debug file name is invalid (i.e. empty or null)\n");
+                f->fd_debug = -1;
+                f->fd_audit = -1;
+                return NULL;
+            }
+            
+            if (ISINVALID(f->name_audit)) {
+                fprintf(stderr, "am_log_worker(): the audit file name is invalid (i.e. empty or null)\n");
+                f->fd_debug = -1;
+                f->fd_audit = -1;
+                return NULL;
+            }
+            
             /* log files are not opened yet, do it now */
             if (f->fd_audit == -1 && f->fd_debug == -1) {
 #ifdef _WIN32
@@ -264,8 +286,11 @@ static void *am_log_worker(void *arg) {
 #endif
             }
 
-            if (f->fd_debug == -1 || f->fd_audit == -1) {
-                fprintf(stderr, "am_log_worker() log file open failed with error: %d", errno);
+            if (f->fd_debug == -1) {
+                fprintf(stderr, "am_log_worker() failed to open log file %s: error: %d", f->name_debug, errno);
+                f->fd_debug = f->fd_audit = -1;
+            } else if (f->fd_audit == -1) {
+                fprintf(stderr, "am_log_worker() failed to open audit file %s: error: %d", f->name_audit, errno);
                 f->fd_debug = f->fd_audit = -1;
             } else {
                 int file_handle = is_audit ? f->fd_audit : f->fd_debug;
@@ -389,6 +414,8 @@ static void *am_log_worker(void *arg) {
     return NULL;
 }
 
+/*****************************************************************************************/
+
 void am_log_re_init(int status) {
     struct am_log *log = AM_LOG();
     if (log != NULL && status == AM_RETRY_ERROR) {
@@ -412,11 +439,13 @@ void am_log_re_init(int status) {
     }
 }
 
-void am_log_init(int status) {
+/*****************************************************************************************/
+
+void am_log_init(int id, int status) {
     int i;
     char opened = 0;
 
-    am_agent_instance_init_init();
+    am_agent_instance_init_init(id);
 
     if (am_log_handle == NULL) {
         am_log_handle = (struct am_shared_log *) malloc(sizeof (struct am_shared_log));
@@ -434,7 +463,7 @@ void am_log_init(int status) {
 #else
             AM_GLOBAL_PREFIX"am_log_%d"
 #endif
-            , 0);
+            , id);
     am_log_handle->area_size = page_size(sizeof (struct am_log));
 
 #ifdef _WIN32
@@ -469,21 +498,21 @@ void am_log_init(int status) {
                 f->max_size_debug = f->max_size_audit = 0;
             }
 
-            am_log_lck.exit = CreateEvent(NULL, FALSE, FALSE, AM_GLOBAL_PREFIX"am_log_exit");
+            am_log_lck.exit = CreateEvent(NULL, FALSE, FALSE, get_global_name(AM_GLOBAL_PREFIX"am_log_exit", id));
             if (am_log_lck.exit == NULL && GetLastError() == ERROR_ACCESS_DENIED) {
-                am_log_lck.exit = OpenEventA(SYNCHRONIZE, TRUE, AM_GLOBAL_PREFIX"am_log_exit");
+                am_log_lck.exit = OpenEventA(SYNCHRONIZE, TRUE, get_global_name(AM_GLOBAL_PREFIX"am_log_exit", id));
             }
-            am_log_lck.lock = CreateMutex(NULL, FALSE, AM_GLOBAL_PREFIX"am_log_lock");
+            am_log_lck.lock = CreateMutex(NULL, FALSE, get_global_name(AM_GLOBAL_PREFIX"am_log_lock", id));
             if (am_log_lck.lock == NULL && GetLastError() == ERROR_ACCESS_DENIED) {
-                am_log_lck.lock = OpenMutexA(SYNCHRONIZE, TRUE, AM_GLOBAL_PREFIX"am_log_lock");
+                am_log_lck.lock = OpenMutexA(SYNCHRONIZE, TRUE, get_global_name(AM_GLOBAL_PREFIX"am_log_lock", id));
             }
-            am_log_lck.new_data_cond = CreateEvent(NULL, FALSE, FALSE, AM_GLOBAL_PREFIX"am_log_queue_empty");
+            am_log_lck.new_data_cond = CreateEvent(NULL, FALSE, FALSE, get_global_name(AM_GLOBAL_PREFIX"am_log_queue_empty", id));
             if (am_log_lck.new_data_cond == NULL && GetLastError() == ERROR_ACCESS_DENIED) {
-                am_log_lck.new_data_cond = OpenEventA(SYNCHRONIZE, TRUE, AM_GLOBAL_PREFIX"am_log_queue_empty");
+                am_log_lck.new_data_cond = OpenEventA(SYNCHRONIZE, TRUE, get_global_name(AM_GLOBAL_PREFIX"am_log_queue_empty", id));
             }
-            am_log_lck.new_space_cond = CreateEvent(NULL, FALSE, FALSE, AM_GLOBAL_PREFIX"am_log_queue_overflow");
+            am_log_lck.new_space_cond = CreateEvent(NULL, FALSE, FALSE, get_global_name(AM_GLOBAL_PREFIX"am_log_queue_overflow", id));
             if (am_log_lck.new_space_cond == NULL && GetLastError() == ERROR_ACCESS_DENIED) {
-                am_log_lck.new_space_cond = OpenEventA(SYNCHRONIZE, TRUE, AM_GLOBAL_PREFIX"am_log_queue_overflow");
+                am_log_lck.new_space_cond = OpenEventA(SYNCHRONIZE, TRUE, get_global_name(AM_GLOBAL_PREFIX"am_log_queue_overflow", id));
             }
 
             log->owner = getpid();
@@ -578,9 +607,11 @@ void am_log_init(int status) {
 #endif
 }
 
-void am_log_init_worker(int status) {
+/*****************************************************************************************/
+
+void am_log_init_worker(int id, int status) {
 #ifdef _WIN32
-    am_log_init(status);
+    am_log_init(id, status);
 #endif
 }
 
@@ -751,7 +782,7 @@ void am_log_write(unsigned long instance_id, int level, const char* header, int 
 #endif
 }
 
-void am_log_shutdown() {
+void am_log_shutdown(int id) {
     static const char *thisfunc = "am_log_shutdown():";
     int i;
     int pid = getpid();
@@ -831,7 +862,7 @@ void am_log_shutdown() {
     }
 #endif
 
-    am_agent_instance_init_release(AM_TRUE);
+    am_agent_instance_init_release(id, AM_TRUE);
 
     free(am_log_handle);
     am_log_handle = NULL;
@@ -858,6 +889,8 @@ int am_log_get_current_owner() {
 #endif
     return rv;
 }
+
+/***************************************************************************/
 
 void am_log_register_instance(unsigned long instance_id, const char *debug_log, int log_level, int log_size,
         const char *audit_log, int audit_level, int audit_size) {
@@ -924,6 +957,8 @@ void am_log_register_instance(unsigned long instance_id, const char *debug_log, 
     }
 }
 
+/***************************************************************************/
+
 int get_valid_url_index(unsigned long instance_id) {
     int i, value = 0;
     struct am_log *log = AM_LOG();
@@ -951,6 +986,8 @@ int get_valid_url_index(unsigned long instance_id) {
 #endif
     return value;
 }
+
+/***************************************************************************/
 
 void set_valid_url_index(unsigned long instance_id, int value) {
     int i, set = AM_FALSE;
@@ -989,10 +1026,10 @@ void set_valid_url_index(unsigned long instance_id, int value) {
 #endif
 }
 
-int am_agent_instance_init_init() {
+int am_agent_instance_init_init(int id) {
     int status = AM_ERROR;
 #if defined(_WIN32)
-    ic_sem = CreateSemaphoreA(NULL, 1, 1, "Global\\"AM_CONFIG_INIT_NAME);
+    ic_sem = CreateSemaphoreA(NULL, 1, 1, get_global_name("Global\\"AM_CONFIG_INIT_NAME, id));
     if (ic_sem != NULL) {
         status = AM_SUCCESS;
     }
@@ -1002,7 +1039,7 @@ int am_agent_instance_init_init() {
         status = AM_SUCCESS;
     }
 #else
-    ic_sem = sem_open(AM_CONFIG_INIT_NAME, O_CREAT, 0600, 1);
+    ic_sem = sem_open(get_global_name(AM_CONFIG_INIT_NAME, id), O_CREAT, 0600, 1);
     if (ic_sem != SEM_FAILED) {
         status = AM_SUCCESS;
     }
@@ -1030,7 +1067,7 @@ void am_agent_instance_init_unlock() {
 #endif 
 }
 
-void am_agent_instance_init_release(char unlink) {
+void am_agent_instance_init_release(int id, char unlink) {
 #if defined(_WIN32)
     CloseHandle(ic_sem);
 #elif defined(__APPLE__)
@@ -1038,7 +1075,7 @@ void am_agent_instance_init_release(char unlink) {
 #else
     sem_close(ic_sem);
     if (unlink) {
-        sem_unlink(AM_CONFIG_INIT_NAME);
+        sem_unlink(get_global_name(AM_CONFIG_INIT_NAME, id));
     }
 #endif
 }

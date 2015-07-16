@@ -243,6 +243,58 @@ public class UmaSettingsImpl extends OpenAMSettingsImpl implements UmaSettings {
         }
     }
 
+    @Override
+    public boolean isEmailResourceOwnerOnPendingRequestCreationEnabled() throws ServerException {
+        try {
+            return getBooleanSetting(realm, EMAIL_RESOURCE_OWNER_ON_PENDING_REQUEST_CREATION);
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        }
+    }
+
+    @Override
+    public boolean isEmailRequestingPartyOnPendingRequestApprovalEnabled() throws ServerException {
+        try {
+            return getBooleanSetting(realm, EMAIL_REQUESTING_PARTY_ON_PENDING_REQUEST_APPROVAL);
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        }
+    }
+
+    @Override
+    public String getUserProfilePreferredLocaleAttribute() throws ServerException {
+        try {
+            return getStringSetting(realm, USER_PROFILE_PREFERRED_LOCAL_ATTRIBUTE);
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        }
+    }
+
+    @Override
+    public ResharingMode getResharingMode() throws ServerException {
+        try {
+            return ResharingMode.valueOf(getStringSetting(realm, RESHARING_MODE));
+        } catch (SMSException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        } catch (SSOException e) {
+            logger.error(e.getMessage());
+            throw new ServerException(e);
+        }
+    }
+
     /**
      * ServiceListener implementation to clear cache when it changes.
      */

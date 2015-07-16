@@ -4,11 +4,16 @@
     </span>
 
     <h4 class="page-type">{{t "console.scripts.edit.script"}}</h4>
+    <div class="page-header-button-group">
+        <button id="deleteScript" class="btn btn-primary" type="button" {{#unless entity.name}}disabled{{/unless}}>
+            <i class="fa fa-times"></i> {{t "common.form.delete"}}
+        </button>
+    </div>
     <h1>
         {{#if entity.name}}
         {{entity.name}}
         {{else}}
-        {{t "console.scripts.edit.createNew"}}
+        {{t "common.form.createNew"}}
         {{/if}}
     </h1>
 </div>
@@ -18,7 +23,7 @@
         <div class="panel-body">
             <!-- NAME -->
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{t "console.scripts.edit.name"}}</label>
+                <label class="col-sm-3 control-label">{{t "console.common.name"}}</label>
 
                 <div class="col-sm-7">
                     <input type="text" id="name" name="scriptName" class="form-control" value="{{entity.name}}"
@@ -28,7 +33,7 @@
 
             <!-- DESCRIPTION -->
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{t "console.scripts.edit.description"}}</label>
+                <label class="col-sm-3 control-label">{{t "console.common.description"}}</label>
 
                 <div class="col-sm-7">
                     <textarea id="description" class="form-control pull-left script-text" rows="3"
@@ -38,13 +43,13 @@
 
             <!-- CONTEXT -->
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{t "console.scripts.edit.context"}}</label>
+                <label class="col-sm-3 control-label">{{t "console.scripts.edit.scriptType"}}</label>
 
                 <div class="col-sm-7 script-context">
                     <span class="form-control" id="context">{{contextName}}</span>
-                    <a class="btn btn-default pull-right" id="changeContext" role="button">
-                        <span class="fa fa-gear"></span> {{t 'common.form.change'}}
-                    </a>
+                    <button type="button" id="changeContext" class="btn btn-default pull-right">
+                        <i class="fa fa-gear"></i> {{t "common.form.change"}}
+                    </button>
                 </div>
             </div>
 
@@ -84,8 +89,8 @@
 
         <div class="panel-footer clearfix">
             <div class="pull-right">
-                <a id="cancelEdit" class="btn btn-default" tabindex="0" role="button">{{t 'common.form.cancel'}}</a>
-                <input type="button" name="save" value="{{t 'common.form.save'}}" class="btn btn-primary">
+                <button id="revertChanges" class="btn btn-default" type="reset">{{t "common.form.revert"}}</button>
+                <button id="saveChanges" class="btn btn-primary" type="submit">{{t 'common.form.save'}}</button>
             </div>
         </div>
     </form>

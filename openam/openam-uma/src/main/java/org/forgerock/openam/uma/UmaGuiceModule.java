@@ -29,6 +29,10 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 import org.forgerock.guice.core.GuiceModule;
 import org.forgerock.guice.core.InjectorHolder;
+import org.forgerock.http.Client;
+import org.forgerock.http.HttpApplicationException;
+import org.forgerock.http.context.RootContext;
+import org.forgerock.http.handler.HttpClientHandler;
 import org.forgerock.oauth2.core.OAuth2RequestFactory;
 import org.forgerock.oauth2.core.TokenIntrospectionHandler;
 import org.forgerock.oauth2.core.TokenStore;
@@ -36,6 +40,7 @@ import org.forgerock.openam.cts.adapters.JavaBeanAdapter;
 import org.forgerock.openam.cts.api.tokens.TokenIdGenerator;
 import org.forgerock.openam.oauth2.AccessTokenProtectionFilter;
 import org.forgerock.openam.sm.datalayer.impl.uma.UmaAuditEntry;
+import org.forgerock.openam.sm.datalayer.impl.uma.UmaPendingRequest;
 import org.forgerock.openam.uma.audit.UmaAuditLogger;
 import org.forgerock.openam.utils.Config;
 import org.restlet.Request;
@@ -93,6 +98,12 @@ public class UmaGuiceModule extends AbstractModule {
 
     @Provides
     @Inject
+    public JavaBeanAdapter<UmaPendingRequest> getPendingRequestAdapter(TokenIdGenerator idFactory) {
+        return new JavaBeanAdapter<>(UmaPendingRequest.class, idFactory);
+    }
+
+    @Provides
+    @Inject
     @Singleton
     @Named(UmaConstants.PERMISSION_REQUEST_ENDPOINT)
     public Restlet createPermissionRequestEndpoint(TokenStore store, OAuth2RequestFactory<Request> requestFactory) {
@@ -111,4 +122,14 @@ public class UmaGuiceModule extends AbstractModule {
                         wrap(AuthorizationRequestEndpoint.class)));
     }
 
+    @Provides
+    @Named("UMA")
+    Client getHttpClient() {
+        try {
+            return new Client(new HttpClientHandler(), new RootContext());
+        } catch (HttpApplicationException e) {
+            throw new RuntimeException("Failed to create HTTP Client. "
+                    + "Is the HTTP Client binding present on the classpath?", e);
+        }
+    }
 }

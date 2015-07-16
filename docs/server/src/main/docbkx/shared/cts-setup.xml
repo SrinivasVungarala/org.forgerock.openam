@@ -88,20 +88,13 @@ printf "dn: $CTS_DN\n" >> $T/add-cts-entries.ldif
 printf 'objectclass: top\n' >> $T/add-cts-entries.ldif
 printf 'objectclass: domain\n' >> $T/add-cts-entries.ldif
 printf 'dc: cts\n' >> $T/add-cts-entries.ldif
-printf "aci: (targetattr=\"*\")(version 3.0;acl \"Allow entry search\"; \
- allow (search, read)(userdn = \
- "ldap:///uid=openam,ou=admins,$CTS_DN\");)\n" >> $T/add-cts-entries.ldif
-printf "aci: (targetattr=\"*\")(version 3.0;acl \"Modify config entry\"; \
- allow (write)(userdn = \
- "ldap:///uid=openam,ou=admins,$CTS_DN\");)\n" >> $T/add-cts-entries.ldif
+printf "aci: (targetattr=\"*\")(version 3.0;acl \"Allow CRUDQ operations\"; \
+ allow (search, read, write, add, delete)(userdn = \
+ \"ldap:///uid=openam,ou=admins,$CTS_DN\");)\n" >> $T/add-cts-entries.ldif
 printf "aci: (targetcontrol=\"2.16.840.1.113730.3.4.3\") \
  (version 3.0;acl \"Allow persistent search\"; \
  allow (search, read)(userdn = \
- "ldap:///uid=openam,ou=admins,$CTS_DN\");)\n" >> $T/add-cts-entries.ldif
-printf "aci: (version 3.0;acl \"Add config entry\"; allow (add)(userdn = \
- "ldap:///uid=openam,ou=admins,$CTS_DN\");)\n" >> $T/add-cts-entries.ldif
-printf "aci: (version 3.0;acl \"Delete config entry\"; allow (delete)(userdn = \
- "ldap:///uid=openam,ou=admins,$CTS_DN\");)\n" >> $T/add-cts-entries.ldif
+ \"ldap:///uid=openam,ou=admins,$CTS_DN\");)\n" >> $T/add-cts-entries.ldif
 printf '\n' >>$T/add-cts-entries.ldif
 printf "dn: ou=admins,$CTS_DN\n" >> $T/add-cts-entries.ldif
 printf 'objectclass: top\n' >> $T/add-cts-entries.ldif

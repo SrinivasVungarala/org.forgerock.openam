@@ -148,9 +148,7 @@
     	<antcall target="postNightlyBuildStep" inheritRefs="true"/>
         <antcall target="apache24" />
     	<antcall target="postNightlyBuildStep" inheritRefs="true"/>
-   <!--     <antcall target="sjsws" /> 
-        <antcall target="iis6" />
-        <antcall target="varnish" /> -->
+   <!-- <antcall target="varnish" /> -->
     </target>
 
     <target name="sjsws">

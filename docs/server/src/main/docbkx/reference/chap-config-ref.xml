@@ -5392,11 +5392,56 @@
        when used by the specified node(s).
       </para>
       <para>
-       Example:
-       <literal>opendj.example.com:389, opendj2.example.com:50389|server1|site1</literal>
+       You can configure this field for external token stores only.
       </para>
       <para>
-       You can configure this field for external token stores only.
+       Examples:
+       <variablelist>
+        <varlistentry>
+         <term>
+          <literal>cts-dj1.example.com:389,cts-dj2.example.com:389</literal>
+         </term>
+         <listitem>
+          <para>
+           Access <literal>cts-dj1.example.com:389</literal> for all CTS
+           operations unless that directory server goes down. If it goes down,
+           then access <literal>cts-dj2.example.com:389</literal>
+           for all CTS operations.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <literal>cts-dj1.example.com:389|1|1,cts-dj2.example.com:389|2|1</literal>
+         </term>
+         <listitem>
+          <para>
+           Access <literal>cts-dj1.example.com:389</literal> for all
+           CTS operations from server 1, site 1. Access
+           <literal>cts-dj2.example.com:389</literal> for all CTS operations
+           from server 2, site 1. If either of these servers goes down, do not
+           redirect operations to another directory server.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <literal>cts-dj1.example.com:389|1|1,cts-dj2.example.com:389|1|1,cts-dj2.example.com:389|2|1,cts-dj1.example.com:389|2|1</literal>
+         </term>
+         <listitem>
+          <para>
+           Access <literal>cts-dj1.example.com:389</literal> for all CTS
+           operations from server 1, site 1 unless that directory server goes
+           down. If it goes down, access <literal>cts-dj2.example.com:389</literal>
+           for all CTS operations from server 1, site 1. Access
+           <literal>cts-dj2.example.com:389</literal> for all CTS operations
+           from server 2, site 1 unless that directory server goes down. If it
+           goes down, access <literal>cts-dj1.example.com:389</literal> for all
+           CTS operations from server 2, site 1.
+          </para>
+         </listitem>
+        </varlistentry>
+       </variablelist>
       </para>
      </listitem>
     </varlistentry>
@@ -5532,6 +5577,10 @@
       are optional parameters that will prioritize that connection for use by
       the specified nodes. Multiple connection strings should be comma-separated,
       for example, <literal>host1:389,host2:50389|server1|site1,host3:50389</literal>.
+     </para>
+     <para>
+      See the entry for Connection String(s) in <xref linkend="servers-cts" />
+      for syntax examples.
      </para>
     </listitem>
    </varlistentry>

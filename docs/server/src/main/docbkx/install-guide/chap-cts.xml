@@ -456,25 +456,17 @@
 
      Give the regular administrative user access to
      add, delete, modify, read, and search CTS data,
-     by setting access control instructions on the Root Suffix entry for CTS data.
+     by setting an access control instruction on the Root Suffix entry for CTS data.
 
      The user in examples shown here has DN
      <literal>uid=openam,ou=admins,dc=cts,dc=example,dc=com</literal>, but
      set your DN to match your installation.
     </para>
 
-    <programlisting language="ldif">aci: (version 3.0;acl "Add config entry";
- allow (add)(userdn =
- "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)
-aci: (targetattr="*")(version 3.0;acl "Allow entry search";
- allow (search, read)(userdn =
- "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)
-aci: (targetattr="*")(version 3.0;acl "Modify entries";
- allow (write)(userdn =
- "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)
-aci: (version 3.0;acl "Delete entries";
- allow (delete)(userdn =
- "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)</programlisting>
+    <programlisting language="ldif">
+aci: (targetattr="*")(version 3.0;acl "Allow CRUDQ operations";
+   allow (add, search, read, write, delete)(userdn =
+   "ldap:///uid=openam,ou=admins,dc=cts,dc=example,dc=com");)</programlisting>
 
     <para>
      For detailed information on ACIs, with examples of how to use
@@ -489,7 +481,7 @@ aci: (version 3.0;acl "Delete entries";
      The Core Token Service performs search operations that use the
      simple paged results control, specified by the
      OID <literal>1.2.840.113556.1.4.319</literal>. OpenDJ's default global ACIs
-     allow3 access to this control. Be sure not to change the global ACIs to
+     allow access to this control. Be sure not to change the global ACIs to
      deny access.
     </para>
 

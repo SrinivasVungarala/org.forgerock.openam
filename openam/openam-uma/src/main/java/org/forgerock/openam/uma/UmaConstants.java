@@ -42,9 +42,16 @@ public final class UmaConstants {
 
     static final String RPT_LIFETIME_ATTR_NAME = "uma-rpt-lifetime";
     static final String PERMISSION_TIKCET_LIFETIME_ATTR_NAME = "uma-permission-ticket-lifetime";
-    public static final String DELETE_POLICIES_ON_RESOURCE_SERVER_DELETION = "uma-delete-policies-on-resource-server-deletion";
+    public static final String DELETE_POLICIES_ON_RESOURCE_SERVER_DELETION =
+            "uma-delete-policies-on-resource-server-deletion";
     public static final String DELETE_RESOURCE_SETS_ON_RESOURCE_SERVER_DELETION
             = "uma-delete-resource-sets-on-resource-server-deletion";
+    public static final String EMAIL_RESOURCE_OWNER_ON_PENDING_REQUEST_CREATION =
+            "emailResourceOwnerOnPendingRequestCreation";
+    public static final String EMAIL_REQUESTING_PARTY_ON_PENDING_REQUEST_APPROVAL
+            = "emailRequestingPartyOnPendingRequestApproval";
+    public static final String USER_PROFILE_PREFERRED_LOCAL_ATTRIBUTE = "userProfileLocaleAttribute";
+    public static final String RESHARING_MODE = "resharingMode";
     static final String SUPPORTED_PAT_PROFILES_ATTR_NAME = "uma-supported-pat-profiles";
     static final String SUPPORTED_AAT_PROFILES_ATTR_NAME = "uma-supported-aat-profiles";
     static final String SUPPORTED_RPT_PROFILES_ATTR_NAME = "uma-supported-rpt-profiles";
@@ -59,6 +66,7 @@ public final class UmaConstants {
     public static final String AUTHORIZATION_REQUEST_ENDPOINT = "authz-request-endpoint";
 
     static final String NOT_AUTHORISED_ERROR_CODE = "not_authorised";
+    static final String REQUEST_SUBMITTED_ERROR_CODE = "request_submitted";
     static final String INVALID_TICKET_ERROR_CODE = "invalid_ticket";
     static final String EXPIRED_TICKET_ERROR_CODE = "expired_ticket";
 
@@ -68,19 +76,20 @@ public final class UmaConstants {
         static final String PERMISSIONS = "permissions";
     }
 
-    static final class UmaPolicy {
-        static final String POLICY_ID_KEY = "policyId";
+    public static final class UmaPolicy {
+        public static final String POLICY_ID_KEY = "policyId";
+        public static final String PERMISSIONS_KEY = "permissions";
+        public static final String SUBJECT_KEY = "subject";
+        public static final String SCOPES_KEY = "scopes";
         static final String POLICY_NAME = "name";
-        static final String PERMISSIONS_KEY = "permissions";
-        static final String SUBJECT_KEY = "subject";
-        static final String SCOPES_KEY = "scopes";
     }
 
-    static final class BackendPolicy {
+    public static final class BackendPolicy {
+        public static final String BACKEND_POLICY_RESOURCE_TYPE_KEY = "resourceTypeUuid";
+        public static final String BACKEND_POLICY_ACTION_VALUES_KEY = "actionValues";
+        public static final String BACKEND_POLICY_SUBJECT_CLAIM_VALUE_KEY = "claimValue";
         static final String BACKEND_POLICY_NAME_KEY = "name";
         static final String BACKEND_POLICY_RESOURCES_KEY = "resources";
-        static final String BACKEND_POLICY_RESOURCE_TYPE_KEY = "resourceTypeUuid";
-        static final String BACKEND_POLICY_ACTION_VALUES_KEY = "actionValues";
         static final String BACKEND_POLICY_SUBJECT_KEY = "subject";
         static final String BACKEND_POLICY_SUBJECT_TYPE_KEY = "type";
         static final String BACKEND_POLICY_SUBJECT_TYPE_OR = "OR";
@@ -88,6 +97,5 @@ public final class UmaConstants {
         static final String BACKEND_POLICY_SUBJECTS_KEY = "subjects";
         static final String BACKEND_POLICY_SUBJECT_CLAIM_NAME_KEY = "claimName";
         static final String BACKEND_POLICY_SUBJECT_CLAIM_NAME = "sub";
-        static final String BACKEND_POLICY_SUBJECT_CLAIM_VALUE_KEY = "claimValue";
     }
 }
