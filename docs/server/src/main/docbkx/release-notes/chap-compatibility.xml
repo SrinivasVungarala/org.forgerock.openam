@@ -354,7 +354,7 @@ $ <userinput>curl \
   <!-- Deprecated features in 13.0 -->
   <section>
 
-   <title>Functionality Deprecated in OpenAM 13</title>
+   <title>Functionality Deprecated in OpenAM ${serverDocTargetVersion}</title>
 
    <para>The following functionality is deprecated in OpenAM
     ${serverDocTargetVersion}, and is likely to be removed in a future
@@ -364,9 +364,17 @@ $ <userinput>curl \
    <itemizedlist>
 
     <listitem>
-     <para>
-      TODO: Update for the next release
-     </para>
+     <para>Older REST services relying on the following endpoints are
+      deprecated.</para>
+
+     <itemizedlist>
+      <listitem><para><literal>/identity/getCookieNameForToken</literal></para></listitem>
+      <listitem><para><literal>/identity/getCookieNamesToForward</literal></para></listitem>
+      <listitem><para><literal>/identity/log</literal></para></listitem>
+     </itemizedlist>
+
+     <para>Support for the older REST services is likely to be removed in a
+      future release in favor of the newer REST services.</para>
     </listitem>
 
    </itemizedlist>
@@ -394,132 +402,12 @@ $ <userinput>curl \
     </listitem>
 
     <listitem>
-     <para>Older REST services relying on the following endpoints are
-      deprecated.</para>
-
-     <itemizedlist>
-      <listitem><para><literal>/identity/authorize</literal></para></listitem>
-      <listitem><para><literal>/identity/isTokenValid</literal></para></listitem>
-      <listitem><para><literal>/ws/1/entitlement/decision</literal></para></listitem>
-      <listitem><para><literal>/ws/1/entitlement/decisions</literal></para></listitem>
-      <listitem><para><literal>/ws/1/entitlement/entitlement</literal></para></listitem>
-      <listitem><para><literal>/ws/1/entitlement/entitlements</literal></para></listitem>
-     </itemizedlist>
-
-     <para>The following table shows how legacy and newer endpoints
-      correspond.</para>
-
-     <table pgwide="1">
-      <title>REST Endpoints</title>
-
-      <tgroup cols="2">
-       <colspec colnum="1" colwidth="1*"/>
-       <colspec colnum="2" colwidth="1*"/>
-
-       <thead>
-        <row>
-         <entry><link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                      xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link> URIs</entry>
-         <entry>Newer <link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                            xlink:role="http://docbook.org/xlink/role/olink">Evolving</link> URIs</entry>
-        </row>
-       </thead>
-
-       <tbody>
-
-        <row>
-         <entry><literal>/identity/authorize</literal></entry>
-         <entry><literal>/json/policies?_action=evaluate</literal>,
-          <literal>/json/policies?_evaluateTree</literal></entry>
-        </row>
-
-        <row>
-         <entry><literal>/identity/isTokenValid</literal></entry>
-         <entry><literal>/json/sessions/<replaceable>tokenId</replaceable>?_action=validate</literal></entry>
-        </row>
-
-        <row>
-         <entry><literal>/ws/1/entitlement/decision</literal>,
-          <literal>/ws/1/entitlement/decisions</literal>,
-          <literal>/ws/1/entitlement/entitlement</literal>,
-          <literal>/ws/1/entitlement/entitlements</literal></entry>
-         <entry><literal>/json/policies?_action=evaluate</literal>,
-          <literal>/json/policies?_evaluateTree</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/applications</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/applicationtypes</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/conditiontypes</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/dashboard</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/decisionscombiners</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/policies</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/referrals</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/serverinfo</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/subjectattributes</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/json/subjecttypes</literal></entry>
-        </row>
-
-        <row>
-         <entry>N/A</entry>
-         <entry><literal>/xacml/policies</literal></entry>
-        </row>
-       </tbody>
-      </tgroup>
-     </table>
-
-     <para>Find examples in the <citetitle>Developer Guide</citetitle> chapter <link
-      xlink:href="dev-guide#sec-rest" xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"><citetitle>Using RESTful Web Services</citetitle></link>.</para>
-
-     <para>Support for the older REST services is likely to be removed in a
-      future release in favor of the newer REST services.</para>
-    </listitem>
-
-    <listitem>
-     <para>With the implementation of XACML 3.0 support when importing and
-     exporting policies the following <option>ssoadm</option> commands
-      have been replaced:</para>
+     <para>With the implementation of XACML 3.0 support, when importing and
+     exporting policies, the following <command>ssoadm</command> commands
+     have been replaced.</para>
 
      <table>
-     <title>Policy Import and Export with ssoadm</title>
+     <title>Policy Import and Export With <command>ssoadm</command></title>
 
      <tgroup cols="2">
      <colspec colnum="1" colwidth="1*"/>
@@ -611,98 +499,6 @@ $ <userinput>curl \
 
   </section>
 
-  <!-- Deprecated features in 11.0 -->
-  <section>
-
-   <title>Functionality Deprecated Since OpenAM 11</title>
-
-   <para>
-    The following functionality was deprecated in OpenAM 11,
-    and is likely to be removed in a future release.
-   </para>
-
-   <itemizedlist>
-
-    <listitem>
-     <para>Older REST services relying on the following endpoints are
-      deprecated.</para>
-
-     <itemizedlist>
-      <listitem><para><literal>/identity/attributes</literal></para></listitem>
-      <listitem><para><literal>/identity/authenticate</literal></para></listitem>
-      <listitem><para><literal>/identity/create</literal></para></listitem>
-      <listitem><para><literal>/identity/delete</literal></para></listitem>
-      <listitem><para><literal>/identity/logout</literal></para></listitem>
-      <listitem><para><literal>/identity/read</literal></para></listitem>
-      <listitem><para><literal>/identity/search</literal></para></listitem>
-      <listitem><para><literal>/identity/update</literal></para></listitem>
-     </itemizedlist>
-
-     <para>The following table shows how legacy and newer endpoints
-      correspond.</para>
-
-     <table pgwide="1">
-      <title>REST Endpoints</title>
-
-      <tgroup cols="2">
-       <colspec colnum="1" colwidth="1*"/>
-       <colspec colnum="2" colwidth="1*"/>
-
-       <thead>
-        <row>
-         <entry><link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                      xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link> URIs</entry>
-         <entry>Newer <link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                            xlink:role="http://docbook.org/xlink/role/olink">Evolving</link> URIs</entry>
-        </row>
-       </thead>
-
-       <tbody>
-        <row>
-         <entry><literal>/identity/attributes</literal></entry>
-         <entry><literal>/json/users</literal></entry>
-        </row>
-
-        <row>
-         <entry><literal>/identity/authenticate</literal></entry>
-         <entry><literal>/json/authenticate</literal></entry>
-        </row>
-
-        <row>
-         <entry><literal>/identity/create</literal>, <literal>/identity/delete</literal>,
-          <literal>/identity/read</literal>, <literal>/identity/search</literal>,
-          <literal>/identity/update</literal></entry>
-         <entry><literal>/json/agents</literal>, <literal>/json/groups</literal>,
-          <literal>/json/realms</literal>, <literal>/json/users</literal></entry>
-        </row>
-
-        <row>
-         <entry><literal>/identity/logout</literal></entry>
-         <entry><literal>/json/sessions/?_action=logout</literal></entry>
-        </row>
-
-       </tbody>
-      </tgroup>
-     </table>
-
-     <para>Find examples in the <citetitle>Developer Guide</citetitle> chapter <link
-      xlink:href="dev-guide#sec-rest" xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"><citetitle>Using RESTful Web Services</citetitle></link>.</para>
-
-     <para>Support for the older REST services is likely to be removed in a
-      future release in favor of the newer REST services.</para>
-    </listitem>
-
-    <listitem>
-     <para>With the implementation of the Persistent Cookie authentication module, the
-     Core Authentication module persistent cookie options are deprecated and are
-     likely to be removed in a future release.</para>
-    </listitem>
-
-   </itemizedlist>
-
-  </section>
-
   <!-- Deprecated features in 10.0 -->
   <section>
 
@@ -740,18 +536,12 @@ $ <userinput>curl \
  <section xml:id="removed">
   <title>Removed Functionality</title>
 
+  <para>
+   The following functionality has been removed from OpenAM:
+  </para>
+
   <!-- Features removed from 13.0 -->
   <itemizedlist>
-   <listitem>
-    <para>
-     The "Persistent Cookie (Legacy)" settings in the Core Authentication
-     module have been removed. Configure persistent cookies with the
-     <link
-      xlink:href="admin-guide#persistent-cookie"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"><citetitle>Persistent Cookie module</citetitle></link>.
-    </para>
-   </listitem>
 
    <!-- OPENAM-3714 -->
    <listitem>
@@ -801,7 +591,45 @@ $ <userinput>curl \
     </para>
    </listitem>
 
+   <listitem>
+    <para>
+     REST services relying on the following endpoints have been removed
+     from OpenAM.
+    </para>
+    <itemizedlist>
+     <listitem><para><literal>/identity/attributes</literal></para></listitem>
+     <listitem><para><literal>/identity/authenticate</literal></para></listitem>
+     <listitem><para><literal>/identity/authorize</literal></para></listitem>
+     <listitem><para><literal>/identity/create</literal></para></listitem>
+     <listitem><para><literal>/identity/delete</literal></para></listitem>
+     <listitem><para><literal>/identity/isTokenValid</literal></para></listitem>
+     <listitem><para><literal>/identity/logout</literal></para></listitem>
+     <listitem><para><literal>/identity/read</literal></para></listitem>
+     <listitem><para><literal>/identity/search</literal></para></listitem>
+     <listitem><para><literal>/identity/update</literal></para></listitem>
+     <listitem><para><literal>/ws/1/entitlement/decision</literal></para></listitem>
+     <listitem><para><literal>/ws/1/entitlement/decisions</literal></para></listitem>
+     <listitem><para><literal>/ws/1/entitlement/entitlement</literal></para></listitem>
+     <listitem><para><literal>/ws/1/entitlement/entitlements</literal></para></listitem>
+     <listitem><para><literal>/ws/1/entitlement/listener</literal></para></listitem>
+     <listitem><para><literal>/ws/1/entitlement/privilege</literal></para></listitem>
+     <listitem><para><literal>/ws/1/token</literal></para></listitem>
+    </itemizedlist>
+   </listitem>
+
+   <listitem>
+    <para>
+     The Persistent Cookie (Legacy) settings in the Core Authentication
+     module have been removed. Configure persistent cookies with the
+     <link
+      xlink:href="admin-guide#persistent-cookie"
+      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:show="new"><citetitle>Persistent Cookie module</citetitle></link>.
+    </para>
+   </listitem>
+
   </itemizedlist>
+
  </section>
 
 </chapter>
