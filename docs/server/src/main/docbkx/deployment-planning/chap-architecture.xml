@@ -122,6 +122,8 @@
      to accommodate the number of users in your system.
      Horizontal scaling involves adding additional host servers, possibly
      behind a load balancer, so that the servers can function as a single unit.
+     Configuring OpenAM to issue stateless sessions greatly simplifies
+     deployment when using horizontal scaling.
     </para>
    </listitem>
 
@@ -132,11 +134,21 @@
      single points of failure and for continuous availability.
      Based on the size of your deployment, you can create an architecture using
      a single-site configuration. For larger deployments, consider implementing a
-     multi-site configuration with replication over WAN, sticky load-balancing,
-     and session failover.
+     multi-site configuration with replication over WAN in combination with one
+     of the following two alternatives:
+     <itemizedlist>
+      <listitem>
+       <para>
+        Stateless sessions
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Sticky load-balancing and session failover
+       </para>
+      </listitem>
+     </itemizedlist>
     </para>
-   </listitem>
-   <listitem>
     <para><emphasis role="bold">Which type of clients will be supported?</emphasis>
      The type of client determines the components required for the deployment.
      For example, applications supported in a Web server require the use of a
@@ -341,6 +353,12 @@
         <primary>architecting</primary>
         <secondary>horizontal scaling</secondary>
        </indexterm>
+      </para>
+     </listitem>
+     <listitem>
+      <para>Determine whether to configure OpenAM to issue stateful or stateless
+       sessions. Stateless sessions allow for easier horizontal scaling but
+       do not provide equivalent functionality to stateful sessions.
       </para>
      </listitem>
      <listitem>
@@ -1019,6 +1037,13 @@
       in the event of a failure or network partition,
       CTS data must be replicated rapidly including across WAN links.
       This can affect network sizing for the directory service.
+     </para>
+
+     <para>
+      When configured to issue stateless sessions, OpenAM does
+      <emphasis>not</emphasis> write the stateless sessions to CTS. Instead,
+      OpenAM uses CTS for session blacklists. Session blacklisting is an
+      optional OpenAM feature that provides logout integrity.
      </para>
     </listitem>
 
