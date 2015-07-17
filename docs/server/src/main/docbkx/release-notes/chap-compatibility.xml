@@ -341,6 +341,38 @@ $ <userinput>curl \
     </para>
    </listitem>
 
+   <!-- AME-6845 -->
+   <listitem>
+    <para>
+     The OpenAM administrative user now needs access to the server-side sort
+     control on the configuration data store. If you use an external
+     configuration store, you must add an access control instruction (ACI)
+     to the configuration store, similar to the following:
+     <programlisting language="ldif">
+aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
+ server-side sorting"; allow (read)(userdn = "ldap:///
+ uid=openam,ou=admins,dc=example,dc=com");)</programlisting>
+    </para>
+    <para>
+     If you are upgrading from a previous release of OpenAM,
+     see the step to add the ACI to the external configuration store
+     in  <link xlink:show="new"
+               xlink:href="upgrade-guide#upgrade-server"
+               xlink:role="http://docbook.org/xlink/role/olink"
+     >To Upgrade From OpenAM 9.5 or Later</link> in the
+     <citetitle>Upgrade Guide</citetitle> for more information.
+    </para>
+    <para>
+     If you are a new OpenAM user,
+     see the step to add the ACI to the external configuration store
+     in  <link xlink:show="new"
+               xlink:href="install-guide#install-prepare-opendj-external-config-store"
+               xlink:role="http://docbook.org/xlink/role/olink"
+     >To Install an External OpenDJ Directory Server</link> in the
+     <citetitle>Installation Guide</citetitle> for more information.
+    </para>
+   </listitem>
+
   </itemizedlist>
  </section>
 

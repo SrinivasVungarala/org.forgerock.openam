@@ -212,6 +212,28 @@ Upgrade Complete.
   </step>
 
   <step performance="optional">
+   <para>If you installed OpenAM using an external directory server as the
+    configuration store, add an access control instruction (ACI) to the external
+    directory to give the OpenAM administrative user server-side sorting
+    privileges.
+   </para>
+   <para>The ACI should be similar to the following:
+    <programlisting language="ldif">
+aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
+ server-side sorting"; allow (read)(userdn = "ldap:///
+ uid=openam,ou=admins,dc=example,dc=com");)</programlisting>
+    </para>
+    <para>
+     See <link xlink:show="new"
+               xlink:href="install-guide#prepare-configuration-store"
+               xlink:role="http://docbook.org/xlink/role/olink">
+     <citetitle>Preparing an External Configuration Data Store</citetitle></link>
+     for more information about using an external directory server as the
+     OpenAM configuration store.
+    </para>
+  </step>
+
+  <step performance="optional">
    <para>If you want to configure the upgraded system for the Core Token Service (CTS),
    read <link xlink:show="new"
    xlink:href="install-guide#chap-cts" xlink:role="http://docbook.org/xlink/role/olink">
