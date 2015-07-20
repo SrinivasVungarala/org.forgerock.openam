@@ -586,13 +586,61 @@
       can trust the Active Directory certificate when using this option.</para>
       <para>OpenAM first attempts to contact primary servers. If no primary
       server is available, then OpenAM attempts to contact secondaries.</para>
-      <para>When authenticating users from a directory server that is remote
-      from OpenAM, set both the primary and secondary server values.</para>
-      <para><command>ssoadm</command> attributes: primary is
-      <literal>iplanet-am-auth-ldap-server</literal>; secondary is
-      <literal>iplanet-am-auth-ldap-server2</literal></para>
+      <para>
+       When authenticating users from a directory server that is remote
+       to OpenAM, set the primary server values, and optionally the secondary server
+       values. Primary servers have priority over secondary servers.
+      </para>
+      <para><command>ssoadm</command> attributes are: primary is
+       <literal>iplanet-am-auth-ldap-server</literal>; secondary is
+       <literal>iplanet-am-auth-ldap-server2</literal>.
+      </para>
+      <para>
+       Both properties take more than one value; thus, allowing more than one primary
+       or secondary remote server, respectively. Assuming a multi-data center
+       environment, OpenAM determines priority within
+       the primary and secondary remote servers, respectively, as follows:
+      </para>
+      <itemizedlist>
+       <listitem>
+        <para>
+         Every LDAP server that is mapped to the current OpenAM instance has highest
+         priority.
+        </para>
+        <para>
+         For example, if you are connected to <literal>openam1.example.com</literal>
+         and <literal>ldap1.example.com</literal> is mapped to that OpenAM instance,
+         then OpenAM uses <literal>ldap1.example.com</literal>.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Every LDAP server that was not specifically mapped to a given OpenAM instance has
+         the next highest priority.
+        </para>
+        <para>
+         For example, if you have another LDAP server, <literal>ldap2.example.com</literal>,
+         that is not connected to a specific OpenAM server and if <literal>ldap1.example.com</literal>
+         is unavailable, OpenAM connects to the next highest priority LDAP server,
+         <literal>ldap2.example.com</literal>.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         LDAP servers that are mapped to different OpenAM instances have the
+         lowest priority.
+        </para>
+        <para>
+         For example, if <literal>ldap3.example.com</literal> is connected to
+         <literal>openam3.example.com</literal> and <literal>ldap1.example.com</literal>
+         and <literal>ldap2.example.com</literal> are unavailable, then
+         <literal>openam1.example.com</literal> connects to <literal>ldap3.example.com</literal>.
+        </para>
+       </listitem>
+      </itemizedlist>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>DN to Start User Search</term>
      <listitem>
@@ -607,6 +655,7 @@
       <literal>iplanet-am-auth-ldap-base-dn</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Bind User DN, Bind User Password</term>
      <listitem>
@@ -628,6 +677,7 @@
       <literal>iplanet-am-auth-ldap-bind-passwd</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
         <term>Attributes Used to Retrieve User Profile</term>
         <term>Attributes Used to Search for a User to be Authenticated</term>
@@ -673,6 +723,7 @@
       <literal>iplanet-am-auth-ldap-search-scope</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>SSL/TLS Access to Active Directory Server</term>
      <listitem>
@@ -3235,7 +3286,7 @@ the '%' character is not included in the properties.
        due to maintenance or to a problem with a particular server.
       </para>
       <para>
-       Set one primary and optionally one secondary directory server for
+       Set one or more primary and optionally one or more secondary directory server for
        each OpenAM server. For the current OpenAM server, specify each directory
        server as a
        <literal><replaceable>host</replaceable>:<replaceable>port</replaceable></literal>
@@ -3253,21 +3304,66 @@ the '%' character is not included in the properties.
        and the directory server is accessible at <literal>opendj.example.com:1389</literal>,
        you would enter <literal>openam.example.com|opendj.example.com:1389</literal>.
       </para>
-         <!-- Possible future change per OPENAM-1361 -->
+
       <para>
-       When authenticating users from a directory service that is remote
-       from OpenAM, set both the primary and secondary server values.
+       When authenticating users from a directory server that is remote
+       to OpenAM, set the primary server values, and optionally the secondary server
+       values. Primary servers have priority over secondary servers.
       </para>
+      <para><command>ssoadm</command> attributes are: primary is
+       <literal>iplanet-am-auth-ldap-server</literal>; secondary is
+       <literal>iplanet-am-auth-ldap-server2</literal>.
+      </para>
+      <para>
+       Both properties take more than one value; thus, allowing more than one primary
+       or secondary remote server, respectively. Assuming a multi-data center
+       environment, OpenAM determines priority within
+       the primary and secondary remote servers, respectively, as follows:
+      </para>
+      <itemizedlist>
+       <listitem>
+        <para>
+         Every LDAP server that is mapped to the current OpenAM instance has highest
+         priority.
+        </para>
+        <para>
+         For example, if you are connected to <literal>openam1.example.com</literal>
+         and <literal>ldap1.example.com</literal> is mapped to that OpenAM instance,
+         then OpenAM uses <literal>ldap1.example.com</literal>.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Every LDAP server that was not specifically mapped to a given OpenAM instance has
+         the next highest priority.
+        </para>
+        <para>
+         For example, if you have another LDAP server, <literal>ldap2.example.com</literal>,
+         that is not connected to a specific OpenAM server and if <literal>ldap1.example.com</literal>
+         is unavailable, OpenAM connects to the next highest priority LDAP server,
+         <literal>ldap2.example.com</literal>.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         LDAP servers that are mapped to different OpenAM instances have the
+         lowest priority.
+        </para>
+        <para>
+         For example, if <literal>ldap3.example.com</literal> is connected to
+         <literal>openam3.example.com</literal> and <literal>ldap1.example.com</literal>
+         and <literal>ldap2.example.com</literal> are unavailable, then
+         <literal>openam1.example.com</literal> connects to <literal>ldap3.example.com</literal>.
+        </para>
+       </listitem>
+      </itemizedlist>
       <para>
        If you want use SSL or StartTLS to initiate a secure connection to a data store,
        then scroll down to enable SSL/TLS Access to LDAP Server.
-       Make sure that OpenAM can trust the servers' certificates when using this option.
+       Make sure that OpenAM can trust the server's certificates when using this option.
       </para>
       <para>
-       <command>ssoadm</command> attributes:
-       primary is <literal>iplanet-am-auth-ldap-server</literal>,
-       secondary is <literal>iplanet-am-auth-ldap-server2</literal>, and
-       <literal>openam-auth-ldap-connection-mode</literal>
+       <command>ssoadm</command> attributes: <literal>openam-auth-ldap-connection-mode</literal>
       </para>
       <para>
        Possible values: <literal>LDAP</literal>, <literal>LDAPS</literal>, and
@@ -3348,6 +3444,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-auth-ldap-search-scope</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>SSL/TLS Access to LDAP Server</term>
      <listitem>
@@ -3396,6 +3493,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-ldap-user-creation-attr-list</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Minimum Password Length</term>
      <listitem>
@@ -3404,6 +3502,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-auth-ldap-min-password-length</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>LDAP Behera Password Policy Support</term>
      <listitem>
@@ -3425,6 +3524,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-auth-ldap-behera-password-policy-enabled</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Trust All Server Certificates</term>
      <listitem>
@@ -4755,14 +4855,49 @@ the '%' character is not included in the properties.
     <varlistentry>
      <term>Primary Radius Servers, Secondary Radius Servers</term>
      <listitem>
-      <para>Specify the IP address or fully qualified domain name of the
+      <para>Specify the IP address or fully qualified domain name of one or more
       primary RADIUS server. The default is <literal>127.0.0.1</literal>
-      (localhost loopback).</para>
+      (localhost loopback), and optionally, set secondary servers.</para>
+
       <para><command>ssoadm</command> attribute:
       <literal>primary is iplanet-am-auth-radius-server1</literal>;
       secondary is <literal>iplanet-am-auth-radius-server2</literal></para>
+
+     <para>
+      When authenticating users from a directory server that is remote
+      to OpenAM, set the primary values, and optionally, the secondary server values.
+      Primary servers have priority over secondary servers.
+     </para>
+     <para>
+      Both properties take more than one value; thus, allowing more than one primary
+      or secondary remote server, respectively. Assuming a multi-data center
+      environment, OpenAM determines priority within
+      the primary and secondary remote servers, respectively, as follows:
+     </para>
+      <itemizedlist>
+       <listitem>
+        <para>
+         Every RADIUS server that is mapped to the current OpenAM instance has highest
+         priority.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Every RADIUS server that was not specifically mapped to a given OpenAM instance has
+         the next highest priority.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         RADIUS servers that are mapped to different OpenAM instances have the
+         lowest priority.
+        </para>
+       </listitem>
+      </itemizedlist>
      </listitem>
     </varlistentry>
+
+
     <varlistentry>
      <term>Shared Secret</term>
      <listitem>
@@ -4772,6 +4907,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-auth-radius-secret</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Port Number</term>
      <listitem>
@@ -4780,6 +4916,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-auth-radius-server-port</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Timeout</term>
      <listitem>
@@ -4789,6 +4926,7 @@ the '%' character is not included in the properties.
       <literal>iplanet-am-auth-radius-timeout</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Health check interval</term>
      <listitem>
@@ -4799,6 +4937,7 @@ the '%' character is not included in the properties.
       <literal>openam-auth-radius-healthcheck-interval</literal></para>
      </listitem>
     </varlistentry>
+
     <varlistentry>
      <term>Authentication Level</term>
      <listitem>

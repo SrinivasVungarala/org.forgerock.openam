@@ -28,6 +28,7 @@
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
+ xmlns:xlink='http://www.w3.org/1999/xlink'
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <info>
   <xinclude:include href="../shared/mediaobject-fr-logo.xml" />
@@ -40,7 +41,7 @@
   </abstract>
   <copyright>
    <year>2011-2015</year>
-   <holder>ForgeRock AS.</holder>
+   <holder>ForgeRock AS</holder>
   </copyright>
   <authorgroup>
    <author>
@@ -50,17 +51,7 @@
    </author>
    <author>
     <personname>
-     <firstname>David</firstname> <surname>Goldsmith</surname>
-    </personname>
-   </author>
-   <author>
-    <personname>
      <firstname>Gene</firstname> <surname>Hirayama</surname>
-    </personname>
-   </author>
-   <author>
-    <personname>
-     <firstname>Chris</firstname> <surname>Lee</surname>
     </personname>
 
     <xinclude:include href="../shared/affiliation-fr.xml"/>
