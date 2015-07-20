@@ -146,7 +146,8 @@
 
     <para>
      In OpenAM session failover is different from service failover.
-     Session failover consists of maintaining redundant session information,
+     Session failover consists of maintaining redundant information for stateful
+     sessions,
      so that if a server fails, another server recovers the session information,
      preventing the user from having to authenticate again.
      Service failover alone consists of maintaining redundant servers,
@@ -270,7 +271,7 @@
 
    <listitem>
     <para>
-     For a service that stores sessions, access, and refresh tokens,
+     For a service that stores stateful sessions, access, and refresh tokens,
      or other authentication-related data in the CTS backing store,
      what is the average session or access/refresh token size?
      What is the average total size of CTS data?
@@ -289,7 +290,7 @@
     </para>
 
     <para>
-     For example, suppose that the deployment only handles SSO sessions,
+     For example, suppose that the deployment only handles stateful SSO sessions,
      session entries occupy on average 20 KB of memory,
      and that you anticipate on average 100,000 active sessions.
      In that case, you would estimate the need
@@ -339,7 +340,8 @@
     </para>
 
     <para>
-     Much of the network traffic between OpenAM servers
+     In OpenAM deployments using stateful sessions,
+     much of the network traffic between OpenAM servers
      consists of notifications and crosstalk.
      When the session state changes on session creation and destruction,
      the OpenAM server performing the operations can notify other servers.
@@ -476,7 +478,7 @@
    <para>
     Memory depends on space for OpenAM code,
     on the number of live connections OpenAM maintains,
-    on caching of configuration data, user profile data, and session data,
+    on caching of configuration data, user profile data, and stateful session data,
     and importantly, on holding embedded directory server data in memory.
     The OpenAM code in memory probably never changes while the server is running,
     as JSPs deployed are unlikely ever to change in production.
