@@ -382,7 +382,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
   </itemizedlist>
 
   <!-- Changes for OpenAM 12.0.0 -->
-  <itemizedlist>
+  <itemizedlist>>
    <para>
     The following changes were listed for OpenAM 12.0.0:
    </para>
@@ -397,8 +397,11 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
        the installer or upgrader will interactively present a license agreement
        screen to the user.</para>
    </listitem>
+  </itemizedlist>
+ </section>
 
-   <title>Functionality Deprecated in OpenAM ${serverDocTargetVersion}</title>
+ <section>
+  <title>Functionality Deprecated in OpenAM ${serverDocTargetVersion}</title>
 
     <itemizedlist>
      <para>
@@ -630,6 +633,10 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
          /ws/1/entitlement/entitlement, /ws/1/entitlement/entitlements</entry>
         <entry>/json/policies?_action=evaluate, /json/policies?_evaluateTree</entry>
        </row>
+     </tbody>
+     </tgroup>
+    </table>
+   </listitem>
 
    <listitem>
     <para>The Netscape LDAP API is to be removed from OpenAM, with OpenAM
@@ -702,7 +709,6 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
   <!-- Features removed from 13.0 -->
   <itemizedlist>
-
    <!-- OPENAM-3714 -->
    <listitem>
     <para>
@@ -736,11 +742,13 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
       >OPENAM-5097</link>.
     </para>
    </listitem>
+
    <listitem>
     <para>
      REST services relying on the following endpoints have been removed
      from OpenAM.
     </para>
+
     <itemizedlist>
      <listitem><para><literal>/identity/attributes</literal></para></listitem>
      <listitem><para><literal>/identity/authenticate</literal></para></listitem>
