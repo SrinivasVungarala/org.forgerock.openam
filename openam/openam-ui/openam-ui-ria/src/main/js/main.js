@@ -37,10 +37,9 @@ require.config({
         "clockPicker" : "libs/bootstrap-clockpicker-0.0.7-min",
         "doTimeout"   : "libs/jquery.ba-dotimeout-1.0-min",
         "form2js"     : "libs/form2js-2.0",
-        "handlebars"  : "libs/handlebars-1.3.0-min",
+        "handlebars"  : "libs/handlebars-3.0.3-min",
         "i18next"     : "libs/i18next-1.7.3-min",
         "jquery"      : "libs/jquery-2.1.1-min",
-        "jqueryui"    : "libs/jquery-ui-1.11.1-min", // TODO this is used only for date picker, remove it and use something more lightweight
         "js2form"     : "libs/js2form-2.0",
         "jsonEditor"  : "libs/jsoneditor-custom.min",
         "moment"      : "libs/moment-2.8.1-min",
@@ -64,7 +63,7 @@ require.config({
             deps: ["underscore"],
             exports: "Backbone"
         },
-        "backbone.paginator":{
+        "backbone.paginator": {
             deps: ["backbone"]
         },
         "backbone-relational": {
@@ -109,9 +108,6 @@ require.config({
         "form2js": {
             exports: "form2js"
         },
-        "handlebars": {
-            exports: "handlebars"
-        },
         "i18next": {
             deps: ["jquery", "handlebars"],
             exports: "i18next"
@@ -121,10 +117,6 @@ require.config({
         },
         "jsonEditor": {
             exports: "JSONEditor"
-        },
-        "jqueryui": {
-            deps: ["jquery"],
-            exports: "jqueryui"
         },
         "moment": {
             exports: "moment"
@@ -197,11 +189,11 @@ require([
     "org/forgerock/openam/ui/admin/main",
     "sortable",
     "qrcode"
-], function(constants, eventManager, $, _, Backbone) {
+], function (Constants, EventManager, $, _, Backbone) {
     // Helpers for the code that hasn't been properly migrated to require these as explicit dependencies:
     window.$ = $;
     window._ = _;
     window.Backbone = Backbone;
 
-    eventManager.sendEvent(constants.EVENT_DEPENDECIES_LOADED);
+    EventManager.sendEvent(Constants.EVENT_DEPENDECIES_LOADED);
 });

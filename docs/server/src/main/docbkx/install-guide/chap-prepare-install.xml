@@ -1330,8 +1330,9 @@ $ <userinput>bin/dsconfig create-backend \
     </para>
     <para>
      When OpenAM connects as <literal>uid=openam,ou=admins,dc=example,dc=com</literal>
-     to an external directory server to store its data, it requires both read,
-     write, and persistent search access privileges. You add these privileges by
+     to an external directory server to store its data, it requires read,
+     write, persistent search, and server-side sorting access privileges.
+     You add these privileges by
      setting access control instructions (ACIs) on the base distinguished name
      (DN) entry (<literal>dc=example,dc=com</literal>). If your OpenAM user has
      a DN other than <literal>uid=openam,ou=admins,dc=example,dc=com</literal>,
@@ -1366,6 +1367,9 @@ aci: (targetattr="*")(version 3.0;acl "Allow CRUDQ operations";
 aci: (targetcontrol="2.16.840.1.113730.3.4.3")(version 3.0;acl "Allow
  persistent search"; allow (search, read)(userdn = "ldap:///uid=openam
  ,ou=admins,dc=example,dc=com");)
+aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
+ server-side sorting"; allow (read)(userdn = "ldap:///
+ uid=openam,ou=admins,dc=example,dc=com");)
 
 dn: ou=admins,dc=example,dc=com
 objectclass: top

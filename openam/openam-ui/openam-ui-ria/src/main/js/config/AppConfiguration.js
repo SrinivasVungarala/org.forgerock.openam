@@ -104,7 +104,6 @@ define("config/AppConfiguration", [
                             "templates/admin/views/realms/policies/policies/conditions/ConditionAttrTime.html",
                             "templates/admin/views/realms/policies/policies/conditions/ConditionAttrDay.html",
                             "templates/admin/views/realms/policies/policies/conditions/ConditionAttrDate.html",
-                            "templates/admin/views/realms/policies/policies/conditions/ConditionAttrTimeZone.html",
                             "templates/admin/views/realms/policies/policies/conditions/ListItem.html",
                             "templates/admin/views/realms/policies/policies/conditions/LegacyListItem.html",
                             "templates/admin/views/realms/policies/policies/StripedListActionItemTemplate.html",
@@ -115,6 +114,11 @@ define("config/AppConfiguration", [
                             "templates/uma/backgrid/cell/RevokeCell.html",
                             "templates/uma/backgrid/cell/SelectizeCell.html",
                             "templates/user/ConfirmPasswordDialogTemplate.html"
+                        ],
+                        partialUrls: [
+                            "partials/form/_JSONSchemaFooter.html",
+                            "partials/headers/_Title.html",
+                            "partials/headers/_TitleWithSubAndIcon.html"
                         ]
                     }
                 },

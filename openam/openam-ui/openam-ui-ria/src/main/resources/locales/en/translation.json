@@ -248,6 +248,7 @@
             "false" : "False",
             "update" : "Update",
             "save" : "Save",
+            "saveChanges": "Save Changes",
             "create" : "Create",
             "cancel" : "Cancel",
             "reset" : "Reset",
@@ -507,7 +508,7 @@
                 },
                 "sharedResources": {
                     "title": "Shared with me",
-                    "grid": ["Resource", "From", "Permissions"]
+                    "grid": ["Resource", "From", "Permissions", "Shared By"]
                 },
                 "revokeAllResourcesSuccess" : "All resources successfully revoked",
                 "revokeAllResourcesFail" : "We have been unable revoke access to your resources. Please contact your Administrator"
@@ -559,17 +560,14 @@
         },
         "authentication": {
             "settings": {
-                "title": "Authentication Settings",
-                "description": "",
-                "revert": "Revert",
-                "saveChanges": "Save Changes"
+                "title": "Authentication Settings"
             },
             "modules": {
                 "title" : "Authentication Modules",
                 "description" : "OpenAM uses authentication modules to identify the user. Normally authentication modules are associated with an authentication chain. Each realm has a default authentication chain that will be used to authenticate users. This section is used to add, configure or remove authentication module available for authentication into this realm.",
                 "addModuleDialogTitle" : "Create new Module",
                 "addModuleDialogError": "Authentication instance already exists.",
-                "selectModuleType" : "Select Module type",
+                "selectModuleType" : "Select Module type   ",
                 "addModule": "Add Module",
                 "moduleName": "Module Name",
                 "moduleType": "Type"

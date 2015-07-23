@@ -292,14 +292,13 @@ $ <userinput>curl \
  --data \
  '{
     "username":"myAgent",
-    "realm":"/",
     "com.sun.identity.agents.config.fqdn.default":
       ["www.example.com"],
     "com.sun.identity.agents.config.repository.location":
       ["centralized"],
     "agenttype":["WebAgent"],
-    "serverUrl":["https://openam.example.com:8443/openam/"],
-    "agentUrl":["http://www.example.com:80/"],
+    "serverurl":["https://openam.example.com:8443/openam/"],
+    "agenturl":["http://www.example.com:80/"],
     "userpassword":["password"],
     "com.sun.identity.agents.config.login.url":
       ["[0]=https://openam.example.com:8443/openam/UI/Login"],

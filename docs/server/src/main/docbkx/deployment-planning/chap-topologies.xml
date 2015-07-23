@@ -458,6 +458,15 @@
   </para>
 
   <para>
+   Directing OpenAM requests to the authoritative server is
+   necessary only for OpenAM deployments that use stateful sessions. Because
+   stateless sessions reside in the session token cookie
+   (default: <literal>iPlanetDirectoryPro</literal>) rather than on the OpenAM
+   server, any OpenAM server in a cluster can handle a request with a stateless
+   session without crosstalk.
+  </para>
+
+  <para>
    To direct requests directly to the authoritative OpenAM server, the load
    balancer should use the value specified in the OpenAM load balancer cookie,
    <literal>amlbcookie</literal>, which you can configure to uniquely identify
@@ -469,6 +478,7 @@
    OpenAM server should receive the request.
    This ensures that all subsequent requests
    involving the session are routed to the correct server.</para>
+
   </section>
 
  <section xml:id="openam-agents">
@@ -571,11 +581,21 @@
     </listitem>
     <listitem>
      <para><emphasis role="bold">Notifications</emphasis>. Both agents have the
-      ability to receive configuration and session notifications from OpenAM.
-      Both can also be configured in cross-domain single sign-on (CDSSO) mode.
+      ability to receive configuration notifications from OpenAM. In deployments
+      with stateful sessions, both agents can receive session notifications
+      from OpenAM.
       <indexterm>
        <primary>policy agents</primary>
        <secondary>notifications</secondary>
+      </indexterm>
+     </para>
+    </listitem>
+    <listitem>
+     <para><emphasis role="bold">Cross-Domain Single Sign-On</emphasis>. In
+      deployments with stateful sessions, both agents can be configured for
+      cross-domain single sign-on (CDSSO).
+      <indexterm>
+       <primary>cross-domain single sign-on</primary>
       </indexterm>
      </para>
     </listitem>
@@ -701,7 +721,8 @@
    </note>
 
    <para>
-    Within each site, you configure each server for session failover, in which
+    In OpenAM deployments with stateful sessions, you configure each server in a site for
+    session failover, in which
     the user's authenticated session continues uninterrupted in the event one of
     the servers go down.
     Session failover uses OpenAM's CTS to store and share user
@@ -720,6 +741,12 @@
     <link xlink:href="${docSetBaseURL}/install-guide/#chap-session-failover"
           xlink:show="new">
      <citetitle>OpenAM Session Failover</citetitle></link>.
+   </para>
+
+   <para>
+    OpenAM deployments with stateless sessions do not use the CTS for
+    session storage and retrieval to achieve session failover. Instead, the
+    session is stored in a browser cookie.
    </para>
 
    <para>
@@ -820,7 +847,7 @@
    <title>Multiple Sites</title>
    <para>
     Another deployment variation is to set up multiple redundant sites, typically across a
-    WAN network, which provides high availability through system and session failover.
+    WAN network, which provides high availability for stateful sessions through system and session failover.
     This setup can be seen in <xref linkend="figure-site-deployment-multi-site-2"/>
     If the load balancer in one site goes down, the other site can resume
     processing requests with the authenticated user session running without
@@ -992,7 +1019,8 @@
      <emphasis role="bold">CTS Data Stores</emphasis>.
      The CTS provides persistent and highly available token
      storage for OpenAM session, OAuth 2.0, and SAML 2.0 tokens.
-     If configured, CTS supports session token persistence for session failover.
+     If configured, CTS supports session token persistence for stateful session
+     failover.
      <indexterm>
       <primary>CTS data stores</primary>
       <secondary>described</secondary>
@@ -1079,7 +1107,7 @@
    The Web and application servers have the Web policy agent and Java EE policy agent
    installed on each server respectively.
    OpenAM is deployed on Tomcat hosted on a Linux server. Within each datacenter,
-   the OpenAM servers are configured as sites for failover and session failover
+   the OpenAM servers are configured as sites for failover and stateful session failover
    capabilities.
   </para>
   <para>

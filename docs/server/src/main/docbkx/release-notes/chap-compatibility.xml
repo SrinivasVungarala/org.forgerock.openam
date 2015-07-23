@@ -37,232 +37,233 @@
  <section xml:id="changes">
   <title>Important Changes to Existing Functionality</title>
 
-  <!-- New features in 13.0 -->
+  <!-- Changes for 13.0.0 -->
+
   <itemizedlist>
+   <para>
+    These changes are new in OpenAM ${serverDocTargetVersion}:
+   </para>
 
+   <!-- OPENAM-3575/6212 -->
    <listitem>
     <para>
-     The <literal>applications</literal> REST endpoint has changed.
+     <emphasis role="bold">AD/LDAP/RADIUS Authentication Modules Allow More Than One
+      Primary/Secondary Server</emphasis>. The Active Directory, LDAP, and
+     RADIUS authentication modules now allow one or more servers to be designated
+     as primary or secondary servers.
     </para>
     <para>
-     With the introduction of
-     <link xlink:show="new" xlink:href="admin-guide#what-is-authz-policies"
-      xlink:role="http://docbook.org/xlink/role/olink">resource types</link> into
-     the policy model the <literal>/json/applications</literal> endpoint has
-     changed, and the <link xlink:show="new"
-                            xlink:href="dev-guide#rest-api-versioning"
-      xlink:role="http://docbook.org/xlink/role/olink">REST resource
-     version</link> upped to <literal>2.0</literal>.</para>
-    <para>
-     Version 2.0 of the endpoint includes a new <literal>resourceTypeUuids</literal>
-     field in the JSON representation of applications, which holds the UUIDs of
-     the associated resource types. The <literal>resources</literal> and
-     <literal>actions</literal> fields have been removed. Version 1.0 of the
-     endpoint is unchanged, providing backwards compatibility.
+     When authenticating users from a directory server that is remote
+     to OpenAM, set the primary server values, and optionally, the secondary server
+     values. Primary servers have priority over secondary servers.
     </para>
-    <para>Any existing applications will be converted to use the version 2.0
-     JSON representation when upgrading OpenAM instances.</para>
+    <para><command>ssoadm</command> attributes are: primary is
+     <literal>iplanet-am-auth-ldap-server</literal>; secondary is
+     <literal>iplanet-am-auth-ldap-server2</literal>.
+    </para>
+    <para>
+     Both properties take more than one value; thus, allowing more than one primary
+     or secondary remote server, respectively. Assuming a multi-data center
+     environment, OpenAM determines priority within
+     the primary and secondary remote servers, respectively, as follows:
+    </para>
     <itemizedlist>
      <listitem>
-      <para><literal>/json/applications</literal> endpoint version 2.0</para>
-<screen>
-$ <userinput>curl \
-  --header "Content-Type: application/json" \
-  --header  "Accept-API-Version: resource=2.0, protocol=1.0" \
-  --header "iPlanetDirectoryPro: AQIC5..." \
-  https://openam.example.com:8443/openam/json/applications/myapplication
-</userinput><computeroutput>{
-    "creationDate": 1431363195434,
-    "lastModifiedDate": 1431363197721,
-    "conditions": [
-        "NOT",
-        "SimpleTime"
-    ],
-    "resourceComparator": null,
-    "attributeNames": [ ],
-    "saveIndex": null,
-    "searchIndex": null,
-    "editable": true,
-    "applicationType": "iPlanetAMWebAgentService",
-    "subjects": [
-        "AuthenticatedUsers",
-        "Identity",
-        "NOT",
-        "AND",
-        "OR"
-    ],
-    "entitlementCombiner": "DenyOverride",
-    "resourceTypeUuids": [
-        "12345a67-8f0b-123c-45de-6fab78cd01e4"
-    ],
-    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "description": "My example application.",
-    "realm": "/",
-    "name": "myapplication"
-}</computeroutput></screen>
+      <para>
+       Every LDAP server that is mapped to the current OpenAM instance has highest
+       priority.
+      </para>
+      <para>
+       For example, if you are connected to <literal>openam1.example.com</literal>
+       and <literal>ldap1.example.com</literal> is mapped to that OpenAM instance,
+       then OpenAM uses <literal>ldap1.example.com</literal>.
+      </para>
      </listitem>
      <listitem>
-      <para><literal>/json/applications</literal> endpoint version 1.0</para>
-<screen>
-$ <userinput>curl \
-  --header "Content-Type: application/json" \
-  --header  "Accept-API-Version: resource=1.0, protocol=1.0" \
-  --header "iPlanetDirectoryPro: AQIC5..." \
-  https://openam.example.com:8443/openam/json/applications/myapplication
-</userinput><computeroutput>{
-    "creationDate": 1431363195434,
-    "lastModifiedDate": 1431363197721,
-    "conditions": [
-    "NOT",
-        "SimpleTime"
-    ],
-    "resourceComparator": null,
-    "attributeNames": [ ],
-    "saveIndex": null,
-    "searchIndex": null,
-    "editable": true,
-    "applicationType": "iPlanetAMWebAgentService",
-    "subjects": [
-        "AuthenticatedUsers",
-        "Identity",
-        "NOT",
-        "AND",
-        "OR"
-    ],
-    "entitlementCombiner": "DenyOverride",
-    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "description": "My example application.",
-    "realm": "/",
-    "name": "myapplication",
-    "actions": {
-        "POST": true,
-        "PATCH": true,
-        "GET": true,
-        "DELETE": true,
-        "OPTIONS": true,
-        "PUT": true,
-        "HEAD": true
-    },
-    "resources": [
-        "*://*:*/*?*",
-        "*://*:*/*"
-    ]
-}</computeroutput></screen>
+      <para>
+       Every LDAP server that was not specifically mapped to a given OpenAM instance has
+       the next highest priority.
+      </para>
+      <para>
+       For example, if you have another LDAP server, <literal>ldap2.example.com</literal>,
+       that is not connected to a specific OpenAM server and if <literal>ldap1.example.com</literal>
+       is unavailable, OpenAM connects to the next highest priority LDAP server,
+       <literal>ldap2.example.com</literal>.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       LDAP servers that are mapped to different OpenAM instances have the
+       lowest priority.
+      </para>
+      <para>
+       For example, if <literal>ldap3.example.com</literal> is connected to
+       <literal>openam3.example.com</literal> and <literal>ldap1.example.com</literal>
+       and <literal>ldap2.example.com</literal> are unavailable, then
+       <literal>openam1.example.com</literal> connects to <literal>ldap3.example.com</literal>.
+      </para>
      </listitem>
     </itemizedlist>
-    <para>For more information, see
-     <link xlink:show="new" xlink:href="dev-guide#rest-api-authz-applications"
-      xlink:role="http://docbook.org/xlink/role/olink">Managing Applications</link>.</para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3575"
+      xlink:show="new"
+      >OPENAM-3575</link>.
+    </para>
    </listitem>
+  </itemizedlist>
 
+
+  <!-- Changes for 12.0.1 -->
+  <itemizedlist>
+   <para>
+    These changes are new in OpenAM 12.0.1:
+   </para>
+
+   <!-- OPENAM-718 -->
    <listitem>
     <para>
-     The <literal>policies</literal> REST endpoint has changed.
+     <emphasis role="bold">Agent Group Membership Now Stored in Agent Profile</emphasis>.
+     The agent group membership information is now stored as part of the agent
+     profile using the <literal>agentgroup</literal>
+     attribute. You can now assign an agent to a group by simply setting the
+     <literal>agentgroup</literal> property upon creation.
+     You can also use the <command>ssoadm</command> <command>show-agent</command> command
+     to return the group membership detail in the <literal>agentgroup</literal>
+     attribute.
+     Note that the existing <command>ssoadm</command>
+     commands (for example, <literal>add-agent-to-grp</literal>
+     and <literal>remove-agent-from-grp</literal>) are still the preferred methods
+     for managing group membership information.
     </para>
     <para>
-     With the introduction of
-     <link xlink:show="new" xlink:href="admin-guide#what-is-authz-policies"
-      xlink:role="http://docbook.org/xlink/role/olink">resource types</link> into
-     the policy model the <literal>/json/policies</literal> endpoint has
-     changed, and the <link xlink:show="new"
-                            xlink:href="dev-guide#rest-api-versioning"
-      xlink:role="http://docbook.org/xlink/role/olink">REST resource
-     version</link> upped to <literal>2.0</literal>.</para>
-    <para>
-     Version 2.0 of the endpoint includes a new <literal>resourceTypeUuid</literal>
-     field in the JSON representation of policies, which holds the UUID of the
-     associated resource type. Version 1.0 of the endpoint is unchanged,
-     providing backwards compatibility.
+     During upgrade, agent profiles will be automatically upgraded to use the new
+     <literal>agentgroup</literal> attribute to store the group's name.
     </para>
-    <para>Any existing policies will be converted to use the version 2.0
-     JSON representation when upgrading OpenAM instances.</para>
-    <itemizedlist>
-     <listitem>
-      <para><literal>/json/policies</literal> endpoint v2.0</para>
-<screen>
-$ <userinput>curl \
-  --header "Content-Type: application/json" \
-  --header  "Accept-API-Version: resource=2.0, protocol=1.0" \
-  --header "iPlanetDirectoryPro: AQIC5..." \
-  https://openam.example.com:8443/openam/json/policies/mypolicy
-</userinput><computeroutput>{
-    "name": "mypolicy",
-    "active": true,
-    "description": "My example policy.",
-    "applicationName": "iPlanetAMWebAgentService",
-    "actionValues": {
-        "GET": true
-    },
-    "resources": [
-        "http://www.example.com:80/*",
-        "http://www.example.com:80/*?*"
-    ],
-    "subject": {
-        "type": "AuthenticatedUsers"
-    },
-    "resourceTypeUuid": "12345a67-8f0b-123c-45de-6fab78cd01e4",
-    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "lastModifiedDate": "2015-05-14T15:20:35.550Z",
-    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "creationDate": "2015-05-11T17:37:24.556Z"
-}</computeroutput></screen>
-     </listitem>
-     <listitem>
-      <para><literal>/json/policies</literal> endpoint v1.0</para>
-<screen>
-$ <userinput>curl \
-  --header "Content-Type: application/json" \
-  --header  "Accept-API-Version: resource=1.0, protocol=1.0" \
-  --header "iPlanetDirectoryPro: AQIC5..." \
-  https://openam.example.com:8443/openam/json/policies/mypolicy
-</userinput><computeroutput>{
-    "name": "mypolicy",
-    "active": true,
-    "description": "My example policy.",
-    "applicationName": "iPlanetAMWebAgentService",
-    "actionValues": {
-        "GET": true
-    },
-    "resources": [
-        "http://www.example.com:80/*",
-        "http://www.example.com:80/*?*"
-    ],
-    "subject": {
-        "type": "AuthenticatedUsers"
-    },
-    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "lastModifiedDate": "2015-05-14T15:20:35.550Z",
-    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
-    "creationDate": "2015-05-11T17:37:24.556Z"
-}</computeroutput></screen>
-     </listitem>
-    </itemizedlist>
-    <para>For more information, see
-     <link xlink:show="new" xlink:href="dev-guide#rest-api-authz-policies"
-      xlink:role="http://docbook.org/xlink/role/olink">Managing Policies</link>.
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-718"
+      xlink:show="new"
+      >OPENAM-718</link>.
     </para>
    </listitem>
 
+   <!-- OPENAM-3333 -->
    <listitem>
     <para>
-     The <literal>users</literal> REST endpoint has changed.
+     <emphasis role="bold">Updated web.xml for WebLogic</emphasis>.
+     When running OpenAM on WebLogic 11g, you must add a WebLogic-specific descriptor
+     file, <filename>WEB-INF/weblogic.xml</filename> in the <literal>.war</literal>
+     before deployment. The descriptor file maps resources defined for OpenAM in
+     WebLogic deployments.
     </para>
     <para>
-     Versions 1.2 and 2.1 of the endpoint include a new <literal>roles</literal>
-     field in the JSON representation of a user, with a value of
-     <literal>ui-admin</literal>, if an administrator is querying their own user
-     details. Versions 1.1 and 2.0 of the endpoint are unchanged.
+     An example <literal>web.xml</literal> file is presented below.
     </para>
-    <para>For more information, see
-     <olink targetdoc="dev-guide" targetptr="rest-api-read-identity" />.
+    <screen>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-web-app
+     http://xmlns.oracle.com/weblogic/weblogic-web-app/1.3/weblogic-web-app.xsd">
+      &lt;context-root>/openam&lt;/context-root>
+      &lt;container-descriptor>
+       &lt;prefer-application-packages>
+        &lt;!-- Use bundled Jersey library -->
+        &lt;package-name>com.sun.jersey.*&lt;/package-name>
+        &lt;package-name>com.sun.research.ws.wadl.*&lt;/package-name>
+        &lt;package-name>com.sun.ws.rs.ext.*&lt;/package-name>
+
+        &lt;!-- Rhino -->
+        &lt;package-name>org.mozilla.javascript.*&lt;/package-name>
+
+        &lt;package-name>org.apache.commons.lang.*&lt;/package-name>
+      &lt;/prefer-application-packages>
+     &lt;/container-descriptor>
+ &lt;/weblogic-web-app>
+    </screen>
+    <para>
+     For more information see, <link
+     xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3333"
+     xlink:show="new"
+     >OPENAM-3333</link>.
+    </para>
+   </listitem>
+
+   <!-- OPENAM-3575/6212 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">AD/LDAP/RADIUS Authentication Modules Allow More Than One
+      Primary/Secondary Server</emphasis>. The Active Directory, LDAP, and
+     RADIUS authentication modules now allow one or more servers to be designated
+     as primary or secondary servers.
+    </para>
+    <para>
+     When authenticating users from a directory server that is remote
+     to OpenAM, set the primary server values, and optionally the secondary server
+     values. Primary servers have priority over secondary servers.
+    </para>
+    <para><command>ssoadm</command> attributes are: primary is
+     <literal>iplanet-am-auth-ldap-server</literal>; secondary is
+     <literal>iplanet-am-auth-ldap-server2</literal>.
+    </para>
+    <para>
+     Both properties take more than one value; thus, allowing more than one primary
+     or secondary remote server, respectively. Assuming a multi-data center
+     environment, OpenAM determines priority within
+     the primary and secondary remote servers, respectively, as follows:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       Every LDAP server that is mapped to the current OpenAM instance has highest
+       priority.
+      </para>
+      <para>
+       For example, if you are connected to <literal>openam1.example.com</literal>
+       and <literal>ldap1.example.com</literal> is mapped to that OpenAM instance,
+       then OpenAM uses <literal>ldap1.example.com</literal>.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Every LDAP server that was not specifically mapped to a given OpenAM instance has
+       the next highest priority.
+      </para>
+      <para>
+       For example, if you have another LDAP server, <literal>ldap2.example.com</literal>,
+       that is not connected to a specific OpenAM server and if <literal>ldap1.example.com</literal>
+       is unavailable, OpenAM connects to the next highest priority LDAP server,
+       <literal>ldap2.example.com</literal>.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       LDAP servers that are mapped to different OpenAM instances have the
+       lowest priority.
+      </para>
+      <para>
+       For example, if <literal>ldap3.example.com</literal> is connected to
+       <literal>openam3.example.com</literal> and <literal>ldap1.example.com</literal>
+       and <literal>ldap2.example.com</literal> are unavailable, then
+       <literal>openam1.example.com</literal> connects to <literal>ldap3.example.com</literal>.
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3575"
+      xlink:show="new"
+      >OPENAM-3575</link>.
     </para>
    </listitem>
 
    <!-- OPENAM-3714 -->
    <listitem>
     <para>
+     <emphasis role="bold">StartTLS Support for IdRepo</emphasis>.
      You can now use StartTLS to initiate secure connections to an OpenAM Identity
      Repository.
      A new property, <literal>sun-idrepo-ldapv3-config-connection-mode</literal>,
@@ -279,9 +280,10 @@ $ <userinput>curl \
     <para>
      OpenAM automatically updates the <literal>sun-idrepo-ldapv3-config-ssl-enabled</literal>
      property to the <literal>sun-idrepo-ldapv3-config-connection-mode</literal> property
-     when you upgrade to OpenAM 13. You must manually set the value of
-     the <literal>sun-idrepo-ldapv3-config-connection-mode</literal> to "StartTLS"
-     to initiate a StartTLS connection to the data store.
+     when you upgrade.
+     To enable StartTLS, set
+     the <literal>sun-idrepo-ldapv3-config-connection-mode</literal> property
+     to "StartTLS".
      You will also need to update existing <command>ssoadm</command> scripts to
      use the new property,
     </para>
@@ -297,19 +299,23 @@ $ <userinput>curl \
    <!-- OPENAM-4333 -->
    <listitem>
     <para>
-     <emphasis role="bold">Move of Oauth 2.0 Well-Known Endpoints</emphasis>.
+     <emphasis role="bold">Move of OAuth 2.0 Well-Known Endpoints</emphasis>.
      The well-known endpoints have been moved from
      <literal>/openam/.well-known</literal> to <literal>/openam/oauth2/.well-known</literal>.
-     (<link
+    </para>
+    <para>
+     For more information, see
+     <link
      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-4333"
      xlink:show="new"
-     >OPENAM-4333</link>).
+     >OPENAM-4333</link>.
     </para>
    </listitem>
 
    <!-- OPENAM-5097 -->
    <listitem>
     <para>
+     <emphasis role="bold">StartTLS Support For AD/LDAP Authentication Moduels</emphasis>.
      You can now use StartTLS with the Active Directory
      and LDAP authentication modules to secure OpenAM's connection to the data stores.
      A new property, <literal>openam-auth-ldap-connection-mode</literal>,
@@ -326,7 +332,7 @@ $ <userinput>curl \
     <para>
      OpenAM automatically updates the <literal>iplanet-am-auth-ldap-ssl-enabled</literal>
      property to the <literal>openam-auth-ldap-connection-mode</literal> property
-     when you upgrade to OpenAM 13. You must manually set the value of
+     when you upgrade. You must manually set the value of
      the <literal>openam-auth-ldap-connection-mode</literal> to "StartTLS"
      to initiate a StartTLS connection to the data store.
      You will also need to update existing <command>ssoadm</command> scripts to
@@ -341,29 +347,72 @@ $ <userinput>curl \
     </para>
    </listitem>
 
+   <!-- AME-6845 -->
+   <listitem>
+    <para>
+     The OpenAM administrative user now needs access to the server-side sort
+     control on the configuration data store. If you use an external
+     configuration store, you must add an access control instruction (ACI)
+     to the configuration store, similar to the following:
+     <programlisting language="ldif">
+aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
+ server-side sorting"; allow (read)(userdn = "ldap:///
+ uid=openam,ou=admins,dc=example,dc=com");)</programlisting>
+    </para>
+    <para>
+     If you are upgrading from a previous release of OpenAM,
+     see the step to add the ACI to the external configuration store
+     in  <link xlink:show="new"
+               xlink:href="upgrade-guide#upgrade-server"
+               xlink:role="http://docbook.org/xlink/role/olink"
+     >To Upgrade From OpenAM 9.5 or Later</link> in the
+     <citetitle>Upgrade Guide</citetitle> for more information.
+    </para>
+    <para>
+     If you are a new OpenAM user,
+     see the step to add the ACI to the external configuration store
+     in  <link xlink:show="new"
+               xlink:href="install-guide#install-prepare-opendj-external-config-store"
+               xlink:role="http://docbook.org/xlink/role/olink"
+     >To Install an External OpenDJ Directory Server</link> in the
+     <citetitle>Installation Guide</citetitle> for more information.
+    </para>
+   </listitem>
+
+  </itemizedlist>
+
+  <!-- Changes for OpenAM 12.0.0 -->
+  <itemizedlist>>
+   <para>
+    The following changes were listed for OpenAM 12.0.0:
+   </para>
+   <listitem>
+       <para>All OpenAM core server, tools, and agent installers now display a
+        software license acceptance screen prior to configuration.
+        You must agree to the license to continue the configuration. </para>
+       <para>For users implementing scripted or silent installs, the installers
+       and upgrader tools provide a <option>--acceptLicense</option> command-line
+       option, indicating that you have read and accepted the terms of the
+       license. If the option is not present on the command-line invocation,
+       the installer or upgrader will interactively present a license agreement
+       screen to the user.</para>
+   </listitem>
   </itemizedlist>
  </section>
 
- <section xml:id="deprecated">
-  <title>Deprecated Functionality</title>
+ <section>
+  <title>Functionality Deprecated in OpenAM ${serverDocTargetVersion}</title>
 
-   <para>
-    This sections covers deprecated functionality in OpenAM.
-   </para>
-  
-  <!-- Deprecated features in 13.0 -->
-  <section>
+    <itemizedlist>
+     <para>
+      OpenAM has changed its internal representation for policies
+      to better fit the underlying implementation,
+      which is based on a new engine
+      designed for higher performance and finer grained policies.
+      When you upgrade to this version,
+      OpenAM migrates your policies to the new representation.
+     </para>
 
-   <title>Functionality Deprecated in OpenAM ${serverDocTargetVersion}</title>
-
-   <para>The following functionality is deprecated in OpenAM
-    ${serverDocTargetVersion}, and is likely to be removed in a future
-    release.
-   </para>
-
-   <itemizedlist>
-
-    <listitem>
      <para>Older REST services relying on the following endpoints are
       deprecated.</para>
 
@@ -375,31 +424,149 @@ $ <userinput>curl \
 
      <para>Support for the older REST services is likely to be removed in a
       future release in favor of the newer REST services.</para>
-    </listitem>
 
-   </itemizedlist>
+     <listitem>
+      <para>
+       Existing policies with multiple resource rules
+       map to multiple new policies.
+      </para>
 
-  </section>
+      <para>
+       When a single policy maps to multiple policies during migration,
+       OpenAM appends a number to the existing name for each new policy.
+       This allows you to recognize the set of policies
+       when you must manage them together,
+       for example to change them all in the same way.
+      </para>
 
-  <!-- Deprecated features in 12.0 -->
-  <section>
+      <para>
+       This behavior is to optimize policy evaluation performance.
+       The newer policy engine matches resources to policies during evaluation
+       with indexing that proves very efficient
+       as long as each policy specifies one resource pattern.
+       OpenAM processes the list of resources in policies in linear fashion,
+       so long lists of resources can slow policy evaluation.
+      </para>
+     </listitem>
 
-   <title>Functionality Deprecated Since OpenAM 12</title>
+     <listitem>
+      <para>
+       Conditions in existing policies map to newer representations.
+      </para>
 
-   <para>
-    The following functionality was deprecated in OpenAM 12,
-    and is likely to be removed in a future release.
-   </para>
+      <para>
+       New representations exist for all existing conditions
+       provided in OpenAM out of the box.
+       Custom conditions developed for your deployment
+       do not map to any of the newer conditions provided.
+       In that case you must implement your custom conditions
+       by implementing the newer service provider interfaces,
+       and then replace your existing policies to use them.
+      </para>
 
-   <itemizedlist>
+      <para>
+       To see how to implement a custom policy plugin,
+       see the <citetitle>Developer's Guide</citetitle> chapter,
+       <link
+        xlink:href="dev-guide#chap-policy-spi"
+        xlink:show="new"
+        xlink:role="http://docbook.org/xlink/role/olink"
+       ><citetitle>Customizing Policy Evaluation</citetitle></link>.
+      </para>
+     </listitem>
 
-    <listitem>
+     <listitem>
+      <para>
+       When OpenAM encounters issues migrating policies during upgrade,
+       it writes messages about the problems in the upgrade log.
+       When you open a policy in the policy editor
+       that caused problems during the upgrade process
+       the policy editor shows the issues,
+       but does not let you fix them directly.
+       Instead you must create equivalent, corrected policies
+       in order to use them in OpenAM.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       It is strongly recommended <emphasis>not</emphasis> to use the
+       forward slash character
+       in policy names. Users running OpenAM servers on Tomcat
+       and JBoss web containers will not be able to manipulate policies
+       with the forward slash character in their names without setting the
+       <literal>&#x2011;Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true</literal>
+       argument in the <literal>CATALINA_OPTS</literal> environment variable
+       before starting the OpenAM web container.
+      </para>
+      <para>
+       It is also strongly recommended not to enable
+       the <literal>ALLOW_ENCODED_SLASH=true</literal> setting while running
+       OpenAM in production. Using this option introduces a security risk.
+       See
+       <link
+        xlink:href="http://tomcat.apache.org/security-6.html#Fixed_in_Apache_Tomcat_6.0.10
+        ">Apache Tomcat 6.x Vulnerabilities</link>
+       and
+       <link
+        xlink:href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0450
+        ">the related CVE</link>
+       for more information.
+      </para>
+      <para>
+       If you have policy names with forward slashes after
+       migration to OpenAM 12, rename the policies so that they
+       do not have forward slashes. Perform the following steps
+       if you use Tomcat or JBoss as your OpenAM web container:
+       <orderedlist>
+        <listitem>
+         <para>
+           Stop the OpenAM web container.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          Add the
+          <literal>&#x2011;Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true</literal>
+          setting to the <literal>CATALINA_OPTS</literal> environment variable.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          Restart the OpenAM web container.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          Rename any policies with forward slashes in their names.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          Stop the OpenAM web container.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          Remove the
+          <literal>&#x2011;Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true</literal>
+          setting from the <literal>CATALINA_OPTS</literal> environment variable.
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          Restart the OpenAM web container.
+         </para>
+        </listitem>
+       </orderedlist>
+      </para>
+     </listitem>
+    </itemizedlist>
+
+    <itemizedlist>
      <para>
-      Classic (JATO-based) UI is deprecated for end user pages.
-      OpenAM offers the JavaScript-based XUI as a replacement.
-      Classic UI for end user pages is likely to be removed in a future release.
+      OpenAM configuration has changed in several ways to accommodate
+      the changes to the way policies are managed:
      </para>
-    </listitem>
 
     <listitem>
      <para>With the implementation of XACML 3.0 support, when importing and
@@ -410,130 +577,130 @@ $ <userinput>curl \
      <title>Policy Import and Export With <command>ssoadm</command></title>
 
      <tgroup cols="2">
-     <colspec colnum="1" colwidth="1*"/>
-     <colspec colnum="2" colwidth="1*"/>
+      <colspec colnum="1" colwidth="1*"/>
+      <colspec colnum="2" colwidth="1*"/>
 
-     <thead>
-      <row>
-       <entry><link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                    xlink:role="http://docbook.org/xlink/role/olink">
-        Deprecated</link> Command</entry>
-       <entry>Newer <link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                          xlink:role="http://docbook.org/xlink/role/olink">
-        Evolving</link> Command</entry>
-      </row>
-     </thead>
+      <thead>
+       <row>
+        <entry><link xlink:show="new" xlink:href="admin-guide#interface-stability"
+                     xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link> URIs</entry>
+        <entry>Newer <link xlink:show="new" xlink:href="admin-guide#interface-stability"
+                           xlink:role="http://docbook.org/xlink/role/olink">Evolving</link> URIs</entry>
+       </row>
+      </thead>
 
-     <tbody>
-     <row>
-      <entry><literal>create-policies</literal></entry>
-      <entry><literal>create-xacml</literal></entry>
-     </row>
-      <row>
-       <entry><literal>delete-policies</literal></entry>
-       <entry><literal>delete-xacml</literal></entry>
-      </row>
-      <row>
-       <entry><literal>list-policies</literal></entry>
-       <entry><literal>list-xacml</literal></entry>
-      </row>
-      <row>
-       <entry><literal>update-policies</literal></entry>
-       <entry><literal>create-xacml</literal></entry>
-      </row>
+      <tbody>
+       <row>
+        <entry>/identity/attributes</entry>
+        <entry>/json/users</entry>
+       </row>
+
+       <row>
+        <entry>/identity/authenticate</entry>
+        <entry>/json/authenticate</entry>
+       </row>
+
+       <row>
+        <entry>/identity/authorize</entry>
+        <entry>/json/policies?_action=evaluate, /json/policies?_evaluateTree</entry>
+       </row>
+
+       <row>
+        <entry>/identity/create, /identity/delete, /identity/read,
+         /identity/search, /identity/update</entry>
+        <entry>/json/agents, /json/groups, /json/realms, /json/users</entry>
+       </row>
+
+       <row>
+        <entry>/identity/isTokenValid</entry>
+        <entry>/json/sessions/<replaceable>tokenId</replaceable>?_action=validate</entry>
+       </row>
+
+       <!--
+       <row>
+        <entry>/identity/log</entry>
+        <entry>Pending replacement</entry>
+       </row>
+       -->
+
+       <row>
+        <entry>/identity/logout</entry>
+        <entry>/json/sessions/?_action=logout</entry>
+       </row>
+
+       <row>
+        <entry>/ws/1/entitlement/decision, /ws/1/entitlement/decisions,
+         /ws/1/entitlement/entitlement, /ws/1/entitlement/entitlements</entry>
+        <entry>/json/policies?_action=evaluate, /json/policies?_evaluateTree</entry>
+       </row>
      </tbody>
      </tgroup>
-     </table>
+    </table>
+   </listitem>
 
-     <para>For more information, see the <citetitle>OpenAM
-      Reference</citetitle> section <link xlink:show="new"
-      xlink:href="reference#ssoadm-1"
-      xlink:role="http://docbook.org/xlink/role/olink">
-      ssoadm — configure OpenAM core services</link>.
-     </para>
-    </listitem>
+   <listitem>
+    <para>The Netscape LDAP API is to be removed from OpenAM, with OpenAM
+    using the OpenDJ LDAP SDK instead. This affects all classes in
+    <literal>com.sun.identity.shared.ldap.*</literal> packages.</para>
+   </listitem>
 
-    <listitem>
-     <para>
-      The OAuth 2.0 plugin interface for custom scopes,
-      <link
-       xlink:href="${javadocBase}?org/forgerock/openam/oauth2/provider/Scope.html"
-       xlink:show="new"><literal>Scope</literal></link>
-      is deprecated and likely to be removed in a future release.
-     </para>
+   <listitem>
+    <para>OpenAM currently uses Sun Java System Application Framework (JATO).
+    JATO is deprecated and is likely to be replaced in a future release.</para>
+   </listitem>
 
-     <para>
-      Custom OAuth 2.0 scopes plugins now implement the
-      <link
-       xlink:href="${javadocBase}?org/forgerock/oauth2/core/ScopeValidator.html"
-       xlink:show="new"
-       ><literal>ScopeValidator</literal></link> interface instead.
-      For an example, see the <citetitle>Developer's Guide</citetitle> chapter,
-      <link
-       xlink:href="dev-guide#sec-oauth2-scopes"
-       xlink:role="http://docbook.org/xlink/role/olink"
-       xlink:show="new"
-       ><citetitle>Customizing OAuth 2.0 Scope Handling</citetitle></link>.
-     </para>
-    </listitem>
+   <listitem>
+    <para>With the implementation of the Persistent Cookie authentication module, the
+    Core Authentication module persistent cookie options are deprecated and are
+    likely to be removed in a future release.</para>
+   </listitem>
+   <!-- END: Deprecated in OpenAM 11.0.0 -->
 
-    <listitem>
-     <para>
-      The OAuth 2.0 plugin interface for custom response types,
-      <link
-       xlink:href="${javadocBase}?org/forgerock/openam/oauth2/provider/ResponseType.html"
-       xlink:show="new"><literal>ResponseType</literal></link>
-      is deprecated and likely to be removed in a future release.
-     </para>
+   <listitem>
+    <para>
+     The OAuth 2.0 plugin interface for custom scopes,
+     <link
+      xlink:href="${javadocBase}?org/forgerock/openam/oauth2/provider/Scope.html"
+      xlink:show="new"><literal>Scope</literal></link>
+     is deprecated and likely to be removed in a future release.
+    </para>
 
-     <para>
-      Custom OAuth 2.0 response type plugins now implement the
-      <link
-       xlink:href="${javadocBase}?org/forgerock/oauth2/core/ResponseTypeHandler.html"
-       xlink:show="new"
-       ><literal>ResponseTypeHandler</literal></link> interface instead.
-     </para>
-    </listitem>
+    <para>
+     Custom OAuth 2.0 scopes plugins now implement the
+     <link
+      xlink:href="${javadocBase}?org/forgerock/oauth2/core/ScopeValidator.html"
+      xlink:show="new"
+      ><literal>ScopeValidator</literal></link> interface instead.
+     For an example, see the <citetitle>Developer's Guide</citetitle> chapter,
+     <link
+      xlink:href="dev-guide#chap-oauth2-scopes"
+      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:show="new"
+      ><citetitle>Customizing OAuth 2.0 Scope Handling</citetitle></link>.
+    </para>
+   </listitem>
 
-   </itemizedlist>
+   <listitem>
+    <para>
+     The OAuth 2.0 plugin interface for custom response types,
+     <link
+      xlink:href="${javadocBase}?org/forgerock/openam/oauth2/provider/ResponseType.html"
+      xlink:show="new"><literal>ResponseType</literal></link>
+     is deprecated and likely to be removed in a future release.
+    </para>
 
-  </section>
-
-  <!-- Deprecated features in 10.0 -->
-  <section>
-
-   <title>Functionality Deprecated Since OpenAM 10</title>
-
-   <para>
-    The following functionality was deprecated in OpenAM 10,
-    and is likely to be removed in a future release.
-   </para>
-
-   <itemizedlist>
-
-    <listitem>
-     <para>With the implementation of OAuth 2.0 in this release, OAuth 1.0 has been
-     deprecated. OAuth 1.0 support was originally provided in OpenAM 9.</para>
-    </listitem>
-
-    <listitem>
-     <para>The Netscape LDAP API is to be removed from OpenAM, with OpenAM
-     using the OpenDJ LDAP SDK instead. This affects all classes in
-     <literal>com.sun.identity.shared.ldap.*</literal> packages.</para>
-    </listitem>
-
-    <listitem>
-     <para>OpenAM currently uses Sun Java System Application Framework (JATO).
-     JATO is deprecated and is likely to be replaced in a future release.</para>
-    </listitem>
-
-   </itemizedlist>
-
-  </section>
-
+    <para>
+     Custom OAuth 2.0 response type plugins now implement the
+     <link
+      xlink:href="${javadocBase}?org/forgerock/oauth2/core/ResponseTypeHandler.html"
+      xlink:show="new"
+      ><literal>ResponseTypeHandler</literal></link> interface instead.
+    </para>
+   </listitem>
+  </itemizedlist>
  </section>
 
- <section xml:id="removed">
+ <section xml:id="removed-functionality">
   <title>Removed Functionality</title>
 
   <para>
@@ -542,7 +709,6 @@ $ <userinput>curl \
 
   <!-- Features removed from 13.0 -->
   <itemizedlist>
-
    <!-- OPENAM-3714 -->
    <listitem>
     <para>
@@ -577,25 +743,12 @@ $ <userinput>curl \
     </para>
    </listitem>
 
-   <!-- AME-6954 -->
-   <listitem>
-    <para>
-     The Distributed Authentication User Interface (DAUI) has been removed from
-     OpenAM ${serverDocTargetVersion}. You can deploy OpenIG or another reverse proxy
-     to secure OpenAM in a firewall.
-     For more information, see
-     <link
-      xlink:href="admin-guide#protect-network-access"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"><citetitle>Protecting Network Access</citetitle></link>.
-    </para>
-   </listitem>
-
    <listitem>
     <para>
      REST services relying on the following endpoints have been removed
      from OpenAM.
     </para>
+
     <itemizedlist>
      <listitem><para><literal>/identity/attributes</literal></para></listitem>
      <listitem><para><literal>/identity/authenticate</literal></para></listitem>

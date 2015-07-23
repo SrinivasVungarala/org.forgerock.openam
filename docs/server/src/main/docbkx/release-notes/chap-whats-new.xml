@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-whats-new'
@@ -31,36 +31,374 @@
  xmlns:xlink='http://www.w3.org/1999/xlink'>
  <title>What's New in OpenAM ${serverDocTargetVersion}</title>
 
- <para>OpenAM ${serverDocTargetVersion} fixes a number of issues, and
- provides the following additional features.</para>
+ <para>
+  OpenAM ${serverDocTargetVersion} is a maintenance release
+  that resolves a number of issues, including security issues in OpenAM.
+  It is strongly recommended that you update to this release
+  to make your deployment more secure
+  and to take advantage of important functional fixes.
+  ForgeRock customers can contact support for help and further information.
+ </para>
 
- <section xml:id="major-new-features">
- <title>Major New Features</title>
-  <!-- New Features for Users -->
+ <itemizedlist>
+  <para>
+   Before you install OpenAM or update your existing OpenAM installation,
+   read these release notes.
+   Then, update or install OpenAM.</para>
+
+  <listitem>
+   <para>
+    If you have already installed OpenAM, see <link
+    xlink:show="new"
+    xlink:href="release-notes#update-from-earlier-release"
+    xlink:role="http://docbook.org/xlink/role/olink"
+    ><citetitle>To Update OpenAM From 12.0</citetitle></link>.
+   </para>
+
+   <para>
+    Do <emphasis>not</emphasis> perform an upgrade
+    by deploying the new version
+    and then importing an existing configuration
+    by running the <command>ssoadm import-svc-config</command> command.
+    Importing an outdated configuration can result in a corrupted installation.
+   </para>
+  </listitem>
+
+  <listitem>
+   <para>
+    If you are installing OpenAM for the first time, see <link
+    xlink:show="new"
+    xlink:href="release-notes#install-fresh"
+    xlink:role="http://docbook.org/xlink/role/olink"
+    ><citetitle>To Install OpenAM</citetitle></link>.
+   </para>
+  </listitem>
+ </itemizedlist>
+
+
+ <section xml:id="security-advisories">
+  <title>Security Advisories</title>
+
+  <!-- Note: This passage is the recommended text for advisories per S. Ferris -->
+  <para>
+   ForgeRock issues security advisories in collaboration with our customers and
+   the open source community to address any security vulnerabilities transparently
+   and rapidly. ForgeRock's security advisory policy governs the process on
+   how security issues are submitted, received, and evaluated as well as the
+   timeline for the issuance of security advisories and patches.
+  </para>
+
+  <para>
+   For more information on ForgeRock's security advisory policy, click the
+   following link:
+   <link
+    xlink:href="http://www.forgerock.com/services/security-policy/"
+    xlink:show="new"
+    >http://www.forgerock.com/services/security-policy/</link>
+  </para>
+
+  <para>The following security advisories have been included in this release:
+  </para>
+
   <itemizedlist>
-   <title>New Features for Users</title>
 
+   <!-- #201503-01 Critical -->
+   <listitem>
+    <para><emphasis role="bold">Issue #201503-01: Cross Site Request
+     Forgery</emphasis>.
+     When “Prompt user for old password” feature is disabled (which is the
+     default
+     value) it is possible for a skilled attacker to change the user’s password
+     without their knowledge.
+    </para>
+    <para>
+     Severity: <emphasis role="bold">Critical</emphasis>
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/03/openam-security-advisory-201503/#201503-01"
+      xlink:show="new"
+      >OpenAM Security Advisory #201503-01</link>.
+    </para>
+   </listitem>
+
+   <!-- #201503-02 High -->
+   <listitem>
+    <para><emphasis role="bold">Issue #201503-02: Cross Site
+     Scripting</emphasis>.
+     OpenAM is vulnerable to cross-site scripting (XSS) attacks which could lead
+     to session hijacking or phishing.
+     It has been detected that the following endpoint is vulnerable to
+     cross-site scripting attacks:
+    </para>
+    <itemizedlist>
+     <listitem>/openam/oauth/registerconsumer.jsp (Core Server, Server Only)
+     </listitem>
+    </itemizedlist>
+    <para>
+     Severity: <emphasis role="bold">High</emphasis>
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/03/openam-security-advisory-201503/#201503-02"
+      xlink:show="new"
+      >OpenAM Security Advisory #201503-02</link>.
+    </para>
+   </listitem>
+
+   <!-- #201503-03 Medium -->
+   <listitem>
+    <para><emphasis role="bold">Issue #201503-03: Password recorded as plain
+     text
+     during install</emphasis>.
+     When performing new installations of OpenAM 11.0.2 and 12.0.0 the
+     installation
+     properties are recorded in the install log at the end of the OpenAM
+     installation
+     process to aid diagnostic analysis. In the case of configuring OpenAM to
+     use
+     an external user store, the user data store’s LDAP password will be stored
+     in plain text in the installation log file.
+    </para>
+    <para>
+     Severity: <emphasis role="bold">Medium</emphasis>
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/03/openam-security-advisory-201503/#201503-03"
+      xlink:show="new"
+      >OpenAM Security Advisory #201503-03</link>.
+    </para>
+   </listitem>
+
+   <!-- #201505-01 Critical -->
    <listitem>
     <para>
-     TODO: Update for the next release
+     <emphasis role="bold">Issue #201505-01: Java deserialization methods do not
+     restrict which classes can be loaded</emphasis>.
+     A well-crafted serialized blob can be used to trigger the loading of any
+     class on the classpath via the JATO framework used in the OpenAM Console or
+     the Distributed Authentication Service.
+    </para>
+    <para>
+     Severity: <emphasis role="bold">Critical</emphasis>
+    </para>
+    <para>
+
+     <!-- TODO: Need to verify actual advisory URL -->
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/07/openam-security-advisory-201505/#201505-01"
+      xlink:show="new"
+      >OpenAM Security Advisory #201505-01</link>.
+    </para>
+   </listitem>
+
+   <!-- #201505-02 High -->
+   <listitem>
+    <para><emphasis role="bold">Issue #201505-02: SAML 2.0 IDP-Initiated SSO Does
+     Not Check The Realm of the Authenticated User</emphasis>.
+     When running IDP-initiated SSO, OpenAM does not check that the user is in
+     the correct realm when there is an existing session.
+    </para>
+    <para>
+     Severity: <emphasis role="bold">High</emphasis>
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/07/openam-security-advisory-201505/#201505-02"
+      xlink:show="new"
+      >OpenAM Security Advisory #201505-02</link>.
+    </para>
+   </listitem>
+
+   <!-- #201505-03 High -->
+   <listitem>
+    <para><emphasis role="bold">Issue #201505-03: XML Injection Vulnerability</emphasis>.
+     A well-crafted XML document can be used to exploit the default high entity
+     expiration limits of the XML parser and cause a stack overflow error.
+    </para>
+    <para>
+     Severity: <emphasis role="bold">High</emphasis>
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/07/openam-security-advisory-201505/#201505-03"
+      xlink:show="new"
+      >OpenAM Security Advisory #201505-03</link>.
+    </para>
+   </listitem>
+
+   <!-- #201505-04 Medium -->
+   <listitem>
+    <para><emphasis role="bold">Issue #201505-04: A Non-Admin User Can Import/Export an XACML Policy via ssoadm</emphasis>.
+     A user with an account in OpenAM that has access to an installed
+     <command>ssoadm</command> tool can import or export an XACML policy.
+    </para>
+    <para>
+     Severity: <emphasis role="bold">Medium</emphasis>
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/07/openam-security-advisory-201505/#201505-04"
+      xlink:show="new"
+      >OpenAM Security Advisory #201505-04</link>.
+    </para>
+   </listitem>
+
+   <!-- #201505-05 Medium -->
+   <listitem>
+    <para><emphasis role="bold">Issue #201505-05: Insecure Default Passwords</emphasis>.
+     When OpenAM is configured with an external OpenDJ or Oracle Directory Server
+     Enterprise Edition (formerly Sun DSEE) server, or when the "Load Schema when saved"
+     feature is used, the created users will have insecure passwords.
+    </para>
+    <para>
+     Severity: <emphasis role="bold">Medium</emphasis>
+    </para>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://forgerock.org/2015/07/openam-security-advisory-201505/#201505-05"
+      xlink:show="new"
+      >OpenAM Security Advisory #201505-05</link>.
     </para>
    </listitem>
 
   </itemizedlist>
+ </section>
 
-  <!-- New Features for Administrators -->
+ <section xml:id="product-enhancements">
+  <title>Product Enhancements</title>
+
+  <para>
+   In addition to fixes,
+   this release includes the following limited product enhancements:
+  </para>
+
+  <!-- Product Enhancements -->
   <itemizedlist>
-   <title>New Features for Administrators</title>
 
+   <!-- OPENAM-816/6211 -->
    <listitem>
     <para>
-     TODO: Update for the next release
+     <emphasis role="bold">New JVM Properties For ssoadm</emphasis>.
+     You can now specifically set the authentication module or chain for
+     administrator logins using two JVM settings for the <command>ssoadm</command>
+     command:
+     <literal>org.forgerock.openam.ssoadm.auth.indexType</literal> and
+     <literal>org.forgerock.openam.ssoadm.auth.indexName</literal>.
+     These settings provide more control to select the exact authentication
+     mechanisms to be used when <command>ssoadm</command> authenticates
+     administrators in the top-level realm.
+    </para>
+    <para>
+     To set the JVM properties, manually edit the <command>ssoadm</command> or
+     <command>ssoadm.bat</command> script.
+    </para>
+    <para>
+     The <literal>indexType</literal> property specifies
+     the module or chain-based authentication mechanism used in the top-level realm.
+     If the property is set, OpenAM uses only <emphasis>that</emphasis>
+     authentication mechanism for administrators. Accepted values are:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>module_instance</para>
+     </listitem>
+     <listitem>
+      <para>service</para>
+     </listitem>
+     <listitem>
+      <para>user</para>
+     </listitem>
+     <listitem>
+      <para>role</para>
+     </listitem>
+     <listitem>
+      <para>level</para>
+     </listitem>
+     <listitem>
+      <para>composite_advice</para>
+     </listitem>
+     <listitem>
+      <para>resource</para>
+     </listitem>
+    </itemizedlist>
+
+    <para>
+     The <literal>indexName</literal> specifies the actual name of the authentication
+     module/chain as controlled by the <literal>indexType</literal> property.
+     For example, if <literal>indexType</literal> is set to <literal>module_instance</literal>
+     and <literal>indexName</literal> is set to <literal>LDAP</literal>, then
+     <command>ssoadm</command> authenticates using the LDAP authentication module.
+    </para>
+
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-816"
+      xlink:show="new"
+      >OPENAM-816</link>.
+    </para>
+   </listitem>
+
+   <!-- OPENAM-1631 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Add option to enable debug logging of decrypted SAML
+      assertions</emphasis>.
+     OpenAM now provides a debug logging option to decrypt SAML assertions when
+     OpenAM runs as a service provider and assertion encryption is enabled.
+    </para>
+    <para>
+     To enable the feature, go to the <filename>Debug.jsp</filename> page and
+     select the sub page where you want debugging to occur. Then, at the top of
+     the page, click the button to turn decryption on or off.
+     This feature operates independently of the other debug logging options on the
+     page, so you can click Cancel or Back after pressing the button, and the
+     setting will still be set.
+    </para>
+    <para>
+     For more information, see
+     <link
+     xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-1631"
+     xlink:show="new"
+     >OPENAM-1631</link>.
+    </para>
+   </listitem>
+
+   <!-- OPENAM-2238 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Authentication Context extensibility support</emphasis>.
+     OpenAM supports the extensibility of authentication context classes as described
+     in the SAMLv2 specification.
+    </para>
+    <para>
+     Custom contexts are also now shown in the OpenAM Console if included in the
+     extended metadata, but this change does not include the ability to add new
+     contexts via the Console. Custom contexts still need to be loaded via
+     <literal>ssoadm/extended</literal> metadata.
+    </para>
+    <para>
+     For more information, see <link
+     xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-2238"
+     xlink:show="new"
+     >OPENAM-2238</link>.
     </para>
    </listitem>
 
    <!-- OPENAM-3714 -->
    <listitem>
     <para>
+     <emphasis role="bold">StartTLS Support For IdRepo</emphasis>.
      You can now use StartTLS to initiate secure connections to an Identity Repository
      data store.
      A new property, <literal>sun-idrepo-ldapv3-config-connection-mode</literal>,
@@ -76,9 +414,26 @@
     </para>
    </listitem>
 
+   <!-- OPENAM-4923 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Specifying Trusted Realms using the WindowsDesktopSSO Authentication Module</emphasis>.
+     The WindowsDesktopSSO authentication module now allows you to specify a list
+     of trusted realms. When the setting is specified, Kerberos tokens issued by
+     those realms will only be accepted.
+    </para>
+    <para>
+     For more information, see
+     <link
+     xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-4923"
+     xlink:show="new">OPENAM-4923</link>.
+    </para>
+   </listitem>
+
    <!-- OPENAM-5097 -->
    <listitem>
     <para>
+     <emphasis role="bold">StartTLS Support for AD/LDAP Authentication Modules</emphasis>.
      You can now use StartTLS with the Active Directory
      and LDAP authentication modules to secure OpenAM's connection to the data stores.
      A new property, <literal>openam-auth-ldap-connection-mode</literal>,
@@ -95,52 +450,75 @@
     </para>
    </listitem>
 
-  </itemizedlist>
-</section>
-
-<section xml:id="additional-new-features">
- <title>Additional New Features</title>
-
- <itemizedlist>
-
-  <!-- Epic: AME-3549 -->
-  <listitem>
-   <para><emphasis role="bold">Stateless Sessions</emphasis></para>
-   <para>
-    OpenAM supports two types of sessions: <firstterm>stateful</firstterm> and
-    <firstterm>stateless</firstterm>.
-   </para>
-   <para>
-    Stateful sessions are sessions that reside in the OpenAM server's memory
-    and, if session failover is enabled, are also persisted in the Core Token
-    Service's token store. Stateful sessions have been the only session type
-    supported in previous OpenAM releases.
-   </para>
-   <para>
-    OpenAM ${serverDocTargetVersion} also supports a new type of
-    session: the stateless session. Stateless sessions are sessions in which
-    state information is encoded in OpenAM and sent to clients, but the
-    information from the sessions is not retained in OpenAM's memory.
-    For browser-based clients, OpenAM sets a cookie in the browser that
-    contains the session state. When the browser transmits the cookie back to
-    OpenAM, OpenAM decodes the session state from the cookie.
-   </para>
-   <para>
-    Stateless sessions can be used for deployments when elasticity is required,
-    for example, cloud deployments in which the server load varies. You can add
-    and remove OpenAM servers to and from a site and the stateless session load
-    should balance horizontally.
-   </para>
-   <para>
-    For more information, see the <link
+   <!-- OPENAM-5311 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Default Time limit using Netscape SDK is Configurable</emphasis>.
+     The default timelimit for LDAP operations performed using the Netscape SDK
+     is now configurable.
+    </para>
+    <para>
+     To set the property, open the OpenAM Console, and then click Configuration
+     &gt; Servers and Sites &gt; Servers &gt; <replaceable>URL of the server</replaceable>
+     &gt; Advanced to display the Advanced Properties table.
+     Set
+     <literal>org.forgerock.openam.ldap.default.time=&lt;time limit is milliseconds&gt;</literal>.
+    </para>
+    <para>
+     For more information, see <link
+     xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-5311"
      xlink:show="new"
-     xlink:href="admin-guide#chap-session-state"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Configuring Session State</citetitle></link>
-    chapter in the <citetitle>Administration Guide</citetitle>.
-   </para>
-  </listitem>
+     >OPENAM-5311</link>.
+    </para>
+   </listitem>
 
- </itemizedlist>
-</section>
+   <!-- OPENAM-5534 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">New Base URL Provider Service</emphasis>. A new
+     provider service has been created that allows the realm to have a configured
+     option for obtaining the base URl (including protocol) for components that
+     need to return a URL to the client. This service is used to provide the
+     URL base that is used in the well-known OIDC endpoints.
+    </para>
+    <para>
+     The provider provides the following:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>A radio button option for selecting a URL source from:</para>
+      <simplelist>
+       <member>Configured value</member>
+       <member>RFC7239 Forwarded header</member>
+       <member>X-Forwarded-Host + X-Forwarded-Proto headers</member>
+       <member>Host and protocol from the incoming AM request</member>
+       <member>an extension point that returns a base URL from a given
+        <literal>HttpServletRequest</literal>.
+       </member>
+      </simplelist>
+     </listitem>
+     <listitem>
+      <para>A check box to include or exclude the container's context path.</para>
+     </listitem>
+     <listitem>
+      <para>A text field for specifying the configured fixed value if required.</para>
+     </listitem>
+     <listitem>
+      <para>A text field for specifying the extension class if required.</para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-5534"
+      xlink:show="new"
+      >OPENAM-5534</link>.
+    </para>
+   </listitem>
+
+  </itemizedlist>
+ </section>
+
+
+
 </chapter>

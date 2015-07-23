@@ -1389,6 +1389,7 @@ https://openam.example.com:8443/openam/json/myrealm/resourcetypes/12345a67-8f0b-
 <screen>$ <userinput>curl \
 --header "iPlanetDirectoryPro: AQIC5..." \
 --request POST \
+--header "Content-Type: application/json" \
 --data '{
     "name": "My Resource Type",
     "actions": {
@@ -1449,6 +1450,7 @@ https://openam.example.com:8443/openam/json/myrealm/resourcetypes/?_action=creat
 <screen>$ <userinput>curl \
 --header "iPlanetDirectoryPro: AQIC5..." \
 --request PUT \
+--header "Content-Type: application/json" \
 --data '{
     "uuid": "12345a67-8f0b-123c-45de-6fab78cd01e4",
     "name": "My Updated Resource Type",

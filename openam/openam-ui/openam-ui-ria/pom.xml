@@ -32,7 +32,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-ui-common</artifactId>
@@ -40,7 +39,6 @@
             <type>zip</type>
             <classifier>www</classifier>
         </dependency>
-
         <dependency>
             <groupId>org.forgerock.commons.ui</groupId>
             <artifactId>forgerock-ui-user</artifactId>
