@@ -2171,5 +2171,6 @@ $ <userinput>curl \
  <xinclude:include href='sec-rest-oauth2-oidc.xml' />
  <xinclude:include href='sec-rest-user-services.xml' />
  <xinclude:include href='sec-rest-identity-realm-mgmt.xml' />
+ <xinclude:include href="sec-rest-script-mgmt.xml"/>
  <xinclude:include href='sec-rest-sts.xml' />
 </section>

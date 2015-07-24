@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !
+-->
+<section xml:id='sec-manage-scripts-rest'
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+ <title>RESTful Script Management</title>
+ <indexterm><primary>Scripts</primary></indexterm>
+ <indexterm><secondary>Console</secondary></indexterm>
+ <para>This section shows you how to manage scripts used for client-side and
+  server-side scripted authentication, custom policy conditions, and handling
+  OpenID Connect claims by using the REST API.</para>
+
+  <para>For information on managing scripts by using the OpenAM
+  console, see <olink targetptr="chap-manage-scripts-console"
+                      targetdoc="admin-guide" /> in the <citetitle>OpenAM
+  Administration Guide</citetitle>. For information on configuring script
+    settings, see <olink targetptr="scripting-configuration"
+                      targetdoc="reference" /> in the <citetitle>OpenAM
+    Reference</citetitle>.</para>
+
+  <itemizedlist>
+   <para>OpenAM provides the <literal>scripts</literal> REST endpoint
+    for the following:</para>
+   <listitem>
+    <para><xref linkend="rest-api-scripts-query" /></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-scripts-read" /></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-scripts-validate" /></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-scripts-create" /></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-scripts-update" /></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-scripts-delete"  /></para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   User-created scripts are realm-specific, hence the URI for the scripts API
+   can contain a realm component, such as
+   <literal>/json{<replaceable>/realm</replaceable>}/scripts</literal>.
+   If the realm is not specified in the URI, the top level realm is
+   used.</para>
+
+ <tip><para>OpenAM includes some global example scripts that can be
+ used in any realm.</para></tip>
+
+  <para>
+   Scripts are represented in JSON and take the following form.
+   Scripts are built from standard JSON objects and values
+   (strings, numbers, objects, sets, arrays, <literal>true</literal>,
+   <literal>false</literal>, and <literal>null</literal>). Each script
+   has a system-generated <firstterm>universally unique
+   identifier</firstterm> (UUID), which must be used when modifying
+   existing scripts. Renaming a script will not affect the UUID.
+  </para>
+
+<programlisting language="json">{
+    "_id": "7e3d7067-d50f-4674-8c76-a3e13a810c33",
+    "name": "Scripted Module - Server Side",
+    "description": "Default global script for server side Scripted Authentication Module",
+    "script": "dmFyIFNUQVJUX1RJ...",
+    "language": "JAVASCRIPT",
+    "context": "AUTHENTICATION_SERVER_SIDE",
+    "createdBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+    "creationDate": 1433147666269,
+    "lastModifiedBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedDate": 1433147666269
+}</programlisting>
+
+  <variablelist>
+   <para>
+    The values for the fields shown in the example above are explained below:
+   </para>
+
+   <varlistentry>
+    <term><literal>_id</literal></term>
+    <listitem>
+     <para>
+      The UUID that OpenAM generates for the script.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>name</literal></term>
+    <listitem>
+     <para>
+      The name provided for the script.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>description</literal></term>
+    <listitem>
+     <para>
+      An optional text string to help identify the script.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>script</literal></term>
+    <listitem>
+     <para>
+      The source code of the script. The source code is in UTF-8 format
+      and encoded into Base64.
+     </para>
+     <para>For example, a script such as the following:
+     </para>
+<programlisting language="JavaScript">var a = 123;
+var b = 456;</programlisting>
+
+     <para>When encoded into Base64 becomes:</para>
+     <programlisting language="JavaScript">dmFyIGEgPSAxMjM7IA0KdmFyIGIgPSA0NTY7</programlisting>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>language</literal></term>
+    <listitem>
+         <para>
+          The language the script is written in - <literal>JAVASCRIPT</literal>
+          or <literal>GROOVY</literal>.
+         </para>
+         <table frame='all'><title>Language Support per Context</title>
+         <tgroup cols='2'>
+             <colspec colname='c1'/>
+             <colspec colname='c2'/>
+         <thead>
+         <row>
+           <entry>Script Context</entry>
+           <entry>Supported Languages</entry>
+         </row>
+         </thead>
+         <tbody>
+         <row>
+           <entry><literal>POLICY_CONDITION</literal></entry>
+           <entry><literal>JAVASCRIPT</literal>, <literal>GROOVY</literal></entry>
+         </row>
+         <row>
+           <entry><literal>AUTHENTICATION_SERVER_SIDE</literal></entry>
+           <entry><literal>JAVASCRIPT</literal>, <literal>GROOVY</literal></entry>
+         </row>
+         <row>
+           <entry><literal>AUTHENTICATION_CLIENT_SIDE</literal></entry>
+           <entry><literal>JAVASCRIPT</literal></entry>
+         </row>
+         <row>
+           <entry><literal>OIDC_CLAIMS</literal></entry>
+           <entry><literal>JAVASCRIPT</literal>, <literal>GROOVY</literal></entry>
+         </row>
+         </tbody>
+         </tgroup>
+         </table>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>context</literal></term>
+    <listitem>
+     <para>
+      The context type of the script.
+     </para>
+     <para>Supported values are:</para>
+     <variablelist>
+     <varlistentry>
+         <term><literal>POLICY_CONDITION</literal></term>
+         <listitem>
+         <para>Policy Condition</para>
+         </listitem>
+     </varlistentry>
+     <varlistentry>
+         <term><literal>AUTHENTICATION_SERVER_SIDE</literal></term>
+         <listitem>
+         <para>Server-side Authentication</para>
+         </listitem>
+     </varlistentry>
+     <varlistentry>
+         <term><literal>AUTHENTICATION_CLIENT_SIDE</literal></term>
+         <listitem>
+         <para>Client-side Authentication</para>
+         <note><para>Client-side scripts must be written in JavaScript.</para></note>
+         </listitem>
+         </varlistentry>
+     <varlistentry>
+         <term><literal>OIDC_CLAIMS</literal></term>
+         <listitem>
+         <para>OIDC Claims</para>
+         </listitem>
+     </varlistentry>
+     </variablelist>
+
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>createdBy</literal></term>
+    <listitem>
+     <para>
+      A string containing the universal identifier DN of the subject that
+      created the script.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>creationDate</literal></term>
+    <listitem>
+     <para>
+      An integer containing the creation date and time, in ISO 8601 format.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>lastModifiedBy</literal></term>
+    <listitem>
+     <para>
+      A string containing the universal identifier DN of the subject that
+      most recently updated the resource type.
+     </para>
+     <para>If the script has not been modified since it was
+      created, this property will have the same value as
+      <literal>createdBy</literal>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>lastModifiedDate</literal></term>
+    <listitem>
+     <para>
+      A string containing the last modified date and time, in ISO 8601 format.
+     </para>
+     <para>If the script has not been modified since it was
+      created, this property will have the same value as <literal>creationDate</literal>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <section xml:id="rest-api-scripts-query">
+   <title>Querying Scripts</title>
+
+   <para>
+    To list all the scripts in a realm, as well as any global scripts, perform
+    an HTTP GET to the <literal>/json{<replaceable>/realm</replaceable>}/scripts</literal>
+    endpoint with a <literal>_queryFilter</literal> parameter
+    set to <literal>true</literal>.
+   </para>
+   <note><para>If the realm is not specified in the URL, OpenAM returns
+    scripts in the top level realm, as well as any global scripts.</para></note>
+
+   <para>
+    The <literal>iPlanetDirectoryPro</literal> header is required and should
+    contain the SSO token of an Administrator user who has access to perform
+    the operation.
+   </para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+https://openam.example.com:8443/openam/json/myrealm/scripts?_queryFilter=true</userinput>
+<computeroutput>{
+  "result": [
+    {
+      "_id": "9de3eb62-f131-4fac-a294-7bd170fd4acb",
+      "name": "Scripted Policy Condition",
+      "description": "Default global script for Scripted Policy Conditions",
+      "script": "LyoqCiAqIFRoaXMg...",
+      "language": "JAVASCRIPT",
+      "context": "POLICY_CONDITION",
+      "createdBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+      "creationDate": 1433147666269,
+      "lastModifiedBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+      "lastModifiedDate": 1433147666269
+    },
+    {
+      "_id": "7e3d7067-d50f-4674-8c76-a3e13a810c33",
+      "name": "Scripted Module - Server Side",
+      "description": "Default global script for server side Scripted Authentication Module",
+      "script": "dmFyIFNUQVJUX1RJ...",
+      "language": "JAVASCRIPT",
+      "context": "AUTHENTICATION_SERVER_SIDE",
+      "createdBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+      "creationDate": 1433147666269,
+      "lastModifiedBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+      "lastModifiedDate": 1433147666269
+    }
+  ],
+  "resultCount": 2,
+  "pagedResultsCookie": null,
+  "remainingPagedResults": -1
+}</computeroutput></screen>
+
+   <para>
+    Additional query strings can be specified to alter the returned results.
+    For more information, see <xref linkend="rest-api-filter-sort-page" />.
+   </para>
+
+   <table>
+    <title>Supported <literal>_queryFilter</literal> Fields and
+     Operators</title>
+    <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>Field</entry>
+      <entry>Supported Operators</entry>
+     </row></thead>
+    <tbody>
+     <row>
+      <entry><literal>_id</literal></entry>
+      <entry>
+       Equals (<literal>eq</literal>),
+       Contains (<literal>co</literal>),
+       Starts with (<literal>sw</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry><literal>name</literal></entry>
+      <entry>
+       Equals (<literal>eq</literal>),
+       Contains (<literal>co</literal>),
+       Starts with (<literal>sw</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry><literal>description</literal></entry>
+      <entry>
+       Equals (<literal>eq</literal>),
+       Contains (<literal>co</literal>),
+       Starts with (<literal>sw</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry><literal>script</literal></entry>
+      <entry>
+       Equals (<literal>eq</literal>),
+       Contains (<literal>co</literal>),
+       Starts with (<literal>sw</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry><literal>language</literal></entry>
+      <entry>
+       Equals (<literal>eq</literal>),
+       Contains (<literal>co</literal>),
+       Starts with (<literal>sw</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry><literal>context</literal></entry>
+      <entry>
+       Equals (<literal>eq</literal>),
+       Contains (<literal>co</literal>),
+       Starts with (<literal>sw</literal>)
+      </entry>
+     </row>
+    </tbody>
+    </tgroup>
+   </table>
+  </section>
+
+  <section xml:id="rest-api-scripts-read">
+   <title>Reading a Script</title>
+
+   <para>
+    To read an individual script in a realm, perform an HTTP
+    GET using the <literal>/json{<replaceable>/realm</replaceable>}/scripts</literal>
+    endpoint, specifying the UUID in the URL.
+   </para>
+   <tip><para>To read a script in the top-level realm, or to read a built-in
+    global script, do not specify a realm in the URL.</para></tip>
+   <para>
+    The <literal>iPlanetDirectoryPro</literal> header is required and should
+    contain the SSO token of an Administrator user who has access to perform
+    the operation.
+   </para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+https://openam.example.com:8443/openam/json/myrealm/scripts/9de3eb62-f131-4fac-a294-7bd170fd4acb</userinput>
+<computeroutput>{
+    "_id": "9de3eb62-f131-4fac-a294-7bd170fd4acb",
+    "name": "Scripted Policy Condition",
+    "description": "Default global script for Scripted Policy Conditions",
+    "script": "LyoqCiAqIFRoaXMg...",
+    "language": "JAVASCRIPT",
+    "context": "POLICY_CONDITION",
+    "createdBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+    "creationDate": 1433147666269,
+    "lastModifiedBy": "id=dsameuser,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedDate": 1433147666269
+}</computeroutput></screen>
+  </section>
+
+   <section xml:id="rest-api-scripts-validate">
+   <title>Validating a Script</title>
+
+   <para>
+    To validate a script, perform an HTTP POST using the
+    <literal>/json{<replaceable>/realm</replaceable>}/scripts</literal>
+    endpoint, with an <literal>_action</literal> parameter
+    set to <literal>validate</literal>. Include a JSON representation of the
+    script and the script language, <literal>JAVASCRIPT</literal> or
+    <literal>GROOVY</literal>, in the POST data.
+   </para>
+
+   <para>The value for <literal>script</literal> must be in UTF-8 format and
+    then encoded into Base64.</para>
+
+   <para>
+    The <literal>iPlanetDirectoryPro</literal> header is required and should
+    contain the SSO token of an Administrator user who has access to perform
+    the operation.
+   </para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--header "Content-Type: application/json" \
+--request POST \
+--data '{
+    "script": "dmFyIGEgPSAxMjM7dmFyIGIgPSA0NTY7Cg==",
+    "language": "JAVASCRIPT"
+}' \
+https://openam.example.com:8443/openam/json/myrealm/scripts/?_action=validate</userinput>
+<computeroutput>{
+  "success": true
+}</computeroutput></screen>
+
+    <para>If the script is valid the JSON response contains a
+     <literal>success</literal> key with a value of
+     <literal>true</literal>.</para>
+    <para>If the script is invalid the JSON response contains a
+     <literal>success</literal> key with a value of
+     <literal>false</literal>, and an indication of the problem and where it
+     occurs, as shown below.</para>
+    <screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--header "Content-Type: application/json" \
+--request POST \
+--data '{
+    "script": "dmFyIGEgPSAxMjM7dmFyIGIgPSA0NTY7ID1WQUxJREFUSU9OIFNIT1VMRCBGQUlMPQo=",
+    "language": "JAVASCRIPT"
+}' \
+https://openam.example.com:8443/openam/json/myrealm/scripts/?_action=validate</userinput>
+<computeroutput>{
+    "success": false,
+    "errors": [
+        {
+            "line": 1,
+            "column": 27,
+            "message": "syntax error"
+        }
+    ]
+}</computeroutput></screen>
+  </section>
+
+  <section xml:id="rest-api-scripts-create">
+   <title>Creating a Script</title>
+
+   <para>
+    To create a script in a realm, perform an HTTP POST using the
+    <literal>/json{<replaceable>/realm</replaceable>}/scripts</literal>
+    endpoint, with an <literal>_action</literal> parameter
+    set to <literal>create</literal>. Include a JSON representation of the
+    script in the POST data.
+   </para>
+
+   <para>The value for <literal>script</literal> must be in UTF-8 format and
+    then encoded into Base64.</para>
+
+   <note><para>If the realm is not specified in the URL, OpenAM creates the
+    script in the top level realm.</para></note>
+
+   <para>
+    The <literal>iPlanetDirectoryPro</literal> header is required and should
+    contain the SSO token of an Administrator user who has access to perform
+    the operation.
+   </para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--header "Content-Type: application/json" \
+--request POST \
+--data '{
+    "name": "MyJavaScript",
+    "script": "dmFyIGEgPSAxMjM7CnZhciBiID0gNDU2Ow==",
+    "language": "JAVASCRIPT",
+    "context": "POLICY_CONDITION",
+    "description": "An example script"
+}' \
+https://openam.example.com:8443/openam/json/myrealm/scripts/?_action=create</userinput>
+<computeroutput>{
+    "_id": "0168d494-015a-420f-ae5a-6a2a5c1126af",
+    "name": "MyJavaScript",
+    "description": "An example script",
+    "script": "dmFyIGEgPSAxMjM7CnZhciBiID0gNDU2Ow==",
+    "language": "JAVASCRIPT",
+    "context": "POLICY_CONDITION",
+    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "creationDate": 1436807766258,
+    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedDate": 1436807766258
+}</computeroutput></screen>
+</section>
+
+  <section xml:id="rest-api-scripts-update">
+   <title>Updating a Script</title>
+
+   <para>
+    To update an individual script in a realm, perform an HTTP
+    PUT using the <literal>/json{<replaceable>/realm</replaceable>}/scripts
+   </literal> endpoint, specifying the UUID in both the URL and the PUT body.
+    Include a JSON representation of the updated script in the PUT
+    data, alongside the UUID.
+   </para>
+   <note><para>If the realm is not specified in the URL, OpenAM uses the top
+    level realm.</para></note>
+   <para>
+    The <literal>iPlanetDirectoryPro</literal> header is required and should
+    contain the SSO token of an Administrator user who has access to perform
+    the operation.
+   </para>
+
+<screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--header "Content-Type: application/json" \
+--request PUT \
+--data '{
+    "name": "MyUpdatedJavaScript",
+    "script": "dmFyIGEgPSAxMjM7CnZhciBiID0gNDU2Ow==",
+    "language": "JAVASCRIPT",
+    "context": "POLICY_CONDITION",
+    "description": "An updated example script configuration"
+}' \
+https://openam.example.com:8443/openam/json/myrealm/scripts/0168d494-015a-420f-ae5a-6a2a5c1126af</userinput>
+<computeroutput>{
+    "_id": "0168d494-015a-420f-ae5a-6a2a5c1126af",
+    "name": "MyUpdatedJavaScript",
+    "description": "An updated example script configuration",
+    "script": "dmFyIGEgPSAxMjM7CnZhciBiID0gNDU2Ow==",
+    "language": "JAVASCRIPT",
+    "context": "POLICY_CONDITION",
+    "createdBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "creationDate": 1436807766258,
+    "lastModifiedBy": "id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org",
+    "lastModifiedDate": 1436808364681
+}</computeroutput></screen>
+  </section>
+
+  <section xml:id="rest-api-scripts-delete">
+   <title>Deleting a Script</title>
+
+   <para>
+    To delete an individual script in a realm, perform an HTTP
+    DELETE using the <literal>/json{<replaceable>/realm</replaceable>}/scripts</literal>
+    endpoint, specifying the UUID in the URL.
+   </para>
+   <note><para>If the realm is not specified in the URL, OpenAM uses the top
+    level realm.</para></note>
+   <para>
+    The <literal>iPlanetDirectoryPro</literal> header is required and should
+    contain the SSO token of an Administrator user who has access to perform
+    the operation.
+   </para>
+
+<screen>$ <userinput>curl \
+--request DELETE \
+--header "iPlanetDirectoryPro: AQIC5..." \
+https://openam.example.com:8443/openam/json/myrealm/scripts/0168d494-015a-420f-ae5a-6a2a5c1126af</userinput>
+<computeroutput>{}</computeroutput></screen>
+  </section>
+ </section>
