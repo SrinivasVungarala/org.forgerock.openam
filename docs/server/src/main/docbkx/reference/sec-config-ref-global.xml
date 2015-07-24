@@ -1,0 +1,2947 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !    
+-->
+ <section xml:id="global-configuration"
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+  <title>Global Configuration</title>
+  <indexterm>
+   <primary>Configuration</primary>
+   <secondary>Global</secondary>
+  </indexterm>
+
+  <para>Under Configuration &gt; Global, you can set defaults for a range of
+  federation services, password reset, policy configuration, session
+   management, and dynamic user attributes.</para>
+
+  <itemizedlist>
+   <para>
+    This section describes the following sets of properties:
+   </para>
+
+   <listitem>
+    <para>
+     <xref linkend="common-federation-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="dashboard-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="email-service-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="liberty-id-ff-service-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="oauth2-provider-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="password-reset-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="policy-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="rest-apis-service-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="saml2-service-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="saml2-soap-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="scripting-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="sts-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="session-configuration-attributes" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="uma-provider-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="user-configuration-attributes" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="rest-security-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="validation-service-configuration" />
+    </para>
+   </listitem>
+
+  </itemizedlist>
+
+  <section xml:id="common-federation-configuration">
+   <title>Common Federation Configuration</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>sunFAMFederationCommon</literal></para>
+
+   <varlistentry>
+    <term>Datastore SPI implementation class</term>
+    <listitem>
+     <para>Used by the Federation system to access user profile
+     attributes</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>DatastoreClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>ConfigurationInstance SPI implementation class</term>
+    <listitem>
+     <para>Used by the Federation system to access service configuration</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>ConfigurationClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Logger SPI implementation class</term>
+    <listitem>
+     <para>Used by the Federation system to record log messages</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>LoggerClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>SessionProvider SPI implementation class</term>
+    <listitem>
+     <para>Used by the Federation system to access the session service</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SessionProviderClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum allowed content length</term>
+    <listitem>
+     <para>Maximum number of bytes for Federation communications</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>MaxContentLength</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>PasswordDecoder SPI implementation class</term>
+    <listitem>
+     <para>Used by the Federation system to decode passwords encoded by
+     OpenAM</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>PasswordDecoderClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>SignatureProvider SPI implementation class</term>
+    <listitem>
+     <para>Used by the Federation system digitally to sign SAML documents</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SignatureProviderClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>KeyProvider SPI implementation class</term>
+    <listitem>
+     <para>Used by the Federation system to access the Java key store</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>KeyProviderClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Check presence of certificates</term>
+    <listitem>
+     <para>If enabled, OpenAM checks that the partner's signing certificate
+     presented in the XML matches the certificate from the partner's
+     metadata</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>CheckCert</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML canonicalization algorithm</term>
+    <listitem>
+     <para>Algorithm used to render the canonical versions of XML
+     documents</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>CannonicalizationAlgorithm</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML signature algorithm</term>
+    <listitem>
+     <para>Algorithm used to sign XML documents</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SignatureAlgorithm</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML transformation algorithm</term>
+    <listitem>
+     <para>Algorithm used for XML transformations</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>TransformationAlgorithm</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>SAML Error Page URL</term>
+    <listitem>
+     <para>OpenAM redirects users here when an error occurs in the SAML2
+     engine. Users are redirected to absolute URLs, whereas relative URLs
+     are displayed within the request.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SAMLErrorPageURL</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>SAML Error Page HTTP Binding</term>
+    <listitem>
+     <para>Set this either to <literal>HTTP-Redirect</literal> or to
+     <literal>HTTP-POST</literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SAMLErrorPageHTTPBinding</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Monitoring Agent Provider Class</term>
+    <listitem>
+     <para>Used by the Federation system to access the monitoring system</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>MonAgentClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Monitoring Provider Class for SAML1</term>
+    <listitem>
+     <para>Used by the SAMLv1 engine to access the monitoring system</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>MonSAML1Class</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Monitoring Provider Class for SAML2</term>
+    <listitem>
+     <para>Used by the SAML2 engine to access the monitoring system</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>MonSAML2Class</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Monitoring Provider Class for ID-FF</term>
+    <listitem>
+     <para>Used by the ID-FF engine to access the monitoring system</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>MonIDFFClass</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+<!-- Commenting out, assuming the corresponding screen is also commented out, per OPENAM-3164
+  <variablelist xml:id="core-token-service-configuration">
+   <title>Core Token Service</title>
+
+   <para><command>ssoadm</command> service name:
+   <literal>sunCoreTokenConfigService</literal></para>
+
+   <varlistentry>
+    <term>Searchable Attribute List</term>
+    <listitem>
+     <para>List of attribute names used in token search operations</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>searchableAttributes</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Token cleanup interval for token expiry</term>
+    <listitem>
+     <para>Seconds OpenAM delays cleanup after token expiry</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>tokenCleanupInterval</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Token types without ETag enforcement</term>
+    <listitem>
+     <para><command>ssoadm</command> attribute:
+     <literal>tokenTypesWithoutEtagEnforcement</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+                                                          -->
+  <section xml:id="dashboard-configuration">
+   <title>Dashboard</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>dashboardService</literal></para>
+
+   <para>
+    The following properties are available for each
+    Dashboard Service secondary configuration instance:
+   </para>
+
+   <varlistentry>
+    <term>Dashboard Class Name</term>
+    <listitem>
+     <para>Identifies how to access the application, for example
+     <literal>SAML2ApplicationClass</literal> for a SAML v2.0 application</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>dashboardClassName</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Dashboard Name</term>
+    <listitem>
+     <para>The application name as it will appear to the administrator for
+     configuring the dashboard</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>dashboardName</literal></para>
+    </listitem>
+   </varlistentry>
+
+
+   <varlistentry>
+    <term>Dashboard Display Name</term>
+    <listitem>
+     <para>The application name that displays on the dashboard client</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>dashboardDisplayName</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Dashboard Icon</term>
+    <listitem>
+     <para>The icon name that will be displayed on the dashboard client
+     identifying the application</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>dashboardIcon</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Dashboard Login</term>
+    <listitem>
+     <para>The URL that takes the user to the application</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>dashboardLogin</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Available Dashboard Apps</term>
+    <listitem>
+     <para>List of application dashboard names available by default for
+     realms with the Dashboard configured</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>assignedDashboard</literal></para>
+    </listitem>
+   </varlistentry>
+</variablelist>
+  </section>
+
+  <section xml:id="email-service-configuration">
+   <title>Email Service</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>ForgeRockSendEmailService</literal></para>
+
+   <varlistentry>
+    <term>Email Message Implementation Class</term>
+    <listitem>
+     <para>Specifies the class that sends email notifications, such as those
+     sent for user registration and forgotten passwords.</para>
+
+     <para>Default: <literal>org.forgerock.openam.services.email.MailServerImpl</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockMailServerImplClassName</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mail Server Host Name</term>
+    <listitem>
+     <para>Specifies the fully qualified domain name of the SMTP mail server
+     through which to send email notifications.</para>
+
+     <para>Default: <literal>smtp.gmail.com</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPHostName</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mail Server Host Port</term>
+    <listitem>
+     <para>Specifies the port number for the SMTP mail server.</para>
+
+     <para>Default: 465</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPHostPort</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mail Server Authentication Username</term>
+    <listitem>
+     <para>Specifies the user name for the SMTP mail server.</para>
+
+     <para>Default: <literal>forgerocksmtp</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPUserName</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mail Server Authentication Password</term>
+    <listitem>
+     <para>Specifies the password for the SMTP user name.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPUserPassword</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mail Server Secure Connection</term>
+    <listitem>
+     <para>Specifies whether to connect to the SMTP mail server using SSL.</para>
+
+     <para>Default: use SSL (<literal>true</literal>)</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPSSLEnabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Email From Address</term>
+    <listitem>
+     <para>Specifies the address from which to send email notifications.</para>
+
+     <para>Default: <literal>no-reply@openam.org</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPFromAddress</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Email Attribute Name</term>
+    <listitem>
+     <para>Specifies the profile attribute from which to retrieve the end user's
+     email address.</para>
+
+     <para>Default: <literal>mail</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openamEmailAttribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Email Subject</term>
+    <listitem>
+     <para>Specifies a subject for notification messages. If you do not set this
+     OpenAM does not set the subject for notification messages.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPSubject</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Email Content</term>
+    <listitem>
+     <para>Specifies content for notification messages. If you do not set this
+     OpenAM includes only the confirmation URL in the mail body.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockEmailServiceSMTPMessage</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="liberty-id-ff-service-configuration">
+   <title>Liberty ID-FF Service Configuration</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>sunFAMIDFFConfiguration</literal></para>
+
+   <varlistentry>
+    <term>Federation Cookie Name</term>
+    <listitem>
+     <para>Cookie name for Liberty ID-FF</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>FedCookieName</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>IDP Proxy Finder SPI implementation class</term>
+    <listitem>
+     <para>Used by the ID-FF engine to find the IDP proxy</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>IDPProxyFinderClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Request cache cleanup interval</term>
+    <listitem>
+     <para>Seconds between times OpenAM cleans up the request cache</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>RequestCacheCleanupInterval</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Request cache timeout</term>
+    <listitem>
+     <para>Seconds cached requests remain valid</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>RequestCacheTimeout</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>IDP Login URL</term>
+    <listitem>
+     <para>Login URL for the ID-FF IDP</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>IDPLoginURL</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML signing on</term>
+    <listitem>
+     <para>If yes, require XML signing.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>XMLSigningOn</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="oauth2-provider-configuration">
+   <title>OAuth2 Provider</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>OAuth2Provider</literal></para>
+
+   <varlistentry>
+    <term>Authorization Code Lifetime</term>
+    <listitem>
+     <para>Lifetime of OAuth 2.0 authorization code in seconds.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-authorization-code-lifetime</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Refresh Token Lifetime</term>
+    <listitem>
+     <para>Lifetime of OAuth 2.0 refresh token in seconds.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-refresh-token-lifetime</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Access Token Lifetime</term>
+    <listitem>
+     <para>Lifetime of OAuth 2.0 access token in seconds.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-access-token-lifetime</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Issue Refresh Tokens</term>
+    <listitem>
+     <para>Whether to issue a refresh token when returning an access
+     token.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-issue-refresh-token</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Issue Refresh Tokens on Refreshing Access Tokens</term>
+    <listitem>
+     <para>Whether to issue a refresh token when refreshing an access
+     token.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-issue-refresh-token-on-refreshing-token</literal></para>
+     </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Scope Implementation Class</term>
+    <listitem>
+     <para>Name of class on OpenAM classpath implementing scopes.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-scope-implementation-class</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Response Type Plugins</term>
+    <listitem>
+     <para>List of plugins that handle the valid
+     <literal>response_type</literal> values. OAuth 2.0 clients pass response
+     types as parameters to the OAuth 2.0 Authorization endpoint
+     (<literal>/oauth2/authorize</literal>) to indicate which grant type is
+     requested from the provider. For example, the client passes
+     <literal>code</literal> when requesting an authorization code, and
+     <literal>token</literal> when requesting an access token.</para>
+
+     <para>Values in this list take the form <literal
+     ><replaceable>response-type</replaceable>|<replaceable
+     >plugin-class-name</replaceable></literal>.</para>
+
+     <para>Defaults:
+     <literal>code|org.forgerock.restlet.ext.oauth2.flow.responseTypes.CodeResponseType</literal>,
+     <literal>id_token|org.forgerock.restlet.ext.oauth2.flow.responseTypes.IDTokenResponseType</literal>,
+     <literal>token|org.forgerock.restlet.ext.oauth2.flow.responseTypes.TokenResponseType</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-response-type-map-class</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>User Profile Attribute(s) the Resource Owner is Authenticated On</term>
+    <listitem>
+     <para>Names of profile attributes that resource owners use to log in.
+     The default is <literal>uid</literal>, and you can add others, such as
+     <literal>mail</literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-authentication-attributes</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Saved Consent Attribute Name</term>
+    <listitem>
+     <para>Name of a multi-valued attribute on resource owner profiles where
+     OpenAM can save authorization consent decisions. When the resource owner
+     chooses to save the decision to authorize access for a client application,
+     then OpenAM updates the resource owner's profile to avoid having to
+     prompt the resource owner to grant authorization when the client issues
+     subsequent authorization requests.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-saved-consent-attribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Remote JSON Web Key URL</term>
+    <listitem>
+     <para>
+      The remote URL where the OpenID Connect provider's JSON Web Key can be retrieved.
+     </para>
+
+     <para>
+      If this setting is not configured, then OpenAM provides a local URL
+      to access the public key of the private key used to sign ID tokens.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-jkws-uri</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Subject Types supported</term>
+    <listitem>
+     <para>
+      List of OpenID Connect subject types supported.
+      Valid values are as follows:
+      <variablelist>
+       <varlistentry>
+        <term><literal>public
+     </literal></term>
+        <listitem>
+         <para>Each client receives the same <literal>sub</literal>
+          (subject) value.</para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><literal>pairwise</literal></term>
+        <listitem>
+         <para>Each client receives a different <literal>sub</literal>
+          (subject) value, to prevent correlation between clients.</para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </para>
+
+     <para>
+      Default: <literal>public</literal>
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-subject-types-supported</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>ID Token Signing Algorithms supported</term>
+    <listitem>
+     <para>Algorithms supported to sign OpenID Connect
+     <literal>id_tokens</literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-id-token-signing-algorithms-supported</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Supported Claims</term>
+    <listitem>
+     <para>List of claims supported by the OpenID Connect
+     <literal>/oauth2/userinfo</literal> endpoint.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerock-oauth2-provider-supported-claims</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OpenID Connect JWT Token Lifetime (seconds)</term>
+    <listitem>
+     <para>
+      Time in seconds that a JWT is valid. Default: 600 (10 minutes)
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>forgerock-oauth2-provider-jwt-token-lifetime</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Alias of ID Token Signing Key</term>
+    <listitem>
+     <para>
+      Alias of key in OpenAM's key store that is used to sign ID Tokens.
+     </para>
+
+     <para>
+      Default: <literal>test</literal> (OpenAM test key pair,
+      not for use in production)
+     </para>
+
+     <para>
+      See <link xlink:show="new" xlink:href="admin-guide#change-signing-key"
+      xlink:role="http://docbook.org/xlink/role/olink"><citetitle
+      >To Change the Signing Key for Federation</citetitle></link> for
+      instructions on changing the key pair.
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>forgerock-oauth2-provider-keypair-name</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Allow Open Dynamic Client Registration</term>
+    <listitem>
+     <para>
+      Allow clients to register without an access token.
+     </para>
+
+     <para>
+      If enabled, you should consider adding some form of rate limiting.
+     </para>
+
+     <para>
+      Default: <literal>false</literal>
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>forgerock-oauth2-provider-allow-open-dynamic-registration</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Generate Registration Access Tokens</term>
+    <listitem>
+     <para>
+      Whether to generate Registration Access Tokens for clients
+      that register via open dynamic client registration.
+     </para>
+
+     <para>
+      Registration tokens allow the client to access the client configuration
+      endpoint as described in the OpenID Connect specification.
+      This setting has no effect if open dynamic client registration is disabled.
+     </para>
+
+     <para>
+      Default: <literal>true</literal>
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>forgerock-oauth2-provider-generate-registration-access-tokens</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OpenID Connect acr_values to Auth Chain Mapping</term>
+    <listitem>
+     <para>
+      Map of Mobile Connect levels of assurance,
+      sent as <literal>acr_values</literal> in the authorization request,
+      to OpenAM authentication chains provide those levels of assurance.
+     </para>
+
+     <para>
+      For more information, see the <citetitle>Administration Guide</citetitle>
+      section,
+      <link
+       xlink:show="new"
+       xlink:href="admin-guide#mobile-connect-configure"
+       xlink:role="http://docbook.org/xlink/role/olink"
+      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>forgerock-oauth2-provider-loa-mapping</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OpenID Connect default acr claim.</term>
+    <listitem>
+     <para>
+      The <literal>acr</literal> claim value to return in the ID Token
+      when falling back to the default authentication chain.
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>forgerock-oauth2-provider-default-acr</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OpenID Connect id_token amr values to Auth Module mappings</term>
+    <listitem>
+     <para>
+      Map of the <literal>amr</literal> values to return in the ID Token
+      after successfully authenticating with specified authentication modules.
+     </para>
+
+     <para>
+      For more information, see the <citetitle>Administration Guide</citetitle> section,
+      <link
+       xlink:show="new"
+       xlink:href="admin-guide#mobile-connect-configure"
+       xlink:role="http://docbook.org/xlink/role/olink"
+      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>forgerock-oauth2-provider-amr-mappings</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Modified Timestamp attribute name</term>
+    <term>Created Timestamp attribute name</term>
+    <listitem>
+     <para>
+      The identity Data Store attributes used to return
+      <literal>updated_at</literal> values in the ID Token.
+     </para>
+
+     <para>
+      For more information, see the <citetitle>Administration
+      Guide</citetitle> section,
+      <link
+       xlink:show="new"
+       xlink:href="admin-guide#mobile-connect-configure"
+       xlink:role="http://docbook.org/xlink/role/olink"
+      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+     </para>
+
+     <para>
+      <command>ssoadm</command> attributes:
+      <literal>forgerock-oauth2-provider-modified-attribute-name</literal>,
+      <literal>forgerock-oauth2-provider-created-attribute-name</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="password-reset-configuration">
+   <title>Password Reset</title>
+<variablelist>
+   <varlistentry>
+    <term>Realm Attributes</term>
+    <listitem>
+     <para>See the <citetitle>Administration Guide</citetitle> chapter on
+     <link xlink:href="admin-guide#chap-pwd-reset"
+     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
+     Password Reset</citetitle></link> for details.</para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="policy-configuration">
+   <title>Policy Configuration</title>
+<variablelist>
+   <para>
+    You can change global policy configuration and the defaults per realm.
+    The settings visible in OpenAM console are listed first.
+    Settings that must be changed using <command>ssoadm</command>,
+    and are not visible in OpenAM console, are listed next.
+    These are labeled as (<command>ssoadm</command> only).
+   </para>
+
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMPolicyConfigService</literal></para>
+
+   <varlistentry>
+    <term>Resource Comparator</term>
+    <listitem>
+     <para>OpenAM uses resource comparators to match resources specified in
+     policy rules. When setting comparators on the command line, separate
+     fields with <literal>|</literal> characters.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-resource-comparator</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Continue Evaluation on Deny Decision</term>
+    <listitem>
+     <para>If no, then OpenAM stops evaluating policy as soon as it reaches a
+     deny decision.</para>
+
+     <para>
+      Default: false (No)
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-continue-evaluation-on-deny-decision</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Realm Alias Referrals</term>
+    <listitem>
+     <para>If yes, then OpenAM allows creation of policies for HTTP and HTTPS
+     resources whose FQDN matches the DNS alias for the realm even when no
+     referral policy exists.</para>
+
+     <para>
+      Default: false (No)
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sun-am-policy-config-org-alias-mapped-resources-enabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Activate Referrals</term>
+    <listitem>
+     <para>
+      If Enabled, OpenAM allows creation and update of referrals,
+      including in the policy editor.
+     </para>
+
+     <para>
+      Default: false (not enabled)
+     </para>
+
+     <para>
+      <command>ssoadm</command> attribute:
+      <literal>openam-referrals-enabled</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Primary LDAP Server</term>
+    <listitem>
+     <para>Configuration directory server host:port that OpenAM searches for
+     policy information.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-server</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Users Base DN</term>
+    <listitem>
+     <para>Base DN for LDAP Users subject searches.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-users-base-dn</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OpenAM Roles Base DN</term>
+    <listitem>
+     <para>Base DN for OpenAM Roles searches</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-is-roles-base-dn</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Bind DN</term>
+    <listitem>
+     <para>Bind DN to connect to the directory server for policy
+     information.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-bind-dn</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Bind Password</term>
+    <listitem>
+     <para>Bind password to connect to the directory server for policy
+     information.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-bind-password</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Organization Search Filter</term>
+    <listitem>
+     <para>Search filter to match organization entries.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-organizations-search-filter</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Users Search Filter</term>
+    <listitem>
+     <para>Search filter to match user entries.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-users-search-filter</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Users Search Scope</term>
+    <listitem>
+     <para>Search scope to find user entries.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-users-search-scope</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OpenAM Roles Search Scope</term>
+    <listitem>
+     <para>Search scope to find OpenAM roles entries.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-is-roles-search-scope</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Users Search Attribute</term>
+    <listitem>
+     <para>Naming attribute for user entries</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-users-search-attribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum Results Returned from Search.</term>
+    <listitem>
+     <para>Search limit for LDAP searches</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-search-limit</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Search Timeout</term>
+    <listitem>
+     <para>Seconds after which OpenAM returns an error for an incomplete
+     search.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-search-timeout</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP SSL/TLS</term>
+    <listitem>
+     <para>If enabled, OpenAM connects securely to the directory server. This
+     requires that you install the directory server certificate.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-ssl-enabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Connection Pool Minimum Size</term>
+    <listitem>
+     <para>Minimum number of connections in the pool.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-connection_pool_min_size</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Connection Pool Maximum Size</term>
+    <listitem>
+     <para>Maximum number of connections in the pool.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-connection_pool_max_size</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Subjects Result Time to Live</term>
+    <listitem>
+     <para>Maximum minutes OpenAM caches a subject result for evaluating
+     policy requests. A value of 0 prevents OpenAM from caching subject
+     evaluations for policy decisions.</para>
+     <para>Default: 10</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-subjects-result-ttl</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>User Alias</term>
+    <listitem>
+     <para>If enabled, OpenAM can evaluate policy for remote users aliased
+     to local users.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-user-alias-enabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Advices Handleable by OpenAM (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Lists advice names for which policy agents redirect users to
+     OpenAM for further authentication and authorization.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sun-am-policy-config-advices-handleable-by-am</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Base DN (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Base DN for policy searches.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-base-dn</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Organization Search Scope (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Search scope to find organization entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-organizations-search-scope</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Groups Search Filter (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Search filter to match group entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-groups-search-filter</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Groups Search Scope (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Search scope to find group entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-groups-search-scope</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Roles Search Filter (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Search filter to match nsRole definition entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-roles-search-filter</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Roles Search Scope (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Search scope to find nsRole definition entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-roles-search-scope</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Organization Search Attribute (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Naming attribute for organization entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-organizations-search-attribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Groups Search Attribute (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Naming attribute for group entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-groups-search-attribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>LDAP Roles Search Attribute (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Naming attribute for nsRole definition entries.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-config-ldap-roles-search-attribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Selected Policy Subjects (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Lists subjects available for policy definition in realms.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-selected-subjects</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Selected Policy Conditions (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Lists conditions available for policy definition in realms.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-selected-conditions</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Selected Policy Referrals (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Lists referral types available for policy definition in realms.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-policy-selected-referrals</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Selected Response Attribute Providers (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Lists response attribute providers available for policy
+     definition.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sun-am-policy-selected-responseproviders</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Selected Dynamic Response Attributes (<command>ssoadm</command> only)</term>
+    <listitem>
+     <para>Lists dynamic response attributes available for policy
+     definition.</para>
+
+     <para>
+      This setting is not shown in OpenAM console.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sun-am-policy-dynamic-response-attributes</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="rest-apis-service-configuration">
+   <title>REST APIs</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>RestApisService</literal></para>
+
+   <varlistentry>
+    <term>Default version</term>
+    <listitem>
+     <para>The API version to use when the REST request does not specify a
+      desired version. Values are <literal>Latest</literal>, <literal>Oldest</literal>,
+      and <literal>None</literal>.</para>
+     <para>
+      Default: <literal>Latest</literal> for new OpenAM installations,
+      <literal>Oldest</literal> for upgraded OpenAM installations.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-rest-apis-default-version</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Warning header</term>
+    <listitem>
+     <para>Whether to include a warning header in the response to a request
+      that fails to include the Accept-API-Version header. Values are
+      <literal>Enabled</literal> and <literal>Disabled</literal>.</para>
+     <para>
+      Default: <literal>Enabled</literal>
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-rest-apis-header-warning</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="saml2-service-configuration">
+   <title>SAML v2.0 Service Configuration</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>sunFAMSAML2Configuration</literal></para>
+
+   <varlistentry>
+    <term>Cache cleanup interval</term>
+    <listitem>
+     <para>Seconds between cache cleanup operations.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>CacheCleanupInterval</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Attribute name for Name ID information</term>
+    <listitem>
+     <para>User entry attribute to store name identifier information.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>NameIDInfoAttribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Attribute name for Name ID information key</term>
+    <listitem>
+     <para>User entry attribute to store the name identifier key.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>NameIDInfoKeyAttribute</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Cookie domain for IDP Discovery Service</term>
+    <listitem>
+     <para>Specifies the cookie domain for the IDP discovery service.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>IDPDiscoveryCookieDomain</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Cookie type for IDP Discovery Service</term>
+    <listitem>
+     <para>Indicates whether to use PERSISTENT or SESSION cookies</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>IDPDiscoveryCookieType</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>URL scheme for IDP Discovery Service</term>
+    <listitem>
+     <para>Indicates whether to use HTTP or HTTPS.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>IDPDiscoveryURLScheme</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML Encryption SPI implementation class</term>
+    <listitem>
+     <para>Used by the SAML2 engine to encrypt and decrypt documents.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>XMLEncryptionClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Include xenc:EncryptedKey Inside ds:KeyInfo Element</term>
+    <listitem>
+     <para><command>ssoadm</command> attribute:
+     <literal>EncryptedKeyInKeyInfo</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML Signing SPI implementation class</term>
+    <listitem>
+     <para>Used by the SAML2 engine to sign documents.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>XMLSigningClass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML Signing Certificate Validation</term>
+    <listitem>
+     <para>If enabled, then validate certificates used to sign documents.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SigningCertValidation</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CA Certificate Validation</term>
+    <listitem>
+     <para>If enabled, then validate CA certificates.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>CACertValidation</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable SAML v2.0 failover</term>
+    <listitem>
+     <para>If enabled, the OpenAM can failover requests to another
+     instance.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>failOverEnabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Buffer length to decompress request</term>
+    <listitem>
+     <para>The size is specified in bytes.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>bufferLength</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Metadata signing key alias</term>
+    <listitem>
+     <para>Private key alias that is used when requesting signed metadata
+      (either using <filename>exportmetadata.jsp</filename> or
+      <filename>ssoadm</filename>) to sign the entity's metadata.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>metadataSigningKey</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Metadata signing key password</term>
+    <listitem>
+     <para>The password used to retrieve the signing key from the keystore.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>metadataSigningKeyPass</literal></para>
+    </listitem>
+   </varlistentry>
+</variablelist>
+  </section>
+
+  <section xml:id="saml2-soap-configuration">
+   <title>SAML v2.0 SOAP Binding</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>sunfmSAML2SOAPBindingService</literal></para>
+
+   <varlistentry>
+    <term>Request Handler List</term>
+    <listitem>
+     <para>List of handlers to deal with SAML2 requests bound to SOAP. The
+     key for a request handler is the meta alias, whereas the class indicates
+     the name of the class that implements the handler.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sunSAML2RequestHandlerList</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="scripting-configuration">
+   <title>Scripting</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>ScriptingService</literal></para>
+
+   <varlistentry>
+    <term>Default Script Type</term>
+    <listitem>
+     <para>The default script context type when creating a new script.</para>
+     <para><command>ssoadm</command> attribute:
+     <literal>defaultScriptContext</literal></para>
+  <para>Supported values are:</para>
+     <variablelist>
+     <varlistentry>
+         <term><literal>POLICY_CONDITION</literal></term>
+         <listitem>
+         <para>Policy Condition</para>
+         </listitem>
+     </varlistentry>
+     <varlistentry>
+         <term><literal>AUTHENTICATION_SERVER_SIDE</literal></term>
+         <listitem>
+         <para>Server-side Authentication</para>
+         </listitem>
+     </varlistentry>
+     <varlistentry>
+         <term><literal>AUTHENTICATION_CLIENT_SIDE</literal></term>
+         <listitem>
+         <para>Client-side Authentication</para>
+         </listitem>
+         </varlistentry>
+     <varlistentry>
+         <term><literal>OIDC_CLAIMS</literal></term>
+         <listitem>
+         <para>OIDC Claims</para>
+         </listitem>
+     </varlistentry>
+     </variablelist>
+     <para>
+         The following properties are available for
+         Scripting Service secondary configuration instances:
+     </para>
+
+
+  <variablelist>
+   <varlistentry>
+    <term>Engine Configuration</term>
+    <listitem>
+     <para>Configure script engine parameters for running a particular
+      script type in OpenAM.</para>
+     <note><para>Supports server-side scripts only. OpenAM cannot
+      configure engine settings for client-side scripts.</para></note>
+     <para>The configurable engine settings are as follows:</para>
+     <variablelist>
+      <varlistentry>
+       <term>Server-side Script Timeout</term>
+       <listitem>
+        <para>The maximum execution time any individual script should take on
+         the server (in seconds). OpenAM terminates scripts which take
+         longer to run than this value.</para>
+
+        <para><command>ssoadm</command> attribute:
+        <literal>serverTimeout</literal></para>
+
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>Core thread pool size</term>
+       <listitem>
+        <para>The initial number of threads in the thread pool from
+         which scripts operate. OpenAM will ensure the pool contains at least
+         this many threads.
+         </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>coreThreads</literal></para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>Maximum thread pool size</term>
+       <listitem>
+        <para>The maximum number of threads in the thread pool from which
+         scripts operate. If no free thread is available in the pool, OpenAM
+         creates new threads in the pool for script execution up to the
+         configured maximum.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>maxThreads</literal></para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>Thread pool queue size</term>
+       <listitem>
+        <para>The number of threads to use for buffering script execution
+         requests when the maximum thread pool size is reached.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>queueSize</literal></para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>Thread idle timeout (seconds)</term>
+       <listitem>
+        <para>Length of time (in seconds) for a thread to be idle before OpenAM
+         terminates created threads. If the current pool size contains the
+         number of threads set in <literal>Core thread pool size</literal>
+         idle threads will not be terminated, to maintain the initial pool size.
+        </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>idleTimeout</literal></para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>Java class whitelist</term>
+       <listitem>
+        <para>Specifies the list of class-name patterns allowed to be invoked
+         by the script. Every class accessed by the script must match at least
+         one of these patterns.</para>
+        <para>You can specify the class name as-is or use a
+         regular expression.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>whiteList</literal></para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>Java class blacklist</term>
+       <listitem>
+        <para>Specifies the list of class-name patterns that are NOT allowed
+         to be invoked by the script. The blacklist is applied AFTER the
+         whitelist to exclude those classes - access to a class
+         specified in both the whitelist and the blacklist will be denied.
+        </para>
+        <para>You can specify the class name to exclude as-is or use a
+         regular expression.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>blackList</literal></para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Use system SecurityManager</term>
+       <listitem>
+        <para>If enabled, OpenAM will make a call to
+         <literal>System.getSecurityManager().checkPackageAccess(...)</literal> for each
+         class that is accessed. The method throws <literal>SecurityException</literal> if
+         the calling thread is not allowed to access the package.</para>
+        <note><para>This feature only takes effect if the security manager is
+         enabled for the JVM. </para></note>
+        <para><command>ssoadm</command> attribute:
+        <literal>useSecurityManager</literal></para>
+       </listitem>
+      </varlistentry>
+
+     </variablelist>
+    </listitem>
+
+   </varlistentry>
+
+   <varlistentry>
+    <term>Scripting languages</term>
+    <listitem>
+     <para>Select the languages available for scripts on the chosen type.
+     Either <literal>GROOVY</literal> or <literal>JAVASCRIPT</literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>languages</literal></para>
+    </listitem>
+   </varlistentry>
+
+
+   <varlistentry>
+    <term>Default Script</term>
+    <listitem>
+     <para>The source code that is presented as the default when creating a
+      new script of this type.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>defaultScript</literal></para>
+    </listitem>
+   </varlistentry>
+
+  </variablelist>
+      </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="sts-configuration">
+   <title>Security Token Service</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>sunFAMSTSService</literal></para>
+
+   <varlistentry>
+    <term>Issuer</term>
+    <listitem>
+     <para>Specifies the name of the security token service.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>stsIssuer</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>End Point</term>
+    <listitem>
+     <para>Specifies the STS service endpoint</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>stsEndPoint</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Lifetime for Security Token</term>
+    <listitem>
+     <para>Milliseconds the security token remains valid.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>stsLifetime</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Certificate Alias Name</term>
+    <listitem>
+     <para>Specifies the alias for the signing certificate.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>stsCertAlias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>STS End User Token Plugin class</term>
+    <listitem>
+     <para>Specifies the class that converts end user tokens.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>com.sun.identity.wss.sts.clientusertoken</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Security Mechanism</term>
+    <listitem>
+     <para>Lists credentials used to secure the token, and credentials OpenAM
+     accepts in the incoming request.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SecurityMech</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Authentication Chain</term>
+    <listitem>
+     <para>Specifies the authentication chain OpenAM applies for incoming
+     requests for authenticated security tokens.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>AuthenticationChain</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>User Credential</term>
+    <listitem>
+     <para>User name and password shared secrets to validate UserName tokens
+     in incoming requests.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>UserCredential</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Detect Message Replay</term>
+    <listitem>
+     <para>If yes, then OpenAM checks for and rejects replayed messages.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>DetectMessageReplay</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Detect User Token Replay</term>
+    <listitem>
+     <para>If yes, then OpenAM checks for and rejects replayed user
+     tokens.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>DetectUserTokenReplay</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Is Request Signature Verified</term>
+    <listitem>
+     <para>If yes, then OpenAM verifies signatures on incoming requests.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>isRequestSign</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Is Response Signed Enabled</term>
+    <listitem>
+     <para>If yes, then OpenAM signs the selected parts of the response.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>isResponseSign</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Signing Reference Type</term>
+    <listitem>
+     <para>Specifies the reference type used to sign the response. One of
+     <literal>DirectReference</literal>, <literal>KeyIdentifierRef</literal>,
+     or <literal>X509IssuerSerialRef</literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SigningRefType</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Is Request Decrypted</term>
+    <listitem>
+     <para>If yes, then OpenAM decrypts the selected parts of the
+     request.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>isRequestEncrypt</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Is Response Encrypted</term>
+    <listitem>
+     <para>If yes, then OpenAM encrypts responses.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>isResponseEncrypt</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption Algorithm</term>
+    <listitem>
+     <para>Specifies the algorithm used to encrypt responses.
+     AES and 3DES are supported.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>EncryptionAlgorithm</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption Strength</term>
+    <listitem>
+     <para>Specifies the strength of the encryption algorithm.
+     For AES, key strengths of 128, 192, 256 are supported.
+     For 3DES, 0, 112 or 168 are supported.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>EncryptionStrength</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Private Key Alias</term>
+    <listitem>
+     <para>Alias for the private key used to sign responses and decrypt
+     requests.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>privateKeyAlias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Private Key Type</term>
+    <listitem>
+     <para>Type of private key. One of <literal>publicKey</literal>,
+     <literal>symmetricKey</literal>, or <literal>noProofKey</literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>privateKeyType</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Public Key Alias of Web Service Client</term>
+    <listitem>
+     <para>Alias for the certificate used to verify request signatures and
+     encrypt responses.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>publicKeyAlias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Kerberos Domain Server</term>
+    <listitem>
+     <para>Specifies the FQDN of the KDC.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>KerberosDomainServer</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Kerberos Domain</term>
+    <listitem>
+     <para>Specifies the domain name of the KDC.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>KerberosDomain</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Kerberos Service Principal</term>
+    <listitem>
+     <para>Specifies the Kerberos principal who owns the generated token.
+     Use the format <literal>HTTP/<replaceable
+     >host</replaceable>.<replaceable
+     >domain</replaceable>@<replaceable
+     >kdc-domain</replaceable></literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>KerberosServicePrincipal</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Kerberos Key Tab File</term>
+    <listitem>
+     <para>Specifies the key tab file used to issue the token.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>KerberosKeyTabFile</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Is Verify Kerberos Signature</term>
+    <listitem>
+     <para>If yes, then OpenAM requires signed Kerberos tokens.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>isVerifyKrbSignature</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>SAML Attribute Mapping</term>
+    <listitem>
+     <para>Lists attribute mappings for generated assertions.</para>
+
+     <para>This attribute applies when OpenAM acts as a WSP, receiving a
+     SAML token or assertion generated by another STS.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>SAMLAttributeMapping</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>NameID Mapper</term>
+    <listitem>
+     <para>Specifies the NameID mapper for generated assertions.</para>
+
+     <para>This attribute applies when OpenAM acts as a WSP, receiving a
+     SAML token or assertion generated by another STS.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>NameIDMapper</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Should Include Memberships</term>
+    <listitem>
+     <para>If yes, then OpenAM requires generated assertions include user
+     memberships.</para>
+
+     <para>This attribute applies when OpenAM acts as a WSP, receiving a
+     SAML token or assertion generated by another STS.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>includeMemberships</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Attribute Namespace</term>
+    <listitem>
+     <para>Specifies the namespace for generated assertions.</para>
+
+     <para>This attribute applies when OpenAM acts as a WSP, receiving a
+     SAML token or assertion generated by another STS.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>AttributeNamespace</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Trusted Issuers</term>
+    <listitem>
+     <para>Lists issuers OpenAM can trust to send security tokens.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>trustedIssuers</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Trusted IP Addresses</term>
+    <listitem>
+     <para>Lists issuer IP address that OpenAM can trust to send security
+     tokens.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>trustedIPAddresses</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="session-configuration-attributes">
+   <title>Session</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMSessionService</literal></para>
+
+   <varlistentry>
+    <term>Secondary Configuration Instance</term>
+    <listitem>
+     <para>When session failover is configured, you can set up additional
+     configurations for connecting to the session repository here.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum Number of Search Results</term>
+    <listitem>
+     <para>Maximum number of results from a session search.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-max-session-list-size</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Timeout for Search</term>
+    <listitem>
+     <para>Seconds after which OpenAM sees an incomplete search as having
+     failed.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-session-list-retrieval-timeout</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Property Change Notifications</term>
+    <listitem>
+     <para>If on, then OpenAM notifies other applications participating in
+     SSO when a session property in the Notification Properties list
+     changes on a stateful session.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-property-change-notification</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Quota Constraints</term>
+    <listitem>
+     <para>If on, then OpenAM allows you to set constraints on stateful
+     sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-enable-session-constraint</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Read Timeout for Quota Constraint</term>
+    <listitem>
+     <para>Milliseconds after which OpenAM considers a search for live session
+     count as having failed if quota constraints are enabled.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-constraint-max-wait-time</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Resulting behavior if session quota exhausted</term>
+    <listitem>
+     <para>You can either set the next expiring session to be destroyed,
+     <literal>DESTROY_NEXT_EXPIRING</literal>, the oldest session to
+     be destroyed, <literal>DESTROY_OLDEST_SESSION</literal>, all previous
+     sessions to be destroyed, <literal>DESTROY_OLD_SESSIONS</literal>, or deny
+     the new session creation request, <literal>DENY_ACCESS</literal>.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-constraint-resulting-behavior</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Deny user login when session repository is down</term>
+    <listitem>
+     <para>This attribute takes effect when quota constraints are
+     enabled.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-deny-login-if-db-is-down</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Signing Algorithm Type</term>
+    <listitem>
+     <para>Specifies the algorithm that OpenAM uses to sign a Java Web Token
+      (JWT) containing a stateless session. Signing the JWT enables tampering
+      detection. Note that OpenAM stores stateless sessions in a JWT that
+      resides in an HTTP cookie.
+     </para>
+     <para>Valid values are <literal>NONE</literal>,
+      <literal>HS256</literal>, <literal>HS384</literal>,
+      <literal>HS512</literal>, and <literal>RS256</literal>.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-signing-type</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Signing HMAC Shared Secret</term>
+    <listitem>
+     <para>Specifies the shared secret that OpenAM uses when performing HMAC
+      signing on the stateless session JWT. Specify a shared secret when using
+      a Signing Algorithm Type of <literal>HS256</literal>,
+      <literal>HS384</literal>, or <literal>HS512</literal>.
+     </para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-signing-hmac-shared-secret</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Signing RSA Certificate Alias</term>
+    <listitem>
+     <para>Specifies the name of a certificate containing a public/private key
+      pair that OpenAM uses when performing RSA signing on the stateless session
+      JWT. Specify a signing certificate alias when using a Signing
+      Algorithm Type of <literal>RS256</literal>.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-signing-rsa-certificate-alias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption Algorithm Type</term>
+    <listitem>
+     <para>Specifies the algorithm that OpenAM uses to encrypt JWTs
+      containing stateless sessions. Encrypting the JWT hides its contents.
+     </para>
+     <para>Valid values are <literal>NONE</literal> and
+      <literal>RSA</literal>.</para>
+
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-encryption-type</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption RSA Certificate Alias</term>
+    <listitem>
+     <para>Specifies the name of a certificate containing a public/private key
+      pair that OpenAM uses when encrypting a JWT. Specify an encryption
+      certificate alias when using an Encryption Algorithm Type of
+      <literal>RSA</literal>.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-encryption-rsa-certificate-alias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Session Blacklisting</term>
+    <listitem>
+     <para>Enables session blacklisting for logged out stateless sessions.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-enable-session-blacklisting</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Session Blacklist Cache Size</term>
+    <listitem>
+     <para>Specifies the size of the cache of logged out stateless sessions.
+      The cache size should be around the number of logouts expected in the
+      maximum session time.</para>
+     <para>Applies only to deployments using stateless sessions.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-blacklist-cache-size</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Blacklist Poll Interval</term>
+    <listitem>
+     <para>Specifies the interval, in seconds, at which OpenAM polls the Core
+      Token Service for changes to logged out sessions. The longer the polling
+      interval, the more time a malicious user has to connect to other OpenAM
+      servers in a cluster and make use of a stolen session cookie. Shortening
+      the polling interval improves the security for logged out sessions, but
+      might incur a minimal decrease in overall OpenAM performance due to
+      increased network activity.</para>
+     <para>Applies only to deployments using stateless sessions and
+      session blacklisting.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-blacklist-poll-interval</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Blacklist Purge Delay</term>
+    <listitem>
+     <para>When added to the maximum session time, specifies the
+      amount of time that OpenAM tracks logged out sessions.
+      Increase the blacklist purge delay if you expect system clock skews in a
+      cluster of OpenAM servers to be greater than one minute. There is no need
+      to increase the blacklist purge delay for servers running a clock
+      synchronization protocol, such as Network Time Protocol.</para>
+     <para>Applies only to deployments using stateless sessions and
+      session blacklisting.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-stateless-blacklist-purge-delay</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Notification Properties</term>
+    <listitem>
+     <para>Lists session properties for which OpenAM can send notifications
+     upon modification. Session notification applies to stateful
+     sessions only.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-notification-property-list</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>DN Restriction Only Enabled</term>
+    <listitem>
+     <para>If enabled, OpenAM does not perform DNS lookups when checking
+     restrictions in cookie hijacking mode.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-dnrestrictiononly</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Session Trimming</term>
+    <listitem>
+     <para>If yes, then OpenAM stores only a limited set of session properties
+     after session timeout and before session purging.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-enable-session-trimming</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Session Timeout Handler implementations</term>
+    <listitem>
+     <para>Lists plugin classes implementing session timeout handlers</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-session-timeout-handler-list</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum Session Time</term>
+    <listitem>
+     <para>Maximum minutes a session can remain valid before OpenAM requires
+     the user to authenticate again.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-max-session-time</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum Idle Time</term>
+    <listitem>
+     <para>Maximum minutes a stateful session can remain idle before OpenAM
+      requires the user to authenticate again.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-max-idle-time</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum Caching Time</term>
+    <listitem>
+     <para>Maximum minutes before OpenAM refreshes a session that has been
+     cached.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-max-caching-time</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Active User Sessions</term>
+    <listitem>
+     <para>Maximum number of concurrent stateful sessions OpenAM allows a user to
+     have.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-session-quota-limit</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="uma-provider-configuration">
+   <title>UMA Provider</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+    <literal>UmaProvider</literal></para>
+
+    <varlistentry>
+     <term>Requesting Party Token Lifetime (seconds)</term>
+     <listitem>
+      <para>The maximum life of a Requesting Party Token (RPT) before it
+       expires, in seconds.</para>
+      <para>
+       Default: <literal>3600</literal>
+      </para>
+      <para><command>ssoadm</command> attribute:
+       <literal>uma-rpt-lifetime</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Permission Ticket Lifetime (seconds)</term>
+     <listitem>
+      <para>The maximum life of a permission ticket before it expires, in seconds.</para>
+      <para>
+       Default: <literal>60</literal>
+      </para>
+      <para><command>ssoadm</command> attribute:
+       <literal>uma-permission-ticket-lifetime</literal></para>
+     </listitem>
+    </varlistentry>
+   <varlistentry>
+    <term>Delete user policies when Resource Server is removed</term>
+    <listitem>
+     <para>Whether to delete all user policies that relate to a Resource Server
+      when removing the OAuth2 agent entry or removing the
+      <literal>uma_protection</literal> scope from the OAuth2 agent.</para>
+     <para>
+      Default: <literal>true</literal> (Enabled)
+     </para>
+     <para><command>ssoadm</command> attribute:
+      <literal>uma-delete-policies-on-resource-server-deletion</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Delete resource sets when Resource Server is removed</term>
+    <listitem>
+     <para>Whether to delete all resource sets that relate to a Resource Server
+      when removing the OAuth2 agent entry or removing the <literal>uma_protection</literal>
+      scope from the OAuth2 agent.</para>
+     <para>
+      Default: <literal>true</literal> (Enabled)
+     </para>
+     <para><command>ssoadm</command> attribute:
+      <literal>uma-delete-resource-sets-on-resource-server-deletion</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>The cache size for the UMA backend policies</term>
+    <listitem>
+     <para>The number of UMA user-created policies to cache, per user. </para>
+     <para>
+      Default: <literal>1000</literal>
+     </para>
+     <para><command>ssoadm</command> attribute:
+      <literal>uma-backend-policy-cache-size</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+     <term>Supported Permission API Token Profiles</term>
+     <listitem>
+      <para>A list of the <emphasis>Permission API</emphasis> profiles this
+       instance of the UMA provider service supports. The
+       <literal>bearer</literal> profile <emphasis>MUST</emphasis> be in this
+       list and is currently the only profile that OpenAM supports.
+      </para>
+      <para>
+       Default: <literal>bearer</literal>
+      </para>
+      <para><command>ssoadm</command> attribute:
+       <literal>uma-supported-pat-profiles</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Supported Authorization API Token Profiles</term>
+     <listitem>
+      <para>A list of the <emphasis>Authorization API</emphasis> profiles
+       this instance of the UMA provider service supports. The
+       <literal>bearer</literal> profile <emphasis>MUST</emphasis> be in this
+       list and is currently the only profile that OpenAM supports.
+      </para>
+      <para>
+       Default: <literal>bearer</literal>
+      </para>
+      <para><command>ssoadm</command> attribute:
+       <literal>uma-supported-aat-profiles</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Supported Requesting Party Token Profiles</term>
+     <listitem>
+      <para>A list of the <emphasis>Requesting Party Token (RPT)</emphasis>
+       profiles this instance of the UMA provider service supports. The
+       <literal>bearer</literal> profile <emphasis>MUST</emphasis> be in this
+       list and is currently the only profile that OpenAM supports.
+      </para>
+      <para>
+       Default: <literal>bearer</literal>
+      </para>
+      <para><command>ssoadm</command> attribute:
+       <literal>uma-supported-rpt-profiles</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Supported Claim Token Profiles</term>
+     <listitem>
+      <para>A list of the <emphasis>Claim Token</emphasis>
+       profiles this instance of the UMA provider service supports.</para>
+      <note><para>Currently OpenAM does not support any Claim Token profiles.</para></note>
+      <para><command>ssoadm</command> attribute:
+       <literal>uma-supported-claim-token-profiles</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Supported UMA Profiles</term>
+     <listitem>
+      <para>A list of the <emphasis>UMA extension</emphasis>
+       profiles this instance of the UMA provider service supports.</para>
+      <note><para>Currently OpenAM does not support any UMA extension profiles.</para></note>
+      <para><command>ssoadm</command> attribute:
+       <literal>uma-supported-uma-profiles</literal></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="user-configuration-attributes">
+   <title>User</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMUserService</literal></para>
+
+   <varlistentry>
+    <term>User Preferred Timezone</term>
+    <listitem>
+     <para>Time zone for accessing OpenAM console.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>preferredtimezone</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Administrator DN Starting View</term>
+    <listitem>
+     <para>Specifies the DN for the initial screen when the OpenAM
+     administrator successfully logs in to the OpenAM console.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-user-admin-start-dn</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Default User Status</term>
+    <listitem>
+     <para>Inactive users cannot authenticate, though OpenAM stores their
+     profiles. Default: <literal>Active</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-user-login-status</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="rest-security-configuration">
+   <title>User Self Service</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>RestSecurity</literal></para>
+
+   <para>The order of options that appear in the console may vary depending on whether you are running from
+   a new installation or an upgrade of OpenAM.</para>
+
+   <!-- May be affected by OPENAM-3027, where, in an upgrade situation,
+   the  Forgot Password Token LifeTime (seconds) label has
+   been incorrectly replaced with another instance of Forgot Password for Users -->
+
+   <varlistentry>
+    <term>Two Factor Authentication Enabled</term>
+    <listitem>
+     <para>This option is reserved for future use.</para>
+     <para>Default: False</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecurityTwoFactorAuthEnabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Two Factor Authentication Required</term>
+    <listitem>
+     <para>This option is reserved for future use.</para>
+     <para>Default: False</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecurityTwoFactorAuthMandatory</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Self-Registration for Users</term>
+    <listitem>
+     <para>If enabled, new users can sign up using a REST API client.</para>
+     <para>Default: not enabled</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecuritySelfRegistrationEnabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Self-Registration Token LifeTime (seconds)</term>
+    <listitem>
+     <para>Maximum life time for the token allowing user self-registration using
+     the REST API.</para>
+
+     <para>Default: 900 (seconds)</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecuritySelfRegTokenTTL</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Self-Registration Confirmation Email URL</term>
+    <listitem>
+     <para>
+      This page handles the HTTP GET request
+      when the user clicks the link sent by email in the confirmation request.
+     </para>
+
+     <para>
+      Default:
+      <literal><replaceable>deployment-base-url</replaceable>/XUI/confirm.html</literal>
+      where <replaceable>deployment-base-url</replaceable> is something like
+      <literal>https://openam.example.com:8443/openam</literal>
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecuritySelfRegConfirmationUrl</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Forgot Password for Users</term>
+    <listitem>
+      <para>If enabled, users can assign themselves a new password using a REST API client.</para>
+      <para>Default: not enabled</para>
+
+      <para><command>ssoadm</command> attribute:
+      <literal>forgerockRESTSecurityForgotPasswordEnabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Forgot Password Token LifeTime (seconds)</term>
+    <listitem>
+     <para>Maximum life time for the token allowing user to process a forgotten
+     password using the REST API.</para>
+
+     <para>Default: 900 (seconds)</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRestSecurityForgotPassTokenTTL</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Forgot Password Confirmation Email URL</term>
+    <listitem>
+     <para>
+      This page handles the HTTP GET request
+      when the user clicks the link sent by email in the confirmation request.
+     </para>
+
+     <para>
+      Default:
+      <literal><replaceable>deployment-base-url</replaceable>/XUI/confirm.html</literal>
+      where <replaceable>deployment-base-url</replaceable> is something like
+      <literal>https://openam.example.com:8443/openam</literal>
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecurityForgotPassConfirmationUrl</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Destination After Successful Self-Registration</term>
+    <listitem>
+     <para>Specifies the action to be taken after a user successfully registers a new account. Values are
+      <literal>default</literal> (user is sent to a successful registration page, without being logged in),
+      <literal>login</literal> (user is sent to the login page to authenticate),
+      and <literal>autologin</literal> (user is automatically logged in and sent to the appropriate page within the system).</para>
+     <para>This option applies to XUI deployments only.</para>
+     <para>Default: <literal>default</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecuritySuccessfulUserRegistrationDestination</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Protected User Attributes</term>
+    <listitem>
+     <para>A list of user profile attributes. Users modifying
+      any of the attributes in this list will be required to
+      enter a password as confirmation before the change is accepted.</para>
+     <para>This option applies to XUI deployments only.</para>
+     <para>Default: No user attributes are protected.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>forgerockRESTSecurityProtectedUserAttributes</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="validation-service-configuration">
+   <title>Validation Service</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>validationService</literal></para>
+
+   <varlistentry>
+    <term>Valid goto URL Resources</term>
+    <listitem>
+     <para>By default, OpenAM redirects the user to one of the URLs specified in the
+      <literal>goto</literal> parameter supplied to the authentication interface. To
+      enhance security, a list of valid URL resources can be specified here so OpenAM can validate
+      the <literal>goto</literal> URL against them. OpenAM will only redirect a user if the goto URL
+      matches any of the resources specified in this setting. If no setting is present,
+      it is assumed that the goto URL is valid. Resources defined here can have the
+      "*" wildcard defined, where "*" matches all characters except "?".</para>
+     <para>Default: No validation URLs are specified. OpenAM accepts
+      <literal>goto</literal> URLs without validation.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-auth-valid-goto-resources</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+ </section>

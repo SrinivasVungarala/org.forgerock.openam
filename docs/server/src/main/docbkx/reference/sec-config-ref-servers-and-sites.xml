@@ -1,0 +1,2208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !    
+-->
+ <section xml:id="servers-and-sites-configuration"
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+  <title>Servers and Sites Configuration</title>
+  <indexterm>
+   <primary>Configuration</primary>
+   <secondary>Servers and Sites</secondary>
+  </indexterm>
+
+  <para>Under Configuration &gt; Servers and Sites, you can manage server
+  defaults, configuration for OpenAM server instances, and site configurations
+  when using multiple OpenAM server instances.</para>
+
+  <itemizedlist>
+   <para>
+    This section describes the following sets of properties.
+   </para>
+
+   <listitem>
+    <para>
+     <xref linkend="servers-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="sites-configuration" />
+    </para>
+   </listitem>
+  </itemizedlist>
+
+ <section xml:id="servers-configuration">
+  <title>Configuring Servers</title>
+
+  <para>To change inherited settings that appear read only for a server,
+  click Default Server Settings on the Servers and Sites tab page to access
+  and adjust the defaults, or change the Inheritance Settings for a specific
+  server.</para>
+
+  <para>After changing server configurations, restart OpenAM or the web
+  application container where OpenAM runs for the changes to take
+  effect unless otherwise noted.</para>
+
+  <section xml:id="servers-general-configuration">
+   <title>General</title>
+<variablelist>
+   <para>The General tab lets you access the settings to inherit, set the
+   site for the server, and also set system, debug, and mail server
+   attributes.</para>
+
+   <varlistentry>
+    <term>Parent Site</term>
+    <listitem>
+     <para>Select the site from the list. You must first create at least one
+     site.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Base installation directory</term>
+    <listitem>
+     <para>OpenAM writes the configuration data and logs here.</para>
+
+     <para>property:
+     <literal>com.iplanet.services.configpath</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Default Locale</term>
+    <listitem>
+     <para>
+      The default requested locale when the client does not request a locale
+      either by using the <literal>locale</literal> query string parameter
+      or by setting the HTTP header, <literal>Accept-Language</literal>.
+     </para>
+
+     <para>
+      To set the locale when OpenAM cannot find UI files for the requested locale,
+      set the JVM platform locale instead.
+      For details see the <citetitle>Installation Guide</citetitle> section,
+      <link
+       xlink:href="install-guide#lookup-for-ui-files"
+       xlink:role="http://docbook.org/xlink/role/olink"
+      ><citetitle>How OpenAM Looks Up UI Files</citetitle></link>
+     </para>
+
+     <para>property:
+     <literal>com.iplanet.am.locale</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Notification URL</term>
+    <listitem>
+     <para>The notification service endpoint.</para>
+
+     <para>property:
+     <literal>com.sun.identity.client.notification.url</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>XML Validation</term>
+    <listitem>
+     <para>If enabled, then OpenAM validates XML documents that it parses.</para>
+
+     <para>property:
+     <literal>com.iplanet.am.util.xml.validating</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Debug Level</term>
+    <listitem>
+     <para>Set the log level shared across components for debug logging.</para>
+     <para>
+      Changes to this property take effect immediately. No server
+      restart is necessary.
+     </para>
+
+     <para>property:
+     <literal>com.iplanet.services.debug.level</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Merge Debug Files</term>
+    <listitem>
+     <para>If enabled, then OpenAM writes all debug log messages to a single
+      file, <filename>debug.out</filename>. By default, OpenAM writes a debug log
+     per component.</para>
+     <para>
+      Changes to this property take effect immediately. No server
+      restart is necessary.
+     </para>
+     <para>property:
+     <literal>com.iplanet.services.debug.mergeall</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Debug Directory</term>
+    <listitem>
+     <para>File system directory where OpenAM writes debug logs.</para>
+     <para>
+      Changes to this property do not take effect until you
+      restart the OpenAM server.
+     </para>
+     <para>property:
+     <literal>com.iplanet.services.debug.directory</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mail Server Host Name</term>
+    <listitem>
+     <para>SMTP host name for email sent by OpenAM.</para>
+
+     <para>property:
+     <literal>com.iplanet.am.smtphost</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mail Server Port Number</term>
+    <listitem>
+     <para>SMTP port number for email sent by OpenAM.</para>
+
+     <para>property:
+     <literal>com.iplanet.am.smtpport</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="servers-security-configuration">
+   <title>Security</title>
+<variablelist>
+   <para>Most security settings are inherited by default.</para>
+
+   <varlistentry>
+    <term>Password Encryption Key</term>
+    <listitem>
+     <para>Encryption key for decrypting stored passwords</para>
+     <para>Example: <literal>TF1Aue9c63bWTTY4mmZJeFYubJbNiSE3</literal></para>
+
+     <para>property:
+     <literal>am.encryption.password</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Authentication Service Shared Secret</term>
+    <listitem>
+     <para>Shared secret for application authentication</para>
+     <para>Example: <literal>AQICQ7QMKN5TSt1fpyFZBMZ8hRwkYkkrUaFk</literal></para>
+
+     <para>property:
+     <literal>com.iplanet.am.service.secret</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption class</term>
+    <listitem>
+     <para>Default class used to handle encryption</para>
+     <para>Default: <literal>com.iplanet.services.util.JCEEncryption</literal></para>
+
+     <para>property:
+     <literal>com.iplanet.security.encryptor</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Secure Random Factory Class</term>
+    <listitem>
+     <para>The default implementation uses pure Java, rather than JSS.</para>
+     <para>Default: <literal>com.iplanet.am.util.SecureRandomFactoryImpl</literal></para>
+
+     <para>property:
+     <literal>com.iplanet.security.SecureRandomFactorImpl</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Platform Low Level Comm. Max. Content Length</term>
+    <listitem>
+     <para>Maximum content length for an HTTP request</para>
+     <para>Default: 16384</para>
+
+     <para>property:
+     <literal>com.iplanet.services.comm.server.pllrequest.maxContentLength</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Client IP Address Check</term>
+    <listitem>
+     <para>If enabled, then OpenAM checks client IP addresses when creating and
+     validating SSO tokens.</para>
+     <para>Default: No</para>
+
+     <para>property:
+     <literal>com.iplanet.am.clientIPCheckEnabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Cookie Name</term>
+    <listitem>
+     <para>Cookie name OpenAM uses to set a session handler ID during
+     authentication.</para>
+     <para>Default: <literal>iPlanetDirectoryPro</literal></para>
+
+     <para>property:
+     <literal>com.iplanet.am.cookie.name</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Secure Cookie</term>
+    <listitem>
+     <para>If yes, then OpenAM sets the cookie in secure mode such that the
+     browser only returns the cookie if a secure protocol such as HTTPS is
+     used.</para>
+     <para>Default: No</para>
+
+     <para>property:
+     <literal>com.iplanet.am.cookie.secure</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encode Cookie Value</term>
+    <listitem>
+     <para>If yes, then OpenAM URL encodes cookie values.</para>
+     <para>Default: No</para>
+
+     <para>property:
+     <literal>com.iplanet.am.cookie.encode</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Keystore File</term>
+    <listitem>
+     <para>Path to OpenAM key store file</para>
+     <para>Default: Path to <filename>keystore.jks</filename>, located in the
+     directory that holds the OpenAM configuration.</para>
+     <para>Example: <filename>~/openam/openam/keystore.jks</filename></para>
+
+     <para>property:
+     <literal>com.sun.identity.saml.xmlsig.keystore</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Keystore Password File</term>
+    <listitem>
+     <para>Path to password file for key store</para>
+     <para>Default: Path to <filename>.storepass</filename>, located in the
+     directory that holds the OpenAM configuration.</para>
+     <para>Example: <filename>~/openam/openam/.storepass</filename></para>
+
+     <para>property:
+     <literal>com.sun.identity.saml.xmlsig.storepass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Private Key Password File</term>
+    <listitem>
+     <para>Path to password file for OpenAM private key</para>
+     <para>Default: Path to <filename>.keypass</filename>, located in the
+     directory that holds the OpenAM configuration.</para>
+     <para>Example: <filename>~/openam/openam/.keypass</filename></para>
+
+     <para>property:
+     <literal>com.sun.identity.saml.xmlsig.keypass</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Certificate Alias</term>
+    <listitem>
+     <para>Alias for OpenAM certificate stored in key store</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.saml.xmlsig.certalias</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CRL: LDAP server host name</term>
+    <listitem>
+     <para>Directory server host name where the certificate revocation list
+     (CRL) is cached</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.crl.cache.directory.host</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CRL: LDAP server port number</term>
+    <listitem>
+     <para>Directory server port number where the certificate revocation list
+     is cached</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.crl.cache.directory.port</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CRL: SSL/TLS Enabled</term>
+    <listitem>
+     <para>If yes, then connect securely when accessing the CRL cache
+     directory server</para>
+     <para>Default: No</para>
+
+     <para>property:
+     <literal>com.sun.identity.crl.cache.directory.ssl</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CRL: LDAP server bind user name</term>
+    <listitem>
+     <para>Bind DN to access CRL cache directory server</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.crl.cache.directory.user</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CRL: LDAP server bind password</term>
+    <listitem>
+     <para>Bind password to access CRL cache directory server</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.crl.cache.directory.password</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CRL: LDAP search base DN</term>
+    <listitem>
+     <para>Base DN under which to search for CRL</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.crl.cache.directory.searchlocs</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>CRL: Search Attributes</term>
+    <listitem>
+     <para>DN component of issuer's subject DN used to retrieve the CRL</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.crl.cache.directory.searchattr</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OCSP: Check Enabled</term>
+    <listitem>
+     <para>If yes, then OpenAM runs Online Certificate Status Protocol (OCSP)
+     checks.</para>
+     <para>Default: Yes</para>
+
+     <para>property:
+     <literal>com.sun.identity.authentication.ocspCheck</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Responder URL</term>
+    <listitem>
+     <para>URL for OCSP responder</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.authentication.ocsp.responder.url</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Certificate Nickname</term>
+    <listitem>
+     <para>Nickname for OCSP responder certificate</para>
+     <para>Not set by default</para>
+
+     <para>property:
+     <literal>com.sun.identity.authentication.ocsp.responder.nickname</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>FIPS Mode</term>
+    <listitem>
+     <para>If yes, then OpenAM runs in Federal Information Processing Standards
+     mode.</para>
+     <para>Default: No</para>
+
+     <para>property:
+     <literal>com.sun.identity.security.fipsmode</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="servers-session-configuration">
+   <title>Session</title>
+<variablelist>
+   <para>Session settings are inherited by default.</para>
+
+   <varlistentry>
+    <term>Maximum Sessions</term>
+    <listitem>
+     <para>Maximum concurrent stateful sessions OpenAM permits</para>
+
+     <para>property:
+     <literal>com.iplanet.am.session.maxSessions</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Invalidate Session Max Time</term>
+    <listitem>
+     <para>Minutes after which invalid stateful sessions are removed from the session
+     table</para>
+
+     <para>property:
+     <literal>com.iplanet.am.session.invalidsessionmaxtime</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Sessions Purge Delay</term>
+    <listitem>
+     <para>Minutes OpenAM delays purging of stateful sessions</para>
+
+     <para>property:
+     <literal>com.iplanet.am.session.purgedelay</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Logging Interval</term>
+    <listitem>
+     <para>Seconds OpenAM delays between logging stateful session statistics</para>
+
+     <para>property:
+     <literal>com.iplanet.am.stats.interval</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>State</term>
+    <listitem>
+     <para>Whether to write statistics to a <literal>file</literal>, to the
+     <literal>console</literal>, or to turn recording
+     <literal>off</literal></para>
+
+     <para>property:
+     <literal>com.iplanet.services.stats.state</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Directory</term>
+    <listitem>
+     <para>Path to statistics logs directory</para>
+
+     <para>property:
+     <literal>com.iplanet.services.stats.directory</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Host Lookup</term>
+    <listitem>
+     <para>If yes, then OpenAM performs host lookup during stateful session
+     logging.</para>
+
+     <para>property:
+     <literal>com.sun.am.session.enableHostLookUp</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Notification Pool Size</term>
+    <listitem>
+     <para>
+      Number of threads in the session change notification pool.
+      Session notification applies to stateful sessions only.
+     </para>
+
+     <para>property:
+     <literal>com.iplanet.am.notification.threadpool.size</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Notification Thread Pool Threshold</term>
+    <listitem>
+     <para>Maximum number of tasks in the queue for serving session change
+      notification threads. Session notification applies to stateful sessions
+      only.
+     </para>
+
+     <para>property:
+     <literal>com.iplanet.am.notification.threadpool.threshold</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Case Insensitive client DN comparison</term>
+    <listitem>
+     <para>If yes, then OpenAM distinguished name comparison is case
+     insensitive.</para>
+
+     <para>property:
+     <literal>com.sun.am.session.caseInsensitiveDN</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="servers-sdk-configuration">
+   <title>SDK</title>
+   <variablelist>
+   <para>Most SDK settings are inherited.</para>
+
+   <varlistentry>
+    <term>Enable Datastore Notification</term>
+    <listitem>
+     <para>If yes, then OpenAM uses data store notification. Otherwise, OpenAM
+     uses in-memory notification.</para>
+
+     <para>property:
+     <literal>com.sun.identity.sm.enableDataStoreNotification</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Directory Proxy</term>
+    <listitem>
+     <para>If yes, then OpenAM accounts for the use of a directory proxy to
+     access the directory server.</para>
+
+     <para>property:
+     <literal>com.sun.identity.sm.ldap.enableProxy</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Notification Pool Size</term>
+    <listitem>
+     <para>Service management notification thread pool size</para>
+
+     <para>property:
+     <literal>com.sun.identity.sm.notification.threadpool.size</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Number of retries for Event Service connections</term>
+    <listitem>
+     <para>Maximum number of attempts to reestablish Event Service
+     connections</para>
+
+     <para>property:
+     <literal>com.iplanet.am.event.connection.num.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Delay between Event Service connection retries</term>
+    <listitem>
+     <para>Milliseconds between attempts to reestablish Entry Service
+     connections</para>
+
+     <para>property:
+     <literal>com.iplanet.am.event.connection.delay.between.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Error codes for Event Service connection retries</term>
+    <listitem>
+     <para>LDAP error codes for which OpenAM retries rather than returning
+     failure</para>
+
+     <para>property:
+     <literal>com.iplanet.am.event.connection.ldap.error.codes.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Idle Time Out</term>
+    <listitem>
+     <para>Minutes after which OpenAM reestablishes idle persistent search
+     connections</para>
+
+     <para>property:
+     <literal>com.sun.am.event.connection.idle.timeout</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Disabled Event Service Connection</term>
+    <listitem>
+     <para>Persistent search connections OpenAM can disable</para>
+
+     <para>property:
+     <literal>com.sun.am.event.connection.disable.list</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Number of retries for LDAP Connection</term>
+    <listitem>
+     <para>Maximum number of attempts to reestablish LDAP connections</para>
+
+     <para>property:
+     <literal>com.iplanet.am.ldap.connection.num.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Delay between LDAP connection retries</term>
+    <listitem>
+     <para>Milliseconds between attempts to reestablish LDAP connections</para>
+
+     <para>property:
+     <literal>com.iplanet.am.ldap.connection.delay.between.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Error Codes for LDAP connection retries</term>
+    <listitem>
+     <para>LDAP error codes for which OpenAM retries rather than returning
+     failure</para>
+
+     <para>property:
+     <literal>com.iplanet.am.ldap.connection.ldap.error.codes.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>SDK Caching Max. Size</term>
+    <listitem>
+     <para>Cache size used if SDK caching is enabled</para>
+
+     <para>property:
+     <literal>com.iplanet.am.sdk.cache.maxSize</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>SDK Replica Retries</term>
+    <listitem>
+     <para>Maximum number of attempts to retrieve entries returned as not
+     found</para>
+
+     <para>property:
+     <literal>com.iplanet.am.replica.num.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Delay between SDK Replica Retries</term>
+    <listitem>
+     <para>Milliseconds between attempts to retrieve entries through the
+     SDK</para>
+
+     <para>property:
+     <literal>com.iplanet.am.replica.delay.between.retries</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Cache Entry Expiration Enabled</term>
+    <listitem>
+     <para>If no, then cache entries expire based on User Entry Expiration
+     Time</para>
+
+     <para>property:
+     <literal>com.iplanet.am.sdk.cache.entry.expire.enabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>User Entry Expiration Time</term>
+    <listitem>
+     <para>Minutes user entries remain valid after modification. When OpenAM
+     accesses a user entry that has expired, it rereads the entry from the
+     directory server.</para>
+
+     <para>property:
+     <literal>com.iplanet.am.sdk.cache.entry.user.expire.time</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Default Entry Expiration Time</term>
+    <listitem>
+     <para>Minutes non-user entries remain valid after modification</para>
+
+     <para>property:
+     <literal>com.iplanet.am.sdk.cache.entry.default.expire.time</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="servers-directory-configuration">
+   <title>Directory Configuration</title>
+<variablelist>
+   <para>Use this tab to change connection settings and add additional
+   LDAP configuration directory server instances.</para>
+
+   <varlistentry>
+    <term>Minimum Connection Pool</term>
+    <listitem>
+     <para>Set the minimum number of connections in the pool.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum Connection Pool</term>
+    <listitem>
+     <para>Set the maximum number of connections in the pool.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Bind DN</term>
+    <listitem>
+     <para>Set the bind DN to connect to the configuration directory
+     servers.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Bind Password</term>
+    <listitem>
+     <para>Set the bind password to connect to the configuration directory
+     servers.</para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="servers-cts">
+    <title>CTS</title>
+<variablelist>
+    <para>
+     The Core Token Service (CTS) does not need to be configured
+     in the same LDAP storage as the external or embedded user store.
+     The CTS can instead be configured on its own external directory server.
+     There are some specific requirements for indexing and replication
+     which need to be accounted for.
+     In particular, WAN replication is an important consideration
+     which needs to be handled carefully for optimum performance.
+    </para>
+
+    <para>
+     You may also choose to set advanced properties related to token size, including
+     <literal>com.sun.identity.session.repository.enableEncryption</literal>,
+     <literal>com.sun.identity.session.repository.enableCompression</literal>,
+     and <literal>com.sun.identity.session.repository.enableAttributeCompression</literal>.
+     For more information, identify these variables in the following section:
+     <xref linkend="servers-advanced-configuration" />.
+    </para>
+
+      <varlistentry>
+       <term>Default Token Store</term>
+       <listitem>
+        <para>
+         If selected, CTS tokens are stored
+         in the same external or embedded data store
+         as is used on an OpenAM configuration store.
+         If you use the default token store,
+         you can only configure the <literal>Root Suffix</literal>.
+         Associated with the <literal>Directory Configuration</literal> tab
+         associated with individual servers.
+        </para>
+       </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>External Token Store</term>
+     <listitem>
+      <para>
+       If you use OpenDJ, you can separate the CTS
+       from the configuration on different external servers.
+       On the external CTS server, you can also configure token schema and indexes.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Root Suffix</term>
+     <listitem>
+      <para>
+       For either the default or external token stores,
+       enter the base DN for CTS storage information in LDAP format,
+       such as <literal>dc=cts,dc=forgerock,dc=com</literal>.
+       The <literal>Root Suffix</literal> would be a database
+       that can be maintained and replicated separately
+       from the standard user data store.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>SSL/TLS Enabled</term>
+     <listitem>
+      <para>
+       Access the directory service using StartTLS or LDAPS.
+      </para>
+      <para>
+       You can configure this field for external token stores only.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Connection String(s)</term>
+     <listitem>
+      <para>
+       Specifies the ordered list of connection strings for external OpenDJ
+       directory servers. The format is <literal>HOST:PORT[|SERVERID[|SITEID]]</literal>,
+       where <literal>SERVERID</literal> and <literal>SITEID</literal> are
+       optional parameters that let you prioritize the particular connection
+       when used by the specified node(s).
+      </para>
+      <para>
+       You can configure this field for external token stores only.
+      </para>
+      <para>
+       Examples:
+       <variablelist>
+        <varlistentry>
+         <term>
+          <literal>cts-dj1.example.com:389,cts-dj2.example.com:389</literal>
+         </term>
+         <listitem>
+          <para>
+           Access <literal>cts-dj1.example.com:389</literal> for all CTS
+           operations unless that directory server goes down. If it goes down,
+           then access <literal>cts-dj2.example.com:389</literal>
+           for all CTS operations.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <literal>cts-dj1.example.com:389|1|1,cts-dj2.example.com:389|2|1</literal>
+         </term>
+         <listitem>
+          <para>
+           Access <literal>cts-dj1.example.com:389</literal> for all
+           CTS operations from server 1, site 1. Access
+           <literal>cts-dj2.example.com:389</literal> for all CTS operations
+           from server 2, site 1. If either of these servers goes down, do not
+           redirect operations to another directory server.
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term>
+          <literal>cts-dj1.example.com:389|1|1,cts-dj2.example.com:389|1|1,cts-dj2.example.com:389|2|1,cts-dj1.example.com:389|2|1</literal>
+         </term>
+         <listitem>
+          <para>
+           Access <literal>cts-dj1.example.com:389</literal> for all CTS
+           operations from server 1, site 1 unless that directory server goes
+           down. If it goes down, access <literal>cts-dj2.example.com:389</literal>
+           for all CTS operations from server 1, site 1. Access
+           <literal>cts-dj2.example.com:389</literal> for all CTS operations
+           from server 2, site 1 unless that directory server goes down. If it
+           goes down, access <literal>cts-dj1.example.com:389</literal> for all
+           CTS operations from server 2, site 1.
+          </para>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Login Id</term>
+     <listitem>
+      <para>
+       Specifies the user, in DN format, needed to authenticate.
+       The user needs sufficient privileges to read and write
+       to the root suffix of the external data store.
+      </para>
+      <para>
+       You can configure this field for external token stores only.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Password</term>
+     <listitem>
+      <para>
+       Specifies the password associated with the login ID.
+      </para>
+      <para>
+       You can configure this field for external token stores only.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Max Connections</term>
+     <listitem>
+      <para>
+       Notes the maximum number of remote connections to the external data
+       store.
+      </para>
+
+      <para>
+       For suggested settings,
+       see the <citetitle>Administration Guide</citetitle> section on
+       <link
+        xlink:show="new"
+        xlink:href="admin-guide#tuning-ldap-settings-cts"
+        xlink:role="http://docbook.org/xlink/role/olink"
+       ><citetitle>Tuning LDAP CTS and Configuration Store Settings</citetitle></link>.
+      </para>
+      <para>
+       You can configure this field for external token stores only.
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Heartbeat</term>
+     <listitem>
+      <para>
+       Specifies how often OpenAM should send a heartbeat request to the directory server
+       to ensure that the connection does not remain idle, in seconds.
+       Default: 10.
+      </para>
+      <para>
+       You can configure this field for external token stores only.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="servers-uma">
+   <title>UMA</title>
+   <variablelist>
+   <para>OpenAM stores information about registered resource sets, and also audit
+    information generated when users manage access to their protected resources.
+    OpenAM provides a default store, or you can configure external stores to
+    maintain this information.</para>
+
+   <para>The following settings can be configured separately for both the data
+    store used for storing registered resource sets, and the data store for UMA
+    audit information.</para>
+
+   <para><emphasis role="bold">Resource Sets Store / UMA Audit Store</emphasis></para>
+
+   <varlistentry>
+    <term>Default Token Store</term>
+    <listitem>
+     <para>
+      If selected, tokens are stored in the OpenAM configuration store.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>External Token Store</term>
+    <listitem>
+     <para>
+      If selected, tokens are stored in a separate external data store.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Root Suffix</term>
+    <listitem>
+     <para>
+      Enter the base DN for storage information in LDAP format,
+      such as <literal>dc=uma-rs,dc=forgerock,dc=com</literal>.
+     </para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+
+  <variablelist xml:id="servers-uma-external">
+   <para><emphasis role="bold">External Store Configuration</emphasis></para>
+   <para>The options in this section become available when
+    <literal>External Token Store</literal> is selected.</para>
+
+   <varlistentry>
+    <term>SSL/TLS Enabled</term>
+    <listitem>
+     <para>
+      Specifies if SSL or TLS is enabled for the connection to the store.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Connection String(s)</term>
+    <listitem>
+     <para>
+      Each connection string is composed as follows:
+      <literal><replaceable>HOST</replaceable>:<replaceable>PORT</replaceable>[|<replaceable>SERVERID</replaceable>[|<replaceable>SITEID</replaceable>]]</literal>, where
+      <replaceable>SERVERID</replaceable> and <replaceable>SITEID</replaceable>
+      are optional parameters that will prioritize that connection for use by
+      the specified nodes. Multiple connection strings should be comma-separated,
+      for example, <literal>host1:389,host2:50389|server1|site1,host3:50389</literal>.
+     </para>
+     <para>
+      See the entry for Connection String(s) in <xref linkend="servers-cts" />
+      for syntax examples.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Login Id</term>
+    <listitem>
+     <para>
+      The DN of the data store user that OpenAM authenticates to the
+      directory with. This user needs sufficient privileges to read and
+      write to the root suffix of the data store.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Password</term>
+    <listitem>
+     <para>
+      Specifies the password associated with the login ID.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Max Connections</term>
+    <listitem>
+     <para>
+      Sets the maximum number of remote connections to the external data store.
+     </para>
+
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Heartbeat</term>
+    <listitem>
+     <para>
+      Specifies how often OpenAM should send a heartbeat request to the
+      data store to ensure that the connection does not remain idle, in seconds.
+      Default: 10.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  </section>
+
+  <section xml:id="servers-advanced-configuration">
+   <title>Advanced</title>
+   <variablelist>
+
+   <para>Use this page to set advanced properties directly. A partial list of
+   advanced properties follows.</para>
+
+   <para>For a list of inherited advanced properties, see the table under the
+   Advanced tab for Default Server Settings.</para>
+
+   <varlistentry>
+    <term><literal>org.forgerock.openam.cdc.validLoginURIs</literal></term>
+
+    <listitem>
+     <para>
+      This property sets a whitelist of valid login URIs.
+      It is used by the CDCServlet to validate
+      <literal>LoginURI</literal> parameter values.
+     </para>
+
+     <para>
+      Set only the URIs, not the query string parameters.
+      If the actual <literal>LoginURI</literal> parameter value
+      includes query string parameters,
+      then OpenAM strips them off before comparing the URI
+      with the value or values in the whitelist.
+     </para>
+
+     <para>
+      Separate multiple values with a comma, as in the following example:
+      <literal>org.forgerock.openam.cdc.validLoginURIs=/UI/Login,/customLoginURI</literal>.
+     </para>
+
+     <para>
+      Default: <literal>/UI/Login</literal>
+     </para>
+
+     <para>
+
+     </para>
+    </listitem>
+
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.cookie.c66Encode</literal></term>
+    <listitem>
+     <para>Properly URL encode session tokens.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.cookie.timeToLive</literal></term>
+    <listitem>
+     <para><literal>iplanetDirectoryPro</literal> cookie lifetime if
+     persistent, in hours</para>
+     <para>Default: 24</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.daemons</literal></term>
+    <listitem>
+     <para>Modules for which to open daemons at OpenAM startup.</para>
+     <para>Default: <literal>securid</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.directory.ssl.enabled</literal></term>
+    <listitem>
+     <para>Whether to connect to the configuration directory server over
+     LDAPS.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.installdir</literal></term>
+    <listitem>
+     <para>OpenAM Configuration and log file location.</para>
+     <para>Default: <literal>~/openam/<replaceable>server-uri</replaceable></literal>,
+     such as <literal>~/openam/openam</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.jssproxy.checkSubjectAltName</literal></term>
+    <listitem>
+     <para>When using JSS or JSSE, check whether the name values in the
+     <literal>SubjectAltName</literal> certificate match the server FQDN.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.jssproxy.resolveIPAddress</literal></term>
+    <listitem>
+     <para>When using JSS or JSSE, check that the IP address of the server resolves
+     to the host name.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.jssproxy.SSLTrustHostList</literal></term>
+    <listitem>
+     <para>When using JSS or JSSE, comma-separated list of server FQDNs to trust if
+     they match the certificate CN, even if the domain name is not
+     correct.</para>
+        </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.jssproxy.trustAllServerCerts</literal></term>
+    <listitem>
+     <para>When using JSS or JSSE, set to <literal>true</literal> to trust whatever
+     certificate is presented without checking.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.lbcookie.name</literal></term>
+    <listitem>
+     <para>Used with sticky load balancers that can inspect the cookie
+     value.</para>
+     <para>Default: <literal>amlbcookie</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.lbcookie.value</literal></term>
+    <listitem>
+     <para>Used with sticky load balancers that can inspect the cookie value.
+     Set this property to a unique value if your load balancer requires it.
+     Restart OpenAM for the change to take effect.</para>
+     <para>Default: 01</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.openam.ldap.default.time.limit</literal></term>
+    <listitem>
+     <para>Configures the client-side timeout, in milliseconds, applied to LDAP
+      operations performed with the Netscape LDAP SDK.</para>
+     <para>Default: <literal>0</literal> (no time limit)</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.pcookie.name</literal></term>
+    <listitem>
+     <para>Persistent cookie name.</para>
+     <para>Default: <literal>DProPCookie</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.profile.host</literal></term>
+    <listitem>
+     <para>Not used</para>
+     <para>Default: <replaceable>server-host</replaceable>, such as
+     <literal>openam.example.com</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.profile.port</literal></term>
+    <listitem>
+     <para>Not used</para>
+     <para>Default: <replaceable>server-port</replaceable>, such as 8080 or
+     8443</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.session.agentSessionIdleTime</literal></term>
+    <listitem>
+     <para>Time in <emphasis>minutes</emphasis> after which a policy agent's
+      stateful session expires. Note that this setting is ignored when OpenAM
+      creates a stateless session for a policy agent.
+     </para>
+     <para>Default: 0 (never time out). You can set this property
+      to 0, or 30 and higher (no maximum limit).</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.session.client.polling.enable</literal></term>
+    <listitem>
+     <para>Whether client applications such as policy agents poll for stateful
+     session changes. If <literal>false</literal>, then client applications
+     register listeners for notifications about changes to stateful sessions.</para>
+     <para>Default: false</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.session.client.polling.period</literal></term>
+    <listitem>
+     <para>If client applications poll for changes, number of seconds between
+     polls.</para>
+     <para>Default: 180</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.session.failover.cluster.stateCheck.period</literal></term>
+    <listitem>
+     <para>Time in milliseconds between health checks of other servers in the
+     same site.</para>
+     <para>Default: 1000</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.session.failover.cluster.stateCheck.timeout</literal></term>
+    <listitem>
+     <para>Socket timeout in milliseconds for health checks of other servers in
+     the same site.</para>
+     <para>Default: 1000</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.am.session.httpSession.enabled</literal></term>
+    <listitem>
+     <para>Create an <literal>HttpSession</literal> for users on successful
+     authentication.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.security.SSLSocketFactoryImpl</literal></term>
+    <listitem>
+     <para>SSL socket factory implementation used by OpenAM.</para>
+     <para>Default: <literal>com.sun.identity.shared.ldap.factory.JSSESocketFactory</literal>,
+     uses a pure Java provider</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.iplanet.services.cdc.invalidGotoStrings</literal>;</term>
+    <listitem>
+     <para>Strings that OpenAM rejects as values in <literal>goto</literal>
+     query string parameters.</para>
+     <para>Default: <literal>&lt;,&gt;javascript:,javascript%3a,%3c,%3e</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.embedded.replicationport</literal></term>
+    <listitem>
+     <para>Replication port for embedded OpenDJ directory server.</para>
+     <para>Default: 8989</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.embedded.sync.servers</literal></term>
+    <listitem>
+     <para>Whether to replicate data between embedded directory servers.</para>
+     <para>Default: <literal>on</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.am.cookie.check</literal></term>
+    <listitem>
+     <para>Whether to check for cookie support in the user agent, and if not to
+     return an error.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.appendSessionCookieInURL</literal></term>
+    <listitem>
+     <para>Whether to append the session cookie to URL for a zero page
+     session.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.auth.cookieName</literal></term>
+    <listitem>
+     <para>Cookie used by the OpenAM authentication service to handle the
+     authentication process.</para>
+     <para>Default: <literal>AMAuthCookie</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.authentication.client.ipAddressHeader</literal></term>
+    <listitem>
+     <para>Set the name of the HTTP header that OpenAM can examine to learn the
+     client IP address when requests go through a proxy or load balancer. (When
+     requests go through an HTTP proxy or load balancer, checking the IP address
+     on the request alone returns the address of the proxy or load balancer
+     rather than that of the client.) OpenAM must be able to trust the proxy or
+     load balancer to set the client IP address correctly in the header
+     specified.</para>
+     <para>Example: <literal>com.sun.identity.authentication.client.ipAddressHeader=X-Forwarded-For</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.authentication.multiple.tabs.used</literal></term>
+    <listitem>
+     <para>Whether to allow users to open many browser tabs to the login page
+     at the same time without encountering an error.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.authentication.setCookieToAllDomains</literal></term>
+    <listitem>
+     <para>Whether to allow multiple cookie domains.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.authentication.special.users</literal></term>
+    <listitem>
+     <para>List of special users always authenticated against the local
+     directory server.</para>
+     <para>Default: <literal>cn=dsameuser,ou=DSAME Users,<?eval
+     ${defaultRootSuffix}?>|cn=amService-UrlAccessAgent,ou=DSAME Users,<?eval
+     ${defaultRootSuffix}?></literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.authentication.super.user</literal></term>
+    <listitem>
+     <para>OpenAM privileged administrator user.</para>
+     <para>Default: <literal>uid=amAdmin,ou=People,<?eval
+     ${defaultRootSuffix}?></literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.authentication.uniqueCookieName</literal></term>
+    <listitem>
+     <para>When cookie hijacking protection is configured, name of the cookie
+     holding the URL to the OpenAM server that authenticated the user.</para>
+     <para>Default: <literal>sunIdentityServerAuthNServer</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.client.notification.url</literal></term>
+    <listitem>
+     <para>Notification service endpoint for clients such as policy agents.</para>
+     <para>Default: <literal><replaceable>server-protocol</replaceable
+     >://<replaceable>server-host</replaceable>:<replaceable
+     >server-port</replaceable>/<replaceable>server-uri</replaceable
+     >/notificationservice</literal>, such as <literal
+     >https://openam.example.com:8443/openam/notificationservice</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.common.systemtimerpool.size</literal></term>
+    <listitem>
+     <para>Number of threads in the shared system timer pool used to schedule
+     operations such as session timeout.</para>
+     <para>Default: 3</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.cookie.httponly</literal></term>
+    <listitem>
+     <para>When set to <literal>true</literal>, mark cookies as HTTPOnly to
+     prevent scripts and third-party programs from accessing the cookies.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.enableUniqueSSOTokenCookie</literal></term>
+    <listitem>
+     <para>If <literal>true</literal>, then OpenAM is using protection against
+     cookie hijacking.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.jss.donotInstallAtHighestPriority</literal></term>
+    <listitem>
+     <para>Whether JSS should take priority over other providers.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.monitoring</literal></term>
+    <listitem>
+     <para>Whether monitoring is active for OpenAM.</para>
+     <para>Default: <literal>off</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.monitoring.local.conn.server.url</literal></term>
+    <listitem>
+     <para>URL for local connection to the monitoring service.</para>
+     <para>Default: <literal>service:jmx:rmi://</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.password.deploymentDescriptor</literal></term>
+    <listitem>
+     <para>Internal property used by OpenAM.</para>
+     <para>Default: <replaceable>server-uri</replaceable>, such as
+     <literal>openam</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.policy.Policy.policy_evaluation_weights</literal></term>
+    <listitem>
+     <para>Weights of the cost of evaluating policy subjects, rules, and
+     conditions. Evaluation is in order of heaviest weight to lightest weight.</para>
+     <para>Default: <literal>10:10:10</literal>, meaning evaluation of rules,
+     then conditions, then subjects</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.policy.resultsCacheMaxSize</literal></term>
+    <listitem>
+     <para>Maximum number of policy decisions OpenAM caches.</para>
+     <para>Default: 10000</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.server.fqdnMap</literal></term>
+    <listitem>
+     <para>Enables virtual hosts, partial hostname and IP address. Maps invalid
+     or virtual name keys to valid FQDN values for proper redirection.</para>
+     <para>To map <literal>myserver</literal> to
+     <literal>myserver.example.com</literal>, set
+     <literal>com.sun.identity.server.fqdnMap[myserver]=myserver.example.com</literal>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.session.repository.enableEncryption</literal></term>
+    <listitem>
+     <para>Enables tokens to be encrypted when stored.</para>
+     <para>Multi-instance deployments require consistent use of this property, which should
+     be done under the Servers and Sites &gt; Default Server Settings &gt; Advanced.</para>
+     <para>The <literal>am.encryption.pwd</literal> property must also be the same for
+     all deployed instances. The <literal>am.encryption.pwd</literal> is under
+     Servers and Sites &gt; Server &gt; Security &gt; Password Encryption Key. You will need to
+     verify that all servers have the same setting for this property as the default
+     server.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.urlchecker.dorequest</literal></term>
+    <listitem>
+     <para>
+      Whether to perform an HTTP GET on
+      <literal>com.sun.identity.urlchecker.targeturl</literal>
+      as a health check against another server in the same site.
+     </para>
+
+     <para>
+      If set to <literal>false</literal>,
+      then OpenAM only checks the Socket connection,
+      and does not perform an HTTP GET.
+     </para>
+
+     <para>
+      If each OpenAM server runs behind a reverse proxy,
+      then the default setting of <literal>true</literal>
+      means the health check actually runs against the OpenAM instance,
+      rather than checking only the Socket to the reverse proxy.
+     </para>
+
+     <para>
+      Default: <literal>true</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.urlchecker.targeturl</literal></term>
+    <listitem>
+     <para>
+      URL to monitor when
+      <literal>com.sun.identity.urlchecker.dorequest</literal>
+      is set to <literal>true</literal>.
+     </para>
+
+     <para>
+      Default: URL to the <literal>/openam/namingservice</literal> endpoint
+      on the remote server
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.security.checkcaller</literal></term>
+    <listitem>
+     <para>Whether to perform a Java security permissions check for OpenAM.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.session.repository.enableEncryption</literal></term>
+    <listitem>
+     <para>For CTS token encryption, if desired.</para>
+     <para>Default: false</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.session.repository.enableCompression</literal></term>
+    <listitem>
+     <para>For GZip-based compression of CTS tokens, if desired.</para>
+     <para>Default: false</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.session.repository.enableAttributeCompression</literal></term>
+    <listitem>
+     <para>For additional compression of CTS token JSON binaries, beyond GZip, if desired.</para>
+     <para>Default: false</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.sm.cache.ttl</literal></term>
+    <listitem>
+     <para>When service configuration caching time-to-live is enabled, this
+     sets the time to live in minutes.</para>
+     <para>Default: 30</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.sm.cache.ttl.enable</literal></term>
+    <listitem>
+     <para>If service configuration caching is enabled, whether to enable a
+     time-to-live for cached configuration.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.sm.flatfile.root_dir</literal></term>
+    <listitem>
+     <para>File system directory to hold file-based representation of OpenAM
+     configuration.</para>
+     <para>Default: <literal>~/openam/<replaceable>server-uri</replaceable
+     >/sms</literal> such as <literal>~/openam/openam/sms</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.sm.sms_object_class_name</literal></term>
+    <listitem>
+     <para>Class used to read and write OpenAM service configuration entries
+     in the directory.</para>
+     <para>Default: <literal>com.sun.identity.sm.ldap.SMSEmbeddedLdapObject</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.url.readTimeout</literal></term>
+    <listitem>
+     <para>Used to set the read timeout in milliseconds for HTTP and HTTPS
+     connections to other servers.</para>
+     <para>Default: 30000</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.urlchecker.dorequest</literal></term>
+    <listitem>
+     <para>Allows the OpenAM ClusterStateService to work with HTTPS
+     endpoints.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.urlconnection.useCache</literal></term>
+    <listitem>
+     <para>Whether to cache documents for HTTP and HTTPS connections to other
+     servers.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.webcontainer</literal></term>
+    <listitem>
+     <para>Name of the web container to correctly set character encoding, if
+     necessary.</para>
+     <para>Default: <literal>WEB_CONTAINER</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>console.privileged.users</literal></term>
+    <listitem>
+     <para>Used to assigned privileged console access to particular users. Set
+     to a <literal>|</literal> separated list of users' Universal IDs, such as
+     <literal>console.privileged.users=uid=demo,ou=user,<?eval
+     ${defaultRootSuffix}?>|uid=demo2,ou=user,<?eval
+     ${defaultRootSuffix}?></literal>.</para>
+        </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.auth.destroy_session_after_upgrade</literal></term>
+    <listitem>
+     <para>Where to destroy the old session after a session is successfully
+     upgraded.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.auth.distAuthCookieName</literal></term>
+    <listitem>
+     <para>Cookie used by the OpenAM distributed authentication service to
+     handle the authentication process.</para>
+     <para>Default: <literal>AMDistAuthCookie</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.auth.session_property_upgrader</literal></term>
+    <listitem>
+     <para>Class that controls which session properties are copied during
+     session upgrade, where default is to copy all properties to the upgraded
+     session.</para>
+     <para>Default: <literal>org.forgerock.openam.authentication.service.DefaultSessionPropertyUpgrader</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.auth.version.header.enabled</literal></term>
+    <listitem>
+     <para>The X-DSAMEVersion http header provides detailed information about the version
+     of OpenAM currently running on the system, including the build and date/time of
+     the build. OpenAM will need to be restarted once this property is enabled.</para>
+     <para>Default: false</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.authentication.ignore_goto_during_logout</literal></term>
+    <listitem>
+     <para>Whether to ignore the <literal>goto</literal> query string parameter
+     on logout, instead displaying the logout page.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.cdm.default.charset</literal></term>
+    <listitem>
+     <para>Character set used for globalization.</para>
+     <para>Default: <literal>UTF-8</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.forbidden.to.copy.headers</literal></term>
+    <listitem>
+     <para>Comma-separated list of HTTP headers not to copy when the distributed
+     authentication server forwards a request to another distributed
+     authentication server.</para>
+     <para>Default: <literal>connection</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.forbidden.to.copy.request.headers</literal></term>
+    <listitem>
+     <para>Comma-separated list of HTTP headers not to copy when the distributed
+     authentication server forwards a request to another distributed
+     authentication server.</para>
+     <para>Default: <literal>connection</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.retained.http.headers</literal></term>
+    <listitem>
+     <para>Comma-separated list of HTTP headers to copy to the forwarded
+     response when the server forwards a request to another server.</para>
+
+     <para>Requests are forwarded when the server receiving the request is
+     not the server that originally initiated authentication. The server that
+     originally initiated authentication is identified by a cookie.</para>
+
+     <para>When the distributed authentication service (DAS) is in use, then
+     the cookie is the <literal>AMDistAuthCookie</literal> that identifies the
+     DAS server by its URL.</para>
+
+     <para>When authentication is done directly on OpenAM, then the cookie is
+     the <literal>AMAuthCookie</literal> that holds a session ID that identifies
+     the OpenAM server.</para>
+
+     <para>On subsequent requests the server receiving the request checks the
+     cookie. If the cookie identifies another server, the current server
+     forwards the request to that server.</para>
+
+     <para>If a header such as <literal>Cache-Control</literal> has been
+     included in the list of values for the property
+     <literal>openam.retained.http.request.headers</literal>
+     and the header must also be copied to the response, then add it to the
+     list of values for this property.</para>
+
+     <para>Example: <literal>openam.retained.http.headers=X-DSAMEVersion,Cache-Control</literal></para>
+
+     <para>Default: <literal>X-DSAMEVersion</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry xml:id="openam-retained-http-request-headers">
+    <term><literal>openam.retained.http.request.headers</literal></term>
+    <listitem>
+     <para>Comma-separated list of HTTP headers to copy to the forwarded request
+     when the server forwards a request to another server.</para>
+
+     <para>Requests are forwarded when the server receiving the request is
+     not the server that originally initiated authentication. The server that
+     originally initiated authentication is identified by a cookie.</para>
+
+     <para>When the distributed authentication service (DAS) is in use, then
+     the cookie is the <literal>AMDistAuthCookie</literal> that identifies the
+     DAS server by its URL.</para>
+
+     <para>When authentication is done directly on OpenAM, then the cookie is
+     the <literal>AMAuthCookie</literal> that holds a session ID that identifies
+     the OpenAM server.</para>
+
+     <para>On subsequent requests the server receiving the request checks the
+     cookie. If the cookie identifies another server, the current server
+     forwards the request to that server.</para>
+
+     <para>When configuring the distributed authentication service, or when a
+     reverse proxy is set up to provide the client IP address in the
+     <literal>X-Forwarded-For</literal> header, if your deployment includes
+     multiple OpenAM servers, then this property must be set to include the
+     header.</para>
+
+     <para>Example: <literal>openam.retained.http.request.headers=X-DSAMEVersion,X-Forwarded-For</literal></para>
+
+     <para>OpenAM copies the header when forwarding a request to the
+     authoritative server where the client originally began the authentication
+     process, so that the authoritative OpenAM server receiving the forwarded
+     request can determine the real client IP address.</para>
+
+     <para>In order to retain headers to return in the response to the OpenAM
+     server that forwarded the request, use the property
+     <literal>openam.retained.http.headers</literal>.</para>
+
+     <para>Default: <literal>X-DSAMEVersion</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.session.allow_persist_am_cookie</literal></term>
+    <listitem>
+     <para>If <literal>true</literal> users can extend the lifetime of the
+     <literal>iplanetDirectoryPro</literal> cookie to
+     <literal>com.iplanet.am.cookie.timeToLive</literal> on a per-session
+     basis, by using the query string parameter
+     <literal>openam.session.persist_am_cookie=Yes</literal>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.session.case.sensitive.uuid</literal></term>
+    <listitem>
+     <para>Whether universal user IDs are considered case sensitive when
+     matching them.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.session.persist_am_cookie</literal></term>
+    <listitem>
+     <para>If <literal>true</literal> extend the lifetime of the
+     <literal>iplanetDirectoryPro</literal> cookie to
+     <literal>com.iplanet.am.cookie.timeToLive</literal>.</para>
+     <para>Default: false</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>openam.session.useLocalSessionsInMultiServerMode</literal></term>
+    <listitem>
+     <para>This property is for use in multi-server deployments where session
+     failover is not available. If <literal>true</literal>, calculate session
+     quotas per server. In other words, if the session quota is 5 sessions and
+     users can access up to 4 servers, they can have a maximum of 20 (5 * 4)
+     sessions.</para>
+     <para>Default: <literal>false</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>opensso.protocol.handler.pkgs</literal></term>
+    <listitem>
+     <para>If the web application containers sets
+     <literal>java.protocol.handler.pkgs</literal>, then set this property to
+     <literal>com.sun.identity.protocol</literal>.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.embedded.dsadminport</literal></term>
+    <listitem>
+     <para>Administration port for embedded OpenDJ directory server.</para>
+     <para>Default: 4444</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.openam.cts.rest.enabled</literal></term>
+    <listitem>
+     <para>
+      Enables access to the CTS REST endpoint <literal>/json/tokens</literal>.
+     </para>
+
+     <para>
+      Even when access to the CTS REST endpoint is enabled,
+      only the OpenAM global administrator has authorization
+      to perform operations against <literal>/json/tokens</literal>.
+     </para>
+
+     <para>
+      Default: false
+     </para>
+
+     <para>
+      After changing this property,
+      you must restart OpenAM or the container in which it runs
+      for the change to take effect.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.openam.authentication.accountExpire.days</literal></term>
+    <listitem>
+     <para>Days until account expiration set after successful authentication
+     by the account expiration post authentication plugin.</para>
+     <para>Default: 30</para>
+    </listitem>
+   </varlistentry>
+
+
+   <varlistentry>
+    <term><literal>org.forgerock.openam.core.resource.lookup.cache.enabled</literal></term>
+    <listitem>
+     <para>
+      Controls whether the results of resource file lookup should be cached.
+     </para>
+
+     <para>
+      While you are customizing the UI as described in
+      <link
+       xlink:href="install-guide#update-classic-ui"
+       xlink:role="http://docbook.org/xlink/role/olink"
+       xlink:show="new"
+      ><citetitle>Updating the Classic UI</citetitle></link>,
+      set this property to <literal>false</literal>
+      to allow OpenAM immediately to pick up changes
+      to the files as you customize them.
+     </para>
+
+     <para>
+      Reset this to the default, <literal>true</literal>,
+      when using OpenAM in production.
+     </para>
+
+     <para>
+      Default: <literal>true</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.openam.openidconnect.allow.open.dynamic.registration</literal></term>
+    <listitem>
+     <para>
+      Controls whether OpenID Connect clients can register dynamically
+      without providing an access token.
+     </para>
+
+     <para>
+      If you set this to <literal>true</literal> in production,
+      take care to limit or throttle dynamic client registrations.
+     </para>
+
+     <para>
+      Default: <literal>false</literal>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.services.datalayer.connection.timeout</literal></term>
+    <listitem>
+     <para>
+      Timeout in seconds for LDAP connections to the configuration data store.
+     </para>
+
+     <para>
+      Default: 10 (seconds)
+     </para>
+
+     <para>
+      For suggested settings,
+      see the <citetitle>Administration Guide</citetitle> section on
+      <link
+       xlink:show="new"
+       xlink:href="admin-guide#tuning-ldap-settings-cts"
+       xlink:role="http://docbook.org/xlink/role/olink"
+      ><citetitle>Tuning LDAP CTS and Configuration Store
+       Settings</citetitle></link>.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.services.datalayer.connection.timeout.cts.async</literal></term>
+    <listitem>
+     <para>
+      Timeout in seconds for LDAP connections used for most CTS operations.
+     </para>
+
+     <para>
+      Default: 10 (seconds)
+     </para>
+
+     <para>
+      For suggested settings,
+      see the <citetitle>Administration Guide</citetitle> section on
+      <link
+       xlink:show="new"
+       xlink:href="admin-guide#tuning-ldap-settings-cts"
+       xlink:role="http://docbook.org/xlink/role/olink"
+      ><citetitle>Tuning LDAP CTS and Configuration Store Settings</citetitle></link>.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>org.forgerock.services.datalayer.connection.timeout.cts.reaper</literal></term>
+    <listitem>
+     <para>
+      Timeout in seconds for the LDAP connection used for CTS token cleanup.
+     </para>
+
+     <para>
+      Default: None (do not time out)
+     </para>
+
+     <para>
+      For suggested settings,
+      see the <citetitle>Administration Guide</citetitle> section on
+      <link
+       xlink:show="new"
+       xlink:href="admin-guide#tuning-ldap-settings-cts"
+       xlink:role="http://docbook.org/xlink/role/olink"
+      ><citetitle>Tuning LDAP CTS and Configuration Store Settings</citetitle></link>.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <xinclude:include href="../shared/securid/varlistentry-config-ref.xml" condition="securid">
+    <xinclude:fallback>
+     <para>Could not include "../shared/securid/varlistentry-config-ref.xml".</para>
+    </xinclude:fallback>
+   </xinclude:include>
+
+   <varlistentry>
+    <term><literal>ssoadm.disabled</literal></term>
+    <listitem>
+     <para>Set to <literal>false</literal> to enable
+     <filename>ssoadm.jsp</filename>.</para>
+     <para>Default: <literal>true</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  </section>
+  <section xml:id="sites-configuration">
+   <title>Configuring Sites</title>
+   <variablelist>
+
+   <para>Sites involve multiple OpenAM servers working together to provide
+   services. You can use sites with load balancers and session failover to
+   configure pools of servers capable of responding to client requests in
+   highly available fashion.</para>
+
+   <varlistentry>
+    <term>Primary URL</term>
+    <listitem>
+     <para>Set the primary entry point to the site, such as the URL to the
+     load balancer for the site configuration.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Secondary URLs</term>
+    <listitem>
+     <para>Set alternate entry points to the site. Used when session failover
+     is configured.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Assigned Servers</term>
+    <listitem>
+     <para>Shows the list of OpenAM servers in the site.</para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+ </section>
