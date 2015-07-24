@@ -109,6 +109,7 @@
  <xinclude:include href='chap-dashboard.xml' />
  <xinclude:include href='chap-rest.xml' />
  <xinclude:include href='chap-backup-restore.xml' />
+ <xinclude:include href='chap-manage-scripts-console.xml' />
  <xinclude:include href='chap-certs-keystores.xml' />
  <xinclude:include href='chap-monitoring.xml' />
  <xinclude:include href='chap-tuning.xml' />
