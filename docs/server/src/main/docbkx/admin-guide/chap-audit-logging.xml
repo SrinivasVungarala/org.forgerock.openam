@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-audit-logging'
@@ -43,7 +43,7 @@
 
  <para>
   Audit logs capture normal operational information about OpenAM usage.
-  Audit file records are structured: they adhere to a consistent, documented
+  Audit file records are structured; they adhere to a consistent, documented
   file format. You can configure OpenAM to write audit logs to flat files,
   relational database tables, or a syslog server.
  </para>
@@ -102,7 +102,7 @@
    OpenAM sends messages to different log files, each named after the
    service logging the message, with two different types log files per service:
    <filename>.access</filename>
-   and<filename>.error</filename>. Thus the
+   and<filename>.error</filename>. Thus, the
    current log files for the authentication service are named
    <filename>amAuthentication.access</filename>
    and
@@ -112,10 +112,7 @@
   <para>
    See the
    <link xlink:href="reference#chap-log-messages"
-         xlink:role="http://docbook.org/xlink/role/olink">
-    Log Messages
-   </link>
-   reference for details.
+         xlink:role="http://docbook.org/xlink/role/olink">Log Messages</link> reference for details.
   </para>
  </section>
  <section xml:id="log-mgmt-syslog">
@@ -160,9 +157,8 @@
   <procedure xml:id="enable-syslog-audit-logging-SSOADM">
    <title>Enabling Syslog Audit Logging by Using SSOADM</title>
    <step>
-    <para>Create a text file, for example
-     <filename>MySyslogServerSettings.txt</filename> containing the settings
-     used when audit logging to a syslog server, as shown below:</para>
+    <para>Create a text file, for example, <filename>MySyslogServerSettings.txt</filename>
+     containing the settings used when audit logging to a syslog server, as shown below:</para>
 <screen>
 <userinput>iplanet-am-logging-syslog-port=<replaceable>514</replaceable>
 iplanet-am-logging-syslog-protocol=<replaceable>UDP</replaceable>
@@ -198,7 +194,7 @@ iplanet-am-logging-syslog-facility=<replaceable>local5</replaceable></userinput>
   </para>
 
   <para>
-   By default OpenAM policy agents send log messages remotely to OpenAM
+   By default, OpenAM policy agents send log messages remotely to OpenAM
    when you log auditing information about URL access attempts. To configure
    audit logging for a centrally managed policy agent, login to the OpenAM
    console as administrator, and browse to Access Control &gt;
