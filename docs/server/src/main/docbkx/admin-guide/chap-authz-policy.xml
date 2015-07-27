@@ -85,7 +85,7 @@
     <para>
      To allow OpenAM to determine whether to grant access,
      you define authorization <firstterm>policies</firstterm>.
-     A policy defines the following.
+     A policy defines the following:
     </para>
    <variablelist>
 
@@ -149,7 +149,7 @@
 
    <para>
     When queried about whether to let a user through to a protected resource,
-    OpenAM decides to authorize access or not based on applicable policies
+    or OpenAM decides whether to authorize access or not based on applicable policies
     as described below in <xref linkend="what-is-authz-decision" />.
     OpenAM communicates its decision to the application
     using OpenAM for access management.
@@ -158,24 +158,26 @@
     The agent then enforces the authorization decision from OpenAM.
    </para>
 
-   <mediaobject xml:id="figure-realm-app-policy-overview">
-    <alt>Shows the relationship between Realms, Applications and
-     Policies, and how a policy agent requests authorization decisions from
-     OpenAM.</alt>
-    <imageobject>
-     <imagedata
-      fileref="images/realm-app-policy-overview.png"
-      format="PNG" />
-    </imageobject>
-    <textobject><para>Shows the relationship between Realms, Applications and
-     Policies, and how a policy agent requests authorization decisions from
-     OpenAM.</para></textobject>
-   </mediaobject>
+   <figure xml:id="figure-realm-app-policy-overview">
+    <title>Relationship between Realms, Applications, and Policies</title>
+    <mediaobject>
+     <alt>Shows the relationship between Realms, Applications and
+      Policies, and how a policy agent requests authorization decisions from
+      OpenAM.</alt>
+     <imageobject>
+      <imagedata
+       fileref="images/realm-app-policy-overview.png"
+       format="PNG" />
+     </imageobject>
+     <textobject><para>Shows the relationship between Realms, Applications and
+      Policies, and how a policy agent requests authorization decisions from
+      OpenAM.</para></textobject>
+    </mediaobject>
+   </figure>
 
    <para>
     To help with the creation of policies, OpenAM uses
-    <firstterm>resource types</firstterm> and <firstterm>applications
-   </firstterm>.</para>
+    <firstterm>resource types</firstterm> and applications.</para>
 
    <variablelist>
     <varlistentry>
@@ -233,17 +235,22 @@
     The list of applications is the first thing that you see
     when editing policies in the OpenAM console. </para>
 
-   <mediaobject xml:id="console-applications">
-    <alt>Shows the Applications and Resource Types tabs as they appear in
-     the console.</alt>
-    <imageobject>
-     <imagedata
-      fileref="images/console-applications.png"
-      format="PNG" />
-    </imageobject>
-    <textobject><para>The Applications and Resource Types tabs as they appear in
-     the console.</para></textobject>
-   </mediaobject>
+   <figure xml:id="console-applications">
+    <title>OpenAM Console's Applications and Resources Tabs</title>
+    <mediaobject>
+     <alt>Shows the Applications and Resource Types tabs as they appear in
+      the console.</alt>
+     <imageobject>
+      <imagedata
+       fileref="images/console-applications.png"
+       format="PNG" />
+     </imageobject>
+     <textobject><para>The Applications and Resource Types tabs as they appear in
+      the console.</para></textobject>
+    </mediaobject>
+   </figure>
+
+
    <para>To view, create or edit resource types, click the Resource Types
     tab. See <xref linkend="configure-authz-apps" />. </para>
   </section>
@@ -392,7 +399,7 @@
   allow decision, and so by default once OpenAM reaches a deny decision it
   stops checking further policies. (If you want OpenAM to continue checking
   despite the deny, see Configuration &gt; Global &gt; Policy Configuration
-  &gt; Continue Evaluation on Deny Decision.)</para>
+  &gt; Continue Evaluation on Deny Decision).</para>
  </section>
 
  <section xml:id="configure-authz-apps">

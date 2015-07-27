@@ -53,16 +53,18 @@
   communications proceed over the HTTP protocol to a FQDN
   (<literal>openam.example.com</literal>), over a standard Java EE web container
   port number (8080), to a specific deployment URI (<literal>/openam</literal>).</para>
-  
-  <mediaobject xml:id="figure-console-as-amadmin">
-   <alt>How the console looks to amadmin</alt>
-   <imageobject>
-    <imagedata fileref="images/console-as-amadmin.png" format="PNG" />
-   </imageobject>
-   <textobject><para>The OpenAM administrator sees all capabilities of the
-   console.</para></textobject>
-  </mediaobject>
-  
+
+  <figure xml:id="figure-console-as-amadmin">
+   <title>OpenAM Console</title>
+   <mediaobject>
+    <alt>How the console looks to amadmin</alt>
+    <imageobject>
+     <imagedata fileref="images/console-as-amadmin.png" format="PNG" />
+    </imageobject>
+    <textobject><para>The OpenAM administrator sees all capabilities of the console.</para></textobject>
+   </mediaobject>
+  </figure>
+
   <para>When you log in as the OpenAM administrator, <literal>amadmin</literal>,
   you have access to the complete OpenAM console. In addition, OpenAM has set a
   cookie in your browser that lasts until the session expires, you logout, or
@@ -74,15 +76,18 @@
   <para>When you log in to the OpenAM console as a non-administrative end user,
   you do not have access to the administrative console. Your access is limited
   to a configuration page with your account information.</para>
-  
-  <mediaobject xml:id="figure-console-non-admin-user">
-   <alt>How the console looks to an end user</alt>
-   <imageobject>
-    <imagedata fileref="images/console-non-admin-user.png" format="PNG" />
-   </imageobject>
-   <textobject><para>OpenAM console directs an end user to a page where she
-   can view and update her account information.</para></textobject>
-  </mediaobject>
+
+  <figure xml:id="figure-console-non-admin-user">
+   <title>OpenAM Console for Non-Administrative Users</title>
+   <mediaobject>
+    <alt>How the console looks to an end user</alt>
+    <imageobject>
+     <imagedata fileref="images/console-non-admin-user.png" format="PNG" />
+    </imageobject>
+    <textobject><para>OpenAM console directs an end user to a page where she
+    can view and update her account information.</para></textobject>
+   </mediaobject>
+  </figure>
   
   <para>If you configure OpenAM to grant administrative capabilities to
   another user, then that user also sees the console after login. For
@@ -93,15 +98,18 @@
   policy agent properties.) When Kirsten logs in, she sees only part of the
   console capabilities.<footnote><para>For more on delegated administration,
   see the chapter covering realms.</para></footnote></para>
-  
-  <mediaobject xml:id="figure-console-as-kvaughan">
-   <alt>How the console looks to an administrator</alt>
-   <imageobject>
-    <imagedata fileref="images/console-as-kvaughan.png" format="PNG" />
-   </imageobject>
-   <textobject><para>OpenAM console appears differently to an administrator
-   with limited rights.</para></textobject>
-  </mediaobject>
+
+  <figure xml:id="figure-console-as-kvaughan">
+   <title>OpenAM Console for An Administrator with Limited Rights</title>
+   <mediaobject>
+    <alt>How the console looks to an administrator</alt>
+    <imageobject>
+     <imagedata fileref="images/console-as-kvaughan.png" format="PNG" />
+    </imageobject>
+    <textobject><para>OpenAM console appears differently to an administrator
+     with limited rights.</para></textobject>
+   </mediaobject>
+  </figure>
  </section>
  
  <section xml:id="openam-cli-overview">
@@ -264,6 +272,7 @@
     <para>Click Advanced to display the Advanced Properties table,
     and then click Add. In the text boxes that appear, include the following
     information, and then click Save:</para>
+
     <variablelist>
      <varlistentry>
       <term>Property Name</term>
@@ -274,6 +283,7 @@
       <listitem><para>false</para></listitem>
      </varlistentry>
     </variablelist>
+
    </step>
    <step>
     <para>To see if the change worked, navigate to the URL of OpenAM with the
