@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock Inc
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-agents'
@@ -43,14 +43,14 @@
  <para> You install policy agents in web servers and web application containers
   to enforce access policies OpenAM applies to protected web sites and web
   applications. Policy agents depend on OpenAM for all authentication and
-  authorization decisions. Their primary responsibility consists in enforcing
+  authorization decisions. Their primary responsibility consists of enforcing
   what OpenAM decides in a way that is unobtrusive to the user. In organizations
   with many servers, you might well install many policy agents.</para>
 
- <para>Policy agents can have local configurations where they are installed,
-  but usually you store all policy agent configuration information in the
+ <para>Policy agents can have local configurations where they are installed.
+  Typically, you store all policy agent configuration information in the
   OpenAM configuration store, defining policy agent profiles for each, and then
-  you let the policy agents access their profiles through OpenAM such that you
+  you let the policy agents access their profiles through OpenAM. In this way, you
   manage all agent configuration changes centrally. This chapter describes how
   to set up policy agent profiles in OpenAM for centralized configuration.</para>
 
@@ -92,7 +92,7 @@
   Name</replaceable>.</para>
   
   <variablelist xml:id="wsp-general-properties">
-   <title>General properties</title>
+   <title>General Properties</title>
    <varlistentry>
     <term>Group</term>
     <listitem>
@@ -122,7 +122,7 @@
   </variablelist>
   
   <variablelist xml:id="wsp-security-properties">
-   <title>Security properties</title>
+   <title>Security Properties</title>
    <varlistentry>
     <term>Security Mechanism</term>
     <listitem>
@@ -196,7 +196,7 @@
   </variablelist>
   
   <variablelist xml:id="wsp-saml-conf-properties">
-   <title>SAML Configuration properties</title>
+   <title>SAML Configuration Properties</title>
    <varlistentry>
     <term>SAML Attribute Mapping</term>
     <listitem>
@@ -230,7 +230,7 @@
   </variablelist>
   
   <variablelist xml:id="wsp-signing-and-encryption-properties">
-   <title>Signing and Encryption properties</title>
+   <title>Signing and Encryption Properties</title>
    <varlistentry>
     <term>Is Request Signature Verified</term>
     <listitem>
@@ -266,7 +266,7 @@
    <varlistentry>
     <term>Encryption Algorithm</term>
     <listitem>
-     <para>Specifies whether to use Advanced Encryption Standard, corresponding
+     <para>Specifies whether to use Advanced Encryption Standard corresponding
      to an Encryption Strength of 128, 192, or 256, or to use Triple DES with
      a key length of 0, 112, or 168.</para>
     </listitem>
@@ -280,7 +280,7 @@
   </variablelist>
   
   <variablelist xml:id="wsp-keystore-properties">
-   <title>Key Store properties</title>
+   <title>Key Store Properties</title>
    <varlistentry>
     <term>Public Key Alias of Web Service Client</term>
     <listitem>
@@ -305,7 +305,7 @@
   </variablelist>
   
   <variablelist xml:id="wsp-end-points-properties">
-   <title>End Points properties</title>
+   <title>End Points Properties</title>
    <varlistentry>
     <term>Web Service Security Proxy End Point</term>
     <listitem>
@@ -322,7 +322,7 @@
   </variablelist>
   
   <variablelist xml:id="wsp-kerberos-properties">
-   <title>Kerberos Configuration properties</title>
+   <title>Kerberos Configuration Properties</title>
    <varlistentry>
     <term>Kerberos Domain Server</term>
     <listitem>
@@ -384,7 +384,7 @@
   Name</replaceable>.</para>
   
   <variablelist xml:id="wsc-general-properties">
-   <title>General properties</title>
+   <title>General Properties</title>
    <varlistentry>
     <term>Group</term>
     <listitem>
@@ -414,7 +414,7 @@
   </variablelist>
   
   <variablelist xml:id="wsc-security-properties">
-   <title>Security properties</title>
+   <title>Security Properties</title>
    <varlistentry>
     <term>Security Mechanism</term>
     <listitem>
@@ -481,7 +481,7 @@
   </variablelist>
   
   <variablelist xml:id="wsc-saml-conf-properties">
-   <title>SAML Configuration properties</title>
+   <title>SAML Configuration Properties</title>
    <varlistentry>
     <term>SAML Attribute Mapping</term>
     <listitem>
@@ -513,7 +513,7 @@
   </variablelist>
   
   <variablelist xml:id="wsc-signing-and-encryption-properties">
-   <title>Signing and Encryption properties</title>
+   <title>Signing and Encryption Properties</title>
    <varlistentry>
     <term>Is Request Signed Enabled</term>
     <listitem>
@@ -563,7 +563,7 @@
   </variablelist>
   
   <variablelist xml:id="wsc-keystore-properties">
-   <title>Key Store properties</title>
+   <title>Key Store Properties</title>
    <varlistentry>
     <term>Public Key Alias of Web Service Provider</term>
     <listitem>
@@ -581,14 +581,14 @@
    <varlistentry>
     <term>Key Store Usage</term>
     <listitem>
-     <para>If you use your own, custom key store, specify how to access it
+     <para>If you use your own custom key store, specify how to access it
      here.</para>
     </listitem>
    </varlistentry>
   </variablelist>
   
   <variablelist xml:id="wsc-end-points-properties">
-   <title>End Points properties</title>
+   <title>End Points Properties</title>
    <varlistentry>
     <term>Web Service Security Proxy End Point</term>
     <listitem>
@@ -605,12 +605,12 @@
   </variablelist>
   
   <variablelist xml:id="wsc-kerberos-properties">
-   <title>Kerberos Configuration properties</title>
+   <title>Kerberos Configuration Properties</title>
    <varlistentry>
     <term>Kerberos Domain Server</term>
     <listitem>
      <para>Specifies the fully qualified domain name of the Kerberos
-     Distribution Center service.</para>
+     Distribution Center Service.</para>
     </listitem>
    </varlistentry>
    <varlistentry>
@@ -623,7 +623,7 @@
    <varlistentry>
     <term>Kerberos Service Principal</term>
     <listitem>
-     <para>Specifies the Kerberos principal used by OpenAM, using the form
+     <para>Specifies the Kerberos principal used by OpenAM using the form
      <literal>HTTP/<replaceable>openam-fqdn</replaceable>@<replaceable>krb-domain</replaceable></literal>,
      where <replaceable>openam-fqdn</replaceable> is the fully qualified domain
      name for OpenAM, and <replaceable>krb-domain</replaceable> is the
@@ -654,7 +654,7 @@
   </indexterm>
 
   <para>This section covers Security Token Service (STS) Client properties. STS
-  clients both secure outgoing requests to trust authorities, and also validate
+  clients secure outgoing requests to trust authorities, and also validate
   incoming requests from trust authorities. You can configure STS clients to
   work with OpenAM's Security Token Service and with its Discovery
   Service.</para>
@@ -665,7 +665,7 @@
   Name</replaceable>.</para>
   
   <variablelist xml:id="sts-agent-general-properties">
-   <title>General properties</title>
+   <title>General Properties</title>
    <varlistentry>
     <term>Group</term>
     <listitem>
@@ -701,7 +701,7 @@
   </variablelist>
   
   <variablelist xml:id="sts-agent-security-properties">
-   <title>Security properties</title>
+   <title>Security Properties</title>
    <varlistentry>
     <term>Security Mechanism</term>
     <listitem>
@@ -753,7 +753,7 @@
   </variablelist>
   
   <variablelist xml:id="sts-agent-saml-conf-properties">
-   <title>SAML Configuration properties</title>
+   <title>SAML Configuration Properties</title>
    <varlistentry>
     <term>SAML Attribute Mapping</term>
     <listitem>
@@ -787,7 +787,7 @@
   </variablelist>
   
   <variablelist xml:id="sts-agent-signing-and-encryption-properties">
-   <title>Signing and Encryption properties</title>
+   <title>Signing and Encryption Properties</title>
    <varlistentry>
     <term>Is Response Signature Verified</term>
     <listitem>
@@ -837,7 +837,7 @@
   </variablelist>
   
   <variablelist xml:id="sts-agent-keystore-properties">
-   <title>Key Store properties</title>
+   <title>Key Store Properties</title>
    <varlistentry>
     <term>Public Key Alias of Web Service Provider</term>
     <listitem>
@@ -862,7 +862,7 @@
   </variablelist>
   
   <variablelist xml:id="sts-agent-end-points-properties">
-   <title>End Points properties</title>
+   <title>End Points Properties</title>
    <varlistentry>
     <term>Security Token Service End Point</term>
     <listitem>
@@ -879,19 +879,19 @@
   </variablelist>
   
   <variablelist xml:id="sts-agent-kerberos-properties">
-   <title>Kerberos Configuration properties</title>
+   <title>Kerberos Configuration Properties</title>
    <varlistentry>
     <term>Kerberos Domain Server</term>
     <listitem>
      <para>Specifies the fully qualified domain name of the Kerberos
-     Distribution Center service.</para>
+     Distribution Center Service.</para>
     </listitem>
    </varlistentry>
    <varlistentry>
     <term>Kerberos Domain</term>
     <listitem>
      <para>Specifies the Kerberos Distribution Center domain name. For
-     Windows environments this is the domain controller domain name.</para>
+     Windows environments, this is the domain controller domain name.</para>
     </listitem>
    </varlistentry>
    <varlistentry>
@@ -918,7 +918,7 @@
  <xinclude:include href="../shared/sec-configure-22-policy-agent.xml" />
 
  <section xml:id="configure-oauth2-client">
-  <title>Configuring OAuth 2.0 &amp; OpenID Connect 1.0 Clients</title>
+  <title>Configuring OAuth 2.0 and OpenID Connect 1.0 Clients</title>
 
   <indexterm>
    <primary>Policy agents</primary>
@@ -944,7 +944,7 @@
 
   <itemizedlist>
    <para>The topmost configuration fields are for both OAuth 2.0 and OpenID
-   Connect 1.0, whereas others are specifically for OpenID Connect 1.0.</para>
+   Connect 1.0, whereas others are specifically for OpenID Connect 1.0:</para>
 
    <listitem>
     <para><xref linkend="configure-oauth2-client-common" /></para>
@@ -959,7 +959,7 @@
    <title>Common Client Configuration</title>
 
    <para>The following configuration fields are common to OAuth 2.0 and OpenID
-   Connect 1.0 clients.</para>
+   Connect 1.0 clients:</para>
 
    <varlistentry>
     <term>Group</term>
@@ -1026,7 +1026,7 @@
    </varlistentry>
 
    <varlistentry>
-    <term>Display name</term>
+    <term>Display Name</term>
     <listitem>
      <para>Specify a client name to display to the resource owner
      when the resource owner is asked to authorize client access to protected
@@ -1038,7 +1038,7 @@
    </varlistentry>
 
    <varlistentry>
-    <term>Display description</term>
+    <term>Display Description</term>
     <listitem>
      <para>Specify a client description to display to the resource owner
      when the resource owner is asked to authorize client access to protected
@@ -1069,7 +1069,7 @@
 
      <itemizedlist>
       <para>
-       The default lists are the following.
+       The default lists are the following:
       </para>
 
       <listitem>
@@ -1396,7 +1396,7 @@ TeGSgcqEAd6XlGXY1+M/yIeouUTi0F1bk1rNlqJvd57Xb4CEq17tVbGBm0hkECM8
 
      <para>
       Default: <literal>RS256</literal>
-      (RSA with SHA256, where the RSA key comes from the OpenAM keystore)
+      (RSA with SHA256, where the RSA key comes from the OpenAM keystore).
      </para>
 
      <para>Valid values are listed in <citetitle>JSON Web Algorithms
@@ -1480,7 +1480,7 @@ TeGSgcqEAd6XlGXY1+M/yIeouUTi0F1bk1rNlqJvd57Xb4CEq17tVbGBm0hkECM8
     <term>Post Logout Redirect URI</term>
     <listitem>
      <para>URI to which to redirect the user-agent after the client logout
-      process</para>
+      process.</para>
     </listitem>
    </varlistentry>
 

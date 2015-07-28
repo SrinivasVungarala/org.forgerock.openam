@@ -18,7 +18,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2013 ForgeRock, Inc.
+  !      Copyright 2013-2015 ForgeRock AS.
   !
 -->
  <appendix xml:id="appendix-interface-stability"
@@ -27,7 +27,7 @@
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
- <title>Release Levels &amp; Interface Stability</title>
+ <title>Release Levels and Interface Stability</title>
 
  <para>This appendix includes ForgeRock definitions for product release levels
  and interface stability.</para>

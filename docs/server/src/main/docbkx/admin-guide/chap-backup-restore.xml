@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-backup-restore'
@@ -35,7 +35,7 @@
  <para>
   OpenAM stores configuration data in an LDAP directory server and in files.
   The directory service replicates configuration data between directory servers,
-  allowing OpenAM to share configuration data across servers in a Site.
+  allowing OpenAM to share configuration data across servers in a site.
   During normal production operations, you rely on directory replication
   to maintain multiple, current copies of OpenAM service configuration.
   To recover from the loss of a server or from a serious administrative error,
@@ -57,13 +57,13 @@
   <link
    xlink:href="${opendjDocBase}/admin-guide/#chap-backup-restore"
    xlink:show="new"
-  ><citetitle>Backing Up &amp; Restoring Data</citetitle></link>.
+  ><citetitle>Backing Up and Restoring Data</citetitle></link>.
  </para>
 
  <itemizedlist>
   <para>
    In OpenAM deployments where configuration directory data is replicated,
-   you must take the following points into consideration.
+   you must take the following points into consideration:
   </para>
 
   <listitem>
@@ -116,7 +116,7 @@
 
   <listitem>
    <para>
-    Recovery from server failure.
+    Recovery from server failure:
    </para>
 
    <itemizedlist>
@@ -136,7 +136,7 @@
 
   <listitem>
    <para>
-    Recovery from serious administrative error.
+    Recovery from serious administrative error:
    </para>
 
    <itemizedlist>
@@ -165,7 +165,7 @@
 
   <itemizedlist>
    <para>
-    Use this procedure when the following statements are true.
+    Use this procedure when the following statements are true:
    </para>
 
    <listitem>
@@ -209,7 +209,7 @@
    <link
     xlink:href="${opendjDocBase}/admin-guide/#chap-backup-restore"
     xlink:show="new"
-   ><citetitle>Backing Up &amp; Restoring Data</citetitle></link>.
+   ><citetitle>Backing Up and Restoring Data</citetitle></link>.
   </para>
 
   <indexterm>
@@ -221,18 +221,18 @@
     Understand the explanation in the introductory paragraphs of this chapter
     before you proceed.
     Directory backup validity depends on replication purge delay,
-    which by default for OpenDJ directory server is 3 days.
+    which by default for OpenDJ directory server is three days.
    </para>
 
    <para>
-    Also do not restore configuration data from a backup of
+    Also, do not restore configuration data from a backup of
     a different release of OpenAM.
     The structure of configuration data can change from release to release.
    </para>
   </important>
 
   <para>
-   Follow these steps for each OpenAM server that you want to back up.
+   Follow these steps for each OpenAM server that you want to back up:
   </para>
 
   <step>
@@ -243,7 +243,7 @@
 
   <step>
    <para>
-    Backup OpenAM configuration files
+    Back up OpenAM configuration files
     including those of the configuration directory server
     but skipping log and lock files.
    </para>
@@ -252,7 +252,7 @@
     The following example uses the default configuration location.
     $HOME is the home directory of the user
     who runs the web container where OpenAM is deployed,
-    and OpenAM is deployed in Apache Tomcat under <literal>openam</literal>.
+    and OpenAM is deployed in Apache Tomcat under <literal>openam</literal>:
    </para>
 
    <screen>
@@ -292,7 +292,7 @@ $ <userinput>ls /path/to/backup-2014-12-01-12-00.zip</userinput>
 
   <itemizedlist>
    <para>
-    Use this procedure when the following statements are true.
+    Use this procedure when the following statements are true:
    </para>
 
    <listitem>
@@ -336,7 +336,7 @@ $ <userinput>ls /path/to/backup-2014-12-01-12-00.zip</userinput>
    <link
     xlink:href="${opendjDocBase}/admin-guide/#chap-backup-restore"
     xlink:show="new"
-   ><citetitle>Backing Up &amp; Restoring Data</citetitle></link>.
+   ><citetitle>Backing Up and Restoring Data</citetitle></link>.
   </para>
 
   <indexterm>
@@ -348,7 +348,7 @@ $ <userinput>ls /path/to/backup-2014-12-01-12-00.zip</userinput>
     Understand the explanation in the introductory paragraphs of this chapter
     before you proceed.
     Directory backup validity depends on replication purge delay,
-    which by default for OpenDJ directory server is 3 days.
+    which by default for OpenDJ directory server is three days.
    </para>
 
    <para>
@@ -362,7 +362,7 @@ $ <userinput>ls /path/to/backup-2014-12-01-12-00.zip</userinput>
    Follow these steps for each OpenAM server to restore.
    If you are restoring OpenAM after a failure,
    make sure you make a copy of any configuration and log files
-   that you need to investigate the problem before restoring OpenAM from backup.
+   that you need to investigate the problem before restoring OpenAM from backup:
   </para>
 
   <step>
@@ -375,7 +375,7 @@ $ <userinput>ls /path/to/backup-2014-12-01-12-00.zip</userinput>
    <para>
     Restore files in the configuration directory as necessary,
     making sure that you restore from a valid backup,
-    one that is newer than the replication purge delay.
+    one that is newer than the replication purge delay:
    </para>
 
    <screen>
@@ -405,7 +405,7 @@ replace openam/.configParam? [y]es, [n]o, [A]ll, [N]one, [r]ename: </computerout
 
   <para>
    This procedure takes an LDIF backup of OpenAM configuration data only.
-   Use this LDIF data when recovering from a serious configuration error.
+   Use this LDIF data when recovering from a serious configuration error:
   </para>
 
   <indexterm>
@@ -436,7 +436,7 @@ replace openam/.configParam? [y]es, [n]o, [A]ll, [N]one, [r]ename: </computerout
 
    <para>
     The bind password for Directory Manager is the same
-    as the password for the OpenAM global administrator (amadmin).
+    as the password for the OpenAM global administrator (amadmin):
    </para>
 
    <screen>
@@ -455,7 +455,7 @@ $ <userinput>$HOME/openam/opends/bin/export-ldif \
    </screen>
 
    <para>
-    When the task completes, the LDIF file is at the expected location.
+    When the task completes, the LDIF file is at the expected location:
    </para>
 
    <screen>
