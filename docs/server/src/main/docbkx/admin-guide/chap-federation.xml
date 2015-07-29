@@ -33,7 +33,7 @@
  <title>Managing SAML v2.0 Federation</title>
 
  <para>This chapter addresses how to set up and manage SAML v2.0 SSO for
- single sign on and single log out across resources belonging to
+ single sign-on and single log out across resources belonging to
  organizations participating in a circle of trust.</para>
  
  <section xml:id="about-federation">
@@ -55,7 +55,8 @@
    <para>To achieve SAML v2.0 SSO, OpenAM separates <firstterm>identity
    providers</firstterm> from <firstterm>service providers</firstterm>,
    lets you include them them in a <firstterm>circle of trust</firstterm>, and
-   has you configure how the providers in the circle of trust interact.</para>
+   has you configure how the providers in the circle of trust interact:</para>
+
    <listitem>
     <para>An identity provider stores and serves identity profiles, and
     handles authentication.</para>
@@ -66,7 +67,7 @@
    </listitem>
    <listitem>
     <para>A circle of trust groups at least one identity provider and at least
-    one service provider who agree to share authentication information, with
+    one service provider who agree to share authentication information with
     assertions about authenticated users that let service providers make
     authorization decisions.</para>
     <para>Providers in a circle of trust share <firstterm>metadata</firstterm>,
@@ -76,7 +77,7 @@
    <listitem>
     <para>SAML v2.0 SSO maps attributes from accounts at the identity provider to
     attributes on accounts at the service provider. The identity provider makes
-    assertions to the service provider, for example to attest that a user has
+    assertions to the service provider, for example, to attest that a user has
     authenticated with the identity provider. The service provider then
     consumes assertions from the identity provider to make authorization
     decisions, for example to let an authenticated user complete a purchase
@@ -100,7 +101,7 @@
     <para>Know which providers participate in the circle of trust.</para>
    </listitem>
    <listitem>
-    <para>Know how OpenAM installations act as identity providers, or
+    <para>Know how OpenAM installations act as identity providers or
     service providers.</para>
    </listitem>
    <listitem>
@@ -130,7 +131,7 @@
     the configuration directory, such as
     <filename>$HOME/openam/keystore.jks</filename>. The password,
     stored in <filename>$HOME/openam/.keypass</filename>, is
-    <literal>changeit</literal> by default. Also by default the only key
+    <literal>changeit</literal> by default. Also by default, the only key
     available is for a self-signed certificate (alias: test) installed with
     OpenAM.</para>
    </listitem>
@@ -145,7 +146,7 @@
   OpenAM server, whereas a remote provider is one hosted elsewhere.</para>
 
   <itemizedlist>
-   <para>This section covers the following topics.</para>
+   <para>This section covers the following topics:</para>
 
    <listitem><para><xref linkend="create-hosted-idp" /></para></listitem>
    <listitem><para><xref linkend="create-hosted-sp" /></para></listitem>
@@ -243,7 +244,7 @@ http://www.idp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceab
    </step>
    <step>
     <para>Export the XML-based metadata from your provider to share
-    with other providers in your circle of trust.</para>
+    with other providers in your circle of trust:</para>
 
     <screen>
 $ <userinput>curl \
@@ -266,7 +267,7 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
     <secondary>Configuring</secondary>
    </indexterm>
    <step>
-    <para>Obtain the identity provider metadata, or the URL where you can
+    <para>Obtain the identity provider metadata or the URL where you can
     obtain it.</para>
    </step>
    <step>
@@ -306,7 +307,7 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
    </step>
    <step performance="optional">
     <para>If the identity provider has not already mapped the attributes you
-    share, map identity provider attribute names (Name in Assertion), to user
+    share, map identity provider attribute names (Name in Assertion) to user
     profile names from your identity repository (Local Attribute Name).</para>
 
     <para>
@@ -331,14 +332,14 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
     <secondary>Configuring</secondary>
    </indexterm>
 
-   <para>When your organization acts as the identity provider, and you want
+   <para>When your organization acts as the identity provider and you want
    quickly to enable service providers to federate their services with yours,
    you can provide them with a <firstterm>fedlet</firstterm>. A fedlet is
    a small Java or .NET web application that can act as a service provider for
    a specific identity provider without requiring that you install all of
    OpenAM.</para>
 
-   <para>Fedlets support the following SAML v2.0 features.</para>
+   <para>Fedlets support SAML v2.0 features, as shown in the following table:</para>
 
    <table xml:id="fedlet-saml2-features">
     <title>Fedlet Support for SAML v2.0 Features</title>
@@ -355,32 +356,32 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
      </thead>
      <tbody>
       <row>
-       <entry>IDP &amp; SP-initiated Single Sign-On (HTTP Artifact)</entry>
+       <entry>IDP and SP-initiated Single Sign-On (HTTP Artifact)</entry>
        <entry>Supported</entry>
        <entry>Supported</entry>
       </row>
       <row>
-       <entry>IDP &amp; SP-initiated Single Sign-On (HTTP POST)</entry>
+       <entry>IDP and SP-initiated Single Sign-On (HTTP POST)</entry>
        <entry>Supported</entry>
        <entry>Supported</entry>
       </row>
       <row>
-       <entry>IDP &amp; SP-initiated Single Logout (HTTP POST)</entry>
+       <entry>IDP and SP-initiated Single Logout (HTTP POST)</entry>
        <entry>Supported</entry>
        <entry>Supported</entry>
       </row>
       <row>
-       <entry>IDP &amp; SP-initiated Single Logout (HTTP Redirect)</entry>
+       <entry>IDP and SP-initiated Single Logout (HTTP Redirect)</entry>
        <entry>Supported</entry>
        <entry>Supported</entry>
       </row>
       <row>
-       <entry>Sign Requests &amp; Responses</entry>
+       <entry>Sign Requests and Responses</entry>
        <entry>Supported</entry>
        <entry>Supported</entry>
       </row>
       <row>
-       <entry>Encrypt Assertion, Attribute, &amp; NameID Elements</entry>
+       <entry>Encrypt Assertion, Attribute, and NameID Elements</entry>
        <entry>Supported</entry>
        <entry>Supported</entry>
       </row>
@@ -427,7 +428,7 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
    .NET Applications</citetitle></link> in the <citetitle>Developer's
    Guide</citetitle>.</para>
 
-   <para>The following procedure describes how to create a Java Fedlet.</para>
+   <para>The following procedure describes how to create a Java Fedlet:</para>
 
    <step performance="optional">
     <para>If you have not done so already, set up your identity provider.</para>
@@ -461,7 +462,7 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
    request. You can deploy the identity provider discovery service for this
    purpose as a separate web application.</para>
 
-   <para>Browsers only send cookies for the originating domain. Therefore
+   <para>Browsers only send cookies for the originating domain. Therefore,
    when a browser accesses the service provider in the <literal>www.sp.example</literal>
    domain, the service provider has no way of knowing whether the user has
    perhaps already authenticated at <literal>www.this-idp.example</literal> or at
@@ -474,10 +475,10 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
    as part of SAML v2.0 federation.</para>
 
    <para>Deploying the identity provider discovery service involves the
-   following stages.</para>
+   following stages:</para>
    <orderedlist>
     <listitem>
-     <para>Deploy the .war file into your web application container.</para>
+     <para>Deploy the <literal>.war</literal> into your web application container.</para>
     </listitem>
     <listitem>
      <para>Configure the discovery service.</para>
@@ -496,9 +497,9 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
    <procedure xml:id="deploy-idpdisco-on-tomcat">
     <title>To Deploy the Discovery Service on Tomcat</title>
 
-    <para>How you deploy the discovery service .war file depends on your web
-    application container. The procedure in this section shows how to deploy
-    on Apache Tomcat.</para>
+    <para>How you deploy the discovery service <literal>.war</literal> file depends
+     on your web application container. The procedure in this section shows how
+     to deploy on Apache Tomcat.</para>
 
     <step>
      <para>Copy the <filename><?eval ${ipdiscoWarFile}?></filename> file to
@@ -524,15 +525,20 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
     
     <step>
      <para>Configure the identity provider discovery service.</para>
-     <mediaobject xml:id="figure-idp-disco-config">
-      <alt>Completed discovery service configuration screen</alt>
-      <imageobject>
-       <imagedata fileref="images/idp-disco-config.png" format="PNG" />
-      </imageobject>
-      <textobject>
-       <para>Configure the identity provider discovery service.</para>
-      </textobject>
-     </mediaobject>
+
+     <figure xml:id="figure-idp-disco-config">
+      <title>Completed Discovery Service Configuration Screen</title>
+      <mediaobject>
+       <alt>Completed discovery service configuration screen</alt>
+       <imageobject>
+        <imagedata fileref="images/idp-disco-config.png" format="PNG" />
+       </imageobject>
+       <textobject>
+        <para>Configure the identity provider discovery service.</para>
+       </textobject>
+      </mediaobject>
+     </figure>
+
      <para>Hints for discovery service configuration parameters follow.</para>
      <variablelist>
       <varlistentry>
@@ -556,7 +562,7 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
        <term>Cookie Type</term>
        <listitem>
         <para>Set to PERSISTENT if you have configured OpenAM to use persistent
-        cookies, meaning single sign on cookies that can continue to be valid
+        cookies, meaning single sign-on cookies that can continue to be valid
         after the browser is closed.</para>
        </listitem>
       </varlistentry>
@@ -579,7 +585,7 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
        <term>Encode Cookie</term>
        <listitem>
         <para>Leave this true unless your OpenAM installation requires that you
-        do not encode cookies. Normally cookies are encoded such that cookies
+        do not encode cookies. Normally, cookies are encoded such that cookies
         remain valid in HTTP.</para>
        </listitem>
       </varlistentry>
@@ -605,7 +611,7 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
     
     <para>Each provider has a circle of trust including itself. You configure
     each of these circles of trust to use the identity provider discovery
-    service as described in the following steps.</para>
+    service as described in the following steps:</para>
     
     <step>
      <para>On the service provider console, login as OpenAM
@@ -613,7 +619,7 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
     </step>
     <step>
      <para>On the service provider console, under Federation &gt; Circle of
-     Trust &gt; <replaceable>Circle of Trust Name</replaceable>
+     Trust &gt; <replaceable>Circle of Trust Name</replaceable>,
      add SAML2 Writer and Reader Service URLs for the identity provider
      discovery service endpoints, and Save your work.</para>
 
@@ -629,21 +635,21 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
     </step>
     <step>
      <para>On the identity provider console, under Federation &gt; Circle of
-     Trust Configuration &gt; <replaceable>Circle of Trust Name</replaceable>
+     Trust Configuration &gt; <replaceable>Circle of Trust Name</replaceable>,
      also add SAML2 Writer and Reader Service URLs for the identity provider
      discovery service endpoints, and Save your work.</para>
     </step>
    </procedure>
    
    <procedure xml:id="share-idpdisco-sp-metadata">
-    <title>To Share Identity &amp; Service Provider Metadata</title>
+    <title>To Share Identity and Service Provider Metadata</title>
 
     <para>Before performing these steps, install the administration tools
     for each provider as described in <link
     xlink:href="install-guide#install-openam-admin-tools"
     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up
     Administration Tools</citetitle></link>. The administration tools include
-    the <command>ssoadm</command> command that you need to export metadata.</para>
+    the <command>ssoadm</command> command that you need to export metadata:</para>
 
     <step>
      <para>On each identity provider console, register the service provider as
@@ -655,7 +661,7 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
     </step>
 
     <step>
-     <para>Obtain metadata for each identity provider.</para>
+     <para>Obtain metadata for each identity provider:</para>
 
      <screen>
 $ <userinput>ssh www.this-idp.example</userinput>
@@ -792,7 +798,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Assertion Content</title>
    
    <para>Use the following hints to adjust settings on the Assertion Content
-   tab page.</para>
+   tab page:</para>
    
    <variablelist xml:id="idp-signing-encryption">
     <title>Signing and Encryption</title>
@@ -833,8 +839,8 @@ CookieWriterServlet.doGetPost: Redirect to
      <term>NameID Format List</term>
      <listitem>
       <para>Specifies the supported name identifiers for users that are shared
-      between providers for single sign on. If no name identifier is specified
-      when initiating single sign on, then the identity provider uses the first
+      between providers for single sign-on. If no name identifier is specified
+      when initiating single sign-on, then the identity provider uses the first
       one in the list.</para>
      </listitem>
     </varlistentry>
@@ -920,7 +926,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Assertion Processing</title>
    
    <para>Use the following hints to adjust settings on the Assertion Processing
-   tab page.</para>
+   tab page:</para>
    
    <variablelist xml:id="idp-attribute-mapper">
     <title>Attribute Mapper</title>
@@ -1014,7 +1020,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Services</title>
    
    <para>Use the following hints to adjust settings on the Services tab
-   page.</para>
+   page:</para>
    
    <variablelist xml:id="idp-meta-alias">
     <title>MetaAlias</title>
@@ -1058,7 +1064,7 @@ CookieWriterServlet.doGetPost: Redirect to
     <varlistentry>
      <term>Single SignOn Service</term>
      <listitem>
-      <para>Specifies the end points to handle single sign on.</para>
+      <para>Specifies the end points to handle single sign-on.</para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -1078,7 +1084,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Advanced Settings</title>
    
    <para>Use the following hints to adjust settings on the Advanced tab
-   page.</para>
+   page:</para>
    
    <variablelist xml:id="idp-sae-configuration">
     <title>SAE Configuration</title>
@@ -1185,7 +1191,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Assertion Content</title>
    
    <para>Use the following hints to adjust settings on the Assertion Content
-   tab page.</para>
+   tab page:</para>
    
    <variablelist xml:id="sp-signing-encryption">
     <title>Signing and Encryption</title>
@@ -1217,8 +1223,8 @@ CookieWriterServlet.doGetPost: Redirect to
      <term>NameID Format List</term>
      <listitem>
       <para>Specifies the supported name identifiers for users that are shared
-      between providers for single sign on. If no name identifier is specified
-      when initiating single sign on, then the service provider uses the first
+      between providers for single sign-on. If no name identifier is specified
+      when initiating single sign-on, then the service provider uses the first
       one in the list supported by the identity provider.</para>
      </listitem>
     </varlistentry>
@@ -1293,7 +1299,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Assertion Processing</title>
    
    <para>Use the following hints to adjust settings on the Assertion Processing
-   tab page.</para>
+   tab page:</para>
    
    <variablelist xml:id="sp-attribute-mapper">
     <title>Attribute Mapper</title>
@@ -1362,7 +1368,7 @@ CookieWriterServlet.doGetPost: Redirect to
     <varlistentry>
      <term>Transient User</term>
      <listitem>
-      <para>Specifies the user profile to which to map all identity provider
+      <para>Specifies the user profile to map all identity provider
       users when sending transient name identifiers.</para>
      </listitem>
     </varlistentry>
@@ -1428,7 +1434,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Services</title>
    
    <para>Use the following hints to adjust settings on the Services tab
-   page.</para>
+   page:</para>
    
    <variablelist xml:id="sp-meta-alias">
     <title>MetaAlias</title>
@@ -1476,7 +1482,7 @@ CookieWriterServlet.doGetPost: Redirect to
    <title>Hints for Advanced Settings</title>
    
    <para>Use the following hints to adjust settings on the Advanced tab
-   page.</para>
+   page:</para>
    
    <variablelist xml:id="sp-sae-configuration">
     <title>SAE Configuration</title>
@@ -1577,7 +1583,7 @@ CookieWriterServlet.doGetPost: Redirect to
     <varlistentry>
      <term>Relay State URL List</term>
      <listitem>
-      <para>List of URLs to which to redirect users after the request has
+      <para>List of URLs to redirect users after the request has
       been handled. Used if not specified in the service provider extended
       metadata.</para>
      </listitem>
@@ -1680,7 +1686,7 @@ CookieWriterServlet.doGetPost: Redirect to
   <para>
    When you set up the same SAML v2.0 Provider on multiple servers
    behind a load balancer, however, you must ensure the metadata
-   points to the load balancer rather than the individual servers.
+   points to the load balancer rather than the individual servers:
   </para>
 
   <orderedlist>
@@ -1931,7 +1937,7 @@ $ <userinput>ssoadm \
      <step>
       <para>If your users go directly to Salesforce to access services, then
       their single sign-on is SP-initiated from the Salesforce side. Salesforce
-      provides a "My Domain" feature to facilitate SP-initiated single sign-on
+      provides a My Domain feature to facilitate SP-initiated single sign-on
       for desktop and device users.</para>
 
       <para>When you have completed configuring Salesforce as a service
@@ -2015,7 +2021,7 @@ $ <userinput>ssoadm \
        Salesforce uses an unspecified <literal>nameid-format</literal> value;
        therefore, your IdP configuration in OpenAM should reflect this. In the
        NameID Value Map setting, enter the following NameID Format user attribute
-       mapping, and then click <guibutton>Add</guibutton>.
+       mapping, and then click <guibutton>Add</guibutton>:
        <screen>
 urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</replaceable>
        </screen>
@@ -2208,7 +2214,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <literal>/<replaceable>realm-name</replaceable>/<replaceable
      >provider-name</replaceable></literal> as described in <xref
      linkend="idp-meta-alias"/>. You do not repeat the slash for
-     the top level realm, for example <literal>metaAlias=/idp</literal>.</para>
+     the top-level realm, for example <literal>metaAlias=/idp</literal>.</para>
     </listitem>
    </varlistentry>
 
@@ -2216,7 +2222,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>spEntityID</literal></term>
     <listitem>
      <para>(Required) Use this parameter to indicate the remote service
-     provider. Make sure you URL encode the value. For example, specify
+     provider. Make sure you URL-encode the value. For example, specify
      <literal>spEntityID=http://www.sp.example:8080/openam</literal> as
      <literal>spEntityID=http%3A%2F%2Fwww.sp.example%3A8080%2Fopenam</literal>.</para>
     </listitem>
@@ -2255,7 +2261,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>RelayState</literal></term>
     <listitem>
      <para>(Optional) Use this parameter to specify where to redirect the user
-     when the process is complete. Make sure you URL encode the value. For
+     when the process is complete. Make sure you URL-encode the value. For
      example, <literal>RelayState=http%3A%2F%2Fforgerock.com</literal>
      takes the user to <literal>http://forgerock.com</literal>.</para>
     </listitem>
@@ -2280,7 +2286,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>idpEntityID</literal></term>
     <listitem>
      <para>(Required) Use this parameter to indicate the remote identity
-     provider. Make sure you URL encode the value. For example, specify
+     provider. Make sure you URL-encode the value. For example, specify
      <literal>idpEntityID=http://www.idp.example:8080/openam</literal> as
      <literal>idpEntityID=http%3A%2F%2Fwww.idp.example%3A8080%2Fopenam</literal>.</para>
     </listitem>
@@ -2294,7 +2300,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      takes the format <literal>/<replaceable>realm-name</replaceable>/<replaceable
      >provider-name</replaceable></literal> as described in <xref
      linkend="sp-meta-alias"/>. You do not repeat the slash for the
-     top level realm, <literal>metaAlias=/sp</literal>.</para>
+     top-level realm, <literal>metaAlias=/sp</literal>.</para>
     </listitem>
    </varlistentry>
 
@@ -2439,7 +2445,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>RelayState</literal></term>
     <listitem>
      <para>(Optional) Use this parameter to specify where to redirect the user
-     when the process is complete. Make sure you URL encode the value. For
+     when the process is complete. Make sure you URL-encode the value. For
      example, <literal>RelayState=http%3A%2F%2Fforgerock.com</literal>
      takes the user to <literal>http://forgerock.com</literal>.</para>
     </listitem>
@@ -2470,10 +2476,11 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    <varlistentry>
     <term><literal>sunamcompositeadvice</literal></term>
     <listitem>
-     <para>(Optional) Use this parameter to specify a URL encoded XML blob that
+     <para>(Optional) Use this parameter to specify a URL-encoded XML blob that
      specifies the authentication level advice. For example, the following XML
      indicates a requested authentication level of 1. Notice the required
-     <literal>:</literal> before the 1.</para>
+     <literal>:</literal> before the 1:</para>
+
      <programlisting language="xml">&lt;Advice&gt;
  &lt;AttributeValuePair&gt;
   &lt;Attribute name=&quot;AuthLevelConditionAdvice&quot;/&gt;
@@ -2493,7 +2500,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <para>(Required) Use this parameter to indicate what binding to use for the
      operation. The full, long name format is required for this parameter to work.</para>
      <itemizedlist>
-         <para>The value must be one of the following.</para>
+         <para>The value must be one of the following:</para>
 
          <listitem>
              <para><literal>urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect</literal> (default)</para>
@@ -2559,7 +2566,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>RelayState</literal></term>
     <listitem>
      <para>(Optional) Use this parameter to specify where to redirect the user
-     when the process is complete. Make sure you URL encode the value. For
+     when the process is complete. Make sure you URL-encode the value. For
      example, <literal>RelayState=http%3A%2F%2Fforgerock.com</literal>
      takes the user to <literal>http://forgerock.com</literal>.</para>
     </listitem>
@@ -2646,7 +2653,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>RelayState</literal></term>
     <listitem>
      <para>(Optional) Use this parameter to specify where to redirect the user
-     when the process is complete. Make sure you URL encode the value. For
+     when the process is complete. Make sure you URL-encode the value. For
      example, <literal>RelayState=http%3A%2F%2Fforgerock.com</literal>
      takes the user to <literal>http://forgerock.com</literal>.</para>
     </listitem>
@@ -2663,12 +2670,12 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   </variablelist>
 
   <example xml:id="example-saml2-sso-slo">
-   <title>SSO &amp; SLO From the Service Provider</title>
+   <title>SSO and SLO From the Service Provider</title>
 
    <para>The following URL takes the user from the service provider side to
    authenticate at the identity provider and then come back to the end user
    profile page at the service provider after successful SSO. Lines are folded
-   to show you the query string parameters.</para>
+   to show you the query string parameters:</para>
 
    <programlisting language="none"
    >http://www.sp.example:8080/openam/saml2/jsp/spSSOInit.jsp?metaAlias=/sp
@@ -2676,7 +2683,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
 &amp;RelayState=http%3A%2F%2Fwww.sp.example%3A8080%2Fopenam%2Fidm%2FEndUser</programlisting>
 
    <para>The following URL initiates SLO from the service provider side,
-   leaving the user at <literal>http://forgerock.com</literal>.</para>
+   leaving the user at <literal>http://forgerock.com</literal>:</para>
 
    <programlisting language="none"
    >http://www.sp.example:8080/openam/saml2/jsp/spSingleLogoutInit.jsp?
@@ -2687,7 +2694,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   <procedure xml:id="show-saml2-sso-login-progress">
    <title>To Indicate Progress During SSO</title>
 
-   <para>During SSO log in, OpenAM presents users with a self-submitting form
+   <para>During SSO login, OpenAM presents users with a self-submitting form
    when access has been validated. This page is otherwise blank. If you want to
    present users with something to indicate that the operation is in progress,
    then customize the necessary templates.</para>
@@ -2723,7 +2730,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
  </section>
 
  <section xml:id="saml2-ecp-config">
-  <title>Configuring OpenAM For the ECP Profile</title>
+  <title>Configuring OpenAM for the ECP Profile</title>
 
   <indexterm>
    <primary>Federation</primary>
@@ -2752,7 +2759,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   <para>OpenAM supports the SAML v2.0 ECP profile on the server side for
   identity providers and service providers. You must build the ECP.</para>
 
-  <para>By default an OpenAM identity provider uses the
+  <para>By default, an OpenAM identity provider uses the
   <literal>com.sun.identity.saml2.plugins.DefaultIDPECPSessionMapper</literal>
   class to find a user session for requests to the IDP from the ECP. The
   default session mapper uses OpenAM cookies as it would for any other client
@@ -2761,7 +2768,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   Federation &gt; Entity Providers &gt; <replaceable>idp-name</replaceable>
   &gt; IDP &gt; Advanced &gt; ECP Configuration.</para>
 
-  <para>By default an OpenAM service provider uses the
+  <para>By default, an OpenAM service provider uses the
   <literal>com.sun.identity.saml2.plugins.ECPIDPFinder</literal> class to
   return identity providers from the list under Federation &gt; Entity
   Providers &gt; <replaceable>sp-name</replaceable> &gt; SP &gt; Advanced
@@ -2807,9 +2814,9 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   </indexterm>
 
   <para>Identity providers and service providers must be able to communicate
-  about users. Yet in some cases the identity provider can choose to communicate
+  about users. Yet, in some cases the identity provider can choose to communicate
   a minimum of information about an authenticated user, with no user account
-  maintained on the service provider side. In other cases the identity provider
+  maintained on the service provider side. In other cases, the identity provider
   and service provider can choose to link user accounts in a persistent way, in
   a more permanent way, or even in automatic fashion by using some shared value
   in the user's profiles such as an email address or by dynamically creating
@@ -2829,14 +2836,14 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
 
    <para>To use transient name identifiers, specify the name ID format
    <literal>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</literal> when
-   initiating single sign on.</para>
+   initiating single sign-on.</para>
 
    <para>The examples below work in an environment where the identity provider
    is <literal>www.idp.example</literal> and the service provider is
    <literal>www.sp.example</literal>. Both providers have deployed OpenAM on port
    8080 under deployment URI <literal>/openam</literal>.</para>
 
-   <para>To initiate single sign on from the service provider, access the
+   <para>To initiate single sign-on from the service provider, access the
    following URL with at least the query parameters shown.</para>
    <literallayout class="monospaced"
    >http://www.sp.example:8080/openam/saml2/jsp/spSSOInit.jsp?
@@ -2846,7 +2853,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    <para>For a complete list of query parameters, see <xref
    linkend="spssoinit-parameters" />.</para>
 
-   <para>To initiate single sign on from the identity provider, access the
+   <para>To initiate single sign-on from the identity provider, access the
    following URL with at least the query parameters shown.</para>
    <literallayout class="monospaced"
    >http://www.idp.example:8080/openam/saml2/jsp/idpSSOInit.jsp?
@@ -2857,7 +2864,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    linkend="idpssoinit-parameters" />.</para>
 
    <para>The accounts are only linked for the duration of the session. Once the
-   user logs out for example the accounts are no longer linked.</para>
+   user logs out, for example, the accounts are no longer linked.</para>
   </section>
 
   <section xml:id="persistent-federation">
@@ -2875,7 +2882,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    <literal>www.sp.example</literal>. Both providers have deployed OpenAM on port
    8080 under deployment URI <literal>/openam</literal>.</para>
 
-   <para>To initiate single sign on from the service provider, access the
+   <para>To initiate single sign-on from the service provider, access the
    following URL with at least the query parameters shown.</para>
    <literallayout class="monospaced"
    >http://www.sp.example:8080/openam/saml2/jsp/spSSOInit.jsp?
@@ -2885,7 +2892,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    <para>For a complete list of query parameters, see <xref
    linkend="spssoinit-parameters" />.</para>
 
-   <para>To initiate single sign on from the identity provider, access the
+   <para>To initiate single sign-on from the identity provider, access the
    following URL with at least the query parameters shown.</para>
    <literallayout class="monospaced"
    >http://www.idp.example:8080/openam/saml2/jsp/idpSSOInit.jsp?
@@ -2977,7 +2984,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <term><literal>spEntityID</literal></term>
      <listitem>
       <para>(Required) Use this parameter to indicate the remote service
-      provider. Make sure you URL encode the value. For example, specify
+      provider. Make sure you URL-encode the value. For example, specify
       <literal>spEntityID=http://www.sp.example:8080/openam</literal> as
       <literal>spEntityID=http%3A%2F%2Fwww.sp.example%3A8080%2Fopenam</literal>.</para>
      </listitem>
@@ -2992,7 +2999,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       <literal>/<replaceable>realm-name</replaceable>/<replaceable
       >provider-name</replaceable></literal> as described in <xref
       linkend="idp-meta-alias"/>. You do not repeat the slash for
-      the top level realm, for example <literal>metaAlias=/idp</literal>.</para>
+      the top-level realm, for example <literal>metaAlias=/idp</literal>.</para>
      </listitem>
     </varlistentry>
 
@@ -3030,7 +3037,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       to work.</para>
 
       <itemizedlist>
-       <para>The value must be one of the following.</para>
+       <para>The value must be one of the following:</para>
 
        <listitem>
         <para><literal>urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST</literal></para>
@@ -3051,7 +3058,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <term><literal>relayState</literal></term>
      <listitem>
       <para>(Optional) Use this parameter to specify where to redirect the user
-      when the process is complete. Make sure you URL encode the value. For
+      when the process is complete. Make sure you URL-encode the value. For
       example, <literal>relayState=http%3A%2F%2Fforgerock.com</literal>
       takes the user to <literal>http://forgerock.com</literal>.</para>
      </listitem>
@@ -3065,7 +3072,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <term><literal>idpEntityID</literal></term>
      <listitem>
       <para>(Required) Use this parameter to indicate the remote identity
-      provider. Make sure you URL encode the value. For example, specify
+      provider. Make sure you URL-encode the value. For example, specify
       <literal>idpEntityID=http://www.idp.example:8080/openam</literal> as
       <literal>idpEntityID=http%3A%2F%2Fwww.idp.example%3A8080%2Fopenam</literal>.</para>
      </listitem>
@@ -3079,7 +3086,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       takes the format <literal>/<replaceable>realm-name</replaceable>/<replaceable
       >provider-name</replaceable></literal> as described in <xref
       linkend="sp-meta-alias"/>. You do not repeat the slash for the
-      top level realm, <literal>metaAlias=/sp</literal>.</para>
+      top-level realm, <literal>metaAlias=/sp</literal>.</para>
      </listitem>
     </varlistentry>
 
@@ -3117,7 +3124,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       to work.</para>
 
       <itemizedlist>
-       <para>The value must be one of the following.</para>
+       <para>The value must be one of the following:</para>
 
        <listitem>
         <para><literal>urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST</literal></para>
@@ -3138,7 +3145,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <term><literal>relayState</literal></term>
      <listitem>
       <para>(Optional) Use this parameter to specify where to redirect the user
-      when the process is complete. Make sure you URL encode the value. For
+      when the process is complete. Make sure you URL-encode the value. For
       example, <literal>relayState=http%3A%2F%2Fforgerock.com</literal>
       takes the user to <literal>http://forgerock.com</literal>.</para>
      </listitem>
@@ -3213,10 +3220,10 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     on an attribute value that is the same in both accounts.</para>
 
     <para>Perform the following steps on the hosted identity provider(s), and
-    again on the hosted service provider(s).</para>
+    again on the hosted service provider(s):</para>
 
     <step>
-     <para>Login to the OpenAM console as administrator.</para>
+     <para>Log in to the OpenAM console as administrator.</para>
     </step>
     <step>
      <para>Browse to Federation &gt; <replaceable
@@ -3236,13 +3243,13 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    </procedure>
 
    <procedure xml:id="auto-federate-using-anonymous">
-    <title>To Map Remote Accounts to a Single Service Provider Account</title>
+    <title>To Map Remote Accounts to a Single-Service Provider Account</title>
 
     <para>The following steps demonstrate how to auto-federate using a single
     anonymous user account on the service provider.</para>
 
     <para>Perform the following steps on the hosted identity provider(s), and
-    again on the hosted service provider(s).</para>
+    again on the hosted service provider(s):</para>
 
     <step>
      <para>Login to the OpenAM console as administrator.</para>
@@ -3273,7 +3280,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
 
     <para>
      The following steps demonstrate how to map accounts
-     with dynamic creation of missing accounts on the service provider side.
+     with dynamic creation of missing accounts on the service provider side:
     </para>
 
     <step>
@@ -3339,7 +3346,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    <para>The <command>ssoadm</command> command then needs a file that maps
    local user IDs to remote user IDs, one per line, separated by the vertical
    bar character <literal>|</literal>. Each line of the file appears as
-   follows.</para>
+   follows:</para>
 
    <literallayout class="monospaced"><replaceable>local-user-ID</replaceable
    >|<replaceable>remote-user-ID</replaceable></literallayout>
@@ -3356,13 +3363,13 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
 
    <orderedlist>
     <para>Link the accounts using the <command>ssoadm</command> bulk federation
-    commands.</para>
+    commands:</para>
 
     <listitem>
      <para>Prepare the data with the
      <command>ssoadm do-bulk-federation</command> command.</para>
 
-     <para>The following example starts on the service provider side.</para>
+     <para>The following example starts on the service provider side:</para>
 
      <screen>
 $ <userinput>cat /tmp/user-map.txt</userinput>
@@ -3384,7 +3391,7 @@ provider.</computeroutput>
     </listitem>
 
     <listitem>
-     <para>Copy the name ID mapping output file to the other provider.</para>
+     <para>Copy the name ID mapping output file to the other provider:</para>
 
      <screen>
 $ <userinput>scp /tmp/name-map.txt openam@idp.example.org:/tmp/name-map.txt</userinput>
@@ -3398,7 +3405,7 @@ name-map.txt                     100%  177     0.2KB/s   00:00</computeroutput>
      <command>ssoadm import-bulk-fed-data</command> command.</para>
 
      <para>The following example is performed on the identity provider
-     side.</para>
+     side:</para>
 
      <screen>
 $ <userinput>ssoadm \
@@ -3425,14 +3432,14 @@ $ <userinput>ssoadm \
    </para>
 
    <para>
-    Authentication is also required however on the service provider side
+    Authentication is also required, however, on the service provider side
     when the OpenAM account mapper on the service provider is not able to map
     the user identified in the SAML assertion from the identity provider
     to a local user account.
    </para>
 
    <para>
-    This can happen for example the first time accounts are linked
+    This can happen, for example, the first time accounts are linked
     as described in <xref linkend="persistent-federation" />,
     after which the persistent identifier establishes the mapping.
    </para>
@@ -3443,7 +3450,7 @@ $ <userinput>ssoadm \
     <xref linkend="transient-federation" />,
     then the service provider must locally authenticate the user
     for every SAML assertion received.
-    This is because the identifier used to link the accounts is transient:
+    This is because the identifier used to link the accounts is transient;
     it does not provide a durable means to link the accounts.
    </para>
   </section>
@@ -3488,7 +3495,7 @@ $ <userinput>ssoadm \
     The following procedure applies
     when OpenAM is configured as an IDP in one domain,
     and the desired policy agent protects resources
-    on behalf of a second OpenAM server configured as an SP on a second domain.
+    on behalf of a second OpenAM server configured as an SP on a second domain:
    </para>
 
    <step>
@@ -3517,7 +3524,7 @@ $ <userinput>ssoadm \
     </para>
 
     <para>
-     The following steps explain how to do this for web policy agents.
+     The following steps explain how to do this for web policy agents:
     </para>
 
     <stepalternatives>

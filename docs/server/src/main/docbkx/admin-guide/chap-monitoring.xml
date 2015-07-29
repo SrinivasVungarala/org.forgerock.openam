@@ -45,8 +45,8 @@
   
   <para>To configure monitoring services, login to OpenAM console as OpenAM
   administrator, and browse to Configuration &gt; System &gt; Monitoring.
-  Alternatively you can use the <command>ssoadm set-attr-defs</command>
-  command.</para>
+  Alternatively, you can use the <command>ssoadm set-attr-defs</command>
+  command:</para>
 
   <screen>
 $ <userinput>ssoadm \
@@ -62,12 +62,12 @@ $ <userinput>ssoadm \
   OpenAM if you disable monitoring.</para>
 
   <section xml:id="monitoring-web-pages">
-   <title>Web Based Monitoring</title>
+   <title>Web-Based Monitoring</title>
    
    <para>You can configure OpenAM to allow you to access a web based view of
    OpenAM MBeans on port 8082 where the core server runs, such as
    <literal>http://openam-ter.example.com:8082/</literal>. Either use the
-   console, or use the <command>ssoadm</command> command.</para>
+   console, or use the <command>ssoadm</command> command:</para>
 
    <screen>
 $ <userinput>ssoadm \
@@ -82,7 +82,7 @@ $ <userinput>ssoadm \
    <para>The default authentication file allows you to authenticate over HTTP
    as user <literal>demo</literal>, password <literal>changeit</literal>. The
    user name and password are kept in the file specified, with the password
-   encrypted.</para>
+   encrypted:</para>
    
    <screen>
 $ <userinput>cat openam/openam/openam_mon_auth</userinput>
@@ -99,14 +99,18 @@ $ <userinput>cat openam/openam/opensso_mon_auth</userinput>
    <para>You can encrypt a new password using the <command>ampassword</command>
    command. After changing the authentication file, you must restart OpenAM
    for the changes to take effect.</para>
-   
-   <mediaobject xml:id="figure-web-based-monitoring">
-    <alt>OpenAM MBeans in a browser</alt>
-    <imageobject>
-     <imagedata fileref="images/web-based-monitoring.png" format="PNG" />
-    </imageobject>
-    <textobject><para>You can monitor OpenAM through a web browser.</para></textobject>
-   </mediaobject>
+
+   <figure xml:id="figure-web-based-monitoring">
+    <title>OpenAM MBeans in a Browser</title>
+    <mediaobject>
+     <alt>OpenAM MBeans in a browser</alt>
+     <imageobject>
+      <imagedata fileref="images/web-based-monitoring.png" format="PNG" />
+     </imageobject>
+     <textobject><para>You can monitor OpenAM through a web browser.</para></textobject>
+    </mediaobject>
+   </figure>
+
   </section>
   
   <section xml:id="monitoring-jmx">
@@ -119,7 +123,7 @@ $ <userinput>cat openam/openam/opensso_mon_auth</userinput>
    eXtension (JMX) clients, by default on port 9999. Either use the OpenAM
    console page under Configuration &gt; System &gt; Monitoring and make sure
    both Monitoring Status and Monitoring RMI interface status are both set to
-   Enabled, or use the <command>ssoadm</command> command.</para>
+   Enabled, or use the <command>ssoadm</command> command:</para>
 
    <screen>
 $ <userinput>ssoadm \
@@ -147,13 +151,16 @@ $ <userinput>jconsole service:jmx:rmi:///jndi/rmi://localhost:9999/server &amp;<
    your container is likely to be accessible only locally, using the process
    ID.</para>
 
-   <mediaobject xml:id="figure-jconsole-to-openam">
-    <alt>Jconsole browsing OpenAM MBeans</alt>
-    <imageobject>
-     <imagedata fileref="images/jconsole-to-openam.png" format="PNG" />
-    </imageobject>
-    <textobject><para>You can monitor OpenAM over JMX.</para></textobject>
-   </mediaobject>
+   <figure xml:id="figure-jconsole-to-openam">
+    <title>JConsole Browsing OpenAM MBeans</title>
+    <mediaobject>
+     <alt>JConsole browsing OpenAM MBeans</alt>
+     <imageobject>
+      <imagedata fileref="images/jconsole-to-openam.png" format="PNG" />
+     </imageobject>
+     <textobject><para>You can monitor OpenAM over JMX.</para></textobject>
+    </mediaobject>
+   </figure>
 
    <para>Also see <link xlink:show="new"
    xlink:href="http://docs.oracle.com/javase/1.5.0/docs/guide/management/agent.html"
@@ -178,7 +185,7 @@ $ <userinput>jconsole service:jmx:rmi:///jndi/rmi://localhost:9999/server &amp;<
    
    <para>You can configure OpenAM to allow you to listen on port 8085 for SNMP
    monitoring. Either use the console, or use the <command>ssoadm</command>
-   command.</para>
+   command:</para>
 
    <screen>
 $ <userinput>ssoadm \
@@ -210,7 +217,7 @@ $ <userinput>ssoadm \
   <para>
    Depending on system load and usage, the CTS can produce a
    large quantity of tokens, which can be short lived. This style of
-   usage is significantly different form typical LDAP usage. As such,
+   usage is significantly different from typical LDAP usage. As such,
    systems administrators may be interested in monitoring this usage
    as part of LDAP directory maintenance.
   </para>
@@ -305,7 +312,7 @@ $ <userinput>ssoadm \
   </section>
 
   <section xml:id="snmp-policy-evaluation">
-   <title>SNMP Monitoring For Policy Evaluation</title>
+   <title>SNMP Monitoring for Policy Evaluation</title>
 
    <indexterm>
     <primary>Monitoring</primary>
@@ -356,7 +363,7 @@ $ <userinput>ssoadm \
     The statistics are all read-only.
     The base OID for policy evaluation statistics is
     <literal>enterprises.36733.1.2.2.1</literal>.
-    The following table describes the values that you can read.
+    The following table describes the values that you can read:
    </para>
 
    <table xml:id="snmp-policy-evaluation-oids">
@@ -615,7 +622,7 @@ $ <userinput>ssoadm \
   </section>
 
   <section xml:id="snmp-sessions">
-   <title>SNMP Monitoring For Sessions</title>
+   <title>SNMP Monitoring for Sessions</title>
 
    <indexterm>
     <primary>Monitoring</primary>
@@ -672,7 +679,7 @@ $ <userinput>ssoadm \
     <literal>enterprises.36733.1.2.1</literal>.
     Times are expressed in nanoseconds rather than milliseconds,
     as many operations take less than one millisecond.
-    The following table describes the values that you can read.
+    The following table describes the values that you can read:
    </para>
 
    <table xml:id="snmp-sessions-oids">
@@ -1041,7 +1048,7 @@ $ <userinput>ssoadm \
   </section>
   
   <section xml:id="log-debug-selective-capture">
-   <title>Debug Logging by Service</title>
+   <title>Debug Logging By Service</title>
    <indexterm>
     <primary>Debug logging</primary>
     <secondary>Service selection</secondary>
@@ -1054,7 +1061,7 @@ $ <userinput>ssoadm \
 
    <orderedlist>
     <para>Perform these steps to capture debug messages for a specific
-    service.</para>
+    service:</para>
     <listitem>
      <para>Login to OpenAM console as administrator,
      <literal>amadmin</literal>.</para>
@@ -1067,7 +1074,7 @@ $ <userinput>ssoadm \
     <listitem>
      <para>Select the service to debug and also the level required given the
      hints provided in the <filename>Debug.jsp</filename> page.</para>
-     <para>The change takes effect immediately.</para>
+     <para>The changes takes effect immediately.</para>
     </listitem>
     <listitem>
      <para>Promptly reproduce the problem you are investigating.</para>
@@ -1093,7 +1100,8 @@ $ <userinput>ssoadm \
 
    <variablelist>
     <para>The <filename>debugconfig.properties</filename> file includes
-    the following properties.</para>
+    the following properties:</para>
+
     <varlistentry>
      <term><literal>org.forgerock.openam.debug.prefix</literal></term>
      <listitem>
@@ -1140,15 +1148,18 @@ $ <userinput>ssoadm \
   <para>Session management from the OpenAM console is only available for
   stateful sessions. Stateless sessions do not appear in the Sessions tab page.
   </para>
-  
-  <mediaobject xml:id="figure-session-management">
-   <alt>Session management tab page</alt>
-   <imageobject>
-    <imagedata fileref="images/session-management.png" format="PNG" />
-   </imageobject>
-   <textobject><para>The OpenAM Administrator can view stateful end user
-   sessions.</para></textobject>
-  </mediaobject>
+
+  <figure xml:id="figure-session-management">
+   <title>Session Management Tab Page</title>
+   <mediaobject>
+    <alt>Session management tab page</alt>
+    <imageobject>
+     <imagedata fileref="images/session-management.png" format="PNG" />
+    </imageobject>
+    <textobject><para>The OpenAM Administrator can view stateful end user
+    sessions.</para></textobject>
+   </mediaobject>
+  </figure>
   
   <para>To end a user session manually, select the user's session, and then
   click the Invalidate Session button. As a result, the user has to
