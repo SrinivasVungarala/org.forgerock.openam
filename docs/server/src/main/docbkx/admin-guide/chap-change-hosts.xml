@@ -81,7 +81,7 @@
   <title>To Add the New Host Name As an Alias</title>
 
   <step>
-   <para>Login to OpenAM console as administrator,
+   <para>Log in to OpenAM console as administrator,
    <literal>amadmin</literal>.</para>
   </step>
   <step>
@@ -245,7 +245,7 @@ Service Configuration was imported.</computeroutput>
   <title>To Remove the Old Host Name As an Alias</title>
 
   <step>
-   <para>Login to OpenAM console as administrator,
+   <para>Log in to OpenAM console as administrator,
    <literal>amadmin</literal>.</para>
   </step>
   <step>

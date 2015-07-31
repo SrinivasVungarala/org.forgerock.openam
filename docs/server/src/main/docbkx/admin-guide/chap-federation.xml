@@ -957,7 +957,7 @@ CookieWriterServlet.doGetPost: Redirect to
       additional attributes in user profiles.</para>
 
       <para>To specify the list of profile attributes for an LDAP identity
-      repository, login to OpenAM Console as administrator and browse to
+      repository, login to OpenAM console as administrator and browse to
       Access Control > <replaceable>Realm Name</replaceable> > Data Stores, and
       click the data store name to open the configuration page. Scroll down to
       User Configuration, and edit the LDAP User Attributes list, and then
@@ -1741,19 +1741,19 @@ $ <userinput>ssoadm \
 
    <listitem>
     <para>
-     Delete the provider configuration in OpenAM Console.
+     Delete the provider configuration in OpenAM console.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     Import the edited provider configuration in OpenAM Console.
+     Import the edited provider configuration in OpenAM console.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     Enable SAML v2.0 failover in OpenAM Console.
+     Enable SAML v2.0 failover in OpenAM console.
     </para>
 
     <para>
@@ -3252,7 +3252,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     again on the hosted service provider(s):</para>
 
     <step>
-     <para>Login to the OpenAM console as administrator.</para>
+     <para>Log in to the OpenAM console as administrator.</para>
     </step>
     <step>
      <para>Browse to Federation &gt; <replaceable

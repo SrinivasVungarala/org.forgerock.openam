@@ -430,7 +430,7 @@
   <xinclude:include href="sec-configure-resource-types-with-console.xml">
    <xinclude:fallback>
     <para>
-     Configuring Resource Types with the OpenAM Console missing:
+     Configuring Resource Types with the OpenAM console missing:
      sec-configure-resource-types-with-console.xml
     </para>
    </xinclude:fallback>
@@ -439,7 +439,7 @@
   <xinclude:include href="sec-configure-apps-with-console.xml">
    <xinclude:fallback>
     <para>
-     Configuring Applications with the OpenAM Console missing:
+     Configuring Applications with the OpenAM console missing:
      sec-configure-apps-with-console.xml
     </para>
    </xinclude:fallback>
@@ -448,7 +448,7 @@
   <xinclude:include href="sec-configure-policies-with-console.xml">
    <xinclude:fallback>
     <para>
-     Configuring Policies with the OpenAM Console missing:
+     Configuring Policies with the OpenAM console missing:
      sec-configure-apps-with-console.xml
     </para>
    </xinclude:fallback>

@@ -44,11 +44,11 @@
   <itemizedlist>
    <para>OpenAM includes default settings to make it easier for you to
    evaluate the software. Avoid these default settings in production
-   deployments.</para>
+   deployments:</para>
 
    <listitem>
     <para>When connecting to LDAP, bind with a specific administrative account
-    rather than a root DN account if possible.</para>
+    rather than a root DN account, if possible.</para>
    </listitem>
 
    <listitem>
@@ -141,69 +141,81 @@
  <section xml:id="protect-network-access">
   <title>Protecting Network Access</title>
 
-   <para>Anytime users interact with a web service, there are risks. With OpenAM, you can
-   reduce those risks by deploying different parts of OpenAM in appropriate parts of an
-   enterprise network.</para>
+  <para>Anytime users interact with a web service, there are risks. With OpenAM,
+   you can reduce those risks by deploying different parts of OpenAM in appropriate
+   parts of an enterprise network.</para>
 
-    <para>To minimize risks, deploy only the core OpenAM server on systems directly connected
-        through a firewall. As a start, deploy only the core server (and the protected web application)
-        on Internet-facing servers. For instructions, see the following section from the
-        OpenAM Installation Guide, <link xlink:href="install-guide#which-war-to-deploy"
-        xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Determine Which
-        War File to Deploy</citetitle></link>.</para>
+  <para>To minimize risks, deploy only the core OpenAM server on systems directly
+   connected through a firewall. As a start, deploy only the core server (and the
+   protected web application) on Internet-facing servers. For instructions, see
+   the following section from the
+   OpenAM Installation Guide, <link xlink:href="install-guide#which-war-to-deploy"
+                                    xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Determine Which
+    War File to Deploy</citetitle></link>.</para>
 
-    <para>You can further limit what is exposed through the firewall using the
+  <para>You can further limit what is exposed through the firewall using the
      following strategy:</para>
 
-    <itemizedlist>
-        <listitem>
-            <para>Use a reverse proxy in front of OpenAM to allow
-             access only to the necessary URLs.
-             A reverse proxy exposes only
-             those endpoints needed for an application. For example, if you
-             need to expose the OAuth2/OpenID Connect endpoints and REST interface,
-             then you should implement a reverse proxy.
-            </para>
+  <itemizedlist>
+   <listitem>
+    <para>Use a reverse proxy in front of OpenAM to allow
+     access only to the necessary URLs.
+     A reverse proxy exposes only
+     those endpoints needed for an application. For example, if you
+     need to expose the OAuth2/OpenID Connect endpoints and REST interface,
+     then you should implement a reverse proxy.</para>
 
-            <para>
-            The following figure shows the recommended architecture with a
-            reverse proxy.</para>
 
-            <mediaobject xml:id="figure-securing-openam-rp">
-                <alt>Exposing only a reverse proxy to the Internet</alt>
-                <imageobject>
-                    <imagedata fileref="images/securing-openam-rp.png" format="PNG" />
-                </imageobject>
-                <textobject><para>By placing a reverse proxy between OpenAM and the
-                    Internet, you expose only the necessary endpoints outside your
-                    infrastructure. Notice that OpenAM installed with the console is inside
-                    your infrastructure as well.</para></textobject>
-            </mediaobject>
-            <para>For access to the console, deploy the full OpenAM application<footnote
-                    ><para>Console only deployment is no longer supported.</para></footnote> on
-                a separate system that is reachable only from internal systems. Do not
-                include the full OpenAM server in the load-balanced pool of OpenAM servers
-                serving applications.</para>
-        </listitem>
-        <listitem>
-            <para>Leave <literal>ssoadm.jsp</literal> disabled in production. (Advanced
-                property: <literal>ssoadm.disabled=true</literal>)</para>
-        </listitem>
-        <listitem>
-            <para>If possible in your deployment, control access to OpenAM console by
-                network address, such that administrators can only connect from well-known
-                systems and networks.</para>
-        </listitem>
-        <listitem>
-            <para>Restrict access to URIs that you do not use, and prevent internal
-                endpoints such as <literal>/sessionservice</literal> from being reachable
-                over the Internet.</para>
-            <para>For a full list of endpoints, see the <citetitle>Reference</citetitle>
-            chapter on <link xlink:show="new" xlink:href="reference#chap-endpoints"
-            xlink:role="http://docbook.org/xlink/role/olink">
+    <para>The following figure shows the recommended architecture with a
+     reverse proxy.</para>
+
+
+    <figure xml:id="figure-securing-openam-rp">
+     <title>Exposing Only a Reverse Proxy to the Internet</title>
+     <mediaobject>
+      <alt>Exposing only a reverse proxy to the Internet</alt>
+      <imageobject>
+       <imagedata fileref="images/securing-openam-rp.png" format="PNG" />
+      </imageobject>
+      <textobject>
+       <para>By placing a reverse proxy between OpenAM and the
+        Internet, you expose only the necessary endpoints outside your
+        infrastructure. Notice that OpenAM installed with the console is inside
+        your infrastructure as well.</para>
+      </textobject>
+     </mediaobject>
+    </figure>
+
+    <para>For access to the console, deploy the full OpenAM application<footnote>
+     <para>Console-only deployment is no longer supported.</para></footnote> on
+     a separate system that is reachable only from internal systems. Do not
+     include the full OpenAM server in the load-balanced pool of OpenAM servers
+     serving applications.</para>
+   </listitem>
+
+   <listitem>
+    <para>Leave <literal>ssoadm.jsp</literal> disabled in production. (Advanced
+     property: <literal>ssoadm.disabled=true</literal>).</para>
+   </listitem>
+
+   <listitem>
+
+    <para>If possible in your deployment, control access to OpenAM console by
+     network address, such that administrators can only connect from well-known
+     systems and networks.</para>
+   </listitem>
+
+   <listitem>
+    <para>Restrict access to URIs that you do not use, and prevent internal
+     endpoints such as <literal>/sessionservice</literal> from being reachable
+     over the Internet.</para>
+
+    <para>For a full list of endpoints, see the <citetitle>Reference</citetitle>
+     chapter on <link xlink:show="new" xlink:href="reference#chap-endpoints"
+                      xlink:role="http://docbook.org/xlink/role/olink">
             <citetitle>Service Endpoints</citetitle></link>.</para>
-        </listitem>
-    </itemizedlist>
+   </listitem>
+  </itemizedlist>
  </section>
 
  <section xml:id="secure-openam-administration">
@@ -211,7 +223,7 @@
 
   <itemizedlist>
    <para>Keep administration of access management services separate from
-   management of the services themselves.</para>
+   management of the services themselves:</para>
 
    <listitem>
     <para>Create realms for your organization(s) and separate administrative
@@ -223,7 +235,7 @@
      <listitem>
       <para>Use the <literal>realm=<replaceable>realm-name</replaceable></literal>
       query string parameter when redirecting users to OpenAM, which gives you
-      a way to isolate the URLs used by an application.</para>
+      a way to isolate the URLs used by an application:</para>
      </listitem>
      <listitem>
       <para>Create fully qualified domain name realm/DNS aliases, and use
@@ -253,7 +265,7 @@
 
   <itemizedlist>
    <para>Keep communications secure by using encryption, properly configured
-   cookies, and request and response signatures.</para>
+   cookies, and request and response signatures:</para>
 
    <listitem>
     <para>Protect network traffic by using HTTPS and LDAPS where
@@ -323,107 +335,132 @@
  </section>
 
  <section xml:id="amadmin-changes">
-        <title>Administering the amadmin Account</title>
+  <title>Administering the amadmin Account</title>
 
-        <para>You can make changes to the password and user name for the main OpenAM administrative account.</para>
-        <para>You can change the user name of the <literal>amadmin</literal> administrative account
-            to something more obscure, such as <literal>superroot</literal>.
-            However, the capabilities of that alternative administrative
-            account would not be complete, due to some hard-coding of <literal>amadmin</literal> in the source files.
-            When changing the password for the main OpenAM administrative account, you must make a corresponding change
-            to the authentication datastore. That datastore could be OpenDJ. The steps you would take to change
-            the OpenAM top-level administrative password and account name are shown in the following sections.</para>
+  <para>You can make changes to the password and user name for the main OpenAM
+   administrative account.</para>
 
-        <procedure xml:id="change-amadmin-password">
-            <title>To Change the Password for the Top-Level Administrator (normally <literal>amadmin</literal>)</title>
+  <para>You can change the user name of the <literal>amadmin</literal> administrative account
+   to something more obscure, such as <literal>superroot</literal>.
+   However, the capabilities of that alternative administrative
+   account would not be complete, due to some hard-coding of <literal>amadmin</literal>
+   in the source files.
+   When changing the password for the main OpenAM administrative account, you must
+   make a corresponding change to the authentication datastore. That datastore
+   could be OpenDJ. The steps you would take to change the OpenAM top-level
+   administrative password and account name are shown in the following sections:</para>
 
-            <step>
-                <para>Login to the OpenAM console as the administrator, normally
-                    <literal>amadmin</literal>.</para>
-            </step>
-            <step>
-                <para>Under Access Control &gt; / (Top Level Realm) &gt; Subjects &gt; User, select the name of the
-                    current top-level administrative user.</para>
-            </step>
-            <step>
-                <para>In the page that appears, navigate to the Password row and click Edit.</para>
-            </step>
-            <step>
-                <para>In the window that appears, enter the desired new password in the New Password and
-                    Re-Enter Password text boxes.</para>
-            </step>
-            <step>
-                <para>Click OK to implement the change. If you want to cancel, click Close or just close the window.</para>
-            </step>
-            <step>
-                <para>You'll also need to change the password for the administrator on the directory server. If you are
-                    using OpenDJ, refer to the <link xlink:show="new"
-                    xlink:href="${opendjDocBase}/admin-guide/#troubleshoot-reset-admin-passwords"
-                    ><citetitle>OpenDJ Administration Guide</citetitle> section on Resetting Administrator
-                    Passwords</link>. If you are using a different directory server, you will have to refer to the
-                documentation for that server.</para>
-            </step>
-        </procedure>
+  <procedure xml:id="change-amadmin-password">
 
-        <para>In the following steps, you will identify the new administrative user by assigning it to the <literal>
-            com.sun.identity.authentication.super.user</literal> directive. You may also need to create an
-            OpenAM account for the new administrative user. Don't forget to make sure that new administrative
-            account is configured in the corresponding directory server such as OpenDJ.
-        </para>
+   <title>To Change the Password for the Top-Level Administrator</title>
 
-        <procedure xml:id="change-amadmin-uid">
-            <title>To Change the Account Name for the Top-Level Administrator (normally <literal>amadmin</literal>)</title>
+   <step>
+    <para>Log in to the OpenAM console as the administrator, normally
+     <literal>amadmin</literal>.</para>
+   </step>
 
-            <step>
-                <para>Login to the OpenAM console as the administrator, normally
-                    <literal>amadmin</literal>.</para>
-            </step>
-            <step>
-                <para>Navigate to the page where you can set the properties for different classes. Select
-                    Configuration &gt; Servers and Sites &gt; <replaceable>Server Name</replaceable> &gt; Advanced.</para>
-            </step>
-            <step>
-                <para>In the Advanced Properties window that appears, click Add.</para>
-            </step>
-            <step>
-                <para>You'll see blank entries in the end of the list of Property Names and Property Values. In the
-                    empty Property Name text box, enter <literal>com.sun.identity.authentication.super.user</literal>.</para>
-            </step>
-            <step>
-                <para>In the corresponding Property Values test box, enter appropriate values for the new administrative
-                    user in LDAP Data Interchange Format (LDIF). For example, the following entry would set up an
-                    administrative user named <literal>superroot</literal>, in the organizational unit named <literal>
-                        people</literal>people, associated with the example.com domain:
-                    <literal>uid=superroot,ou=people,dc=example,dc=com</literal>.</para>
-            </step>
-            <step>
-                <para>Click Save to save the changes that you've made. </para>
-            </step>
-            <step>
-                <para>If the account doesn't already exist in OpenAM or on a connected directory server, you'll need to
-               create it. To do so, select Access Control &gt; / (Top Level Realm) &gt; Subject &gt; User &gt; New.
-               In the New User window that appears, create the new user. Make sure to enter an appropriate password
-               and make that user Active. The ID for that new user is the user name.</para>
-            </step>
-            <step>
-                <para>As noted earlier, you'll also need to make sure that the corresponding account on the directory server
-                has at least CN=Directory Manager  privileges. If you're using OpenDJ, refer to the chapter on
-                    <citetitle>Configuring Privileges &amp; Access Control</citetitle> in the
-                    <link xlink:show="new"
+   <step>
+    <para>Under Access Control &gt; / (Top Level Realm) &gt; Subjects &gt; User,
+     select the name of the current top-level administrative user.</para>
+   </step>
+
+   <step>
+    <para>In the page that appears, navigate to the Password row and click Edit.</para>
+   </step>
+
+   <step>
+    <para>In the window that appears, enter the desired new password in the New Password
+     box and reenter password.</para>
+   </step>
+
+   <step>
+    <para>Click OK to implement the change. If you want to cancel, click Close or
+     just close the window.</para>
+   </step>
+
+   <step>
+    <para>You'll also need to change the password for the administrator on the
+     directory server. If you are
+     using OpenDJ, refer to the <link xlink:show="new"
+                                      xlink:href="${opendjDocBase}/admin-guide/#troubleshoot-reset-admin-passwords">
+      <citetitle>OpenDJ Administration Guide</citetitle> section on Resetting Administrator Passwords</link>.
+     If you are using a different directory server, you will have to refer to the
+     documentation for that server.</para>
+   </step>
+  </procedure>
+
+  <para>In the following steps, you will identify the new administrative user by
+   assigning it to the <literal>com.sun.identity.authentication.super.user</literal>
+   directive. You may also need to create an OpenAM account for the new administrative user.
+   Don't forget to make sure that new administrative account is configured in the
+   corresponding directory server such as OpenDJ.
+  </para>
+
+  <procedure xml:id="change-amadmin-uid">
+   <title>To Change the Account Name for the Top-Level Administrator</title>
+
+   <step>
+    <para>Log in to the OpenAM console as the administrator, normally <literal>amadmin</literal>.</para>
+   </step>
+
+   <step>
+    <para>Navigate to the page where you can set the properties for different classes. Select
+     Configuration &gt; Servers and Sites &gt; <replaceable>Server Name</replaceable> &gt; Advanced.</para>
+   </step>
+
+   <step>
+    <para>In the Advanced Properties window that appears, click Add.</para>
+   </step>
+
+   <step>
+    <para>You'll see blank entries in the end of the list of Property Names and
+     Property Values. In the empty Property Name text box, enter
+     <literal>com.sun.identity.authentication.super.user</literal>.</para>
+   </step>
+
+   <step>
+    <para>In the corresponding Property Values test box, enter appropriate values
+     for the new administrative user in LDAP Data Interchange Format (LDIF).
+     For example, the following entry would set up an
+     administrative user named <literal>superroot</literal>, in the organizational
+     unit named <literal>people</literal>people, associated with the example.com domain:
+     <literal>uid=superroot,ou=people,dc=example,dc=com</literal>.</para>
+   </step>
+
+   <step>
+    <para>Click Save.</para>
+   </step>
+
+   <step>
+    <para>If the account does not already exist in OpenAM or on a connected
+     directory server, you'll need to create it. To do so, select
+     Access Control &gt; / (Top-Level Realm) &gt; Subject &gt; User &gt; New.
+     In the New User window that appears, create the new user. Make sure to enter
+     an appropriate password and make that user Active. The ID for that new user
+     is the user name.</para>
+   </step>
+
+   <step>
+    <para>As noted earlier, you'll also need to make sure that the corresponding
+     account on the directory server has at least CN=Directory Manager privileges.
+     If you're using OpenDJ, refer to the chapter on
+     <citetitle>Configuring Privileges and Access Control</citetitle> in the
+     <link xlink:show="new"
                     xlink:href="${opendjDocBase}/admin-guide/#chap-privileges-acis">
                     <citetitle>OpenDJ Administration Guide</citetitle></link>.</para>
-            </step>
-        </procedure>
+   </step>
+  </procedure>
 
-        <para>If you do change the account name of the top-level administrative account, you should be aware that the
-        original <literal>amadmin</literal> account is "hard-coded" in the source code of several files.
-            The code in these files may affect the functionality of a top-level administrative user
-            with a name other than <literal>amadmin</literal>.</para>
+  <para>If you do change the account name of the top-level administrative account,
+   you should be aware that the original <literal>amadmin</literal> account is
+   hard-coded in the source code of several files.
+   The code in these files may affect the functionality of a top-level administrative user
+   with a name other than <literal>amadmin</literal>.</para>
 
-        <para>One of the improvements that we plan to make to OpenAM is to eliminate these instances of hard-coding.
-        Until we make such improvements, the amadmin user would retain privileges related to the LoginState and some
-        IDM-related classes.</para>
-
-    </section>
+  <para>One of the improvements that we plan to make to OpenAM is to eliminate
+   these instances of hard-coding.
+   Until we make such improvements, the amadmin user would retain privileges
+   related to the LoginState and some OpenIDM-related classes.</para>
+ </section>
 
 </chapter>

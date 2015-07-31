@@ -323,7 +323,7 @@ $ <userinput>ssoadm \
     You can monitor policy evaluation performance over SNMP.
     OpenAM records statistics for up to
     a number of recent policy evaluation requests.
-    (You can configure the number in OpenAM Console
+    (You can configure the number in OpenAM console
     under Configuration > System > Monitoring.
     For details, see the system configuration reference section,
     <link
@@ -633,7 +633,7 @@ $ <userinput>ssoadm \
     You can monitor stateful session statistics over SNMP.
     OpenAM records statistics for up to
     a configurable number of recent sessions.
-    (You can configure the number in OpenAM Console
+    (You can configure the number in OpenAM console
     under Configuration > System > Monitoring.
     For details, see the system configuration reference section,
     <link
@@ -1063,7 +1063,7 @@ $ <userinput>ssoadm \
     <para>Perform these steps to capture debug messages for a specific
     service:</para>
     <listitem>
-     <para>Login to OpenAM console as administrator,
+     <para>Log in to OpenAM console as administrator,
      <literal>amadmin</literal>.</para>
     </listitem>
     <listitem>

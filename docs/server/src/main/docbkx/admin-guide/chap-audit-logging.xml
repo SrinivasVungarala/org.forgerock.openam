@@ -126,7 +126,7 @@
   <procedure xml:id="enable-syslog-audit-logging-console">
     <title>Enabling Syslog Audit Logging by Using the OpenAM Console</title>
     <step>
-      <para>Login to the OpenAM console as OpenAM administrator.</para>
+      <para>Log in to the OpenAM console as OpenAM administrator.</para>
     </step>
     <step>
       <para>Browse to Configuration &gt; System &gt; Logging.</para>

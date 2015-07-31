@@ -52,7 +52,7 @@
   that the third-party application aims to access.
   This resource is the <emphasis>UserInfo</emphasis>,
   information about the authenticated end user expressed in a standard format.
-  In this way OpenID Connect 1.0 allows relying parties
+  In this way, OpenID Connect 1.0 allows relying parties
   both to verify the identity of the end user
   and also to obtain user information using REST.
   This contrasts with OAuth 2.0, which only defines the authorization mechanism.
@@ -61,7 +61,7 @@
  <itemizedlist>
   <para>
    The names used in OpenID Connect 1.0 differ from those used in OAuth 2.0.
-   In OpenID Connect 1.0, the key entities are the following.
+   In OpenID Connect 1.0, the key entities are the following:
   </para>
 
   <listitem>
@@ -127,7 +127,7 @@
  </itemizedlist>
 
  <para>
-  In OpenID Connect the relying party can verify claims
+  In OpenID Connect, the relying party can verify claims
   about the identity of the end user,
   and log the user out at the end of a session.
   OpenID Connect also makes it possible
@@ -171,17 +171,20 @@
     and optional use of the access token to get information about the end user.
    </para>
 
-   <mediaobject xml:id="figure-openid-connect-basic">
-    <alt>OpenAM in OpenID Connect Authorization Code Flow</alt>
-    <imageobject>
-     <imagedata fileref="images/openid-connect-basic.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-     <para>
-      OpenAM supports the OpenID Connect Authorization Code Flow.
-     </para>
-    </textobject>
-   </mediaobject>
+   <figure xml:id="figure-openid-connect-basic">
+    <title>OpenAM in OpenID Connect Authorization Code Flow</title>
+    <mediaobject>
+     <alt>OpenAM in OpenID Connect Authorization Code Flow</alt>
+     <imageobject>
+      <imagedata fileref="images/openid-connect-basic.png" format="PNG"/>
+     </imageobject>
+     <textobject>
+      <para>
+       OpenAM supports the OpenID Connect Authorization Code Flow.
+      </para>
+     </textobject>
+    </mediaobject>
+   </figure>
 
    <para>
     In addition to what OAuth 2.0 specifies,
@@ -207,17 +210,20 @@
     and optional use of the access token to get information about the end user.
    </para>
 
-   <mediaobject xml:id="figure-openid-connect-implicit">
-    <alt>OpenAM in OpenID Connect Implicit Flow</alt>
-    <imageobject>
-     <imagedata fileref="images/openid-connect-implicit.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-     <para>
-      OpenAM supports the OpenID Connect Implicit Flow.
-     </para>
-    </textobject>
-   </mediaobject>
+   <figure xml:id="figure-openid-connect-implicit">
+    <title>OpenAM in OpenID Connect Implicit Flow</title>
+    <mediaobject>
+     <alt>OpenAM in OpenID Connect Implicit Flow</alt>
+     <imageobject>
+      <imagedata fileref="images/openid-connect-implicit.png" format="PNG"/>
+     </imageobject>
+     <textobject>
+      <para>
+       OpenAM supports the OpenID Connect Implicit Flow.
+      </para>
+     </textobject>
+    </mediaobject>
+   </figure>
 
    <para>
     As for the Authorization Code Flow, the Implicit Flow specifies
@@ -245,7 +251,7 @@
     OpenID Connect relying parties register OAuth 2.0 client profiles with OpenAM.
     Relying parties can register with OpenAM as a provider both statically,
     as for other OAuth 2.0 clients,
-    and also dynamically as specified by OpenID Connect Discovery.
+    and also dynamically, as specified by OpenID Connect Discovery.
     To allow dynamic registration, you register an initial OAuth 2.0 client
     that other relying parties can use to get access tokens for registration.
    </para>
@@ -299,7 +305,7 @@
 
   <itemizedlist>
    <para>
-    Next, configure the OpenID Connect specific options.
+    Next, configure the OpenID Connect specific options:
    </para>
 
    <listitem>
@@ -427,7 +433,7 @@
 
   <para>
    To retrieve the OpenID Provider for an end user,
-   the relying party needs the following.
+   the relying party needs the following:
   </para>
 
   <variablelist>
@@ -448,7 +454,7 @@
      <para>Identifies the end user that is the subject of the request.</para>
 
      <para>The relying party must percent-encode the resource value when using it in
-     the query string of the request, so when using the "acct" URI scheme and
+     the query string of the request, so when using the <literal>acct</literal> URI scheme and
      the resource is <literal>acct:user@example.com</literal>, then the value
      to use is <literal>acct%3Auser%40example.com</literal>.</para>
     </listitem>
@@ -466,7 +472,7 @@
   </variablelist>
 
   <para>Ignoring the question of redirection, you can test the endpoint for the
-  demo user account (output lines folded to make them easier to read).</para>
+  demo user account (output lines folded to make them easier to read):</para>
 
   <screen>
 $ <userinput>curl \
@@ -490,7 +496,7 @@ $ <userinput>curl \
   <para>
    The relying party can also discover the OpenID provider configuration.
    Ignoring the question of redirection, you can test this
-   (output lines folded to make them easier to read).
+   (output lines folded to make them easier to read):
   </para>
 
   <informalexample>
@@ -571,7 +577,7 @@ $ <userinput>curl https://openam.example.com:8443/.well-known/openid-configurati
     <para>Follow the hints in the section, <link xlink:show="new"
     xlink:href="admin-guide#configure-oauth2-client"
     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-    OAuth 2.0 &amp; OpenID Connect 1.0 Clients</citetitle></link> to edit
+    OAuth 2.0 and OpenID Connect 1.0 Clients</citetitle></link> to edit
     the profile to match the relying party configuration.</para>
 
     <para>In order to read and edit the relying party profile dynamically later
@@ -594,7 +600,7 @@ $ <userinput>curl https://openam.example.com:8443/.well-known/openid-configurati
    <tip>
     <para>
      As described in <xref linkend="openam-openid-client-registration" />,
-     You can allow relying parties to register without having an access token
+     you can allow relying parties to register without having an access token
      by setting the advanced server property,
      <literal>org.forgerock.openam.openidconnect.allow.open.dynamic.registration</literal>,
      to <literal>true</literal>.
@@ -605,7 +611,7 @@ $ <userinput>curl https://openam.example.com:8443/.well-known/openid-configurati
 
    <para>On successful registration, OpenAM responds with information including
    an access token to allow the relying party subsequently to read and edit its
-   profile.</para>
+   profile:</para>
 
    <step>
     <para>Register an initial OAuth 2.0 client statically with a client ID
@@ -619,7 +625,7 @@ $ <userinput>curl https://openam.example.com:8443/.well-known/openid-configurati
     <para>For example, if you created the client as described in the previous
     step, and OpenAM administrator <literal>amadmin</literal> has password
     <literal>password</literal>, you can use the OAuth 2.0 resource owner
-    password grant as in the following example.</para>
+    password grant as in the following example:</para>
 
     <screen>
 $ <userinput>curl \
@@ -645,7 +651,7 @@ $ <userinput>curl \
     the examples <link xlink:show="new"
     xlink:href="https://github.com/ForgeRock/openid">available online</link>.
     Successful registration shows a response that includes the client ID and
-    client secret. Lines are folded in the following example.</para>
+    client secret. Lines are folded in the following example:</para>
 
     <programlisting language="javascript">
 {
@@ -677,9 +683,9 @@ $ <userinput>curl \
   <para>As described in the <link
   xlink:href="http://openid.net/specs/openid-connect-session-1_0.html"
   xlink:show="new">OpenID Connect Session Management 1.0</link> specification,
-  OpenAM's OpenID Provider exposes both a "check_session_iframe" URL
+  OpenAM's OpenID Provider exposes both a <literal>check_session_iframe</literal> URL
   that allows the relying party to receive notifications when the end user's session
-  state changes at the provider, and also an "end_session_endpoint" URL to
+  state changes at the provider, and also an <literal>end_session_endpoint</literal> URL to
   which to redirect an end user for logout.</para>
 
   <para>When registering your relying party that uses session management, you set the
@@ -687,7 +693,7 @@ $ <userinput>curl \
   Client Session URI, described in <link xlink:show="new"
   xlink:href="admin-guide#configure-oauth2-client"
   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-  OAuth 2.0 &amp; OpenID Connect 1.0 Clients</citetitle></link>. The Post
+  OAuth 2.0 and OpenID Connect 1.0 Clients</citetitle></link>. The Post
   Logout Redirect URI is used to redirect the end user user-agent after logout.
   The Client Session URI is the relying party URI where OpenAM sends notifications
   when the end user's session state changes.</para>
@@ -713,26 +719,29 @@ $ <userinput>curl \
     xlink:href="https://github.com/ForgeRock/openid"
    >available online</link>.
    Clone the example project to deploy it in the same web container as OpenAM.
-   Edit the configuration at the outset of the .js files in the project,
+   Edit the configuration at the outset of the <literal>.js</literal> files in the project,
    register a corresponding profile for the example relying party
    as described in <xref linkend="register-openid-connect-clients"/>,
    and browse the deployment URL to see the initial page.
   </para>
 
-  <mediaobject xml:id="figure-openid-connect-example-start-page">
-   <alt>OpenID Connect Client Profiles Start Page</alt>
-   <imageobject>
-    <imagedata fileref="images/openid-connect-example-start-page.png" format="PNG" />
-   </imageobject>
-   <textobject>
-    <para>
-     The OpenID Connect Client Profiles Start Page
-     lets you choose whether to try
-     the Basic Client Profile (Authorization Code Flow)
-     or the Implicit Client Profile (Implicit Code Flow).
-    </para>
-   </textobject>
-  </mediaobject>
+  <figure xml:id="figure-openid-connect-example-start-page">
+   <title>OpenID Connect Client Profiles Start Page</title>
+   <mediaobject>
+    <alt>OpenID Connect Client Profiles Start Page</alt>
+    <imageobject>
+     <imagedata fileref="images/openid-connect-example-start-page.png" format="PNG" />
+    </imageobject>
+    <textobject>
+     <para>
+      The OpenID Connect Client Profiles Start Page
+      lets you choose whether to try
+      the Basic Client Profile (Authorization Code Flow)
+      or the Implicit Client Profile (Implicit Code Flow).
+     </para>
+    </textobject>
+   </mediaobject>
+  </figure>
 
   <section xml:id="openid-basic-profile-example">
    <title>Authorization Code Flow Example</title>
@@ -757,20 +766,23 @@ $ <userinput>curl \
     check that the OAuth 2.0 client profile matches the settings described.
    </para>
 
-   <mediaobject xml:id="figure-openid-connect-basic-start-page">
-    <alt>OpenID Connect Basic Client Profile Start Page</alt>
-    <imageobject>
-     <imagedata fileref="images/openid-connect-basic-start-page.png" format="PNG" />
-    </imageobject>
-    <textobject>
-     <para>
-      The Basic Client Profile start page describes the configuration required.
-     </para>
-    </textobject>
-   </mediaobject>
+   <figure xml:id="figure-openid-connect-basic-start-page">
+    <title>OpenID Connect Basic Client Profile Start Page</title>
+    <mediaobject>
+     <alt>OpenID Connect Basic Client Profile Start Page</alt>
+     <imageobject>
+      <imagedata fileref="images/openid-connect-basic-start-page.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       The Basic Client Profile start page describes the configuration required.
+      </para>
+     </textobject>
+    </mediaobject>
+   </figure>
 
    <para>
-    Logout of OpenAM,
+    Log out of OpenAM,
     and click the link at the bottom of the page to request authorization.
     The link sends an HTTP GET request
     asking for <literal>openid profile</literal> scopes
@@ -794,23 +806,26 @@ $ <userinput>curl \
     It shows the response to that request.
     It also validates the ID token signature using the default (HS256) algorithm,
     and decodes the ID token to validate its content and show it in the output.
-    Finally it uses the access token
+    Finally, it uses the access token
     to request information about the end user who authenticated,
     and displays the result.
    </para>
 
-   <mediaobject xml:id="figure-openid-connect-basic-response-page">
-    <alt>OpenID Connect Basic Client Profile Response Page</alt>
-    <imageobject>
-     <imagedata fileref="images/openid-connect-basic-response-page.png" format="PNG" />
-    </imageobject>
-    <textobject>
-     <para>
-      The Basic Client Profile response page for the Authorization Code Flow
-      shows responses from OpenAM's OpenID Provider.
-     </para>
-    </textobject>
-   </mediaobject>
+   <figure xml:id="figure-openid-connect-basic-response-page">
+    <title>OpenID Connect Basic Client Profile Response Page</title>
+    <mediaobject>
+     <alt>OpenID Connect Basic Client Profile Response Page</alt>
+     <imageobject>
+      <imagedata fileref="images/openid-connect-basic-response-page.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       The Basic Client Profile response page for the Authorization Code Flow
+       shows responses from OpenAM's OpenID Provider.
+      </para>
+     </textobject>
+    </mediaobject>
+   </figure>
 
    <para>
     Notice that in addition to the standard payload,
@@ -838,25 +853,28 @@ $ <userinput>curl \
     In OpenAM console,
     check that the OAuth 2.0 client profile matches the settings described.
     If you have already configured the agent profile
-    for the Authorization Code Flow example
+    for the Authorization Code Flow example,
     then you still need to add the redirect URI for the Implicit Flow.
    </para>
 
-   <mediaobject xml:id="figure-openid-connect-implicit-start-page">
-    <alt>OpenID Connect Implicit Client Profile Start Page</alt>
-    <imageobject>
-     <imagedata fileref="images/openid-connect-implicit-start-page.png" format="PNG" />
-    </imageobject>
-    <textobject>
-     <para>
-      The Implicit Client Profile start page for the Implicit Flow
-      describes the configuration required.
-     </para>
-    </textobject>
-   </mediaobject>
+   <figure xml:id="figure-openid-connect-implicit-start-page">
+    <title>OpenID Connect Implicit Client Profile Start Page</title>
+    <mediaobject>
+     <alt>OpenID Connect Implicit Client Profile Start Page</alt>
+     <imageobject>
+      <imagedata fileref="images/openid-connect-implicit-start-page.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       The Implicit Client Profile start page for the Implicit Flow
+       describes the configuration required.
+      </para>
+     </textobject>
+    </mediaobject>
+   </figure>
 
    <para>
-    Logout of OpenAM,
+    Log out of OpenAM,
     and click the link at the bottom of the page to request authorization.
     The link sends an HTTP GET request asking
     for <literal>id_token token</literal> response types
@@ -881,23 +899,26 @@ $ <userinput>curl \
     The relying party shows the response to the request.
     It also validates the ID token signature using the default (HS256) algorithm,
     and decodes the ID token to validate its content and show it in the output.
-    Finally the relying party uses the access token
+    Finally, the relying party uses the access token
     to request information about the end user who authenticated,
     and displays the result.
    </para>
 
-   <mediaobject xml:id="figure-openid-connect-implicit-response-page">
-    <alt>OpenID Connect Implicit Client Profile Response Page</alt>
-    <imageobject>
-     <imagedata fileref="images/openid-connect-implicit-response-page.png" format="PNG" />
-    </imageobject>
-    <textobject>
-     <para>
-      The Implicit Client Profile response page for the Implicit Flow
-      shows responses from OpenAM's OpenID Provider.
-     </para>
-    </textobject>
-   </mediaobject>
+   <figure xml:id="figure-openid-connect-implicit-response-page">
+    <title>OpenID Connect Implicit Client Profile Response Page</title>
+    <mediaobject>
+     <alt>OpenID Connect Implicit Client Profile Response Page</alt>
+     <imageobject>
+      <imagedata fileref="images/openid-connect-implicit-response-page.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       The Implicit Client Profile response page for the Implicit Flow
+       shows responses from OpenAM's OpenID Provider.
+      </para>
+     </textobject>
+    </mediaobject>
+   </figure>
 
    <para>
     As for the Authorization Code Flow example,
@@ -916,7 +937,7 @@ $ <userinput>curl \
   xlink:href="admin-guide#chap-certs-keystores"
   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing
   Certificates</citetitle></link> includes some discussion of protecting
-  traffic in the container where OpenAM runs. Also see the documentation for
+  traffic in the container where OpenAM runs. Also, see the documentation for
   your web application container.</para>
 
   <para>Also take into account the points developed in the section on <link
@@ -945,7 +966,7 @@ $ <userinput>curl \
 
   <itemizedlist>
    <para>
-    This section includes an overview, as well as the following.
+    This section includes an overview, as well as the following:
    </para>
 
    <listitem>
@@ -968,7 +989,7 @@ $ <userinput>curl \
   </itemizedlist>
 
   <para>
-   In a Mobile Connect deployment OpenAM can play the OpenID Provider role,
+   In a Mobile Connect deployment, OpenAM can play the OpenID Provider role,
    implementing the Mobile Connect Profile
    as part of the Service Provider - Identity Gateway interface.
   </para>
@@ -987,11 +1008,11 @@ $ <userinput>curl \
   <para>
    In OpenAM, Mobile Connect LoAs map to an authentication mechanism.
    Service Providers acting as OpenID Relying Parties (RP) request an LoA
-   by using the "acr_values" field in an OIDC authentication request.
-   In OIDC, "acr_values" specifies Authentication Context Class Reference values.
-   The RP sets "acr_values" as part of the OIDC Authentication Request.
-   OpenAM returns the corresponding "acr" claim in the Authentication Response
-   as the value of the ID Token "acr" field.
+   by using the <literal>acr_values</literal> field in an OIDC authentication request.
+   In OIDC, <literal>acr_values</literal> specifies Authentication Context Class Reference values.
+   The RP sets <literal>acr_values</literal> as part of the OIDC Authentication Request.
+   OpenAM returns the corresponding <literal>acr</literal> claim in the Authentication Response
+   as the value of the ID Token <literal>acr</literal> field.
   </para>
 
   <para>
@@ -1004,7 +1025,7 @@ $ <userinput>curl \
 
   <para>
    As Mobile Connect OP, OpenAM supports mandatory request parameters,
-   and a number of optional request parameters.
+   and a number of optional request parameters:
   </para>
 
   <table xml:id="mobile-connect-table-auth-request-params">
@@ -1177,7 +1198,7 @@ $ <userinput>curl \
        <para>
         When provided as part of the OIDC Authentication Request,
         the <literal>login_hint</literal> is set
-        as the value of a cookie named oidcLoginHint,
+        as the value of a cookie named <literal>oidcLoginHint</literal>,
         which is an HttpOnly cookie (only sent over HTTPS).
         Authentication modules can then retrieve the cookie's value.
        </para>
@@ -1207,7 +1228,7 @@ $ <userinput>curl \
         It runs through the list of <literal>acr_values</literal> in order,
         attempting to use the first authentication chain that matches.
         OpenAM then returns the authentication chain used
-        as the value of the ID token "acr" claims property.
+        as the value of the ID token <literal>acr</literal> claims property.
         In this way the relying part on the service provider
         can determine the LoA achieved during authentication.
        </para>
@@ -1240,10 +1261,10 @@ $ <userinput>curl \
   <para>
    As Mobile Connect OP, OpenAM responds to a successful authorization request
    with a response containing all the required fields,
-   and also the optional "expires_in" field.
+   and also the optional <literal>expires_in</literal> field.
    OpenAM supports the mandatory ID Token properties,
-   though the relying party is expected to use the "expires_in" value,
-   rather than specifying <literal>max_age</literal> as a request parameter.
+   though the relying party is expected to use the <literal>expires_in</literal> value,
+   rather than specifying <literal>max_age</literal> as a request parameter:
   </para>
 
   <table xml:id="mobile-connect-table-id-token-properties">
@@ -1317,7 +1338,7 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        Audience, an array including the <literal>client_id</literal>
+        Audience, an array including the <literal>client_id</literal>.
        </para>
       </entry>
      </row>
@@ -1335,7 +1356,7 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        Expiration time in seconds since the epoch
+        Expiration time in seconds since the epoch.
        </para>
       </entry>
      </row>
@@ -1353,7 +1374,7 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        Issued at time in seconds since the epoch
+        Issued at time in seconds since the epoch.
        </para>
       </entry>
      </row>
@@ -1369,7 +1390,7 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        The nonce supplied in the request
+        The nonce supplied in the request.
        </para>
       </entry>
      </row>
@@ -1382,12 +1403,12 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        Supported
+        Supported.
        </para>
       </entry>
       <entry>
        <para>
-        Base64url encoding of the SHA-256 hash of the "access_token" value
+        Base64url-encoding of the SHA-256 hash of the "access_token" value.
        </para>
       </entry>
      </row>
@@ -1405,7 +1426,7 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        Authentication Context class Reference for the LoA achieved
+        Authentication Context class Reference for the LoA achieved.
        </para>
 
        <para>
@@ -1430,7 +1451,7 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        Authentication Methods Reference to indicate the authentication method
+        Authentication Methods Reference to indicate the authentication method.
        </para>
 
        <para>
@@ -1439,7 +1460,7 @@ $ <userinput>curl \
 
        <para>
         Suggested values include the following:
-        <literal>OK, DEV_PIN, SIM_PIN, UID_PWD, BIOM, HDR, OTP</literal>
+        <literal>OK, DEV_PIN, SIM_PIN, UID_PWD, BIOM, HDR, OTP</literal>.
        </para>
       </entry>
      </row>
@@ -1457,7 +1478,7 @@ $ <userinput>curl \
       </entry>
       <entry>
        <para>
-        Authorized party identifier, which is the <literal>client_id</literal>
+        Authorized party identifier, which is the <literal>client_id</literal>.
        </para>
       </entry>
      </row>
@@ -1466,8 +1487,8 @@ $ <userinput>curl \
   </table>
 
   <para>
-   In addition to the standard OIDC user information returned with userinfo,
-   OpenAM as OP for Mobile Connect returns the "updated_at" property,
+   In addition to the standard OIDC user information returned with <literal>userinfo</literal>,
+   OpenAM as OP for Mobile Connect returns the <literal>updated_at</literal> property,
    representing the time last updated as seconds since the epoch.
   </para>
 
@@ -1484,7 +1505,7 @@ $ <userinput>curl \
     under Access Control > <replaceable>Realm Name</replaceable>
     > Services > OAuth2 Provider for the configuration in a specific realm,
     and under Configuration > Global > OAuth2 Provider
-    for the inherited global settings.
+    for the inherited global settings:
    </para>
 
    <step>
@@ -1551,18 +1572,18 @@ $ <userinput>curl \
    <step>
     <para>
      Configure the identity Data Store attributes used to return
-     "updated_at" values in the ID Token.
+     <literal>updated_at</literal> values in the ID Token.
     </para>
 
     <para>
      For Mobile Connect clients,
-     the user info endpoint returns "updated_at" values in the ID Token.
-     If the user profile has never been updated "updated_at"
+     the user info endpoint returns <literal>updated_at</literal> values in the ID Token.
+     If the user profile has never been updated <literal>updated_at</literal>
      reflects creation time.
     </para>
 
     <para>
-     The "updated_at" values are read from the profile attributes you specify.
+     The <literal>updated_at</literal> values are read from the profile attributes you specify.
      When using OpenDJ directory server as an identity Data Store,
      the value is read from the <literal>modifyTimestamp</literal> attribute,
      or the <literal>createTimestamp</literal> attribute
@@ -1584,7 +1605,7 @@ $ <userinput>curl \
     <para>
      In addition, you must also add these attributes to the list
      of LDAP User Attributes for the data store.
-     Otherwise the attributes are not returned when OpenAM reads the user profile.
+     Otherwise, the attributes are not returned when OpenAM reads the user profile.
      To edit the list in OpenAM console, browse to
      Access Control > <replaceable>Realm Name</replaceable>
      > Data Stores > <replaceable>Data Store Name</replaceable>
