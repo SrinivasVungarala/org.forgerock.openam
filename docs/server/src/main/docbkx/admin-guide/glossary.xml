@@ -34,7 +34,7 @@
  <glossentry>
   <glossterm>Access control</glossterm>
   <glossdef>
-   <para>Control to grant or to deny access to a resource</para>
+   <para>Control to grant or to deny access to a resource.</para>
   </glossdef>
  </glossentry>
 
@@ -42,7 +42,7 @@
   <glossterm>Account lockout</glossterm>
   <glossdef>
    <para>The act of making an account temporarily or permanently inactive
-    after successive authentication failures</para>
+    after successive authentication failures.</para>
   </glossdef>
  </glossentry>
 
@@ -72,7 +72,7 @@
   <glossdef>
    <para>User having privileges only to read and write policy agent profile
    configuration information, typically created to delegate policy agent
-   profile creation to the user installing a policy agent</para>
+   profile creation to the user installing a policy agent.</para>
   </glossdef>
  </glossentry>
 
@@ -80,7 +80,7 @@
   <glossterm>Agent authenticator</glossterm>
   <glossdef>
    <para>Entity with read-only access to multiple agent profiles defined in the
-    same realm; allows an agent to read web service profiles</para>
+    same realm; allows an agent to read web service profiles.</para>
   </glossdef>
  </glossentry>
 
@@ -123,14 +123,14 @@
   <glossterm>Attribute-based access control (ABAC)</glossterm>
   <glossdef>
    <para>Access control that is based on attributes of a user, such as how old
-    a user is or whether she is a paying customer</para>
+    a user is or whether the user is a paying customer.</para>
   </glossdef>
  </glossentry>
 
  <glossentry>
   <glossterm>Authentication</glossterm>
   <glossdef>
-   <para>The act of confirming the identity of a principal</para>
+   <para>The act of confirming the identity of a principal.</para>
   </glossdef>
  </glossentry>
 
@@ -139,7 +139,7 @@
   <glossdef>
    <para>A series of authentication modules configured together which a
    principal must negotiate as configured in order to authenticate
-   successfully</para>
+   successfully.</para>
   </glossdef>
  </glossentry>
 
@@ -148,7 +148,7 @@
   <glossdef>
    <para>Positive integer associated with an authentication module, usually
     used to require success with more stringent authentication measures when
-    requesting resources requiring special protection</para>
+    requesting resources requiring special protection.</para>
   </glossdef>
  </glossentry>
 
@@ -156,7 +156,7 @@
   <glossterm>Authentication module</glossterm>
   <glossdef>
    <para>OpenAM authentication unit that handles one way of obtaining and
-    verifying credentials</para>
+    verifying credentials.</para>
   </glossdef>
  </glossentry>
 
@@ -164,7 +164,7 @@
   <glossterm>Authorization</glossterm>
   <glossdef>
    <para>The act of determining whether to grant or to deny a principal access
-   to a resource</para>
+   to a resource.</para>
   </glossdef>
  </glossentry>
 
@@ -183,7 +183,7 @@
   <glossdef>
    <para>Arrangement to federate a principal's identity automatically based
    on a common attribute value shared across the principal's profiles at
-   different providers</para>
+   different providers.</para>
   </glossdef>
  </glossentry>
 
@@ -192,7 +192,7 @@
   <glossdef>
    <para>Batch job permanently federating user profiles between a service
    provider and an identity provider based on a list of matched user
-   identifiers that exist on both providers</para>
+   identifiers that exist on both providers.</para>
   </glossdef>
  </glossentry>
 
@@ -201,7 +201,7 @@
   <glossdef>
    <para>Group of providers, including at least one identity provider, who
    have agreed to trust each other to participate in a SAML v2.0 provider
-   federation</para>
+   federation.</para>
   </glossdef>
  </glossentry>
 
@@ -225,13 +225,13 @@
    <para>
     Environmental conditions reflect circumstances like
     the client IP address, time of day, how the subject authenticated,
-    or the authentication level achieved
+    or the authentication level achieved.
    </para>
 
    <para>
     Subject conditions reflect characteristics of the subject like
     whether the subject authenticated, the identity of the subject,
-    or claims in the subject's JWT
+    or claims in the subject's JWT.
    </para>
   </glossdef>
  </glossentry>
@@ -239,15 +239,15 @@
  <glossentry>
   <glossterm>Configuration datastore</glossterm>
   <glossdef>
-   <para>LDAP directory service holding OpenAM configuration data</para>
+   <para>LDAP directory service holding OpenAM configuration data.</para>
   </glossdef>
  </glossentry>
 
  <glossentry>
-  <glossterm>Cross-domain single sign on (CDSSO)</glossterm>
+  <glossterm>Cross-domain single sign-on (CDSSO)</glossterm>
   <glossdef>
-   <para>OpenAM capability allowing single sign on across different DNS
-   domains</para>
+   <para>OpenAM capability allowing single sign-on across different DNS
+   domains.</para>
   </glossdef>
  </glossentry>
 
@@ -255,7 +255,7 @@
   <glossterm>Delegation</glossterm>
   <glossdef>
    <para>
-    Granting users administrative privileges with OpenAM
+    Granting users administrative privileges with OpenAM.
    </para>
   </glossdef>
  </glossentry>
@@ -267,7 +267,7 @@
     Decision that defines which resource names can and cannot be accessed
     for a given subject in the context of a particular application,
     which actions are allowed and which are denied,
-    and any related advice and attributes
+    and any related advice and attributes.
    </para>
   </glossdef>
  </glossentry>
@@ -275,7 +275,7 @@
  <glossentry>
   <glossterm>Extended metadata</glossterm>
   <glossdef>
-   <para>Federation configuration information specific to OpenAM</para>
+   <para>Federation configuration information specific to OpenAM.</para>
   </glossdef>
  </glossentry>
 
@@ -283,7 +283,7 @@
   <glossterm>Extensible Access Control Markup Language (XACML)</glossterm>
   <glossdef>
    <para>Standard, XML-based access control policy language, including a
-   processing model for making authorization decisions based on policies</para>
+   processing model for making authorization decisions based on policies.</para>
   </glossdef>
  </glossentry>
 
@@ -293,7 +293,7 @@
    <para>Standardized means for aggregating identities, sharing authentication
    and authorization data information between trusted providers, and allowing
    principals to access services across different providers without
-   authenticating repeatedly</para>
+   authenticating repeatedly.</para>
   </glossdef>
  </glossentry>
 
@@ -311,7 +311,7 @@
   <glossterm>Hot swappable</glossterm>
   <glossdef>
    <para>Refers to configuration properties for which changes can take effect
-   without restarting the container where OpenAM runs</para>
+   without restarting the container where OpenAM runs.</para>
   </glossdef>
  </glossentry>
 
@@ -319,14 +319,14 @@
   <glossterm>Identity</glossterm>
   <glossdef>
    <para>Set of data that uniquely describes a person or a thing such as a
-   device or an application</para>
+   device or an application.</para>
   </glossdef>
  </glossentry>
 
  <glossentry>
   <glossterm>Identity federation</glossterm>
   <glossdef>
-   <para>Linking of a principal's identity across multiple providers</para>
+   <para>Linking of a principal's identity across multiple providers.</para>
   </glossdef>
  </glossentry>
 
@@ -335,7 +335,7 @@
   <glossdef>
    <para>Entity that produces assertions about a principal (such as how and
    when a principal authenticated, or that the principal's profile has a
-   specified attribute value)</para>
+   specified attribute value).</para>
   </glossdef>
  </glossentry>
 
@@ -352,14 +352,14 @@
   <glossdef>
    <para>Java web application installed in a web container that acts as a
    policy agent, filtering requests to other applications in the container
-   with policies based on application resource URLs</para>
+   with policies based on application resource URLs.</para>
   </glossdef>
  </glossentry>
 
  <glossentry>
   <glossterm>Metadata</glossterm>
   <glossdef>
-   <para>Federation configuration information for a provider</para>
+   <para>Federation configuration information for a provider.</para>
   </glossdef>
  </glossentry>
 
@@ -368,7 +368,7 @@
   <glossdef>
    <para>
     Set of rules that define who is granted access to a protected resource
-    when, how, and under what conditions
+    when, how, and under what conditions.
    </para>
   </glossdef>
  </glossentry>
@@ -377,14 +377,14 @@
   <glossterm>Policy Agent</glossterm>
   <glossdef>
    <para>Agent that intercepts requests for resources, directs principals to
-    OpenAM for authentication, and enforces policy decisions from OpenAM</para>
+    OpenAM for authentication, and enforces policy decisions from OpenAM.</para>
   </glossdef>
  </glossentry>
 
  <glossentry>
   <glossterm>Policy Administration Point (PAP)</glossterm>
   <glossdef>
-   <para>Entity that manages and stores policy definitions</para>
+   <para>Entity that manages and stores policy definitions.</para>
   </glossdef>
  </glossentry>
 
@@ -392,7 +392,7 @@
   <glossterm>Policy Decision Point (PDP)</glossterm>
   <glossdef>
    <para>Entity that evaluates access rights and then issues authorization
-   decisions</para>
+   decisions.</para>
   </glossdef>
  </glossentry>
 
@@ -400,15 +400,15 @@
   <glossterm>Policy Enforcement Point (PEP)</glossterm>
   <glossdef>
    <para>Entity that intercepts a request for a resource and then enforces
-   policy decisions from a PDP</para>
+   policy decisions from a PDP.</para>
   </glossdef>
  </glossentry>
 
  <glossentry>
   <glossterm>Policy Information Point (PIP)</glossterm>
   <glossdef>
-   <para>Entity that provides extra information such as user profile attributes
-   that a PDP needs in order to make a decision</para>
+   <para>Entity that provides extra information, such as user profile attributes
+   that a PDP needs in order to make a decision.</para>
   </glossdef>
  </glossentry>
 
@@ -418,7 +418,7 @@
    <para>
     Represents an entity that has been authenticated
     (such as a user, a device, or an application),
-    and thus is distinguished from other entities
+    and thus is distinguished from other entities.
    </para>
 
    <para>
@@ -434,7 +434,7 @@
    <para>
     In the context of delegated administration,
     a set of administrative tasks that can be performed by specified subjects
-    in a given realm
+    in a given realm.
    </para>
   </glossdef>
  </glossentry>
@@ -442,7 +442,7 @@
  <glossentry>
   <glossterm>Provider federation</glossterm>
   <glossdef>
-   <para>Agreement among providers to participate in a circle of trust</para>
+   <para>Agreement among providers to participate in a circle of trust.</para>
   </glossdef>
  </glossentry>
 
@@ -450,7 +450,7 @@
   <glossterm>Realm</glossterm>
   <glossdef>
    <para>
-    OpenAM unit for organizing configuration and identity information
+    OpenAM unit for organizing configuration and identity information.
    </para>
 
    <para>
@@ -472,7 +472,7 @@
   <glossdef>
    <para>
     Allows the policies for an application to be managed in the current realm,
-    and also in sibling and child realms
+    and also in sibling and child realms.
    </para>
 
    <para>
@@ -487,7 +487,7 @@
   <glossterm>Resource</glossterm>
   <glossdef>
    <para>
-    Something a user can access over the network such as a web page
+    Something a user can access over the network such as a web page.
    </para>
 
    <para>
@@ -501,7 +501,7 @@
   <glossterm>Resource owner</glossterm>
   <glossdef>
    <para>In OAuth 2.0, entity who can authorize access to protected web
-   resources, such as an end user</para>
+   resources, such as an end user.</para>
   </glossdef>
  </glossentry>
 
@@ -509,7 +509,7 @@
   <glossterm>Resource server</glossterm>
   <glossdef>
    <para>In OAuth 2.0, server hosting protected web resources, capable of
-    handling access tokens to respond to requests for such resources</para>
+    handling access tokens to respond to requests for such resources.</para>
   </glossdef>
  </glossentry>
 
@@ -519,7 +519,7 @@
    <para>
     Defined as part of policies, these allow OpenAM
     to return additional information in the form of "attributes"
-    with the response to a policy decision
+    with the response to a policy decision.
    </para>
   </glossdef>
  </glossentry>
@@ -528,7 +528,7 @@
   <glossterm>Role based access control (RBAC)</glossterm>
   <glossdef>
    <para>Access control that is based on whether a user has been granted a set
-   of permissions (a role)</para>
+   of permissions (a role).</para>
   </glossdef>
  </glossentry>
 
@@ -536,7 +536,7 @@
   <glossterm>Security Assertion Markup Language (SAML)</glossterm>
   <glossdef>
    <para>Standard, XML-based language for exchanging authentication and
-   authorization data between identity providers and service providers</para>
+   authorization data between identity providers and service providers.</para>
   </glossdef>
  </glossentry>
 
@@ -544,7 +544,7 @@
   <glossterm>Service provider (SP)</glossterm>
   <glossdef>
    <para>Entity that consumes assertions about a principal (and provides a
-   service that the principal is trying to access)</para>
+   service that the principal is trying to access).</para>
   </glossdef>
  </glossentry>
 
@@ -565,7 +565,7 @@
   <glossdef>
    <para>Capability to allow another OpenAM server to manage a session when
    the OpenAM server that initially authenticated the principal goes
-   offline</para>
+   offline.</para>
   </glossdef>
  </glossentry>
 
@@ -582,15 +582,15 @@
   <glossterm>Single log out (SLO)</glossterm>
   <glossdef>
    <para>Capability allowing a principal to end a session once, thereby ending
-   her session across multiple applications</para>
+   her session across multiple applications.</para>
   </glossdef>
  </glossentry>
 
  <glossentry>
-  <glossterm>Single sign on (SSO)</glossterm>
+  <glossterm>Single sign-on (SSO)</glossterm>
   <glossdef>
    <para>Capability allowing a principal to authenticate once and gain access
-   to multiple applications without authenticating again</para>
+   to multiple applications without authenticating again.</para>
   </glossdef>
  </glossentry>
 
@@ -599,7 +599,7 @@
   <glossdef>
    <para>
     Group of OpenAM servers configured the same way,
-    accessed through a load balancer layer
+    accessed through a load balancer layer.
    </para>
 
    <para>
@@ -618,7 +618,7 @@
   <glossterm>Standard metadata</glossterm>
   <glossdef>
    <para>Standard federation configuration information that you can share with
-   other access management software</para>
+   other access management software.</para>
   </glossdef>
  </glossentry>
 
@@ -651,10 +651,10 @@
    </para>
 
    <para>
-    When a Subject successfully authenticates,
-    OpenAM associates the Subject with the <xref linkend="def-principal" />
+    When a subject successfully authenticates,
+    OpenAM associates the subject with the <xref linkend="def-principal" />
     that distinguishes it from other subjects.
-    A Subject can be associated with multiple Principals.
+    A subject can be associated with multiple principals.
    </para>
   </glossdef>
  </glossentry>
@@ -664,7 +664,7 @@
   <glossdef>
    <para>Data storage service holding principals' profiles; underlying storage
    can be an LDAP directory service, a relational database, or a custom
-   <literal>IdRepo</literal> implementation</para>
+   <literal>IdRepo</literal> implementation.</para>
   </glossdef>
  </glossentry>
 
@@ -672,7 +672,7 @@
   <glossterm>Web policy agent</glossterm>
   <glossdef>
    <para>Native library installed in a web server that acts as a policy agent
-   with policies based on web page URLs</para>
+   with policies based on web page URLs.</para>
   </glossdef>
  </glossentry>
 
