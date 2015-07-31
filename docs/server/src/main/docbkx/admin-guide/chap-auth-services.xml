@@ -2204,6 +2204,47 @@ $ ssoadm set-realm-svc-attrs \
      </listitem>
     </varlistentry>
 
+     <varlistentry>
+      <term>Two Factor Authentication Mandatory</term>
+      <listitem>
+       <para>When selected, specifies that users authenticating to a chain that
+        includes a Two Step Verification module will always be required to
+        perform authentication using a registered device before they
+        can access OpenAM. When not selected, users can opt to forego
+        registering a device and providing a token and still successfully
+        authenticate.</para>
+       <para>Letting users opt not to provide a verification token
+        while authenticating carries implications beyond the
+        <literal>required</literal>, <literal>optional</literal>,
+        <literal>requisite</literal>, or <literal>sufficient</literal> flag
+        settings on the Two Step Verification module in the authentication
+        chain. For example, suppose you configured authentication as follows:
+        <itemizedlist>
+         <listitem>
+          <para>The Two Step Verification module is in an authentication chain.</para>
+         </listitem>
+         <listitem>
+          <para>The Two Step Verification module has the <literal>required</literal> flag set.</para>
+         </listitem>
+         <listitem>
+          <para>Two Factor Authentication Mandatory is not selected.</para>
+         </listitem>
+        </itemizedlist>
+        </para>
+        <para>
+        Users authenticating to the chain can authenticate successfully
+        <emphasis>without</emphasis> providing tokens from their devices. The
+        reason for successful authentication in this case is that the
+        <literal>required</literal> setting relates to the execution
+        of the Two Step Verification module itself. Internally, the Two Step
+        Verification module has the ability to forego processing a token while
+        still returning a passing status to the authentication chain.
+       </para>
+       <para><command>ssoadm</command> attribute:
+        <literal>forgerockTwoFactorAuthMandatory</literal></para>
+      </listitem>
+     </varlistentry>
+
     </variablelist>
     </section>
 
@@ -3798,181 +3839,6 @@ the '%' character is not included in the properties.
    </indexterm>
 
   </section>
-  
-  <section xml:id="OATH-module-conf-hints">
-   <title>Hints for the OATH Module</title>
-
-   <indexterm class="startofrange" xml:id="idx-auth-hints-oath">
-    <primary>Authentication</primary>
-    <secondary>Open Authentication (OATH) module</secondary>
-   </indexterm>
-   <indexterm>
-    <primary>Open Authentication (OATH) authentication</primary>
-   </indexterm>
-
-   <para>The Open Authentication (OATH) module provides a more secure method for users to 
-      access their accounts with the help of a device, such as their mobile phone or 
-      Yubikey. Users can log into OpenAM and update their information more securely from
-      a one-time password (OTP) displayed on their device. The OATH module includes the
-      <link xlink:show="new" xlink:href="http://www.openauthentication.org/about/"
-      >OATH standard protocols</link> (<link xlink:show="new"
-      xlink:href="http://tools.ietf.org/html/rfc4226">RFC 4226</link> and 
-      <link xlink:show="new" xlink:href="http://tools.ietf.org/html/rfc6238">
-      RFC 6238</link>). The OATH module has several enhancements to the
-      HMAC One-Time Password (HOTP) Authentication Module, but does not replace the original
-      module for those already using HOTP prior to the 10.1.0 release. The OATH module includes 
-      HOTP authentication and Time-Based One-Time Password (TOTP) authentication. Both types
-      of authentication require an OATH compliant device that can provide the OTP.</para>
-   
-   <para> HOTP authentication generates the OTP every time the user requests a new OTP
-      on their device. The device tracks the number of times the user requests a new OTP, called
-      the counter. The OTP displays for a period of time you designate in the setup, so the 
-      user may be further in the counter on their device than on their account. OpenAM will resynchronize
-      the counter when the user finally logs in. To accommodate this, you set the number of 
-      passwords a user can generate before their device cannot be resynchronized. For example, if 
-      you set the number of HOTP Window Size to 50 and someone presses the button 30 on the
-      user's device to generate a new OTP, the counter in OpenAM will review the OTPs until
-      it reaches the OTP entered by the user. If someone presses the button 51 times,
-      you will need to reset the counter to match the number on the device's counter before the
-      user can login to OpenAM. HOTP authentication does not check earlier passwords, so if the 
-      user attempts to reset the counter on their device, they will not be able to login until
-      you reset the counter in OpenAM to match their device.</para>
-   <para>TOTP authentication constantly generates a new OTP based on a time interval you specify.
-      The device tracks the last two passwords generated and the current password. The Last Login Time
-      monitors the time when a user logs in to make sure that user is not logged in several times
-      within the present time period. Once a user log into OpenAM, they must wait for the time it 
-      takes TOTP to generate the next two passwords and display them. This prevents others from 
-      being able to access the users account using the OTP they entered. The user's account can be
-      accessed again after the generation of the third new OTP is generated and displayed on their
-      device. For this reason, the TOTP Time-Step Interval should not be so long as to
-      lock users out, with a recommended time of 30 seconds.</para>
-   <para>An authentication chain can be created to generate an OTP from 
-      either HOTP or TOTP.</para>
-   
-   <para><command>ssoadm</command> service name:
-   <literal>iPlanetAMAuthOATHService</literal></para>
-   
-   <variablelist>
-    <varlistentry>
-     <term>Authentication Level</term>
-     <listitem>
-      <para>Sets the authentication level used to indicate the level of security
-      associated with the module. The value can range from 0 to any positive integer.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-auth-level</literal></para></listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>One Time Password Length (in digits)</term>
-     <listitem>
-      <para>Set the length of the OTP between 6 and 9 digits long. The default value is 6 digits.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-password-length</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Minimum Secret Key Length</term>
-     <listitem>
-      <para>The minimal number of characters required to set the Secret Key.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-min-secret-key-length</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Secret Key Attribute Name</term>
-     <listitem>
-      <para>The name of the attribute where the key will be stored in the user profile.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-secret-key-attribute</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>OATH Algorithm to Use</term>
-     <listitem>
-      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
-      allow for a greater variety of devices. The default value is HOTP.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-algorithm</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>HOTP Window Size</term>
-     <listitem>
-      <para>The number of requests that the system and the device can be off to resynchronize 
-      the password. If a user passes this number of requests before logging 
-      into the system, the password will not work. The default value is 100.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-hotp-window-size</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Counter Attribute Name</term>
-     <listitem>
-      <para>The name of the HOTP attribute where the counter will be stored in the user profile.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-hotp-counter-attribute</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Add Checksum Digit</term>
-     <listitem>
-      <para>Adds a checksum digit at the end of the HOTP password to verify it was entered correctly. 
-      The default value is No.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-add-checksum</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Truncation Offset</term>
-     <listitem>
-      <para>Advanced feature that is device specific. Any value below 0 or above 15 will turn off 
-      the functionality. The default value is -1. If not required by the device, leave at the default 
-      setting.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-truncation-offset</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>TOTP Time Step Interval</term>
-     <listitem>
-      <para>Defines how long the password will appear on the user's device (in seconds).
-      We recommend keeping this number low, for example 30 seconds, because once a user
-      logs out, they will not be able to login again until two full time cycles have passed.
-      The default value is 30 seconds.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-size-of-time-step</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>TOTP Time Steps</term>
-     <listitem>
-      <para>The number of requests that the system and the device can be off to resynchronize 
-      the password. If a user passes this number of requests before logging into the system,
-      the password will not work. The default value is 2.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-steps-in-window</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Last Login Time Attribute</term>
-     <listitem>
-      <para>The name of the attribute where both HOTP and TOTP authentication will store information
-      on when a person last logged in.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-last-login-time-attribute-name</literal></para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-    <para>If you plan to use Yubikey for your OATH module, you will need to take some
-    time to set it up. Go to the <link xlink:show="new"
-    xlink:href="http://www.yubico.com/products/services-software/personalization-tools/use/">
-    YubiKey website</link> to configure your YubiKey device. If you do not have a
-    YubiKey device, you can purchase them from this page as well.</para>
-
-    <para>Select the appropriate instructions, keeping in mind that the cross-platform
-    personalization tool is recommended unless you have specific need for one of the
-    other types. You have the greatest selection of platforms for this choice. Each 
-    device will need to be setup before use.</para>
-  </section>  
 
   <section xml:id="oauth2-module-conf-hints">
    <title>Hints for the OAuth 2.0/OpenID Connect Authentication Module</title>
@@ -5287,6 +5153,172 @@ ssoadm \
     <!-- Module not present in nightly builds -->
    </xinclude:fallback>
   </xinclude:include>
+
+  <section xml:id="OATH-module-conf-hints">
+   <title>Hints for the Two Step Verification Authentication Module</title>
+
+   <indexterm class="startofrange" xml:id="idx-auth-hints-oath">
+    <primary>Authentication</primary>
+    <secondary>Two Step Verification module</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>Two Step Verification authentication</primary>
+   </indexterm>
+
+   <para>The Two Step Verification module provides a more secure method for users to
+      access their accounts with the help of a device, such as their mobile phone or
+      Yubikey. Users can log into OpenAM and update their information more securely by using
+      a one-time password (OTP) displayed on their device. The Two Step Verification module includes the
+      <link xlink:show="new" xlink:href="http://www.openauthentication.org/about/"
+      >OATH standard protocols</link> (<link xlink:show="new"
+      xlink:href="http://tools.ietf.org/html/rfc4226">RFC 4226</link> and
+      <link xlink:show="new" xlink:href="http://tools.ietf.org/html/rfc6238">
+      RFC 6238</link>). The Two Step Verification module has several enhancements to the
+      HMAC One-Time Password (HOTP) Authentication Module, but does not replace the original
+      module for those already using HOTP prior to the OpenAM 10.1.0 release. The Two Step Verification module includes
+      HOTP authentication and Time-Based One-Time Password (TOTP) authentication. Both types
+      of authentication require an OATH-compliant device that can provide the OTP.</para>
+
+   <para> HOTP authentication generates the OTP every time the user requests a new OTP
+      on their device. The device tracks the number of times the user requests a new OTP, called
+      the counter. The OTP displays for a period of time you designate in the setup, so the
+      user may be further in the counter on their device than on their account. OpenAM will resynchronize
+      the counter when the user finally logs in. To accommodate this, you set the number of
+      passwords a user can generate before their device cannot be resynchronized. For example, if
+      you set the number of HOTP Window Size to 50 and someone presses the button 30 times on the
+      user's device to generate a new OTP, the counter in OpenAM will review the OTPs until
+      it reaches the OTP entered by the user. If someone presses the button 51 times,
+      you will need to reset the counter to match the number on the device's counter before the
+      user can login to OpenAM. HOTP authentication does not check earlier passwords, so if the
+      user attempts to reset the counter on their device, they will not be able to login until
+      you reset the counter in OpenAM to match their device.</para>
+   <para>TOTP authentication constantly generates a new OTP based on a time interval you specify.
+      The device tracks the last several passwords generated and the current password. (The TOTP
+      Time Steps setting configures the number of passwords tracked.) The Last Login Time
+      monitors the time when a user logs in to make sure that user is not logged in several times
+      within the present time period. Once a user logs into OpenAM, they must wait for the time it
+      takes TOTP to generate the next two passwords and display them. This prevents others from
+      being able to access the user's account using the OTP they entered. The user's account can be
+      accessed again after the third new OTP is generated and displayed on their
+      device. For this reason, the TOTP Time-Step Interval should not be so long as to
+      lock users out, with a recommended time of 30 seconds.</para>
+   <para>An authentication chain can be created to generate an OTP from
+      either HOTP or TOTP.</para>
+
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMAuthOATHService</literal></para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Authentication Level</term>
+     <listitem>
+      <para>Sets the authentication level used to indicate the level of security
+      associated with the module. The value can range from 0 to any positive integer.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-auth-level</literal></para></listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>One Time Password Length</term>
+     <listitem>
+      <para>Sets the length of the OTP to six digits or longer. The default value is 6.</para>
+
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-password-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Minimum Secret Key Length</term>
+     <listitem>
+      <para>The minimum number of hexidecimal characters allowed for the secret key.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-min-secret-key-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>OATH Algorithm to Use</term>
+     <listitem>
+      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
+      allow for a greater variety of devices. The default value is HOTP.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-algorithm</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>HOTP Window Size</term>
+     <listitem>
+      <para>The window that the OTP device and the server counter can be out of sync.
+      For example, if the window size is 100 and the server's last successful login was
+      at counter value 2, then the server will accept an OTP from device counter 3 to
+      102. The default value is 100.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-hotp-window-size</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Add Checksum Digit</term>
+     <listitem>
+      <para>Adds a checksum digit at the end of the HOTP password to verify the OTP was
+      generated correctly. This is in addition to the actual password length. Set this
+      only if your device supports it. The default value is No.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-add-checksum</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Truncation Offset</term>
+     <listitem>
+      <para>Advanced feature that is device-specific. Let this value default unless
+      you know your device uses a truncation offset. The default value is -1.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-truncation-offset</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Step Interval</term>
+     <listitem>
+      <para>The time interval for which an OTP is valid. For example, if the time
+      step interval is 30 seconds, a new OTP will be generated every 30 seconds,
+      and an OTP will be valid for 30 seconds. The default value is 30 seconds.
+      </para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-size-of-time-step</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Steps</term>
+     <listitem>
+      <para>The number of time step intervals that the system and the device can be off
+      before password resynchronization is required. For example, if the number
+      of TOTP time steps is 2 and the TOTP time step interval is 30 seconds, the server
+      will allow an 89 second clock skew between the client and the server&#x2014;two 30 second
+      steps plus 29 seconds for the interval in which the OTP arrived. The default value
+      is 2.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-steps-in-window</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Maximum Allowed Clock Drift</term>
+     <listitem>
+      <para>The maximum acceptable clock skew before authentication fails. When
+      this value is exceeded, the user must re-register the device.</para>
+
+      <para><command>ssoadm</command> attribute:
+      <literal>openam-auth-oath-maximum-clock-drift</literal></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+    <para>If you plan to use Yubikey for your Two Step Verification module, you will need to take some
+    time to set it up. Go to the <link xlink:show="new"
+    xlink:href="http://www.yubico.com/products/services-software/personalization-tools/use/">
+    YubiKey web site</link> to configure your YubiKey device. If you do not have a
+    YubiKey device, you can purchase them from this site as well.
+    Select the appropriate instructions, keeping in mind that the cross-platform
+    personalization tool is recommended unless you have specific need for one of the
+    other types. You have the greatest selection of platforms for this choice. Each
+    device will need to be setup before use.</para>
+  </section>
   
   <section xml:id="desktop-module-conf-hints">
    <title>Hints for the Windows Desktop SSO Authentication Module</title>
