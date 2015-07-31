@@ -745,7 +745,7 @@
   </table>
  </section>
 
- <figure xml:id="caching">
+ <section xml:id="caching">
   <title>Caching in OpenAM</title>
   <indexterm><primary>Caching</primary></indexterm>
 
@@ -779,7 +779,7 @@
 
   <figure xml:id="figure-openam-caches">
    <title>OpenAM Caches</title>
-   <mediaobject">
+   <mediaobject>
     <alt>Caches in OpenAM server</alt>
     <imageobject>
      <imagedata fileref="images/openam-caches.png" format="PNG" />
