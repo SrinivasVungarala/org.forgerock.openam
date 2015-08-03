@@ -387,11 +387,11 @@ https://openam.example.com:8443/openam/json/users/demo\
        <para>Filters can be composed of multiple expressions by a using boolean
  operator <literal>AND</literal>, and by using parentheses,
  <literal>(<replaceable>expression</replaceable>)</literal>, to group expressions.</para>
- <note><para>You must URL encode the filter expression in
-       <literal>_queryFilter=<replaceable>filter</replaceable></literal>. So
-  for example the following filter:</para>
+ <note><para>You must URL-encode the filter expression in
+       <literal>_queryFilter=<replaceable>filter</replaceable></literal>. So,
+  for example, the following filter:</para>
   <para><literal>resourceServer eq "UMA-Resource-Server" AND permissions/subject eq "id=bob,ou=user,dc=openam,dc=forgerock,dc=org"</literal></para>
-  <para>When URL encoded becomes:</para>
+  <para>When URL-encoded becomes:</para>
       <para><literal>resourceServer%20eq%20%22UMA-Resource-Server%22%20AND%20permissions%2Fsubject%20eq%20%22id%3Dbob%2Cou%3Duser%2Cdc%3Dopenam%2Cdc%3Dforgerock%2Cdc%3Dorg%22</literal>
       </para></note>
       </listitem>
@@ -399,7 +399,7 @@ https://openam.example.com:8443/openam/json/users/demo\
     </variablelist>
 
    <para>The following example uses an SSO token to query the policies belonging
-    to user <replaceable>demo</replaceable> which have a subject
+    to user <replaceable>demo</replaceable>, which have a subject
     <literal>bob</literal> in the permissions:</para>
 <screen>
  $ <userinput>curl \
@@ -440,7 +440,7 @@ https://openam.example.com:8443/openam/json/users/demo\
    </screen>
    <para>On success, an HTTP 200 OK status code is returned, with
     a JSON body representing the policies that match the query.</para>
-   <para>If the query is not formatted correctly, for example an incorrect
+   <para>If the query is not formatted correctly, for example, an incorrect
     field is used in the <literal>_queryFilter</literal>, an HTTP 500 Server
     Error is returned, as follows:
 <screen><computeroutput>{

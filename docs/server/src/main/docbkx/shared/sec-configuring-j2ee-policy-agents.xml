@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <section xml:id="configure-j2ee-policy-agent"
@@ -55,7 +55,7 @@
    after editing agent properties.</para>
  </tip>
 
- <para>After changing properties specified as "Hot swap: no" you must
+ <para>After changing properties specified as "Hot swap: no", you must
   restart the application server or web server, or the agent's container.</para>
 
  <section xml:id="configure-j2ee-pa-global-props">
@@ -67,7 +67,7 @@
    Java EE &gt; <replaceable>Agent Name</replaceable> &gt; Global.</para>
 
   <variablelist xml:id="j2ee-agent-profile-properties">
-   <title>Profile properties</title>
+   <title>Profile Properties</title>
    <varlistentry>
     <term>Group</term>
     <listitem>
@@ -150,7 +150,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-general-properties">
-   <title>General properties</title>
+   <title>General Properties</title>
    <varlistentry>
     <term>Agent Filter Mode</term>
     <listitem>
@@ -258,7 +258,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-user-mapping-properties">
-   <title>User Mapping properties</title>
+   <title>User Mapping Properties</title>
    <varlistentry>
     <term>User Mapping Mode</term>
     <listitem>
@@ -292,7 +292,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-audit-properties">
-   <title>Audit properties</title>
+   <title>Audit Properties</title>
    <varlistentry>
     <term>Audit Access Types</term>
     <listitem>
@@ -343,7 +343,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-fqdn-properties">
-   <title>Fully Qualified Domain Name Checking properties</title>
+   <title>Fully Qualified Domain Name Checking Properties</title>
    <varlistentry>
     <term>FQDN Check</term>
     <listitem>
@@ -390,7 +390,7 @@
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; Application.</para>
 
   <variablelist xml:id="j2ee-agent-login-processing-properties">
-   <title>Login Processing properties</title>
+   <title>Login Processing Properties</title>
    <varlistentry>
     <term>Login Form URI</term>
     <listitem>
@@ -430,7 +430,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-logout-processing-properties">
-   <title>Logout Processing properties</title>
+   <title>Logout Processing Properties</title>
    <varlistentry>
     <term>Application Logout Handler</term>
     <listitem>
@@ -502,7 +502,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-access-denied-uri-processing-properties">
-   <title>Access Denied URI Processing properties</title>
+   <title>Access Denied URI Processing Properties</title>
    <varlistentry>
     <term>Resource Access Denied URI</term>
     <listitem>
@@ -521,7 +521,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-not-enforced-uri-properties">
-   <title>Not Enforced URI Processing properties</title>
+   <title>Not Enforced URI Processing Properties</title>
    <varlistentry>
     <term>Not Enforced URIs</term>
     <listitem>
@@ -589,7 +589,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-not-enforced-ip-properties">
-   <title>Not Enforced IP Processing properties</title>
+   <title>Not Enforced IP Processing Properties</title>
    <varlistentry>
     <term>Not Enforced Client IP List</term>
     <listitem>
@@ -633,7 +633,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-profile-attributes-processing-properties">
-   <title>Profile Attributes Processing properties</title>
+   <title>Profile Attributes Processing Properties</title>
    <varlistentry>
     <term>Profile Attribute Fetch Mode</term>
     <listitem>
@@ -670,7 +670,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-response-attributes-processing-properties">
-   <title>Response Attributes Processing properties</title>
+   <title>Response Attributes Processing Properties</title>
    <varlistentry>
     <term>Response Attribute Fetch Mode</term>
     <listitem>
@@ -705,7 +705,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-common-attributes-fetching-properties">
-   <title>Common Attributes Fetching Processing properties</title>
+   <title>Common Attributes Fetching Processing Properties</title>
    <varlistentry>
     <term>Cookie Separator Character</term>
     <listitem>
@@ -734,7 +734,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-session-attributes-processing-properties">
-   <title>Session Attributes Processing properties</title>
+   <title>Session Attributes Processing Properties</title>
    <varlistentry>
     <term>Session Attribute Fetch Mode</term>
     <listitem>
@@ -770,7 +770,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-privilege-attributes-properties">
-   <title>Privilege Attributes Processing properties</title>
+   <title>Privilege Attributes Processing Properties</title>
    <para>Privileged attributes are sued when the agent is running in
     <literal>ALL</literal> or <literal>J2EE_POLICY</literal> filter mode.
     Privileged attributes contain the list of declarative Java EE roles that the
@@ -826,7 +826,7 @@
     <listitem>
      <para>OpenAM allows original attribute values to be mapped to other
       values. For example, you can map UUIDs to principal names in roles
-      specified in a web application's deployment descriptor. For example, to
+      specified in a web application's deployment descriptor. To
       map the UUID <literal>id=employee,ou=group,o=openam</literal> to the
       principal name <literal>am_employee_role</literal> in the deployment
       descriptor, set the key to
@@ -838,7 +838,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-custom-authentication-properties">
-   <title>Custom Authentication Processing properties</title>
+   <title>Custom Authentication Processing Properties</title>
    <varlistentry>
     <term>Custom Authentication Handler</term>
     <listitem>
@@ -878,7 +878,7 @@
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; SSO</para>
 
   <variablelist xml:id="j2ee-agent-cookie-properties">
-   <title>Cookie properties</title>
+   <title>Cookie Properties</title>
    <varlistentry>
     <term>Cookie Name</term>
     <listitem>
@@ -891,7 +891,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-caching-properties">
-   <title>Caching properties</title>
+   <title>Caching Properties</title>
    <varlistentry>
     <term>SSO Cache Enable</term>
     <listitem>
@@ -903,11 +903,11 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-cdsso-properties">
-   <title>Cross Domain SSO properties</title>
+   <title>Cross-Domain SSO Properties</title>
    <varlistentry>
-    <term>Cross Domain SSO</term>
+    <term>Cross-Domain SSO</term>
     <listitem>
-     <para>Enables Cross Domain Single Sign On.</para>
+     <para>Enables Cross-Domain Single Sign-On.</para>
      <para>Property: <literal>com.sun.identity.agents.config.cdsso.enable</literal></para>
     </listitem>
    </varlistentry>
@@ -963,7 +963,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-cookie-reset-properties">
-   <title>Cookie Reset properties</title>
+   <title>Cookie Reset Properties</title>
    <varlistentry>
     <term>Cookie Reset</term>
     <listitem>
@@ -1008,7 +1008,7 @@
    Services.</para>
 
   <variablelist xml:id="j2ee-agent-login-url-properties">
-   <title>Login URL properties</title>
+   <title>Login URL Properties</title>
    <varlistentry>
     <term>OpenAM Login URL</term>
     <listitem>
@@ -1057,7 +1057,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-logout-url-properties">
-   <title>Logout URL properties</title>
+   <title>Logout URL Properties</title>
    <varlistentry>
     <term>OpenAM Logout URL</term>
     <listitem>
@@ -1107,7 +1107,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-agent-authn-service-properties">
-   <title>Authentication Service properties</title>
+   <title>Authentication Service Properties</title>
    <varlistentry>
     <term>OpenAM Authentication Service Protocol</term>
     <listitem>
@@ -1136,7 +1136,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-policy-client-service-properties">
-   <title>Policy Client Service properties</title>
+   <title>Policy Client Service Properties</title>
 
    <varlistentry>
     <term>Realm</term>
@@ -1146,12 +1146,12 @@
      </para>
 
      <para>
-      Default: / (top level realm)
+      Default: / (top-level realm)
      </para>
 
      <para>
       Edit this property when OpenAM should start policy evaluation
-      in a realm other than the top level realm, <literal>/</literal>,
+      in a realm other than the top-level realm, <literal>/</literal>,
       when handling policy decision requests from this policy agent.
      </para>
 
@@ -1265,7 +1265,7 @@
     <listitem>
      <para>Time in seconds used to adjust time difference between agent system
       and OpenAM. Clock skew in seconds = AgentTime - OpenAMServerTime.</para>
-     <para>Default: 10.</para>
+     <para>Default: 10</para>
      <para>Property: <literal>com.sun.identity.policy.client.clockSkew</literal></para>
      <para>Hot swap: no</para>
     </listitem>
@@ -1308,7 +1308,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-user-data-cache-service-properties">
-   <title>User Data Cache Service properties</title>
+   <title>User Data Cache Service Properties</title>
    <varlistentry>
     <term>Enable Notification of User Data Caches</term>
     <listitem>
@@ -1352,7 +1352,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-session-client-service-properties">
-   <title>Session Client Service properties</title>
+   <title>Session Client Service Properties</title>
    <varlistentry>
     <term>Enable Client Polling</term>
     <listitem>
@@ -1384,7 +1384,7 @@
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; Miscellaneous.</para>
 
   <variablelist xml:id="j2ee-agent-locale-properties">
-   <title>Locale properties</title>
+   <title>Locale Properties</title>
    <varlistentry>
     <term>Locale Language</term>
     <listitem>
@@ -1404,7 +1404,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-port-check-properties">
-   <title>Port Check Processing properties</title>
+   <title>Port Check Processing Properties</title>
    <varlistentry>
     <term>Port Check Enable</term>
     <listitem>
@@ -1433,7 +1433,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-bypass-principal-list-properties">
-   <title>Bypass Principal List properties</title>
+   <title>Bypass Principal List Properties</title>
    <varlistentry>
     <term>Bypass Principal List</term>
     <listitem>
@@ -1446,7 +1446,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-password-encryptor-properties">
-   <title>Agent Password Encryptor properties</title>
+   <title>Agent Password Encryptor Properties</title>
    <varlistentry>
     <term>Encryption Provider</term>
     <listitem>
@@ -1459,7 +1459,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-ignore-path-info-properties">
-   <title>Ignore Path Info properties</title>
+   <title>Ignore Path Info Properties</title>
    <varlistentry>
     <term>Ignore Path Info in Request URL</term>
     <listitem>
@@ -1532,7 +1532,7 @@
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; Advanced.</para>
 
   <variablelist xml:id="j2ee-agent-client-identification-properties">
-   <title>Client Identification properties</title>
+   <title>Client Identification Properties</title>
    <para>If the agent is behind a proxy or load balancer, then the agent can
     get client IP and host name values from the proxy or load balancer. For
     proxies and load balancer that support providing the client IP and host
@@ -1558,7 +1558,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-web-service-processing-properties">
-   <title>Web Service Processing properties</title>
+   <title>Web Service Processing Properties</title>
    <varlistentry>
     <term>Web Service Enable</term>
     <listitem>
@@ -1619,7 +1619,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-alternate-url-properties">
-   <title>Alternate Agent URL properties</title>
+   <title>Alternate Agent URL Properties</title>
    <varlistentry>
     <term>Alternative Agent Host Name</term>
     <listitem>
@@ -1648,7 +1648,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-jboss-properties">
-   <title>JBoss Application Server properties</title>
+   <title>JBoss Application Server Properties</title>
    <varlistentry>
     <term>WebAuthentication Available</term>
     <listitem>
@@ -1663,7 +1663,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-xss-detection-properties">
-   <title>Cross Site Scripting Detection properties</title>
+   <title>Cross-Site Scripting Detection Properties</title>
    <varlistentry>
     <term>Possible XSS code elements</term>
     <listitem>
@@ -1687,7 +1687,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-post-data-preservation-properties">
-   <title>Post Data Preservation properties</title>
+   <title>Post Data Preservation Properties</title>
    <varlistentry>
     <term>POST Data Preservation</term>
     <listitem>
@@ -1748,7 +1748,7 @@
   </variablelist>
 
   <variablelist xml:id="j2ee-agent-custom-properties">
-   <title>Custom properties</title>
+   <title>Custom Properties</title>
    <varlistentry>
     <term>Custom Properties</term>
     <listitem>

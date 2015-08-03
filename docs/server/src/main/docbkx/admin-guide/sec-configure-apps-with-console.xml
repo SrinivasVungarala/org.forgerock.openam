@@ -33,7 +33,7 @@
           xmlns:xlink='http://www.w3.org/1999/xlink'
           xmlns:xinclude='http://www.w3.org/2001/XInclude'>
 
-    <title>Configuring Applications by Using the OpenAM Console</title>
+    <title>Configuring Applications Using the OpenAM Console</title>
     <indexterm>
      <primary>Application</primary>
      <secondary>Configuring</secondary>
@@ -45,7 +45,7 @@
 
     <procedure xml:id="create-app-xui">
 
-        <title>To Configure an Application by Using the Policy Editor</title>
+        <title>To Configure an Application Using the Policy Editor</title>
 
         <step>
             <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
@@ -87,7 +87,10 @@
         <step>
             <para>In the Available Resource Types section, click a resource
              type to move to the Selected Resource Types section.</para>
-            <mediaobject xml:id="console-applications-add-resource-types">
+
+           <figure xml:id="console-applications-add-resource-types">
+            <title>Adding Resource Types</title>
+            <mediaobject>
              <alt>Move available resource types to the right of the screen to
               select the resource types that policies in this
               application use.</alt>
@@ -99,6 +102,8 @@
              <textobject><para>Click the arrow to move the resource type to
               the right.</para></textobject>
             </mediaobject>
+          </figure
+
         </step>
      </substeps>
       <tip><para>To remove a resource type, click the Delete icon.</para></tip>

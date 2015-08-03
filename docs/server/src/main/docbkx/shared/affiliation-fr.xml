@@ -32,7 +32,7 @@
 
    <orgname>ForgeRock AS</orgname>
    <address>
-    <street>201 Mission St.</street>
+    <street>201 Mission St</street>
     <otheraddr>Suite 2900</otheraddr>
     <city>San Francisco</city>, <state>CA</state> <postcode>94105</postcode>
     <country>USA</country>

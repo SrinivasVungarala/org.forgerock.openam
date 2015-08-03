@@ -45,7 +45,7 @@
   <title>To Create an Agent Profile</title>
   <para>To create a new Java EE policy agent profile, you need a name and
    password for the agent, and the URLs to OpenAM and the application to
-   protect.</para>
+   protect:</para>
   <step>
    <para>On the Access Control tab page of the OpenAM console, click the link
     for the realm in which you manage agents.</para>
@@ -71,7 +71,6 @@
     <textobject><para>At first, you provide only minimal configuration
      for your new agent.</para></textobject>
    </mediaobject>
-
   </step>
   <step>
    <para>After creating the agent profile, you can click the link to the
@@ -80,7 +79,7 @@
  </procedure>
 
  <procedure xml:id="create-agent-group">
-  <title>To Create an Agent Profile Group &amp; Inherit Settings</title>
+  <title>To Create an Agent Profile Group and Inherit Settings</title>
   <indexterm>
    <primary>Policy agents</primary>
    <secondary>Group inheritance</secondary>
@@ -88,7 +87,7 @@
   <para>Agent profile groups let you set up multiple agents to inherit
    settings from the group. To create a new Java EE agent profile group,
    you need a name and the URL to the OpenAM server in which you store the
-   profile.</para>
+   profile:</para>
   <step>
    <para>On the Access Control tab page of the OpenAM console, click the link
     for the realm in which you manage agents.</para>
@@ -119,7 +118,7 @@
    want to set when creating the agent profile.</para>
 
   <para>The following procedure demonstrates creating a policy agent
-   profile using the <command>ssoadm</command> command.</para>
+   profile using the <command>ssoadm</command> command:</para>
 
   <step>
    <para>Make sure the <command>ssoadm</command> command is installed as
@@ -133,7 +132,7 @@
    <para>Determine the list of properties to set in the agent profile.</para>
 
    <para>The following properties file shows a minimal configuration for a
-    policy agent profile.</para>
+    policy agent profile:</para>
 
     <screen>
 $ <userinput>cat myAgent.properties</userinput>
@@ -160,27 +159,26 @@ userpassword=password
   <step>
    <para>Set up a password file used when authenticating to OpenAM.
     The password file must be read-only for the user who creates the policy
-    agent profile, and must not be accessible to other users.
+    agent profile, and must not be accessible to other users:
    </para>
 
    <screen>
-    $ <userinput>echo password > /tmp/pwd.txt</userinput>
-    $ <userinput>chmod 400 /tmp/pwd.txt</userinput>
+$ <userinput>echo password > /tmp/pwd.txt</userinput>
+$ <userinput>chmod 400 /tmp/pwd.txt</userinput>
    </screen>
   </step>
 
   <step>
-   <para>Create the profile in OpenAM.</para>
+   <para>Create the profile in OpenAM:</para>
 
    <screen>
-    $ <userinput>ssoadm \
-    create-agent \
-    --realm / \
-    --agentname myAgent \
-    --agenttype J2EE \
-    --adminid amadmin
-    --password-file /tmp/pwd.txt \
-    --datafile myAgent.properties</userinput>
+$ <userinput>ssoadm create-agent \
+  --realm / \
+  --agentname myAgent \
+  --agenttype J2EE \
+  --adminid amadmin
+  --password-file /tmp/pwd.txt \
+  --datafile myAgent.properties</userinput>
 
     <computeroutput>Agent configuration was created.</computeroutput>
    </screen>

@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <section xml:id="gateway-or-policy-agent"
@@ -42,13 +42,13 @@
         xlink:href="http://openig.forgerock.org/">Open Identity
   Gateway (OpenIG)</link> and also a variety of policy agents.
   Both OpenIG
-  and also the policy agents enforce policy, redirecting users to authenticate
+  and the policy agents enforce policy, redirecting users to authenticate
   when necessary, and controlling access to protected resources. Yet, the
   Identity Gateway runs as a self-contained reverse proxy located between the
   users and the protected applications. Policy agents are installed into the
   servers where applications run, intercepting requests in that context.</para>
 
- <para>The OpenIG allows you to protect access to applications not
+ <para>OpenIG allows you to protect access to applications not
   suited for a policy agent. Not all web servers and Java EE applications have
   policy agents. Not all operating systems work with policy agents.</para>
 

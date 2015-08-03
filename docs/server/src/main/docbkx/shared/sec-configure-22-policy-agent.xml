@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <section xml:id="configure-22-policy-agent"
@@ -35,19 +35,21 @@
   <primary>Policy agents</primary>
   <secondary>Configuring</secondary>
  </indexterm>
- <para>This section covers version 2.2 agent properties. Version 2.2 agents
-  store their configurations locally, with a user name, password combination
+ <para>This section covers version 2.2 policy agent properties. Version 2.2 agents
+  store their configurations locally, with a username-password combination
   used to connect to OpenAM.</para>
 
  <warning>
-  <para>ForgeRock no longer supports 2.2 agents. Documentation exists only for
+  <para>ForgeRock no longer supports 2.2 policy agents. Documentation exists only for
    legacy systems. Do not use 2.2 policy agents for new deployments.
   </para>
  </warning>
 
  <para>After creating the agent profile, you access agent properties in the
   OpenAM console under Access Control &gt; <replaceable>Realm Name</replaceable>
-  &gt; Agents &gt; 2.2 Agents &gt; <replaceable>Agent Name</replaceable>.</para>
+  &gt; Agents &gt; 2.2 Agents &gt; <replaceable>Agent Name</replaceable>.
+  Properties include:
+ </para>
 
  <variablelist>
   <varlistentry>
