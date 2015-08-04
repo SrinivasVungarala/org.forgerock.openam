@@ -24,15 +24,15 @@
 
 /*global _, define*/
 define("org/forgerock/openam/ui/uma/models/UMAResourceSetWithPolicy", [
-    'backbone',
-    'backbone-relational',
-    'org/forgerock/openam/ui/uma/models/UMAPolicy',
-    'org/forgerock/openam/ui/uma/models/UMAPolicyPermissionScope',
-    'org/forgerock/openam/ui/uma/util/URLHelper'
+    "backbone",
+    "backbone-relational",
+    "org/forgerock/openam/ui/uma/models/UMAPolicy",
+    "org/forgerock/openam/ui/uma/models/UMAPolicyPermissionScope",
+    "org/forgerock/openam/ui/uma/util/URLHelper"
 ], function(Backbone, BackboneRelational, UMAPolicy, UMAPolicyPermissionScope, URLHelper) {
     return Backbone.RelationalModel.extend({
         idAttribute: "_id",
-        parse: function(response, options) {
+        parse: function(response) {
             // Hardwiring the id across to the UMAPolicy object as the server doesn't provide it
             if(!response.policy) {
                 response.policy = {};
@@ -47,15 +47,15 @@ define("org/forgerock/openam/ui/uma/models/UMAResourceSetWithPolicy", [
         },
         relations: [{
             type: Backbone.HasOne,
-            key: 'policy',
+            key: "policy",
             relatedModel: UMAPolicy,
             parse: true
         }, {
             type: Backbone.HasMany,
-            key: 'scopes',
+            key: "scopes",
             relatedModel: UMAPolicyPermissionScope,
             parse: true
         }],
-        urlRoot: URLHelper.substitute("__api__/__subrealm__/users/__username__/oauth2/resourcesets")
+        urlRoot: URLHelper.substitute("__api__/__subrealm__/users/__username__/oauth2/resource/sets")
     });
 });

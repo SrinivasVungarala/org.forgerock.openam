@@ -24,10 +24,7 @@
  *
  * $Id: LogService.java,v 1.5 2009/12/15 18:00:14 bigfatrat Exp $
  *
- */
-
-/*
- * Portions Copyrighted 2011 ForgeRock AS
+ * Portions Copyrighted 2011-2015 ForgeRock AS
  */
 
 package com.sun.identity.log.service;
@@ -35,6 +32,7 @@ package com.sun.identity.log.service;
 import java.io.ByteArrayInputStream;
 import java.net.InetAddress;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletContext;
@@ -47,6 +45,7 @@ import com.iplanet.services.comm.share.ResponseSet;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenManager;
+import com.iplanet.services.comm.server.PLLAuditor;
 import com.sun.identity.log.spi.Debug;
 import com.sun.identity.monitoring.Agent;
 import com.sun.identity.monitoring.MonitoringUtil;
@@ -54,6 +53,9 @@ import com.sun.identity.monitoring.SsoServerLoggingHdlrEntryImpl;
 import com.sun.identity.monitoring.SsoServerLoggingSvcImpl;
 import com.sun.identity.session.util.RestrictedTokenHelper;
 import com.sun.identity.session.util.SessionUtils;
+import org.forgerock.openam.audit.AuditEventFactory;
+import org.forgerock.openam.audit.AuditEventPublisher;
+
 import java.util.List;
 
 /**
@@ -77,11 +79,19 @@ public class LogService implements RequestHandler {
      * The SAX parser instance
      */
     WebtopParser parser = new WebtopParser();
+
+    private final AuditEventPublisher auditEventPublisher;
+    private final AuditEventFactory auditEventFactory;
+
     /**
      * Registers the classes with the SAX parser
      * @throws Exception
      */
-    public LogService() throws Exception {
+    @Inject
+    public LogService(AuditEventPublisher auditEventPublisher, AuditEventFactory auditEventFactory) throws Exception {
+        this.auditEventFactory = auditEventFactory;
+        this.auditEventPublisher = auditEventPublisher;
+
         parser = new WebtopParser();
         parser.register(LogXMLStrings.RECWRITE, pkg+"LogRecWrite");
         parser.register(LogXMLStrings.LOG, pkg+"Log");
@@ -107,7 +117,7 @@ public class LogService implements RequestHandler {
      * @param servletResponse
      * @return The response set which contains the result of the log operation.
      */
-    public ResponseSet process(List<Request> requests,
+    public ResponseSet process(PLLAuditor auditor, List<Request> requests,
     HttpServletRequest servletRequest,
     HttpServletResponse servletResponse,
     ServletContext servletContext) {
@@ -169,7 +179,7 @@ public class LogService implements RequestHandler {
                     ByteArrayInputStream bin = new ByteArrayInputStream(
                     xmlRequestString.getBytes("UTF-8"));
                     LogOperation op = (LogOperation) parser.parse(bin);
-                    res = op.execute();
+                    res = op.execute(auditEventPublisher, auditEventFactory);
                 } catch(Exception e) {
                         Debug.error("LogService::process():",e);
                     // FORMAT ERROR RESPONSE HERE

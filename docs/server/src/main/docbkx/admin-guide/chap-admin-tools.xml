@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2012 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-admin-tools'
@@ -28,14 +28,14 @@
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'>
- <title>Administration Interfaces &amp; Tools</title>
+ <title>Administration Interfaces and Tools</title>
 
  <indexterm>
   <primary>Administration tools</primary>
  </indexterm>
 
  <para>This chapter provides a brief introduction to the web-based OpenAM
- console. It also lists and describes each command line interface (CLI)
+ console. It also lists and describes each command-line interface (CLI)
  administration tool.</para>
  
  <section xml:id="openam-console-overview">
@@ -46,24 +46,26 @@
    <secondary>overview</secondary>
   </indexterm>
 
-  <para>After you install OpenAM, login to the web-based console as OpenAM
-  Administrator, <literal>amadmin</literal> with the password you set during
+  <para>After you install OpenAM, log in to the web-based console as OpenAM
+  administrator, <literal>amadmin</literal> with the password you set during
   installation. Navigate to a URL such as
   <literal>http://openam.example.com:8080/openam</literal>. In this case,
   communications proceed over the HTTP protocol to a FQDN
   (<literal>openam.example.com</literal>), over a standard Java EE web container
   port number (8080), to a specific deployment URI (<literal>/openam</literal>).</para>
-  
-  <mediaobject xml:id="figure-console-as-amadmin">
-   <alt>How the console looks to amadmin</alt>
-   <imageobject>
-    <imagedata fileref="images/console-as-amadmin.png" format="PNG" />
-   </imageobject>
-   <textobject><para>The OpenAM Administrator sees all capabilities of the
-   console.</para></textobject>
-  </mediaobject>
-  
-  <para>When you login as the OpenAM Administrator, <literal>amadmin</literal>,
+
+  <figure xml:id="figure-console-as-amadmin">
+   <title>OpenAM Console</title>
+   <mediaobject>
+    <alt>How the console looks to amadmin</alt>
+    <imageobject>
+     <imagedata fileref="images/console-as-amadmin.png" format="PNG" />
+    </imageobject>
+    <textobject><para>The OpenAM administrator sees all capabilities of the console.</para></textobject>
+   </mediaobject>
+  </figure>
+
+  <para>When you log in as the OpenAM administrator, <literal>amadmin</literal>,
   you have access to the complete OpenAM console. In addition, OpenAM has set a
   cookie in your browser that lasts until the session expires, you logout, or
   you close your browser.<footnote>
@@ -71,37 +73,43 @@
   close your browser. This section reflects OpenAM default behavior before
   you configure additional functionality.</para></footnote></para>
   
-  <para>When you login to the OpenAM console as a non-administrative end user,
+  <para>When you log in to the OpenAM console as a non-administrative end user,
   you do not have access to the administrative console. Your access is limited
   to a configuration page with your account information.</para>
-  
-  <mediaobject xml:id="figure-console-non-admin-user">
-   <alt>How the console looks to an end user</alt>
-   <imageobject>
-    <imagedata fileref="images/console-non-admin-user.png" format="PNG" />
-   </imageobject>
-   <textobject><para>OpenAM console directs an end user to a page where she
-   can view and update her account information.</para></textobject>
-  </mediaobject>
+
+  <figure xml:id="figure-console-non-admin-user">
+   <title>OpenAM Console for Non-Administrative Users</title>
+   <mediaobject>
+    <alt>How the console looks to an end user</alt>
+    <imageobject>
+     <imagedata fileref="images/console-non-admin-user.png" format="PNG" />
+    </imageobject>
+    <textobject><para>OpenAM console directs an end user to a page where she
+    can view and update her account information.</para></textobject>
+   </mediaobject>
+  </figure>
   
   <para>If you configure OpenAM to grant administrative capabilities to
   another user, then that user also sees the console after login. For
-  instance, the OpenAM Administrator granted Kirsten Vaughan privileges to
-  administer the OpenAM Top Level Realm. (This can be done through the console
+  instance, the OpenAM administrator granted Kirsten Vaughan privileges to
+  administer the OpenAM Top-Level Realm. (This can be done through the console
   under Access Control &gt; / (Top Level Realm) &gt; Privileges. Kirsten
   has authorization to read and write policy properties and configured
   policy agent properties.) When Kirsten logs in, she sees only part of the
   console capabilities.<footnote><para>For more on delegated administration,
   see the chapter covering realms.</para></footnote></para>
-  
-  <mediaobject xml:id="figure-console-as-kvaughan">
-   <alt>How the console looks to an administrator</alt>
-   <imageobject>
-    <imagedata fileref="images/console-as-kvaughan.png" format="PNG" />
-   </imageobject>
-   <textobject><para>OpenAM console appears differently to an administrator
-   with limited rights.</para></textobject>
-  </mediaobject>
+
+  <figure xml:id="figure-console-as-kvaughan">
+   <title>OpenAM Console for An Administrator with Limited Rights</title>
+   <mediaobject>
+    <alt>How the console looks to an administrator</alt>
+    <imageobject>
+     <imagedata fileref="images/console-as-kvaughan.png" format="PNG" />
+    </imageobject>
+    <textobject><para>OpenAM console appears differently to an administrator
+     with limited rights.</para></textobject>
+   </mediaobject>
+  </figure>
  </section>
  
  <section xml:id="openam-cli-overview">
@@ -118,7 +126,7 @@
   <indexterm><primary>Silent installation</primary></indexterm>
 
   <variablelist>
-   <para>You can install the following OpenAM command-line tools.</para>
+   <para>You can install the following OpenAM command-line tools:</para>
    <varlistentry>
     <term><command>agentadmin</command></term>
     <listitem>
@@ -144,7 +152,7 @@
    <varlistentry>
     <term><command>${configJarFile}</command></term>
     <listitem>
-     <para>This executable .jar file lets you perform a silent installation of an OpenAM
+     <para>This executable <literal>.jar</literal> file lets you perform a silent installation of an OpenAM
      server with a configuration file. For example, the <command>java -jar configurator.jar -f
      config.file</command> command couples the <filename>configurator.jar</filename> archive
      with the <replaceable>config.file</replaceable>. The <filename>sampleconfiguration</filename>
@@ -158,14 +166,14 @@
     <listitem>
      <para>This tool provides a rich command-line interface for the configuration
      of OpenAM core services.</para>
-     <para>In a test environment you can activate
+     <para>In a test environment, you can activate
      <filename>ssoadm.jsp</filename> to access the same functionality in your
      browser. Once active, you can use many features of the <command>ssoadm</command>
-     command, by navigating to the <filename>ssoadm.jsp</filename> URI, in a URL such as
+     command by navigating to the <filename>ssoadm.jsp</filename> URI, in a URL such as
      <literal>http://openam.example.com:8080/openam/ssoadm.jsp</literal>.</para>
      <para>Install this from <filename><?eval ${ssoadminZipFile}?></filename>.</para>
      <para>To translate settings applied in OpenAM console to service attributes
-     for use with <command>ssoadm</command>, login to the OpenAM console
+     for use with <command>ssoadm</command>, log in to the OpenAM console
      as <literal>amadmin</literal> and access the services page, in a URL such as
      <literal>http://openam.example.com:8080/openam/services.jsp</literal>.</para>
     </listitem>
@@ -188,7 +196,7 @@
   When using the administration commands in a site configuration, the
   commands access the configuration through the front end load balancer.</para>
   <itemizedlist>
-   <para>Sometimes a command cannot access the load balancer, because:</para>
+   <para>Sometimes a command cannot access the load balancer because:</para>
    <listitem>
     <para>Network routing restrictions prevent the tool from accessing
     the load balancer.</para>
@@ -254,7 +262,7 @@
    <title>To Enable ssoadm.jsp</title>
    <indexterm><primary>Enabling ssoadm.jsp</primary></indexterm>
    <step>
-    <para>Login as OpenAM administrator, <literal>amadmin</literal>.</para>
+    <para>Log in as OpenAM administrator, <literal>amadmin</literal>.</para>
    </step>
    <step>
     <para>Click Configuration &gt; Servers and Sites &gt;
@@ -263,7 +271,8 @@
    <step>
     <para>Click Advanced to display the Advanced Properties table,
     and then click Add. In the text boxes that appear, include the following
-    information, and then click Save.</para>
+    information, and then click Save:</para>
+
     <variablelist>
      <varlistentry>
       <term>Property Name</term>
@@ -274,6 +283,7 @@
       <listitem><para>false</para></listitem>
      </varlistentry>
     </variablelist>
+
    </step>
    <step>
     <para>To see if the change worked, navigate to the URL of OpenAM with the

@@ -41,7 +41,7 @@
   which are used to group configuration and identities together.
   For example, you might have one realm for OpenAM administrators and agents,
   and another realm for users.
-  In this two-realm setup, the OpenAM administrator can login
+  In this two-realm setup, the OpenAM administrator can log in
   to the administrative realm to manage the services,
   but cannot authenticate as OpenAM administrator to the realm
   that protects web sites with HR and financial information.
@@ -58,12 +58,12 @@
  
  <para>
   When you first configure OpenAM,
-  OpenAM sets up the default <literal>/ (Top Level Realm)</literal>,
+  OpenAM sets up the default <literal>/ (Top-Level Realm)</literal>,
   containing OpenAM configuration data,
   and allowing authentication using the identity repository
   that you choose during initial configuration.
-  The top level realm might hold the overall configuration
-  for Example.com for instance.
+  The top-level realm might hold the overall configuration
+  for Example.com, for instance.
  </para>
  
  <para>
@@ -80,7 +80,7 @@
   The default authentication mechanism corresponds
   to that identity repository as well.
   You can, however, constrain authentication to rely on different data stores,
-  and set policy for agents to define authorization in the realm.
+  and set policy for agents to define authorization in the realm:
  </para>
 
  <section xml:id="manage-realms">
@@ -107,12 +107,12 @@
 
    <para>
     You can create a new realm through the OpenAM console as described below,
-    or by using the <command>ssoadm create-realm</command> command.
+    or by using the <command>ssoadm create-realm</command> command:
    </para>
 
    <step>
     <para>
-     Login to the OpenAM console as OpenAM Administrator, <literal>amadmin</literal>.
+     Log in to the OpenAM console as OpenAM Administrator, <literal>amadmin</literal>.
     </para>
    </step>
 
@@ -123,7 +123,7 @@
     </para>
 
     <note><para>Do not use the names of OpenAM REST endpoints as the name of a realm.
-     The OpenAM REST endpoint names that should not be used includes: "users",
+     The OpenAM REST endpoint names that should not be used include: "users",
      "groups", "realms", "policies" and "applications".</para></note>
 
     <para>
@@ -172,7 +172,7 @@
 
    <para>
     You can grant privileges through the OpenAM console as described below,
-    or by using the <command>ssoadm add-privileges</command> command.
+    or by using the <command>ssoadm add-privileges</command> command:
    </para>
 
    <step>
@@ -186,7 +186,7 @@
    <step>
     <para>
      On the Privileges tab, click the name of the group
-     to whom you intend to grant access.
+     to which you intend to grant access.
     </para>
    </step>
 
@@ -418,7 +418,7 @@
   <para>
    You can configure a policy agent
    to be directed to a realm and application when requesting policy decisions,
-   or to log users into a different realm than the policy agent's realm.
+   or to log users into a different realm than the policy agent's realm:
   </para>
 
   <itemizedlist>
@@ -431,7 +431,7 @@
 
    <para>
     By default, policy agents request policy decisions
-    in the top level realm (/)
+    in the top-level realm (/)
     and for the default policy agent application,
     <literal>iPlanetAMWebAgentService</literal>.
     When the realm and application differ for your policy agent,
@@ -485,13 +485,13 @@
   </procedure>
 
   <procedure xml:id="agent-redirect-login-to-realm">
-   <title>To Configure a Web or J2EE Agent for Login to a Realm</title>
+   <title>To Configure a Web or J2EE Agent for Log In to a Realm</title>
 
    <para>
     You might choose to configure your agent in one realm,
     yet have your real users authenticate through another realm.
     In this case, you want your policy agents
-    to redirect users to authenticate to their realm, rather than the agent realm.
+    to redirect users to authenticate to their realm, rather than the agent realm:
    </para>
 
    <step>

@@ -31,7 +31,9 @@
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'>
  <title>Troubleshooting</title>
+
  <indexterm><primary>Troubleshooting</primary></indexterm>
+
  <para>This chapter covers how to get debugging information and troubleshoot
  issues in OpenAM deployments.</para>
  
@@ -54,7 +56,7 @@
      this problem. If you do not know the user running the web container, use
      the <command>ps</command> command to check. In the following example, the
      user is <literal>mark</literal>, the web container
-     <literal>tomcat</literal>.</para>
+     <literal>tomcat</literal>:</para>
 
      <screen>
 $ <userinput>ps -ef | grep tomcat</userinput>
@@ -71,7 +73,7 @@ $ <userinput>ps -ef | grep tomcat</userinput>
      set the <literal>configuration.dir</literal> property in the
      <filename>WEB-INF/classes/bootstrap.properties</filename> to a directory
      with appropriate permissions, and repack <filename>openam.war</filename>
-     with the adjusted file before deploying that.</para>
+     with the adjusted file before deploying that:</para>
 
      <screen>
 $ <userinput>cd ~/Downloads/openam/${coreWarFile}</userinput>
@@ -96,7 +98,7 @@ $ <userinput>jar cf ../openam.war *</userinput>
      for these settings.</para>
      <para>If you do not know the settings used when the web container was
      started, use the <command>ps</command> command to check. In the following
-     example, the web container is <literal>tomcat</literal>.</para>
+     example, the web container is <literal>tomcat</literal>:</para>
 
      <screen>
 $ <userinput>ps -ef | grep tomcat | grep Xm</userinput>
@@ -119,7 +121,7 @@ $ <userinput>ps -ef | grep tomcat | grep Xm</userinput>
     </question>
     <answer>
      <para>OpenAM requires that you use a fully qualified domain name (FQDN)
-     that the host can resolve.</para>
+     that the host can resolve:</para>
 
      <screen>
 $ <userinput>ping openam-ter.example.com</userinput>
@@ -132,7 +134,7 @@ $ <userinput>ping openam-ter.example.com</userinput>
      <para>For a test deployment (at home, on a laptop), you can use fake FQDNs
      in <filename>/etc/hosts</filename> (<filename
      >%SystemRoot%\system32\drivers\etc\hosts</filename> on Windows), depending
-     on how your network is configured.</para>
+     on how your network is configured:</para>
 
      <screen>
 $ <userinput>cat /etc/hosts | grep openam</userinput>
@@ -154,7 +156,7 @@ $ <userinput>cat /etc/hosts | grep openam</userinput>
      example shows what the file looks like for OpenAM deployed in Apache
      Tomcat under <filename>/path/to/tomcat/webapps/openam</filename>, and
      running as user <literal>amuser</literal> with <literal>$HOME</literal>
-     <filename>/home/amuser</filename>.</para>
+     <filename>/home/amuser</filename>:</para>
 
      <screen>
 $ <userinput>cat ~/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</userinput>
@@ -243,12 +245,12 @@ $ <userinput>cat ~/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</userinput
    <qandaentry xml:id="opendj-missing-schema">
     <question>
      <para>I added OpenDJ as a data store, and now I cannot add a user. OpenAM
-     gives me the following error.</para>
+     gives me the following error:</para>
+
      <literallayout>ERROR: LDAPv3Repo.create failed. errorCode=65 Entry
      uid=test,ou=people,dc=example,dc=com violates the Directory Server
      schema configuration because it includes attribute inetUserStatus which
-     is not allowed by any of the objectclasses defined in that
-     entry</literallayout>
+     is not allowed by any of the objectclasses defined in that entry</literallayout>
     </question>
     <answer>
      <para>When you set up a New Data Store to use OpenDJ as an identity
@@ -258,7 +260,7 @@ $ <userinput>cat ~/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</userinput
      not selected by default.</para>
      <para>The full version of OpenAM includes directory server schema in the
      <filename>~/Downloads/openam/ldif/</filename> directory. To add the schema
-     to OpenDJ afterwards, you can try the following command.</para>
+     to OpenDJ afterwards, you can try the following command:</para>
 
      <screen>
 $ <userinput>/path/to/opendj/bin/ldapmodify \
@@ -300,7 +302,7 @@ MODIFY operation successful for DN CN=schema</computeroutput>
 
      <para>
       To work around the problem, follow these steps
-      to make sure that WebSphere trusts the mail server SSL certificate.
+      to make sure that WebSphere trusts the mail server SSL certificate:
      </para>
 
      <orderedlist>
@@ -424,13 +426,13 @@ MODIFY operation successful for DN CN=schema</computeroutput>
      </para>
 
      <para>
-      For example, if your container is Apache Tomcat, follow these steps.
+      For example, if your container is Apache Tomcat (Tomcat), follow these steps:
      </para>
 
      <orderedlist>
       <listitem>
        <para>
-        Stop Tomcat.
+        Stop Tomcat:
        </para>
 
        <screen>
@@ -468,7 +470,7 @@ org.restlet.level=OFF
 
       <listitem>
        <para>
-        Start Tomcat.
+        Start Tomcat:
        </para>
 
        <screen>
@@ -493,10 +495,10 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
      health checks are run every second (1000 milliseconds) with a timeout of 1
      second (1000 milliseconds).</para>
 
-     <para>If there is network latency between servers in a site, for example
+     <para>If there is network latency between servers in a site, for example,
      if you are running your servers in virtual machines, the default settings
      might not be right for your deployment. In that case, consider changing the
-     following advanced server properties.</para>
+     following advanced server properties:</para>
      <itemizedlist>
       <listitem>
        <para>By lengthening

@@ -44,7 +44,7 @@
  </para>
 
  <para>
-  SAML v1.x is an XML and SOAP-based framework that allows
+  SAML v1.x is an XML- and SOAP-based framework that allows
   online trusted partners to exchange security information.
   In particular, SAML v1.x defines mechanisms for
   browser based web single sign-on (SSO) across independent organizations
@@ -88,7 +88,7 @@
   <title>About SAML v1.x</title>
 
   <para>
-   SAML v1.x was defined in response to several technical problems.
+   SAML v1.x was defined in response to several technical problems:
   </para>
 
   <itemizedlist>
@@ -163,7 +163,7 @@
    The asserting party and relying party can exchange messages either
    by reference, where the asserting party sends
    an <firstterm>artifact</firstterm>
-   (a base64 encoded reference to the assertion)
+   (a base64-encoded reference to the assertion)
    as a query string parameter value,
    or by value, where the asserting party directs the user's browser
    to HTTP POST the assertion to the relying party.
@@ -183,7 +183,6 @@
 
   <figure xml:id="figure-saml-1-browser-artifact-profile">
    <title>SAML v1.x Web SSO Browser Artifact Profile</title>
-
    <mediaobject>
     <alt>Sequence diagram of the web SSO browser artifact profile</alt>
     <imageobject>
@@ -215,7 +214,6 @@
 
   <figure xml:id="figure-saml-1-browser-post-profile">
    <title>SAML v1.x Web SSO Browser POST Profile</title>
-
    <mediaobject>
     <alt>Sequence diagram of the web SSO browser POST profile</alt>
     <imageobject>
@@ -245,7 +243,7 @@
    the relying party's authorization decision capabilities to
    establish whether the user can access the resource.
    If so, the resource is returned to the user's browser.
-   If the relying party is using OpenAM for example,
+   If the relying party is using OpenAM, for example,
    then the relying party sets an OpenAM SSO token based on the SAML response,
    and this token is used to track the user's session for authorization.
   </para>
@@ -273,7 +271,7 @@
   </para>
 
   <para>
-   This section lists the data that you must collect.
+   This section lists the data that you must collect:
   </para>
 
   <itemizedlist>
@@ -389,7 +387,7 @@
    <listitem>
     <para>
      Whether the relying party sends SOAP query requests to the asserting party,
-     for example to get authorization decisions
+     for example, to get authorization decisions
     </para>
 
     <itemizedlist>
@@ -496,13 +494,13 @@
     Trusted partners should ask you for a Site ID.
     OpenAM generates a SAML v1.x Site ID value at configuration time.
     This Site ID value corresponds to the server.
-    To find this in OpenAM Console, see Federation
+    To find this in OpenAM console, see Federation
     > SAML 1.x Configuration > Local Site Properties > Site Identifiers,
     and then click your server URL.
    </para>
 
    <para>
-    If you have multiple servers in an OpenAM Site set up behind a load balancer,
+    If you have multiple servers in an OpenAM site set up behind a load balancer,
     you can generate a Site ID, and then use it for all the servers in your site.
    </para>
 
@@ -515,7 +513,7 @@
      This example is for an asserting party
      where the site load balancer host is <literal>ap.example.net</literal>.
      The command is bundled with OpenAM server,
-     shown with lines folded to fit on the printed page.
+     shown with lines folded to fit on the printed page:
     </para>
 
     <screen>
@@ -599,16 +597,16 @@ $ <userinput>java \
   <tip>
    <para>
     When you enter SAML v1.x configuration data,
-    OpenAM Console escapes these special characters by default:
+    OpenAM console escapes these special characters by default:
     <literal>&amp; &lt; &gt; " ' /</literal>.
     If instead you have already escaped these characters
-    in the data that you plan to enter in OpenAM Console,
+    in the data that you plan to enter in OpenAM console,
     then set the advanced configuration property
     <literal>com.sun.identity.saml.escapeattributevalue</literal>
     to <literal>false</literal>
     under Configuration > Servers and Sites > Default Server Settings > Advanced,
     and then restart OpenAM or the container in which it runs
-    to prevent OpenAM Console from escaping the characters for you.
+    to prevent OpenAM console from escaping the characters for you.
    </para>
   </tip>
 
@@ -627,12 +625,12 @@ $ <userinput>java \
 
    <para>
     Using the configuration information you have gathered
-    complete the following steps.
+    complete the following steps:
    </para>
 
    <step>
     <para>
-     Login to OpenAM Console as administrator, amadmin,
+     Log in to OpenAM console as administrator, amadmin,
      browse to Federation > SAML 1.x Configuration,
      and then click Local Site Properties.
     </para>
@@ -750,7 +748,7 @@ $ <userinput>java \
 
    <step>
     <para>
-     Login to OpenAM Console as administrator, amadmin,
+     Log in to OpenAM console as administrator, amadmin,
      browse to Federation > SAML 1.x Configuration,
      and then click Local Site Properties.
     </para>
@@ -850,7 +848,7 @@ $ <userinput>java \
   <para>
    After you have gathered configuration information
    and if necessary imported public key certificates from trusted partners
-   you can configure SAML v1.x information for the partners.
+   you can configure SAML v1.x information for the partners:
   </para>
 
   <itemizedlist>
@@ -867,13 +865,13 @@ $ <userinput>java \
    <title>To Configure a Trusted Relying Party</title>
 
    <para>
-    OpenAM Console refers to the relying party as the Destination,
-    because the relying party's site is the destination site.
+    OpenAM console refers to the relying party as the Destination,
+    because the relying party's site is the destination site:
    </para>
 
    <step>
     <para>
-     Login to OpenAM Console as administrator, amadmin,
+     Log in to OpenAM console as administrator, amadmin,
      browse to Federation > SAML 1.x Configuration,
      and then click New in the Trusted Partners table.
     </para>
@@ -959,13 +957,13 @@ $ <userinput>java \
    <title>To Configure a Trusted Asserting Party</title>
 
    <para>
-    OpenAM Console refers to the asserting party as the Source,
-    because the asserting party's site is the source site.
+    OpenAM console refers to the asserting party as the Source,
+    because the asserting party's site is the source site:
    </para>
 
    <step>
     <para>
-     Login to OpenAM Console as administrator, amadmin,
+     Log in to OpenAM console as administrator, amadmin,
      browse to Federation > SAML 1.x Configuration,
      and then click New in the Trusted Partners table.
     </para>
@@ -1053,7 +1051,7 @@ $ <userinput>java \
 
   <para>
    You can try SAML v1.x Web SSO using OpenAM
-   by following the procedures in this section.
+   by following the procedures in this section:
   </para>
 
   <itemizedlist>
@@ -1089,13 +1087,13 @@ $ <userinput>java \
     </para>
 
     <para>
-     You can for example set up two separate OpenAM servers on a single host
+     You can, for example, set up two separate OpenAM servers on a single host
      by adding aliases for the hosts in your hosts file,
      and by using separate containers that listen on different ports.
     </para>
 
     <para>
-     For example if your host is a laptop,
+     For example, if your host is a laptop,
      you can add the aliases to the loopback address
      as in the following example line
      from an <filename>/etc/hosts</filename> file.
@@ -1105,7 +1103,7 @@ $ <userinput>java \
     >127.0.0.1    localhost ap.example.net rp.example.com</literallayout>
 
     <para>
-     Then run one application server to listen on port 8080,
+     Then, run one application server to listen on port 8080,
      and another to listen on port 9080.
     </para>
 
@@ -1132,7 +1130,7 @@ $ <userinput>java \
    <step>
     <para>
      On the asserting party server,
-     login to OpenAM Console as administrator,
+     login to OpenAM console as administrator,
      browse to Federation > SAML 1.x Configuration,
      and then click Local Site Properties.
     </para>
@@ -1149,7 +1147,7 @@ $ <userinput>java \
    <step>
     <para>
      On the relying party server,
-     login to OpenAM Console as administrator,
+     login to OpenAM console as administrator,
      browse to Federation > SAML 1.x Configuration,
      and then click Local Site Properties.
     </para>
@@ -1168,12 +1166,12 @@ $ <userinput>java \
    <title>To Prepare to Test the Asserting Party</title>
 
    <para>
-    Follow these steps to configure the asserting party OpenAM server.
+    Follow these steps to configure the asserting party OpenAM server:
    </para>
 
    <step>
     <para>
-     Login to OpenAM Console as administrator,
+     Log in to OpenAM console as administrator,
      browse to Federation > SAML 1.x Configuration,
      and then click Local Site Properties.
     </para>
@@ -1258,12 +1256,12 @@ $ <userinput>java \
    <title>To Prepare to Test the Relying Party</title>
 
    <para>
-    Follow these steps to configure the relying party OpenAM server.
+    Follow these steps to configure the relying party OpenAM server:
    </para>
 
    <step>
     <para>
-     Login to OpenAM Console as administrator,
+     Log in to OpenAM console as administrator,
      browse to Federation > SAML 1.x Configuration,
      and then click New in the Trusted Partners table
      to add the asserting party as a trusted partner.
@@ -1315,12 +1313,12 @@ $ <userinput>java \
    <title>To Try SAML v1.x Web SSO</title>
 
    <para>
-    Once you have successfully configured both parties, try SAML v1.x Web SSO.
+    Once you have successfully configured both parties, try SAML v1.x Web SSO:
    </para>
 
    <step>
     <para>
-     Log out of OpenAM Console on both servers.
+     Log out of OpenAM console on both servers.
     </para>
    </step>
 
@@ -1333,7 +1331,7 @@ $ <userinput>java \
      <step>
       <para>
        Simulate the OpenAM administrator browsing the asserting party's site,
-       and selecting a link to the OpenAM Console on the relying party's site.
+       and selecting a link to the OpenAM console on the relying party's site.
       </para>
 
       <para>
@@ -1356,14 +1354,14 @@ $ <userinput>java \
 
      <step>
       <para>
-       Notice that you are redirected to OpenAM Console on the relying party server,
+       Notice that you are redirected to OpenAM console on the relying party server,
        and that you are successfully logged in as the demo user.
       </para>
      </step>
 
      <step>
       <para>
-       Log out of OpenAM Console on both servers.
+       Log out of OpenAM console on both servers.
       </para>
      </step>
     </substeps>
@@ -1371,14 +1369,14 @@ $ <userinput>java \
 
    <step>
     <para>
-     Try Web SSO using the SAML HTTP POST profile.
+     Try Web SSO using the SAML HTTP POST profile:
     </para>
 
     <substeps>
      <step>
       <para>
        Simulate the OpenAM administrator browsing the asserting party's site,
-       and selecting a link to the OpenAM Console on the relying party's site.
+       and selecting a link to the OpenAM console on the relying party's site.
       </para>
 
       <para>
@@ -1400,7 +1398,7 @@ $ <userinput>java \
 
      <step>
       <para>
-       Notice that you are redirected to OpenAM Console on the relying party server,
+       Notice that you are redirected to OpenAM console on the relying party server,
        and that you are successfully logged in as <literal>amadmin</literal>.
       </para>
      </step>

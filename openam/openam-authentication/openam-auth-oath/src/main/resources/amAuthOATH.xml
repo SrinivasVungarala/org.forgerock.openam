@@ -41,6 +41,20 @@
                 resourceName="oath">
 
             <Organization>
+                <AttributeSchema name="AlphaNumericValidator"
+                                 type="validator"
+                                 syntax="string">
+                    <DefaultValues>
+                        <Value>org.forgerock.openam.authentication.modules.oath.AlphaNumericValidator</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+                <AttributeSchema name="CodeLengthValidator"
+                                 type="validator"
+                                 syntax="string">
+                    <DefaultValues>
+                        <Value>org.forgerock.openam.authentication.modules.oath.CodeLengthValidator</Value>
+                    </DefaultValues>
+                </AttributeSchema>
                 <AttributeSchema name="iplanet-am-auth-oath-auth-level"
                                  type="single"
                                  syntax="number_range" rangeStart="0" rangeEnd="2147483647"
@@ -51,16 +65,18 @@
                         <Value>0</Value>
                     </DefaultValues>
                 </AttributeSchema>
+
                 <AttributeSchema name="iplanet-am-auth-oath-password-length"
                                  type="single"
                                  syntax="string"
-                                 validator="RequiredValueValidator"
+                                 validator="CodeLengthValidator"
                                  i18nKey="a501"
                                  resourceName="passwordLength">
                     <DefaultValues>
                         <Value>6</Value>
                     </DefaultValues>
                 </AttributeSchema>
+
                 <AttributeSchema name="iplanet-am-auth-oath-min-secret-key-length"
                                  type="single"
                                  syntax="string"
@@ -91,16 +107,6 @@
                                  resourceName="hotpWindowSize">
                     <DefaultValues>
                         <Value>100</Value>
-                    </DefaultValues>
-                </AttributeSchema>
-
-                <AttributeSchema name="iplanet-am-auth-oath-skippable-attr-name"
-                                 type="single"
-                                 syntax="string"
-                                 i18nKey="a513"
-                                 resourceName="oathSkippableAttrName">
-                    <DefaultValues>
-                        <Value>oath2faEnabled</Value>
                     </DefaultValues>
                 </AttributeSchema>
 
@@ -144,7 +150,41 @@
                         <Value>2</Value>
                     </DefaultValues>
                 </AttributeSchema>
+                <AttributeSchema name="openam-auth-oath-maximum-clock-drift"
+                                 type="single"
+                                 syntax="number"
+                                 i18nKey="a514"
+                                 resourceName="totpMaximumClockDrift"
+                                 rangeStart="0" rangeEnd="2147483648">
+                    <DefaultValues>
+                        <Value>0</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+                <AttributeSchema name="openam-auth-oath-issuer-name"
+                                 type="single"
+                                 syntax="string"
+                                 i18nKey="a515"
+                                 validator="AlphaNumericValidator"
+                                 resourceName="oathIssuerName">
+                    <DefaultValues>
+                        <Value>ForgeRock</Value>
+                    </DefaultValues>
+                </AttributeSchema>
                 <SubSchema name="serverconfig" inheritance="multiple" resourceName="USE-PARENT">
+                    <AttributeSchema name="AlphaNumericValidator"
+                                     type="validator"
+                                     syntax="string">
+                        <DefaultValues>
+                            <Value>org.forgerock.openam.authentication.modules.oath.AlphaNumericValidator</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+                    <AttributeSchema name="CodeLengthValidator"
+                                     type="validator"
+                                     syntax="string">
+                        <DefaultValues>
+                            <Value>org.forgerock.openam.authentication.modules.oath.CodeLengthValidator</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
                     <AttributeSchema name="iplanet-am-auth-oath-auth-level"
                                      type="single"
                                      syntax="number_range" rangeStart="0" rangeEnd="2147483647"
@@ -157,6 +197,7 @@
                     <AttributeSchema name="iplanet-am-auth-oath-password-length"
                                      type="single"
                                      syntax="string"
+                                     validator="CodeLengthValidator"
                                      i18nKey="a501"
                                      resourceName="passwordLength">
                         <DefaultValues>
@@ -192,16 +233,6 @@
                                      resourceName="hotpWindowSize">
                         <DefaultValues>
                             <Value>100</Value>
-                        </DefaultValues>
-                    </AttributeSchema>
-
-                    <AttributeSchema name="iplanet-am-auth-oath-skippable-attr-name"
-                                     type="single"
-                                     syntax="string"
-                                     i18nKey="a513"
-                                     resourceName="oathSkippableAttrName">
-                        <DefaultValues>
-                            <Value>oath2faEnabled</Value>
                         </DefaultValues>
                     </AttributeSchema>
 
@@ -243,6 +274,26 @@
                                      resourceName="totpTimeStepsInWindow">
                         <DefaultValues>
                             <Value>2</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+                    <AttributeSchema name="openam-auth-oath-maximum-clock-drift"
+                        type="single"
+                        syntax="number"
+                        i18nKey="a514"
+                        resourceName="totpMaximumClockDrift"
+                        rangeStart="0" rangeEnd="2147483648">
+                        <DefaultValues>
+                            <Value>0</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+                    <AttributeSchema name="openam-auth-oath-issuer-name"
+                                     type="single"
+                                     syntax="string"
+                                     i18nKey="a515"
+                                     validator="AlphaNumericValidator"
+                                     resourceName="oathIssuerName">
+                        <DefaultValues>
+                            <Value>ForgeRock</Value>
                         </DefaultValues>
                     </AttributeSchema>
                 </SubSchema>

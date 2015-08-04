@@ -66,12 +66,12 @@ define("config/AppMessages", [
             msg: "uma.share.messages.fail",
             type: "error"
         },
-        "revokeAllResourcesSuccess": {
-            msg: "uma.resources.list.revokeAllResourcesSuccess",
+        "unshareAllResourcesSuccess": {
+            msg: "uma.resources.myresources.unshareAllResources.messages.success",
             type: "info"
         },
-        "revokeAllResourcesFail": {
-            msg: "uma.resources.list.revokeAllResourcesFail",
+        "unshareAllResourcesFail": {
+            msg: "uma.resources.myresources.unshareAllResources.messages.fail",
             type: "error"
         },
         "revokeAllPoliciesSuccess": {
@@ -121,6 +121,14 @@ define("config/AppMessages", [
         "resTypeErrorNoActions": {
             msg: "config.messages.AdminMessages.policies.error.noActions",
             type: "error"
+        },
+        "ruleErrorFullLogical": {
+            msg: "config.messages.AdminMessages.policies.ruleErrorFullLogical",
+            type: "error"
+        },
+        "ruleHelperTryAndOr": {
+            msg: "config.messages.AdminMessages.policies.ruleHelperTryAndOr",
+            type: "info"
         }
     };
 });

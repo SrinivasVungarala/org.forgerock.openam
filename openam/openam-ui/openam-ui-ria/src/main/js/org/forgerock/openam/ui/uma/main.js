@@ -31,13 +31,19 @@ define([
     "./models/UMAResourceSetWithPolicy",
     "./models/User",
 
-    "./views/RequestsView",
+    "./views/request/ListRequest",
+    "./views/request/EditRequest",
     "./views/backgrid/cells/PermissionsCell",
     "./views/history/ListHistory",
-    "./views/resource/EditResource",
-    "./views/resource/ListResource",
-    "./views/resource/MyResourcesTab",
-    "./views/resource/SharedResourcesTab",
+
+    "./views/resource/BasePage",
+    "./views/resource/LabelTreeNavigationView",
+    "./views/resource/MyLabelsPage",
+    "./views/resource/MyResourcesPage",
+    "./views/resource/ResourcePage",
+    "./views/resource/SharedWithMePage",
+    "./views/resource/StarredPage",
+
     "./views/share/BaseShare",
     "./views/share/CommonShare",
     "./views/share/ShareCounter"

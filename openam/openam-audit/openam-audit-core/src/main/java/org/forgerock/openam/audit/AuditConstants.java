@@ -27,6 +27,16 @@ public final class AuditConstants {
      */
     public static final String ACCESS_TOPIC = "access";
 
+    /**
+     * SMS service name for the audit service.
+     */
+    public static final String SERVICE_NAME = "AuditService";
+
+    /**
+     * Name of the event handlers registered with the audit service.
+     */
+    public static final String CSV = "csv";
+
     private AuditConstants() {
         // Prevent instantiation
     }

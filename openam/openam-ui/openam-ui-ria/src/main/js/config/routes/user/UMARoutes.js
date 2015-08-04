@@ -17,43 +17,79 @@
 /*global define*/
 define("config/routes/user/UMARoutes", function () {
     return {
-        "uma": {
-            view: "org/forgerock/openam/ui/uma/views/resource/ListResource",
-            url: /^uma/,
-            pattern: "uma/resources/",
-            role: "ui-user"
-        },
-        "editResource": {
-            view: "org/forgerock/openam/ui/uma/views/resource/EditResource",
-            url: /^uma\/resources\/(.*?)(?:\/){0,1}$/,
+        // Lists of Resource Sets
+        "umaResourcesMyResources": {
+            view: "org/forgerock/openam/ui/uma/views/resource/LabelTreeNavigationView",
+            page: "org/forgerock/openam/ui/uma/views/resource/MyResourcesPage",
+            url: /^uma\/resources\/?(myresources)?\/?([^\/]+)?\/?$/,
+            pattern: "uma/resources/?/?",
             role: "ui-user",
-            pattern: "uma/resources/?"
+            defaults: ["myresources", ""],
+            forceUpdate: true
         },
-        "listResource": {
-            view: "org/forgerock/openam/ui/uma/views/resource/ListResource",
-            url: /^uma\/resources\/$/,
+        "umaResourcesSharedWithMe": {
+            view: "org/forgerock/openam/ui/uma/views/resource/LabelTreeNavigationView",
+            page: "org/forgerock/openam/ui/uma/views/resource/SharedWithMePage",
+            url: /^uma\/resources\/sharedwithme\/?$/,
+            pattern: "uma/resources/sharedwithme",
+            role: "ui-user",
+            forceUpdate: true
+        },
+        "umaResourcesStarred": {
+            view: "org/forgerock/openam/ui/uma/views/resource/LabelTreeNavigationView",
+            page: "org/forgerock/openam/ui/uma/views/resource/StarredPage",
+            url: /^uma\/resources\/starred\/?$/,
+            pattern: "uma/resources/starred",
+            role: "ui-user",
+            forceUpdate: true
+        },
+        "umaResourcesMyLabels": {
+            view: "org/forgerock/openam/ui/uma/views/resource/LabelTreeNavigationView",
+            page: "org/forgerock/openam/ui/uma/views/resource/MyLabelsPage",
+            url: /^uma\/resources\/mylabels\/([^\/]+)\/?$/,
+            pattern: "uma/resources/mylabels/?",
+            role: "ui-user",
             defaults: [""],
-            role: "ui-user",
-            pattern: "uma/resources/"
+            forceUpdate: true
         },
-        "baseShare": {
+        // Individual Resource Sets
+        "umaResource": {
+            view: "org/forgerock/openam/ui/uma/views/resource/LabelTreeNavigationView",
+            page: "org/forgerock/openam/ui/uma/views/resource/ResourcePage",
+            url: /^uma\/resources\/([^\/]+)\/([^\/]+)\/([^\/]+)\/?$/,
+            role: "ui-user",
+            pattern: "uma/resources/?/?/?",
+            defaults: ["", "", ""],
+            forceUpdate: true
+        },
+        // History
+        "umaHistory": {
+            view: "org/forgerock/openam/ui/uma/views/history/ListHistory",
+            role: "ui-user",
+            url: /^uma\/history\/?$/,
+            pattern: "uma/history"
+        },
+        // Requests
+        "umaRequestEdit": {
+            view: "org/forgerock/openam/ui/uma/views/request/EditRequest",
+            role: "ui-user",
+            url: /^uma\/requests\/(.*?)(?:\/){0,1}$/,
+            pattern: "uma/requests/?"
+        },
+        "umaRequestList": {
+            view: "org/forgerock/openam/ui/uma/views/request/ListRequest",
+            role: "ui-user",
+            defaults: [""],
+            url: /^uma\/requests\/?$/,
+            pattern: "uma/requests/"
+        },
+        // Share
+        "umaBaseShare": {
             view: "org/forgerock/openam/ui/uma/views/share/BaseShare",
             url: /^uma\/share\/(.*?)(?:\/){0,1}$/,
             pattern: "uma/share/?",
             defaults: [""],
             role: "ui-user"
-        },
-        "listHistory": {
-            view: "org/forgerock/openam/ui/uma/views/history/ListHistory",
-            role: "ui-user",
-            url: /^uma\/history\/?$/,
-            pattern: "uma/history/"
-        },
-        "umaRequests": {
-            view: "org/forgerock/openam/ui/uma/views/RequestsView",
-            role: "ui-user",
-            url: /^uma\/requests\/?$/,
-            pattern: "uma/requests/"
         }
     };
 });

@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <section xml:id="kinds-of-agent-profiles"
@@ -37,9 +37,9 @@
   <secondary>kinds of</secondary>
  </indexterm>
 
- <para>When you open the OpenAM console to configure agents for the top level
+ <para>When you open the OpenAM console to configure agents for the top-level
   realm, you can choose from a number of different types of agents. Web and J2EE policy
-  agents are the most common, requiring the least integration effort.</para>
+  agents are the most common, requiring the least integration effort:</para>
  <indexterm>
   <primary>Policy agents</primary>
   <secondary>Profiles</secondary>

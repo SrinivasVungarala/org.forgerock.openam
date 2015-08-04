@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <section xml:id="sec-data-stores-active-directory"
@@ -31,7 +31,7 @@
  <title>Hints for Configuring Active Directory Data Stores</title>
 
  <para>
-  Use these hints when configuring Active Directory Data Stores.
+  Use these hints when configuring Active Directory Data Stores:
  </para>
 
  <indexterm>
@@ -82,7 +82,7 @@
      <literal><replaceable>host</replaceable>:<replaceable>port</replaceable></literal>
      to contact the directory server, with optional
      <literal>|<replaceable>server_ID</replaceable>|<replaceable>site_ID</replaceable></literal>
-     for deployments with multiple servers and sites
+     for deployments with multiple servers and sites.
     </para>
 
     <orderedlist>
@@ -90,14 +90,14 @@
       OpenAM uses the optional settings to determine
       which directory server to contact first.
       OpenAM tries to contact directory servers
-      in the following priority order, with highest priority first.
+      in the following priority order, with highest priority first:
      </para>
 
      <listitem>
       <para>
        The first directory server in the list
        whose <replaceable>server_ID</replaceable>
-       matches the current OpenAM server
+       matches the current OpenAM server.
       </para>
      </listitem>
 
@@ -105,13 +105,13 @@
       <para>
        The first directory server in the list
        whose <replaceable>site_ID</replaceable>
-       matches the current OpenAM server
+       matches the current OpenAM server.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       The first directory server in the remaining list
+       The first directory server in the remaining list.
       </para>
      </listitem>
     </orderedlist>
@@ -129,7 +129,7 @@
     <para>
      Default:
      <literal><replaceable>host</replaceable>:<replaceable>port</replaceable></literal>
-     of the initial directory server configured for this OpenAM server
+     of the initial directory server configured for this OpenAM server.
     </para>
    </listitem>
   </varlistentry>
@@ -172,7 +172,7 @@
    <term>LDAP Organization DN</term>
    <listitem>
     <para>
-     The base DN under which to find user and group profiles
+     The base DN under which to find user and group profiles.
     </para>
 
     <para>
@@ -260,7 +260,7 @@
    <term>LDAP Connection Heartbeat Time Unit</term>
    <listitem>
     <para>
-     Time unit for the LDAP Connection Heartbeat Interval setting
+     Time unit for the LDAP Connection Heartbeat Interval setting.
     </para>
 
     <para>
@@ -280,7 +280,7 @@
    <listitem>
     <para>
      A cap for the number of search results to request.
-     For example when using the Subjects tab to view profiles,
+     For example, when using the Subjects tab to view profiles,
      even if you set
      Configuration > Console > Administration > Maximum Results Returned from Search
      to a larger number, OpenAM does not exceed this setting.
@@ -321,7 +321,7 @@
   </varlistentry>
 
   <varlistentry>
-   <term>LDAPv3 Plug-in Search Scope</term>
+   <term>LDAPv3 Plugin Search Scope</term>
    <listitem>
     <para>
      LDAP searches can apply to a single entry (SCOPE_BASE),
@@ -342,10 +342,10 @@
   </varlistentry>
 
   <varlistentry>
-   <term>LDAPv3 Repository Plug-in Class Name</term>
+   <term>LDAPv3 Repository Plugin Class Name</term>
    <listitem>
     <para>
-     OpenAM identity repository implementation
+     OpenAM identity repository implementation.
     </para>
 
     <para>
@@ -364,7 +364,7 @@
    <term>Attribute Name Mapping</term>
    <listitem>
     <para>
-     Map of OpenAM profile attribute names to directory server attribute names
+     Map of OpenAM profile attribute names to directory server attribute names.
     </para>
 
     <para>
@@ -380,10 +380,10 @@
   </varlistentry>
 
   <varlistentry>
-   <term>LDAPv3 Plug-in Supported Types and Operations</term>
+   <term>LDAPv3 Plugin Supported Types and Operations</term>
    <listitem>
     <para>
-     Map of OpenAM operations that can be performed in the specified OpenAM contexts
+     Map of OpenAM operations that can be performed in the specified OpenAM contexts.
     </para>
 
     <para>
@@ -404,7 +404,7 @@
    <term>LDAP Users Search Attribute</term>
    <listitem>
     <para>
-     When searching for a user by name, match values against this attribute
+     When searching for a user by name, match values against this attribute.
     </para>
 
     <para>
@@ -423,7 +423,7 @@
    <term>LDAP Users Search Filter</term>
    <listitem>
     <para>
-     When searching for users, apply this LDAP search filter as well
+     When searching for users, apply this LDAP search filter as well.
     </para>
 
     <para>
@@ -442,7 +442,7 @@
    <term>LDAP People Container Naming Attribute</term>
    <listitem>
     <para>
-     RDN attribute of the LDAP base DN which contains user profiles
+     RDN attribute of the LDAP base DN which contains user profiles.
     </para>
 
     <para>
@@ -461,7 +461,7 @@
    <term>LDAP People Container Value</term>
    <listitem>
     <para>
-     RDN attribute value of the LDAP base DN which contains user profiles
+     RDN attribute value of the LDAP base DN which contains user profiles.
     </para>
 
     <para>
@@ -480,7 +480,7 @@
    <term>LDAP User Object Class</term>
    <listitem>
     <para>
-     User profiles have these LDAP object classes
+     User profiles have these LDAP object classes.
     </para>
 
     <para>
@@ -490,7 +490,7 @@
     </para>
 
     <para>
-     For example, with default settings
+     For example, with default settings,
      if you request that OpenAM execute a search that asks for
      the <literal>mailAlternateAddress</literal> attribute,
      OpenAM does the search, but does not request
@@ -520,7 +520,7 @@
    <term>LDAP User Attributes</term>
    <listitem>
     <para>
-     User profiles have these LDAP attributes
+     User profiles have these LDAP attributes.
     </para>
 
     <para>
@@ -656,7 +656,7 @@
    <term>Attribute Name of User Status</term>
    <listitem>
     <para>
-     Attribute to check/set user status
+     Attribute to check/set user status.
     </para>
 
     <para>
@@ -715,7 +715,7 @@
     <para>
      RDN attribute for building the bind DN
      when given a username and password
-     to authenticate a user against the directory server
+     to authenticate a user against the directory server.
     </para>
 
     <para>
@@ -734,7 +734,7 @@
    <term>LDAP Groups Search Attribute</term>
    <listitem>
     <para>
-     When searching for a group by name, match values against this attribute
+     When searching for a group by name, match values against this attribute.
     </para>
 
     <para>
@@ -753,7 +753,7 @@
    <term>LDAP Groups Search Filter</term>
    <listitem>
     <para>
-     When searching for groups, apply this LDAP search filter as well
+     When searching for groups, apply this LDAP search filter as well.
     </para>
 
     <para>
@@ -772,7 +772,7 @@
    <term>LDAP Groups Container Naming Attribute</term>
    <listitem>
     <para>
-     RDN attribute of the LDAP base DN which contains group profiles
+     RDN attribute of the LDAP base DN which contains group profiles.
     </para>
 
     <para>
@@ -791,7 +791,7 @@
    <term>LDAP Groups Container Value</term>
    <listitem>
     <para>
-     RDN attribute value of the LDAP base DN which contains group profiles
+     RDN attribute value of the LDAP base DN which contains group profiles.
     </para>
 
     <para>
@@ -810,7 +810,7 @@
    <term>LDAP Groups Object Class</term>
    <listitem>
     <para>
-     Group profiles have these LDAP object classes
+     Group profiles have these LDAP object classes.
     </para>
 
     <para>
@@ -830,7 +830,7 @@
    <term>LDAP Groups Attributes</term>
    <listitem>
     <para>
-     Group profiles have these LDAP attributes
+     Group profiles have these LDAP attributes.
     </para>
 
     <para>
@@ -858,7 +858,7 @@
    <listitem>
     <para>
      LDAP attribute in the member's LDAP entry
-     whose values are the groups to which a member belongs
+     whose values are the groups to which a member belongs.
     </para>
 
     <para>
@@ -873,7 +873,7 @@
    <listitem>
     <para>
      Attribute in the group's LDAP entry
-     whose values are the members of the group
+     whose values are the members of the group.
     </para>
 
     <para>
@@ -892,8 +892,8 @@
    <term>Persistent Search Base DN</term>
    <listitem>
     <para>
-     Base DN for LDAP persistent searches
-     used to receive notification of changes in directory server data
+     Base DN for LDAP-persistent searches
+     used to receive notification of changes in directory server data.
     </para>
 
     <para>
@@ -914,7 +914,7 @@
     <para>
      LDAP searches can apply to a single entry (SCOPE_BASE),
      entries directly below the search DN (SCOPE_ONE),
-     or all entries below the search DN (SEARCH_SUB)
+     or all entries below the search DN (SEARCH_SUB).
     </para>
 
     <para>
@@ -941,7 +941,7 @@
    <listitem>
     <para>
      How long to wait after receiving an error result
-     that indicates OpenAM should try the LDAP operation again
+     that indicates OpenAM should try the LDAP operation again.
     </para>
 
     <para>
@@ -983,7 +983,7 @@
    <term>DN Cache Size</term>
    <listitem>
     <para>
-     Maximum number of DNs cached when caching is enabled
+     Maximum number of DNs cached when caching is enabled.
     </para>
 
     <para>

@@ -31,7 +31,7 @@
          http://docbook.org/xml/5.0/xsd/docbook.xsd'
          xmlns:xlink='http://www.w3.org/1999/xlink'>
 
- <title>The RESTful Security Token Service (REST-STS)</title>
+ <title>The RESTful Security Token Service</title>
 
   <para>
     This chapter specifies the configuration requirements associated with the
@@ -113,18 +113,21 @@
      Access Control &gt; <replaceable>Realm Name</replaceable> &gt; STS. When
      you see the <replaceable>Realm Name</replaceable> - REST STS Instances
      menu, click Add. You should see an excerpt of the REST Security Token
-     Service menu in the following screen shot.
+     Service menu in the following screen shot:
     </para>
 
-    <mediaobject xml:id="rest-sts-access-menu">
-     <alt>The REST Security Token Service UI</alt>
-     <imageobject>
-      <imagedata fileref="images/rest-sts-access-menu.png" format="PNG"/>
-     </imageobject>
-     <textobject>
-      <para>You can configure the REST STS from this realm-based menu</para>
-     </textobject>
-    </mediaobject>
+    <figure xml:id="rest-sts-access-menu">
+     <title>REST Security Token Service UI</title>
+     <mediaobject>
+      <alt>The REST Security Token Service UI</alt>
+      <imageobject>
+       <imagedata fileref="images/rest-sts-access-menu.png" format="PNG"/>
+      </imageobject>
+      <textobject>
+       <para>You can configure the REST STS from this realm-based menu</para>
+      </textobject>
+     </mediaobject>
+    </figure>
 
     <para>
      The REST STS configuration menu is subdivided into three sections:
@@ -180,19 +183,19 @@
       configure two or three  pieces of information related to each input token.
       The default options shown in this field are known as a
       <literal>tuple</literal>, an ordered list of elements. Each element is
-      separated with a pipe character: "<literal>|</literal>".
+      separated with a pipe character: "<literal>|</literal>":
      </para>
      <variablelist>
       <varlistentry>
-       <term>Authentication target type</term>
+       <term>Authentication target type.</term>
        <listitem>
         <para>
-         Whether the target is a module or service
+         Whether the target is a module or service.
         </para>
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term>Name of the authentication module or service</term>
+       <term>Name of the authentication module or service.</term>
        <listitem>
         <para>
          Two default options are included: the <literal>ldapService</literal>
@@ -207,7 +210,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term>Authentication context information (optional)</term>
+       <term>Authentication context information (optional).</term>
        <listitem>
         <para>
          Defines STS authentication context information about the token to be
@@ -253,7 +256,7 @@
 
      <para>
       This REST-STS configuration UI supports token transformations from
-      username, Open ID Connect, OpenAM, and x509 tokens to SAML2 format.
+      username, Open ID Connect, OpenAM, and X509 tokens to SAML2 format.
       Configure the options shown in this part of the REST-STS UI menu to customize
       how OpenAM will create those SAML2 tokens.
      </para>
@@ -553,7 +556,7 @@
        <term>Confirm Keystore Password</term>
        <listitem>
         <para>
-         Re-enter the password for the keystore file to confirm.
+         Reenter the password for the keystore file to confirm.
         </para>
        </listitem>
       </varlistentry>
@@ -588,7 +591,7 @@
        <term>Confirm Signature Key Password</term>
        <listitem>
         <para>
-         Re-enter the password for the signature key to confirm.
+         Reenter the password for the signature key to confirm.
         </para>
        </listitem>
       </varlistentry>

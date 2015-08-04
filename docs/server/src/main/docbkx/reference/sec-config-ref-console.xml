@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !    
+-->
+ <section xml:id="console-configuration"
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'>
+  <title>Console Configuration</title>
+  <indexterm>
+   <primary>Configuration</primary>
+   <secondary>Console</secondary>
+  </indexterm>
+
+  <para>Under Configuration &gt; Console, you can customize how the OpenAM
+  console appears and what character sets are used.</para>
+
+  <itemizedlist>
+   <para>
+    This section describes the following sets of properties:
+   </para>
+
+   <listitem>
+    <para>
+     <xref linkend="console-administration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="console-g11n" />
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <section xml:id="console-administration">
+   <title>Administration</title>
+   <variablelist>
+   <para>Administration includes both global and realm attributes.</para>
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMAdminConsoleService</literal></para>
+
+   <varlistentry>
+    <term>Federation Management</term>
+    <listitem>
+     <para>Clear Enabled to disable federation functionality in OpenAM.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-admin-console-liberty-enabled</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Maximum Results Returned from Search</term>
+    <listitem>
+     <para>Use this attribute to restrict the maximum number of results found
+     in a search, such as a search for user profiles. Increasing the value can
+     negatively impact performance.</para>
+     <note><para>The default maximum is 100, so you may not see all users in
+      search results.</para></note>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-admin-console-search-limit</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Timeout for Search</term>
+    <listitem>
+     <para>Timeout in seconds for a console search. OpenAM returns an error
+     if the search is not completed by the timeout.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-admin-console-search-timeout</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Search Return Attribute</term>
+    <listitem>
+     <para>List of LDAP attribute types to return in search results. OpenAM
+     sorts users by the first attribute you specify. Use attributes that are
+     present in user profiles.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-admin-console-user-return-attribute</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Maximum Items Displayed per Page</term>
+    <listitem>
+     <para>OpenAM shows the maximum number of items in a console page before
+     separating the page into multiple screens.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-admin-console-paging-size</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Prompt user for old password</term>
+    <listitem>
+     <para>If enabled, when the user edits her password in the user view, then
+     OpenAM prompts her for the old password.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-admin-console-password-reset-enabled</literal></para>
+    </listitem>
+   </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="console-g11n">
+   <title>Globalization Settings</title>
+<variablelist>
+   <para>Globalization settings affect character sets and common name
+   formats. See <link xlink:href="reference#chap-l10n"
+  xlink:role="http://docbook.org/xlink/role/olink"><citetitle
+  >Localization</citetitle></link> for a list of supported locales.</para>
+
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetG11NSettings</literal></para>
+
+   <varlistentry>
+    <term>Charsets Supported by Each Locale</term>
+    <listitem>
+     <para>This table lets you configure the order of supported character
+     sets used for each supported locale. Change the settings only if the
+     defaults are not appropriate.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sun-identity-g11n-settings-locale-charset-mapping</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Charset Aliases</term>
+    <listitem>
+     <para>Use this list to map between different character set names used in
+     Java and in MIME.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sun-identity-g11n-settings-charset-alias-mapping</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Auto Generated Common Name Format</term>
+    <listitem>
+     <para>Use this list to configure how OpenAM formats names shown in the
+     console banner.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>sun-identity-g11n-settings-common-name-format</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+   </section>
+ </section>

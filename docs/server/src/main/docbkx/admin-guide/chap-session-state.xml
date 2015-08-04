@@ -43,7 +43,6 @@
  </para>
 
  <section xml:id="session-state-about-sessions">
-
   <title>About OpenAM Sessions</title>
 
   <para>
@@ -59,7 +58,6 @@
   </para>
 
   <section xml:id="session-state-stateful">
-
    <title>Stateful Sessions</title>
 
    <indexterm>
@@ -91,7 +89,6 @@
   </section>
 
   <section xml:id="session-state-stateless">
-
    <title>Stateless Sessions</title>
 
    <indexterm>
@@ -114,12 +111,10 @@
     until the user has logged out of OpenAM, or until the user's session has
     expired.
    </para>
-
   </section>
 
   <section xml:id="session-state-granularity-by-realm">
-
-   <title>Configuration by Realm</title>
+   <title>Configuration By Realm</title>
 
    <para>
     Session statefulness and statelessness are configured at the realm level.
@@ -165,26 +160,23 @@
   </section>
 
   <section xml:id="session-state-session-customization">
-
    <title>Session Customization</title>
 
    <para>
     You can store custom information in both stateful and stateless sessions
-    with post authentication plug-ins. For more information about
-    post authentication plug-ins,
+    with post authentication plugins. For more information about
+    post authentication plugins,
     see <link xlink:show="new"
               xlink:href="dev-guide#chap-post-auth"
               xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Creating
      a Post Authentication Plugin</citetitle></link> in the
      <citetitle>Developer's Guide</citetitle>.
    </para>
-
   </section>
 
  </section>
 
  <section xml:id="session-state-cookies">
-
   <title>Session Cookies</title>
 
    <indexterm>
@@ -196,7 +188,6 @@
     <primary>Session state</primary>
     <secondary>iPlanetDirectoryPro cookie</secondary>
    </indexterm>
-
 
   <para>
    OpenAM writes a cookie in the authenticated user's browser for both stateful
@@ -219,7 +210,9 @@
    information, as illustrated in the figure below.
   </para>
 
-  <mediaobject xml:id="figure-session-state-cookies">
+  <figure xml:id="figure-session-state-cookies">
+   <title>Stateful and Stateless Session Cookies</title>
+   <mediaobject>
     <alt>Stateful and Stateless Session Cookies</alt>
     <imageobject>
      <imagedata fileref="images/iPlanetDirectoryProCookie.png" format="PNG"/>
@@ -230,7 +223,8 @@
       values is larger than stateless session cookie values.
      </para>
     </textobject>
-  </mediaobject>
+   </mediaobject>
+  </figure>
 
   <para>
    The preceding diagram illustrates the difference between stateful and
@@ -247,7 +241,6 @@
   </para>
 
   <section xml:id="session-state-stateless-cookie-security">
-
    <title>Stateless Session Cookie Security</title>
 
    <para>
@@ -262,8 +255,7 @@
    </para>
 
    <section xml:id="session-state-stateless-cookie-security-jwt-sign">
-
-   <title>JWT Signing</title>
+    <title>JWT Signing</title>
 
     <para>
      OpenAM sets the <literal>iPlanetDirectoryPro</literal>
@@ -292,15 +284,11 @@
      the state of every OpenAM session. Encryption also ensures that end users
      are unable to access the information in their OpenAM session.
     </para>
-
    </section>
-
   </section>
-
  </section>
 
  <section xml:id="session-state-cts-usage">
-
   <title>Core Token Service Usage</title>
 
    <indexterm>
@@ -494,7 +482,7 @@
    workload balances gradually, assuming a short session lifetime. If an OpenAM
    server fails, sessions are retrieved from the Core Token Service's token
    store, and performance can take some time to recover. Crosstalk, an expensive
-   operation, is incurred whenever a user arrives at an OpenAM server that isn't
+   operation, is incurred whenever a user arrives at an OpenAM server that is not
    the user's home server. Adding servers to OpenAM sites does not improve
    performance in a horizontally scalable manner; as more servers are added to a
    site, coordination among the servers becomes more complex.
@@ -586,7 +574,7 @@
 
   <para>
    The following table contrasts the impact of using stateful and stateless
-   sessions in an OpenAM deployment.
+   sessions in an OpenAM deployment:
   </para>
 
   <table xml:id="session-state-stateful-stateless" pgwide="1">
@@ -663,17 +651,13 @@
        Sessions cached in the Policy Agent cannot receive change notification.
       </entry>
      </row>
-
     </tbody>
-
    </tgroup>
-
   </table>
 
  </section>
 
  <section xml:id="session-state-installation-planning">
-
   <title>Installation Planning for Stateless Sessions</title>
 
   <indexterm>
@@ -691,7 +675,7 @@
    see <link xlink:show="new"
              xlink:href="install-guide#chap-cts"
              xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-   the Core Token Service (CTS)</citetitle></link> in the
+   the Core Token Service</citetitle></link> in the
    <citetitle>Installation Guide</citetitle>.
   </para>
 
@@ -726,7 +710,6 @@
  </section>
 
  <section xml:id="session-state-configure-stateless">
-
   <title>Configuring OpenAM for Stateless Sessions</title>
 
   <indexterm>
@@ -735,11 +718,10 @@
   </indexterm>
 
   <para>
-    To configure stateless sessions for a realm, follow these steps.
+    To configure stateless sessions for a realm, follow these steps:
   </para>
 
   <procedure xml:id="session-state-enable-stateless-procedure">
-
    <title>Enable Stateless Sessions in a Realm</title>
 
    <step>
@@ -771,11 +753,10 @@
 
   <para>
    To verify that OpenAM creates a stateless session when non-administrative
-   users authenticate to the realm, follow these steps.
+   users authenticate to the realm, follow these steps:
   </para>
 
   <procedure xml:id="session-state-verify-stateless-procedure">
-
    <title>Verify that Stateless Sessions Are Enabled</title>
 
    <step>
@@ -922,7 +903,7 @@
     When deploying multiple OpenAM servers in an OpenAM site, every server must
     have the same security configuration. Shared secrets and security keys must
     be identical. If you modify shared secrets or keys, you must make the
-    modification to all the servers on the site.
+    modifications to all the servers on the site.
    </para>
   </important>
 
@@ -936,7 +917,7 @@
    </para>
 
    <para>
-    Perform the following steps to configure the JWT signature.
+    Perform the following steps to configure the JWT signature:
    </para>
 
    <procedure xml:id="session-state-configure-jwt-signature-procedure">
@@ -991,7 +972,6 @@
   </section>
 
   <section xml:id="session-state-configure-jwt-encryption">
-
    <title>Configuring JWT Encryption</title>
 
    <para>
@@ -1001,11 +981,10 @@
    </para>
 
    <para>
-    Perform the following steps to encrypt the JWT.
+    Perform the following steps to encrypt the JWT:
    </para>
 
    <procedure xml:id="session-state-configure-jwt-encryption-procedure">
-
     <title>To Configure JWT Encryption</title>
 
     <step>
@@ -1052,13 +1031,11 @@
     >Session Service attributes</link> in the
     <citetitle>Reference</citetitle>.
    </para>
-
   </section>
 
  </section>
 
  <section xml:id="session-state-configure-blacklist">
-
   <title>Configuring Session Blacklisting</title>
 
   <indexterm>
@@ -1070,7 +1047,7 @@
    sessions cannot achieve single sign-on without reauthenticating to OpenAM.
   </para>
   <para>
-   Perform the following steps to configure session blacklisting.
+   Perform the following steps to configure session blacklisting:
   </para>
 
   <procedure xml:id="session-state-configure-session-blacklisting-procedure">
@@ -1170,7 +1147,6 @@
  </section>
 
  <section xml:id="session-state-stateless-limitations">
-
   <title>Limitations When Using Stateless Sessions</title>
 
   <indexterm>

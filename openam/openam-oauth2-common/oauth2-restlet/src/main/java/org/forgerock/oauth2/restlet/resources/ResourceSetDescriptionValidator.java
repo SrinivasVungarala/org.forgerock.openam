@@ -50,6 +50,7 @@ public class ResourceSetDescriptionValidator {
         validateType(description);
         validateScopes(description);
         validateIconUri(description);
+        validateLabels(description);
 
         return resourceSetDescription;
     }
@@ -107,6 +108,15 @@ public class ResourceSetDescriptionValidator {
                 throw new BadRequestException("Invalid Resource Set Description. Attribute, 'icon_uri', must be a "
                         + "valid URI.");
             }
+        }
+    }
+
+    private void validateLabels(JsonValue description) throws BadRequestException {
+        try {
+            description.get(OAuth2Constants.ResourceSets.LABELS).asSet(String.class);
+        } catch (JsonValueException e) {
+            throw new BadRequestException("Invalid Resource Set Description. Optional attribute, 'labels', must be an "
+                    + "array of Strings.");
         }
     }
 }

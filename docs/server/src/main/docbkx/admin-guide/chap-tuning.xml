@@ -91,7 +91,8 @@
   
   <section xml:id="tuning-general-settings">
    <title>General Settings</title>
-   <para>The following general points apply.</para>
+
+   <para>The following general points apply:</para>
    <itemizedlist>
     <listitem>
      <para>Set debug level to <literal>error</literal>.</para>
@@ -121,7 +122,7 @@
     <replaceable>Realm Name</replaceable> &gt; Data Stores &gt;
     <replaceable>Data Store Name</replaceable> in the OpenAM console.
     Each data store has its own connection pool and therefore each data store
-    needs its own tuning.</para>
+    needs its own tuning:</para>
 
     <table xml:id="tuning-ldap-data-store-settings" pgwide="1">
      <title>LDAP Data Store Settings</title>
@@ -194,7 +195,7 @@
 
     <para>To change connection pool settings for the LDAP authentication module,
     browse to Configuration &gt; Authentication &gt; Core in the OpenAM
-    console.</para>
+    console:</para>
 
     <table xml:id="tuning-ldap-authentication-module-settings" pgwide="1">
      <title>LDAP Authentication Module Setting</title>
@@ -226,7 +227,7 @@
    </section>
 
    <section xml:id="tuning-ldap-settings-cts">
-    <title>Tuning LDAP CTS &amp; Configuration Store Settings</title>
+    <title>Tuning LDAP CTS and Configuration Store Settings</title>
 
     <para>
      When tuning LDAP connection pool settings for the Core Token Service (CTS),
@@ -251,13 +252,13 @@
      The remaining connections are allocated
      to services accessing the OpenAM configuration.
      For a default configuration,
-     where the maximum number of connections in the pool is 10,
-     1 connection is allocated for cleanup of expired CTS tokens,
-     4 connections are allocated for other CTS operations,
-     and 5 connections are allocated for services accessing the configuration.
+     where the maximum number of connections in the pool is ten,
+     one connection is allocated for cleanup of expired CTS tokens,
+     four connections are allocated for other CTS operations,
+     and five connections are allocated for services accessing the configuration.
      If the Maximum Connection Pool size is 20,
-     1 connection is allocated for cleanup of expired CTS tokens,
-     8 connections are allocated for other CTS operations,
+     one connection is allocated for cleanup of expired CTS tokens,
+     eight connections are allocated for other CTS operations,
      and 11 connections are allocated for services accessing the configuration.
      If the pool size is 65, then the numbers are 1, 32, and 32, and so on.
     </para>
@@ -299,7 +300,7 @@
      In both cases, if you must change the default connection timeouts,
      set the advanced properties described below under
      Configuration > Servers and Sites > <replaceable>server name</replaceable>
-     > Advanced.
+     > Advanced:
     </para>
 
     <table xml:id="tuning-ldap-cts-settings" pgwide="1">
@@ -453,9 +454,9 @@
    </indexterm>
 
    <para>OpenAM has two thread pools used to send notifications to clients. The
-   Service Management Service thread pool can be tuned in OpenAM console under
+   Service Management Service (SMS) thread pool can be tuned in OpenAM console under
    Configuration &gt; Servers and Sites &gt; Default Server Settings &gt;
-   SDK.</para>
+   SDK:</para>
    
    <table xml:id="tuning-sms-notifications" pgwide="1">
     <title>SMS Notification Setting</title>
@@ -493,7 +494,7 @@
    <para>The session service has its own thread pool to send notifications
    to listeners about changes to stateful sessions.
    This is configured under Configuration &gt; Servers and Sites &gt; Default
-   Server Settings &gt; Session.</para>
+   Server Settings &gt; Session:</para>
    
    <table xml:id="tuning-session-service-notifications" pgwide="1">
     <title>Session Service Notification Settings</title>
@@ -539,7 +540,7 @@
    <para>The session service has additional properties to tune, which are
    configured under Configuration &gt; Servers and Sites &gt; Default
    Server Settings &gt; Session. The following suggestions apply to deployments
-   using stateful sessions.</para>
+   using stateful sessions:</para>
    
    <table xml:id="tuning-session-service-settings" pgwide="1">
     <title>Session Settings</title>
@@ -559,7 +560,7 @@
        <entry>Maximum Sessions</entry>
        <entry>5000</entry>
        <entry>
-        <para>In production this value can safely be set into the 100,000s.
+        <para>In production, this value can safely be set into the 100,000s.
         The maximum session limit is really controlled by the maximum size of
         the JVM heap which must be tuned appropriately to match the expected
         number of concurrent sessions.</para>
@@ -586,7 +587,7 @@
   <para>This section gives some initial guidance on configuring the JVM for
   running OpenAM. These settings provide a strong foundation to the JVM before
   a more detailed garbage collection tuning exercise, or as best practice
-  configuration for production.</para>
+  configuration for production:</para>
   
   <table xml:id="tuning-heap-size" pgwide="1">
    <title>Heap Size Settings</title>
@@ -605,9 +606,9 @@
      <row>
       <entry><para><literal>-Xms</literal> &amp;
       <literal>-Xmx</literal></para></entry>
-      <entry><para>At least 1024m (2048m with embedded OpenDJ), in production
-      environments at least 2048m to 3072m. This setting depends on the available
-      physical memory, and on whether a 32 or 64-bit JVM is used.</para></entry>
+      <entry><para>At least 1024 MB (2048 MB with embedded OpenDJ), in production
+      environments at least 2048 MB to 3072 MB. This setting depends on the available
+      physical memory, and on whether a 32- or 64-bit JVM is used.</para></entry>
       <entry><para>-</para></entry>
      </row>
      <row>
@@ -623,7 +624,7 @@
      <row>
       <entry><para><literal>-XX:PermSize</literal> &amp;
       <literal>-XX:MaxPermSize</literal></para></entry>
-      <entry><para>Set both to 256m</para></entry>
+      <entry><para>Set both to 256 MB</para></entry>
       <entry><para>Controls the size of the permanent generation in the
       JVM</para></entry>
      </row>
@@ -774,16 +775,20 @@
    search and <literal>mod DN</literal> operations (that is, move or rename DN).</para>
 
   <para>The following diagram depicts the two kinds of cache, and also the
-   two types of caching available for user data.</para>
+   two types of caching available for user data:</para>
 
-  <mediaobject xml:id="figure-openam-caches">
-   <alt>Caches in OpenAM server</alt>
-   <imageobject>
-    <imagedata fileref="images/openam-caches.png" format="PNG" />
-   </imageobject>
-   <textobject><para>OpenAM server caches user data and configuration data
-   separately.</para></textobject>
-  </mediaobject>
+  <figure xml:id="figure-openam-caches">
+   <title>OpenAM Caches</title>
+   <mediaobject>
+    <alt>Caches in OpenAM server</alt>
+    <imageobject>
+     <imagedata fileref="images/openam-caches.png" format="PNG" />
+    </imageobject>
+    <textobject><para>OpenAM server caches user data and configuration data
+     separately.</para>
+    </textobject>
+   </mediaobject>
+  </figure>
 
   <para>The rest of this section concerns mainly settings for global user data
   cache and for SDK clients. For a look at data store cache settings, see
@@ -803,14 +808,14 @@
     <title>To Turn Off Global User Data Caching</title>
 
     <para><emphasis role="strong">Disabling caching can have a severe negative
-    impact on performance. This is because, when caching is disabled, OpenAM
+    impact on performance. This is because when caching is disabled, OpenAM
     must query a data store each time it needs data.</emphasis></para>
 
     <para>If, however, you have at least one user data store that does not
     support LDAP persistent search, such as a relational database or an LDAP
     directory server that does not support persistent search, then you must
     disable the <emphasis>global</emphasis> cache for user data. Otherwise user
-    data caches cannot stay in sync with changes to user data entries.</para>
+    data caches cannot stay in sync with changes to user data entries:</para>
 
     <step>
      <para>In the OpenAM console, browse to Configuration &gt; Servers and Sites
@@ -844,7 +849,7 @@
     <title>To Change the Maximum Size of Global User Data Cache</title>
 
     <para>With a large user data store and active user base, the number of user
-    entries in cache can grow large.</para>
+    entries in cache can grow large:</para>
 
     <step>
      <para>In the OpenAM console, browse to Configuration &gt; Servers and Sites
@@ -852,8 +857,7 @@
     </step>
 
     <step>
-     <para>Change the value of SDK Caching Max. Size, and then Save your
-     work.</para>
+     <para>Change the value of SDK Caching Maximum Size, and then click Save.</para>
 
      <para>There is no corresponding setting for configuration data, as the
      number of configuration entries in a large deployment is not likely to
@@ -863,21 +867,21 @@
   </section>
 
   <section xml:id="java-ee-policy-agent-and-sdk-caching">
-   <title>Caching Properties For Java EE Policy Agents &amp; SDK Clients</title>
+   <title>Caching Properties For Java EE Policy Agents and SDK Clients</title>
 
    <para>Policy agents and other OpenAM SDK clients can also cache user data,
    using most of the same properties as OpenAM server as described in
-   <xref linkend="table-cache-properties" /> . Clients however can receive
+   <xref linkend="table-cache-properties" /> . Clients, however, can receive
    updates by notification from OpenAM or, if notification fails, by
    polling OpenAM for changes.</para>
 
    <procedure xml:id="notify-sdk-cache-updates">
-    <title>To Enable Notification &amp; Polling For Client Cache Updates</title>
+    <title>To Enable Notification and Polling For Client Cache Updates</title>
 
     <para>This procedure describes how to enable change notification and polling
     for policy agent user data cache updates. When configuring a custom OpenAM
     SDK client using a .properties file, use the same properties as for the
-    policy agent configuration.</para>
+    policy agent configuration:</para>
 
     <step>
      <para>In OpenAM console, browse to Access Control &gt; <replaceable>Realm
@@ -936,7 +940,7 @@
    <para>Notice that many properties for configuration data cache have
    <literal>sm</literal> (for Service Management) in their names, whereas those
    for user data have <literal>idm</literal> (for Identity Management) in their
-   names.</para>
+   names:</para>
 
    <table xml:id="table-cache-properties" pgwide="1">
     <title>OpenAM Cache Properties</title>
@@ -956,9 +960,9 @@
      <tbody>
       <row>
        <entry><para><literal>com.iplanet.am.sdk.cache.maxSize</literal></para></entry>
-       <entry><para>Maximum number of user entries cached</para></entry>
+       <entry><para>Maximum number of user entries cached.</para></entry>
        <entry><para>10000</para></entry>
-       <entry><para>Server &amp; SDK</para></entry>
+       <entry><para>Server and SDK</para></entry>
       </row>
 
       <row>
@@ -1023,7 +1027,7 @@
        <entry><para><literal>com.sun.identity.idm.cache.entry.default.expire.time</literal></para></entry>
        <entry>
         <para>How many minutes to store a user data entry in the global user
-        data cache</para>
+        data cache.</para>
        </entry>
        <entry><para>30 (minutes)</para></entry>
        <entry><para>Server &amp; SDK</para></entry>
@@ -1033,7 +1037,7 @@
        <entry><para><literal>com.sun.identity.idm.cache.entry.expire.enabled</literal></para></entry>
        <entry>
         <para>Whether user data entries in the global user data cache should
-        expire over time</para>
+        expire over time.</para>
        </entry>
        <entry><para><literal>false</literal></para></entry>
        <entry><para>Server &amp; SDK</para></entry>

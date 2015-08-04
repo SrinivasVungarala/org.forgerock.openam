@@ -38,14 +38,15 @@ import com.sun.identity.idm.IdSearchResults;
 import com.sun.identity.idm.IdType;
 import com.sun.identity.shared.datastruct.CollectionHelper;
 import com.sun.identity.shared.debug.Debug;
+import com.sun.identity.sm.SMSException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.ConfirmationCallback;
@@ -57,7 +58,9 @@ import org.forgerock.json.fluent.JsonValue;
 import org.forgerock.json.resource.InternalServerErrorException;
 import org.forgerock.openam.rest.devices.OathDeviceSettings;
 import org.forgerock.openam.rest.devices.OathDevicesDao;
+import org.forgerock.openam.rest.devices.services.OathService;
 import org.forgerock.openam.utils.CollectionUtils;
+import org.forgerock.openam.utils.StringUtils;
 import org.forgerock.openam.utils.qr.GenerationUtils;
 
 /**
@@ -66,8 +69,7 @@ import org.forgerock.openam.utils.qr.GenerationUtils;
  * generation and authentication; HMAC-based One Time Password (HOTP) and
  * Time-based One Time Password (TOTP).
  */
-public class
-        OATH extends AMLoginModule {
+public class OATH extends AMLoginModule {
 
     //debug log name
     protected Debug debug = null;
@@ -83,8 +85,6 @@ public class
             "iplanet-am-auth-oath-password-length";
     private static final String WINDOW_SIZE =
             "iplanet-am-auth-oath-hotp-window-size";
-    private static final String USER_OATH_ACTIVATED_ATTRIBUTE_NAME =
-            "iplanet-am-auth-oath-skippable-attr-name";
     private static final String TRUNCATION_OFFSET =
             "iplanet-am-auth-oath-truncation-offset";
     private static final String CHECKSUM = "iplanet-am-auth-oath-add-checksum";
@@ -95,10 +95,12 @@ public class
     private static final String ALGORITHM = "iplanet-am-auth-oath-algorithm";
     private static final String MIN_SECRET_KEY_LENGTH =
             "iplanet-am-auth-oath-min-secret-key-length";
+    private static final String MAXIMUM_CLOCK_DRIFT = "openam-auth-oath-maximum-clock-drift";
+    private static final String ISSUER_NAME = "openam-auth-oath-issuer-name";
 
     //module attribute holders
+    private String issuerName;
     private int userConfiguredSkippable = 0;
-    private String skippableAttrName = null;
     private boolean isOptional;
     private int passLen = 0;
     private int minSecretKeyLength = 0;
@@ -109,6 +111,7 @@ public class
     private int totpTimeStep = 0;
     private int totpStepsInWindow = 0;
     private long time = 0;
+    private int totpMaxClockDrift = 0;
 
     private static final int HOTP = 0;
     private static final int TOTP = 1;
@@ -129,9 +132,9 @@ public class
 
     private static final int SCRIPT_OUTPUT_CALLBACK_INDEX = 1;
 
-    private static final int NOT_SET = 0;
-    private static final int SKIPPABLE = 1;
-    private static final int NOT_SKIPPABLE = 2;
+    private OathService realmOathService;
+    private AMIdentity id;
+
 
     private final OathDevicesDao devicesDao = InjectorHolder.getInstance(OathDevicesDao.class);
     private final OathMaker deviceFactory = InjectorHolder.getInstance(OathMaker.class);
@@ -177,8 +180,14 @@ public class
             debug.message("OATH::init");
         }
 
-        //get module attributes
+        //get username from previous authentication
         try {
+            userName = (String) sharedState.get(getUserKey());
+
+            //gets skippable name from the realm's service and stores it
+            id = getIdentity();
+            realmOathService = new OathService(id.getRealm());
+
             this.authLevel = CollectionHelper.getMapAttr(options, AUTHLEVEL);
 
             try {
@@ -190,16 +199,17 @@ public class
             try {
                 this.minSecretKeyLength = CollectionHelper.getIntMapAttr(options, MIN_SECRET_KEY_LENGTH, 0, debug);
             } catch (NumberFormatException e) {
-                minSecretKeyLength = 0; //Default value has been delete, set to 0
+                minSecretKeyLength = 0; //Default value has been deleted, set to 0
             }
 
-            this.skippableAttrName = CollectionHelper.getMapAttr(options, USER_OATH_ACTIVATED_ATTRIBUTE_NAME);
             this.windowSize = CollectionHelper.getIntMapAttr(options, WINDOW_SIZE, 0, debug);
-            this.truncationOffset = CollectionHelper.getIntMapAttr(options, TRUNCATION_OFFSET, 0, debug);
+            this.truncationOffset = CollectionHelper.getIntMapAttr(options, TRUNCATION_OFFSET, -1, debug);
             this.isOptional = !getLoginState("OATH").is2faMandatory();
             this.totpTimeStep = CollectionHelper.getIntMapAttr(options, TOTP_TIME_STEP, 1, debug);
             this.totpStepsInWindow = CollectionHelper.getIntMapAttr(options, TOTP_STEPS_IN_WINDOW, 1, debug);
             this.checksum = CollectionHelper.getBooleanMapAttr(options, CHECKSUM, false);
+            this.totpMaxClockDrift = CollectionHelper.getIntMapAttr(options, MAXIMUM_CLOCK_DRIFT, 0, debug);
+            this.issuerName = CollectionHelper.getMapAttr(options, ISSUER_NAME);
 
             final String algorithm = CollectionHelper.getMapAttr(options, ALGORITHM);
             if (algorithm.equalsIgnoreCase("HOTP")) {
@@ -216,19 +226,14 @@ public class
                     setAuthLevel(Integer.parseInt(authLevel));
                 } catch (Exception e) {
                     if (debug.errorEnabled()) {
-                        debug.error("OATH" + ".init() : Unable to set auth level " + authLevel, e);
+                        debug.error("OATH :: init() : Unable to set auth level " + authLevel, e);
                     }
                 }
             }
-        } catch (Exception e) {
-            debug.error("OATH.init() : Unable to get module attributes", e);
-        }
-
-        //get username from previous authentication
-        try {
-            userName = (String) sharedState.get(getUserKey());
-        } catch (Exception e) {
-            debug.error("OATH.init() : Unable to get username : ", e);
+        } catch (SMSException | SSOException | AuthLoginException e) {
+            if (debug.errorEnabled()) {
+                debug.error("OATH :: init() : Unable to configure basic module properties " + authLevel, e);
+            }
         }
 
     }
@@ -265,8 +270,6 @@ public class
                 }
             }
 
-            final AMIdentity id = getIdentity();
-
             final OathDeviceSettings settings = getOathDeviceSettings(id.getName(), id.getRealm());
 
             try {
@@ -281,11 +284,11 @@ public class
             switch (state) {
                 case LOGIN_START:
 
-                    if (isOptional && userConfiguredSkippable == SKIPPABLE) {
+                    if (isOptional && userConfiguredSkippable == OathService.SKIPPABLE) {
                         return ISAuthConstants.LOGIN_SUCCEED;
-                    } else if (isOptional && userConfiguredSkippable == NOT_SET) {
+                    } else if (isOptional && userConfiguredSkippable == OathService.NOT_SET) {
                         return LOGIN_OPTIONAL;
-                    } else if (isOptional && userConfiguredSkippable != NOT_SKIPPABLE) {
+                    } else if (isOptional && userConfiguredSkippable != OathService.NOT_SKIPPABLE) {
                         throw new AuthLoginException(amAuthOATH, "authFailed", null); //invalid so error
                     } else {
                         if (settings == null) {
@@ -307,7 +310,7 @@ public class
 
                     selectedIndex = ((ConfirmationCallback) callbacks[1]).getSelectedIndex();
                     if (selectedIndex == SKIP_OATH_INDEX) {
-                        setUserSkipOath(id, true);
+                        realmOathService.setUserSkipOath(id, true);
                         return ISAuthConstants.LOGIN_SUCCEED;
                     }
 
@@ -351,7 +354,7 @@ public class
                     }
 
                 case REGISTER_DEVICE:
-                    setUserSkipOath(id, false);
+                    realmOathService.setUserSkipOath(id, false);
                     return LOGIN_SAVED_DEVICE;
 
                 case RECOVERY_USED:
@@ -370,7 +373,7 @@ public class
     private OathDeviceSettings createBasicDevice(AMIdentity id) throws AuthLoginException {
 
         OathDeviceSettings settings = deviceFactory.createDeviceProfile(minSecretKeyLength);
-        settings.setLastLogin(System.currentTimeMillis());
+        settings.setLastLogin(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
         settings.setChecksumDigit(checksum);
         settings.setRecoveryCodes(OathDeviceSettings.generateRecoveryCodes(NUM_CODES));
 
@@ -414,19 +417,18 @@ public class
     private void detectNecessity(AMIdentity identity) throws AuthLoginException, IdRepoException, SSOException {
 
         //not optional if they haven't selected anywhere to save the user's preference
-        if (isOptional && skippableAttrName == null) {
+        if (isOptional && StringUtils.isBlank(realmOathService.getSkippableAttributeName())) {
             isOptional = false;
         }
 
         //value is stored as: 0 (not chosen), 1 (skippable) or 2 (not skippable)
         if (isOptional) {
-            Set response = identity.getAttribute(skippableAttrName);
+            Set response = identity.getAttribute(realmOathService.getSkippableAttributeName());
             if (response != null && !response.isEmpty()) { //sets skippable to true if set in user
                 String tmp = (String) response.iterator().next();
                 userConfiguredSkippable = Integer.valueOf(tmp);
             }
         }
-
     }
 
     private void paintRegisterDeviceCallback(AMIdentity id, OathDeviceSettings settings) throws AuthLoginException {
@@ -498,10 +500,8 @@ public class
             throw new AuthLoginException(amAuthOATH, "authFailed", null);
         }
 
-        final String secretHex = settings.getSharedSecret();
-
         final AuthenticatorAppRegistrationURIBuilder builder =
-                new AuthenticatorAppRegistrationURIBuilder(id, secretHex);
+                new AuthenticatorAppRegistrationURIBuilder(id, settings.getSharedSecret(), passLen, issuerName);
 
         int algorithm = this.algorithm;
         try {
@@ -612,10 +612,10 @@ public class
                  */
 
                 //get Last login time
-                long lastLoginTime = settings.getLastLogin();
+                long lastLoginTimeStep = settings.getLastLogin() / totpTimeStep;
 
                 //Check TOTP values for validity
-                if (lastLoginTime < 0) {
+                if (lastLoginTimeStep < 0) {
                     debug.error("OATH.checkOTP() : invalid login time value : ");
                     throw new AuthLoginException(amAuthOATH, "authFailed", null);
                 }
@@ -632,15 +632,14 @@ public class
                 }
 
                 //get Time Step
-                long localTime = time;
-                localTime /= totpTimeStep;
+                long localTime = (time / totpTimeStep) + (settings.getClockDriftSeconds() / totpTimeStep);
 
                 boolean sameWindow = false;
 
                 //check if we are in the time window to prevent 2 logins within the window using the same OTP
 
-                if (lastLoginTime >= (localTime - totpStepsInWindow) &&
-                        lastLoginTime <= (localTime + totpStepsInWindow)) {
+                if (lastLoginTimeStep >= (localTime - totpStepsInWindow) &&
+                        lastLoginTimeStep <= (localTime + totpStepsInWindow)) {
                     if (debug.messageEnabled()) {
                         debug.message("OATH.checkOTP() : Logging in in the same TOTP window");
                     }
@@ -670,11 +669,11 @@ public class
                     //check time step before current time
                     otpGen = TOTPAlgorithm.generateTOTP(secretKey, Long.toHexString(time2), passLenStr);
 
-                    if (otpGen.equals(otp) && sameWindow){
+                    if (otpGen.equals(otp) && sameWindow) {
                         debug.error("OATH.checkOTP() : Logging in in the same window with a OTP that is older " +
                                 "than the current times OTP");
                         return false;
-                    } else if(otpGen.equals(otp) && !sameWindow)  {
+                    } else if (otpGen.equals(otp) && !sameWindow) {
                         setLoginTime(id, time2, settings);
                         return true;
                     }
@@ -684,6 +683,9 @@ public class
                 debug.error("OATH.checkOTP() : No OTP algorithm selected");
                 throw new AuthLoginException(amAuthOATH, "authFailed", null);
             }
+        } catch (AuthLoginException e) {
+            // Re-throw to avoid the catch-all block below that would log and lose the error message.
+            throw e;
         } catch (Exception e) {
             debug.error("OATH.checkOTP() : checkOTP process failed : ", e);
             throw new AuthLoginException(amAuthOATH, "authFailed", null);
@@ -771,23 +773,22 @@ public class
      * Sets the last login time of a user.
      *
      * @param id   The id of the user to set the attribute of.
-     * @param time The time to set the attribute too.
+     * @param time The time <strong>step</strong> to set the attribute to.
      * @param settings The settings to store the value in.
      */
     private void setLoginTime(AMIdentity id, long time, OathDeviceSettings settings)
             throws AuthLoginException, IOException, InternalServerErrorException {
-        settings.setLastLogin(time);
+        settings.setLastLogin(time * totpTimeStep, TimeUnit.SECONDS);
+
+        // Update the observed time-step drift for resynchronisation
+        long drift = time - (this.time / totpTimeStep);
+        if (Math.abs(drift) > totpMaxClockDrift) {
+            setFailureID(userName);
+            throw new AuthLoginException(amAuthOATH, "outOfSync", null);
+        }
+
+        settings.setClockDriftSeconds((int) drift * totpTimeStep);
         devicesDao.saveDeviceProfiles(id.getName(), id.getRealm(),
                 Collections.singletonList(JsonConversionUtils.toJsonValue(settings)));
-    }
-
-    private void setUserSkipOath(AMIdentity id, boolean userSkipOath) throws IdRepoException, SSOException {
-        final HashMap<String, Set<String>> attributesToWrite = new HashMap<>();
-        attributesToWrite.put(skippableAttrName,
-                userSkipOath ?
-                        Collections.singleton(String.valueOf(SKIPPABLE)) :
-                        Collections.singleton(String.valueOf(NOT_SKIPPABLE)));
-        id.setAttributes(attributesToWrite);
-        id.store();
     }
 }

@@ -32,7 +32,7 @@
  <title>Hints for Configuring Database Repository (Early Access) Data Stores</title>
 
  <para>
-  Use these hints when configuring Database Repository (Early Access) Data Stores.
+  Use these hints when configuring Database Repository (Early Access) data stores.
  </para>
 
  <important>
@@ -62,7 +62,7 @@
    <term>Name</term>
    <listitem>
     <para>
-     Name for the data store configuration
+     Name for the data store configuration.
     </para>
    </listitem>
   </varlistentry>
@@ -90,7 +90,7 @@
    <term>Database Data Access Object Plugin Class Name</term>
    <listitem>
     <para>
-     OpenAM data access implementation
+     OpenAM data access implementation.
     </para>
 
     <para>
@@ -110,7 +110,7 @@
    <listitem>
     <para>
      Whether to connect directly to the database,
-     or to connect through JNDI provided by the container where OpenAM runs
+     or to connect through JNDI provided by the container where OpenAM runs.
     </para>
 
     <para>
@@ -129,7 +129,7 @@
    <term>Database DataSource Name</term>
    <listitem>
     <para>
-     Data source name from the container configuration when connecting over JNDI
+     Data source name from the container configuration when connecting over JNDI.
     </para>
 
     <para>
@@ -148,7 +148,7 @@
    <term>JDBC Driver Class Name</term>
    <listitem>
     <para>
-     Driver class used when connecting directly
+     Driver class used when connecting directly.
     </para>
 
     <para>
@@ -167,7 +167,7 @@
    <term>JDBC Driver URL</term>
    <listitem>
     <para>
-     URL used when connecting directly
+     URL used when connecting directly.
     </para>
 
     <para>
@@ -186,7 +186,7 @@
    <term>Connect This User to Database</term>
    <listitem>
     <para>
-     Username used when connecting directly
+     Username used when connecting directly.
     </para>
 
     <para>
@@ -205,7 +205,7 @@
    <term>Password for Connecting to Database</term>
    <listitem>
     <para>
-     Password used when connecting directly
+     Password used when connecting directly.
     </para>
 
     <para>
@@ -220,7 +220,7 @@
    <listitem>
     <para>
      A cap for the number of search results to request.
-     For example when using the Subjects tab to view profiles,
+     For example, when using the Subjects tab to view profiles,
      even if you set
      Configuration > Console > Administration > Maximum Results Returned from Search
      to a larger number, OpenAM does not exceed this setting.
@@ -244,7 +244,7 @@
    <term>Database Repository Plugin Class Name</term>
    <listitem>
     <para>
-     OpenAM identity repository implementation
+     OpenAM identity repository implementation.
     </para>
 
     <para>
@@ -263,7 +263,7 @@
    <term>Attribute Name Mapping</term>
    <listitem>
     <para>
-     Map of OpenAM profile attribute names to database column names
+     Map of OpenAM profile attribute names to database column names.
     </para>
 
     <para>
@@ -286,10 +286,10 @@
   </varlistentry>
 
   <varlistentry>
-   <term>Database Plug-in Supported Types and Operations</term>
+   <term>Database Plugin Supported Types and Operations</term>
    <listitem>
     <para>
-     Map of OpenAM operations that can be performed in the specified OpenAM contexts
+     Map of OpenAM operations that can be performed in the specified OpenAM contexts.
     </para>
 
     <para>
@@ -309,7 +309,7 @@
    <term>Database User Table Name</term>
    <listitem>
     <para>
-     Table to store user profiles
+     Table to store user profiles.
     </para>
 
     <tip><para>A MySQL database table for storing user profiles could be
@@ -346,7 +346,7 @@
    <term>List of User Attributes Names in Database</term>
    <listitem>
     <para>
-     Columns for user profile attributes
+     Columns for user profile attributes.
     </para>
 
     <para>
@@ -386,7 +386,7 @@
    <term>User Password Attribute Name</term>
    <listitem>
     <para>
-     Column for user passwords
+     Column for user passwords.
     </para>
 
     <para>
@@ -405,7 +405,7 @@
    <term>User ID Attribute Name</term>
    <listitem>
     <para>
-     Column for user IDs
+     Column for user IDs.
     </para>
 
     <para>
@@ -424,7 +424,7 @@
    <term>Attribute Name of User Status</term>
    <listitem>
     <para>
-     Column to check/set user status
+     Column to check/set user status.
     </para>
 
     <para>
@@ -481,7 +481,7 @@
    <term>Users Search Attribute in Database</term>
    <listitem>
     <para>
-     Key for looking up user profiles by name
+     Key for looking up user profiles by name.
     </para>
 
     <para>
@@ -500,7 +500,7 @@
    <term>Database Membership table name</term>
    <listitem>
     <para>
-     Table to store group profiles
+     Table to store group profiles.
     </para>
 
     <para>
@@ -519,7 +519,7 @@
    <term>Membership ID Attribute Name</term>
    <listitem>
     <para>
-     Column for group IDs
+     Column for group IDs.
     </para>
 
     <para>
@@ -538,7 +538,7 @@
    <term>Membership Search Attribute in Database</term>
    <listitem>
     <para>
-     Key for looking up group profiles by name
+     Key for looking up group profiles by name.
     </para>
 
     <para>

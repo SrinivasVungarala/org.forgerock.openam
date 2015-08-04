@@ -35,13 +35,14 @@
 
   <para>You can configure the default behavior OpenAM will take when a REST
    call does not specify explicit version information using either of the
-   following procedures.</para>
+   following procedures:</para>
+
   <itemizedlist>
    <listitem><para><xref linkend="configure-versioning-ui" /></para></listitem>
    <listitem><para><xref linkend="configure-versioning-ssoadm" /></para></listitem>
   </itemizedlist>
 
-  <para>The available options for default behavior are as follows.</para>
+  <para>The available options for default behavior are as follows:</para>
 
   <variablelist>
    <varlistentry>
@@ -79,7 +80,7 @@
    <title>Configure Versioning Behavior by using the Web-based Console</title>
 
    <step>
-    <para>Login as OpenAM administrator, <literal>amadmin</literal>.</para>
+    <para>Log in as OpenAM administrator, <literal>amadmin</literal>.</para>
    </step>
 
    <step>
@@ -87,23 +88,28 @@
    </step>
 
    <step>
-    <para>In 'Default Version', select the required response to a REST
-     API request that does not specify an explicit version; 'Latest', 'Oldest',
-     or 'None'.</para>
-    <mediaobject xml:id="figure-rest-api-default-version-config">
-    <alt>REST API Default Version Configuration page.</alt>
-    <imageobject>
-     <imagedata fileref="images/rest-api-default-version-config.png" format="PNG" />
-    </imageobject>
-    <textobject><para>Select the default version behavior from either Latest,
-     Oldest, or None. Optionally enable a warning header when
-     explicit version information is not provided.</para></textobject>
-   </mediaobject>
+    <para>In Default Version, select the required response to a REST
+     API request that does not specify an explicit version: <literal>Latest</literal>,
+     <literal>Oldest</literal>, or <literal>None</literal>.</para>
+
+    <figure xml:id="figure-rest-api-default-version-config">
+     <title>REST API Default Version Configuration Page</title>
+     <mediaobject>
+     <alt>REST API Default Version Configuration page.</alt>
+     <imageobject>
+      <imagedata fileref="images/rest-api-default-version-config.png" format="PNG" />
+     </imageobject>
+     <textobject><para>Select the default version behavior from either
+      <literal>Latest</literal>, <literal>Oldest</literal>, or <literal>None</literal>.
+      Optionally enable a warning header when explicit version information is
+      not provided.</para></textobject>
+     </mediaobject>
+    </figure>
    </step>
 
    <step performance="optional">
-    <para>Optionally, enable 'Warning Header' to include warning messages in the
-     headers of responses to requests.</para>
+    <para>Optionally, enable <literal>Warning Header</literal> to include
+     warning messages in the headers of responses to requests.</para>
    </step>
 
    <step>
@@ -116,10 +122,10 @@
    <title>Configure Versioning Behavior by using SSOADM</title>
 
    <step>
-    <para>Use the <literal>ssoadm set-attr-defs</literal> command, with
+    <para>Use the <literal>ssoadm set-attr-defs</literal> command with
      the <literal>openam-rest-apis-default-version</literal> attribute set
      to either <literal>LATEST</literal>, <literal>OLDEST</literal> or
-     <literal>NONE</literal>, as in the following example.</para>
+     <literal>NONE</literal>, as in the following example:</para>
     <screen>
      $ <userinput>ssh openam.example.com</userinput>
      $ <userinput>cd /path/to/openam-tools/admin/openam/bin</userinput>

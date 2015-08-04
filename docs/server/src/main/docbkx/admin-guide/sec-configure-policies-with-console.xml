@@ -33,7 +33,7 @@
           xmlns:xlink='http://www.w3.org/1999/xlink'
           xmlns:xinclude='http://www.w3.org/2001/XInclude'>
 
-    <title>Configuring Policies by Using the OpenAM Console</title>
+    <title>Configuring Policies Using the OpenAM Console</title>
 
  <para>This section describes the process of using the OpenAM
   console to configure policies, which are
@@ -41,7 +41,7 @@
   or other resources.</para>
 
  <procedure xml:id="create-policy-xui">
-  <title>To Configure a Policy by Using the OpenAM Console</title>
+  <title>To Configure a Policy Using the OpenAM Console</title>
   <indexterm>
    <primary>Authorization</primary>
    <secondary>Configuring</secondary>
@@ -54,7 +54,7 @@
   <step>
    <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
     Name</replaceable> &gt; Policies, and then click the name of the
-    application to configure a policy in.</para>
+    application to configure a policy in:</para>
   <substeps>
    <step><para>To create a new policy, click Add New Policy.</para></step>
    <step><para>To modify an existing policy, click the name of the
@@ -91,7 +91,9 @@
       row containing the pattern to use as the template for a resource pattern
       to move it to the Create your resources section.</para>
 
-     <mediaobject xml:id="resource-patterns-policies-step1">
+    <figure xml:id="resource-patterns-policies-step1">
+     <title>Resource Patterns Policies</title>
+     <mediaobject>
       <alt>Modify the resource patterns to specify the resources the
        policy applies to.</alt>
       <imageobject>
@@ -101,6 +103,7 @@
       </imageobject>
       <textobject><para>Select a resource pattern.</para></textobject>
      </mediaobject>
+    </figure>
     </step>
 
     <step performance="optional">
@@ -108,15 +111,16 @@
       section, replace the asterisks with values to define the resources
       that the policy applies to.</para>
 
-     <mediaobject xml:id="resource-patterns-policies-step2">
-      <alt>Edit the resource pattern if required.</alt>
-      <imageobject>
-       <imagedata
-        fileref="images/resource-pattern-step2.png"
-        format="PNG" />
-      </imageobject>
-      <textobject><para>Optionally, edit the resource pattern.</para></textobject>
-     </mediaobject>
+     <figure xml:id="resource-patterns-policies-step2">
+      <title>Editing Resource Patterns Policies</title>
+      <mediaobject>
+       <alt>Edit the resource pattern if required.</alt>
+       <imageobject>
+        <imagedata fileref="images/resource-pattern-step2.png" format="PNG" />
+       </imageobject>
+       <textobject><para>Optionally, edit the resource pattern.</para></textobject>
+      </mediaobject>
+     </figure>
 
      <para>For information on specifying patterns for matching resources, see
       <xref linkend="policy-patterns-wildcards" />.</para>
@@ -125,18 +129,22 @@
     <step>
      <para>Click the Add icon to move the resource into
       the Resources section.</para>
-     <mediaobject xml:id="resource-patterns-policies-step3">
-      <alt>Add the completed resource to the Resources section
-       by clicking the Add icon.</alt>
-      <imageobject>
-       <imagedata
-        fileref="images/resource-pattern-step3.png"
-        format="PNG" />
-      </imageobject>
-      <textobject><para>Add the resource to the Resources section.</para></textobject>
-     </mediaobject>
+
+     <figure xml:id="resource-patterns-policies-step3">
+      <title>Moving the Resource</title>
+      <mediaobject>
+       <alt>Add the completed resource to the Resources section
+        by clicking the Add icon.</alt>
+       <imageobject>
+        <imagedata fileref="images/resource-pattern-step3.png" format="PNG" />
+       </imageobject>
+       <textobject><para>Add the resource to the Resources section.</para></textobject>
+      </mediaobject>
+     </figure>
+
     </step>
    </substeps>
+
    <tip><para>To remove a resource, click the Delete icon.</para></tip>
    <para>Repeat these steps to add all the resources your
     policy applies to, and then click Next.</para>
@@ -147,17 +155,22 @@
     Select the actions that the policy applies to by checking the relevant box,
     and whether to <literal>Allow</literal> or <literal>Deny</literal> those
     actions on the resources specified earlier, and then click Next.</para>
-   <mediaobject xml:id="resource-actions-step1">
-    <alt>Select the actions and whether to allow or deny the
-     action for the resources specified.</alt>
-    <imageobject>
-     <imagedata
-      fileref="images/resource-actions-step1.png"
-      format="PNG" />
-    </imageobject>
-    <textobject><para>Select the actions and whether to allow or deny the
-     action for the resources specified.</para></textobject>
-   </mediaobject>
+
+   <figure xml:id="resource-actions-step1">
+    <title>Allowing or Denying the Action for the Resource</title>
+    <mediaobject>
+     <alt>Select the actions and whether to allow or deny the
+      action for the resources specified.</alt>
+     <imageobject>
+      <imagedata
+       fileref="images/resource-actions-step1.png"
+       format="PNG" />
+     </imageobject>
+     <textobject><para>Select the actions and whether to allow or deny the
+      action for the resources specified.</para></textobject>
+    </mediaobject>
+   </figure>
+
    </step>
 
     <step>
@@ -179,17 +192,19 @@
        <tip><para>Valid drop-points in which to drop a block are displayed with
         a striped horizontal bar.</para>
 
-        <mediaobject xml:id="policy-editor-valid-drop-points">
-         <alt>Valid drop-points to drop a block are shown with a striped
-          horizontal band.</alt>
-         <imageobject>
-          <imagedata
-           fileref="images/policy-editor-valid-drop-points.png"
-           format="PNG" />
-         </imageobject>
-         <textobject><para>Drop blocks into drop-points that contain a
-          striped horizontal band.</para></textobject>
-        </mediaobject>
+        <figure xml:id="policy-editor-valid-drop-points">
+         <title>Valid Drop-Points</title>
+         <mediaobject>
+          <alt>Valid drop-points to drop a block are shown with a striped
+           horizontal band.</alt>
+          <imageobject>
+           <imagedata fileref="images/policy-editor-valid-drop-points.png"
+            format="PNG" />
+          </imageobject>
+          <textobject><para>Drop blocks into drop-points that contain a
+           striped horizontal band.</para></textobject>
+         </mediaobject>
+        </figure>
 
        </tip>
 
@@ -202,7 +217,7 @@
          </listitem>
         </varlistentry>
         <varlistentry>
-         <term>Users &amp; Groups</term>
+         <term>Users and Groups</term>
          <listitem>
           <para>A user or group as defined in the Subjects tab of the
            realm the policy is created in.</para>
