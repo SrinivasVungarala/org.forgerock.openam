@@ -199,7 +199,7 @@
   </indexterm>
 
   <para>This section includes the following procedures that detail how to
-   set up OpenAM to protect a web page.</para>
+   set up OpenAM to protect a web page:</para>
 
   <itemizedlist>
    <listitem><para><xref linkend="prepare-etc-hosts" /></para></listitem>
@@ -547,16 +547,16 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
    <para>Deploy OpenAm into Tomcat and then configure it for use.</para>
 
    <step>
-    <para>Download the OpenAM <literal>.war</literal> (web archive) file either from the ForgeRock
-     <link xlink:show="new" xlink:href="http://forgerock.com/download-stack/"
-     ><citetitle>Enterprise Downloads</citetitle></link> page, or from the
-     project nightly <link xlink:href="http://forgerock.org/openam.html"
-     xlink:show="new"><citetitle>Builds</citetitle></link> page.</para>
-
-    <para>Enterprise downloads are tested, stable releases.</para>
-
-    <para>Nightly builds include the very latest features, but are not
-     thoroughly tested. Some functionality might not be finished.</para>
+    <para>
+     Download the OpenAM <literal>.war</literal> file. Access the
+     <link xlink:show="new" xlink:href="http://www.forgerock.com"
+     ><citetitle>ForgeRock</citetitle></link> web site, and then
+     click the Download tab. On the Your BackStage pass to ForgeRock resources page,
+     click Downloads. On the Downloads page,
+     click OpenAM. On the OpenAM Enterprise page, click <literal>war</literal> in the
+     top-right corner,
+     and then click Download to get the <literal>.war</literal> file.
+    </para>
    </step>
 
    <step>
