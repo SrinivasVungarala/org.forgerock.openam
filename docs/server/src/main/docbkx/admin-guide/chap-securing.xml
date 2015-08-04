@@ -292,15 +292,20 @@
     </para>
 
     <para>
-     You can configure OpenAM server to use HttpOnly cookies
+     If you are using the classic UI,
+     you can configure the OpenAM server to use HttpOnly cookies
      by browsing in OpenAM console to
      Configuration > Servers and Sites > Default Server Settings > Advanced,
      adding the advanced property
      with name <literal>com.sun.identity.cookie.httponly</literal>
      and value <literal>true</literal>,
      and then clicking Save to keep your work.
+     Note that the XUI does not currently support HttpOnly cookies.
     </para>
+
    </listitem>
+
+
 
    <listitem>
     <para>Where possible, use subdomain cookies, and control subdomains in
