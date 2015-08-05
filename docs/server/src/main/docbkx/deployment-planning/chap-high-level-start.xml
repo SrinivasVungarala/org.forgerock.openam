@@ -239,7 +239,7 @@
        </row>
        <row>
         <entry>Determine which services the deployment provides (SSO, CDSSO,
-         SAML Federation IDP/SP, XACML PDP, REST STS, OAuth 2.0/OpenID Connect 1.0, etc.)
+         SAML Federation IDP/SP, XACML PDP, REST STS, OAuth 2.0/OpenID Connect 1.0, and so forth)
         </entry>
         <entry>Y</entry>
         <entry>N</entry>
@@ -275,7 +275,7 @@
         <entry>Define deployment objectives in terms of service levels
          (expectations for authentication rates, active sessions maintained,
          session life cycles, policies managed, authorization decision rates,
-         response times, throughput, etc.)
+         response times, throughput, and so forth)
         </entry>
         <entry>Y</entry>
         <entry>N</entry>
@@ -382,7 +382,7 @@
        </row>
        <row>
         <entry>Quantify impact on external services consumed (LDAP, other auth
-         services, load balancing, etc.)</entry>
+         services, load balancing, and so forth)</entry>
         <entry>Y</entry>
         <entry>N</entry>
        </row>
@@ -513,7 +513,7 @@
        </row>
        <row>
         <entry>Securing processes and files (e.g. with SELinux, dedicated
-         non-privileged user and port forwarding, etc.)
+         non-privileged user and port forwarding, and so forth)
         </entry>
         <entry>Y</entry>
         <entry>N</entry>
@@ -601,8 +601,8 @@
    <listitem>
     <para><emphasis role="bold">Prepare the Operating System</emphasis>.
      Prepare your operating system, depending on the OS: Linux, Solaris,
-     Windows, Cloud (Amazon EC2, OpenStack, etc.), Virtual Machines (VMWare,
-     Xen, Hyper-V, etc.)
+     Windows, Cloud (Amazon EC2, OpenStack, and so forth), Virtual Machines (VMWare,
+     Xen, Hyper-V, and so forth)
     </para>
    </listitem>
    <listitem>
@@ -743,7 +743,7 @@
    <listitem>
     <para><emphasis role="bold">Plan Application and Host Backup</emphasis>.
      Determine your backup strategy include LDIF exports, file system backups,
-     tar files, etc. Also, consider log rotation and retention policies.
+     tar files, and so forth. Also, consider log rotation and retention policies.
      For more information on upgrades, see
      <link xlink:href="${docSetBaseURL}/admin-guide#chap-backup-restore"
            xlink:show="new">

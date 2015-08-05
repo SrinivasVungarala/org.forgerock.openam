@@ -47,7 +47,7 @@
    to a range or applications from LDAP to Windows, RADIUS to SAML identity
    providers to X.509 certificates. The framework for chaining authentication
    modules is very flexible and configurable providing additional features, such
-   as adaptive risk and others. Once SSO has been configured, OpenAM can
+   as adaptive risk and so forth. Once SSO has been configured, OpenAM can
    potentially reduce the load on its authentication services, since SSO takes care of
    session management and only goes back to authenticate when a user's session is
    over.</para>
@@ -147,7 +147,7 @@
    </listitem>
    <listitem>
     <para><emphasis role="bold">Device Print Authentication Module</emphasis>. Supports
-     the collection of client device locations, fonts, plug-ins and other data via a
+     the collection of client device locations, fonts, plugins and other data via a
      browswer to validate additional characteristics of the client's system.
      The module is not a standalone system and must be used with another
      authentication module, so that it can use the authentication information to validate
@@ -167,7 +167,7 @@
      You can specify a list of properties, such as authentication level, mail server
      host name, port, username and password, email from address, one-time password
      validity length, OTP password length, delivery, mobile phone number attribute names,
-     mobile carrier attribute name, email attribute name, and others.</para>
+     mobile carrier attribute name, email attribute name, and so forth.</para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">HTTP Basic Authentication Module</emphasis>. Supports
@@ -177,7 +177,7 @@
    </listitem>
    <listitem>
     <para><emphasis role="bold">JDBC Authentication Module</emphasis>. Supports
-     authentication against a database such as MySQL or Oracle DB. You specify
+     authentication against a database, such as MySQL or Oracle DB. You specify
      the connection type, connection pool JNDI name, JDBC driver and URL, database
      password, password column name, prepared statement, class to transform
      password syntax, and authentication level.</para>
@@ -186,7 +186,7 @@
     <para><emphasis role="bold">LDAP Authentication Module</emphasis>. Supports
      authentication against an LDAP directory server. You specify the primary
      and secondary LDAP server, DN to start user search, bind user DN and password,
-     attributes to retrieve user profile, and others.</para>
+     attributes to retrieve user profile, and so forth.</para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">Membership Authentication Module</emphasis>. Supports
@@ -224,7 +224,7 @@
      account activation code in an email. You specify the client ID and secret,
      authentication endpoint URL, access token endpoint URL, user profile service URL,
      scope, proxy URL, account mapper and configuration, attribute mapper and
-     configuration, SMTP properties, and others.
+     configuration, SMTP properties, and so forth.
     </para>
    </listitem>
    <listitem>
@@ -346,7 +346,7 @@
     There are numerous possible deployment options depending on your existing
     network infrastructure and scalability planning requirements.</para>
 
-  <para>OpenAM provides various out-of-the box and custom plug-ins to connect and
+  <para>OpenAM provides various out-of-the box and custom plugins to connect and
    map identities to a data store, housed on an LDAP or Oracle server.
    OpenAM supports a number of data store types, which can be viewed in the
    <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements" xlink:show="new">
@@ -719,7 +719,7 @@
   <title>Monitoring OpenAM Software</title>
 
   <para>OpenAM supports a monitoring framework that exposes configuration, operational,
-   and performance MBean metrics accessible through various tools such as SNMP
+   and performance MBean metrics accessible through various tools, such as SNMP
    network management devices, JConsole, or a Web browser.
    The monitoring framework is based upon the Java Dynamic Monitoring Kit
    (JDMK) API and tools that create Java Management Extensions (JMX) Management Beans
@@ -749,7 +749,7 @@
    <listitem>
     <para><emphasis role="bold">Federation Data</emphasis>. Maintains information on the entire federation configuration
      across all protocols, such as SAML2 circle of trust configurations,
-     WS-Federation entities, ID-FF entities and others.</para>
+     WS-Federation entities, ID-FF entities and so forth.</para>
    </listitem>
   </itemizedlist>
 

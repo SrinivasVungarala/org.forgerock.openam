@@ -474,8 +474,8 @@
                                    xlink:href="admin-guide#register-oauth2-client"
                                    xlink:role="http://docbook.org/xlink/role/olink"
     >registered an OAuth 2.0/OpenID Connect client</link>
-    with a name such as <replaceable>UMA-Resource-Server</replaceable> and a
-    client password such as <replaceable>password</replaceable>. Ensure that
+    with a name, such as <replaceable>UMA-Resource-Server</replaceable> and a
+    client password, such as <replaceable>password</replaceable>. Ensure that
     <literal>uma_protection</literal> is in the list of available scopes in the
     client, and a redirection URI is configured:
    </para>
@@ -1093,8 +1093,8 @@ $ <userinput>curl \
                                    xlink:href="admin-guide#register-oauth2-client"
                                    xlink:role="http://docbook.org/xlink/role/olink"
     >registered an OAuth 2.0/OpenID Connect client</link>
-    with a name such as <replaceable>UMA-Client</replaceable> and a
-    client password such as <replaceable>password</replaceable>. Ensure that
+    with a name, such as <replaceable>UMA-Client</replaceable> and a
+    client password, such as <replaceable>password</replaceable>. Ensure that
     <literal>uma_authorization</literal> is in the list of available scopes in
     the client, and a redirection URI is configured:
    </para>

@@ -207,7 +207,7 @@
 
    <listitem>
     <para>Restrict access to URIs that you do not use, and prevent internal
-     endpoints such as <literal>/sessionservice</literal> from being reachable
+     endpoints, such as <literal>/sessionservice</literal> from being reachable
      over the Internet.</para>
 
     <para>For a full list of endpoints, see the <citetitle>Reference</citetitle>
@@ -246,7 +246,7 @@
 
    <listitem>
     <para>When customizing <filename>config/auth/default*/Login.jsp</filename>,
-    make sure that you do not introduce any security vulnerabilities such as
+    make sure that you do not introduce any security vulnerabilities, such as
     cross-site scripting due to unvalidated input.</para>
    </listitem>
 
@@ -288,7 +288,7 @@
 
     <para>
      HttpOnly cookies are meant to be transmitted only over HTTP and HTTPS,
-     and not through non-HTTP methods such as JavaScript functions.
+     and not through non-HTTP methods, such as JavaScript functions.
     </para>
 
     <para>
@@ -398,7 +398,7 @@
    assigning it to the <literal>com.sun.identity.authentication.super.user</literal>
    directive. You may also need to create an OpenAM account for the new administrative user.
    Don't forget to make sure that new administrative account is configured in the
-   corresponding directory server such as OpenDJ.
+   corresponding directory server, such as OpenDJ.
   </para>
 
   <procedure xml:id="change-amadmin-uid">

@@ -939,7 +939,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
     <para>
      You are not likely to find a standard profile attribute for this.
      For evaluation purposes only,
-     you might try an unused existing profile attribute
+     you might try an unused existing profile attribute,
      such as <literal>description</literal>.
     </para>
 

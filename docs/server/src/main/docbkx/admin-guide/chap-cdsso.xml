@@ -330,9 +330,9 @@
  <procedure xml:id="enable-cdsso-cookie-hijacking-protection">
   <title>To Protect Against Cookie Hijacking</title>
 
-  <para>When cookies are set for an entire domain such as
+  <para>When cookies are set for an entire domain, such as
   <literal>.example.com</literal>, an attacker who steals a cookie can use it
-  from any host in the domain such as <literal>untrusted.example.com</literal>.
+  from any host in the domain, such as <literal>untrusted.example.com</literal>.
   Cookie hijacking protection restricts cookies to the fully-qualified domain
   name (FQDN) of the host where they are issued, such as
   <literal>openam-server.example.com</literal> and

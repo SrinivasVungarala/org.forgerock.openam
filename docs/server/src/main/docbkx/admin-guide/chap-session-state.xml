@@ -121,7 +121,7 @@
     OpenAM realms use stateful sessions by default. Sessions for all users
     authenticating to a given realm are either stateful or stateless, depending
     on the individual realm's configuration. OpenAM can be deployed with some
-    realms using stateless sessions and others using stateful sessions.
+    realms using stateless sessions and so forth using stateful sessions.
    </para>
 
    <para>

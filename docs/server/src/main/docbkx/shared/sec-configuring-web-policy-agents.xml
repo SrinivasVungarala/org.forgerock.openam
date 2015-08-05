@@ -519,7 +519,7 @@
       adds support for IPv6, including the IPv6 loopback address,
       <literal>::1</literal>.</para>
      <para>When the parameter is defined, wildcards are ignored in Not
-      Enforced Client IP settings. Instead, you can use settings such as
+      Enforced Client IP settings. Instead, you can use settings, such as
       those shown in the following examples.</para>
      <variablelist>
       <varlistentry>

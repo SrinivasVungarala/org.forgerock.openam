@@ -101,7 +101,7 @@
      <para>Disable session failover debugging.</para>
     </listitem>
     <listitem>
-     <para>Set container-level logging to a low level such as
+     <para>Set container-level logging to a low level, such as
      <literal>error</literal> or <literal>severe</literal>.</para>
     </listitem>
    </itemizedlist>
@@ -986,7 +986,7 @@
       <row>
        <entry><para><literal>com.iplanet.am.sdk.remote.pollingTime</literal></para></entry>
        <entry>
-        <para>How often in minutes the SDK client such as a policy agent should
+        <para>How often in minutes the SDK client, such as a policy agent should
         poll OpenAM for modified user data entries.</para>
 
         <para>The SDK also uses this value to determine the age of the oldest
@@ -1046,7 +1046,7 @@
       <row>
        <entry><para><literal>com.sun.identity.idm.remote.notification.enabled</literal></para></entry>
        <entry>
-        <para>Whether the SDK client such as a policy agent should register
+        <para>Whether the SDK client, such as a policy agent should register
         a notification listener for user data changes with the OpenAM
         server.</para>
 

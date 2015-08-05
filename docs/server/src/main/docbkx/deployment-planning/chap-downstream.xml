@@ -63,11 +63,11 @@
   what do I need to keep track of?  (token storage, profile storage)
   -->
   <para>After the end user has been authenticated successfully (or unsuccessfully),
-   OpenAM can process specific post-authentication plug-ins.
-   If the authentication was successful, the plug-in has access to the
+   OpenAM can process specific post-authentication plugins.
+   If the authentication was successful, the plugin has access to the
    client request and response objects as well as the user's session <literal>SSOToken</literal>.
-   The plug-in can then update session cookies and variables.
-   The post-authentication plug-ins are invoked after the authentication phase
+   The plugin can then update session cookies and variables.
+   The post-authentication plugins are invoked after the authentication phase
    is completed and at user logout. </para>
 
   <!-- TODO
@@ -139,7 +139,7 @@
      Then, OpenAM acting as a policy decision point (PDP), evaluates the policy
      rules, and returns a decision. If the decision is a "Allow" then
      authorized access is granted. Web policy agents are a light-touch integration
-     option requiring no extra coding, other than plug-ins, for proper operation.</para>
+     option requiring no extra coding, other than plugins, for proper operation.</para>
    </listitem>
    <listitem>
     <!-- TODO

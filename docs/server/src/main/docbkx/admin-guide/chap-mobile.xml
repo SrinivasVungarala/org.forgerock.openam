@@ -40,7 +40,7 @@
   <title>Simplifying Access on Mobile Devices</title>
 
   <para>On many mobile devices, users want to avoid repeatedly entering
-  credentials such as an email address or user name and a password. They
+  credentials, such as an email address or user name and a password. They
   do not want new credentials to manage for every application they try.
   They do not want to share their credentials across applications. Instead,
   users want single sign-on with few identity providers. They want to
@@ -108,7 +108,7 @@
   <para>In addition to serving as an identity provider, OpenAM can also
   function as an OAuth 2.0 client, protecting access to resources within
   your control based on authorization granted by an identity provider who
-  users already know and use, such as Facebook, Google, MSN, and others.
+  users already know and use, such as Facebook, Google, MSN, and so forth.
   OpenAM's built in authorization policy management makes it
   straightforward to integrate this capability into your
   applications.</para>
@@ -222,7 +222,7 @@
   deployment while enabling layered, web-scale services. REST APIs in OpenAM
   implement REST in a way that reuses common HTTP verbs and decouples APIs
   from the programming languages that developers use to interact with them.
-  OpenAM exposes REST APIs for many capabilities such as those in the following
+  OpenAM exposes REST APIs for many capabilities, such as those in the following
   list:</para>
 
   <itemizedlist>
@@ -301,7 +301,7 @@
   standard requests (create, read, update, delete, query, patch), and also
   how resource providers offer extended operations in a managed way (using
   actions). Applications built to interact with OpenAM REST APIs
-  increasingly can interoperate with other products in the ForgeRock stack
+  increasingly can interoperate with other products in the ForgeRock stack,
   such as <link xlink:show="new"
   xlink:href="http://forgerock.com/what-we-offer/open-identity-stack/openidm/"
   >OpenIDM for identity management</link> and <link xlink:show="new"

@@ -275,7 +275,7 @@
    <listitem>
     <para>
      A cap for the number of search results to request.
-     For example when using the Subjects tab to view profiles,
+     For example, when using the Subjects tab to view profiles,
      even if you set
      Configuration > Console > Administration > Maximum Results Returned from Search
      to a larger number, OpenAM does not exceed this setting.

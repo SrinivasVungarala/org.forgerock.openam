@@ -345,7 +345,7 @@
       <listitem>
        <para>This specifies the administrator address(es) which receive(s)
        notification on user account lockout. Each address must be a full
-       email address such as <literal>admin@example.com</literal>, or
+       email address, such as <literal>admin@example.com</literal>, or
        <literal>admin@host.domain</literal>.</para>
        <para>OpenAM must be able to send mail through an SMTP-capable service
        for this to work. See <xref linkend="set-up-mail-notification" />.</para>
@@ -548,7 +548,7 @@
     <para>When the user clicks OK, OpenAM sends the email and shows a
     confirmation message, as shown in the figure.</para>
 
-    <para>The user receives the email with a line such as the following.</para>
+    <para>The user receives the email with a line, such as the following.</para>
     <literallayout class="monospaced">Your OpenAM password was changed to:  647bWluw</literallayout>
    </step>
    <step>

@@ -47,6 +47,7 @@
 
  <para>OpenAM supports scripts in JavaScript or Groovy format, and the
   following script types:</para>
+ 
  <variablelist>
   <varlistentry>
    <term>Client-side Authentication</term>

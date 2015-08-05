@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2012 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <preface xml:id='preface'
@@ -36,7 +36,7 @@
   lockout, cross-domain single sign on, and federation.</para>
 
  <section>
-  <title>Who Should Use this Guide</title>
+  <title>Who Should Use This Guide</title>
   
   <para>This guide is written for access management designers and
    administrators who build, deploy, and maintain OpenAM services for

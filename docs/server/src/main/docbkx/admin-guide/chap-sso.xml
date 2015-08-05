@@ -71,7 +71,7 @@
       <citetitle>Reference</citetitle>.</para>
 
      <para>
-      A cookie domain set to <literal>example.net</literal> will work for subdomains such as
+      A cookie domain set to <literal>example.net</literal> will work for subdomains, such as
       <literal>app1.example.net</literal> and <literal>service1.example.net</literal>.
       If a cookie domain is not specified, OpenAM will use
       the fully qualified domain name of the server as the
@@ -111,7 +111,7 @@
       <link xlink:show="new"
             xlink:href="http://tools.ietf.org/html/rfc6265#section-4.1.2.6">RFC 6265</link>,
       the noted flag "instructs the user agent to omit the cookie when providing
-      access to cookies via 'non-HTTP' APIs (such as a web browser API that exposes
+      access to cookies via 'non-HTTP' APIs (for example, a web browser API that exposes
       cookies to scripts)."</para>
     </listitem>
    </varlistentry>
@@ -131,7 +131,7 @@
     clients today are designed to ignore cookies set to top-level domains including
     <literal>com</literal>, <literal>net</literal>, and <literal>co.uk</literal>.
     In addition, a cookie with a value like <varname>Domain</varname>=
-    <literal>app1.example.net</literal> will not work for similar subdomains such as
+    <literal>app1.example.net</literal> will not work for similar subdomains, such as
     <literal>app2.example.net</literal>.
    </para>
   </note>
@@ -218,7 +218,7 @@
   <para>In general, problems with SSO relate to some sort of mismatch of domain
    names. For example, a cookie that is configured on a third-level domain, such
    as <literal>sso.example.net</literal> will not work with an application on a
-   similar domain such as <literal>app.example.net</literal>. Even if the Session
+   similar domain, such as <literal>app.example.net</literal>. Even if the Session
    ID is valid, the application will not receive the SSO Token. The request is
    then redirected to OpenAM. The client gets what appears as a SSO Token in the
    diagram, which is actually a valid SSO tracking cookie that redirects immediately,

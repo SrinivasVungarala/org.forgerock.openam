@@ -66,9 +66,9 @@
  </figure>
 
  <para>OpenAM features a highly modular and flexible architecture with
-  multiple plug-in points to meet any customer deployment. It leverages industry
+  multiple plugin points to meet any customer deployment. It leverages industry
   standard protocols, such as HTTP, XML, SOAP, REST, SAML, Oauth, OpenID Connect
-  and others to deliver a high performance, highly scalable and highly available
+  and so forth to deliver a high performance, highly scalable and highly available
   access management solution over the network. OpenAM services are 100% Java-based, proven
   across multiple platforms and containers in many production deployments.</para>
 
@@ -332,7 +332,7 @@
   </para>
 
   <para>OpenAM provides two main policy agents, Web Policy Agent (WPA) and J2EE
-   Policy Agent. The Web Policy Agent is a native plug-in to a Web server, distributed
+   Policy Agent. The Web Policy Agent is a native plugin to a Web server, distributed
    as a zip file. Web policy agents filter requests for Web server resources without
    any changes to the resources.
    The J2EE Policy Agent is set up as an application filter within
@@ -364,7 +364,7 @@
     <para><emphasis role="bold">Not-Enforced URLs/URIs List</emphasis>.
      Policy agents protect all resources on the Web server or in a Web application
      that it serves and grants access only if the client has been authenticated and
-     authorized to access the resources. However, there may be some resources
+     authorized to access the resources. However, there may be some resources,
      such as public HTML pages, graphics, or stylesheet files that do not require
      policy evaluation.
      To account for such files, the Policy Agent maintains a Not-Enforced URL list,
@@ -623,7 +623,7 @@
 
     <listitem><para><emphasis role="bold">OAuth 2.0</emphasis> - Supports the
      client authentication for OAuth 2.0 identity providers, such as Google, Facebook,
-     MSN, and others. OpenAM also supports the WebFinger, JWT and other
+     MSN, and so forth. OpenAM also supports the WebFinger, JWT and other
      related and emerging standards. OpenAM can be configured to act as an OAuth 2.0
      client and resource server in addition to an authorization server.
      OpenAm also supports the OpenID Connect 1.0 protocol, which is a layer on
@@ -763,25 +763,25 @@
    <section xml:id="openam-post-auth-plugins">
     <title>Post Authentication Plugins</title>
     <para>At the end of OpenAM's authentication process and before the user is
-     authorized, OpenAM includes custom post-authentication plug-ins to extend
+     authorized, OpenAM includes custom post-authentication plugins to extend
      the default functionality of a module, regardless whether authentication succeeded
      or failed.</para>
 
     <para>The Post Authentication Plugins are called at the end of the authentication
      process and again at Logout if the authentication was successful.
-     The plug-in has access to the session token object, the client request, and
+     The plugin has access to the session token object, the client request, and
      response objects. When the module runs an operation, the result will be
-     written to the cookie, from which the plug-in can retrieve.</para>
+     written to the cookie, from which the plugin can retrieve.</para>
 
-    <para>Typical applications of the Post Authentication plug-ins include setting
+    <para>Typical applications of the Post Authentication plugins include setting
      cookies, prefetching data, and inserting it in the user's session.
-     Note that multiple plug-ins can be configured on a realm or on an authentication
-     chain. While each module is executed in isolation, the plug-ins are executed
+     Note that multiple plugins can be configured on a realm or on an authentication
+     chain. While each module is executed in isolation, the plugins are executed
      synchronously as part of each module's process, add a bit more time to the
      authentication process.</para>
 
-    <para>OpenAM provides the following plug-ins in the standard distribution, which
-     can be used as a model for your custom plug-ins:</para>
+    <para>OpenAM provides the following plugins in the standard distribution, which
+     can be used as a model for your custom plugins:</para>
 
     <itemizedlist>
      <listitem>
@@ -796,7 +796,7 @@
      </listitem>
      <listitem>
       <para><emphasis role="bold">Account Expiration Post Authentication Plugin</emphasis>.
-       Sets an account expiration date after a successful authentication. This plug-in
+       Sets an account expiration date after a successful authentication. This plugin
        prevents expired accounts to authenticate.</para>
      </listitem>
     </itemizedlist>
@@ -1079,7 +1079,7 @@
      </listitem>
      <listitem>
       <para><emphasis role="bold">Response Providers</emphasis>. Response providers
-       are plug-ins that populate a policy response with additional information,
+       are plugins that populate a policy response with additional information,
        such as the reason access was denied or information regarding additional
        policy enforcement. OpenAM sends the response back to the policy agent who
        then passes the information to the application through HTTP headers or
@@ -1186,7 +1186,7 @@
     <listitem>
      <para><emphasis role="bold">Resource/Environment/IP Address</emphasis>. Sets
       a condition based on whether the user is making a request from the localhost,
-      authenticated with the LDAP module, etc. IPv4 and IPv6 are supported.</para>
+      authenticated with the LDAP module, and so forth. IPv4 and IPv6 are supported.</para>
     </listitem>
     <listitem>
      <para><emphasis role="bold">Time (day, date, time, and timezone)</emphasis>.
@@ -1349,7 +1349,7 @@
        and client credentials grant for application access.  OpenAM supports
        OAuth 2.0 for companies that want to their users
        to connect to their site by having them authenticate using an existing
-       Identity Provider, such as Google, Facebook, Twitter, and others with a
+       Identity Provider, such as Google, Facebook, Twitter, and so forth with a
        service provider.</para>
      </listitem>
      <listitem>
@@ -1380,7 +1380,7 @@
     data sharing among the systems that make up a circle of trust (CoT).</para>
 
    <!-- TODO: Clarify what the SAML 2.0 Idapter Plugin does -->
-   <!--para>OpenAM provides a SAML 2.0 Idp Adapter plug-in
+   <!--para>OpenAM provides a SAML 2.0 Idp Adapter plugin
     to execute code and interact with the user before releasing the SAML2 assertion.
     OpenAM's flexible architecture allows it to function as either a service provider
     AND an identity provider. In some deployments, it is possible to have OpenAM
@@ -1664,7 +1664,7 @@
    companies to integrate existing user data stores into their OpenAM system. By default,
    OpenAM includes built-in support for LDAP and RDBMS databases.
    If you require specific functions that are not covered by the build-in OpenAM
-   functionality, you can create an Identity Repository plug-in to account for
+   functionality, you can create an Identity Repository plugin to account for
    these special features.</para>
 
   <para>For more information, see
@@ -1768,7 +1768,7 @@
     <para><emphasis role="bold">Reverse Proxy Functionality</emphasis>.
      OpenIG intercepts HTTP requests to provide SAML 2.0 federation to resources
      unable to support a full SAML 2.0 environment. OpenIG is a fully independent
-     federation solution without modifying the application or installing a plug-ins or
+     federation solution without modifying the application or installing a plugins or
      agents on the application container. </para>
    </listitem>
    <listitem>

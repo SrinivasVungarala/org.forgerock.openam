@@ -177,7 +177,7 @@
     <para><emphasis role="bold">What are your other security requirements?</emphasis>
      The use of firewalls provides an additional layer of security for your deployment.
      If you are planning to deploy the OpenAM server behind a firewall, you
-     can deploy a reverse proxy, such as, OpenIG.
+     can deploy a reverse proxy, such as OpenIG.
      For another level of security, consider using multiple DNS
      infrastructures using zones; one zone for internal clients, another zone for
      external clients.
@@ -362,10 +362,10 @@
       </para>
      </listitem>
      <listitem>
-      <para>Determine if any coding is required including extensions and plug-ins.
+      <para>Determine if any coding is required including extensions and plugins.
        Unless it is absolutely necessary, leverage the product features
        instead of implementing custom code.
-       OpenAM provides numerous plug-in points and REST endpoints.
+       OpenAM provides numerous plugin points and REST endpoints.
        <indexterm>
         <primary>architecting</primary>
         <secondary>coding requirements</secondary>
@@ -688,7 +688,7 @@
    <para>
     When you have prepared plans for each customization sub-project,
     you must account for those plans in your overall deployment project plan.
-    Functional customizations
+    Functional customizations,
     such as custom authentication modules or policy conditions
     might need to reach the pilot stage
     before you can finish an overall pilot implementation.
@@ -1372,7 +1372,7 @@
     <para>
      Although you cannot use actual production data for testing,
      you can generate similar test data using
-     tools such as the OpenDJ <command>makeldif</command> command, which
+     tools, such as the OpenDJ <command>makeldif</command> command, which
      generates user profile data for directory services.
      OpenAM REST APIs can help with test provisioning
      for policies, users, and groups.
@@ -1622,7 +1622,7 @@
       <listitem><para>Network links and configurations</para></listitem>
       <listitem><para>Load balancers</para></listitem>
       <listitem><para>Reverse proxy services to protect OpenAM</para></listitem>
-      <listitem><para>Data stores such as directory services</para></listitem>
+      <listitem><para>Data stores, such as directory services</para></listitem>
       <listitem><para>Authentication providers</para></listitem>
      </itemizedlist>
     </listitem>

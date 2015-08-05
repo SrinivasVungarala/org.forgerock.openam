@@ -48,7 +48,7 @@
 
   <para>After you install OpenAM, log in to the web-based console as OpenAM
   administrator, <literal>amadmin</literal> with the password you set during
-  installation. Navigate to a URL such as
+  installation. Navigate to a URL, such as
   <literal>http://openam.example.com:8080/openam</literal>. In this case,
   communications proceed over the HTTP protocol to a FQDN
   (<literal>openam.example.com</literal>), over a standard Java EE web container
@@ -169,12 +169,12 @@
      <para>In a test environment, you can activate
      <filename>ssoadm.jsp</filename> to access the same functionality in your
      browser. Once active, you can use many features of the <command>ssoadm</command>
-     command by navigating to the <filename>ssoadm.jsp</filename> URI, in a URL such as
+     command by navigating to the <filename>ssoadm.jsp</filename> URI, in a URL, such as
      <literal>http://openam.example.com:8080/openam/ssoadm.jsp</literal>.</para>
      <para>Install this from <filename><?eval ${ssoadminZipFile}?></filename>.</para>
      <para>To translate settings applied in OpenAM console to service attributes
      for use with <command>ssoadm</command>, log in to the OpenAM console
-     as <literal>amadmin</literal> and access the services page, in a URL such as
+     as <literal>amadmin</literal> and access the services page, in a URL, such as
      <literal>http://openam.example.com:8080/openam/services.jsp</literal>.</para>
     </listitem>
    </varlistentry>

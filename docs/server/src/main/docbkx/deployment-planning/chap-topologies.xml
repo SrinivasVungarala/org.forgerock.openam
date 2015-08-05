@@ -74,7 +74,7 @@
     purposes.
     ForgeRock does
     not recommend specific products, such as reverse proxies,
-    load balancers, switches, firewalls, and others, as OpenAM can be deployed
+    load balancers, switches, firewalls, and so forth, as OpenAM can be deployed
     within your existing networking infrastructure.
    </para>
   </note>
@@ -503,7 +503,7 @@
    </para>
 
    <para>OpenAM provides two main policy agents: Web Policy Agent (WPA) and J2EE
-    Policy Agent. The Web Policy Agent is a native plug-in to a Web server and is distributed
+    Policy Agent. The Web Policy Agent is a native plugin to a Web server and is distributed
     as a zip file. Web policy agents filter requests for Web server resources without
     any changes to the resources.
     The J2EE Policy Agent is set up as a servlet filter within
@@ -952,7 +952,7 @@
 
     <para>
      If OpenAM does not support your particular identity data store type, you can
-     develop your own customized plug-in to allow OpenAM to
+     develop your own customized plugin to allow OpenAM to
      run method calls to fetch, read, create, delete, edit, or authenticate to your
      identity store data.
      For more information, see

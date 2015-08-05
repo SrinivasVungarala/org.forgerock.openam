@@ -37,7 +37,7 @@
     average and peak levels of active sessions and tokens.
     Also discuss support levels provided to clients using key services.
     Discuss what levels of security must be provided,
-    as extra network hops, HTTPS, signing and encryption, etc.
+    as extra network hops, HTTPS, signing and encryption, and so forth.
     should be taken into account when testing service performance.
    </para>
   </section>

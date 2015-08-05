@@ -205,8 +205,8 @@ $ <userinput>cat ~/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</userinput
 
    <qandaentry xml:id="ssoadm-slow-on-vm">
     <question>
-     <para>The <command>ssoadm</command> command is very, very slow on my
-     virtual machine (VMWare, VirtualBox, etc.). How can I speed it up?</para>
+     <para>The <command>ssoadm</command> command is very slow on my
+     virtual machine (VMWare, VirtualBox, and so forth). How can I speed it up?</para>
     </question>
 
     <answer>

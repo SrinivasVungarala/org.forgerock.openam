@@ -187,7 +187,7 @@
        apply to, and the actions that could be performed on those resources.</para>
       <para>For example, the <literal>URL</literal> resource type that is
       included by default in OpenAM acts as a template for protecting web
-      pages or applications. It contains resource patterns such as
+      pages or applications. It contains resource patterns, such as
        <literal>*://*:*/*?*</literal>, which can be made more specific
        when used in the policy. The actions that the resource supports
        are also defined, as follows:</para>

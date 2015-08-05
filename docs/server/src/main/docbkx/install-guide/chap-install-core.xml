@@ -1024,7 +1024,7 @@ $ <userinput>cp ${serveronlyWarFile} /path/to/tomcat/webapps/coreonly.war</useri
 
   <step>
    <para>
-    Browse to the configuration application, such as,
+    Browse to the configuration application, such as
     <literal>http://openam.example.com:8080/coreonly/</literal>, and configure
     OpenAM core services as in <xref linkend="configure-openam-custom" />.
    </para>
@@ -1033,7 +1033,7 @@ $ <userinput>cp ${serveronlyWarFile} /path/to/tomcat/webapps/coreonly.war</useri
   <step>
    <para>
     After configuration, restrict permissions to the configuration
-    directory, such as, <filename>$HOME/coreonly/</filename> where
+    directory, such as <filename>$HOME/coreonly/</filename> where
     <literal>$HOME</literal> corresponds to the user who runs the web
     container. Prevent other users from accessing files in the configuration
     directory.
