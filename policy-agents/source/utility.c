@@ -1530,7 +1530,7 @@ int am_session_decode(am_request_t *r) {
 
     if (token == NULL) return AM_EINVAL;
 
-    memset(&r->si, 0, sizeof (struct am_session_info));
+    memset(&r->session_info, 0, sizeof (struct am_session_info));
     tl = strlen(token);
 
     if (strchr(token, '*') != NULL) {
@@ -1591,29 +1591,29 @@ int am_session_decode(am_request_t *r) {
                         }
                     } else {
                         if (ty == AM_SI) {
-                            r->si.si = malloc(sz + 1);
-                            if (r->si.si == NULL) {
-                                r->si.error = AM_ENOMEM;
+                            r->session_info.si = malloc(sz + 1);
+                            if (r->session_info.si == NULL) {
+                                r->session_info.error = AM_ENOMEM;
                                 break;
                             }
-                            memcpy(r->si.si, raw, sz);
-                            r->si.si[sz] = 0;
+                            memcpy(r->session_info.si, raw, sz);
+                            r->session_info.si[sz] = 0;
                         } else if (ty == AM_SK) {
-                            r->si.sk = malloc(sz + 1);
-                            if (r->si.sk == NULL) {
-                                r->si.error = AM_ENOMEM;
+                            r->session_info.sk = malloc(sz + 1);
+                            if (r->session_info.sk == NULL) {
+                                r->session_info.error = AM_ENOMEM;
                                 break;
                             }
-                            memcpy(r->si.sk, raw, sz);
-                            r->si.sk[sz] = 0;
+                            memcpy(r->session_info.sk, raw, sz);
+                            r->session_info.sk[sz] = 0;
                         } else if (ty == AM_S1) {
-                            r->si.s1 = malloc(sz + 1);
-                            if (r->si.s1 == NULL) {
-                                r->si.error = AM_ENOMEM;
+                            r->session_info.s1 = malloc(sz + 1);
+                            if (r->session_info.s1 == NULL) {
+                                r->session_info.error = AM_ENOMEM;
                                 break;
                             }
-                            memcpy(r->si.s1, raw, sz);
-                            r->si.s1[sz] = 0;
+                            memcpy(r->session_info.s1, raw, sz);
+                            r->session_info.s1[sz] = 0;
                         }
                     }
                     l -= sz;
@@ -1904,7 +1904,7 @@ void am_request_free(am_request_t *r) {
     if (r != NULL) {
         AM_FREE(r->normalized_url, r->overridden_url, r->token,
                 r->client_ip, r->client_host, r->post_data,
-                r->si.s1, r->si.si, r->si.sk);
+                r->session_info.s1, r->session_info.si, r->session_info.sk);
         delete_am_policy_result_list(&r->pattr);
         delete_am_namevalue_list(&r->sattr);
     }
@@ -2394,52 +2394,55 @@ int am_create_agent_dir(const char* sep, const char* path,
 }
 
 int string_replace(char **original, const char *pattern, const char *replace, size_t *sz) {
-
     size_t pcnt = 0;
-    const char *optr;
-    const char *ploc;
-
+    size_t replace_sz, pattern_sz, new_sz, e;
+    char *p, *new_str;
+    
     if (original == NULL || *original == NULL || pattern == NULL
             || replace == NULL || sz == NULL) {
         return AM_EINVAL;
     }
-
-    size_t rlen = strlen(replace);
-    size_t plen = strlen(pattern);
-    size_t retlen;
-    char *newop, *ret, *op = *original;
-
-    /* count the number of patterns */
-    for (optr = op; (ploc = strstr(optr, pattern)); optr = ploc + plen) {
+    
+    pattern_sz = strlen(pattern);
+    replace_sz = strlen(replace);
+    
+    // strstr requires this and an empty pattern is nonsense
+    if (pattern_sz == 0) {
+        return AM_NOT_FOUND;
+    }
+    
+    // count number of times pattern occurs
+    for (p = * original; ( p = strstr(p, pattern) ); p += pattern_sz) {
         pcnt++;
     }
     if (pcnt == 0) {
         return AM_NOT_FOUND;
     }
-
-    retlen = (*sz) + pcnt * (rlen + plen); /* worst case */
-    newop = (char *) realloc(op, retlen + 1);
-    if (newop == NULL) {
-        am_free(op);
-        return AM_ENOMEM;
+    
+    // reallocate only if replacement is larger than pattern
+    new_sz = *sz + pcnt * (replace_sz - pattern_sz);
+    if (*sz < new_sz) {
+        new_str = realloc(*original, new_sz + 1);
+        if (new_str == NULL) {
+            free(*original);
+            return AM_ENOMEM;
+        }
+    } else {
+        new_str = *original;
     }
-
-    retlen = *sz;
-    ret = newop;
-    /* go through each of the patterns, make a space (by moving) 
-     * for a replacement string, copy replacement in, 
-     * repeat until all patterns are found
-     */
-    for (optr = ret; (ploc = strstr(optr, pattern)); optr = ploc + plen) {
-        size_t move_sz = retlen - (ploc + plen - ret);
-        memmove((void *) (ploc + rlen), ploc + plen, move_sz);
-        memcpy((void *) ploc, replace, rlen);
-        retlen = (ploc - ret) + rlen + move_sz;
+    
+    // step through patterns, shifting from end of pattern and inserting replacement
+    e = (*sz) + 1;
+    for (p = new_str; ( p = strstr(p, pattern) ); p += replace_sz, e += (replace_sz - pattern_sz)) {
+        char *src = p + pattern_sz, *dest = p + replace_sz;
+        memmove(dest, src, e - (src - new_str));
+        memcpy(p, replace, replace_sz);
     }
-    newop[retlen] = '\0';
-    *original = newop;
-    *sz = retlen;
-
+    
+    // set return values
+    *sz = new_sz;
+    *original = new_str;
+    
     return AM_SUCCESS;
 }
 
@@ -2750,6 +2753,30 @@ void update_agent_configuration_ttl(am_config_t *conf) {
     
     /* com.sun.identity.agents.config.postcache.entry.lifetime */
     UPDATE_VALUE_TO_SEC(conf->pdp_cache_valid);
+}
+
+void update_agent_configuration_audit(am_config_t *conf) {
+    int value;
+
+    if (conf == NULL) {
+        return;
+    }
+
+    if (AM_BITMASK_CHECK(conf->audit_level, (AM_LOG_LEVEL_AUDIT_ALLOW | AM_LOG_LEVEL_AUDIT_DENY))) {
+
+        value = conf->audit_level;
+
+        if (ISINVALID(conf->audit_file_disposition) || strcasecmp(conf->audit_file_disposition, "LOCAL") == 0) {
+            value |= AM_LOG_LEVEL_AUDIT;
+        } else if (strcasecmp(conf->audit_file_disposition, "REMOTE") == 0) {
+            value |= AM_LOG_LEVEL_AUDIT_REMOTE;
+        } else {
+            value |= AM_LOG_LEVEL_AUDIT;
+            value |= AM_LOG_LEVEL_AUDIT_REMOTE;
+        }
+
+        conf->audit_level = value;
+    }
 }
 
 char *get_global_name(const char *name, int id) {

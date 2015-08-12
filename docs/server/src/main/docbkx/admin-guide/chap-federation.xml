@@ -46,7 +46,7 @@
   
   <para>To bridge heterogeneous systems, federation requires interoperability,
   and thus depends on standards for orchestrating interaction and exchanging
-  information between providers. OpenAM federation relies on standards such as
+  information between providers. OpenAM federation relies on standards, such as
   <link xlink:href="http://saml.xml.org/saml-specifications">Security Assertion
   Markup Language (SAML) v2.0</link>. SAML v2.0 describes the messages, how they
   are relayed, how they are exchanged, and common use cases.</para>
@@ -87,7 +87,7 @@
   
   <para>In federation deployments where not all providers support SAML v2.0,
   OpenAM can act as a multi-protocol hub, translating for providers who rely
-  on other and older standards such as SAML v1.x, Liberty Alliance Project
+  on other and older standards, such as SAML v1.x, Liberty Alliance Project
   frameworks, and WS-Federation (for integration with Active Directory
   Federation Services, for example).</para>
  </section>
@@ -1809,7 +1809,7 @@ $ <userinput>ssoadm \
 
    <step>
     <para>On the first Configure Google Apps for Single Sign-On page, add your
-    domain name(s) such as <literal>example.com</literal> to the list, and then
+    domain name(s), such as <literal>example.com</literal> to the list, and then
     click Create.</para>
    </step>
 
@@ -1843,7 +1843,7 @@ $ <userinput>ssoadm \
      </step>
 
      <step>
-      <para>Upload the certificate file you saved such as
+      <para>Upload the certificate file you saved, such as
       <filename>OpenAM.pem</filename> as the Google Apps Verification
       Certificate.</para>
      </step>
@@ -2011,7 +2011,7 @@ $ <userinput>ssoadm \
      </step>
 
      <step xml:id="sf-as-sp-copy-attr-name">
-      <para>Copy the attribute name such as <literal>IDPEmail</literal> from
+      <para>Copy the attribute name, such as <literal>IDPEmail</literal> from
       the OpenAM page to the Attribute Name field on the Salesforce CRM
       page.</para>
      </step>
@@ -2251,7 +2251,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>NameIDFormat</literal></term>
     <listitem>
      <para>(Optional) Use this parameter to specify a SAML Name Identifier
-     format identifier such as
+     format identifier, such as
      <literal>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</literal>, or
      <literal>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</literal>.</para>
     </listitem>
@@ -2435,7 +2435,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     <term><literal>NameIDFormat</literal></term>
     <listitem>
      <para>(Optional) Use this parameter to specify a SAML Name Identifier
-     format identifier such as
+     format identifier, such as
      <literal>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</literal>,
      or <literal>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</literal>.</para>
     </listitem>
@@ -2753,7 +2753,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
 
   <para>An enhanced client, such as a browser with a plugin or an extension,
   can handle these communications on its own. An enhanced proxy is an HTTP
-  server such as a WAP gateway that can support the ECP profile on behalf of
+  server, such as a WAP gateway that can support the ECP profile on behalf of
   client applications.</para>
 
   <para>OpenAM supports the SAML v2.0 ECP profile on the server side for
@@ -2794,7 +2794,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    <varlistentry>
     <term><literal>RelayState</literal></term>
     <listitem>
-     <para>This specifies the resource the client aims to access such as
+     <para>This specifies the resource the client aims to access, such as
      <literal>RelayState=http%3A%2F%2Fforgerock.org%2Findex.html</literal>.</para>
     </listitem>
    </varlistentry>
@@ -2819,7 +2819,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   maintained on the service provider side. In other cases, the identity provider
   and service provider can choose to link user accounts in a persistent way, in
   a more permanent way, or even in automatic fashion by using some shared value
-  in the user's profiles such as an email address or by dynamically creating
+  in the user's profiles, such as an email address or by dynamically creating
   accounts on the service provider when necessary. OpenAM supports all these
   alternatives.</para>
 

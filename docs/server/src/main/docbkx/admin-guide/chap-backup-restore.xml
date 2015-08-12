@@ -470,7 +470,7 @@ $ <userinput>ls /path/to/*.ldif</userinput>
 
   <para>
    A serious configuration error is an error that you cannot easily repair
-   by using OpenAM configuration tools such as OpenAM console
+   by using OpenAM configuration tools, such as OpenAM console
    or the <command>ssoadm</command> command.
   </para>
 

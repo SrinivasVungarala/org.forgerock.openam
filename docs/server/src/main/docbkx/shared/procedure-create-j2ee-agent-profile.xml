@@ -70,7 +70,7 @@
                     <para>The full URL to an OpenAM instance, or if OpenAM is deployed in
                         a site configuration (behind a load balancer) then the site URL</para>
                     <para>In centralized configuration mode, the Server URL is used to
-                        populate the agent profile for services such as Login, Logout, Naming,
+                        populate the agent profile for services, such as Login, Logout, Naming,
                         and Cross Domain SSO.</para>
                 </listitem>
             </varlistentry>
@@ -80,7 +80,7 @@
                     <para>The URL to the J2EE agent application, such as
                         <literal>http://www.example.com:8080/agentapp</literal></para>
                     <para>In centralized configuration mode, the Agent URL is used to
-                        populate the Agent Profile for services such as notifications.</para>
+                        populate the Agent Profile for services, such as notifications.</para>
                 </listitem>
             </varlistentry>
         </variablelist>

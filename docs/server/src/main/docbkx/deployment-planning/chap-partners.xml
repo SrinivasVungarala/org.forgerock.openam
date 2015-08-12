@@ -39,7 +39,7 @@
    Consider how service levels are monitored and supported.
    Discuss planning to meet their needs for training and documentation.
    Discuss how to handle agent and client application registration and profiles,
-   including agent installation, dynamic registration for OpenID Connect, etc.
+   including agent installation, dynamic registration for OpenID Connect, and so forth.
    Discuss how policies are defined and managed.
    Discuss delegated administration and separation of duties.
   </para>

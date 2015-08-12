@@ -35,6 +35,7 @@
  <title>RESTful OAuth 2.0, OpenID Connect 1.0 and UMA 1.0 Services</title>
 
  <indexterm><primary>REST API</primary></indexterm>
+
  <para>This section shows how to use the OpenAM RESTful interfaces for
   OAuth 2.0, OpenID Connect 1.0, and UMA 1.0.</para>
 
@@ -681,10 +682,48 @@ $ <userinput>curl \
     </listitem>
    </itemizedlist>
 
-   <para>For examples, see <link xlink:show="new"
-   xlink:href="admin-guide#configure-openid-connect-discovery"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-   OpenAM For OpenID Connect Discovery</citetitle></link>.</para>
+   <para>
+    For examples, see <link xlink:show="new"
+    xlink:href="admin-guide#configure-openid-connect-discovery"
+    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
+    OpenAM For OpenID Connect Discovery</citetitle></link>.
+   </para>
+
+   <note>
+    <para>
+     <emphasis role="bold">Base URL Provider Service</emphasis>. OpenAM
+     supports a provider service that allows the realm to have a configured
+     option for obtaining the base URL (including protocol) for components that
+     need to return a URL to the client. This service is used to provide the
+     URL base that is used in the well-known OIDC endpoints.
+    </para>
+    <para>
+     The service provides the following:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>A radio button option for selecting a URL source from:</para>
+      <simplelist type="horiz">
+       <member>Configured value</member>
+       <member>RFC7239 Forwarded header</member>
+       <member>X-Forwarded-Host + X-Forwarded-Proto headers</member>
+       <member>Host and protocol from the incoming AM request</member>
+       <member>An extension point that returns a base URL from a given
+        <literal>HttpServletRequest</literal>.
+       </member>
+      </simplelist>
+     </listitem>
+     <listitem>
+      <para>A check box to include or exclude the container's context path.</para>
+     </listitem>
+     <listitem>
+      <para>A text field for specifying the configured fixed value if required.</para>
+     </listitem>
+     <listitem>
+      <para>A text field for specifying the extension class if required.</para>
+     </listitem>
+    </itemizedlist>
+   </note>
   </section>
 
   <section xml:id="rest-api-openid-connect-dynamic-registration">

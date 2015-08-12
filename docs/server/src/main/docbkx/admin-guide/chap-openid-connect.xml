@@ -190,7 +190,7 @@
     In addition to what OAuth 2.0 specifies,
     OpenID Connect uses an ID token
     so the relying party can validate claims about the end user.
-    It also defines how to get user information
+    It also defines how to get user information,
     such as profile, email, address, and phone details
     from the UserInfo endpoint with a valid access token.
    </para>
@@ -228,7 +228,7 @@
    <para>
     As for the Authorization Code Flow, the Implicit Flow specifies
     an ID token so that the relying party can validate claims about the end user.
-    It also defines how to get user information
+    It also defines how to get user information,
     such as profile, email, address, and phone details
     from the UserInfo endpoint with a valid access token.
    </para>
@@ -614,8 +614,8 @@ $ <userinput>curl https://openam.example.com:8443/.well-known/openid-configurati
    profile:</para>
 
    <step>
-    <para>Register an initial OAuth 2.0 client statically with a client ID
-    such as <literal>masterClient</literal> and client secret such as
+    <para>Register an initial OAuth 2.0 client statically with a client ID,
+    such as <literal>masterClient</literal> and client secret like
     <literal>password</literal>.</para>
    </step>
 

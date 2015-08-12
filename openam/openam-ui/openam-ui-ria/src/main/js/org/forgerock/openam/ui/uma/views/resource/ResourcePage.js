@@ -17,6 +17,7 @@
 /*global define*/
 define("org/forgerock/openam/ui/uma/views/resource/ResourcePage", [
     "jquery",
+    "underscore",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "backbone",
     "backgrid",
@@ -28,27 +29,65 @@ define("org/forgerock/openam/ui/uma/views/resource/ResourcePage", [
     "org/forgerock/commons/ui/common/components/Messages",
     "org/forgerock/commons/ui/common/main/Router",
     "org/forgerock/commons/ui/common/util/UIUtils",
-    "org/forgerock/openam/ui/uma/models/UMAResourceSetWithPolicy"
-], function ($, AbstractView, Backbone, Backgrid, BackgridUtils, BootstrapDialog, CommonShare, Constants, EventManager,
-            Messages, Router, UIUtils, UMAResourceSetWithPolicy) {
+    "org/forgerock/openam/ui/uma/delegates/UMADelegate",
+    "org/forgerock/openam/ui/uma/models/UMAResourceSetWithPolicy",
+
+    // jquery dependencies
+    "selectize"
+], function ($, _, AbstractView, Backbone, Backgrid, BackgridUtils, BootstrapDialog, CommonShare,
+             Constants, EventManager, Messages, Router, UIUtils, UMADelegate, UMAResourceSetWithPolicy) {
+    function isUserLabel (label) {
+        return label.type === "USER";
+    }
+    function getLabelForId (labels, labelId) {
+        return _.find(labels, function (otherLabel) {
+            return otherLabel._id === labelId;
+        });
+    }
+    function getLabelForName (labels, name) {
+        return _.find(labels, function (otherLabel) {
+            return otherLabel.name === name;
+        });
+    }
+    function createLabels (labelNames) {
+        var creationPromises = _.map(labelNames, function (labelName) {
+            return UMADelegate.labels.create(labelName, "USER");
+        });
+        return $.when.apply($, creationPromises).then(function () {
+            if (creationPromises.length === 1) {
+                return [arguments[0]._id];
+            } else {
+                return _.map(arguments, function (arg) {
+                    return arg[0]._id;
+                });
+            }
+        });
+    }
+    function getAllLabels () {
+        return UMADelegate.labels.all().then(function (labels) {
+            return labels.result;
+        });
+    }
     var ResourcePage = AbstractView.extend({
         initialize: function () {
             // TODO: AbstarctView.prototype.initialize.call(this);
             this.model = null;
         },
         template: "templates/uma/views/resource/ResourceTemplate.html",
+        selectizeTemplate: "templates/uma/backgrid/cell/SelectizeCell.html",
         events: {
-            "click button#starred": "onStarred",
+            "click button#starred": "onToggleStarred",
             "click button#share": "onShare",
-            "click li#unshare": "onUnshare"
+            "click li#unshare": "onUnshare",
+            "click button#editLabels": "editLabels",
+            "click .page-toolbar .selectize-input.disabled": "editLabels",
+            "click button#saveLabels": "submitLabelsChanges",
+            "click button#discardLabels": "discardLabelsChanges"
         },
         onModelError: function (model, response) {
             console.error("Unrecoverable load failure UMAResourceSetWithPolicy. " +
                 response.responseJSON.code + " (" + response.responseJSON.reason + ") " +
                 response.responseJSON.message);
-        },
-        onModelSync: function () {
-            this.render();
         },
         onUnshare: function (event) {
             event.preventDefault();
@@ -73,64 +112,173 @@ define("org/forgerock/openam/ui/uma/views/resource/ResourcePage", [
                             EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "revokeAllPoliciesSuccess");
                             self.render();
                         }).fail(function (error) {
-                            Messages.messages.addMessage({ message: JSON.parse(error.responseText).message, type: "error"});
+                            Messages.addMessage({
+                                response: error.responseText,
+                                type: Messages.TYPE_DANGER
+                            });
                         }).always(function () {
                             dialog.close();
                         });
                     }
                 }, {
                     label: $.t("common.form.cancel"),
-                    action: function(dialog) {
+                    action: function (dialog) {
                         dialog.close();
                     }
                 }]
             });
         },
-        onShare: function() {
+        onShare: function () {
             var shareView = new CommonShare();
             shareView.renderDialog(this.model.id);
         },
-        onStarred: function() {
-            // TODO: Simply flips the icon ATM, model update and save still TODO
-            // this.model.toggleStarred();
-            // self.model.save().done(function() {
-                this.$el.find("#starred i").toggleClass("fa-star-o fa-star");
-            // });
-        },
-        renderTagsOptions: function () {
-          var self = this;
-            this.$el.find('#labels').selectize({
-                plugins: ['restore_on_backspace'],
-                delimiter: ',',
-                persist: false,
-               create: true,
-                hideSelected: true,
-                onChange: function (values) {
-                    self.$el.find("button#saveChanges").prop("disabled", false);
-                },
-                items: self.data.resourceSetLabels,
-                render: {
-                    item: function (item) {
-                        return '<div data-value="' + item.value + '" class="item">' + item.value + '</div>"';
-                    }
-                }
+        onToggleStarred: function () {
+            var self = this,
+                starredLabelId = _.find(this.allLabels, { type: "STAR" })._id,
+                starButton = self.$el.find("#starred"),
+                starIcon = starButton.find("i");
+
+            self.model.toggleStarred(starredLabelId);
+            starIcon.removeClass("fa-star-o fa-star");
+            starIcon.addClass("fa-refresh fa-spin");
+            starButton.attr("disabled", true);
+
+            self.model.save().always(function () {
+                var isStarred = _.contains(self.model.get("labels"), starredLabelId);
+                starButton.attr("disabled", false);
+                starIcon.removeClass("fa-refresh fa-spin");
+                starIcon.addClass(isStarred ? "fa-star" : "fa-star-o");
             });
         },
-        render: function(args, callback) {
-            var collection, grid, id = null, options, RevokeCell, SelectizeCell, self = this;
+        renderLabelsOptions: function () {
+            var self = this,
+                labelsSelect = this.$el.find("#labels select").selectize({
+                    plugins: ["restore_on_backspace"],
+                    delimiter: ",",
+                    persist: false,
+                    create: true,
+                    hideSelected: true,
+                    onChange: function () {
+                        self.$el.find("button#saveLabels").prop("disabled", false);
+                    },
+                    render: {
+                        item: function (item) {
+                            return "<div data-value=\"" + item.name + "\" class=\"item\">" + item.name + "</div>\"";
+                        }
+                    },
+                    labelField: "name",
+                    valueField: "name",
+                    searchField: ["name"]
+                })[0];
+            labelsSelect.selectize.disable();
+            this.updateLabelOptions();
+            this.$el.find(".page-toolbar .btn-group").hide();
+        },
+        updateLabelOptions: function () {
+            var labelsSelectize = this.getLabelSelectize(),
+                userLabels = _.filter(this.allLabels, isUserLabel),
+                resourceUserLabelNames = _(this.model.get("labels"))
+                    .map(_.partial(getLabelForId, this.allLabels))
+                    .filter(isUserLabel)
+                    .sortBy("name")
+                    .pluck("name")
+                    .value();
+            labelsSelectize.clearOptions();
+            labelsSelectize.addOption(userLabels);
+            labelsSelectize.clear();
+            _.each(resourceUserLabelNames, function (item) {
+                labelsSelectize.addItem(item);
+            });
+        },
+        renderSelectizeCell: function () {
+            var promise = $.Deferred(),
+                self = this,
+                options = this.model.get("scopes").toJSON(),
+                SelectizeCell;
 
-            // Get the current id
-            if(args && args[2]) { id = args[2]; }
+            UIUtils.fillTemplateWithData(this.selectizeTemplate, {}, function (template) {
+                SelectizeCell = Backgrid.Cell.extend({
+                    className: "selectize-cell",
+                    render: function () {
+                        var items = self.model.get("scopes").pluck("name"),
+                            select;
 
-            /**
-             * Guard clause to check if model requires sync'ing/updating
-             * Reason: We do not know the id of the data we need until the render function is called with args,
-             * thus we can only check at this point if we have the correct model to render this view (the model
-             * might already contain the correct data).
-             * Behaviour: If the model does require sync'ing then we abort this render via the return and render
-             * will it invoked again when the model is updated
-             */
-            if(this.syncModel(id)) { return; }
+                        this.$el.html(template);
+                        select = this.$el.find("select").selectize({
+                            create: false,
+                            delimiter: ",",
+                            dropdownParent: "#uma",
+                            hideSelected: true,
+                            persist: false,
+                            labelField: "name",
+                            valueField: "id",
+                            items: items,
+                            options: options
+                        })[0];
+
+                        select.selectize.disable();
+
+                        /* This an extention of the original positionDropdown method within Selectize. The override is
+                         * required because using the dropdownParent 'body' places the dropdown out of scope of the
+                         * containing backbone view. However adding the dropdownParent as any other element, has problems
+                         * due the offsets and/positioning being incorrecly calucaluted in orignal positionDropdown method.
+                         */
+                        select.selectize.positionDropdown = function () {
+                            var $control = this.$control,
+                                offset = this.settings.dropdownParent ? $control.offset() : $control.position();
+
+                            if (this.settings.dropdownParent) {
+                                offset.top -= ($control.outerHeight(true) * 2) +
+                                              $(this.settings.dropdownParent).position().top;
+                                offset.left -= $(this.settings.dropdownParent).offset().left +
+                                               $(this.settings.dropdownParent).outerWidth() -
+                                               $(this.settings.dropdownParent).outerWidth(true);
+                            } else {
+                                offset.top += $control.outerHeight(true);
+                            }
+
+                            this.$dropdown.css({
+                                width: $control.outerWidth(),
+                                top: offset.top,
+                                left: offset.left
+                            });
+                        };
+
+                        this.delegateEvents();
+                        return this;
+                    }
+                });
+                promise.resolve(SelectizeCell);
+            });
+            return promise;
+        },
+
+        render: function (args, callback) {
+            var id = _.last(args), self = this;
+
+            if (this.model && this.id === id) {
+                if (!this.isCurrentlyFetchingData) {
+                    this.renderWithModel(callback);
+                }
+            } else {
+                this.isCurrentlyFetchingData = true;
+                $.when(
+                    getAllLabels(),
+                    UMAResourceSetWithPolicy.findOrCreate({ _id: id }).fetch()
+                ).done(function (allLabels, model) {
+                    // Ensure we don't render any previous requests that were cancelled.
+                    if (model.id === self.id) {
+                        self.allLabels = allLabels;
+                        self.model = model;
+                        self.isCurrentlyFetchingData = false;
+                        self.renderWithModel(callback);
+                    }
+                }).fail(this.onModelError);
+            }
+            this.id = id;
+        },
+        renderWithModel: function (callback) {
+            var collection, grid, options, RevokeCell, SelectizeCell, self = this;
 
             /**
              * FIXME: Ideally the data needs to the be whole model, but I'm told it's also global so we're
@@ -139,9 +287,6 @@ define("org/forgerock/openam/ui/uma/views/resource/ResourcePage", [
             this.data = {};
             this.data.name = this.model.get("name");
             this.data.icon = this.model.get("icon_uri");
-            //TODO: This data should come the server
-            this.data.resourceSetLabels = ["Tag1", "Tag2", "Tag3"];
-            this.data.allLabels = ["Tag1", "Tag2", "Tag3", "Tag4", "Tag5", "Tag6"];
 
             // FIXME: Re-enable filtering and pagination
             //     UserPoliciesCollection = Backbone.PageableCollection.extend({
@@ -157,62 +302,9 @@ define("org/forgerock/openam/ui/uma/views/resource/ResourcePage", [
                 events: {
                     "click #revoke": "revoke"
                 },
-                revoke: function() {
+                revoke: function () {
                     self.model.get("policy").get("permissions").remove(this.model);
                     self.model.get("policy").save();
-                }
-            });
-
-            options = this.model.get("scopes").toJSON();
-
-            SelectizeCell = Backgrid.Cell.extend({
-                className: "selectize-cell",
-                template: "templates/uma/backgrid/cell/SelectizeCell.html",
-                render: function() {
-                    var items = this.model.get("scopes").pluck("name"),
-                        select;
-
-                    this.$el.html(UIUtils.fillTemplateWithData(this.template));
-
-                    select = this.$el.find("select").selectize({
-                        create: false,
-                        delimiter: ",",
-                        dropdownParent: "#uma",
-                        hideSelected: true,
-                        persist: false,
-                        labelField: "name",
-                        valueField: "id",
-                        items: items,
-                        options: options
-                    })[0];
-
-                    select.selectize.lock();
-
-                    /* This an extention of the original positionDropdown method within Selectize. The override is
-                     * required because using the dropdownParent 'body' places the dropdown out of scope of the
-                     * containing backbone view. However adding the dropdownParent as any other element, has problems
-                     * due the offsets and/positioning being incorrecly calucaluted in orignal positionDropdown method.
-                     */
-                    select.selectize.positionDropdown = function() {
-                        var $control = this.$control,
-                            offset = this.settings.dropdownParent ? $control.offset() : $control.position();
-
-                        if (this.settings.dropdownParent) {
-                            offset.top -= ($control.outerHeight(true) * 2) + $(this.settings.dropdownParent).position().top;
-                            offset.left -= $(this.settings.dropdownParent).offset().left + $(this.settings.dropdownParent).outerWidth() - $(this.settings.dropdownParent).outerWidth(true);
-                        } else {
-                            offset.top += $control.outerHeight(true);
-                        }
-
-                        this.$dropdown.css({
-                            width: $control.outerWidth(),
-                            top: offset.top,
-                            left: offset.left
-                        });
-                    };
-
-                    this.delegateEvents();
-                    return this;
                 }
             });
 
@@ -225,84 +317,135 @@ define("org/forgerock/openam/ui/uma/views/resource/ResourcePage", [
                 collection = this.model.get("policy").get("permissions");
             }
 
-            grid = new Backgrid.Grid({
-                columns: [
-                    {
+            this.renderSelectizeCell().done(function (SelectizeCell) {
+                grid = new Backgrid.Grid({
+                    columns: [{
                         name: "subject",
                         label: $.t("uma.resources.show.grid.0"),
                         cell: "string",
-                        editable: false,
-                        headerCell: BackgridUtils.ClassHeaderCell.extend({
-                            className: "col-md-4"
-                        })
-                    },
-                    {
+                        editable: false
+                    }, {
                         name: "permissions",
                         label: $.t("uma.resources.show.grid.2"),
                         cell: SelectizeCell,
                         editable: false,
-                        sortable: false,
-                        headerCell: BackgridUtils.ClassHeaderCell.extend({
-                            className: "col-md-6"
-                        })
-                    },
-                    {
+                        sortable: false
+                    }, {
                         name: "edit",
                         label: "",
                         cell: RevokeCell,
                         editable: false,
                         sortable: false,
                         headerCell: BackgridUtils.ClassHeaderCell.extend({
-                            className: "col-md-2"
+                            className: "col-btn"
                         })
                     }],
-                collection: collection,
-                emptyText: $.t("console.common.noResults"),
-                className: "backgrid table table-striped"
-            });
-
-            // FIXME: Re-enable filtering and pagination
-            // paginator = new Backgrid.Extension.Paginator({
-            //     collection: this.model.get('policy').get('permissions'),
-            //     windowSize: 3
-            // });
-
-            this.parentRender(function() {
-                self.$el.find("[data-toggle='tooltip']").tooltip();
-                self.renderTagsOptions();
-
-                if (self.model.has("policy") && self.model.get("policy").get("permissions").length > 0){
-                    self.$el.find("li#unshare").removeClass("disabled");
-                }
-
-                self.$el.find("#backgridContainer").append(grid.render().el);
-                // FIXME: Re-enable filtering and pagination
-                // self.$el.find("#paginationContainer").append(paginator.render().el);
-
-                self.$el.find("#umaShareImage img").error(function () {
-                    $(this).parent().addClass("no-image");
+                    collection: collection,
+                    emptyText: $.t("console.common.noResults"),
+                    className: "backgrid table table-striped"
                 });
 
-                // TODO: To be decided off the labels passed by the server
-                self.$el.find("#star i").toggleClass("fa-star-o fa-star");
+                // FIXME: Re-enable filtering and pagination
+                // paginator = new Backgrid.Extension.Paginator({
+                //     collection: this.model.get('policy').get('permissions'),
+                //     windowSize: 3
+                // });
 
-                if(callback) { callback(); }
+                self.parentRender(function () {
+                    self.$el.find("[data-toggle=\"tooltip\"]").tooltip();
+                    self.renderLabelsOptions();
+
+                    if (self.model.has("policy") && self.model.get("policy").get("permissions").length > 0) {
+                        self.$el.find("li#unshare").removeClass("disabled");
+                    }
+
+                    self.$el.find("#backgridContainer").append(grid.render().el);
+                    // FIXME: Re-enable filtering and pagination
+                    // self.$el.find("#paginationContainer").append(paginator.render().el);
+
+                    self.$el.find("#umaShareImage img").error(function () {
+                        $(this).parent().addClass("no-image");
+                    });
+
+                    var starredLabel = _.find(this.allLabels, { type: "STAR" }),
+                        isStarred = _.contains(this.model.get("labels"), starredLabel._id);
+
+                    if (isStarred) {
+                        self.$el.find("#starred i").toggleClass("fa-star-o fa-star");
+                    }
+
+                    if (callback) { callback(); }
+                });
             });
         },
-        syncModel: function(id) {
-            var syncRequired = !this.model || (id && this.model.id !== id);
+        getLabelSelectize: function () {
+            return this.$el.find("#labels select")[0].selectize;
+        },
+        stopEditingLabels: function () {
+            var labelsSelect = this.getLabelSelectize();
+            labelsSelect.disable();
+            this.$el.find(".page-toolbar .btn-group").hide();
+            this.$el.find("#editLabels").show();
+            this.$el.find("#labels .selectize-control").addClass("pull-left");
+        },
+        editLabels: function () {
+            var labelsSelect = this.getLabelSelectize();
+            labelsSelect.enable();
+            labelsSelect.focus();
+            this.$el.find("#editLabels").hide();
+            this.$el.find("#labels .selectize-control").removeClass("pull-left");
+            this.$el.find("button#saveLabels").prop("disabled", true);
+            this.$el.find("button#discardLabels").prop("disabled", false);
+            this.$el.find(".page-toolbar .btn-group").show();
+        },
+        disableLabelControls: function () {
+            var labelsSelect = this.getLabelSelectize();
+            labelsSelect.disable();
+            this.$el.find("button#saveLabels").prop("disabled", true);
+            this.$el.find("button#discardLabels").prop("disabled", true);
+        },
+        enableLabelControls: function () {
+            var labelsSelect = this.getLabelSelectize();
+            labelsSelect.enable();
+            this.$el.find("button#saveLabels").prop("disabled", false);
+            this.$el.find("button#discardLabels").prop("disabled", false);
+        },
+        submitLabelsChanges: function () {
+            var self = this,
+                labelsSelectize = this.getLabelSelectize(),
+                selectedUserLabelNames = labelsSelectize.getValue(),
+                userLabels = _.filter(this.allLabels, isUserLabel),
+                userLabelNames = _.pluck(userLabels, "name"),
+                newUserLabelNames = _.difference(selectedUserLabelNames, userLabelNames),
+                existingUserLabelNames = _.intersection(selectedUserLabelNames, userLabelNames),
+                existingUserLabelIds = _(existingUserLabelNames)
+                    .map(_.partial(getLabelForName, userLabels))
+                    .pluck("_id")
+                    .value(),
+                existingNonUserLabelIds = _(self.model.get("labels"))
+                    .map(_.partial(getLabelForId, this.allLabels))
+                    .reject(isUserLabel)
+                    .pluck("_id")
+                    .value(),
+                existingLabelIds = existingUserLabelIds.concat(existingNonUserLabelIds);
 
-            if(syncRequired) {
-                this.stopListening(this.model);
-                this.model = UMAResourceSetWithPolicy.findOrCreate( { _id: id} );
-                this.listenTo(this.model, "sync", this.onModelSync);
-                this.listenTo(this.model, "error", this.onModelError);
-                this.model.fetch();
-            }
-
-            return syncRequired;
+            self.disableLabelControls();
+            createLabels(newUserLabelNames).then(function (newIds) {
+                self.model.set("labels", existingLabelIds.concat(newIds));
+                return $.when(getAllLabels(), self.model.save());
+            }).then(function (allLabels) {
+                self.allLabels = allLabels;
+                self.enableLabelControls();
+                self.stopEditingLabels();
+                self.updateLabelOptions();
+            }, function () {
+                self.enableLabelControls();
+            });
+        },
+        discardLabelsChanges: function () {
+            this.stopEditingLabels();
+            this.updateLabelOptions();
         }
     });
-
     return ResourcePage;
 });

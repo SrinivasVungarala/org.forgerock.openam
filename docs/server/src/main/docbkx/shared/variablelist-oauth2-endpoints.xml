@@ -58,7 +58,7 @@
   <term><literal>/oauth2/tokeninfo</literal></term>
   <listitem>
    <para>Endpoint not defined in RFC 6749, used to validate tokens, and to
-   retrieve information such as scopes</para>
+   retrieve information, such as scopes</para>
    <para>Given an access token, a resource server can perform an HTTP GET on
    <literal>/oauth2/tokeninfo?access_token=<replaceable>token-id</replaceable></literal>
    to retrieve a JSON object indicating <literal>token_type</literal>,

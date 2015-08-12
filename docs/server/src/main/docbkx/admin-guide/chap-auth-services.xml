@@ -49,9 +49,9 @@
   <para>Access management is about controlling access to resources. OpenAM
   plays a role similar to border control at an international airport. Instead
   of having each and every airline company deal with access to each
-  destination, all airlines redirects passengers to border control. Border
+  destination, all airlines redirects passengers to border control. Redirect
   control then determines who each passenger is according to passport
-  credentials. Border control also checks whether the identified passenger
+  credentials. Redirect control also checks whether the identified passenger
   is authorized to fly to the destination corresponding to the ticket, perhaps
   based on visa credentials. Then, at the departure gate, an agent enforces
   the authorization from border control, allowing the passenger to board the
@@ -99,10 +99,14 @@
   In OpenAM, this is called <firstterm>authentication chaining</firstterm>.
   Each authentication module can be configured to specify the continuation and
   failure semantics with one of the following four flags:
-  required, optional, requisite, or sufficient.<footnote>
-  <para>The four flags, required, optional, requisite, and sufficient, come from
-  the standards created for the Java Authentication and Authorization Service
-  (JAAS).</para></footnote></para>
+  required, optional, requisite, or sufficient.
+
+   <footnote>
+    <para>The four flags, required, optional, requisite, and sufficient, come from
+     the standards created for the Java Authentication and Authorization Service
+     (JAAS).</para>
+   </footnote>
+  </para>
   
   <itemizedlist>
    <listitem>
@@ -116,7 +120,7 @@
     <para>When an <firstterm>optional</firstterm> module fails,
     authentication continues.</para>
     <para>An optional module might be used to permit a higher level of access
-    if the user can present a X.509 certificate for example.</para>
+    if the user can present a X.509 certificate, for example.</para>
    </listitem>
    <listitem>
     <para>When a <firstterm>requisite</firstterm> module fails, authentication
@@ -124,11 +128,11 @@
     <para>A requisite module might be used with exclusive SSO.</para>
    </listitem>
    <listitem>
-    <para>When a <firstterm>sufficient</firstterm> succeeds, authentication
+    <para>When a <firstterm>sufficient</firstterm> module succeeds, authentication
     is successful and later modules in the chain are skipped.</para>
     <para>You could set Windows Desktop SSO as sufficient, so authenticated
     Windows users are let through, whereas web users have to traverse another
-    authentication module such as one requiring an email address and a
+    authentication module, such as one requiring an email address and a
     password.</para>
    </listitem>
   </itemizedlist>
@@ -149,7 +153,7 @@
   domains, perhaps managed by different people.</para>
 
   <para>When a user successfully authenticates, OpenAM creates a session, which
-  allows OpenAM to manage that user's access to resources. In some deployments
+  allows OpenAM to manage that user's access to resources. In some deployments,
   you need to limit how many active sessions a user can have at a given time.
   For example, you might want to prevent a user from using more than two devices
   at once. See <xref linkend="configure-session-quotas" /> for
@@ -187,12 +191,12 @@
    wizard provides the ability to configure other third party authentication
    providers.</para>
 
-  <para>The wizards create an Authentication Module
-   and an Authentication Chain containing the correct configuration
+  <para>The wizards create an authentication module
+   and an authentication chain containing the correct configuration
    needed to authenticate with the third party. The wizard also adds
-   configuration data to the realm's <emphasis>Social Authentication Implementations</emphasis>
-   Service (and provisions the service if it is not already present) that
-   enables the display of logos of configured third party authentication
+   configuration data to the realm's <emphasis>Social Authentication Implementations
+   Service</emphasis> (and provisions the service if it is not already present) that
+   enables the display of logos of configured third-party authentication
    providers on the OpenAM login screen, as shown below.</para>
 
   <figure xml:id="figure-login-with-social-logos">
@@ -203,7 +207,7 @@
      <imagedata fileref="images/login-with-social-authentication.png" format="PNG" />
     </imageobject>
     <textobject><para>The login screen displays additional logos after you configure
-     the <emphasis>Social Authentication Implementations</emphasis> service.</para>
+     the <emphasis>Social Authentication Implementations</emphasis> Service.</para>
     </textobject>
    </mediaobject>
   </figure>
@@ -217,7 +221,7 @@
    </indexterm>
 
    <para>OpenAM provides wizards to quickly enable authentication with
-    Facebook, Google and Microsoft. Most settings are pre-populated,
+    Facebook, Google, and Microsoft. Most settings are pre-populated,
     only a <emphasis>Client ID</emphasis> and <emphasis>Client
      Secret</emphasis> are required.</para>
 
@@ -246,7 +250,7 @@
       <note><para>You must enable the Google+ API in order to
        authenticate with Google. To enable the Google+ API,
        login to the Google Developers Console, select your project,
-       navigate to APIs &amp; auth > APIs, and then set the status of the
+       navigate to APIs and auth > APIs, and then set the status of the
        <literal>Google+ API</literal> to <literal>ON</literal>.</para></note>
      </listitem>
     </varlistentry>
@@ -272,10 +276,10 @@
 
     <para>Once you have registered an application and obtained credentials from
      the social authentication provider, follow the steps below to configure
-     authentication with the provider.</para>
+     authentication with the provider:</para>
     <step>
      <para>On the Common Tasks tab page of the OpenAM console, click the link
-      for the social authentication provider you want to configure, either
+      for the social authentication provider you want to configure,
       <emphasis>Configure Facebook Authentication</emphasis>,
       <emphasis>Configure Google Authentication</emphasis>, or
       <emphasis>Configure Microsoft Authentication</emphasis>.
@@ -313,13 +317,13 @@
      </figure>
 
      <para>On completion, the wizard displays a message confirming
-      the successful creation of a new Authentication Module and an
-      Authentication Chain for the provider, and either the creation of a new
+      the successful creation of a new authentication module and an
+      authentication chain for the provider, and either the creation of a new
       Social Authentication Implementations service named
       <literal>socialAuthNService</literal>, or an update if it already existed.</para>
     </step>
    </procedure>
-   <para>You can configure the Authentication Module, Authentication Chain,
+   <para>You can configure the authentication module, authentication chain,
     and Social Authentication Implementations service that you created by using the
     wizards in the same way as manually created versions. For more information, see
     <xref linkend="configure-authn-modules" />,
@@ -350,7 +354,7 @@
 
     <para>Once you have registered an application and obtained your
      credentials from the social authentication provider,
-     follow the steps below to configure authentication with the provider.</para>
+     follow the steps below to configure authentication with the provider:</para>
     <step>
      <para>On the Common Tasks tab page of the OpenAM console, click the
       <literal>Configure Other Authentication</literal> link.
@@ -401,13 +405,13 @@
      </figure>
 
      <para>On completion, the wizard displays a message confirming
-      the successful creation of a new Authentication Module and an
-      Authentication Chain for the provider, and either the creation of a new
+      the successful creation of a new authentication module and an
+      authentication chain for the provider, and either the creation of a new
       Social Authentication Implementations service named
       <literal>socialAuthNService</literal>, or an update if it already existed.</para>
     </step>
    </procedure>
-   <para>You can configure the Authentication Module, Authentication Chain,
+   <para>You can configure the authentication module, authentication chain,
     and Social Authentication Implementations service that you created by using the
     wizard in the same way as manually created versions. For more information, see
     <xref linkend="configure-authn-modules" />,
@@ -417,7 +421,7 @@
   </section>
 
   <section xml:id="social-authn-implementations-service">
-   <title>Configuring the Social Authentication Implementations service</title>
+   <title>Configuring the Social Authentication Implementations Service</title>
 
    <indexterm>
     <primary>Social Authentication</primary>
@@ -429,23 +433,23 @@
     using configured social authentication providers.</para>
    <para>Wizards are provided to configure common social authentication
     providers, which also configure the Social Authentication Implementations
-    service to add logos to the login page. You can manually add other
-    Authentication Chains that contain an OAuth 2.0 / OpenID Connect
+    Service to add logos to the login page. You can manually add other
+    authentication chains that contain an OAuth 2.0/OpenID Connect
     authentication module.</para>
    <para>To add a social authentication provider to the login screen,
-    you must first configure an OAuth 2.0 / OpenID Connect Authentication Module
-    , and an Authentication Chain that contains it. You can create the by using a
+    you must first configure an OAuth 2.0/OpenID Connect authentication module,
+    and an authentication chain that contains it. You can create the by using a
     wizard, see <xref linkend="social-authn-wizard-pre-populated" /> and
     <xref linkend="social-authn-wizard-custom" />
    or created manually, see <xref linkend="configure-authn-modules" /> and
     <xref linkend="configure-authn-chains" />.</para>
 
    <procedure xml:id="howto-social-authn-implementations">
-    <title>To Configure Social Authentication Implementations</title>
+    <title>To Configure Social Authentication Implementations Service</title>
 
-    <para>Once you have created an Authentication Chain containing an OAuth
-     2.0 / OpenID Connect Authentication Module, follow the steps below to add a logo for the
-     authentication provider to the login screen.</para>
+    <para>Once you have created an authentication chain containing an OAuth
+     2.0/OpenID Connect authentication module, follow the steps below to add a
+     logo for the authentication provider to the login screen:</para>
     <step>
      <para>On the Access Control tab page of the OpenAM console, click the
       realm containing the authentication module and authentication chain to
@@ -457,14 +461,14 @@
      <itemizedlist>
       <listitem>
        <para>If the
-        <literal>Social Authentication Implementations</literal> service
+        <literal>Social Authentication Implementations Service</literal>
         exists, click on it.</para>
       </listitem>
      </itemizedlist>
      <itemizedlist>
       <listitem>
        <para>If the
-        <literal>Social Authentication Implementations</literal> service
+        <literal>Social Authentication Implementations Service</literal>
         does not exist, click New, select
         Social Authentication Implementations, and then click
         Next.</para>
@@ -481,7 +485,7 @@
        to each other. The value is case-sensitive.</para></note>
       </step>
       <step><para>In the <emphasis>Authentication Chains</emphasis> section,
-       re-enter the Map Key used in the previous step, select the Authentication Chain
+       re-enter the Map Key used in the previous step, select the authentication chain
        from the Corresponding Map Value list, and then click Add.</para>
       </step>
       <step><para>In the <emphasis>Icons</emphasis> section,
@@ -530,7 +534,7 @@
   </indexterm>
 
   <para>The OpenAM console provides two places where the OpenAM administrator
-  can configure authentication modules.</para>
+  can configure authentication modules:</para>
   
   <orderedlist>
    <listitem>
@@ -647,7 +651,7 @@
       <para>LDAP data is organized hierarchically, a bit like a file system
       on Windows or UNIX. More specific DNs likely result in better performance.
       When configuring the module for a particular part of the organization,
-      you can perhaps start searches from a specific organizational unit such as
+      you can perhaps start searches from a specific organizational unit, such as
       <literal>OU=sales,DC=example,DC=com</literal>.</para>
       <para>If multiple entries exist with identical search attribute values,
       make this value specific enough to return only one entry.</para>
@@ -684,8 +688,8 @@
         <term>User Search Filter</term>
         <term>Search Scope</term>
      <listitem>
-      <para>LDAP searches for user entries return entries with attribute
-      values matching the filter you provide. For example if you search under
+      <para>LDAP searches for user entries with attribute
+      values matching the filter you provide. For example, if you search under
       <literal>CN=Users,DC=example,DC=com</literal> with a filter
       <literal>"(MAIL=bjensen@example.com)"</literal>, then the directory
       returns the entry that has <literal>MAIL=bjensen@example.com</literal>.
@@ -702,7 +706,7 @@
       (objectClass=inetOrgPerson))</literal>, where <replaceable>address</replaceable> 
       is the mail address provided by the user.</para>
       <para>This controls how and the level of the directory that will be searched.
-      You can set the search to run at a high level or against a specific area.</para>
+      You can set the search to run at a high level or against a specific area:</para>
        <itemizedlist>
         <listitem>
          <para>OBJECT will search only for the entry specified as the DN to Start User
@@ -782,7 +786,7 @@
       directory server to ensure that the connection does not remain idle. Some
       network administrators configure firewalls and load balancers to drop
       connections that are idle for too long. You can turn this off by setting
-      the value to 0 or to a negative number. To set the units for the interval
+      the value to 0 or to a negative number. To set the units for the interval,
       use LDAP Connection Heartbeat Time Unit.</para>
 
       <para>Default: 1</para>
@@ -836,36 +840,43 @@
    authentication so that OpenAM can determine whether to require the
    user to complete further authentication steps. After configuring the
    Adaptive Risk module, insert it in your authentication chain with criteria
-   set to sufficient as shown in the following example.</para>
+   set to Sufficient as shown in the following example:</para>
 
-   <mediaobject xml:id="figure-adaptive-auth-module">
-    <alt>Including the Adaptive Risk module in an authentication chain</alt>
-    <imageobject>
-     <imagedata fileref="images/adaptive-auth-module.png" format="PNG" />
-    </imageobject>
-    <textobject><para>With the Adaptive Risk module as sufficient, OpenAM
-    continues to the next module in the chain should the Adaptive Risk module
-    return failure.</para></textobject>
-   </mediaobject>
+   <figure xml:id="figure-adaptive-auth-module">
+    <title>Adaptive Risk Module in an Authentication Chain</title>
+    <mediaobject>
+     <alt>Including the Adaptive Risk module in an authentication chain</alt>
+     <imageobject>
+      <imagedata fileref="images/adaptive-auth-module.png" format="PNG" />
+     </imageobject>
+     <textobject><para>With the Adaptive Risk module as sufficient, OpenAM
+      continues to the next module in the chain should the Adaptive Risk module
+      return failure.</para></textobject>
+    </mediaobject>
+   </figure>
 
    <para>In the example authentication chain shown, OpenAM has users
-   authenticate first using the LDAP module providing a user ID and password
-   combination. Upon success, OpenAM calls the Adaptive Risk module. The
-   Adaptive Risk module assesses the risk based on your configured parameters.
-   If the Adaptive Risk module calculates a total score below the threshold you
-   set, the module returns success, and OpenAM finishes authentication
-   processing without requiring further credentials. Otherwise the Adaptive
-   Risk module evaluates the score to be above the risk threshold, and returns
-   failure. OpenAM then calls the HOTP module, requiring the user to
-   authenticate with a one-time password delivered to her by email or by SMS
-   to her mobile phone.</para>
+    authenticate first using the LDAP module providing a user ID and password
+    combination. Upon success, OpenAM calls the Adaptive Risk module. The
+    Adaptive Risk module assesses the risk based on your configured parameters.
+    If the Adaptive Risk module calculates a total score below the threshold you
+    set, the module returns success, and OpenAM finishes authentication
+    processing without requiring further credentials.
+   </para>
+   <para>
+    Otherwise, the Adaptive
+    Risk module evaluates the score to be above the risk threshold, and returns
+    failure. OpenAM then calls the HOTP module, requiring the user to
+    authenticate with a one-time password delivered to her by email or by SMS
+    to her mobile phone.
+   </para>
    <para>When you configure the Adaptive Risk module to save cookies and
-   profile attributes after successful authentication, OpenAM performs the
-   save as post authentication processing, only after the entire authentication
-   chain returns success. You must set up OpenAM to save the data as part of
-   post authentication processing by editing the authentication chain to add
-   <literal>org.forgerock.openam.authentication.modules.adaptive.Adaptive</literal>
-   to the list of post authentication plugins.</para>
+    profile attributes after successful authentication, OpenAM performs the
+    save as post authentication processing, only after the entire authentication
+    chain returns success. You must set up OpenAM to save the data as part of
+    post authentication processing by editing the authentication chain to add
+    <literal>org.forgerock.openam.authentication.modules.adaptive.Adaptive</literal>
+    to the list of post authentication plugins.</para>
 
    <para>
     When the Adaptive Risk module relies on the client IP address,
@@ -897,8 +908,12 @@
     <varlistentry>
      <term>Risk Threshold</term>
      <listitem>
-      <para>Risk threshold score. If the sum of the Scores is greater than the
-      threshold, the Adaptive Risk module returns failure. Default: 1</para>
+      <para>Risk threshold score. If the sum of the scores is greater than the
+       threshold, the Adaptive Risk module returns failure.
+      </para>
+
+      <para>Default: 1</para>
+
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-auth-threshold</literal></para>
      </listitem>
@@ -912,7 +927,7 @@
       <para>When enabled, check the user profile for authentication failures
       since the last successful login. This check therefore requires
       OpenAM to have access to the user profile, and Account Lockout to be
-      enabled (otherwise OpenAM does not record authentication
+      enabled (otherwise, OpenAM does not record authentication
       failures).</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-failure-check</literal></para>
@@ -930,7 +945,7 @@
     <varlistentry>
      <term>Invert Result</term>
      <listitem>
-      <para>When selected, add the Score to the total score if the user
+      <para>When selected, add the score to the total score if the user
       passes the Failed Authentication Check.</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-failure-invert</literal></para>
@@ -971,7 +986,11 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if the user fails the IP Range
-      Check. Default: 1</para>
+       Check.
+      </para>
+
+      <para>Default: 1</para>
+
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-ip-range-score</literal></para>
      </listitem>
@@ -1002,7 +1021,11 @@
      <term>History Size</term>
      <listitem>
       <para>Specifies how many IP address values to retain on the profile
-      attribute you specify. Default: 5</para>
+      attribute you specify.
+      </para>
+
+      <para>Default: 5</para>
+
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-ip-adaptive-history-count</literal></para>
      </listitem>
@@ -1011,7 +1034,10 @@
      <term>Profile Attribute Name</term>
      <listitem>
       <para>Name of the user profile attribute on which to store known IP
-      addresses. Default: <literal>iphistory</literal></para>
+      addresses.
+      </para>
+      <para>
+       Default: <literal>iphistory</literal></para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-ip-history-attribute</literal></para>
      </listitem>
@@ -1029,7 +1055,10 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if the user fails the IP History
-      Check. Default: 1</para>
+      Check.
+       </para>
+       <para>
+       Default: 1</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-ip-history-score</literal></para>
      </listitem>
@@ -1087,7 +1116,8 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if user passes the Cookie Value
-      Check. Default: 1</para>
+      Check. </para>
+      <para>Default: 1</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-known-cookie-score</literal></para>
      </listitem>
@@ -1118,7 +1148,7 @@
      <term>Cookie Name</term>
      <listitem>
       <para>Specifies the name of the cookie for the Device Registration Cookie
-      Check. Default: Device</para>
+      Check. </para><para>Default: Device</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-device-cookie-name</literal></para>
      </listitem>
@@ -1137,7 +1167,7 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if the user fails the Device
-      Registration Cookie Check. Default: 1</para>
+      Registration Cookie Check. </para><para>Default: 1</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-device-cookie-score</literal></para>
      </listitem>
@@ -1175,7 +1205,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>Max Time since Last Login</term>
+     <term>Max Time Since Last Login</term>
      <listitem>
       <para>Specifies a threshold age of the last login time in days. If the
       client's last login time is more recent than the number of days specified,
@@ -1185,7 +1215,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>Save time of Successful Login</term>
+     <term>Save Time of Successful Login</term>
      <listitem>
       <para>When enabled, save the specified cookie with the current time
       encrypted as the last login value in the client's browser following
@@ -1198,7 +1228,7 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if the user fails the Time Since
-      Last Login Check. Default: 1</para>
+      Last Login Check. </para><para>Default: 1</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-time-since-last-login-score</literal></para>
      </listitem>
@@ -1247,7 +1277,7 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if the user fails the Profile Risk
-      Attribute Check. Default: 1</para>
+      Attribute Check. </para><para>Default: 1</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-risk-attribute-score</literal></para>
      </listitem>
@@ -1268,17 +1298,17 @@
      <term>Geolocation Country Code Check</term>
      <listitem>
       <para>When enabled, check whether the client IP address location matches
-      a country specified in the Valid Country Codes list. The </para>
+      a country specified in the Valid Country Codes list.</para>
       <para><command>ssoadm</command> attribute:
       <literal>forgerock-am-auth-adaptive-geo-location-check</literal></para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>Geolocation Database location</term>
+     <term>Geolocation Database Location</term>
      <listitem>
       <para>Path to GeoIP data file used to convert IP addresses to
       country locations. The geolocation database is not packaged with OpenAM. 
-      You can downloaded the GeoIP Country database from  <link
+      You can download the GeoIP Country database from  <link
       xlink:href="http://www.maxmind.com/en/country">MaxMind</link>. Use the binary 
       .dat file format, rather than .csv. You can use the GeoLite Country database
       for testing.</para>
@@ -1299,7 +1329,7 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if the user fails the Geolocation
-      Country Code Check. Default: 1</para>
+      Country Code Check. </para><para>Default: 1</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-geo-location-score</literal></para>
      </listitem>
@@ -1347,7 +1377,7 @@
      <term>Score</term>
      <listitem>
       <para>Value to add to the total score if the user fails the Request
-      Header Check. Default: 1</para>
+      Header Check. </para><para> 1</para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-adaptive-req-header-score</literal></para>
      </listitem>
@@ -1388,7 +1418,7 @@
      When the user attempts to access resources that require more protection,
      the module can force further authentication for those resources.</para>
 
-     <para>You can configure the Anonymous Authentication Module
+     <para>You can configure the Anonymous Authentication module
       by specifying the <command>ssoadm</command> service name and Anonymous
       Authentication realm attributes: Valid Anonymous Users, Default User Name,
       Case Sensitive User IDs, and Authentication Level.
@@ -1432,7 +1462,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
      <listitem>
       <para>Specifies the user ID assigned by the module if the Valid
       Anonymous Users list is empty. The default value is <literal>anonymous</literal>.
-      Note that the anonymous user must be defined in the realm.</para>
+      Note that the anonymous user must be defined in the realm:</para>
 
 <literallayout class="monospaced">protocol://hostname:port/deploy_URI/UI/Login?module=Anonymous&amp;org=orgName
 &amp;IDToken1=&lt;Default Anonymous User Name&gt;</literallayout>
@@ -1483,8 +1513,8 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     </varlistentry>
 
    </variablelist>
-      <note><para>You can configure the Anonymous Authentication Module using the
-          OpenAM Console by clicking <literal>Configuration</literal> &gt;
+      <note><para>You can configure the Anonymous Authentication module using the
+          OpenAM console by clicking <literal>Configuration</literal> &gt;
           <literal>Authentication</literal> &gt; <literal>Anonymous</literal>.</para></note>
 
    <indexterm class="endofrange" startref="idx-auth-hints-anonymous">
@@ -1726,7 +1756,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     <varlistentry>
      <term>Trusted Remote Hosts</term>
      <listitem>
-      <para>Hosts trusted to send certificates to OpenAM, such as, load balancers
+      <para>Hosts trusted to send certificates to OpenAM, such as load balancers
       doing SSL termination.</para>
       <para><command>ssoadm</command> attribute:
       <literal>iplanet-am-auth-cert-gw-cert-auth-enabled</literal></para>
@@ -1765,13 +1795,14 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     <secondary>Core module</secondary>
    </indexterm>
 
-   <para>The Core authentication module is a meta-module.</para>
-   <para>The Core module lets you set up the list of modules available,
+   <para>The Core Authentication module is a meta-module.</para>
+
+   <para>The Core Authentication module lets you set up the list of modules available,
    and specify what types of client applications can authenticate with which
    modules. It also lets you configure connection pools for access to
-   directory servers, and whether to retain objects used during authentication
-   for use during logout. Furthermore, the Core module lets you set defaults
-   used when configuring authentication in a particular realm.</para>
+   directory servers, and specifies whether to retain objects used during authentication
+   for use during logout. Furthermore, the Core Authentication module lets you set defaults
+   used when configuring authentication in a particular realm:</para>
    
       <itemizedlist>
       <para>The Core Authentication module is divided into seven sections:</para>
@@ -1841,7 +1872,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     <varlistentry>
      <term>User Profile</term>
      <listitem>
-      <para>Whether a user profile needs to exist in the user data store,
+      <para>Specifies whether a user profile needs to exist in the user data store,
       or should be created on successful authentication.</para>
       <variablelist>
        <varlistentry>
@@ -1905,7 +1936,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
       <para>After a user is successfully authenticated, the user's profile is
        retrieved. OpenAM first searches for the user based on the data store settings.
        If that fails to find the user, OpenAM will use the attributes listed here to
-       lookup the user profile. This setting accepts any data store specific attribute
+       look up the user profile. This setting accepts any data store specific attribute
        name.
       </para>
       <para><command>ssoadm</command> attribute:
@@ -1972,8 +2003,8 @@ $ ssoadm set-realm-svc-attrs \
     <varlistentry>
      <term>Login Failure Lockout Count</term>
      <listitem>
-      <para>Defines the number of attempts that a user has to authenticate,
-      within the time interval defined in Login Failure Lockout Interval,
+      <para>Defines the number of attempts that a user has to authenticate
+      within the time interval defined in Login Failure Lockout Interval
       before being locked out.</para>
       <para><command>ssoadm</command> attribute:
       <literal>iplanet-am-auth-login-failure-count</literal></para>
@@ -2009,7 +2040,7 @@ $ ssoadm set-realm-svc-attrs \
     <varlistentry>
      <term>Warn User After N Failures</term>
      <listitem>
-      <para>The number of authentication failures after which OpenAM displays
+      <para>Specifies the number of authentication failures after which OpenAM displays
       a warning message that the user will be locked out.</para>
       <para><command>ssoadm</command> attribute:
       <literal> iplanet-am-auth-lockout-warn-user</literal></para>
@@ -2283,7 +2314,7 @@ $ ssoadm set-realm-svc-attrs \
      <listitem>
 
       <indexterm>
-       <primary>Zero page login</primary>
+       <primary>Zero Page Login</primary>
       </indexterm>
 
       <para>
@@ -2314,8 +2345,7 @@ $ ssoadm set-realm-svc-attrs \
       <para>
        List of HTTP Referer URLs for which OpenAM allows zero page login.
        These URLs are supplied in the HTTP request header,
-       <literal>Referer</literal>, which is designed to
-       allow the client to specify the web page
+       <literal>Referer</literal>, which lets the client specify the web page
        that provided the link to the requested resource.
       </para>
 
@@ -2338,7 +2368,7 @@ $ ssoadm set-realm-svc-attrs \
     </varlistentry>
 
     <varlistentry>
-     <term>Zero Page Login Allowed without Referer?</term>
+     <term>Zero Page Login Allowed Without Referer?</term>
      <listitem>
       <para>
        If enabled and zero page login is enabled,
@@ -2464,9 +2494,9 @@ $ ssoadm set-realm-svc-attrs \
       <literal>SSOToken.getProperty("am.protected.user.mail")</literal> method
       call.</para>
       <para>Properties that are set in the user session using User Attribute
-      Mapping to Session Attributes can not be modified (for example,
+      Mapping to Session Attributes cannot be modified (for example,
       <literal>SSOToken.setProperty(String, String)</literal>). This results in
-      an <literal>SSOException</literal>. Multi-value attributes, such as
+      an <literal>SSOException</literal>. Multivalued attributes, such as
       <literal>memberOf</literal>, are listed as a single session variable
       with a <literal>|</literal> separator.</para>
       <para>When configuring authentication for a realm that uses stateless
@@ -2498,15 +2528,15 @@ $ ssoadm set-realm-svc-attrs \
 
    <para>The Data Store authentication module allows a login using the Identity
    Repository of the realm to authenticate users. Using the Data Store module
-   removes the requirement to write an authentication plug-in module, load,
+   removes the requirement to write an authentication plugin module, load,
    and then configure the authentication module if you need to authenticate
    against the same data store repository. Additionally, you do not need to
-   write a custom authentication module where flat-file authentication is
+   write a custom authentication module where flatfile authentication is
    needed for the corresponding repository in that realm.</para>
 
    <para>Yet, the Data Store module is generic. It does not implement data
-   store-specific capabilities such as the password policy and password reset
-   features provided by LDAP modules. Therefore the Data Store module returns
+   store-specific capabilities, such as the password policy and password reset
+   features provided by LDAP modules. Therefore, the Data Store module returns
    failure when such capabilities are invoked.</para>
    <indexterm>
     <primary>Authentication</primary>
@@ -2540,27 +2570,27 @@ $ ssoadm set-realm-svc-attrs \
    </indexterm>
 
    <para>The Device ID (Match) module provides device fingerprinting functionality
-    for risk-based authentication. The Device ID (Match) works together with other
+    for risk-based authentication. The Device ID (Match) works with other
     modules, for example, the DataStore, HMAC One-Time Password (HOTP), and
     Device ID (Save) modules in an authentication chain.
    </para>
    <para>
-    The Device ID (Match) module collects the unique characteristics of a remote user's computing device
-    and compares them to characteristics on a saved device profile.
+    The Device ID (Match) module collects the unique characteristics of a remote
+    user's computing device and compares them to characteristics on a saved device profile.
     The module computes any variances between the collected characteristics
     to those stored on the saved device profile and assigns penalty points for
     each difference.
    </para>
    <para>
     For example, when a user who typically logs on to the Internet
-    on a FireFox browser, logs on using Chrome, the Device ID (Match) module notes the
+    using FireFox, logs on using Chrome, the Device ID (Match) module notes the
     difference and assigns penalty points to this change in behavior. If
     the module detects additional differences in behavior, such as browser fonts,
-    geolocation, etc., then additional points are assessed and calculated. If the
+    geolocation, and so forth, then additional points are assessed and calculated. If the
     total maximum number of penalty points exceeds a pre-configured threshold value,
     the Device ID (Match) module fails and control is determined by how you
     configured your authentication chain. For example, if you include the
-    HMAC One-Time Password (HOTP) module in your authentication chain
+    HOTP module in your authentication chain,
     and if the Device ID (Match) module fails after the maximum number of penalty
     points have been exceeded, then the authentication chain issues a HOTP request to the user,
     requiring the user to identify himself using two-factor authentication.
@@ -2573,7 +2603,7 @@ $ ssoadm set-realm-svc-attrs \
 
    <itemizedlist>
     <listitem>
-     <para>User agents, associated with the configuration of a web browser</para>
+     <para>User agents associated with the configuration of a web browser</para>
     </listitem>
     <listitem>
      <para>Installed fonts</para>
@@ -2630,7 +2660,7 @@ $ ssoadm set-realm-svc-attrs \
     client-side and server-side scripts are fully functional.
     If you change the client-side script, you must also
     make a corresponding change to the server-side script.
-    For a safer option if you want to change the behavior of the module,
+    For a safer option, if you want to change the behavior of the module,
     you can copy the scripts to a custom scripted module, and edit the code to
     make your own customized version.
    </para></caution>
@@ -2664,16 +2694,16 @@ $ ssoadm set-realm-svc-attrs \
      <para>
       The server-side script calculates the penalty points based
       on differences between the client device and stored device profile, and
-      determines if the client device successfully "matches" the stored profile.
+      or whether the client device successfully "matches" the stored profile.
       If a match is successful, OpenAM determines that the client's device has the
       required attributes for a successful authentication.</para>
      <para>
       If the device does not have a match, then the module fails and falls through
-      to the HMAC One-Time Password (HOTP) module for further processing.
+      to the HOTP module for further processing.
      </para>
     </listitem>
     <listitem>
-     <para><emphasis role="bold">HMAC One-Time Password (HOTP) - Requisite</emphasis>.
+     <para><emphasis role="bold">HOTP - Requisite</emphasis>.
       If the user's device does not match a stored profile,
       OpenAM presents the user with a HMAC One-Time Password (HOTP) screen either
       by SMS or email, prompting the user to enter a password.
@@ -2746,7 +2776,7 @@ $ ssoadm set-realm-svc-attrs \
 
    <variablelist>
     <varlistentry>
-     <term>Client-side Script Enabled</term>
+     <term>Client-Side Script Enabled</term>
      <listitem>
       <para>Enable Device ID (Match) to send JavaScript in an authentication page
       to the device to collect data about the device by a self-submitting form.
@@ -2756,7 +2786,7 @@ $ ssoadm set-realm-svc-attrs \
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>Client-side Script</term>
+     <term>Client-Side Script</term>
      <listitem>
       <para>You can see default client-side JavaScript code that you can modify
        if necessary. Note that if you change the client-side script, you must make
@@ -2768,7 +2798,7 @@ $ ssoadm set-realm-svc-attrs \
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>Server-side Script Language</term>
+     <term>Server-Side Script Language</term>
      <listitem>
       <para>Default: JavaScript. Select Groovy if your script is written in that
        language.
@@ -2880,7 +2910,7 @@ $ ssoadm set-realm-svc-attrs \
      <term>Automatically store new profiles</term>
      <listitem>
       <para>Select the checkbox to automatically store new profiles.
-       After successful HMAC one-time password (HOTP) confirmation,
+       After successful HOTP confirmation,
        OpenAM stores the new profile automatically.</para>
 
       <para><command>ssoadm</command> attribute:
@@ -2951,7 +2981,7 @@ $ ssoadm set-realm-svc-attrs \
     <primary>HMAC One-Time Password (HOTP) authentication</primary>
    </indexterm>
 
-   <para>The HMAC One-Time Password authentication module works together in an
+   <para>The HOTP authentication module works with an
     authentication chain with any module that stores the <literal>username</literal>
     attribute.
     The module uses the <literal>username</literal> from the <literal>sharedState</literal>
@@ -2974,7 +3004,7 @@ $ ssoadm set-realm-svc-attrs \
    </para>
    <para>
     You can set the HOTP module to automatically generate a password when
-    users begin logging into the system. You can also setup mobile phone,
+    users begin logging into the system. You can also set up mobile phone,
     mobile carrier, and email attributes for tighter controls over where
     the messages are generated and what provider the messages go through to
     reach the user.
@@ -3005,8 +3035,7 @@ $ ssoadm set-realm-svc-attrs \
     <varlistentry>
      <term>Mail Server Host Name</term>
      <listitem>
-      <para>Host name of the mail server supporting Simple Message Transfer
-      Protocol for electronic mail.</para>
+      <para>Host name of the mail server supporting SMTP for electronic mail.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMAuthHOTPSMTPHostName</literal></para>
      </listitem>
@@ -3054,24 +3083,24 @@ $ ssoadm set-realm-svc-attrs \
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>One Time Password Validity Length (in minutes)</term>
+     <term>One-Time Password Validity Length (in minutes)</term>
      <listitem>
-      <para>One-time passwords are valid for 5 minutes after they are generated
+      <para>One-time passwords are valid for five minutes after they are generated
       by default.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMAuthHOTPPasswordValidityDuration</literal></para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>One Time Password Length (in digits)</term>
+     <term>One-Time Password Length (in digits)</term>
      <listitem>
-      <para>Set the length of the one-time password to 6 or 8 digits.</para>
+      <para>Set the length of the OTP to 6 or 8.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMAuthHOTPPasswordLength</literal></para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term>One Time Password Delivery</term>
+     <term>One-Time Password Delivery</term>
      <listitem>
       <para>Send the one-time password by SMS, by mail, or both.</para>
       <para><command>ssoadm</command> attribute:
@@ -3112,7 +3141,7 @@ $ ssoadm set-realm-svc-attrs \
     <varlistentry>
      <term>Auto Send OTP Code</term>
      <listitem>
-      <para>Setup the HOTP module to automatically generate an email
+      <para>Set up the HOTP module to automatically generate an email
       or text message when users begin the login process. </para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMAuthHOTPAutoClicking</literal></para>
@@ -3146,7 +3175,7 @@ $ ssoadm set-realm-svc-attrs \
      <term>Backend Module Name</term>
      <listitem>
       <para>Specifies the module that checks the user credentials. The credentials are
-      then supplied to either a Data Store or other identity repository module for authentication.</para>
+      then supplied to either a data store or other identity repository module for authentication.</para>
       <para><command>ssoadm</command> attribute:
       <literal>iplanet-am-auth-http-basic-module-configured</literal></para>
      </listitem>
@@ -3174,7 +3203,7 @@ $ ssoadm set-realm-svc-attrs \
    </indexterm>
 
    <para>The Java Database Connectivity (JDBC) module lets OpenAM connect to
-   a database such as MySQL or Oracle DB to authenticate users.</para>
+   a database, such as MySQL or Oracle DB to authenticate users.</para>
    
    <para><command>ssoadm</command> service name:
    <literal>sunAMAuthJDBCService</literal></para>
@@ -3205,12 +3234,12 @@ $ ssoadm set-realm-svc-attrs \
     <varlistentry>
      <term>JDBC Driver</term>
      <listitem>
-      <para>When using Non-persistent JDBC connection, this specifies the JDBC
+      <para>When using a non-persistent JDBC connection, this specifies the JDBC
       driver provided by the database.</para>
-      <para>The .jar containing the JDBC driver belongs in the
+      <para>The <literal>.jar</literal> containing the JDBC driver belongs in the
       <filename>WEB-INF/lib</filename> directory of the deployed OpenAM
-      instance, and so you should add it to a custom OpenAM .war file that you
-      deploy.</para>
+      instance, and so you should add it to a custom OpenAM <literal>.war</literal>
+       file that you deploy.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMAuthJDBCDriver</literal></para>
      </listitem>
@@ -3218,7 +3247,7 @@ $ ssoadm set-realm-svc-attrs \
     <varlistentry>
      <term>JDBC URL</term>
      <listitem>
-      <para>When using Non-persistent JDBC connection, this specifies the URL
+      <para>When using a non-persistent JDBC connection, this specifies the URL
       to connect to the database.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMAuthJDBCUrl</literal></para>
@@ -3306,7 +3335,7 @@ the '%' character is not included in the properties.
    </indexterm>
 
    <para>OpenAM connects to directory servers using Lightweight Directory
-   Access Protocol (LDAP). To build an easy-to-manage, high performance, pure
+   Access Protocol (LDAP). To build an easy-to-manage, high-performance, pure
    Java, open source directory service, try
    <link xlink:href="http://opendj.org">OpenDJ</link> directory services.</para>
    
@@ -3321,13 +3350,13 @@ the '%' character is not included in the properties.
      <listitem>
       <para>
        Directory servers generally use built-in data replication for high
-       availability. Thus a directory service likely consists of a pool of
+       availability. Thus, a directory service likely consists of a pool of
        replicas to which OpenAM can connect to retrieve and update directory
        data. You set up primary and secondary servers in case a replica is down
        due to maintenance or to a problem with a particular server.
       </para>
       <para>
-       Set one or more primary and optionally one or more secondary directory server for
+       Set one or more primary and optionally, one or more secondary directory server for
        each OpenAM server. For the current OpenAM server, specify each directory
        server as a
        <literal><replaceable>host</replaceable>:<replaceable>port</replaceable></literal>
@@ -3341,7 +3370,7 @@ the '%' character is not included in the properties.
       </para>
       <para>
        For example, if the <replaceable>server-name</replaceable>
-       that is listed is <literal>http://openam.example.com:8080/openam</literal>
+       that is listed is <literal>http://openam.example.com:8080/openam</literal>,
        and the directory server is accessible at <literal>opendj.example.com:1389</literal>,
        you would enter <literal>openam.example.com|opendj.example.com:1389</literal>.
       </para>
@@ -3420,7 +3449,7 @@ the '%' character is not included in the properties.
       on Windows or UNIX. More specific DNs likely result in better search
       performance. When configuring the module for a particular part of the
       organization, you can perhaps start searches from a specific
-      organizational unit such as
+      organizational unit, such as
       <literal>ou=sales,dc=example,dc=com</literal>.</para>
       <para>If multiple entries exist with identical search attribute values,
       make this value specific enough to return only one entry.</para>
@@ -3437,7 +3466,7 @@ the '%' character is not included in the properties.
       authenticate in order to read users' attributes, then OpenAM needs the
       DN and password to authenticate to the directory.</para>
       <para>The default is <literal>cn=Directory Manager</literal>. Make sure
-      that password is correct before you logout. If it is incorrect, you will
+      that password is correct before you log out. If it is incorrect, you will
       be locked out. If this should occur, you can login with the superuser DN,
       which by default is
       <literal>uid=amAdmin,ou=People,<replaceable>OpenAM-deploy-base</replaceable></literal>,
@@ -3456,7 +3485,7 @@ the '%' character is not included in the properties.
      <term>Search Scope</term>
      <listitem>
       <para>LDAP searches for user entries return entries with attribute
-      values matching the filter you provide. For example if you search under
+      values matching the filter you provide. For example, if you search under
       <literal>ou=people,dc=example,dc=com</literal> with a filter
       <literal>"(mail=bjensen@example.com)"</literal>, then the directory
       returns the entry that has <literal>mail=bjensen@example.com</literal>.
@@ -3693,7 +3722,7 @@ the '%' character is not included in the properties.
 
    <para>The Mobile Station Integrated Services Digital Network (MSISDN)
    authentication module enables non-interactive authentication using a mobile
-   subscriber ISDN associated with a terminal such as a mobile phone.
+   subscriber ISDN associated with a terminal, such as a mobile phone.
    The module checks the subscriber ISDN against the value found on a user's
    entry in an LDAP directory service.</para>
    
@@ -3785,7 +3814,7 @@ the '%' character is not included in the properties.
      <term>MSISDN Header Search Attribute</term>
      <listitem>
       <para>Specify the headers to use for searching the request for the
-      MSISDN number.</para>
+      MSISDN number:</para>
       <itemizedlist>
        <listitem>
         <para>Cookie Header tells OpenAM to search the cookie.</para>
@@ -3851,24 +3880,24 @@ the '%' character is not included in the properties.
     <primary>OAuth 2.0/OpenID Connection 1.0</primary>
    </indexterm>
 
-   <para>The OAuth 2.0 / OpenID Connect authentication module lets OpenAM
+   <para>The OAuth 2.0/OpenID Connect authentication module lets OpenAM
     authenticate clients of OAuth resource servers. References in this section
     are to RFC 6749, <link
    xlink:href="http://tools.ietf.org/html/rfc6749" xlink:show="new">The OAuth
    2.0 Authorization Framework</link>.</para>
 
-   <tip><para>OpenAM provides a wizard for configuring common OAuth 2.0 /
-    OpenID Connect authentication providers such as Facebook, Google and
+   <tip><para>OpenAM provides a wizard for configuring common OAuth 2.0/OpenID
+    Connect authentication providers, such as Facebook, Google, and
     Microsoft. For more information, see
     <xref linkend="social-authn-wizard-pre-populated" />.</para></tip>
 
    <para>
     If the module is configured to create an account if none exists,
     then you must provide valid SMTP settings.
-    As part of account creation, the OAuth 2.0 / OpenID Connect client authentication module
+    As part of account creation, the OAuth 2.0/OpenID Connect client authentication module
     sends the resource owner an email with an account activation code.
     To send email, OpenAM uses the SMTP settings from the configuration
-    for the OAuth 2.0 / OpenID Connect authentication module.
+    for the OAuth 2.0/OpenID Connect authentication module.
    </para>
 
    <indexterm>
@@ -4075,11 +4104,11 @@ the '%' character is not included in the properties.
       retrieve a password and activation code from the user, and then create
       the profile. The default mode is <literal>Enabled</literal>.</para>
 
-      <para>When the OAuth 2.0 / OpenID Connect client is configured to create new accounts,
+      <para>When the OAuth 2.0/OpenID Connect client is configured to create new accounts,
       the SMTP settings must also be valid. As part of account creation,
-      the OAuth 2.0 / OpenID Connect client authentication module sends the resource owner
+      the OAuth 2.0/OpenID Connect client authentication module sends the resource owner
       an email with an account activation code. To send the mail, OpenAM
-      uses the SMTP settings you provide here in the OAuth 2.0 / OpenID Connect client
+      uses the SMTP settings you provide here in the OAuth 2.0/OpenID Connect client
       configuration.</para>
       <para><command>ssoadm</command> attribute:
       <literal>org-forgerock-auth-oauth-createaccount-flag</literal></para>
@@ -4127,7 +4156,7 @@ the '%' character is not included in the properties.
      <listitem>
       <para>Specifies whether not to log the user out without prompting from
       the OAuth Provider on logout, to log the user out without prompting, or
-      to prompt the user regarding whether to logout from the OAuth
+      to prompt the user regarding whether to log out from the OAuth
       provider.</para>
       <para><command>ssoadm</command> attribute:
       <literal>org-forgerock-auth-oauth-logout-behaviour</literal></para>
@@ -4220,7 +4249,7 @@ the '%' character is not included in the properties.
     The default endpoints are for Facebook as the OAuth 2.0 provider.</para>
 
     <para>In addition to the endpoint URLs you can set other fields, like scope
-    and attribute mapping, depending on the provider you use.</para>
+    and attribute mapping, depending on the provider you use:</para>
 
     <table xml:id="oauth2-openam" pgwide="1">
      <title>Endpoint URLs for OpenAM</title>
@@ -4238,7 +4267,7 @@ the '%' character is not included in the properties.
          <para><literal>/oauth2/authorize</literal> under the deployment
           URL.<footnote xml:id="oauth2-realms-footnote">
            <para>This OpenAM endpoint can take additional parameters. In
-           particular you must specify the realm if the OpenAM OAuth 2.0
+           particular, you must specify the realm if the OpenAM OAuth 2.0
            provider is configured for a subrealm rather than / (Top-Level
            Realm).</para>
 
@@ -4310,8 +4339,8 @@ the '%' character is not included in the properties.
     it with a user profile. You should not use this module if you want OpenAM
     to act as a client in the full OpenID Connect authentication flow.</para>
     <para>To provision OpenAM as an OpenID Connect client, you should instead configure
-    an OAuth 2.0 / OpenID Connect module. OpenAM provides a wizard to configure
-     an OAuth 2.0 / OpenID Connect module that will
+    an OAuth 2.0/OpenID Connect module. OpenAM provides a wizard to configure
+     an OAuth 2.0/OpenID Connect module that will
     authenticate against an OpenID Connect 1.0 provider. For more information, see
     <xref linkend="social-authn-wizard-custom" />.</para></note>
 
@@ -4561,8 +4590,8 @@ the '%' character is not included in the properties.
     <primary>Persistent Cookie module</primary>
    </indexterm>
 
-   <para>The Persistent Cookie module supports the configuration of cookie lifetimes,
-    based on requests and a maximum time. Note that, by default, the persistent
+   <para>The Persistent Cookie module supports the configuration of cookie lifetimes
+    based on requests and a maximum time. Note that by default, the persistent
     cookie is called <literal>session-jwt</literal>.
    </para>
 
@@ -4594,7 +4623,7 @@ the '%' character is not included in the properties.
           <varlistentry>
               <term>Idle Timeout</term>
               <listitem>
-                  <para>Specify the maximum idle time between requests, in hours. If
+                  <para>Specify the maximum idle time between requests in hours. If
                   that time is exceeded, the cookie is no longer valid.</para>
                   <para><command>ssoadm</command> attribute:
                   <literal>openam-auth-persistent-cookie-idle-time</literal></para>
@@ -4640,7 +4669,7 @@ the '%' character is not included in the properties.
            <term>Use HTTP only cookie</term>
            <listitem>
             <para>
-             When enabled, adds the "HttpOnly" attribute to the persistent
+             When enabled, adds the <literal>HttpOnly</literal> attribute to the persistent
              cookie.
             </para>
 
@@ -4666,26 +4695,32 @@ the '%' character is not included in the properties.
        ><citetitle>Handling HTTP Request Headers</citetitle></link>.
       </para>
 
-      <para>The Persistent Cookie module belongs with a second module in an authentication chain. To see how
-      this works, navigate to Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; New.
-      Enter a name for the chain and add modules as shown in the figure. The following example shows how a
-      Persistent Cookie module is sufficient; if that cookie does not yet exist, authentication in this case
-      relies on a data store module such as LDAP.</para>
+      <para>The Persistent Cookie module belongs with a second module in an
+       authentication chain. To see how this works, navigate to Access Control
+       &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; New.
+       Enter a name for the chain and add modules as shown in the figure.
+       The following example shows how a Persistent Cookie module is sufficient;
+       if that cookie does not yet exist, authentication in this case relies on
+       a data store module, such as LDAP:</para>
 
-      <mediaobject xml:id="figure-persistent-cookie-mod">
+      <figure xml:id="figure-persistent-cookie-mod">
+       <title>Persisten Cookie Module in an Authentication Chain</title>
+       <mediaobject>
           <alt>Including the Persistent Cookie module in an authentication chain</alt>
           <imageobject>
               <imagedata fileref="images/persistent-cookie-mod.png" format="PNG" />
           </imageobject>
-          <textobject><para>When placed before an LDAP module, the Persistent Cookie module can authenticate
-              before referring to an LDAP data store such as OpenDJ.
+          <textobject><para>When placed before an LDAP module, the Persistent
+           Cookie module can authenticate before referring to an LDAP data store,
+           such as OpenDJ.
           </para></textobject>
-      </mediaobject>
+       </mediaobject>
+      </figure>
 
       <para>
        Scroll down in the properties page for the chain.
        Set the Post Authentication Processing Class to
-       <literal>org.forgerock.openam.authentication.modules.persistentcookie.PersistentCookieAuthModule</literal>
+       <literal>org.forgerock.openam.authentication.modules.persistentcookie.PersistentCookieAuthModule</literal>,
        as shown in the following figure:</para>
 
       <mediaobject xml:id="figure-persistent-cookie-class">
@@ -4794,7 +4829,7 @@ the '%' character is not included in the properties.
     </varlistentry>
 
     <varlistentry>
-     <term>Health check interval</term>
+     <term>Health Check Interval</term>
      <listitem>
       <para>Used for failover. Specify how often OpenAM performs a health check
       on a previously unavailable RADIUS server by sending an invalid
@@ -4895,8 +4930,10 @@ the '%' character is not included in the properties.
     use the <command>ssoadm</command> attributes,
     <literal>iplanet-am-auth-scripted-client-script-file</literal>
     or <literal>iplanet-am-auth-scripted-server-script-file</literal>.
-    The following example shows how to create a scripted authentication module,
-    sets up a basic configuration with scripts as strings in the configuration,
+   </para>
+   <para>
+    The following example shows how to create a scripted authentication module.
+    It sets up a basic configuration with scripts as strings in the configuration,
     and then uploads a server-side script file.
    </para>
 
@@ -4967,7 +5004,7 @@ ssoadm \
     <para>
      Use the following settings at the realm level
      when configuring an individual scripted authentication module,
-     in OpenAM Console under Access Control >
+     in OpenAM console under Access Control >
      <replaceable>Realm Name</replaceable> > Authentication > Module Instances.
     </para>
 
@@ -4986,7 +5023,7 @@ ssoadm \
     </varlistentry>
 
     <varlistentry>
-     <term>Client Side Script Enabled</term>
+     <term>Client-Side Script Enabled</term>
      <listitem>
       <para>
        When selected, include the client-side script in the login page
@@ -5001,7 +5038,7 @@ ssoadm \
     </varlistentry>
 
     <varlistentry>
-     <term>Client Side Script</term>
+     <term>Client-Side Script</term>
      <listitem>
       <para>
        The script to include in the login page.
@@ -5070,12 +5107,12 @@ ssoadm \
    <variablelist>
     <para>
      Use the following global configuration settings
-     for all scripted authentication modules,
-     in OpenAM Console under Configuration > Authentication > Scripted Module.
+     for all scripted authentication modules
+     in OpenAM console under Configuration > Authentication > Scripted Module.
     </para>
 
     <varlistentry>
-     <term>Server Side Script Timeout</term>
+     <term>Server-Side Script Timeout</term>
      <listitem>
       <para>
        Sets the maximum execution time to run a single server-side script,
@@ -5165,43 +5202,51 @@ ssoadm \
     <primary>Two Step Verification authentication</primary>
    </indexterm>
 
-   <para>The Two Step Verification module provides a more secure method for users to
-      access their accounts with the help of a device, such as their mobile phone or
-      Yubikey. Users can log into OpenAM and update their information more securely by using
-      a one-time password (OTP) displayed on their device. The Two Step Verification module includes the
-      <link xlink:show="new" xlink:href="http://www.openauthentication.org/about/"
-      >OATH standard protocols</link> (<link xlink:show="new"
+   <para>The Two Step Verification module provides a more secure method for users
+    to access their accounts with the help of a device, such as their mobile phone or
+    Yubikey. Users can log into OpenAM and update their information more securely
+    by using a one-time password (OTP) displayed on their device.
+    The Two Step Verification module includes the
+    <link xlink:show="new" xlink:href="http://www.openauthentication.org/about/"
+     >OATH standard protocols</link> (<link xlink:show="new"
       xlink:href="http://tools.ietf.org/html/rfc4226">RFC 4226</link> and
-      <link xlink:show="new" xlink:href="http://tools.ietf.org/html/rfc6238">
-      RFC 6238</link>). The Two Step Verification module has several enhancements to the
-      HMAC One-Time Password (HOTP) Authentication Module, but does not replace the original
-      module for those already using HOTP prior to the OpenAM 10.1.0 release. The Two Step Verification module includes
-      HOTP authentication and Time-Based One-Time Password (TOTP) authentication. Both types
-      of authentication require an OATH-compliant device that can provide the OTP.</para>
+     <link xlink:show="new" xlink:href="http://tools.ietf.org/html/rfc6238">
+     RFC 6238</link>). The Two Step Verification module has several enhancements to the
+    HOTP Authentication Module, but does not replace the original
+    module for those already using HOTP prior to the OpenAM 10.1.0 release.
+    The Two Step Verification module includes HOTP authentication and
+    Time-Based One-Time Password (TOTP) authentication. Both types
+    of authentication require an OATH-compliant device that can provide the OTP.</para>
 
-   <para> HOTP authentication generates the OTP every time the user requests a new OTP
-      on their device. The device tracks the number of times the user requests a new OTP, called
-      the counter. The OTP displays for a period of time you designate in the setup, so the
-      user may be further in the counter on their device than on their account. OpenAM will resynchronize
-      the counter when the user finally logs in. To accommodate this, you set the number of
-      passwords a user can generate before their device cannot be resynchronized. For example, if
-      you set the number of HOTP Window Size to 50 and someone presses the button 30 times on the
-      user's device to generate a new OTP, the counter in OpenAM will review the OTPs until
-      it reaches the OTP entered by the user. If someone presses the button 51 times,
-      you will need to reset the counter to match the number on the device's counter before the
-      user can login to OpenAM. HOTP authentication does not check earlier passwords, so if the
-      user attempts to reset the counter on their device, they will not be able to login until
-      you reset the counter in OpenAM to match their device.</para>
-   <para>TOTP authentication constantly generates a new OTP based on a time interval you specify.
-      The device tracks the last several passwords generated and the current password. (The TOTP
-      Time Steps setting configures the number of passwords tracked.) The Last Login Time
-      monitors the time when a user logs in to make sure that user is not logged in several times
-      within the present time period. Once a user logs into OpenAM, they must wait for the time it
-      takes TOTP to generate the next two passwords and display them. This prevents others from
-      being able to access the user's account using the OTP they entered. The user's account can be
-      accessed again after the third new OTP is generated and displayed on their
-      device. For this reason, the TOTP Time-Step Interval should not be so long as to
-      lock users out, with a recommended time of 30 seconds.</para>
+   <para>HOTP authentication generates the OTP every time the user requests a new OTP
+    on their device. The device tracks the number of times the user requests
+    a new OTP, called the counter. The OTP displays for a period of time you
+    designate in the setup, so the user may be further in the counter on their
+    device than on their account. OpenAM will resynchronize the counter when the
+    user finally logs in. To accommodate this, you set the number of
+    passwords a user can generate before their device cannot be resynchronized.
+    For example, if you set the number of HOTP Window Size to 50 and someone presses
+    the button 30 times on the user's device to generate a new OTP, the counter
+    in OpenAM will review the OTPs until it reaches the OTP entered by the user.
+    If someone presses the button 51 times, you will need to reset the counter
+    to match the number on the device's counter before the user can login to OpenAM.
+    HOTP authentication does not check earlier passwords, so if the user attempts
+    to reset the counter on their device, they will not be able to log in until
+    you reset the counter in OpenAM to match their device.</para>
+
+   <para>TOTP authentication constantly generates a new OTP based on a time
+    interval you specify. The device tracks the last several passwords generated
+    and the current password. (The TOTP Time Steps setting configures the number
+    of passwords tracked.) The Last Login Time monitors the time when a user logs
+    in to make sure that user is not logged in several times within the present
+    time period. Once a user logs into OpenAM, they must wait for the time it takes
+    TOTP to generate the next two passwords and display them. This prevents others from
+    being able to access the user's account using the OTP they entered.
+    The user's account can be accessed again after the third new OTP is generated
+    and displayed on their device. For this reason, the TOTP Time-Step Interval
+    should not be so long as to lock users out, with a recommended time of
+    30 seconds.</para>
+
    <para>An authentication chain can be created to generate an OTP from
       either HOTP or TOTP.</para>
 
@@ -5218,9 +5263,9 @@ ssoadm \
       <literal>iplanet-am-auth-oath-auth-level</literal></para></listitem>
     </varlistentry>
     <varlistentry>
-     <term>One Time Password Length</term>
+     <term>One-Time Password Length</term>
      <listitem>
-      <para>Sets the length of the OTP to six digits or longer. The default value is 6.</para>
+      <para>Sets the length of the OTP to six digits or longer. The default value is six.</para>
 
       <para><command>ssoadm</command> attribute:
       <literal>iplanet-am-auth-oath-password-length</literal></para>
@@ -5383,7 +5428,7 @@ ssoadm \
      <term>Kerberos Realm</term>
      <listitem>
       <para>Specify the Kerberos Key Distribution Center realm. For the
-      Windows Kerberos service this is the domain controller server domain
+      Windows Kerberos service, this is the domain controller server domain
       name.</para>
       <para><command>ssoadm</command> attribute:
       <literal>iplanet-am-auth-windowsdesktopsso-kerberos-realm</literal></para>
@@ -5463,7 +5508,7 @@ ssoadm \
    <para>The Windows NT module lets OpenAM authenticate against a Microsoft
    Windows NT server.</para>
    <para>This module requires that you install a Samba client in a 
-   <filename>bin</filename> directory under the OpenAM configuration directory
+   <filename>bin</filename> directory under the OpenAM configuration directory,
    such as <filename>$HOME/openam/openam/bin</filename>.</para>
    
    <para><command>ssoadm</command> service name:
@@ -5597,8 +5642,8 @@ ssoadm \
   are needed, or where a single set of credentials is not sufficient.</para>
 
   <tip><para>OpenAM provides a wizard for configuring authentication providers,
-   including Facebook, Google and Microsoft. The wizard creates a
-   relevant Authentication Chain as part of the process. For more
+   including Facebook, Google, and Microsoft. The wizard creates a
+   relevant authentication chain as part of the process. For more
    information, see <xref linkend="configure-social-authn"  />.
   </para></tip>
 
@@ -5667,7 +5712,9 @@ ssoadm \
     options <literal>iplanet-am-auth-shared-state-enabled=true</literal>,
     <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>,
     and criteria <literal>REQUIRED</literal>. A successful authentication
-    sequence happens as follows. The user enters her credentials for the first
+    sequence happens as follows.
+     </para>
+     <para>The user enters her credentials for the first
     module, successfully authenticating. The first module shares the
     credentials with the second module, successfully authenticating the user
     without prompting again for her credentials, unless the credentials for
@@ -5703,7 +5750,7 @@ ssoadm \
     <para>You can set these independently to separate administrative login
     from user login. For example, you can change the default user chain, but
     leave the default administrator chain as is to avoid locking yourself
-    out as administrator. By default, <literal>amadmin</literal> can login at
+    out as administrator. By default, <literal>amadmin</literal> can log in at
     <literal>/openam/UI/Login</literal>. You can change that for your
     deployment.</para>
    </step>
@@ -5766,7 +5813,7 @@ ssoadm \
      those parameters are correctly set.</para>
 
      <para>Sometimes OAuth 2.0 providers change their endpoints, including
-     their logout URLs. When using a provider like Facebook, Google, or MSN
+     their logout URLs. When using a provider like Facebook, Google, or MSN,
      make sure you are aware when they change their endpoint locations so that
      you can change your client configuration accordingly.</para>
     </listitem>
@@ -5808,7 +5855,7 @@ ssoadm \
   <para>The base URL to authenticate to OpenAM points to
   <literal>/UI/Login</literal> under the deployment URL, such as
   <literal>http://openam.example.com:8080/openam/UI/Login</literal>.
-  <footnote><para>The base URL to logout is similar, for example
+  <footnote><para>The base URL to logout is similar, for example,
   <literal>http://openam.example.com:8080/openam/UI/Logout</literal>.</para>
   </footnote> You can, however, specify parameters in the query string
   of the URL to request a specific authentication configuration. For example,
@@ -5849,7 +5896,7 @@ ssoadm \
     <term>ForceAuth</term>
     <listitem>
      <para>If <literal>ForceAuth=true</literal>, request that OpenAM force the
-     user to authenticate even if she already has a valid session. On
+     user to authenticate even if they already has a valid session. On
      successful authentication, OpenAM updates the session token.</para>
     </listitem>
    </varlistentry>
@@ -5858,14 +5905,14 @@ ssoadm \
     <listitem>
      <para>On successful authentication, or successful logout, request that
      OpenAM redirect the user to the specified location. Values must be
-     URL encoded.</para>
+     URL-encoded.</para>
     </listitem>
    </varlistentry>
    <varlistentry>
     <term>gotoOnFail</term>
     <listitem>
      <para>On authentication failure, request that OpenAM redirect the user to
-     the specified location. Values must be URL encoded.</para>
+     the specified location. Values must be URL-encoded.</para>
     </listitem>
    </varlistentry>
    <varlistentry>
@@ -5940,7 +5987,7 @@ ssoadm \
  </section>
 
  <section xml:id="session-upgrade">
-  <title>Authentication Levels &amp; Session Upgrade</title>
+  <title>Authentication Levels and Session Upgrade</title>
 
   <indexterm>
    <primary>Authentication levels</primary>
@@ -5964,7 +6011,7 @@ ssoadm \
    (or at most or at least a specified authentication level).
    When a user who is already authenticated in the realm
    tries to access a sensitive resource with a valid session
-   but that does not have the requisite authentication level,
+   that does not have the requisite authentication level,
    OpenAM denies access to the resource.
    However, OpenAM also returns <firstterm>advices</firstterm>
    with the authorization decision.
@@ -6009,7 +6056,7 @@ ssoadm \
     xlink:show="new"
     xlink:href="dev-guide#rest-api-auth-json"
     xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Authentication &amp; Logout</citetitle></link>,
+   ><citetitle>Authentication and Logout</citetitle></link>,
    for indications on how to handle advices and session upgrade.
   </para>
 
@@ -6033,7 +6080,7 @@ ssoadm \
    <para>OpenAM supports two different approaches to <firstterm>account
    lockout</firstterm>, where OpenAM locks an account after repeated
    authentication failures. Lockout works with modules for which users
-   can enter a password incorrectly.</para>
+   can enter a password incorrectly. For example:</para>
 
    <listitem>
     <para>Memory lockout locks the user account, keeping track of the locked
@@ -6059,7 +6106,7 @@ ssoadm \
    module</link>. Access the settings in OpenAM console under Access Control
    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; All
    Core Settings..., and then scroll down to the Account Lockout section.
-   The inline help explains the settings in detail.</para>
+   The inline help explains the settings in detail. To do this: </para>
 
    <listitem>
     <para>Enable lockout by checking Login Failure Lockout Mode, setting
@@ -6120,16 +6167,16 @@ ssoadm \
   </important>
 
   <procedure xml:id="session-quotas-and-exhaustion-actions">
-   <title>To Configure Session Quotas &amp; Exhaustion Actions</title>
+   <title>To Configure Session Quotas and Exhaustion Actions</title>
 
    <!-- This is based on Peter Major's work. See his blog entry on the subject:
         http://blogs.forgerock.org/petermajor/2013/01/session-quota-basics/ -->
 
   <para>The session quota applies to all sessions opened for the same
-  user (as represented by the user's universal identifier).</para>
+  user (as represented by the user's universal identifier). To configure: </para>
 
   <step>
-   <para>Log in to OpenAM Console as administrator, and then browse to
+   <para>Log in to OpenAM console as administrator, and then browse to
    Configuration &gt; Global &gt; Session.</para>
   </step>
 
@@ -6141,7 +6188,7 @@ ssoadm \
    <para>Set Resulting behavior if session quota exhausted.</para>
 
    <variablelist>
-    <para>The following settings are available by default.</para>
+    <para>The following settings are available by default:</para>
 
     <varlistentry>
      <term><literal>DENY_ACCESS</literal></term>
@@ -6198,7 +6245,7 @@ ssoadm \
 
   <step performance="optional">
    <para>If you have multiple servers but session failover is not configured,
-   configure multi-server mode as described below.</para>
+   configure multi-server mode as described below:</para>
 
    <itemizedlist>
     <listitem>
@@ -6210,7 +6257,7 @@ ssoadm \
      <para>If you have multiple servers with session failover configured, then
      also skip this step. In this case OpenAM uses the session store to enforce
      session quotas globally across your deployment. In other words when the
-     Set Active User Sessions is 5, a user can have a maximum of 5 active
+     Set Active User Sessions is 5, a user can have a maximum of five active
      sessions.</para>
     </listitem>
 
@@ -6220,14 +6267,14 @@ ssoadm \
      Configuration &gt; Servers and Sites &gt; Default Server Settings or
      Configuration &gt; Servers and Sites &gt; <replaceable>Server
      Name</replaceable>, and then use the Advanced tab page to set the
-     following advanced server property.</para>
+     following advanced server property:</para>
 
      <literallayout>openam.session.useLocalSessionsInMultiServerMode = true</literallayout>
 
      <para>When you set this property to <literal>true</literal> for your OpenAM
      servers, users can potentially reach the session quota for each individual
-     server before all session quotas are exhausted. In other words if you have
-     4 OpenAM servers and Set Active User Sessions is 5, then the user can have
+     server before all session quotas are exhausted. In other words, if you have
+     four OpenAM servers and Set Active User Sessions is 5, then the user can have
      a maximum of 20 (5 * 4) sessions.</para>
     </listitem>
    </itemizedlist>
@@ -6265,7 +6312,7 @@ ssoadm \
     xlink:href="admin-guide#define-rules"
     xlink:role="http://docbook.org/xlink/role/olink">
     <citetitle>To Configure a Policy for a Web Site</citetitle></link>.
-   There is one main difference: when creating Applications, the URL pattern
+   There is one main difference: when creating applications, the URL pattern
    matching for <literal>ApplicationTypes</literal> is different from the way
    Applications are matched when creating policies.
   </para>
@@ -6329,12 +6376,12 @@ ssoadm \
      <literal>http://www.example.com:80</literal>.
      In another example, <literal>http://www.example.com:*</literal> matches
      <literal>http://ww.example.com:[any port]</literal>
-     and <literal>http://www.example.com:[any port]/</literal> but nothing more.
+     and <literal>http://www.example.com:[any port]/</literal>, but nothing more.
     </para>
    </listitem>
    <listitem>
     <para>
-     A wildcard after "/" matches anything depending on whether it is single-level
+     A wildcard after "/" matches anything, depending on whether it is single-level
      or a wildcard appropriately.
     </para>
     <para>
@@ -6346,14 +6393,14 @@ ssoadm \
     <para>
      If you do not use any wildcards, OpenAM exactly matches the string, so
      <literal>http://www.example.com</literal> only matches
-     <literal>http://www.example.com</literal> but NOT <literal>http://www.example.com/</literal>
+     <literal>http://www.example.com</literal>, but NOT <literal>http://www.example.com/</literal>
      (trailing slash).
     </para>
     <para>
      If you put the wildcard after the path, OpenAM expects a path (even if it is blank),
      so <literal>http://www.example.com/*</literal> matches
      <literal>http://www.example.com/</literal>
-     and <literal>http://www.example.com/foo/bar/baz.html</literal> but NOT
+     and <literal>http://www.example.com/foo/bar/baz.html</literal>, but NOT
      <literal>http://www.example.com</literal>.
     </para>
    </listitem>

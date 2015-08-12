@@ -51,7 +51,7 @@
 
  <itemizedlist>
   <para>
-   You may want ot change the default styling and branding as well as customize
+   You may want to change the default styling and branding as well as customize
    different realms.
   </para>
 
@@ -190,7 +190,7 @@
   <para>
    Verify that <filename>themeConfig.json</filename> is valid JSON
    after you apply your changes.
-   If in doubt, use a validator such as
+   If in doubt, use a validator, such as
    <link xlink:show="new" xlink:href="http://jsonlint.com" />.
   </para>
 
@@ -202,7 +202,7 @@
   </para>
 
   <para>
-   When configuring new or revised parameters, keep the following tips in mind.
+   When configuring new or revised parameters, keep the following tips in mind:
   </para>
 
   <itemizedlist>
@@ -307,7 +307,7 @@
 
   <para>
    When developing with a web container that deploys
-   OpenAM in a temporary location, such as, JBoss or Jetty, restarting the
+   OpenAM in a temporary location, such as JBoss or Jetty, restarting the
    container can overwrite your changes with the deployable
    <literal>.war</literal> content. For
    those web containers, you should also prepare a deployable <literal>.war</literal>
@@ -362,7 +362,7 @@ $ <userinput>cd /path/to/tomcat/webapps/openam/config/auth</userinput>
      <filename><replaceable>suffix</replaceable>[_<replaceable>locale</replaceable
      >]/html</filename>,
      where <replaceable>suffix</replaceable> is the value of the RDN of the
-     configuration suffix, such as, <literal>openam</literal>, if you use the
+     configuration suffix, such as <literal>openam</literal>, if you use the
      default configuration suffix <literal><?eval ${defaultRootSuffix}?></literal>,
      and the optional <replaceable>locale</replaceable> is, for example,
      <literal>jp</literal> for Japanese, or <literal>zh_CN</literal> for
@@ -524,7 +524,7 @@ $ <userinput>cp -r default_fr/* openam_fr/services/ventes/html</userinput>
    <title>To Customize UI Elements</title>
 
    <para>
-    To customize classic UI elements such as button text on the login screen,
+    To customize classic UI elements, such as button text on the login screen,
     follow these steps.
    </para>
 
@@ -614,7 +614,7 @@ $ <userinput>cp ${coreLibrary} /path/to/tomcat/webapps/openam/WEB-INF/lib/</user
 
   <para>
    Locale settings play an important role in how OpenAM looks up UI files.
-   A locale consists of a language, and optionally, a territory
+   A locale consists of a language, and optionally, a territory,
    such as <literal>en</literal> to specify the English language,
    or <literal>en_GB</literal> to specify British English.
    Locale settings are determined at authentication time,

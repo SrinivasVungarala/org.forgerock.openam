@@ -333,7 +333,7 @@ $ <userinput>cp ~/Downloads/openam/${distauthWarFile} \
 
   <step>
    <para>
-    Some application servers such as, JBoss 7 mount the content of the
+    Some application servers, such as JBoss 7 mount the content of the
     deployed <literal>.war</literal> file in a temporary location that can change on restart. To
     verify that the DAS can find its bootstrap configuration in this scenario,
     specify the path to the bootstrap configuration file as a Java runtime option

@@ -15,7 +15,7 @@
  */
 package org.forgerock.openam.rest.fluent;
 
-import static org.forgerock.openam.audit.AuditConstants.ACCESS_TOPIC;
+import static org.forgerock.openam.audit.AuditConstants.*;
 import static org.forgerock.openam.forgerockrest.utils.ServerContextUtils.getTokenFromContext;
 
 import com.iplanet.sso.SSOToken;
@@ -29,6 +29,8 @@ import org.forgerock.openam.audit.AMAccessAuditEventBuilder;
 import org.forgerock.openam.audit.AuditEventFactory;
 import org.forgerock.openam.audit.AuditEventPublisher;
 import org.forgerock.openam.audit.context.AuditRequestContext;
+import org.forgerock.openam.rest.resource.AuditInfoContext;
+import org.forgerock.util.Reject;
 
 /**
  * ResultHandler decorator responsible for publishing audit access events for a single request.
@@ -39,16 +41,12 @@ import org.forgerock.openam.audit.context.AuditRequestContext;
  */
 abstract class AbstractAuditingResultHandler<T, H extends ResultHandler<T>> implements ResultHandler<T> {
 
-    public static final String CREST_COMPONENT = "CREST";
-    public static final String AM_REST_ACCESS_SUCCESS = "AM-REST-ACCESS_SUCCESS";
-    public static final String AM_REST_ACCESS_FAILURE = "AM-REST-ACCESS_FAILURE";
-    public static final String AM_REST_ACCESS_ATTEMPT = "AM-REST-ACCESS_ATTEMPT";
-
     final H delegate;
     private final Debug debug;
     private final AuditEventPublisher auditEventPublisher;
     private final AuditEventFactory auditEventFactory;
     private final ServerContext context;
+    private final Component component;
     private final Request request;
     private final long startTime;
 
@@ -64,6 +62,10 @@ abstract class AbstractAuditingResultHandler<T, H extends ResultHandler<T>> impl
      */
     AbstractAuditingResultHandler(Debug debug, AuditEventPublisher auditEventPublisher, AuditEventFactory auditEventFactory,
                                   ServerContext context, Request request, H delegate) {
+
+        Reject.ifFalse(context.containsContext(AuditInfoContext.class), "CREST auditing expects the audit context");
+        component = context.asContext(AuditInfoContext.class).getComponent();
+
         this.debug = debug;
         this.auditEventPublisher = auditEventPublisher;
         this.auditEventFactory = auditEventFactory;
@@ -103,8 +105,8 @@ abstract class AbstractAuditingResultHandler<T, H extends ResultHandler<T>> impl
                     .forHttpCrestRequest(context, request)
                     .timestamp(startTime)
                     .transactionId(AuditRequestContext.getTransactionIdValue())
-                    .eventName(AM_REST_ACCESS_ATTEMPT)
-                    .component(CREST_COMPONENT);
+                    .eventName(EventName.AM_ACCESS_ATTEMPT)
+                    .component(component);
             addSessionDetailsFromSSOTokenContext(builder, context);
 
             auditEventPublisher.publish(ACCESS_TOPIC, builder.toEvent());
@@ -126,8 +128,8 @@ abstract class AbstractAuditingResultHandler<T, H extends ResultHandler<T>> impl
                     .forHttpCrestRequest(context, request)
                     .timestamp(endTime)
                     .transactionId(AuditRequestContext.getTransactionIdValue())
-                    .eventName(AM_REST_ACCESS_SUCCESS)
-                    .component(CREST_COMPONENT)
+                    .eventName(EventName.AM_ACCESS_OUTCOME)
+                    .component(component)
                     .response("SUCCESS", elapsedTime);
             addSessionDetailsFromSSOTokenContext(builder, context);
 
@@ -153,8 +155,8 @@ abstract class AbstractAuditingResultHandler<T, H extends ResultHandler<T>> impl
                     .forHttpCrestRequest(context, request)
                     .timestamp(endTime)
                     .transactionId(AuditRequestContext.getTransactionIdValue())
-                    .eventName(AM_REST_ACCESS_FAILURE)
-                    .component(CREST_COMPONENT)
+                    .eventName(EventName.AM_ACCESS_OUTCOME)
+                    .component(component)
                     .responseWithMessage("FAILED - " + resultCode, elapsedTime, message);
             addSessionDetailsFromSSOTokenContext(builder, context);
 

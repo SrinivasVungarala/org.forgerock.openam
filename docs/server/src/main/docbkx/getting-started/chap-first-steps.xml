@@ -180,7 +180,7 @@
      intercepts requests from users, and enforces access policy decisions made
      by OpenAM. The policy agent enforces policy by redirecting users to
      OpenAM for authentication and by contacting OpenAM to get authorization
-     decisions for resources such as the web page to protect.
+     decisions for resources, such as the web page to protect.
     </para>
    </listitem>
   </itemizedlist>
@@ -199,7 +199,7 @@
   </indexterm>
 
   <para>This section includes the following procedures that detail how to
-   set up OpenAM to protect a web page.</para>
+   set up OpenAM to protect a web page:</para>
 
   <itemizedlist>
    <listitem><para><xref linkend="prepare-etc-hosts" /></para></listitem>
@@ -344,7 +344,7 @@ $ <userinput>make install</userinput>
 
    <step>
     <para>Edit the configuration to set the server name to
-    <literal>www.example.com</literal> and the port to one such as 8000 that
+    <literal>www.example.com</literal> and the port to one, such as 8000 that
     the web server process can use when starting with your user ID.</para>
 
     <screen>
@@ -547,16 +547,16 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
    <para>Deploy OpenAm into Tomcat and then configure it for use.</para>
 
    <step>
-    <para>Download the OpenAM <literal>.war</literal> (web archive) file either from the ForgeRock
-     <link xlink:show="new" xlink:href="http://forgerock.com/download-stack/"
-     ><citetitle>Enterprise Downloads</citetitle></link> page, or from the
-     project nightly <link xlink:href="http://forgerock.org/openam.html"
-     xlink:show="new"><citetitle>Builds</citetitle></link> page.</para>
-
-    <para>Enterprise downloads are tested, stable releases.</para>
-
-    <para>Nightly builds include the very latest features, but are not
-     thoroughly tested. Some functionality might not be finished.</para>
+    <para>
+     Download the OpenAM <literal>.war</literal> file. Access the
+     <link xlink:show="new" xlink:href="http://www.forgerock.com"
+     ><citetitle>ForgeRock</citetitle></link> web site, and then
+     click the Download tab. On the Your BackStage pass to ForgeRock resources page,
+     click Downloads. On the Downloads page,
+     click OpenAM. On the OpenAM Enterprise page, click <literal>war</literal> in the
+     top-right corner,
+     and then click Download to get the <literal>.war</literal> file.
+    </para>
    </step>
 
    <step>
@@ -898,7 +898,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
     While the policy agent's job is to verify that uses have the appropriate
     privileges to the resources they request, the policy agents do not make
     policy decisions. They call on OpenAM to make policy decisions using information
-    presented by the user (or the user's client application), such as, the SSO
+    presented by the user (or the user's client application), such as the SSO
     token in the HTTP cookie, which OpenAM uses to manage user sessions.
     A policy agent is, in essence, a gatekeeper for OpenAM.</para>
 
@@ -1045,7 +1045,7 @@ $ <userinput>tail /path/to/apache/logs/error_log</userinput>
     <literal>www.example.com</literal>.</para>
 
     <para>If you examine this cookie in your browser, you see that it has
-     a value such as
+     a value, such as
      <literal>AQIC5wM2LY4SfcwciyfvJcQDUIB7kIWEH187Df_txqLdAVc.*AAJTSQACMDEAAlNLABMxMDYwNzY1MjQ0NTE0ODI2NTkx*</literal>.
      This is the SSO Token value. The value is in fact an encrypted reference to
      the session that is stored only by OpenAM. So, only OpenAM can determine

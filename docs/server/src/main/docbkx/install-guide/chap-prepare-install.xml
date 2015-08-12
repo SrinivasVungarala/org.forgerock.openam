@@ -67,7 +67,7 @@
   <para>
    OpenAM requires that you provide the fully qualified domain name (FQDN)
    when you configure it. Before you set up OpenAM, be sure that your system
-   has an FQDN, such as, <literal>openam.example.com</literal>. For evaluation
+   has an FQDN, such as <literal>openam.example.com</literal>. For evaluation
    purposes, you can give your system an alias using the
    <filename>/etc/hosts</filename> file on UNIX systems or
    <filename>%SystemRoot%\system32\drivers\etc\hosts</filename> on Windows. For
@@ -526,7 +526,8 @@ $ <userinput>cat /proc/sys/fs/file-max</userinput>
 
       <para>
        First, create an LDIF file that defines the OpenAM data store
-       administrator account and gives the account the following privileges.
+       administrator account and gives the account the following privileges:
+      </para>
 
        <itemizedlist>
         <listitem>
@@ -552,7 +553,6 @@ $ <userinput>cat /proc/sys/fs/file-max</userinput>
          </para>
         </listitem>
        </itemizedlist>
-      </para>
       <programlisting language="ldif">
 dn: ou=admins,dc=example,dc=com
 objectClass: top
@@ -764,7 +764,7 @@ MODIFY operation successful for DN dc=example,dc=com</computeroutput></screen>
 
       <para>
        First, create an LDIF file that defines the OpenAM data store
-       administrator account and gives the account the following privilege.
+       administrator account and gives the account the following privilege:
       </para>
 
       <itemizedlist>
@@ -822,6 +822,8 @@ ADD operation successful for DN uid=openam,ou=admins,dc=example,dc=com</computer
        First, identify the path that contains LDIF file for OpenAM schema extensions.
        The path is <literal>/path/to/openam/config/ldif/<replaceable>directory_type</replaceable></literal>,
        where <literal><replaceable>directory_type</replaceable></literal> is one of the following:
+      </para>
+
        <itemizedlist>
         <listitem>
          <para>
@@ -850,7 +852,6 @@ ADD operation successful for DN uid=openam,ou=admins,dc=example,dc=com</computer
          </para>
         </listitem>
        </itemizedlist>
-      </para>
       <para>
        Then run the <command>ldapmodify</command> command to import the
        user, device print, and dashboard schema extensions. For example,
@@ -969,7 +970,9 @@ MODIFY operation successful for DN dc=example,dc=com</computeroutput></screen>
     Now that you have prepared your external identity repository, you
     can configure the directory as an OpenAM
     data store by using one of the following methods:
-    <itemizedlist>
+   </para>
+
+   <itemizedlist>
 
      <listitem>
       <para>
@@ -1012,7 +1015,6 @@ MODIFY operation successful for DN dc=example,dc=com</computeroutput></screen>
      </listitem>
 
     </itemizedlist>
-   </para>
   </section>
 
   <section xml:id="prepare-idrepo-indexing">
@@ -1077,7 +1079,9 @@ $ dsconfig \
     Prior to working actively with external identity repositories,
     you should verify that you have configured the repository and administrator
     privileges correctly. You can test configuration as follows:
-    <itemizedlist>
+   </para>
+
+   <itemizedlist>
      <listitem>
       <para>
        Attempt to create an OpenAM user from the
@@ -1095,7 +1099,6 @@ $ dsconfig \
       </para>
      </listitem>
     </itemizedlist>
-   </para>
 
    <para>
     If you receive an LDAP error code 65 while attempting to create a
@@ -1340,7 +1343,7 @@ $ <userinput>bin/dsconfig create-backend \
     </para>
     <para>
      You must also give privileges to the OpenAM user to modify the schema and write
-     to subentries such as the schema entry. To grant these privileges, you include
+     to subentries, such as the schema entry. To grant these privileges, you include
      the following attributes on the OpenAM user entry:
      <literal>ds-privilege-name: subentry-write</literal> and
      <literal>ds-privilege-name: update-schema</literal>.
@@ -1688,7 +1691,7 @@ $ <userinput>bin/verify-index --baseDN dc=example,dc=com</userinput>
   </indexterm>
 
   <para>
-   Download OpenAM releases from one of the following locations.
+   Download OpenAM releases from one of the following locations:
   </para>
   
   <itemizedlist>
@@ -2031,7 +2034,7 @@ $ <userinput>jar -cf ../openam.war *</userinput>
    UTF-8 URI encoding ensures that URL-encoded characters
    in the paths of URIs are correctly decoded by the container.
    This is particularly useful when applications use the OpenAM REST APIs,
-   and some identifiers, such as, user names can contain special characters.
+   and some identifiers, such as user names can contain special characters.
   </para>
 
   <para>
@@ -2148,7 +2151,7 @@ esac
    <step>
     <para>
      Update the <filename>module.xml</filename> file associated with the container. You can
-     find this file a directory, such as, <filename>/path/to/jboss/modules/sun/jdk/main</filename>.
+     find this file a directory, such as <filename>/path/to/jboss/modules/sun/jdk/main</filename>.
     </para>
    </step>
 
@@ -2226,7 +2229,7 @@ $ <userinput>vi /path/to/jboss7/domain/configuration/domain.xml</userinput>
      In either the <filename>standalone.xml</filename> or <filename>domain.xml</filename>
      files, you will also need to delete <literal>org.jboss.as.webservices</literal> references.
      Depending on the file, this includes one or more groups of <literal>subsystem</literal> lines,
-     such as, the following.
+     such as the following:
     </para>
 
     <programlisting language="xml">
@@ -2666,7 +2669,7 @@ $ <userinput>jar cvf ../openam.war *</userinput>
     <listitem>
      <para>
       To use the Sun/Oracle Java SAAJ implementation,
-      edit the WebLogic startup script for the domain where OpenAM runs, such as,
+      edit the WebLogic startup script for the domain where OpenAM runs, such as
       <filename>/path/to/weblogic/user_projects/domains/wlsdomain/startWebLogic.sh</filename>.
      </para>
      <para>

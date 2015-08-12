@@ -158,7 +158,7 @@
       target resources and applications and exposing a set of programming functions
       for the full lifecycle of an identity. OpenICF connectors are compatible
       with OpenIDM, Sun Identity Manager, <trademark class="registered">Oracle</trademark>
-      Waveset, <trademark class="registered">Brinqa</trademark> GRC Platform, and others.
+      Waveset, <trademark class="registered">Brinqa</trademark> GRC Platform, and so forth.
      </para>
      <para>
       <xref linkend="figure-irm"/> illustrates the ForgeRock IRM platform.
@@ -221,9 +221,9 @@
   </figure>
 
   <para>OpenAM features a highly modular and flexible architecture with
-   multiple plug-in points to meet any customer deployment. It leverages industry
+   multiple plugin points to meet any customer deployment. It leverages industry
    standard protocols, such as HTTP, XML, SOAP, REST, SAML 2.0, OAuth 2.0, OpenID Connect 1.0,
-   and others to deliver a high performance, highly scalable, and highly available
+   and so forth to deliver a high performance, highly scalable, and highly available
    access management solution over the network. OpenAM services are 100% Java-based, proven
    across multiple platforms and containers in many production deployments.</para>
 

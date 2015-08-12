@@ -30,7 +30,7 @@ import org.forgerock.json.resource.ReadRequest;
 import org.forgerock.json.resource.ResourceException;
 import org.forgerock.json.resource.ServerContext;
 import org.forgerock.json.resource.UpdateRequest;
-import org.forgerock.openam.forgerockrest.utils.SoapSTSAgentIdentity;
+import org.forgerock.openam.forgerockrest.utils.AgentIdentity;
 import org.forgerock.openam.forgerockrest.utils.SpecialUserIdentity;
 import org.forgerock.openam.rest.resource.SSOTokenContext;
 import org.forgerock.openam.utils.Config;
@@ -49,11 +49,11 @@ import java.net.HttpURLConnection;
 public class STSTokenGenerationServiceAuthzModule extends SpecialAndAdminUserOnlyAuthzModule  {
     public static final String NAME = "STSTokenGenerationServiceAuthzModule";
 
-    private final SoapSTSAgentIdentity agentIdentity;
+    private final AgentIdentity agentIdentity;
 
     @Inject
-    public STSTokenGenerationServiceAuthzModule(Config<SessionService> sessionService, SoapSTSAgentIdentity agentIdentity, SpecialUserIdentity specialUserIdentity,
-                                                @Named("frRest") Debug debug) {
+    public STSTokenGenerationServiceAuthzModule(Config<SessionService> sessionService, AgentIdentity agentIdentity,
+                                                SpecialUserIdentity specialUserIdentity, @Named("frRest") Debug debug) {
         super(sessionService, specialUserIdentity, debug);
         this.agentIdentity = agentIdentity;
     }

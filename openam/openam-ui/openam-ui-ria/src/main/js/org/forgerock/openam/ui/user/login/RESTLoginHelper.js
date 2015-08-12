@@ -1,30 +1,24 @@
 /**
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
  *
- * Copyright (c) 2011-2015 ForgeRock AS. All rights reserved.
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
  *
- * The contents of this file are subject to the terms
- * of the Common Development and Distribution License
- * (the License). You may not use this file except in
- * compliance with the License.
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
  *
- * You can obtain a copy of the License at
- * http://forgerock.org/license/CDDLv1.0.html
- * See the License for the specific language governing
- * permission and limitations under the License.
- *
- * When distributing Covered Code, include this CDDL
- * Header Notice in each file and include the License file
- * at http://forgerock.org/license/CDDLv1.0.html
- * If applicable, add the following below the CDDL Header,
- * with the fields enclosed by brackets [] replaced by
- * your own identifying information:
- * "Portions Copyrighted [year] [name of copyright owner]"
+ * Portions copyright 2011-2015 ForgeRock AS.
  */
 
-/*global define, _, window, $ */
+/*global define */
 
 define("org/forgerock/openam/ui/user/login/RESTLoginHelper", [
+    "jquery",
+    "underscore",
     "org/forgerock/openam/ui/user/delegates/AuthNDelegate",
     "UserDelegate",
     "org/forgerock/commons/ui/common/main/ViewManager",
@@ -36,7 +30,7 @@ define("org/forgerock/openam/ui/user/login/RESTLoginHelper", [
     "org/forgerock/openam/ui/user/delegates/SessionDelegate",
     "org/forgerock/commons/ui/common/util/CookieHelper",
     "org/forgerock/openam/ui/common/util/RealmHelper"
-], function (authNDelegate, userDelegate, viewManager, AbstractConfigurationAware, router, conf, uiUtils, constants, sessionDelegate, cookieHelper, RealmHelper) {
+], function ($, _, authNDelegate, userDelegate, viewManager, AbstractConfigurationAware, router, conf, uiUtils, constants, sessionDelegate, cookieHelper, RealmHelper) {
     var obj = new AbstractConfigurationAware();
 
     obj.login = function(params, successCallback, errorCallback) {
@@ -137,21 +131,22 @@ define("org/forgerock/openam/ui/user/login/RESTLoginHelper", [
         if (urlParams && urlParams.goto) {
             authNDelegate
                 .setGoToUrl(tokenId, urlParams.goto)
-                .then( function(data){
-                    if ((data.successURL.startsWith("/")) && (!data.successURL.startsWith("/" + constants.context))) {
+                .then(function (data) {
+                    if (data.successURL.indexOf("/") === 0 &&
+                        data.successURL.indexOf("/" + constants.context) !== 0) {
                         context = "/" + constants.context;
                     }
                     conf.globalData.auth.urlParams.goto = context + data.successURL;
                     promise.resolve();
-                }, function(){
+                }, function () {
                     promise.reject();
                 });
         } else {
             if(url !== constants.CONSOLE_PATH || _.contains(conf.loggedUser.roles, 'ui-admin')){
-                if(!conf.globalData.auth.urlParams) {
+                if (!conf.globalData.auth.urlParams) {
                     conf.globalData.auth.urlParams = {};
                 }
-                if(!conf.globalData.auth.urlParams.goto) {
+                if (!conf.globalData.auth.urlParams.goto) {
                     conf.globalData.auth.urlParams.goto = url;
                 }
             }

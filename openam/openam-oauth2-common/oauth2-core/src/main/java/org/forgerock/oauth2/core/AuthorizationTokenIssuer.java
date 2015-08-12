@@ -84,7 +84,6 @@ public class AuthorizationTokenIssuer {
         final String clientId = clientRegistration.getClientId();
         final String redirectUri = request.getParameter(REDIRECT_URI);
         final String nonce = request.getParameter(OAuth2Constants.Custom.NONCE);
-
         final Map<String, Token> tokens = new HashMap<String, Token>();
         boolean returnAsFragment = false;
 

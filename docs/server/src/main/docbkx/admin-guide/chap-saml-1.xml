@@ -58,7 +58,7 @@
    and also clarifies how partners share metadata with each other.
    Unless you are integrating with an existing SAML v1.x deployment
    consider using SAML v2.0,
-   or an alternative such as OAuth 2.0 or OpenID Connect 1.0, instead.
+   or an alternative, such as OAuth 2.0 or OpenID Connect 1.0, instead.
   </para>
 
   <para>
@@ -296,7 +296,7 @@
    <listitem>
     <para>
      Domain names of partner sites
-     (such as <literal>example.com</literal>, <literal>example.net</literal>)
+     (for example, <literal>example.com</literal>, <literal>example.net</literal>)
     </para>
    </listitem>
 
@@ -325,7 +325,7 @@
      <listitem>
       <para>
        URL to the relying party endpoint that receives the artifact
-       (such as <literal>https://rp.example.com/openam/SAMLAwareServlet</literal>)
+       (for example, <literal>https://rp.example.com/openam/SAMLAwareServlet</literal>)
       </para>
      </listitem>
 
@@ -339,14 +339,14 @@
      <listitem>
       <para>
        URL to the asserting party endpoint that responds to SAML requests
-       (such as <literal>https://ap.example.net/openam/SAMLSOAPReceiver</literal>)
+       (for example, <literal>https://ap.example.net/openam/SAMLSOAPReceiver</literal>)
       </para>
      </listitem>
 
      <listitem>
       <para>
        Authentication credentials to connect to the asserting party endpoint,
-       if any (such as the username and password for HTTP Basic authentication)
+       if any (for example, the username and password for HTTP Basic authentication)
       </para>
      </listitem>
 
@@ -366,7 +366,7 @@
       <para>
        URL to the relying party endpoint
        that consumes the form data in the POST assertion
-       (such as <literal>https://rp.example.com/openam/SAMLPOSTProfileServlet</literal>)
+       (for example, <literal>https://rp.example.com/openam/SAMLPOSTProfileServlet</literal>)
       </para>
      </listitem>
 
@@ -458,14 +458,14 @@
    <listitem>
     <para>
      Partners' Site IDs
-     (base64-encoded ID, such as <literal>XARFfsIAXeLX8BEWNIJg9Q8r0PE=</literal>)
+     (base64-encoded ID, for example, <literal>XARFfsIAXeLX8BEWNIJg9Q8r0PE=</literal>)
     </para>
    </listitem>
 
    <listitem>
     <para>
      What NameID formats are used to exchange names
-     (such as <literal>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</literal>)
+     (for example, <literal>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</literal>)
     </para>
    </listitem>
 

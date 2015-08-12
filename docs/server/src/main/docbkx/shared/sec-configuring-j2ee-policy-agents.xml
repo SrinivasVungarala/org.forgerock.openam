@@ -726,7 +726,7 @@
    <varlistentry>
     <term>Attribute Cookie Encode</term>
     <listitem>
-     <para>When enabled, attribute values are URL encoded before being set as
+     <para>When enabled, attribute values are URL-encoded before being set as
       a cookie.</para>
      <para>Property: <literal>com.sun.identity.agents.config.attribute.cookie.encode</literal></para>
     </listitem>
@@ -1483,7 +1483,7 @@
     <listitem>
      <para>Property used only when CDSSO is enabled. Only change the default
       value, <literal>goto</literal> when the login URL has a landing page
-      specified such as,
+      specified, such as
       <literal>com.sun.identity.agents.config.cdsso.cdcservlet.url
        = http://openam.example.com:8080/openam/cdcservlet?goto=
        http://www.example.com/landing.jsp</literal>.

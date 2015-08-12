@@ -1539,6 +1539,8 @@
     <listitem>
      <para>When set to <literal>true</literal>, mark cookies as HTTPOnly to
      prevent scripts and third-party programs from accessing the cookies.</para>
+     <para>Note that this configuration option is used only in non-XUI
+     deployments. The XUI cannot set the HttpOnly name in a cookie.</para>
      <para>Default: <literal>false</literal></para>
     </listitem>
    </varlistentry>
