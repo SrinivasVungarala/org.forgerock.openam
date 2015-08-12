@@ -120,7 +120,7 @@
     For details, see the <citetitle>Administration Guide</citetitle> section,
     <link
      xlink:show="new"
-     xlink:href="${docSetBaseURL}admin-guide/#log-mgmt"
+     xlink:href="${backstageAMBaseURL}/admin-guide/chap-audit-logging"
      ><citetitle>Log Management</citetitle></link>.
    </para>
 
@@ -132,8 +132,8 @@
     For details, see the configuration <citetitle>Reference</citetitle> section,
     <link
      xlink:show="new"
-     xlink:href="${docSetBaseURL}reference/#system-logging"
-     ><citetitle>Logging</citetitle></link>.
+     xlink:href="${backstageAMBaseURL}/reference/chap-log-messages"
+     ><citetitle>Log Files and Messages</citetitle></link>.
     Make sure, however, that you retain the information you need
     before logs are purged.
     Also make sure that your disk can keep pace with the volume of logging,
@@ -234,7 +234,7 @@
       For details, see the <citetitle>Installation Guide</citetitle> section,
       <link
        xlink:show="new"
-       xlink:href="${docSetBaseURL}install-guide/#prerequisites-file-descriptors"
+       xlink:href="${backstageAMBaseURL}/install-guide/chap-prepare-install/prerequisites-file-descriptors"
        ><citetitle>Setting Maximum File Descriptors</citetitle></link>.
      </para>
     </listitem>

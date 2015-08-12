@@ -99,9 +99,7 @@
      so that it does not become a single point of failure.
      Illustrations in the chapter,
      <link
-      xlink:href="deployment-planning#chap-topologies"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:href="${backstageAMBaseURL}/deployment-planning/chap-topologies"
      ><citetitle>Example Deployment Topology</citetitle></link>,
      show multiple levels of load balancing for availability
      and firewalls for security.
@@ -131,9 +129,7 @@
      OpenAM also expects profiles in identity data stores to remain in sync.
      As shown in the chapter,
      <link
-      xlink:href="deployment-planning#chap-topologies"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
+      xlink:href="${backstageAMBaseURL}/deployment-planning/chap-topologies"
      ><citetitle>Example Deployment Topology</citetitle></link>,
      the deployment involves directory service replication between sites.
     </para>
@@ -184,9 +180,7 @@
   <para>
    Also, you must consider the requirements for non-functional testing, covered in
    <link
-    xlink:href="deployment-planning#plan-tests"
-    xlink:show="new"
-    xlink:role="http://docbook.org/xlink/role/olink"
+    xlink:href="${backstageAMBaseURL}/deployment-planning/plan-tests"
    ><citetitle>Planning Tests</citetitle></link>.
    While you might be able to perform functional testing by using
    a single OpenAM server with the embedded OpenDJ server for user data store,
@@ -229,9 +223,7 @@
    When you have established your service level goals,
    you can create load tests for each key service as described in the section on
    <link
-    xlink:href="deployment-planning#plan-service-performance-tests"
-    xlink:show="new"
-    xlink:role="http://docbook.org/xlink/role/olink"
+    xlink:href="${backstageAMBaseURL}/deployment-planning/chap-deployments/plan-service-performance-tests"
    ><citetitle>Planning Service Performance Testing</citetitle></link>.
    Use the load tests to check your sizing assumptions.
   </para>
@@ -263,8 +255,7 @@
      you can monitor policy evaluation counts over SNMP.
      For details, see the <citetitle>Administration Guide</citetitle> section,
      <link
-      xlink:show="new"
-      xlink:href="${docSetBaseURL}admin-guide/#snmp-policy-evaluation"
+      xlink:href="${backstageAMBaseURL}/admin-guide/chap-monitoring/snmp-policy-evaluation"
      ><citetitle>SNMP Monitoring For Policy Evaluation</citetitle></link>.
     </para>
    </listitem>
@@ -324,7 +315,7 @@
      For details, see the <citetitle>Administration Guide</citetitle> section,
      <link
       xlink:show="new"
-      xlink:href="${docSetBaseURL}admin-guide/#cts-monitoring"
+      xlink:href="${backstageAMBaseURL}/admin-guide/chap-monitoring/cts-monitoring"
      ><citetitle>Monitoring CTS Tokens</citetitle></link>.
     </para>
    </listitem>
@@ -381,7 +372,7 @@
      As described in the <citetitle>Administration Guide</citetitle> procedure,
      <link
       xlink:show="new"
-      xlink:href="${docSetBaseURL}admin-guide/#realm-data-store"
+      xlink:href="${backstageAMBaseURL}/admin-guide/chap-realms/realm-data-store"
      ><citetitle>To Configure a Data Store for a Realm</citetitle></link>,
      OpenAM can use or provision many profile attributes.
     </para>
@@ -489,7 +480,7 @@
     as described in the <citetitle>Administration Guide</citetitle> chapter,
     <link
      xlink:show="new"
-     xlink:href="${docSetBaseURL}admin-guide/#chap-tuning"
+     xlink:href="${backstageAMBaseURL}/admin-guide/chap-tuning"
     ><citetitle>Tuning OpenAM</citetitle></link>.
    </para>
 
@@ -506,7 +497,7 @@
     in the OpenDJ <citetitle>Administration Guide</citetitle> section,
     <link
      xlink:show="new"
-     xlink:href="${opendjDocBaseURL}admin-guide/#perf-db-cache"
+     xlink:href="${backstageDJBaseURL}/admin-guide/chap-tuning/perf-db-cache"
     ><citetitle>Database Cache Settings</citetitle></link>.
    </para>
   </section>
@@ -548,9 +539,8 @@
    <para>
     As described in the section on
     <link
-     xlink:href="deployment-planning#storage-requirements"
+     xlink:href="${backstageAMBaseURL}/deployment-planning/chap-hw-sw-requirements/storage-requirements"
      xlink:show="new"
-     xlink:role="http://docbook.org/xlink/role/olink"
     ><citetitle>Storage Requirements</citetitle></link>,
     the largest disk I/O loads for OpenAM servers arise
     from logging and from the embedded OpenDJ directory server writing to disk.

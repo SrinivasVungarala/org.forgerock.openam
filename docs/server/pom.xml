@@ -39,6 +39,7 @@
     <groupId>org.forgerock.openam</groupId>
     <artifactId>openam-server-doc</artifactId>
     <version>13.0.0-SNAPSHOT</version>
+    <!--version>12.0.1</version-->
 
     <name>OpenAM Server Documentation Sources</name>
 
@@ -119,6 +120,16 @@
 
         <serverDocTargetVersion>${project.version}</serverDocTargetVersion>
         <agentsDocTargetVersion>3.5.0-SNAPSHOT</agentsDocTargetVersion>
+
+        <!-- This needs to be updated for the latest Release -->
+        <backstageAMBaseURL>https://backstage.forgerock.com/#!/docs/openam/12.0.0</backstageAMBaseURL>
+        <backstageIGBaseURL>https://backstage.forgerock.com/#!/docs/openig/3.1.0</backstageIGBaseURL>
+        <backstageAMRNBaseURL>https://backstage.forgerock.com/#!/docs/openam/12.0.1</backstageAMRNBaseURL>
+        <!-- Web PA -->
+        <backstageWPABaseURL>https://backstage.forgerock.com/#!/docs/openam-policy-agents/3.3.0</backstageWPABaseURL>
+        <!-- Java EE PA -->
+        <backstageJPABaseURL>https://backstage.forgerock.com/#!/docs/openam-policy-agents/3.5.0</backstageJPABaseURL>
+        <backstageDJBaseURL>https://backstage.forgerock.com/#!/docs/opendj/2.6.0</backstageDJBaseURL>
 
         <!-- This should match the version in OpenAM's POM. -->
         <commons.forgerock-util.version>1.3.5</commons.forgerock-util.version>

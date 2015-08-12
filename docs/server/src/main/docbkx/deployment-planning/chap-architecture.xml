@@ -384,8 +384,9 @@
       <para>
        Install and configure the OpenAM server, datastores, and components.
        For information on installing OpenAM, see
-       <link xlink:href="${docSetBaseURL}/install-guide#install-guide"
-             xlink:show="new"><citetitle>OpenAM Installation Guide</citetitle></link>.
+       <!-- This link will need to be changed for 13.0.0 before the release. -->
+       <link xlink:href="${backstageAMBaseURL}/install-guide/toc"
+        ><citetitle>OpenAM Installation Guide</citetitle></link>.
        <indexterm>
         <primary>deployment implementation</primary>
         <secondary>installing</secondary>
@@ -405,8 +406,9 @@
       <para>Tune OpenAM's JVM, caches, LDAP connection pools, container thread pools,
        and other items.
        For information on tuning OpenAM, see
-       <link xlink:href="${docSetBaseURL}/admin-guide#chap-tuning"
-             xlink:show="new"><citetitle>Tuning OpenAM</citetitle></link>.
+       <!--olink targetptr="chap-tuning" targetdoc="admin-guide"/-->
+       <link xlink:href="${backstageAMBaseURL}/admin-guide/chap-tuning"
+        ><citetitle>Tuning OpenAM</citetitle></link>.
        <indexterm>
         <primary>deployment implementation</primary>
         <secondary>tuning</secondary>
@@ -419,7 +421,7 @@
        considerations.
        For more information, see
        <link xlink:show="new"
-             xlink:href="http://docs.forgerock.org/en/opendj/2.6.0/admin-guide#chap-tuning"
+             xlink:href="${backstageDJBaseURL}/admin-guide/chap-tuning"
         ><citetitle>Tuning Servers for Performance</citetitle></link> in the
        <citetitle>OpenDJ Administration Guide</citetitle>.
        <indexterm>
@@ -616,7 +618,7 @@
     ForgeRock University regularly offers training courses for OpenAM topics,
     including OpenAM development and deployment.
     For a current list of available courses, see
-    <link xlink:show="new" xlink:href="http://forgerock.com/services/university/" />.
+    <link xlink:show="new" xlink:href="http://forgerock.com/services/university/"/>.
    </para>
 
    <para>
@@ -695,7 +697,6 @@
    </para>
   </section>
 
-  <?hard-pagebreak?>
   <section xml:id="plan-pilot">
    <title>Planning a Pilot Implementation</title>
 
@@ -880,8 +881,7 @@
     You must therefore plan to secure the deployment
     as described in the <citetitle>Administration Guide</citetitle> chapter on
     <link
-     xlink:href="${docSetBaseURL}/admin-guide#chap-securing"
-     xlink:show="new"
+     xlink:href="${backstageAMBaseURL}/admin-guide/chap-securing"
     ><citetitle>Securing OpenAM</citetitle></link>.
    </para>
 
@@ -1236,7 +1236,10 @@
    <para>
     In order to analyze the raw material, however, you must use other software,
     such as
-    <link xlink:href="http://www.splunk.com" xlink:show="new">Splunk</link>,
+    <link xlink:href="http://www.splunk.com"
+          xlink:show="new"
+          xlink:role="http://docbook.org/xlink/role/olink"
+     >Splunk</link>,
     which indexes machine-generated data for analysis.
    </para>
 
@@ -1297,9 +1300,15 @@
 
     <para>
      Tools for running functional testing include
-     <link xlink:href="http://jmeter.apache.org/" xlink:show="new">Apache JMeter</link>
+     <link xlink:href="http://jmeter.apache.org/"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Apache JMeter</link>
      and
-     <link xlink:href="http://seleniumhq.org/" xlink:show="new">Selenium</link>.
+     <link xlink:href="http://seleniumhq.org/"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Selenium</link>.
      Apache JMeter is a load testing tool for Web applications.
      Selenium is a test framework for Web applications, particularly for UIs.
     </para>
@@ -1356,9 +1365,15 @@
 
     <para>
      Tools for running performance testing include
-     <link xlink:href="http://jmeter.apache.org/" xlink:show="new">Apache JMeter</link>,
+     <link xlink:href="http://jmeter.apache.org/"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Apache JMeter</link>,
      for which your loads should mimic what you expect in production, and
-     <link xlink:href="http://gatling.io" xlink:show="new">Gatling</link>,
+     <link xlink:href="http://gatling.io"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Gatling</link>,
      which records load using a domain specific language for load testing.
      To mimic the production load, examine both the access patterns
      and also the data that OpenAM stores.
@@ -1749,9 +1764,9 @@
    <para>
     In this section, "upgrade" means moving to a more recent release,
     whether it is a patch, maintenance release, minor release, or major release.
-    (See the OpenAM
-    <link xlink:href="${docSetBaseURL}/admin-guide#chap-tuning"
-          xlink:show="new"><citetitle>Administration Guide</citetitle></link>
+    (See the OpenAM Administration Guide
+    <link xlink:href="${backstageAMBaseURL}/admin-guide/appendix-interface-stability"
+     ><citetitle>Appendix A. Release Levels and Interface Stability</citetitle></link>
     for definitions of the types of release.)
    </para>
 
