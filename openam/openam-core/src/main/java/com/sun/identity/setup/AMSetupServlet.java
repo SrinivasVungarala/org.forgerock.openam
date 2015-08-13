@@ -194,6 +194,14 @@ public class AMSetupServlet extends HttpServlet {
         if (servletCtx == null ) {
             servletCtx = config.getServletContext();
         }
+        final String[] licenseFilePaths =
+                InjectorHolder.getInstance(Key.get(String[].class, Names.named("LICENSE_FILEPATH")));
+        if (licenseFilePaths == null) {
+            throw new ServletException("Could not get license file paths.");
+        }
+        licenseLocator = new ServletContextLicenseLocator(getServletContext(), Charset.forName("UTF-8"),
+                licenseFilePaths);
+        
         checkOpenDJUpgrade();
         checkConfigProperties();
         LoginLogoutMapping.setProductInitialized(isConfiguredFlag);
@@ -212,14 +220,6 @@ public class AMSetupServlet extends HttpServlet {
         }
         
         isVersionNewer();
-
-        final String[] licenseFilePaths =
-                InjectorHolder.getInstance(Key.get(String[].class, Names.named("LICENSE_FILEPATH")));
-        if (licenseFilePaths == null) {
-            throw new ServletException("Could not get license file paths.");
-        }
-        licenseLocator = new ServletContextLicenseLocator(getServletContext(), Charset.forName("UTF-8"),
-                licenseFilePaths);
     }
 
     private static LicenseLocator licenseLocator;
