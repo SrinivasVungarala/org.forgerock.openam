@@ -28,11 +28,12 @@
  version='5.0' xml:lang='en'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
-                     http://docbook.org/xml/5.0/xsd/docbook.xsd'
- xmlns:xlink='http://www.w3.org/1999/xlink'>
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'>
  <title>Managing Scripts with the OpenAM Console</title>
- <indexterm><primary>Scripts</primary></indexterm>
- <indexterm><secondary>Console</secondary></indexterm>
+ <indexterm>
+  <primary>Scripts</primary>
+  <secondary>Managing</secondary>
+ </indexterm>
  <para>This chapter shows you how to manage scripts used for client-side and
   server-side scripted authentication, custom policy conditions, and handling
   OpenID Connect claims by using the OpenAM console.</para>
@@ -44,42 +45,6 @@
     settings, see <olink targetptr="scripting-configuration"
                       targetdoc="reference" /> in the <citetitle>OpenAM
     Reference</citetitle>.</para>
-
- <para>OpenAM supports scripts in JavaScript or Groovy format, and the
-  following script types:</para>
- 
- <variablelist>
-  <varlistentry>
-   <term>Client-side Authentication</term>
-   <listitem>
-    <para>Scripts that are executed on the client during authentication.</para>
-    <note><para>Client-side scripts must be in JavaScript format.</para></note>
-   </listitem>
-  </varlistentry>
-    <varlistentry>
-   <term>Server-side Authentication</term>
-   <listitem>
-    <para>Scripts that are executed on the server during authentication.</para>
-   </listitem>
-  </varlistentry>
-    <varlistentry>
-   <term>Policy Condition</term>
-   <listitem>
-    <para>Scripts used as conditions within policies. </para>
-   </listitem>
-  </varlistentry>
-    <varlistentry>
-   <term>OIDC Claims</term>
-   <listitem>
-    <para>Scripts that gather and populate the claims in a request when
-     issuing an ID Token or making a request to the userinfo endpoint.</para>
-   </listitem>
-  </varlistentry>
- </variablelist>
-
- <para>User-created scripts are realm specific. OpenAM includes some
-  global example scripts that can be used in any realm.</para>
-
 
  <procedure xml:id="manage-scripts-with-console">
   <title>To Manage Scripts by Using the OpenAM Console</title>
@@ -144,7 +109,7 @@
   </step>
  </procedure>
 
-  <procedure xml:id="delete-scripts-with-consle">
+  <procedure xml:id="delete-scripts-with-console">
   <title>To Delete Scripts by Using the OpenAM Console</title>
   <step>
    <para>Login as OpenAM administrator, <literal>amadmin</literal>.</para>

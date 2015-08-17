@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !
+-->
+<section xml:id='sec-scripted-policy-condition'
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'>
+ <title>Default Policy Condition Script</title>
+
+ <indexterm>
+  <primary>Scripts</primary>
+  <secondary>Policy Conditions</secondary>
+ </indexterm>
+
+ <para>
+  This section demonstrates how to use the sample policy condition script
+  as part of an authorization policy. To examine the
+  contents of the sample policy condition script in the OpenAM console browse
+  to REALMS &gt; Top Level Realm &gt; Scripts, and then click
+  <emphasis>Scripted Policy Condition</emphasis>.
+ </para>
+
+<para>The default policy condition script demonstrates how to access a user's
+ profile information, use that information in HTTP calls, and make a policy
+ decision based on the outcome.</para>
+
+  <para>For more information on the functions available for use in policy
+ condition scripts, see <xref linkend="scripting-api"/>.</para>
+
+ <section xml:id="sec-scripted-policy-condition-prepare">
+  <title>Preparing OpenAM</title>
+<para>OpenAM requires a small amount of configuration before trying the default
+ policy condition script. The default policy condition script requires that the
+ subject of the policy has an address in their profile. The script compares the
+ address to the country in the resource URL and to the country from which the
+ request originated, as determined by an external GeoIP web service. The
+ <literal>demo</literal> user also requires access to evaluate policies.
+</para>
+  <para>The procedures in this section are:</para>
+  <itemizedlist>
+   <listitem>
+    <para><xref linkend="proc-scripted-pol-address"/> </para>
+   </listitem>
+      <listitem>
+    <para><xref linkend="proc-scripted-pol-privilege"/> </para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="proc-scripted-pol-policy"/> </para>
+   </listitem>
+  </itemizedlist>
+
+ <procedure xml:id="proc-scripted-pol-address">
+  <title>To Add an Address to the Demo User</title>
+    <para>In this procedure, add an address value to the <literal>demo</literal>
+     user's profile. The default policy condition script uses the address when
+     performing policy evaluation.</para>
+  <step>
+   <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
+  </step>
+  <step>
+   <para>Click REALMS &gt; Top Level Realm &gt; Subjects.</para>
+  </step>
+  <step>
+   <para>On the User tab, click the <literal>demo</literal> user.</para>
+  </step>
+  <step>
+     <para>In Home Address, enter a valid address. For example:</para>
+     <screen><userinput>201 Mission St, Suite 2900, San Francisco, CA 94105</userinput></screen>
+  </step>
+  <step>
+   <para>Click Save.</para>
+  </step>
+ </procedure>
+
+ <procedure xml:id="proc-scripted-pol-privilege">
+  <title>To Allow the Demo User to Evaluate a Policy</title>
+   <para>In this procedure, add the <literal>demo</literal> user to a
+    group and assign the privilege required to perform policy evaluations.</para>
+  <step>
+   <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
+  </step>
+  <step>
+   <para>Click REALMS &gt; Top Level Realm &gt; Subjects.</para>
+  </step>
+  <step>
+   <para>On the Group tab, click New, enter an ID for the group, such as
+    <literal>policyEval</literal>, and then click OK.</para>
+  </step>
+  <step>
+   <para>On the User tab:</para>
+   <substeps>
+    <step>
+     <para>Click the <literal>demo</literal> user.</para>
+    </step>
+    <step>
+     <para>Click the Group tab.</para>
+    </step>
+    <step>
+     <para>In the Available box, select the group created in step 3, and then
+      click Add.</para>
+    </step>
+    <step>
+     <para>Click Save.</para>
+    </step>
+   </substeps>
+  </step>
+  <step>
+   <para>Click REALMS &gt; Top Level Realm &gt; Privileges.</para>
+  </step>
+  <step>
+   <para>Click the group created in step 3, for example <literal>policyEval</literal>.</para>
+  </step>
+  <step>
+   <para>On the Privileges page, select <literal>Read and write access to all realm and policy properties</literal>.</para>
+  </step>
+  <step>
+   <para>Click Save.</para>
+  </step>
+ </procedure>
+
+ <procedure xml:id="proc-scripted-pol-policy">
+  <title>To Create a Policy that uses the Default Policy Condition Script</title>
+    <para>In this procedure, create a policy that uses the
+   default policy condition script. Policy evaluations can then be
+   performed to test the script functionality.</para>
+  <step>
+   <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
+  </step>
+  <step>
+   <para>Click REALMS &gt; Top Level Realm &gt; Policies &gt; Applications.</para>
+  </step>
+  <step>
+   <para>On the Applications page, click <literal>iPlanetAMWebAgentService</literal>.</para>
+  </step>
+  <step>
+   <para>On the iPlanetAMWebAgentService page, click New Policy.</para>
+  </step>
+  <step>
+   <para>Complete the New Policy wizard:</para>
+   <orderedlist>
+    <listitem>
+     <para>In the <emphasis>Name the Policy</emphasis> section, enter a name
+      and description for the policy.</para>
+    </listitem>
+    <listitem>
+     <para>In the <emphasis>Specify Resources</emphasis> section, select the
+      <literal>URL</literal> resource type, and add both available patterns to
+      the RESOURCES column.</para>
+    </listitem>
+    <listitem>
+     <para>In the <emphasis>Select Actions</emphasis> section, add at least
+      one available resource type action to the SELECTED
+      ACTIONS column, setting each one to <literal>Allow</literal>.</para>
+    </listitem>
+
+    <listitem>
+     <para>In the <emphasis>Define Subject Conditions</emphasis>
+      section, add the <literal>Authenticated Users</literal> type.</para>
+    </listitem>
+
+    <listitem>
+     <para>In the <emphasis>Define Environment Conditions</emphasis>, add a
+      script type, and in the Script Name drop-down select
+      <literal>Scripted Policy Condition</literal>.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>No additional configuration is required in the <emphasis>Specify
+      Response Attributes</emphasis> section.
+     </para>
+    </listitem>
+   </orderedlist>
+  </step>
+  <step>
+   <para>Click Review Configuration and Finish. The policy should resemble
+    the following:</para>
+     <mediaobject>
+   <alt>An example policy that uses the default policy condition script.</alt>
+   <imageobject>
+    <imagedata fileref="images/scripting-sample-policy.png" format="PNG" />
+   </imageobject>
+   <textobject>
+    <para>Configure a policy as shown to try out the default policy
+     condition script.</para>
+   </textobject>
+  </mediaobject>
+   <para>When the policy is complete, click Save.</para>
+  </step>
+ </procedure>
+
+ </section>
+
+ <section xml:id="sec-scripted-policy-condition-evaluate">
+  <title>Trying the Default Policy Condition Script</title>
+<para>This section demonstrates using a policy that contains
+the default policy condition script.</para>
+  <para>To evaluate against a policy, you must first obtain an SSO token for
+   the subject performing the evaluation, in this case the <literal>demo</literal>
+   user. You can then make a call to the <literal>policies?_action=evaluate</literal>
+   endpoint, including some environment information, which the policy uses to
+   make an authorization decision.
+  </para>
+
+ <procedure>
+  <title>To Evaluate a Policy</title>
+  <step>
+   <para>Obtain an SSO Token for the <literal>demo</literal> user:</para>
+<screen>
+<userinput>curl --request POST \
+--header "Content-Type: application/json" \
+--header "X-OpenAM-Username: demo" \
+--header "X-OpenAM-Password: changeit" \
+https://openam.example.com:8443/openam/json/authenticate</userinput>
+<computeroutput>{
+     "tokenId": "AQIC5wM2...",
+     "successUrl": "/openam/console"
+}</computeroutput>
+</screen>
+  </step>
+    <step>
+   <para>Send an evaluation request to the <literal>policies</literal>
+    endpoint, using the SSO token of the <literal>demo</literal> user in the
+    <literal>iPlanetDirectoryPro</literal> header.</para>
+     <para>In the JSON data, set the <literal>subject</literal> property
+      to also be the SSO token of the <literal>demo</literal> user.
+      In the <literal>resources</literal> property, include a URL
+      that resides on a server in the same country as the address set for the
+      <literal>demo</literal> user. In the <literal>environment</literal>
+      property, include an IP address that is also based in the same
+      country as the user and the resource. The example below uses the
+      ForgeRock Community web site URL and an IP address from a ForgeRock
+      office, both located in the United States:
+     </para>
+<screen>
+<userinput>curl --request POST \
+--header "Content-Type: application/json" \
+--header "iPlanetDirectoryPro: AQIC5wM2..." \
+--data '{
+    "resources": [
+        "http://www.forgerock.org:80/index.html"
+    ],
+    "application": "iPlanetAMWebAgentService",
+    "subject": { "ssoToken": "AQIC5wM2..."},
+    "environment": {
+        "IP": [
+            "38.99.39.210"
+        ]
+    }
+}' \
+https://openam.example.com:8443/openam/json/policies?_action=evaluate</userinput>
+<computeroutput>[
+  {
+    "advices": {},
+    "ttl": 9223372036854775807,
+    "resource": "http://www.forgerock.org:80/index.html",
+    "actions": {
+      "POST": true,
+      "GET": true
+    },
+    "attributes": {
+      "countryOfOrigin": [
+        "United States"
+      ]
+    }
+  }
+]</computeroutput>
+</screen>
+     <para>If the country in the subject's profile matches the country
+      determined from the source IP in the environment and the country
+      determined from the resource URL, then OpenAM returns a list of actions available.
+      The script will also add an attribute to the response called
+      <literal>countryOfOrigin</literal> with the country as the value.</para>
+     <para>If the countries do not match, no actions are returned. In the
+      following example, the resource URL is based in France, while the IP
+       and user's address in the profile are based in the United States:</para>
+<screen><userinput>curl -X POST \
+-H "Content-Type: application/json" \
+-H "iPlanetDirectoryPro: AQIC5wM2..." \
+-d '{
+    "resources": [
+        "http://www.forgerock.fr:80/index.html"
+    ],
+    "application": "iPlanetAMWebAgentService",
+    "subject": { "ssoToken": "AQIC5wM2..."},
+    "environment": {
+        "IP": [
+            "38.99.39.210"
+        ]
+    }
+}' \
+'https://openam.example.com:8443/openam/json/policies?_action=evaluate'</userinput>
+<computeroutput>[
+    {
+        "advices": {},
+        "ttl": 9223372036854775807,
+        "resource": "http://www.forgerock.fr:80/index.html",
+        "actions": {},
+        "attributes": {}
+    }
+]</computeroutput>
+</screen>
+  </step>
+ </procedure>
+
+ </section>
+
+</section>

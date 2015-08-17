@@ -32,8 +32,9 @@
          xmlns:xlink='http://www.w3.org/1999/xlink'
          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>RESTful Script Management</title>
- <indexterm><primary>Scripts</primary></indexterm>
- <indexterm><secondary>Console</secondary></indexterm>
+ <indexterm>
+  <primary>Scripts</primary>
+  <secondary>Managing</secondary></indexterm>
  <para>This section shows you how to manage scripts used for client-side and
   server-side scripted authentication, custom policy conditions, and handling
   OpenID Connect claims by using the REST API.</para>

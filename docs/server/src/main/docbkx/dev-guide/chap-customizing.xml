@@ -40,7 +40,6 @@
  <xinclude:include href="sec-custom-attr.xml"/>
  <xinclude:include href="sec-oauth2-scopes.xml"/>
  <xinclude:include href="sec-auth-spi.xml"/>
- <xinclude:include href="sec-scripted-auth-module.xml"/>
  <xinclude:include href="sec-custom-quota-exhaustion-action.xml"/>
  <xinclude:include href="sec-policy-spi.xml"/>
  <xinclude:include href="sec-identity-repo-spi.xml"/>

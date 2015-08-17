@@ -4893,7 +4893,7 @@ the '%' character is not included in the properties.
   </section>
 
   <section xml:id="scripted-module-conf-hints">
-   <title>Hints for Scripted Authentication Modules</title>
+   <title>Hints for the Scripted Authentication Module</title>
 
    <indexterm>
     <primary>Authentication</primary>
@@ -5113,85 +5113,117 @@ ssoadm \
     </varlistentry>
    </variablelist>
 
-   <variablelist>
-    <para>
+        <variablelist>
+             <para>
      Use the following global configuration settings
      for all scripted authentication modules
-     in OpenAM console under Configuration > Authentication > Scripted Module.
+     in OpenAM console under Configuration > Global > Scripting >
+     <emphasis>Context Type</emphasis> > Engine Configuration.
     </para>
+         <note><para>Only server-side script context types have
+           engine configurations.</para></note>
+      <varlistentry>
+       <term>Server-side Script Timeout</term>
+       <listitem>
+        <para>The maximum execution time any individual script should take on
+         the server (in seconds). OpenAM terminates scripts which take
+         longer to run than this value.</para>
 
-    <varlistentry>
-     <term>Server-Side Script Timeout</term>
-     <listitem>
-      <para>
-       Sets the maximum execution time to run a single server-side script,
-       in seconds.
-      </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>serverTimeout</literal></para>
 
-      <para>
-       Default: 0 (meaning no timeout)
-      </para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       If your server-side scripts send external HTTP requests,
-       consider setting an appropriate value for this timeout.
-      </para>
+      <varlistentry>
+       <term>Core thread pool size</term>
+       <listitem>
+        <para>The initial number of threads in the thread pool from
+         which scripts operate. OpenAM will ensure the pool contains at least
+         this many threads.
+         </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>coreThreads</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       <command>ssoadm</command> attribute:
-       <literal>iplanet-am-auth-scripted-server-timeout</literal>
-      </para>
-     </listitem>
-    </varlistentry>
+      <varlistentry>
+       <term>Maximum thread pool size</term>
+       <listitem>
+        <para>The maximum number of threads in the thread pool from which
+         scripts operate. If no free thread is available in the pool, OpenAM
+         creates new threads in the pool for script execution up to the
+         configured maximum.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>maxThreads</literal></para>
+       </listitem>
+      </varlistentry>
 
-    <varlistentry>
-     <term>Core thread pool size</term>
-     <listitem>
-      <para>
-       Core size for the pool of threads dedicated to running server-side scripts.
-      </para>
+      <varlistentry>
+       <term>Thread pool queue size</term>
+       <listitem>
+        <para>The number of threads to use for buffering script execution
+         requests when the maximum thread pool size is reached.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>queueSize</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       Default: 10
-      </para>
+      <varlistentry>
+       <term>Thread idle timeout (seconds)</term>
+       <listitem>
+        <para>Length of time (in seconds) for a thread to be idle before OpenAM
+         terminates created threads. If the current pool size contains the
+         number of threads set in <literal>Core thread pool size</literal>, then
+         idle threads will not be terminated, maintaining the initial pool size.
+        </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>idleTimeout</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       This setting is not hot-swappable.
-       Instead, you must restart OpenAM or the container in which it runs
-       for the changes to take effect.
-      </para>
+      <varlistentry>
+       <term>Java class whitelist</term>
+       <listitem>
+        <para>Specifies the list of class-name patterns allowed to be invoked
+         by the script. Every class accessed by the script must match at least
+         one of these patterns.</para>
+        <para>You can specify the class name as-is or use a
+         regular expression.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>whiteList</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       <command>ssoadm</command> attribute:
-       <literal>iplanet-am-auth-scripted-core-threads</literal>
-      </para>
-     </listitem>
-    </varlistentry>
+      <varlistentry>
+       <term>Java class blacklist</term>
+       <listitem>
+        <para>Specifies the list of class-name patterns that are NOT allowed
+         to be invoked by the script. The blacklist is applied AFTER the
+         whitelist to exclude those classes. Access to a class
+         specified in both the whitelist and the blacklist will be denied.
+        </para>
+        <para>You can specify the class name to exclude as-is or use a
+         regular expression.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>blackList</literal></para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Use system SecurityManager</term>
+       <listitem>
+        <para>If enabled, OpenAM will make a call to
+         <literal>System.getSecurityManager().checkPackageAccess(...)</literal> for each
+         class that is accessed. The method throws <literal>SecurityException</literal> if
+         the calling thread is not allowed to access the package.</para>
+        <note><para>This feature only takes effect if the security manager is
+         enabled for the JVM. </para></note>
+        <para><command>ssoadm</command> attribute:
+        <literal>useSecurityManager</literal></para>
+       </listitem>
+      </varlistentry>
 
-    <varlistentry>
-     <term>Maximum thread pool size</term>
-     <listitem>
-      <para>
-       Maximum size for the pool of threads dedicated to running server-side scripts.
-      </para>
-
-      <para>
-       Default: 50
-      </para>
-
-      <para>
-       This setting is not hot-swappable.
-       Instead, you must restart OpenAM or the container in which it runs
-       for the changes to take effect.
-      </para>
-
-      <para>
-       <command>ssoadm</command> attribute:
-       <literal>iplanet-am-auth-scripted-core-threads</literal>
-      </para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
+     </variablelist>
   </section>
 
   <xinclude:include href="../shared/securid/section-auth-services.xml" condition="securid">

@@ -1,0 +1,1456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !
+-->
+<section xml:id="scripting-api"
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+ <title>The Scripting API</title>
+
+  <indexterm>
+  <primary>Scripts</primary>
+  <secondary>API</secondary>
+ </indexterm>
+
+ <para>
+  Client-side scripts have access only to the user agent API.
+  The functionality provided by each user agent is different, refer to the
+  API provided by your user agent for more information.
+ </para>
+
+ <section xml:id="scripting-api-global">
+  <title>Global API Functionality</title>
+  <para>This section covers functionality available to each of the
+   server-side script types.</para>
+
+  <itemizedlist>
+   <para>Global API functionality includes:</para>
+   <listitem><para><xref linkend="scripting-api-global-http-client" xrefstyle="select: title" /></para></listitem>
+   <listitem><para><xref linkend="scripting-api-global-id-repo" xrefstyle="select: title"/></para></listitem>
+   <listitem><para><xref linkend="scripting-api-global-logger" xrefstyle="select: title"/></para></listitem>
+  </itemizedlist>
+
+  <section xml:id="scripting-api-global-http-client">
+   <title>Accessing HTTP Services</title>
+
+   <para>
+    OpenAM passes an HTTP client object, <literal>httpClient</literal>,
+    to server-side scripts.
+    Server-side scripts can call HTTP services
+    with the <literal>httpClient.get</literal>
+    and <literal>httpClient.post</literal> methods.
+    The methods return an <literal>HttpClientResponse</literal> object.
+   </para>
+
+   <table xml:id="scripted-auth-module-http-client-methods" pgwide="1">
+    <title>HTTP Client Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="1*"/>
+     <colspec colnum="2" colwidth="3*"/>
+     <colspec colnum="3" colwidth="2*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>httpClient.get</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>uri</replaceable></literal> (type: <literal>String</literal>),
+         <literal><replaceable>requestData</replaceable></literal> (type:
+         <literal>Map</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>HttpClientResponse</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Perform an HTTP GET on the specified URI
+         with the specified request data and return the response retrieved.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>httpClient.post</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>uri</replaceable></literal> (type: <literal>String</literal>),
+         <literal><replaceable>body</replaceable></literal> (type: <literal>String</literal>),
+         <literal><replaceable>requestData</replaceable></literal> (type:
+         <literal>Map</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>HttpClientResponse</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Perform an HTTP POST to the specified URI
+         with the specified body and request data and return the response retrieved.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+
+   <para>
+    The <literal>requestData</literal> object is a map in which the keys are
+    <literal>cookies</literal> and <literal>headers</literal>. OpenAM ignores other keys.
+   </para>
+   <para>
+    The <literal>cookies</literal> value, specifying the cookie headers in the
+    request, is a list of maps where the keys are <literal>domain</literal>,
+    <literal>field</literal>, and <literal>value</literal>.
+   </para>
+   <para>
+    The <literal>headers</literal> value, specifying the headers in the request,
+    is a list of maps where the keys are <literal>field</literal>, and
+    <literal>value</literal>.
+   </para>
+   <para>An example <literal>requestData</literal> JavaScript object using GET
+    would be as follows:</para>
+<programlisting language="javascript">var response = httpClient.get("http://example.com:8080/openam/json/users" + username,
+{
+    cookies:[
+        {
+            "domain": ".example.com",
+            "field": "iPlanetDirectoryPro,
+            "value": "E8cDkvlad83kd....KDodkIEIx*DLEDLK...JKD09d"
+        }
+    ],
+    headers:[
+        {
+            "field": "Content-type",
+            "value": "application/json"
+        }
+    ]
+});</programlisting>
+
+   <para>An example <literal>requestData</literal> JavaScript object using
+    POST follows:</para>
+
+<programlisting language="javascript">var response = httpClient.post("http://example.com:8080/openam/json/authenticate","{
+    "authId": "eyAiYWxnIjogIkhTMjU2IiwgInR5cCI6ICJqd3QiIH0.eyAib3RrIjogIm03ODVzN2x
+    sbnR1bjZvbGZ1MHZhOGVtYTQxIiwgInNlc3Npb25JZCI6ICJBUUlDNXdNMkxZNFNmY3lEeDY3QnB
+    PdzJtRU9rUzNpLWhfNDdRWlMwNHBEN1ppdy4qQUFKVFNRQUNNREVBQWxOTEFCUXROak15TURjNU1
+    UZzROVFUwTXpnNE5qRTNNQS4uKiIsICJyZWFsbSI6ICJkYz1vcGVuYW0sZGM9Zm9yZ2Vyb2NrLGR
+    jPW9yZyIgfQ.VDRqaekQuXBm2lNI29hfwVADLxjepezuO0241VNDsIM",
+    "template": "",
+    "stage": "DataStore1",
+    "callbacks": [
+        {
+            "type": "NameCallback",
+            "output": [
+                {
+                    "name": "prompt",
+                    "value": "User Name:"
+                }
+            ],
+            "input": [
+                {
+                    "name": "IDToken1",
+                    "value": "demo"
+                }
+            ]
+        },
+        {
+            "type": "PasswordCallback",
+            "output": [
+                {
+                    "name": "prompt",
+                    "value": "Password:"
+                }
+            ],
+            "input": [
+                {
+                    "name": "IDToken2",
+                    "value": "changeit"
+                }
+            ]
+        }
+    ]
+    }",
+    {
+        cookies:[
+        ],
+        headers:[
+            {
+                "field": "Content-Type",
+                "value": "application/json"
+            }
+        ]
+});</programlisting>
+
+   <note><para>To get the form data, you can access the <literal>sharedState</literal>
+    object to get the data that previous modules in the chain have obtained.
+    For example, if you have a Data Store module in your chain, you can get the
+    username and password from the <literal>sharedState</literal> object in the
+    script.
+   </para></note>
+
+   <para>
+    HTTP client requests are synchronous, blocking until they return.
+    You can, however, set a global timeout for server-side scripts.
+    For details, see
+    <olink targetdoc="admin-guide" targetptr="scripted-module-conf-hints"/>.
+   </para>
+
+   <!-- HttpClientRequest seems to have disappeared in the refactoring.
+   <para>
+    Server-side scripts can construct requests by using the methods
+    listed in the table below.
+   </para>
+
+   <table xml:id="scripted-auth-module-http-client-request-methods" pgwide="1">
+    <title>HTTP Client Request Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="1*"/>
+     <colspec colnum="2" colwidth="1*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>addCookie</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>domain</replaceable></literal> (type: <literal>String</literal>),
+         <literal><replaceable>field</replaceable></literal> (type: <literal>String</literal>),
+         <literal><replaceable>value</replaceable></literal> (type: <literal>String</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Add a cookie to the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>addHeader</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>field</replaceable></literal> (type: <literal>String</literal>),
+         <literal><replaceable>value</replaceable></literal> (type: <literal>String</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Add a header to the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>addQueryParameter</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>field</replaceable></literal> (type: <literal>String</literal>),
+         <literal><replaceable>value</replaceable></literal> (type: <literal>String</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Add a query parameter to the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>getCookies</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Set&lt;HttpClientRequestCookie></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the cookies set on the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>getEntity</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the entity set on the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>getHeaders</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Map&lt;String, String></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the headers set on the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>getMethod</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the method to be performed on the resource identified by the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>getQueryParameters</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Map&lt;String, String></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the query parameters set on the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>getUri</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the URI of the resource identified by the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>setEntity</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>entity</replaceable></literal> (type: <literal>String</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Add an entity to the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>setMethod</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>method</replaceable></literal> (type: <literal>String</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Set the method to be performed on the resource identified by the request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>setUri</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>uri</replaceable></literal> (type: <literal>String</literal>)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Set the URI of the resource identified by the request.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   -->
+
+   <para>
+    Server-side scripts can access response data by using the methods
+    listed in the table below.
+   </para>
+
+   <table xml:id="scripted-auth-module-http-client-response-methods" pgwide="1">
+    <title>HTTP Client Response Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="1*"/>
+     <colspec colnum="2" colwidth="1*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="2*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>HttpClientResponse.getCookies</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Map&lt;String, String></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the cookies for the returned response, if any exist.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>HttpClientResponse.getEntity</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the entity of the returned response.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>HttpClientResponse.getHeaders</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Map&lt;String, String></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the headers for the returned response, if any exist.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>HttpClientResponse.getReasonPhrase</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the reason phrase of the returned response.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>HttpClientResponse.getStatusCode</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Integer</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Get the status code of the returned response.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>HttpClientResponse.hasCookies</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Boolean</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Indicate whether the returned response had any cookies.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>HttpClientResponse.hasHeaders</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Boolean</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Indicate whether the returned response had any headers.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
+  <section xml:id="scripting-api-global-id-repo">
+   <title>Accessing Profile Data</title>
+
+   <para>
+    Server-side scripts can access profile data through
+    the methods of the <literal>idRepository</literal> object.
+   </para>
+
+   <table xml:id="scripted-auth-module-id-repo-methods" pgwide="1">
+    <title>Profile Data Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="2*"/>
+     <colspec colnum="2" colwidth="3*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>idRepository.getAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>userName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeName</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Set</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return the values of the named attribute for the named user.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>idRepository.setAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>userName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeValue</replaceable></literal> (type: Array)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Set the named attribute as specified by the attribute value for the
+         named user, and persist the result in the user's profile.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>idRepository.addAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>userName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeValue</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Add an attribute value to the list of attribute values associated with the
+         attribute name for a particular user.
+        </para>
+       </entry>
+      </row>
+
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
+  <section xml:id="scripting-api-global-logger">
+   <title>Debug Logging</title>
+
+   <para>
+    Server-side scripts can write messages to OpenAM debug logs
+    by using the <literal>logger</literal> object.
+   </para>
+
+   <para>
+    OpenAM does not log debug messages from scripts by default.
+    You can configure OpenAM to log such messages
+    by setting the debug log level for the <literal>amScript</literal> service.
+    For details, see <olink targetdoc="admin-guide" targetptr="log-debug-selective-capture"  />.
+   </para>
+
+   <para>
+    The following table lists the <literal>logger</literal> methods.
+   </para>
+
+   <table xml:id="scripted-auth-module-logger-methods" pgwide="1">
+    <title>Logger Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="2*"/>
+     <colspec colnum="2" colwidth="2*"/>
+     <colspec colnum="3" colwidth="2*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>logger.error</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String <replaceable>message</replaceable></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Write <replaceable>message</replaceable> to OpenAM debug logs
+         if ERROR level logging is enabled.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>logger.errorEnabled</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Boolean</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return <literal>true</literal> when ERROR level debug messages are
+         enabled.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>logger.message</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String <replaceable>message</replaceable></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Write <replaceable>message</replaceable> to OpenAM debug logs
+         if MESSAGE level logging is enabled.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>logger.messageEnabled</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Boolean</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return <literal>true</literal> when MESSAGE level debug messages are
+         enabled.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>logger.warning</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String <replaceable>message</replaceable></literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Write <replaceable>message</replaceable> to OpenAM debug logs
+         if WARNING level logging is enabled.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>logger.warningEnabled</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Boolean</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return <literal>true</literal> when WARNING level debug messages are
+         enabled.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
+ </section>
+
+ <section xml:id="scripting-api-authn">
+  <title>Authentication API Functionality</title>
+  <para>This section covers the available functionality when Scripting
+   authentication modules use client-side and server-side authentication
+   script types.</para>
+
+  <itemizedlist>
+   <para>Authentication API functionality includes:</para>
+   <listitem><para><xref linkend="scripting-api-authn-state" xrefstyle="select: title" /></para></listitem>
+   <listitem><para><xref linkend="scripting-api-authn-client-data" xrefstyle="select: title" /></para></listitem>
+   <listitem><para><xref linkend="scripting-api-authn-request-data" xrefstyle="select: title" /></para></listitem>
+  </itemizedlist>
+  <section xml:id="scripting-api-authn-state">
+   <title>Accessing Authentication State</title>
+
+   <para>
+    OpenAM passes <literal>authState</literal> and <literal>sharedState</literal>
+    objects to server-side scripts in order for the scripts to access
+    authentication state.
+   </para>
+
+   <para>
+    Server-side scripts can access the current authentication state
+    through the <literal>authState</literal> object.
+   </para>
+
+   <para>
+    The <literal>authState</literal> value is <literal>SUCCESS</literal>
+    if the authentication is currently successful,
+    or <literal>FAILED</literal> if authentication has failed.
+    Server-side scripts must set a value for <literal>authState</literal>
+    before completing.
+   </para>
+
+   <para>
+    If an earlier authentication module in the authentication chain
+    has set the login name of the user,
+    server-side scripts can access the login name
+    through <literal>username</literal>.</para>
+   <para>The following authentication modules set the login name of the user:
+   </para>
+   <itemizedlist>
+    <listitem><para>Anonymous</para></listitem>
+    <listitem><para>Certificate</para></listitem>
+    <listitem><para>Data Store</para></listitem>
+    <listitem><para>Federation</para></listitem>
+    <listitem><para>HTTP Basic</para></listitem>
+    <listitem><para>JDBC</para></listitem>
+    <listitem><para>LDAP</para></listitem>
+    <listitem><para>Membership</para></listitem>
+    <listitem><para>RADIUS</para></listitem>
+    <listitem><para><xinclude:include
+     href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
+     <xinclude:fallback>
+      <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
+     </xinclude:fallback>
+    </xinclude:include></para></listitem>
+    <listitem><para>Windows Desktop SSO</para></listitem>
+    <listitem><para>Windows NT</para></listitem>
+   </itemizedlist>
+
+   <!-- Not getting this to work at all...
+   <para>
+    Server-side scripts can access the shared state
+    of the current authentication chain
+    through the <literal>sharedState</literal> object.
+   </para>
+
+   <para>
+    The <literal>sharedState</literal> object is a key-value map.
+    The following table lists the <literal>sharedState</literal> map content.
+   </para>
+
+   <table xml:id="scripted-auth-module-shared-state-map-content" pgwide="1">
+    <title>Shared State Map Content</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="2*"/>
+     <colspec colnum="2" colwidth="3*"/>
+     <colspec colnum="3" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Key</entry>
+       <entry>Value Description</entry>
+       <entry>Shared By</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>CompositeAdviceXML</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         XML composite advice for the authentication request
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Any login module
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>javax.security.auth.login.name</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         User's login name
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Anonymous,
+         Certificate,
+         Data Store,
+         Federation,
+         HTTP Basic,
+         JDBC,
+         LDAP,
+         Membership,
+         RADIUS,
+         <xinclude:include href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
+          <xinclude:fallback>
+           <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
+          </xinclude:fallback>
+         </xinclude:include>
+         Windows Desktop SSO,
+         &amp; Windows NT
+         authentication modules
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>javax.security.auth.login.password</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         User's password
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Data Store,
+         HTTP Basic,
+         JDBC,
+         LDAP,
+         Membership,
+         RADIUS,
+         <xinclude:include href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
+          <xinclude:fallback>
+           <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
+          </xinclude:fallback>
+         </xinclude:include>
+         &amp; Windows NT
+         authentication modules
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   -->
+  </section>
+
+  <section xml:id="scripting-api-authn-client-data">
+   <title>Accessing Client-Side Script Output Data</title>
+
+   <para>
+    Client-side scripts add data they gather into a String object
+    named <literal>clientScriptOutputData</literal>.
+    Client-side scripts then cause the user-agent automatically
+    to return the data to OpenAM by HTTP POST of a self-submitting form.
+   </para>
+
+  </section>
+
+  <section xml:id="scripting-api-authn-request-data">
+   <title>Accessing Request Data</title>
+
+   <para>
+    Server-side scripts can get access to the login request
+    by using the methods of the <literal>requestData</literal> object.
+   </para>
+
+   <para>
+    The following table lists the methods
+    of the <literal>requestData</literal> object. Note that this object differs
+    from the client-side <literal>requestData</literal> object (see
+    <xref linkend="scripted-auth-module-http-client-methods" />)
+    and contains information about the original authentication request made by the user.
+   </para>
+
+   <table xml:id="scripted-auth-module-request-data-methods" pgwide="1">
+    <title>Request Data Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="1*"/>
+     <colspec colnum="2" colwidth="1*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>requestData.getHeader</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>name</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return the String value of the named request header,
+         or <literal>null</literal> if parameter is not set.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>requestData.getHeaders</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>name</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String[]</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return the array of String values of the named request header,
+         or <literal>null</literal> if parameter is not set.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>requestData.getParameter</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>name</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return the String value of the named request parameter,
+         or <literal>null</literal> if parameter is not set.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>requestData.getParameters</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>name</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String[]</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return the array of String values of the named request parameter,
+         or <literal>null</literal> if parameter is not set.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
+ </section>
+
+ <section xml:id="scripting-api-authz">
+  <title>Authorization API Functionality</title>
+    <para>This section covers functionality available when scripting
+   authorization using the policy condition script context type.</para>
+
+  <section xml:id="scripted-api-authz-state">
+   <title>Accessing Authorization State</title>
+
+   <para>
+    Server-side scripts can access the current authorization state
+    through the following objects:
+   </para>
+
+   <table xml:id="scripted-api-authz-state-objects" pgwide="1">
+    <title>Authorization State Objects</title>
+    <tgroup cols="3">
+     <colspec colnum="1" colwidth="1*"/>
+     <colspec colnum="2" colwidth="1*"/>
+     <colspec colnum="3" colwidth="4*"/>
+     <thead>
+      <row>
+       <entry>Object</entry>
+       <entry>Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>authorized</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Boolean</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return <literal>true</literal> if the authorization is currently successful,
+         or <literal>false</literal> if authentication has failed.
+         Server-side scripts must set a value for <literal>authorized</literal>
+         before completing.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <literal>environment</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Map</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Describe the environment passed from the client making the
+         authorization request.
+        </para>
+        <para>For example, the following shows a simple
+         <literal>environment</literal> map with a single entry:</para>
+<programlisting>"environment": {
+    "IP": [
+        "127.0.0.1"
+    ]
+}</programlisting>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <literal>resourceURI</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Specify the URI of the resource to which authorization is being requested.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <literal>username</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Specify the user ID of the subject that is requesting authorization.
+        </para>
+       </entry>
+      </row>
+
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
+
+ </section>
+
+</section>
