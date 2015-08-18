@@ -155,12 +155,12 @@
    </para>
    <para>An example <literal>requestData</literal> JavaScript object using GET
     would be as follows:</para>
-<programlisting language="javascript">var response = httpClient.get("http://example.com:8080/openam/json/users" + username,
+<programlisting language="javascript">var response = httpClient.get("http://example.com:8080/openam/json/users/" + username,
 {
     cookies:[
         {
             "domain": ".example.com",
-            "field": "iPlanetDirectoryPro,
+            "field": "iPlanetDirectoryPro",
             "value": "E8cDkvlad83kd....KDodkIEIx*DLEDLK...JKD09d"
         }
     ],
@@ -1071,8 +1071,8 @@
     <listitem><para>LDAP</para></listitem>
     <listitem><para>Membership</para></listitem>
     <listitem><para>RADIUS</para></listitem>
-    <listitem><para><xinclude:include
-     href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
+    <listitem condition="securid"><para><xinclude:include
+     href="../shared/securid/phrase-SecurID.xml" >
      <xinclude:fallback>
       <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
      </xinclude:fallback>
@@ -1147,9 +1147,9 @@
          LDAP,
          Membership,
          RADIUS,
-         <xinclude:include href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
+         <xinclude:include href="../shared/securid/phrase-SecurID.xml" condition="securid">
           <xinclude:fallback>
-           <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
+           <para>Could not include "../shared/securid/phrase-SecurID.xml".</para>
           </xinclude:fallback>
          </xinclude:include>
          Windows Desktop SSO,
@@ -1178,9 +1178,9 @@
          LDAP,
          Membership,
          RADIUS,
-         <xinclude:include href="../shared/securid/phrase-scripted-auth-module.xml" condition="securid">
+         <xinclude:include href="../shared/securid/phrase-SecurID.xml" condition="securid">
           <xinclude:fallback>
-           <para>Could not include "../shared/securid/phrase-scripted-auth-module.xml".</para>
+           <para>Could not include "../shared/securid/phrase-SecurID.xml".</para>
           </xinclude:fallback>
          </xinclude:include>
          &amp; Windows NT
