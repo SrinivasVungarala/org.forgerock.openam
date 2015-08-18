@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2014 ForgeRock AS
+  !      Copyright 2014-2015 ForgeRock AS.
   !
 -->
 <chapter xml:id='chap-lb'
@@ -59,15 +59,12 @@
   </para>
 
   <figure xml:id="figure-lb-agents">
-   <title>Load Balancing With Same Protocol and Port</title>
-
+   <title>Load Balancing With the Same Protocol and Port</title>
    <mediaobject>
     <alt>Diagram showing matching protocols and port numbers</alt>
-
     <imageobject>
      <imagedata fileref="images/lb-agents.png" />
     </imageobject>
-
     <textobject>
      <para>
       In some deployments, the protocol scheme and port number
@@ -93,14 +90,11 @@
 
   <figure xml:id="figure-lb-agents-ssl-offload">
    <title>Load Balancing With SSL Offloading</title>
-
    <mediaobject>
     <alt>Diagram showing SSL offloading</alt>
-
     <imageobject>
      <imagedata fileref="images/lb-agents-ssl-offload.png" />
     </imageobject>
-
     <textobject>
      <para>
       In some deployments, the protocol scheme and port number
@@ -117,7 +111,7 @@
  </section>
 
  <section xml:id="lb-same-protocol-and-port">
-  <title>When Protocols &amp; Port Number Match</title>
+  <title>When Protocols and Port Number Match</title>
 
   <indexterm>
    <primary>load balancers</primary>
@@ -150,7 +144,7 @@
     This procedure explains how to do so
     for a centralized web policy agent profile configured in OpenAM Console.
     The steps also mention the properties for
-    web agent profiles that rely on local, file-based configurations.
+    web agent profiles that rely on local, file-based configurations:
    </para>
 
    <step>
@@ -196,7 +190,7 @@
    <step>
     <para>
      Set FQDN Virtual Host Map to map the protected server FQDN
-     to the load balancer FQDN, for example where
+     to the load balancer FQDN, for example, where
      the key <literal>agent.example.com</literal> (protected server)
      has value <literal>lb.example.com</literal> (load balancer).
     </para>
@@ -216,7 +210,7 @@
  </section>
 
  <section xml:id="lb-different-protocol-and-port">
-  <title>When Protocols &amp; Port Number Differ</title>
+  <title>When Protocols and Port Number Differ</title>
 
   <indexterm>
    <primary>load balancers</primary>
@@ -230,7 +224,7 @@
   </para>
 
   <procedure>
-   <title>To Override Protocol, Host, &amp; Port</title>
+   <title>To Override Protocol, Host, and Port</title>
 
    <para>
     Use the Agent Deployment URI Prefix setting to override the agent
@@ -253,7 +247,7 @@
     This procedure explains how to do so
     for a centralized web policy agent profile configured in OpenAM Console.
     The steps also mention the properties for
-    web agent profiles that rely on local, file-based configurations.
+    web agent profiles that rely on local, file-based configurations:
    </para>
 
    <step>

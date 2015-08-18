@@ -34,6 +34,6 @@
   xlink:show="new"
  ><citetitle>Obtaining OpenAM Software</citetitle></link>
  to determine which version of the agent to download, and download the agent.
- Also verify the checksum of the file you download
+ Also, verify the checksum of the file you download
  against the checksum posted on the download page.
 </para>

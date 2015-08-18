@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <preface xml:id='preface'
@@ -31,26 +31,33 @@
          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>Preface</title>
 
- <para>This guide shows you how to install OpenAM web server policy agents, as well as 
- how to integrate with other access management software. Read the 
- <citetitle>Release Notes</citetitle> before you get started.</para>
+ <para>
+  This guide shows you how to install OpenAM web server policy agents, as well as
+  how to integrate with other access management software. Read the
+  <citetitle>Release Notes</citetitle> before you get started.</para>
 
  <section>
-  <title>Who Should Use this Guide</title>
+  <title>Who Should Use This Guide</title>
   
-  <para>This guide is written for anyone installing OpenAM policy agents to 
-  interface with supported web servers application containers.</para>
+  <para>
+   This guide is written for anyone installing OpenAM policy agents to
+   interface with supported web servers application containers.
+  </para>
    
-  <para>This guide covers procedures that you theoretically perform only
-  once per version. This guide aims to provide you with at least some idea
-  of what happens behind the scenes when you perform the steps.</para>
+  <para>
+   This guide covers procedures that you theoretically perform only
+   once per version. This guide aims to provide you with at least some idea
+   of what happens behind the scenes when you perform the steps.
+  </para>
      
-  <para>You do not need to be an OpenAM wizard to learn something from
-  this guide, though a background in access management and maintaining
-  web application software can help. You do need some background in
-  managing services on your operating systems and in your application
-  servers. You can nevertheless get started with this guide, and then
-  learn more as you go along.</para>
+  <para>
+   You do not need to be an OpenAM wizard to learn something from
+   this guide, though a background in access management and maintaining
+   web application software can help. You do need some background in
+   managing services on your operating systems and in your application
+   servers. You can nevertheless get started with this guide, and then
+   learn more as you go along.
+  </para>
  </section>
 
  <xinclude:include href="../shared/sec-formatting-conventions.xml">
@@ -63,5 +70,11 @@
 
  <xinclude:include href="../shared/sec-joining-the-community.xml">
   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+ <xinclude:include href="../shared/sec-support-contact.xml">
+  <xinclude:fallback>
+   <!-- Error: failed to include sec-support-contact.xml -->
+  </xinclude:fallback>
  </xinclude:include>
 </preface>

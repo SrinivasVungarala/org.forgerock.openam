@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-about-web-agents'
@@ -69,8 +69,8 @@
   </indexterm>
 
   <para>The web policy agent provides fast installation and light touch integration
-   to protect the resources on the supported web server. The web agent consists
-   a web server plug-in matching the API requirements of the particular web server
+   to protect the resources on the supported web server. The web agent consists of
+   a web server plugin matching the API requirements of the particular web server
    and a native module that interfaces with OpenAM for its services.
   </para>
 
@@ -204,7 +204,7 @@
  </section>
 
  <section xml:id="example-agent-interaction">
-  <title>How the User, Web Policy Agent, &amp; OpenAM Interact</title>
+  <title>How the User, Web Policy Agent, and OpenAM Interact</title>
 
   <indexterm>
    <primary>web policy agent</primary>
@@ -212,13 +212,13 @@
   </indexterm>
 
   <para>Imagine that a user attempts to access a protected resource before
-   having authenticated by pointing her browser to a web page. Assume that you
-   have configured OpenAM to protect the web page. Then the web policy agent
-   intercepting her browser's request finds no session token in the request,
+   having authenticated by pointing the user's browser to a web page. Assume that you
+   have configured OpenAM to protect the web page. Then, the web policy agent
+   intercepting the user's browser's request finds no session token in the request,
    and so redirects the user's browser to the OpenAM login page for
    authentication. After the user has successfully authenticated, OpenAM
-   sets a session token in a browser cookie, and redirects her browser back to
-   the page she tried to access initially.</para>
+   sets a session token in a browser cookie, and redirects the browser back to
+   the page the user tried to access initially.</para>
 
   <para>When the user's browser reiterates the request, the policy agent again
    checks that the request has a session token, finds a session token this
@@ -234,20 +234,23 @@
    simplified to show only the essential principals rather than to describe
    every possible case.</para>
 
-  <mediaobject xml:id="figure-web-pa-overview">
-   <alt>Diagram of web policy agent use</alt>
-   <imageobject>
-    <imagedata fileref="images/web-pa-overview.png" format="PNG" />
-   </imageobject>
-   <textobject>
-    <para>The interaction happens as described in the following list.</para>
-   </textobject>
-  </mediaobject>
+  <figure xml:id="figure-web-pa-overview">
+   <title>Web Policy Agent Diagram</title>
+   <mediaobject>
+    <alt>Diagram of web policy agent use</alt>
+    <imageobject>
+     <imagedata fileref="images/web-pa-overview.png" format="PNG" />
+    </imageobject>
+    <textobject>
+     <para>The interaction happens as described in the following list.</para>
+    </textobject>
+   </mediaobject>
+  </figure>
 
   <orderedlist>
    <para>A web policy agent is a library installed in the web server and
     configured to be called by the web server when a client requests access
-    to a protected resource in a web site.</para>
+    to a protected resource in a web site. Here is how it works:</para>
    <listitem>
     <para>The web client requests access to a protected resource.</para>
    </listitem>
@@ -284,7 +287,7 @@
   </indexterm>
 
   <para>The Web policy agent provides a number of additional features
-   useful for your deployment, some of which are described below:
+   useful for your deployment, some of which are described below.
   </para>
 
   <section xml:id="web-agent-attribute-fetching">
@@ -299,7 +302,7 @@
    </indexterm>
 
    <!-- TODO: Add examples/user cases of each type of attribute fetch -->
-   <para>Web policy agents provides the capability
+   <para>Web policy agents provide the capability
     to fetch and inject user information into HTTP headers, request objects, and
     cookies and pass them on to the protected client applications.
     The client applications can then personalize content using these attributes
@@ -312,7 +315,7 @@
     authenticated user as well as policy response attributes.
    </para>
    <para>For example, you can have a web page that addresses the user by name
-    retrieved from the user profile, e.g. "Welcome Your Name!"
+    retrieved from the user profile, for example "Welcome Your Name!"
     OpenAM populates part of the request (header, form data) with the CN from
     the user profile, and the web site consumes and displays it.</para>
 
@@ -372,7 +375,7 @@
    <para>The web policy agent requires that clients accessing
     protected resources use valid URLs with fully qualified domain names (FQDNs).
     If invalid URLs are referenced, policy evaluation can
-    fail as the fully qualified domain name (FQDN) will not match the requested
+    fail as the FQDN will not match the requested
     URL, leading to blocked access to the resource.
     Misconfigured URLs can also result in incorrect policy evaluation for
     subsequent access requests.
@@ -408,7 +411,6 @@
      <citetitle>Fully Qualified Domain Name Checking Properties</citetitle></link>.</para>
   </section>
 
-  <?hard-pagebreak?>
   <section xml:id="cookie-reset">
    <title>Cookie Reset Properties</title>
 
@@ -512,7 +514,7 @@
     data.
    </para>
    <para>
-    These mechanisms ensures that unauthenticated POST data can be
+    These mechanisms ensure that unauthenticated POST data can be
     preserved. Policy agents store POST data in the cache and do not share the data
     among the agents behind the load balancer.
    </para>
@@ -537,7 +539,7 @@
  </section>
  
  <section xml:id="web-agent-configuration">
-  <title>How Web Policy Agents are Configured</title>
+  <title>How Web Policy Agents Are Configured</title>
 
   <indexterm>
    <primary>web policy agent</primary>
@@ -554,7 +556,7 @@
   <para>You can opt to store the agent configuration locally if necessary.
   If you store the configuration locally, then avoid issues with the
   configuration by making sure you provide valid values for configuration
-  properties ending in the following.</para>
+  properties ending in the following:</para>
   <!-- Fix for OPENAM-724. -->
   <itemizedlist>
    <listitem><para><literal>.cookie.name</literal></para></listitem>
@@ -569,7 +571,7 @@
    <listitem><para><literal>.policy_clock_skew</literal></para></listitem>
   </itemizedlist>
   
-  <para>You configure web policy agents per realm. Thus to access centralized
+  <para>You configure web policy agents per realm. Thus, to access centralized
   configuration, you select Access Control &gt; <replaceable>Realm
   Name</replaceable> &gt; Agents &gt; Web &gt; <replaceable>Agent
   Name</replaceable>. Web policy agent configuration is distinct from

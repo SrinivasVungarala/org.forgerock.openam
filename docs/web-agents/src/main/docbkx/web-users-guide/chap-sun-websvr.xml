@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock, Inc
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-sun-websvr'
@@ -54,38 +54,50 @@
    <secondary>before you begin</secondary>
   </indexterm>
 
-  <para>Make sure OpenAM is installed, running, that you can contact OpenAM
-  from the system running the policy agent. Next, create a profile for your
-  policy agent as described in the <citetitle>Administration Guide</citetitle>
-  section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
-  xlink:show="new"><citetitle>Creating Agent
-  Profiles</citetitle></link>. To protect resources with the agent also create
-  at least one policy as described in the section on <link
-  xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
-  xlink:show="new"><citetitle>Configuring
-  Policies</citetitle></link>. Consider creating a simple policy, such as a
-  policy that allows only authenticated users to access your resources, in order
-  to test your policy agent after installation.</para>
+  <para>
+   Make sure OpenAM is installed, running, and that you can contact OpenAM
+   from the system running the policy agent. Next, create a profile for your
+   policy agent as described in the <citetitle>Administration Guide</citetitle>
+   section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
+   xlink:show="new"><citetitle>Creating Agent
+   Profiles</citetitle></link>.
+  </para>
 
-  <para>You must install Apache HTTP Server before you install the policy
-  agent, and you must stop the server during installation.</para>
+  <para>
+   To protect resources with the agent, create
+   at least one policy as described in the section on <link
+   xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
+   xlink:show="new"><citetitle>Configuring
+   Policies</citetitle></link>. Consider creating a simple policy, such as a
+   policy that allows only authenticated users to access your resources, in order
+   to test your policy agent after installation.
+  </para>
+
+  <para>
+   You must install Apache HTTP Server before you install the policy
+   agent, and you must stop the server during installation.
+  </para>
 
   <xinclude:include href="../shared/para-java-support.xml" />
 
-      <screen>
+  <screen>
 $ <userinput>echo $JAVA_HOME</userinput>
 <computeroutput>/path/to/java</computeroutput>
-      </screen>
+  </screen>
 
   <xinclude:include href="../shared/para-download-agent.xml" />
   
-  <para>Unzip the file in the directory where you plan to install the web
-  policy agent. The agent you install stores its configuration and logs
-  under this directory.</para>
+  <para>
+   Unzip the file in the directory where you plan to install the web
+   policy agent. The agent you install stores its configuration and logs
+   under this directory.
+  </para>
 
-  <para>When you unzip the policy agent .zip download, you find the following
+  <para>
+   When you unzip the policy agent .zip download, you find the following
    directories under the <filename>web_agents/sjsws_agent</filename>
-   directory.</para>
+   directory:
+  </para>
 
   <xinclude:include href="../shared/variablelist-agentadmin-folders.xml">
    <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
@@ -120,15 +132,21 @@ $ <userinput>echo $JAVA_HOME</userinput>
    </indexterm>
 
    <step>
-    <para>Shut down Oracle iPlanet Web Server instance where you plan to install
-    the agent.</para>
+    <para>
+     Shut down Oracle iPlanet Web Server instance where you plan to install
+     the agent.
+    </para>
    </step>
+
    <step>
     <para>Make sure OpenAM is running.</para>
    </step>
+
    <step>
-    <para>Run <command>agentadmin --install</command> to install the
-    agent.</para>
+    <para>
+     Run <command>agentadmin --install</command> to install the
+     agent.
+    </para>
 
     <xinclude:include href="../shared/para-licensing-agreement-procedure.xml">
      <xinclude:fallback>
@@ -172,42 +190,53 @@ Install log file location:
 ...</computeroutput>
     </screen>
 
-    <para>Upon successful completion, the installer has backed up and updated
-    the Oracle iPlanet Web Server instance configuration, and has also set up
-    configuration and log directories for the agent.</para>
+    <para>
+     Upon successful completion, the installer has backed up and updated
+     the Oracle iPlanet Web Server instance configuration, and has also set up
+     configuration and log directories for the agent.
+    </para>
+
     <note>
-     <para>If the agent is in a different domain than the server, refer to <citetitle>Administration Guide</citetitle> procedure, <link
-   xlink:href="${serverDocBase}/admin-guide/#chap-cdsso"
-   xlink:show="new"><citetitle>Configuring Cross-Domain
-   Single Sign On</citetitle></link>.</para>
+     <para>
+      If the agent is in a different domain than the server, refer to
+      <citetitle>Administration Guide</citetitle> procedure,
+      <link xlink:href="${serverDocBase}/admin-guide/#chap-cdsso"
+            xlink:show="new"><citetitle>Configuring Cross-Domain
+      Single Sign On</citetitle></link>.
+     </para>
     </note>
    </step>
+
    <step>
     <para>Take note of the configuration files and log locations.</para>
-    <para>Each agent instance that you install on the system has its own
-    numbered configuration and logs directory. The first agent's configuration
-    and logs are thus located under the directory
-    <filename>web_agents/sjsws_agent/Agent_001/</filename>.</para>
+
+    <para>
+     Each agent instance that you install on the system has its own
+     numbered configuration and logs directory. The first agent's configuration
+     and logs are thus located under the directory
+     <filename>web_agents/sjsws_agent/Agent_001/</filename>:
+    </para>
+
     <variablelist>
      <varlistentry>
       <term><filename>config/<?eval ${agentsBootstrapFile}?></filename></term>
       <listitem>
        <para>Used to bootstrap the web policy agent, allowing the agent to
-       connect to OpenAM and download its configuration</para>
+       connect to OpenAM and download its configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>config/<?eval ${agentsConfigurationFile}?></filename></term>
       <listitem>
        <para>Only used if you configured the web policy agent to use local
-       configuration</para>
+       configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>logs/audit/</filename></term>
       <listitem>
        <para>Operational audit log directory, only used if remote logging
-       to OpenAM is disabled</para>
+       to OpenAM is disabled.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
@@ -219,59 +248,79 @@ Install log file location:
      </varlistentry>
     </variablelist>
    </step>
+
    <step>
-    <para>If your policy agent configuration is not in the top-level realm (/),
-       then you must edit config/<?eval ${agentsBootstrapFile}?> to identify
-       the sub-realm that has your policy agent configuration.
-       Find com.sun.identity.agents.config.organization.name and change
-       the / to the path to your policy agent profile. This allows the policy agent
-       to properly identify itself to the OpenAM server. </para>
+    <para>
+     If your policy agent configuration is not in the top-level realm (/),
+     then you must edit config/<?eval ${agentsBootstrapFile}?> to identify
+     the subrealm that has your policy agent configuration.
+     Find com.sun.identity.agents.config.organization.name and change
+     the / to the path to your policy agent profile. This allows the policy agent
+     to properly identify itself to the OpenAM server.
+    </para>
    </step>
+
    <step>
-    <para>Set up ownership of the log directory. The default is to run as a 
-    webservd user instead of root. To post its logs, the agent needs permission to 
-    add the files to the directory.</para>
+    <para>
+     Set up ownership of the log directory. The default is to run as a
+     webservd user, instead of root. To post its logs, the agent needs permission to
+     add the files to the directory:
+    </para>
 
     <screen>
 $ <userinput>chown -R webservd:webservd /opt/web_agents/sjsws_agent/Agent_<replaceable>number</replaceable>/logs</userinput>
     </screen>
+   </step>
 
-   </step>
    <step>
-    <para>Restart the Oracle iPlanet Web Server instance where you installed the
-    agent.</para>
+    <para>
+     Restart the Oracle iPlanet Web Server instance where you installed the
+     agent.
+    </para>
    </step>
+
    <step>
     <para>Check that the agent protects the web site.</para>
-    <para>If you have not yet configured any policies to allow access, then
-    you should receive an HTTP 403 Forbidden error. In the above example, when
-    accessing <literal>http://www.example.com:8080/</literal>, the content of
-    the page returned appears in the browser as follows.</para>
-    <literallayout><emphasis role="strong">Forbidden</emphasis>
 
-Your client is not allowed to access the requested object.</literallayout>
-    <para>If it appears the protection is inadequate, complete one of the 
-    following steps.</para>
+    <para>
+     If you have not yet configured any policies to allow access, then
+     you should receive an HTTP 403 Forbidden error. In the above example, when
+     accessing <literal>http://www.example.com:8080/</literal>, the content of
+     the page returned appears in the browser as follows:
+    </para>
 
-      <note>
-       <para>A potential cause for the protection failing is updates to the 
-       <filename>server.xml</filename> file for the <literal>object-file</literal>
-       property. A <literal>object-file</literal> property refers to the 
-       <literal>obj.conf</literal> file created during the web server installation.
-       Multiple servers create their own <literal>obj.conf</literal> files, which can
-       cause problems with protection. Also, admin changes can update the
-       <literal>obj.conf</literal> file. For more information, checkout the <link 
-       xlink:show="new" xlink:href="http://docs.oracle.com/cd/E19146-01/821-1827/abvag/index.html">
-       <citetitle>Syntax and Use of obj.conf</citetitle></link>.</para>
-      </note>
+    <literallayout><emphasis role="strong">Forbidden</emphasis>. Your client is
+     not allowed to access the requested object.
+    </literallayout>
+
+    <para>
+     If it appears the protection is inadequate, complete one of the
+     following steps:
+    </para>
+
+    <note>
+     <para>
+      A potential cause for the protection failing is updates to the
+      <filename>server.xml</filename> file for the <literal>object-file</literal>
+      property. An <literal>object-file</literal> property refers to the
+      <literal>obj.conf</literal> file created during the web server installation.
+      Multiple servers create their own <literal>obj.conf</literal> files, which can
+      cause problems with protection. Also, admin changes can update the
+      <literal>obj.conf</literal> file. For more information, checkout the <link
+      xlink:show="new" xlink:href="http://docs.oracle.com/cd/E19146-01/821-1827/abvag/index.html">
+      <citetitle>Syntax and Use of obj.conf</citetitle></link>.
+     </para>
+    </note>
 
     <stepalternatives>
      <step>
-      <para>This step removes the <filename>obj.conf</filename> file if it is 
-      not needed.</para>
-      <para>Open the <filename>server.xml</filename> and remove the <literal>object-file</literal>
-      property. The web server will use the default <filename>obj.conf</filename>
-      configuration.</para>
+      <para>
+       If the <filename>obj.conf</filename> file is not needed,
+       open the <filename>server.xml</filename> and remove the <literal>object-file</literal>
+       property. The web server will use the default <filename>obj.conf</filename>
+       configuration:
+      </para>
+
       <note>
        <para>Do not change the original file.</para>
       </note>
@@ -289,11 +338,13 @@ Your client is not allowed to access the requested object.</literallayout>
  
      </step>
      <step>
-      <para>This step updates the <filename>obj.conf</filename> file if it 
-      is needed.</para>
-      <para>Open the <filename>server.xml</filename> and manually update the 
-      <literal>object-file</literal> property to validate the location of
-      the <filename>obj.conf</filename> file.</para>
+      <para>
+       If the <filename>obj.conf</filename> file requires updating,
+       open the <filename>server.xml</filename> and manually update the
+       <literal>object-file</literal> property to validate the location of
+       the <filename>obj.conf</filename> file.
+      </para>
+
       <note>
        <para>Do not change the original file.</para>
       </note>
@@ -338,19 +389,24 @@ Service type=text/* method=(POST) fn=process_notification
   using <command>agentadmin --install --acceptLicense --useResponse
   <replaceable>response-file</replaceable></command>.</para>
 
-  <para>With <command>./agentadmin --custom-install</command>, you can opt to
-  create the policy agent profile during installation. The OpenAM administrator
-  must first create an agent administrator user, as described in <link
-  xlink:href="${serverDocBase}/admin-guide/#delegate-agent-profile-creation"
-  xlink:show="new"><citetitle>Delegating Agent
-  Profile Creation</citetitle></link>, and provide you with the agent
-  administrator user name and password. Before running the
-  <command>./agentadmin --custom-install</command> command, put the password
-  alone in a read-only file only the user installing can access, as for the
-  agent password. When the <command>agentadmin</command> command prompts you to
-  create the profile during installation, enter <literal>true</literal>, and
-  then respond to the <command>agentadmin</command> prompts for the agent
-  administrator user name and password file.</para>
+  <para>
+   With <command>./agentadmin --custom-install</command>, you can opt to
+   create the policy agent profile during installation. The OpenAM administrator
+   must first create an agent administrator user, as described in <link
+   xlink:href="${serverDocBase}/admin-guide/#delegate-agent-profile-creation"
+   xlink:show="new"><citetitle>Delegating Agent
+   Profile Creation</citetitle></link>, and provide you with the agent
+   administrator user name and password.
+  </para>
+
+  <para>
+   Before running the <command>./agentadmin --custom-install</command> command,
+   put the password alone in a read-only file only the user installing can access,
+   as for the agent password. When the <command>agentadmin</command> command prompts
+   you to create the profile during installation, enter <literal>true</literal>, and
+   then respond to the <command>agentadmin</command> prompts for the agent
+   administrator user name and password file.
+  </para>
  </section>
  
  <section xml:id="uninstall-sjsws-agent">
@@ -361,10 +417,13 @@ Service type=text/* method=(POST) fn=process_notification
    <secondary>removing</secondary>
   </indexterm>
 
-  <para>Shut down the Oracle iPlanet Web Server before you uninstall the
-    policy agent.</para>
+  <para>
+   Shut down the Oracle iPlanet Web Server before you uninstall the
+   policy agent.
+  </para>
   
-  <para>To remove the web policy agent, use <command>agentadmin
-  --uninstall</command>.</para>
+  <para>
+   To remove the web policy agent, use <command>agentadmin --uninstall</command>.
+  </para>
  </section>
 </chapter>

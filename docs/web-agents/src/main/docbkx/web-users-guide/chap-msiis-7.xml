@@ -52,24 +52,32 @@
    <secondary>before you install</secondary>
   </indexterm>
 
-  <para>Make sure OpenAM is installed, running, that you can contact OpenAM
-  from the system running the policy agent. Next, create a profile for your
-  policy agent as described in the <citetitle>Administration Guide</citetitle>
-  section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
-  xlink:show="new"><citetitle>Creating Agent
-  Profiles</citetitle></link>. To protect resources with the agent also create
-  at least one policy as described in the section on <link
-  xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
-  xlink:show="new"><citetitle>Configuring
-  Policies</citetitle></link>. Consider creating a simple policy, such as a
-  policy that allows only authenticated users to access your resources, in order
-  to test your policy agent after installation.</para>
+  <para>
+   Make sure OpenAM is installed, running, that you can contact OpenAM
+   from the system running the policy agent. Next, create a profile for your
+   policy agent as described in the <citetitle>Administration Guide</citetitle>
+   section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
+   xlink:show="new"><citetitle>Creating Agent
+   Profiles</citetitle></link>.
+  </para>
 
-  <para>You must install Microsoft IIS 7 before you install the policy agent,
-  and make sure that IIS 7 allows anonymous authentication. Make sure that IIS
-  7 listens on the URL used during the web policy agent installation, such as
-  <literal>http://windows7.example.com:80/</literal>. Furthermore, you
-  must reset IIS 7 after installing the policy agent.</para>
+  <para>
+   To protect resources with the agent, create
+   at least one policy as described in the section on <link
+   xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
+   xlink:show="new"><citetitle>Configuring
+   Policies</citetitle></link>. Consider creating a simple policy, such as a
+   policy that allows only authenticated users to access your resources, in order
+   to test your policy agent after installation.
+  </para>
+
+  <para>
+   You must install Microsoft IIS 7 before you install the policy agent,
+   and make sure that IIS 7 allows anonymous authentication. Make sure that IIS
+   7 listens on the URL used during the web policy agent installation, such as
+   <literal>http://windows7.example.com:80/</literal>. Furthermore, you
+   must reset IIS 7 after installing the policy agent.
+  </para>
 
   <para>
    In addition, the Microsoft IIS 7 policy agent requires that
@@ -80,14 +88,19 @@
 
   <xinclude:include href="../shared/para-download-agent.xml" />
   
-  <para>Unpack the file in the directory where you plan to install the web
-  policy agent. The agent you install stores its configuration and logs
-  under this directory.</para>
+  <para>
+   Unpack the file in the directory where you plan to install the web
+   policy agent. The agent you install stores its configuration and logs
+   under this directory:
+  </para>
   
   <variablelist>
-   <para>When you unpack the policy agent you download, you find the following
-   directories under the <filename>web_agents\iis7_agent\</filename>
-   directory.</para>
+   <para>
+    When you unpack the policy agent you download, you find the following
+    directories under the <filename>web_agents\iis7_agent\</filename>
+    directory.
+   </para>
+
    <varlistentry>
     <term><filename>bin</filename></term>
     <listitem>
@@ -102,7 +115,7 @@
     <term><filename>config</filename></term>
     <listitem>
      <para>Configuration templates used by the scripts during configuration
-     and installation</para>
+     and installation.</para>
     </listitem>
    </varlistentry>
   </variablelist>
@@ -116,15 +129,16 @@
    <secondary>installing</secondary>
   </indexterm>
 
-
   <para>Complete the following procedures to install the policy agent.</para>
 
   <note>
    <para>If the agent is in a different domain than the server, refer to
-    the <citetitle>Administration Guide</citetitle> procedure, <link
+    the <citetitle>Administration Guide</citetitle> procedure,
+    <link
      xlink:href="${serverDocBase}/admin-guide/#chap-cdsso"
      xlink:show="new"><citetitle>Configuring Cross-Domain
-     Single Sign On</citetitle></link>.</para>
+     Single Sign On</citetitle></link>.
+   </para>
   </note>
 
   <xinclude:include href="../shared/procedure-create-web-agent-profile.xml">
@@ -142,8 +156,9 @@
    <step>
     <para>Protect the password file you will create as appropriate.</para>
    </step>
+
    <step>
-    <para>Create a text file containing only the password.</para>
+    <para>Create a text file containing only the password"</para>
 
     <screen>
 C:\><userinput>notepad C:\Windows\Temp\pwd.txt</userinput>
@@ -164,20 +179,26 @@ C:\><userinput>notepad C:\Windows\Temp\pwd.txt</userinput>
    <step>
     <para>Log on as a user with Administrator privileges.</para>
    </step>
+
    <step>
-    <para>Change to the directory where you unpacked the agent download.</para>
+    <para>Change to the directory where you unpacked the agent download:</para>
 
     <screen>
 C:\><userinput>cd web_agents\iis7_agent\bin</userinput>
     </screen>
-
    </step>
+
    <step>
-    <para>Create a configuration file using the
-    <command>IIS7CreateConfig.vbs</command> script.</para>
+    <para>
+     Create a configuration file using the
+     <command>IIS7CreateConfig.vbs</command> script.
+    </para>
+
     <note>
-     <para>The Web Site Identifier is the value of <literal>id</literal>,
-     not the site name.</para>
+     <para>
+      The Web Site Identifier is the value of <literal>id</literal>,
+      not the site name.
+     </para>
     </note>
 
     <screen>
@@ -223,11 +244,13 @@ Agent Configuration file created : config.txt
    <step>
     <para>Log on as a user with Administrator privileges.</para>
    </step>
+
    <step>
     <para>Make sure OpenAM is running.</para>
    </step>
+
    <step>
-    <para>Run <command>IIS7Admin.vbs</command> to install the agent.</para>
+    <para>Run <command>IIS7Admin.vbs</command> to install the agent:</para>
 
     <screen>
 C:\web_agents\iis7_agent\bin><userinput>cscript IIS7Admin.vbs -config config.txt</userinput>
@@ -242,14 +265,17 @@ Installing policy web agent module in IIS (status: 0)
 Adding policy web agent module to "Default Web Site" (status: 0)
 Completed Configuring the IIS 7.0 Agent</computeroutput>
     </screen>
+   </step>
 
-   </step>
    <step>
-    <para>Make sure the authentication method for IIS 7 is set to
-    anonymous.</para>
+    <para>
+     Make sure the authentication method for IIS 7 is set to
+     anonymous.
+    </para>
    </step>
+
    <step>
-    <para>Restart IIS 7.</para>
+    <para>Restart IIS 7:</para>
 
     <screen><userinput>
 net stop w3svc
@@ -262,39 +288,43 @@ net start w3svc</userinput>
       IIS 6.0, IIS 7.0, and IIS 7.5.
      </para>
     </note>
-
    </step>
+
    <step>
     <para>Take note of the configuration files and log locations.</para>
-    <para>Each agent instance that you install on the system has its own
-    configuration and logs directory. The agent protecting the Default Web
-    Site (id: 1) shown in the examples above has configuration and logs located
-    under the directory
-    <filename>web_agents\iis7_agent\Identifier_1</filename>.
-    The number in the path to the agent configuration reflects the IIS site ID,
-    unlike the other agents for which the number in the path is a counter.
-    The number in the path therefore remains the same when you uninstall and
-    then reinstall an agent to protect the same site.</para>
+
+    <para>
+     Each agent instance that you install on the system has its own
+     configuration and logs directory. The agent protecting the Default Web
+     Site (id: 1) shown in the examples above has configuration and logs located
+     under the directory
+     <filename>web_agents\iis7_agent\Identifier_1</filename>.
+     The number in the path to the agent configuration reflects the IIS site ID,
+     unlike the other agents for which the number in the path is a counter.
+     The number in the path therefore remains the same when you uninstall and
+     then reinstall an agent to protect the same site.
+    </para>
+
     <variablelist>
      <varlistentry>
       <term><filename>config\<?eval ${agentsBootstrapFile}?></filename></term>
       <listitem>
        <para>Used to bootstrap the web policy agent, allowing the agent to
-       connect to OpenAM and download its configuration</para>
+       connect to OpenAM and download its configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>config\<?eval ${agentsConfigurationFile}?></filename></term>
       <listitem>
        <para>Only used if you configured the web policy agent to use local
-       configuration</para>
+       configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>audit\</filename></term>
       <listitem>
        <para>Operational audit log directory, only used if remote logging
-       to OpenAM is disabled</para>
+       to OpenAM is disabled.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
@@ -306,22 +336,28 @@ net start w3svc</userinput>
      </varlistentry>
     </variablelist>
    </step>
+
    <step>
-    <para>If your policy agent configuration is not in the top-level realm (/),
-       then you must edit config\<?eval ${agentsBootstrapFile}?> to identify
-       the sub-realm that has your policy agent configuration.
-       Find com.sun.identity.agents.config.organization.name and change
-       the / to the path to your policy agent profile. This allows the policy agent
-       to properly identify itself to the OpenAM server. </para>
-    </step>
-    <step performance="optional">
-     <para>If you have a policy configured, you can test your policy agent.
+    <para>
+     If your policy agent configuration is not in the top-level realm (/),
+     then you must edit config\<?eval ${agentsBootstrapFile}?> to identify
+     the subrealm that has your policy agent configuration.
+     Find com.sun.identity.agents.config.organization.name and change
+     the / to the path to your policy agent profile. This allows the policy agent
+     to properly identify itself to the OpenAM server.
+    </para>
+   </step>
+
+   <step performance="optional">
+    <para>
+     If you have a policy configured, you can test your policy agent.
      For example, try to browse to a resource that your policy agent protects.
-     You should be redirected to OpenAM to authenticate, for example as user
+     You should be redirected to OpenAM to authenticate, for example, as user
      <literal>demo</literal>, password <literal>changeit</literal>. After
      you authenticate, OpenAM then redirects you back to the resource you tried
-     to access.</para>
-    </step>
+     to access.
+    </para>
+   </step>
   </procedure>
  </section>
  
@@ -334,14 +370,18 @@ net start w3svc</userinput>
    <tertiary>custom</tertiary>
   </indexterm>
 
-  <para>When protecting multiple IIS 7 websites on the same host, use different
-  configuration files for each site.</para>
+  <para>
+   When protecting multiple IIS 7 websites on the same host, use different
+   configuration files for each site.
+  </para>
   
-  <para>When preparing a scripted, silent installation, notice that the
-  configuration file generated using <command>IIS7CreateConfig.vbs</command>
-  is a text file containing all of the configuration information in clear text
-  plus the encrypted password retrieved originally from the password
-  file. Encrypt passwords using <command>cryptit.exe</command>.</para>
+  <para>
+   When preparing a scripted, silent installation, notice that the
+   configuration file generated using <command>IIS7CreateConfig.vbs</command>
+   is a text file containing all of the configuration information in clear text
+   plus the encrypted password retrieved originally from the password
+   file. Encrypt passwords using <command>cryptit.exe</command> as follows:
+  </para>
   
   <screen>
 C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replaceable> <replaceable>encryption-key</replaceable></userinput>
@@ -349,19 +389,20 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
 
  </section>
 
- <!-- OPENAM-1644: Document changes to IIS 7 PA support for Basic Auth and password replay -->
  <section xml:id="iis7-enable-basic-auth">
-  <title>Enable IIS 7 Basic Authentication &amp; Password Replay Support</title>
+  <title>Enable IIS 7 Basic Authentication and Password Replay Support</title>
 
   <indexterm>
    <primary>Microsoft IIS 7</primary>
-   <secondary>basic authentication &amp; password relay support</secondary>
+   <secondary>basic authentication and password relay support</secondary>
    <tertiary>enabling</tertiary>
   </indexterm>
 
   <itemizedlist>
-   <para>The IIS 7 web policy agent now supports IIS 7 basic authentication and
-   password replay. You must use the appropriate software versions.</para>
+   <para>
+    The IIS 7 web policy agent now supports IIS 7 basic authentication and
+    password replay. You must use the appropriate software versions.
+   </para>
 
    <para>
     Given the proper configuration
@@ -373,7 +414,7 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
    </para>
 
    <para>
-    When configured as described
+    When configured as described,
     the policy agent requests IIS server variable values from OpenAM,
     which gets them from Active Directory.
     The policy agent then sets the values in HTTP headers
@@ -415,7 +456,7 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
     so Logon and Impersonation are not operative.
     Furthermore IIS in Classic mode treats all modules as ISAPI extensions,
     and request processing is affected.
-    It is therefore strongly recommended that you run IIS in Integrated mode.
+    It is therefore strongly recommended that you run IIS in Integrated mode:
    </para>
 
    <listitem>
@@ -429,16 +470,22 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
   </itemizedlist>
 
   <variablelist>
-   <para>You must also apply workarounds as described for the following
-   Microsoft issues.</para>
+   <para>
+    You must also apply workarounds as described for the following
+    Microsoft issues.
+   </para>
 
    <varlistentry>
     <term>Microsoft Support Issue: 841215</term>
     <listitem>
      <para>Link: <link xlink:show="new"
      xlink:href="http://support.microsoft.com/kb/841215" /></para>
-     <para>Description: Error message when you try to connect to a Windows
-     SharePoint document library: "System error 5 has occurred"</para>
+
+     <para>
+      Description: Error message when you try to connect to a Windows
+      SharePoint document library: "System error 5 has occurred".
+     </para>
+
      <para>Summary: Enable Basic Authentication on the client computer.</para>
     </listitem>
    </varlistentry>
@@ -448,8 +495,12 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
     <listitem>
      <para>Link: <link xlink:show="new"
      xlink:href="http://support.microsoft.com/kb/870853" /></para>
-     <para>Description: Office 2003 and 2007 Office documents open read-only
-     in Internet Explorer</para>
+
+     <para>
+      Description: Office 2003 and 2007 Office documents open read-only
+      in Internet Explorer.
+     </para>
+
      <para>Summary: Add registry keys as described in Microsoft's support
      document.</para>
     </listitem>
@@ -459,10 +510,15 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
     <term>Microsoft Support Issue: 928692</term>
     <listitem>
      <para>Link: <link xlink:show="new"
-     xlink:href="http://support.microsoft.com/kb/928692" /></para>
-     <para>Description: Error message when you open a Web site by using Basic
-     authentication in Expression Web on a computer that is running Windows
-     Vista: "The folder name is not valid"</para>
+      xlink:href="http://support.microsoft.com/kb/928692" />
+     </para>
+
+     <para>
+      Description: Error message when you open a Web site by using Basic
+      authentication in Expression Web on a computer that is running Windows
+      Vista: "The folder name is not valid".
+     </para>
+
      <para>Summary: Edit the registry as described in Microsoft's support
      document.</para>
     </listitem>
@@ -472,9 +528,13 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
     <term>Microsoft Support Issue: 932118</term>
     <listitem>
      <para>Link: <link xlink:show="new"
-     xlink:href="http://support.microsoft.com/kb/932118" /></para>
-     <para>Description: Persistent cookies are not shared between Internet
-     Explorer and Office applications</para>
+      xlink:href="http://support.microsoft.com/kb/932118" /></para>
+
+     <para>
+      Description: Persistent cookies are not shared between Internet
+      Explorer and Office applications.
+     </para>
+
      <para>Summary: Add the web site the list of trusted sites.</para>
     </listitem>
    </varlistentry>
@@ -483,9 +543,13 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
     <term>Microsoft Support Issue: 943280</term>
     <listitem>
      <para>Link: <link xlink:show="new"
-     xlink:href="http://support.microsoft.com/kb/943280" /></para>
-     <para>Description: Prompt for Credentials When Accessing FQDN Sites From a
-     Windows Vista or Windows 7 Computer</para>
+      xlink:href="http://support.microsoft.com/kb/943280" /></para>
+
+     <para>
+      Description: Prompt for Credentials When Accessing FQDN Sites From a
+      Windows Vista or Windows 7 Computer.
+     </para>
+
      <para>Summary: Edit the registry as described in Microsoft's support
      document.</para>
     </listitem>
@@ -495,9 +559,13 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
     <term>Microsoft Support Issue: 968851</term>
     <listitem>
      <para>Link: <link xlink:show="new"
-     xlink:href="http://support.microsoft.com/kb/968851" /></para>
-     <para>Description: SharePoint Server 2007 Cumulative Update Server
-     Hotfix Package (MOSS server-package): April 30, 2009</para>
+      xlink:href="http://support.microsoft.com/kb/968851" /></para>
+
+     <para>
+      Description: SharePoint Server 2007 Cumulative Update Server
+      Hotfix Package (MOSS server-package): April 30, 2009.
+     </para>
+
      <para>Summary: Apply the fix from Microsoft if you use SharePoint.</para>
     </listitem>
    </varlistentry>
@@ -506,29 +574,34 @@ C:\web_agents\iis7_agent\bin><userinput>.\cryptit <replaceable>password</replace
     <term>Microsoft Support Issue: 2123563</term>
     <listitem>
      <para>Link: <link xlink:show="new"
-     xlink:href="http://support.microsoft.com/kb/2123563" /></para>
-     <para>Description: You cannot open Office file types directly from a
-     server that supports only Basic authentication over a non-SSL
-     connection</para>
+      xlink:href="http://support.microsoft.com/kb/2123563" /></para>
+
+     <para>
+      Description: You cannot open Office file types directly from a
+      server that supports only Basic authentication over a non-SSL
+      connection.</para>
+
      <para>Summary: Enable SSL encryption on the web server.</para>
     </listitem>
    </varlistentry>
   </variablelist>
 
   <procedure xml:id="configure-ii7-basic-auth">
-   <title>To Configure IIS 7 Basic Authentication &amp; Password Replay Support</title>
+   <title>To Configure IIS 7 Basic Authentication and Password Replay Support</title>
 
-   <para>Follow these steps.</para>
+   <para>Follow these steps:</para>
 
    <step>
-    <para>Generate and store an encryption key.</para>
+    <para>Generate and store an encryption key:</para>
 
     <substeps>
      <step>
-      <para>Generate the key using
-      <literal>com.sun.identity.common.DESGenKey</literal> using the .jars
-      where you deployed OpenAM, as in the following example. The Java command below is
-      broken out into multiple lines for display purposes only.</para>
+      <para>
+       Generate the key using
+       <literal>com.sun.identity.common.DESGenKey</literal> using the .jars
+       where you deployed OpenAM, as in the following example. The Java command below is
+       broken out into multiple lines for display purposes only:
+      </para>
 
       <screen>
 $ <userinput>cd /path/to/tomcat/webapps/openam/WEB-INF/lib</userinput>
@@ -537,8 +610,10 @@ $ <userinput>java -cp ${forgerockUtilLibrary}:${coreLibrary}:\
 <computeroutput>Key ==> sxVoaDRAN0o=</computeroutput>
       </screen>
 
-      <para>Windows users should use semi-colons (";"), instead of colons (":") in the commands.
-      The Java command below is broken out into multiple lines for display purposes only.</para>
+      <para>
+       Windows users should use semi-colons (";"), instead of colons (":") in the commands.
+       The Java command below is broken out into multiple lines for display purposes only:
+      </para>
 
       <screen>
 C:><userinput>cd path\to\tomcat\webapps\openam\WEB-INF\lib</userinput>
@@ -546,17 +621,18 @@ C:><userinput>java -cp ${forgerockUtilLibrary};${coreLibrary}; ^
     ${sharedLibrary} com.sun.identity.common.DESGenKey</userinput>
 <computeroutput>Key ==> sxVoaDRAN0o=</computeroutput>
       </screen>
-
      </step>
 
      <step>
-      <para>Store the key in the agent configuration on the property in the
-      OpenAM console under Access Control &gt;
-      <replaceable>realm-name</replaceable> &gt; Agents &gt; Web &gt;
-      <replaceable>agent-name</replaceable> &gt; Advanced &gt; Microsoft IIS
-      Server &gt; Replay Password Key (property name:
-      <literal>com.sun.identity.agents.config.replaypasswd.key</literal>),
-      and then Save your work.</para>
+      <para>
+       Store the key in the agent configuration on the property in the
+       OpenAM console under Access Control &gt;
+       <replaceable>realm-name</replaceable> &gt; Agents &gt; Web &gt;
+       <replaceable>agent-name</replaceable> &gt; Advanced &gt; Microsoft IIS
+       Server &gt; Replay Password Key (property name:
+       <literal>com.sun.identity.agents.config.replaypasswd.key</literal>),
+       and then Save your work.
+      </para>
      </step>
 
      <step>
@@ -578,37 +654,47 @@ C:><userinput>java -cp ${forgerockUtilLibrary};${coreLibrary}; ^
    </step>
 
    <step>
-    <para>If you require Windows logon, or you need to use basic authentication
-    with SharePoint or OWA, then you must configure Active Directory as a
-    user data store, and you must configure the IIS 7 policy agent profile
-    User ID Parameter and User ID Parameter Type so that the policy agent
-    requests OpenAM to provide the appropriate account information from
-    Active Directory in its policy response.</para>
+    <para>
+     If you require Windows logon, or you need to use basic authentication
+     with SharePoint or OWA, then you must configure Active Directory as a
+     user data store, and you must configure the IIS 7 policy agent profile
+     User ID Parameter and User ID Parameter Type so that the policy agent
+     requests OpenAM to provide the appropriate account information from
+     Active Directory in its policy response.
+    </para>
 
-    <para>Skip this step if you do not use SharePoint or OWA and no Windows
-    logon is required.</para>
+    <para>
+     Skip this step if you do not use SharePoint or OWA and no Windows
+     logon is required.
+    </para>
 
-    <para>Make sure OpenAM data store is configured to use Active Directory as
-    the user data store.</para>
+    <para>
+     Make sure OpenAM data store is configured to use Active Directory as
+     the user data store.
+    </para>
 
-    <para>In the OpenAM console under Access Control &gt;
-    <replaceable>realm-name</replaceable> &gt; Agents &gt; Web &gt;
-    <replaceable>agent-name</replaceable> &gt; OpenAM Services &gt; Policy
-    Client Service, set User ID Parameter and User ID Parameter Type, and then
-    Save your work. For example if the real username for Windows domain logon
-    in Active Directory is stored on the <literal>sAMAccountName</literal>
-    attribute, then set the User ID Parameter to
-    <literal>sAMAccountName</literal>, and the User ID Parameter Type to
-    <literal>LDAP</literal>.</para>
+    <para>
+     In the OpenAM console under Access Control &gt;
+     <replaceable>realm-name</replaceable> &gt; Agents &gt; Web &gt;
+     <replaceable>agent-name</replaceable> &gt; OpenAM Services &gt; Policy
+     Client Service, set User ID Parameter and User ID Parameter Type, and then
+     Save your work. For example if the real username for Windows domain logon
+     in Active Directory is stored on the <literal>sAMAccountName</literal>
+     attribute, then set the User ID Parameter to
+     <literal>sAMAccountName</literal>, and the User ID Parameter Type to
+     <literal>LDAP</literal>.
+    </para>
 
-    <para>Setting the User ID Parameter Type to <literal>LDAP</literal> causes
-    the policy agent to request that OpenAM get the value of the User ID
-    Parameter attribute from the data store, in this case Active Directory.
-    Given that information, the policy agent can set the HTTP headers
-    <literal>REMOTE_USER</literal>, <literal>AUTH_USER</literal>, or
-    <literal>LOGON_USER</literal> and <literal>USER_PASSWORD</literal> with
-    Active Directory attribute values suitable for Windows logon, setting the
-    remote user, and so forth.</para>
+    <para>
+     Setting the User ID Parameter Type to <literal>LDAP</literal> causes
+     the policy agent to request that OpenAM get the value of the User ID
+     Parameter attribute from the data store, in this case, Active Directory.
+     Given that information, the policy agent can set the HTTP headers
+     <literal>REMOTE_USER</literal>, <literal>AUTH_USER</literal>, or
+     <literal>LOGON_USER</literal> and <literal>USER_PASSWORD</literal> with
+     Active Directory attribute values suitable for Windows logon, setting the
+     remote user, and so forth.
+    </para>
    </step>
 
    <step>
@@ -632,21 +718,27 @@ C:><userinput>java -cp ${forgerockUtilLibrary};${coreLibrary}; ^
    </step>
 
    <step>
-    <para>In the OpenAM console under Access Control &gt;
-    <replaceable>realm-name</replaceable> &gt; Agents &gt; Web &gt;
-    <replaceable>agent-name</replaceable> &gt; Advanced &gt; Microsoft IIS
-    Server, set Authentication Type to basic, and then Save your work.</para>
+    <para>
+     In the OpenAM console under Access Control &gt;
+     <replaceable>realm-name</replaceable> &gt; Agents &gt; Web &gt;
+     <replaceable>agent-name</replaceable> &gt; Advanced &gt; Microsoft IIS
+     Server, set Authentication Type to basic, and then Save your work.
+    </para>
    </step>
 
    <step>
-    <para>To use the agent with SharePoint or Microsoft Office, configure
-    OpenAM to support the <literal>iPlanetDirectoryPro</literal> as a persistent
-    cookie.</para>
+    <para>
+     To use the agent with SharePoint or Microsoft Office, configure
+     OpenAM to support the <literal>iPlanetDirectoryPro</literal> as a persistent
+     cookie.
+    </para>
 
-    <para>In the OpenAM console under Access Control &gt;
-      <replaceable>realm-name</replaceable> &gt; Authentication &gt; All Core
-      Settings... &gt; Persistent Cookie Mode, select Enabled, and then Save
-      your work.</para>
+    <para>
+     In the OpenAM console under Access Control &gt;
+     <replaceable>realm-name</replaceable> &gt; Authentication &gt; All Core
+     Settings... &gt; Persistent Cookie Mode, select Enabled, and then Save
+     your work.
+    </para>
    </step>
   </procedure>
  </section>
@@ -659,8 +751,10 @@ C:><userinput>java -cp ${forgerockUtilLibrary};${coreLibrary}; ^
    <secondary>removing</secondary>
   </indexterm>
 
-  <para>To remove the web policy agent, log on as a user with Administrator
-  privileges, run <command>cscript IIS7Admin.vbs -unconfig config.txt</command>,
-  and then run <command>iisreset</command>.</para>
+  <para>
+   To remove the web policy agent, log on as a user with Administrator
+   privileges, run <command>cscript IIS7Admin.vbs -unconfig config.txt</command>,
+   and then run <command>iisreset</command>.
+  </para>
  </section>
 </chapter>
