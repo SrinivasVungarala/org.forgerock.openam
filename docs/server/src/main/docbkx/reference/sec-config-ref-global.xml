@@ -2901,28 +2901,6 @@
    been incorrectly replaced with another instance of Forgot Password for Users -->
 
    <varlistentry>
-    <term>Two Factor Authentication Enabled</term>
-    <listitem>
-     <para>This option is reserved for future use.</para>
-     <para>Default: False</para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>forgerockRESTSecurityTwoFactorAuthEnabled</literal></para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term>Two Factor Authentication Required</term>
-    <listitem>
-     <para>This option is reserved for future use.</para>
-     <para>Default: False</para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>forgerockRESTSecurityTwoFactorAuthMandatory</literal></para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
     <term>Self-Registration for Users</term>
     <listitem>
      <para>If enabled, new users can sign up using a REST API client.</para>
