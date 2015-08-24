@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2013-2014 ForgeRock AS
+  !      Copyright 2013-2015 ForgeRock AS
   !    
 -->
 <chapter xml:id='chap-jboss-7'
@@ -292,6 +292,23 @@ Install log file location:
      <filename>META-INF/MANIFEST.MF</filename> file of the application.
     </para>
     <programlisting language="xml">Dependencies: org.forgerock.openam.agent</programlisting>
+   </step>
+
+   <step>
+    <para>
+     If you responded <literal>domain</literal> to the <literal>Enter the name
+     of the deployment mode</literal> question during the installation process,
+     you must manually deploy the <filename>j2ee_agents/jboss_v7_agent/etc/agentapp.war</filename>
+     file to JBoss.
+    </para>
+    <para>
+     The reason manual deployment is required when running JBoss in domain
+     mode is that the agent installer takes advantage of auto-deployment
+     capabilities provided by the JBoss deployment scanner. The deployment
+     scanner is used only in standalone mode. When running JBoss in standalone
+     mode, it is not necessary to manually deploy the
+     <filename>agentapp.war</filename> file.
+    </para>
    </step>
   </procedure>
   
