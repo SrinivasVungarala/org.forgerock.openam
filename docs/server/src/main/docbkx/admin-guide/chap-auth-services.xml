@@ -6004,7 +6004,7 @@ ssoadm \
   <para>
    This section provides general information about two step verification,
    describes how end users authenticate using two step verification, and
-   covers how administrators deploy and support two step verification.
+   covers how administrators implement and support two step verification.
   </para>
 
   <section xml:id="authn-2sv-about">
@@ -6659,85 +6659,592 @@ ssoadm \
   </section>
 
   <section xml:id="authn-2sv-configuring">
-   <title>Deploying Two Step Verification</title>
+   <title>Implementing Two Step Verification</title>
 
    <para>
-    This is a placeholder for a section that will explain how administrators
-    configure OpenAM for two step verification. Future drafts of this material
-    will provide detailed information. Topics to be covered include the
-    following:
-    <itemizedlist>
-     <listitem>
-      <para>
-       Deciding between the HOTP and Two Step Verification authentication
-       modules
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       Letting users skip two step verification
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       Creating an authentication chain for use with two step verification
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       Flag settings on the Two Step Verification module in an authentication
-       chain
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       Encrypting device information in the user profile
-      </para>
-     </listitem>
-    </itemizedlist>
+    This section explains how to implement two step verification in OpenAM.
    </para>
 
-   <para>
-    For more information on two step verification configuration settings, see
-    the following sections:
-    <itemizedlist>
-     <listitem>
+   <section xml:id="authn-2sv-vs-hotp">
+    <title>Deciding Between Two Step Verification and the HOTP Authentication
+     Module
+    </title>
+
+    <para>
+     Two step verification and the HOTP authentication module both have the
+     ability to process HMAC one-time passwords as a step in OpenAM
+     authentication. When implementing one-time passwords,
+     choose the appropriate technique for your organization.
+    </para>
+
+    <para>
+     Before deciding on an implementation strategy, review
+     <xref linkend="authn-2sv-differences-HOTP"/> and assess your
+     requirements against the following capabilities in OpenAM:
+     <table xml:id="authn-2sv-differences-HOTP-table" pgwide="1">
+      <title>Comparing Two Step Verification to the HOTP Authentication Module</title>
+      <tgroup cols="3">
+       <colspec colnum="1" colwidth="3*"/>
+       <colspec colnum="2" colwidth="1*"/>
+       <colspec colnum="3" colwidth="1*"/>
+       <thead>
+        <row>
+         <entry>Requirement</entry>
+         <entry>Available With Two Step Verification?</entry>
+         <entry>Available With the HOTP Authentication Module?</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry>End users can authenticate using a HOTP password</entry>
+         <entry>Yes</entry>
+         <entry>Yes</entry>
+        </row>
+        <row>
+         <entry>OpenAM can generate a HOTP password and send it to
+          end users in a text message or an e-mail
+         </entry>
+         <entry>No</entry>
+         <entry>Yes</entry>
+        </row>
+        <row>
+         <entry>End users can register a mobile phone with OpenAM, and an
+          authenticator app on the phone can generate a HOTP or TOTP password
+          that OpenAM accepts as proof of authentication
+         </entry>
+         <entry>Yes</entry>
+         <entry>No</entry>
+        </row>
+        <row>
+         <entry>End users can authenticate with a TOTP password</entry>
+         <entry>Yes</entry>
+         <entry>No</entry>
+        </row>
+        <row>
+         <entry>End users can opt out of providing a one-time password</entry>
+         <entry>Yes</entry>
+         <entry>No</entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </table>
+    </para>
+
+   </section>
+
+   <section xml:id="authn-2sv-encryption">
+    <title>Configuring the Two Step Verification Service Settings</title>
+
+    <para>
+     When implementing two step verification in OpenAM,
+     configure the following settings:
+     <variablelist>
+      <varlistentry>
+       <term>Encryption Settings</term>
+       <listitem>
+        <para>
+         Administrators must decide whether to configure OpenAM to encrypt
+         device profiles. Device profiles are stored in users' entries in the
+         OpenAM identity repository. When encryption is enabled, OpenAM
+         encrypts all device profiles in the OpenAM deployment.
+        </para>
+        <para>
+         By default, device profiles are not encrypted.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Device Profile Location</term>
+       <listitem>
+        <para>
+        The name of the attribute in which the device profile is stored is also
+        configurable. By default, OpenAM stores device profiles in the
+        <literal>oathDeviceProfiles</literal> attribute.
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+
+    <para>
+     You can configure the device profile encryption and attribute settings
+     globally for an OpenAM deployment under Configuration > Global > Two Step
+     Verification Service. If you need to configure the settings for a realm,
+     add an instance of the Two Step Verification Service to the realm.
+    </para>
+
+    <para>
+     For detailed information about the Two Step Verification Service
+     configuration, see
+     <link xlink:href="reference#two-step-verification-service-configuration"
+           xlink:role="http://docbook.org/xlink/role/olink"
+           xlink:show="new"
+     ><citetitle>Two Step Verification Service</citetitle></link> in the
+     <citetitle>Reference</citetitle>.
+    </para>
+
+   </section>
+
+   <section xml:id="authn-2sv-chain">
+    <title>Creating a Two Step Verification Authentication Chain</title>
+
+    <para>
+     The following procedure provides steps to follow when creating
+     an authentication chain that implements two step verification. The
+     procedure assumes the following implementation details:
+     <itemizedlist>
+      <listitem>
+       <para>
+        Users will provide user IDs and passwords as the first step of
+        two step verification.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        An existing Data Store authentication module will collect and
+        verify user IDs and passwords.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        All authentication modules in the chain will use the
+        <literal>Requisite</literal> flag setting. See
+        <xref linkend="what-is-authn" /> for details about
+        authentication module flag settings.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Users can opt out of two step verification.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </para>
+
+    <procedure xml:id="authn-2sv-chain-procedure">
+     <title>To Create an Authentication Chain for Two Step Verification</title>
+
+     <step>
       <para>
-       <link xlink:href="admin-guide#OATH-module-conf-hints"
-             xlink:role="http://docbook.org/xlink/role/olink"
-             xlink:show="new"
-       ><citetitle>Hints for the Two Step Verification Authentication Module</citetitle></link>
+       Log in to the console as an OpenAM administrator, for example
+       <literal>amadmin</literal>.
       </para>
-     </listitem>
-    </itemizedlist>
-    <itemizedlist>
-     <listitem>
+     </step>
+
+     <step>
       <para>
-       The global service configuration for the
-       <link xlink:href="reference#two-step-verification-service-configuration"
-             xlink:role="http://docbook.org/xlink/role/olink"
-             xlink:show="new"
-       ><citetitle>Two Step Verification Service</citetitle></link>
+       Select the realm that will contain the authentication chain.
       </para>
-     </listitem>
-    </itemizedlist>
-    <itemizedlist>
-     <listitem>
+     </step>
+
+     <step>
       <para>
-       The Two Factor Authentication Mandatory Property in the
-       <link xlink:href="admin-guide#OATH-module-conf-hints"
-             xlink:role="http://docbook.org/xlink/role/olink"
-             xlink:show="new"
-       ><citetitle>Core - General</citetitle></link> authentication configuration
+       Allow users to opt out of two step verification as follows:
       </para>
-     </listitem>
-    </itemizedlist>
-   </para>
+
+      <substeps>
+       <step>
+        <para>
+         Select Authentication > General > Settings.
+        </para>
+       </step>
+
+       <step>
+         <para>
+          Make sure that the Two Factor Authentication Mandatory is not checked.
+         </para>
+         <para>
+          See <xref linkend="auth-core-general" /> for details about this
+          configuration setting.
+         </para>
+       </step>
+      </substeps>
+
+      <para>
+       See <xref linkend="authn-2sv-skip" /> for more information about how
+       letting users skip two step verification impacts the behavior of
+       authentication chains.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Create a Two Step Verification authentication module to be used for
+       the second step of two step verification as follows:
+      </para>
+
+      <substeps>
+       <step>
+        <para>
+         Select Authentication > Modules, and then click Add Module.
+        </para>
+        <para>
+         The Create New Module dialog box appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Fill in fields in the Create New Module dialog box as follows:
+          <itemizedlist>
+          <listitem>
+           <para>
+            Module Name: Specify a module name of your choosing.
+           </para>
+          </listitem>
+          <listitem>
+           <para>
+            Module Type: Select Two Step Verification.
+           </para>
+          </listitem>
+         </itemizedlist>
+         </para>
+       </step>
+
+       <step>
+        <para>
+         Click Create.
+        </para>
+        <para>
+         A page that lets you configure the Two Step Verification authentication
+         module appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Configure the Two Step Verification authentication module to meet
+         your organization's requirements.
+        </para>
+        <para>
+         For more information about the authentication module's configuration
+         settings, see <xref linkend="OATH-module-conf-hints" />.
+        </para>
+       </step>
+      </substeps>
+
+     </step>
+
+     <step>
+      <para>
+       Create the authentication chain as follows:
+      </para>
+
+      <substeps>
+       <step>
+        <para>
+         Select Authentication > Chains, and then click Add Chain.
+        </para>
+        <para>
+         The Create New Chain dialog box appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Specify a chain name of your choosing and click Create.
+        </para>
+        <para>
+         The New Module dialog box appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Fill in fields in the New Module dialog box as follows:
+         <itemizedlist>
+          <listitem>
+           <para>
+            Select Module: Select the existing Data Store module to use in
+            this chain.
+           </para>
+          </listitem>
+
+          <listitem>
+           <para>
+            Select Criteria: Select a flag setting for the module in the
+            authentication chain. For this example, specify the
+            <literal>Requisite</literal> flag.
+           </para>
+           <para>
+            See <xref linkend="what-is-authn" /> for information about
+            authentication module flag settings.
+           </para>
+          </listitem>
+
+         </itemizedlist>
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Click OK.
+        </para>
+        <para>
+         A graphic showing an authentication chain with a single Data Store
+         module appears on the page.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Add the Two Step Verification authentication module to the
+         authentication chain as follows:
+        </para>
+
+        <substeps>
+
+         <step>
+          <para>
+           Click Add Module.
+          </para>
+          <para>
+           The New Module dialog box appears.
+          </para>
+         </step>
+
+         <step>
+          <para>
+           Fill in the New Module dialog box, specifying the Two Step
+           Verification authentication module that you just created. For this
+           example, specify the <literal>Requisite</literal> flag.
+          </para>
+         </step>
+
+         <step>
+          <para>
+           Click OK.
+          </para>
+          <para>
+           The graphic showing your authentication chain now includes the
+           Data Store and Two Step Verification authentication modules.
+          </para>
+         </step>
+
+        </substeps>
+
+       </step>
+
+       <step>
+        <para>
+         Click Save Changes to save the authentication chain.
+        </para>
+       </step>
+
+      </substeps>
+
+     </step>
+
+     <step>
+      <para>
+       Test your authentication chain as follows:
+      </para>
+
+      <substeps>
+       <step>
+        <para>
+         Navigate to a URL similar to the following:
+         <itemizedlist>
+          <listitem>
+           <para>
+            If you are using the XUI:
+            <literal>http://openam.example.com:8080/openam/XUI/#login/&amp;service=<replaceable>myAuthChain</replaceable></literal>
+           </para>
+          </listitem>
+          <listitem>
+           <para>
+            If you are using the classic UI:
+            <literal>http://openam.example.com:8080/openam/UI/Login?service=<replaceable>myAuthChain</replaceable></literal>
+           </para>
+          </listitem>
+         </itemizedlist>
+        </para>
+        <para>
+         A login screen prompting you to enter your user ID and password appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Enter your authentication credentials and click Log In.
+        </para>
+        <para>
+         The Two Step Verification page appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Follow the procedure described in
+         <xref linkend="authn-2sv-using-initiating-first-attempt" />
+         to verify that you can use an authenticator app to obtain a one-time
+         password. If the chain is correctly configured, OpenAM accepts the
+         one-time password.
+        </para>
+       </step>
+
+      </substeps>
+     </step>
+
+    </procedure>
+
+   </section>
+
+   <section xml:id="authn-2sv-skip">
+    <title>Letting Users Skip Two Step Verification</title>
+
+    <para>
+     Letting users opt out of providing one-time passwords when they
+     perform two step verification is an important implementation decision.
+     The Two Factor Authentication Mandatory setting under Realms >
+     Authentication > Settings > General configures whether users can opt out.
+    </para>
+
+    <para>
+     When the Two Factor Authentication Mandatory setting is enabled, users must
+     provide a one-time password every time they authenticate to a chain that
+     includes a Two Step Verification authentication module. When the setting is
+     disabled, the user can optionally skip providing one-time passwords.
+    </para>
+
+    <para>
+     By default, OpenAM lets users opt out of providing one-time passwords. The
+     example in <xref linkend="authn-2sv-using-initiating-first-attempt" />
+     illustrates the default behavior. Users authenticating with two step
+     verification for the first time are prompted with a screen that lets them
+     opt out of providing one-time passwords.
+    </para>
+
+    <para>
+     With the Two Factor Authentication Mandatory setting enabled, the user
+     experience differs from the default behavior. OpenAM does not provide
+     an option to skip two step verification during the initial attempt
+     at two step verification:
+    </para>
+
+    <mediaobject xml:id="authn-2sv-initial-screen-noskip">
+     <alt>
+      Initial screen in the two step verification process if two
+      step verification is mandatory
+     </alt>
+     <imageobject>
+      <imagedata fileref="images/authn-2sv-initial-screen-noskip.png" format="PNG"/>
+     </imageobject>
+     <textobject>
+      <para>
+       This is the screen you see the first time you authenticate using the
+       Two Step Verification authentication module if you have not previously
+       registered a device and if two step verification is mandatory. Notice
+       that there is no option to skip two step verification.
+      </para>
+     </textobject>
+    </mediaobject>
+
+    <para>
+     When configuring an authentication chain that implements two step
+     verification, you need to be aware that a user's decision to opt out of
+     providing one-time passwords affects the authentication process. When a
+     user who has opted out of providing one-time passwords authenticates to a
+     chain that includes a Two Step Verification authentication module, that
+     module <emphasis>always</emphasis> passes authentication.
+    </para>
+
+    <para>
+     Consider the example authentication chain in <xref linkend="authn-2sv-chain" />.
+     The first authentication module is a Data Store module and the second
+     authentication module is a Two Step Verification module. Both
+     authentication modules have the Requisite flag setting.
+    </para>
+
+    <para>
+     A user who has opted out of providing one-time passwords might experience
+     the following sequence of events when authenticating to the chain:
+     <orderedlist>
+      <listitem>
+       <para>
+        The Data Store authentication module prompts the user to provide a user
+        ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The user provides a valid user ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Data Store authentication passes, and authentication proceeds to the
+        next module in the chain&#x2014;the Two Step Verification module.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The Two Step Verification authentication module determines that the
+        user has opted out of providing one-time passwords.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Two Step Verification authentication passes. Because it is the last
+        authentication module in the chain, OpenAM considers authentication
+        to have completed successfully.
+       </para>
+      </listitem>
+     </orderedlist>
+     Contrast the preceding sequence of events to the experience of a user
+     who has not opted out of providing one-time passwords, or who is
+     required to provide one-time passwords, while authenticating to the same
+     chain:
+     <orderedlist>
+      <listitem>
+       <para>
+        The Data Store authentication module prompts the user to provide a user
+        ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The user provides a valid user ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Data Store authentication passes, and authentication proceeds to the
+        next module in the chain&#x2014;the Two Step Verification module.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The Two Step Verification authentication module determines that the
+        user has not opted out of providing one-time passwords, and prompts
+        the user for a one time password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The user obtains a one-time password from the authenticator app on
+        their mobile phone.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        If the one-time password is valid, Two Step Verification authentication
+        passes. Because it is the last authentication module in the chain,
+        OpenAM considers authentication to have completed successfully.
+        However, if the one-time password is not valid, Two Step Verification
+        authentication fails, and OpenAM considers authentication to have
+        failed.
+       </para>
+      </listitem>
+     </orderedlist>
+    </para>
+
+   </section>
 
   </section>
 
   <section xml:id="authn-2sv-issues">
-   <title>Administrator Actions in Two Step Verification Deployments</title>
+   <title>Supporting Two Step Verification</title>
 
    <para>
     This is a placeholder for a section that will describe actions that
