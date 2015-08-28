@@ -1139,6 +1139,878 @@ $ <userinput>ssoadm \
   </section>
  </section>
 
+ <section xml:id="recording">
+  <title>Recording Troubleshooting Information</title>
+
+  <para>
+   The OpenAM recording facility lets you initiate events to monitor
+   OpenAM while saving output that is useful when performing troubleshooting.
+  </para>
+  <para>
+   OpenAM recording events save four types of information:
+   <itemizedlist>
+    <listitem>
+     <para>
+      OpenAM debug logs
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Thread dumps, which show you the status of every active thread, with
+      output similar to a JStack stack trace
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Important run-time properties
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      The OpenAM configuration
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <para>
+   You initiate a recording event by invoking the
+   <command>ssoadm start-recording</command> command or by using the
+   <literal>start</literal> action of the <literal>/json/records</literal>
+   REST API endpoint. Both methods use JSON to control the recording event.
+  </para>
+
+  <para>
+   This section describes starting and stopping recording using the
+   <command>ssoadm</command> command, using a JSON file to configure the
+   recording event, and locating the output recorded information.
+   For information about using the <literal>/json/records</literal> REST API
+   endpoint to activate and deactivate recording, see the
+   <olink targetdoc="dev-guide" />.
+  </para>
+
+  <section xml:id="recording-start-stop">
+   <title>Starting and Stopping Recording</title>
+
+   <para>
+    Start OpenAM recording with the <command>ssoadm start-recording</command>
+    command. For example:
+   </para>
+<screen>$ <userinput>ssoadm \
+ start-recording \
+ --servername http://openam.example.com:8080/openam \
+ --adminid amadmin \
+ --password-file /tmp/pwd.txt \
+ --jsonfile <replaceable>recording.json</replaceable></userinput>
+
+<computeroutput>
+{
+ "recording":true,
+ "record": {
+  "issueID":103572,
+  "referenceID":"policyEvalFails",
+  "description":"Record everything",
+  "zipEnable":false,
+  "threadDump": {
+   "enable":true,
+   "delay": {
+     "timeUnit":"SECONDS",
+     "value":5
+   }
+  },
+  "configExport": {
+   "enable":true,
+   "password":"<replaceable>admin password</replaceable>",
+   "sharePassword":true
+  },
+  "debugLogs": {
+   "debugLevel":"message",
+   "autoStop": {
+    "time": {
+     "timeUnit":"MILLISECONDS",
+     "value":15000
+    },
+    "fileSize": {
+     "sizeUnit":"KB",
+     "value":1048576
+    }
+   }
+  },
+  "status":"RUNNING",
+  "folder":"/home/openam/debug/record/103572/policyEvalFails/"
+ }
+}
+</computeroutput>
+</screen>
+
+   <note>
+    <para>
+     The <command>ssoadm</command> command output in the preceding example is
+     shown in indented format for ease of reading. The actual output is
+     <emphasis>not</emphasis> indented.
+    </para>
+   </note>
+
+   <para>
+    In the preceding <command>ssoadm start-recording</command> command example,
+    the <filename>recording.json</filename> file specifies the information
+    to be recorded and under what conditions recording automatically terminates.
+    This file is known as the <firstterm>recording control file</firstterm>.
+    <xref linkend="recording-json" /> describes the format of recording control
+    files and provides an annotated example.
+   </para>
+
+   <para>
+    An active recording event stops when:
+    <itemizedlist>
+     <listitem>
+      <para>
+       You explicitly tell OpenAM to stop recording by executing the
+       <command>ssoadm stop-recording</command> command. See
+       the <olink targetdoc="reference"/> for details about this
+       command.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Another <command>ssoadm start-recording</command> command is sent to
+       OpenAM that specifies an issue ID other that differs from the active
+       recording event's issue ID. In this case, the initial recording session
+       terminates and the new recording event starts. Note that you can
+       determine whether an OpenAM recording event is active by using the
+       <command>ssoadm get-recording-status</command> command.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       A timer configured in the recording control file determines that the
+       maximum amount of time for the recording event has been reached.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       A file size monitor configured in the recording control file determines
+       that the maximum amount of information in debug logs has been reached.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+
+  </section>
+
+  <section xml:id="recording-json">
+   <title>The Recording Control File</title>
+
+   <para>
+    A JSON file that is input to the <command>ssoadm start-recording</command> command
+    controls the amount of information OpenAM records, the recording duration,
+    and the location of recording output files.
+   </para>
+
+   <section xml:id="recording-file-format">
+    <title>File Format</title>
+
+    <variablelist>
+     <para>
+      The following properties comprise the recording control file:
+     </para>
+
+     <varlistentry>
+      <term><literal>issueID</literal></term>
+      <listitem>
+       <para>
+        Type: Number
+       </para>
+       <para>
+        <emphasis>Required</emphasis>.
+        The issue identifier&#x2014;a positive integer stored internally as a
+        Java <literal>long</literal> data type. A case number is a good choice
+        for the <literal>issueID</literal> value.
+       </para>
+       <para>
+        The <literal>issueID</literal>
+        is a component of the path at which recorded information is stored. See
+        <xref linkend="recording-location" />
+        for more information.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>referenceID</literal></term>
+      <listitem>
+       <para>
+        Type: String
+       </para>
+       <para>
+        <emphasis>Required</emphasis>.
+        A second identifier for the recording event. Use this property to
+        segregate multiple recording events for the same issue.
+       </para>
+       <para>
+        The <literal>referenceID</literal>
+        is a component of the path at which recorded information is stored. See
+        <xref linkend="recording-location" />
+        for more information.
+       </para>
+       <para>
+        Note that spaces are not allowed in the <literal>referenceID</literal>
+        value.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>Description</literal></term>
+      <listitem>
+       <para>
+        Type: String
+       </para>
+       <para>
+        <emphasis>Required</emphasis>.
+        A textual description of the recording event.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>zipEnable</literal></term>
+      <listitem>
+       <para>
+        Type: Boolean
+       </para>
+       <para>
+        <emphasis>Required</emphasis>.
+        Whether to compress the output directory into a zip file when recording
+        has stopped.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>configExport</literal></term>
+      <listitem>
+       <para>
+        Type: Object
+       </para>
+       <para>
+        <emphasis>Required</emphasis>.
+        An object containing the following properties:
+
+        <variablelist>
+
+         <varlistentry>
+          <term><literal>enable</literal></term>
+          <listitem>
+           <para>
+            Type: Boolean
+           </para>
+           <para>
+            <emphasis>Required</emphasis>.
+            Whether to export the OpenAM configuration upon completion of the
+            recording event. Exporting the OpenAM configuration is a best
+            practice, because it is extremely useful to have access to the
+            configuration when troubleshooting.
+           </para>
+          </listitem>
+         </varlistentry>
+
+         <varlistentry>
+          <term><literal>password</literal></term>
+          <listitem>
+           <para>
+            Type: String
+           </para>
+           <para>
+            <emphasis>Required</emphasis> if <literal>enable</literal>
+            is <literal>true</literal>.
+            A key required to import the exported configuration. The key
+            is used the same way that the <command>ssoadm export-svc-cfg</command>
+            command uses the <literal>-e</literal> argument.
+           </para>
+          </listitem>
+         </varlistentry>
+
+         <varlistentry>
+          <term><literal>sharePassword</literal></term>
+          <listitem>
+           <para>
+            Type: Boolean
+           </para>
+           <para>
+            <emphasis>Required</emphasis> if <literal>enable</literal>
+            is <literal>true</literal>.
+            Whether to show the <literal>password</literal> value in the
+            <command>ssoadm start-recording</command>,
+            <command>ssoadm get-recording-status</command>, and
+            <command>ssoadm stop-recording</command> output, and in the
+            <filename>info.json</filename> file, which is output during
+            recording events, and which contains run-time properties.
+           </para>
+          </listitem>
+         </varlistentry>
+
+        </variablelist>
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>debugLogs</literal></term>
+      <listitem>
+       <para>
+        Type: Object
+       </para>
+       <para>
+        <emphasis>Required</emphasis>.
+        An object containing the following properties:
+
+        <variablelist>
+
+         <varlistentry>
+          <term><literal>debugLevel</literal></term>
+          <listitem>
+           <para>
+            Type: String
+           </para>
+           <para>
+            <emphasis>Required</emphasis>.
+            The debug level to set for the recording event. Set the value
+            of <literal>debugLevel</literal> to <literal>MESSAGE</literal>
+            to get the most troubleshooting information from your recording
+            period. Other acceptable but less commonly used values are
+            <literal>ERROR</literal> and <literal>WARNING</literal>.
+           </para>
+          </listitem>
+         </varlistentry>
+
+         <varlistentry>
+          <term><literal>autoStop</literal></term>
+          <listitem>
+           <para>
+            Type: Object
+           </para>
+           <para>
+            <emphasis>Optional</emphasis>.
+            Contains another object used to specify an event that automatically
+            ends a recording period. For time-based termination, specify a
+            <literal>time</literal> object; for termination based on
+            uncompressed file size, specify a <literal>fileSize</literal>
+            object. If you specify both <literal>time</literal> and
+            <literal>fileSize</literal> objects, the event that occurs first
+            causes recording to stop.
+           </para>
+           <para>
+            Specifying <literal>fileSize</literal> and <literal>time</literal>
+            objects is a best practice, because it ensures that the recorded
+            output does not occupy a larger than expected amount of space on
+            your file system, and that recording events end in a timely fashion.
+            <variablelist>
+
+             <varlistentry>
+              <term><literal>time</literal></term>
+              <listitem>
+               <para>
+                Type: Object
+               </para>
+               <para>
+                <emphasis>Optional</emphasis>; must be specified in the
+                <literal>autoStop</literal> object if
+                <literal>fileSize</literal> is not specified.
+                Configures a recording period to terminate recording after
+                this amount of time.
+                <variablelist>
+
+                 <varlistentry>
+                  <term><literal>timeUnit</literal></term>
+                  <listitem>
+                   <para>
+                    Type: String
+                   </para>
+                   <para>
+                    <emphasis>Required</emphasis>.
+                    Acceptable values are
+                    <literal>MILLISECONDS</literal>,
+                    <literal>SECONDS</literal>, <literal>MINUTES</literal>,
+                    <literal>HOURS</literal>, and <literal>DAYS</literal>.
+                   </para>
+                  </listitem>
+                 </varlistentry>
+
+                 <varlistentry>
+                  <term><literal>value</literal></term>
+                  <listitem>
+                   <para>
+                    Type: Numeric
+                   </para>
+                   <para>
+                    <emphasis>Required</emphasis>.
+                    Values in <literal>MILLISECONDS</literal> are rounded down
+                    to the second. The minimum acceptable value for
+                    <literal>autoStop</literal> is one second.
+                   </para>
+                  </listitem>
+                 </varlistentry>
+
+                </variablelist>
+
+               </para>
+              </listitem>
+             </varlistentry>
+
+             <varlistentry>
+              <term><literal>fileSize</literal></term>
+              <listitem>
+               <para>
+                Type: Object
+               </para>
+               <para>
+                <emphasis>Optional</emphasis>; must be specified in the
+                <literal>autoStop</literal> object if
+                <literal>time</literal> is not specified.
+                Configures a recording period to terminate after the aggregate
+                size of uncompressed debug logs has reached this size.
+                <variablelist>
+
+                 <varlistentry>
+                  <term><literal>sizeUnit</literal></term>
+                  <listitem>
+                   <para>
+                    Type: String
+                   </para>
+                   <para>
+                    <emphasis>Required</emphasis>.
+                    Acceptable values are <literal>B</literal>,
+                    <literal>KB</literal>, <literal>MB</literal>, and
+                    <literal>GB</literal>.
+                   </para>
+                  </listitem>
+                 </varlistentry>
+
+                 <varlistentry>
+                  <term><literal>value</literal></term>
+                  <listitem>
+                   <para>
+                    Type: Numeric
+                   </para>
+                   <para>
+                    <emphasis>Required</emphasis>.
+                   </para>
+                  </listitem>
+                 </varlistentry>
+
+                </variablelist>
+
+
+               </para>
+              </listitem>
+             </varlistentry>
+
+            </variablelist>
+
+           </para>
+          </listitem>
+         </varlistentry>
+
+        </variablelist>
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><literal>threadDump</literal></term>
+      <listitem>
+       <para>
+        Type: Object
+       </para>
+       <para>
+        <emphasis>Required</emphasis>.
+        An object containing the following properties:
+
+        <variablelist>
+
+         <varlistentry>
+          <term><literal>enable</literal></term>
+          <listitem>
+           <para>
+            Type: Boolean
+           </para>
+           <para>
+            <emphasis>Required</emphasis>.
+            Whether to dump threads during the recording event. Thread
+            dumps are especially useful when troubleshooting performance
+            issues and issues with unresponsive servers.
+           </para>
+          </listitem>
+         </varlistentry>
+
+         <varlistentry>
+          <term><literal>delay</literal></term>
+          <listitem>
+           <para>
+            Type: Object
+           </para>
+           <para>
+            <emphasis>Required</emphasis> if <literal>enable</literal>
+            is <literal>true</literal>.
+            Contains another object used to specify an interval at which
+            thread dumps are taken. The initial thread dump is taken at the
+            start of the recording event; subsequent thread dumps are taken
+            at multiples of the <literal>delay</literal> interval.
+            <variablelist>
+
+             <varlistentry>
+              <term><literal>timeUnit</literal></term>
+              <listitem>
+               <para>
+                Type: String
+               </para>
+               <para>
+                <emphasis>Required</emphasis>.
+                 Acceptable values are
+                 <literal>MILLISECONDS</literal>,
+                 <literal>SECONDS</literal>, <literal>MINUTES</literal>,
+                 <literal>HOURS</literal>, and <literal>DAYS</literal>.
+               </para>
+              </listitem>
+             </varlistentry>
+
+             <varlistentry>
+              <term><literal>value</literal></term>
+              <listitem>
+               <para>
+                Type: Numeric
+               </para>
+               <para>
+                <emphasis>Required</emphasis>.
+                The minimum acceptable value is one second. Time units that are
+                smaller than seconds, such as <literal>MILLISECONDS</literal>,
+                are rounded to the closest second.
+               </para>
+              </listitem>
+             </varlistentry>
+
+            </variablelist>
+
+           </para>
+          </listitem>
+         </varlistentry>
+
+        </variablelist>
+       </para>
+      </listitem>
+     </varlistentry>
+
+    </variablelist>
+
+   </section>
+
+   <section xml:id="recording-file-examples">
+    <title>Recording Control File Example</title>
+
+    <para>
+     The following is an example of a recording control file:
+    </para>
+    <para>
+     <programlisting language="javascript">
+{
+  "issueID": 103572,
+  "referenceID": "policyEvalFails",
+  "description": "Troubleshooting artifacts in support of case 103572",
+  "zipEnable": true,
+  "configExport": {
+    "enable": true,
+    "password": "5x2RR70",
+    "sharePassword": false
+  },
+  "debugLogs": {
+    "debugLevel": "MESSAGE",
+    "autoStop": {
+      "time":  {
+        "timeUnit": "SECONDS",
+        "value": 15
+      },
+      "fileSize": {
+        "sizeUnit": "GB",
+        "value": 1
+      }
+    }
+  },
+  "threadDump" : {
+    "enable": true,
+    "delay" :  {
+      "timeUnit": "SECONDS",
+      "value": 5
+     }
+  }
+}    </programlisting>
+    </para>
+    <para>
+     The recording control file properties in the preceding example affect
+     the recording output as follows:
+     <table xml:id="recording-example-behavior">
+      <title>Recording Control File Example Properties and Their Effect
+       on Recording Behavior</title>
+      <tgroup cols="3">
+       <colspec colnum="1" colwidth="1*"/>
+       <colspec colnum="2" colwidth="1*"/>
+       <colspec colnum="3" colwidth="2*"/>
+       <thead>
+        <row>
+         <entry>Recording Control File Property</entry>
+         <entry>Value</entry>
+         <entry>Effect</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry>
+          <literal>issueID</literal>, <literal>referenceID</literal>
+         </entry>
+         <entry>
+          <literal>103572</literal>, <literal>policyEvalFails</literal>
+
+         </entry>
+         <entry>
+          Recording output is stored at the path
+          <filename><replaceable>debugFileLocation</replaceable>/record/103572/policyEvalFails_<replaceable>timestamp</replaceable>.zip</filename>.
+          For more information about the location of recording output, see
+          <xref linkend="recording-location" />.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>Description</literal>
+         </entry>
+         <entry>
+          <literal>Troubleshooting artifacts in support of case 103572</literal>
+         </entry>
+         <entry>
+          No effect.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>zipEnable</literal>
+         </entry>
+         <entry>
+          <literal>true</literal>
+         </entry>
+         <entry>
+          Recording output is compressed into a zip file.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>configExport</literal> / <literal>enable</literal>
+         </entry>
+         <entry>
+          <literal>true</literal>
+         </entry>
+         <entry>
+          The OpenAM configuration is exported at the start of the recording
+          event.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>configExport</literal> / <literal>password</literal>
+         </entry>
+         <entry>
+          <literal>5x2RR70</literal>
+         </entry>
+         <entry>
+          Knowledge of this password will be required to access the OpenAM
+          configuration that was saved during recording.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>configExport</literal> / <literal>sharePassword</literal>
+         </entry>
+         <entry>
+          <literal>false</literal>
+         </entry>
+         <entry>
+          The password is not displayed in output messages displayed during
+          the recording event or in the <filename>info.json</filename> file.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>debugLogs</literal> / <literal>debugLevel</literal>
+         </entry>
+         <entry>
+          <literal>MESSAGE</literal>
+         </entry>
+         <entry>
+          Recording enables message-level debug logs during the recording
+          event.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>debugLogs</literal> / <literal>autoStop</literal> / <literal>time</literal>
+         </entry>
+         <entry>
+          <literal>SECONDS</literal>, <literal>15</literal>
+         </entry>
+         <entry>
+          Because both the <literal>time</literal> and
+          <literal>fileSize</literal> properties are set, recording stops after
+          15 seconds, or after the size of the debug logs exceeds 1 GB,
+          whichever occurs first.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>debugLogs</literal> / <literal>autoStop</literal> / <literal>fileSize</literal>
+         </entry>
+         <entry>
+          <literal>GB</literal>, <literal>1</literal>
+         </entry>
+         <entry>
+          Because both the <literal>time</literal> and
+          <literal>fileSize</literal> properties are set, recording stops after
+          15 seconds, or after the size of the debug logs exceeds 1 GB,
+          whichever occurs first.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>threadDump</literal> / <literal>enable</literal>
+         </entry>
+         <entry>
+          <literal>true</literal>
+         </entry>
+         <entry>
+          Thread dumps are taken throughout the recording event.
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <literal>threadDump</literal> / <literal>delay</literal>
+         </entry>
+         <entry>
+          <literal>SECONDS</literal>, <literal>5</literal>
+         </entry>
+         <entry>
+          The first thread dump is taken when the recording event starts.
+          Additional thread dumps are taken every five seconds hence.
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </table>
+    </para>
+   </section>
+
+  </section>
+
+  <section xml:id="recording-location">
+   <title>Retrieving Recording Information</title>
+
+   <para>
+    Information recorded by OpenAM is stored at the path
+    <filename><replaceable>debugFileLocation</replaceable>/record/<replaceable>issueID</replaceable>/<replaceable>referenceID</replaceable></filename>.
+    For example, if the debug file location is
+    <filename>/home/openam/debug</filename>, the issue ID
+    <literal>103572</literal>, and the reference ID
+    <literal>policyEvalFails</literal>, the path containing
+    recorded information is
+    <filename>/home/openam/debug/record/103572/policyEvalFails</filename>.
+   </para>
+   <para>
+    When there are multiple recording events with the same
+    <literal>issueID</literal> and <literal>referenceID</literal>,
+    OpenAM appends a timestamp to the <literal>referenceID</literal>
+    of the earliest paths. For example, multiple recording events for
+    issue ID <literal>103572</literal> and reference ID
+    <literal>policyEvalFails</literal> might be stored at the
+    following paths:
+    <itemizedlist>
+     <listitem>
+      <para>
+       Most recent recording: <filename><replaceable>debugFileLocation</replaceable>/record/103572/policyEvalFails</filename>
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Next most recent recording: <filename><replaceable>debugFileLocation</replaceable>/record/103572/policyEvalFails_2015-10-24-11-48-51-902-PDT</filename>
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Earliest recording: <filename><replaceable>debugFileLocation</replaceable>/record/103572/policyEvalFails_2015-08-10-15-15-10-140-PDT</filename>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+
+   <para>
+    OpenAM compresses the output from recording events when you set the
+    <literal>zipEnable</literal> property to <literal>true</literal>. The output
+    file can be found at the path
+    <filename><replaceable>debugFileLocation</replaceable>/record/<replaceable>issueID</replaceable>/<replaceable>referenceID_timestamp</replaceable>.zip</filename>.
+    For example, compressed output for a recording event for
+    issue ID <literal>103572</literal> and reference ID
+    <literal>policyEvalFails</literal> might be stored at the
+    following path:
+    <filename><replaceable>debugFileLocation</replaceable>/record/103572/policyEvalFails_2015-08-12-12-19-02-683-PDT.zip</filename>.
+   </para>
+
+   <para>
+    Use the <literal>referenceID</literal> property value to segregate
+    output from multiple problem recreations associated with the same case.
+    For example, while troubleshooting case 103572, you notice that you only
+    have a problem when evaluating policy for members of the Finance realm.
+    You could trigger two recording events as follows:
+    <table xml:id="recording-output-location">
+     <title>Segregating Recording Output Using the <literal>referenceID</literal> Value</title>
+     <tgroup cols="3">
+      <colspec colnum="1" colwidth="1*"/>
+      <colspec colnum="2" colwidth="1*"/>
+      <colspec colnum="3" colwidth="1*"/>
+      <thead>
+       <row>
+        <entry>OpenAM Behavior</entry>
+        <entry><literal>referenceID</literal>Value</entry>
+        <entry>Recording Output Path</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         Policy evaluation behaves as expected for members of the Engineering
+         realm.
+        </entry>
+        <entry>
+         <literal>policyEvalSucceeds</literal>
+         </entry>
+        <entry>
+         <filename><replaceable>debugFileLocation</replaceable>/record/103572/policyEvalSucceeds</filename>
+        </entry>
+       </row>
+       <row>
+         <entry>
+          Policy evaluation unexpectedly fails for members of the Finance
+          realm.
+         </entry>
+         <entry>
+          <literal>policyEvalFails</literal>
+          </entry>
+         <entry>
+          <filename><replaceable>debugFileLocation</replaceable>/record/103572/policyEvalFails</filename>
+         </entry>
+        </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </section>
+
+ </section>
+
  <section xml:id="session-mgmt">
   <title>Session Management</title>
   <indexterm><primary>Sessions</primary></indexterm>
