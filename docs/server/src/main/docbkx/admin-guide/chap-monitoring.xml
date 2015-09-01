@@ -1185,8 +1185,8 @@ $ <userinput>ssoadm \
    <command>ssoadm</command> command, using a JSON file to configure the
    recording event, and locating the output recorded information.
    For information about using the <literal>/json/records</literal> REST API
-   endpoint to activate and deactivate recording, see the
-   <olink targetdoc="dev-guide" />.
+   endpoint to activate and deactivate recording, see
+   <olink targetdoc="dev-guide" targetptr="sec-rest-api-recording" />.
   </para>
 
   <section xml:id="recording-start-stop">
