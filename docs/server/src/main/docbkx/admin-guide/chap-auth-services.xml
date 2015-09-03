@@ -2239,8 +2239,8 @@ $ ssoadm set-realm-svc-attrs \
       <term>Two Factor Authentication Mandatory</term>
       <listitem>
        <para>When selected, specifies that users authenticating to a chain that
-        includes a Two Step Verification module will always be required to
-        perform authentication using a registered device before they
+        includes a ForgeRock Authenticator (OATH) module will always be required
+        to perform authentication using a registered device before they
         can access OpenAM. When not selected, users can opt to forego
         registering a device and providing a token and still successfully
         authenticate.</para>
@@ -2248,14 +2248,21 @@ $ ssoadm set-realm-svc-attrs \
         while authenticating carries implications beyond the
         <literal>required</literal>, <literal>optional</literal>,
         <literal>requisite</literal>, or <literal>sufficient</literal> flag
-        settings on the Two Step Verification module in the authentication
-        chain. For example, suppose you configured authentication as follows:
+        settings on the ForgeRock Authenticator (OATH) module in the
+        authentication chain. For example, suppose you configured authentication
+        as follows:
         <itemizedlist>
          <listitem>
-          <para>The Two Step Verification module is in an authentication chain.</para>
+          <para>
+           The ForgeRock Authenticator (OATH) module is in an authentication
+           chain.
+          </para>
          </listitem>
          <listitem>
-          <para>The Two Step Verification module has the <literal>required</literal> flag set.</para>
+          <para>
+           The ForgeRock Authenticator (OATH) module has the
+           <literal>required</literal> flag set.
+          </para>
          </listitem>
          <listitem>
           <para>Two Factor Authentication Mandatory is not selected.</para>
@@ -2263,13 +2270,14 @@ $ ssoadm set-realm-svc-attrs \
         </itemizedlist>
         </para>
         <para>
-        Users authenticating to the chain can authenticate successfully
-        <emphasis>without</emphasis> providing tokens from their devices. The
-        reason for successful authentication in this case is that the
-        <literal>required</literal> setting relates to the execution
-        of the Two Step Verification module itself. Internally, the Two Step
-        Verification module has the ability to forego processing a token while
-        still returning a passing status to the authentication chain.
+         Users authenticating to the chain can authenticate successfully
+         <emphasis>without</emphasis> providing tokens from their devices. The
+         reason for successful authentication in this case is that the
+         <literal>required</literal> setting relates to the execution
+         of the ForgeRock Authenticator (OATH) module itself. Internally, the
+         ForgeRock Authenticator (OATH) module has the ability to forego
+         processing a token while still returning a passing status to the
+         authentication chain.
        </para>
        <para><command>ssoadm</command> attribute:
         <literal>forgerockTwoFactorAuthMandatory</literal></para>
@@ -2969,6 +2977,161 @@ $ ssoadm set-realm-svc-attrs \
     </varlistentry>
    </variablelist>
   </section>
+
+  <section xml:id="fr-authenticator-oath-conf-hints">
+   <title>Hints for the ForgeRock Authenticator (OATH) Authentication Module</title>
+
+   <indexterm>
+    <primary>Authentication</primary>
+    <secondary>ForgeRock Authenticator (OATH) module</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>ForgeRock Authenticator (OATH) authentication</primary>
+   </indexterm>
+
+   <para>The ForgeRock Authenticator (OATH) module provides a more secure method for
+    users to access their accounts with the help of a device such as a mobile
+    phone. For detailed information about two step verification with the
+    ForgeRock Authenticator (OATH) module in OpenAM, see
+    <xref linkend="authn-2sv" />.
+   </para>
+
+   <note>
+    <para>
+     OpenAM provides two authentication modules that support OATH:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       The ForgeRock Authenticator (OATH) authentication module, which is
+       optimized for use with the ForgeRock Authenticator app and provides
+       device profile encryption.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       The OATH authentication module, which is a raw OATH implementation
+       requiring more configuration for users and the OpenAM administrator.
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     We recommend using the ForgeRock Authenticator (OATH) authentication module
+     when possible.
+    </para>
+    <para>
+     Also, the ForgeRock Authenticator (OATH), HOTP, and OATH authentication
+     modules all support HOTP passwords, but the way that users obtain passwords
+     differs. See <xref linkend="authn-2sv-differences-HOTP" /> for more
+     information.
+    </para>
+   </note>
+
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMAuthAuthenticatorOATHService</literal></para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Authentication Level</term>
+     <listitem>
+      <para>Sets the authentication level used to indicate the level of security
+      associated with the module. The value can range from 0 to any positive integer.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-auth-level</literal></para></listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>One-Time Password Length</term>
+     <listitem>
+      <para>Sets the length of the OTP to six digits or longer. The default value is six.</para>
+
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-password-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Minimum Secret Key Length</term>
+     <listitem>
+      <para>The minimum number of hexadecimal characters allowed for the secret key.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-min-secret-key-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>OATH Algorithm to Use</term>
+     <listitem>
+      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
+      allow for a greater variety of devices. The default value is HOTP.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-algorithm</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>HOTP Window Size</term>
+     <listitem>
+      <para>The window that the OTP device and the server counter can be out of sync.
+      For example, if the window size is 100 and the server's last successful login was
+      at counter value 2, then the server will accept an OTP from device counter 3 to
+      102. The default value is 100.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-hotp-window-size</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Add Checksum Digit</term>
+     <listitem>
+      <para>Adds a checksum digit at the end of the HOTP password to verify the OTP was
+      generated correctly. This is in addition to the actual password length. Set this
+      only if your device supports it. The default value is No.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-add-checksum</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Truncation Offset</term>
+     <listitem>
+      <para>Advanced feature that is device-specific. Let this value default unless
+      you know your device uses a truncation offset. The default value is -1.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-truncation-offset</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Step Interval</term>
+     <listitem>
+      <para>The time interval for which an OTP is valid. For example, if the time
+      step interval is 30 seconds, a new OTP will be generated every 30 seconds,
+      and an OTP will be valid for 30 seconds. The default value is 30 seconds.
+      </para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-size-of-time-step</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Steps</term>
+     <listitem>
+      <para>The number of time step intervals that the system and the device can be off
+      before password resynchronization is required. For example, if the number
+      of TOTP time steps is 2 and the TOTP time step interval is 30 seconds, the server
+      will allow an 89 second clock skew between the client and the server&#x2014;two 30 second
+      steps plus 29 seconds for the interval in which the OTP arrived. The default value
+      is 2.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-steps-in-window</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Maximum Allowed Clock Drift</term>
+     <listitem>
+      <para>The maximum acceptable clock skew before authentication fails. When
+      this value is exceeded, the user must re-register the device.</para>
+
+      <para><command>ssoadm</command> attribute:
+      <literal>openam-auth-fr-oath-maximum-clock-drift</literal></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+  </section>
   
   <section xml:id="hotp-module-conf-hints">
    <title>Hints for the HOTP Authentication Module</title>
@@ -3011,11 +3174,10 @@ $ ssoadm set-realm-svc-attrs \
    </para>
    <note>
     <para>
-     Both the HOTP and Two Step Verification authentication modules can use
-     HOTP passwords, but the way that users obtain passwords differs.
-     With the Two Step Verification authentication module, users obtain
-     HOTP passwords generated by an app on their mobile device. See
-     <xref linkend="authn-2sv-differences-HOTP" /> for more information.
+     The ForgeRock Authenticator (OATH), HOTP, and OATH authentication modules
+     all support HOTP passwords, but the way that users obtain passwords
+     differs. See <xref linkend="authn-2sv-differences-HOTP" /> for more
+     information.
     </para>
    </note>
    
@@ -3876,6 +4038,209 @@ the '%' character is not included in the properties.
     <secondary>MSISDN module</secondary>
    </indexterm>
 
+  </section>
+
+  <section xml:id="OATH-module-conf-hints">
+ 	 <title>Hints for the OATH Authentication Module</title>
+
+ 	 <indexterm class="startofrange" xml:id="idx-auth-hints-oath">
+ 	  <primary>Authentication</primary>
+ 	  <secondary>Open Authentication (OATH) module</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>Open Authentication (OATH) authentication</primary>
+   </indexterm>
+
+   <para>The Open Authentication (OATH) module provides a more secure method for users to
+      access their accounts with the help of a device, such as their mobile phone or
+      Yubikey. Users can log into OpenAM and update their information more securely from
+      a one-time password (OTP) displayed on their device. The OATH module includes the
+      <link xlink:show="new" xlink:href="http://www.openauthentication.org/about/"
+      >OATH standard protocols</link> (<link xlink:show="new"
+      xlink:href="http://tools.ietf.org/html/rfc4226">RFC 4226</link> and
+      <link xlink:show="new" xlink:href="http://tools.ietf.org/html/rfc6238">
+      RFC 6238</link>). The OATH module has several enhancements to the
+      HMAC One-Time Password (HOTP) Authentication Module, but does not replace the original
+      module for those already using HOTP prior to the 10.1.0 release. The OATH module includes
+      HOTP authentication and Time-Based One-Time Password (TOTP) authentication. Both types
+      of authentication require an OATH compliant device that can provide the OTP.</para>
+
+	   <para> HOTP authentication generates the OTP every time the user requests a new OTP
+      on their device. The device tracks the number of times the user requests a new OTP, called
+      the counter. The OTP displays for a period of time you designate in the setup, so the
+      user may be further in the counter on their device than on their account. OpenAM will resynchronize
+      the counter when the user finally logs in. To accommodate this, you set the number of
+      passwords a user can generate before their device cannot be resynchronized. For example, if
+      you set the number of HOTP Window Size to 50 and someone presses the button 30 on the
+      user's device to generate a new OTP, the counter in OpenAM will review the OTPs until
+      it reaches the OTP entered by the user. If someone presses the button 51 times,
+      you will need to reset the counter to match the number on the device's counter before the
+      user can login to OpenAM. HOTP authentication does not check earlier passwords, so if the
+      user attempts to reset the counter on their device, they will not be able to login until
+      you reset the counter in OpenAM to match their device.</para>
+
+   <para>TOTP authentication constantly generates a new OTP based on a time interval you specify.
+      The device tracks the last two passwords generated and the current password. The Last Login Time
+      monitors the time when a user logs in to make sure that user is not logged in several times
+      within the present time period. Once a user logs into OpenAM, they must wait for the time it
+      takes TOTP to generate the next two passwords and display them. This prevents others from
+      being able to access the users account using the OTP they entered. The user's account can be
+      accessed again after the generation of the third new OTP is generated and displayed on their
+      device. For this reason, the TOTP Time-Step Interval should not be so long as to
+      lock users out, with a recommended time of 30 seconds.</para>
+
+   <para>An authentication chain can be created to generate an OTP from
+      either HOTP or TOTP.</para>
+
+   <note>
+    <para>
+     OpenAM provides two authentication modules that support OATH:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       The ForgeRock Authenticator (OATH) authentication module, which is
+       optimized for use with the ForgeRock Authenticator app and provides
+       device profile encryption.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       The OATH authentication module, which is a raw OATH implementation
+       requiring more configuration for users and the OpenAM administrator.
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     We recommend using the ForgeRock Authenticator (OATH) authentication module
+     when possible.
+    </para>
+    <para>
+     Also, the ForgeRock Authenticator (OATH), HOTP, and OATH authentication
+     modules all support HOTP passwords, but the way that users obtain passwords
+     differs. See <xref linkend="authn-2sv-differences-HOTP" /> for more
+     information.
+    </para>
+   </note>
+
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMAuthOATHService</literal></para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Authentication Level</term>
+     <listitem>
+      <para>Sets the authentication level used to indicate the level of security
+      associated with the module. The value can range from 0 to any positive integer.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-auth-level</literal></para></listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>One Time Password Length (in digits)</term>
+     <listitem>
+      <para>Sets the length of the OTP to six digits or longer. The default value is six.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-password-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Minimum Secret Key Length</term>
+     <listitem>
+      <para>The minimum number of hexadecimal characters allowed for the secret key.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-min-secret-key-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Secret Key Attribute Name</term>
+     <listitem>
+      <para>The name of the attribute where the key will be stored in the user profile.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-secret-key-attribute</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>OATH Algorithm to Use</term>
+     <listitem>
+      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
+      allow for a greater variety of devices. The default value is HOTP.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-algorithm</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>HOTP Window Size</term>
+     <listitem>
+      <para>The window that the OTP device and the server counter can be
+       out of sync. For example, if the window size is 100 and the server's last
+       successful login was at counter value 2, then the server will accept
+       an OTP from device counter 3 to 102. The default value is 100.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-hotp-window-size</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Counter Attribute Name</term>
+     <listitem>
+      <para>The name of the HOTP attribute where the counter will be stored in the user profile.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-hotp-counter-attribute</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Add Checksum Digit</term>
+     <listitem>
+      <para>Adds a checksum digit at the end of the HOTP password to verify the
+       OTP was generated correctly. This is in addition to the actual password
+       length. Set this only if your device supports it. The default value is No.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-add-checksum</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Truncation Offset</term>
+     <listitem>
+      <para>Advanced feature that is device-specific. Let this value default
+       unless you know your device uses a truncation offset. The default value
+       is -1.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-truncation-offset</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Step Interval</term>
+     <listitem>
+      <para>The time interval for which an OTP is valid. For example, if the time
+      step interval is 30 seconds, a new OTP will be generated every 30 seconds,
+      and an OTP will be valid for 30 seconds. The default value is 30 seconds.
+      </para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-size-of-time-step</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Steps</term>
+     <listitem>
+      <para>The number of time step intervals that the system and the device can be off
+      before password resynchronization is required. For example, if the number
+      of TOTP time steps is 2 and the TOTP time step interval is 30 seconds, the server
+      will allow an 89 second clock skew between the client and the server&#x2014;two 30 second
+      steps plus 29 seconds for the interval in which the OTP arrived. The default value
+      is 2.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-steps-in-window</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Last Login Time Attribute</term>
+     <listitem>
+      <para>The name of the attribute where both HOTP and TOTP authentication will store information
+      on when a person last logged in.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-last-login-time-attribute-name</literal></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
   </section>
 
   <section xml:id="oauth2-module-conf-hints">
@@ -5232,139 +5597,6 @@ ssoadm \
    </xinclude:fallback>
   </xinclude:include>
 
-  <section xml:id="OATH-module-conf-hints">
-   <title>Hints for the Two Step Verification Authentication Module</title>
-
-   <indexterm class="startofrange" xml:id="idx-auth-hints-oath">
-    <primary>Authentication</primary>
-    <secondary>Two Step Verification module</secondary>
-   </indexterm>
-   <indexterm>
-    <primary>Two Step Verification authentication</primary>
-   </indexterm>
-
-   <para>The Two Step Verification module provides a more secure method for
-    users to access their accounts with the help of a device such as a mobile
-    phone. For detailed information about two step verification in OpenAM, see
-    <xref linkend="authn-2sv" />.
-   </para>
-
-   <note>
-    <para>
-     Both the Two Step Verification and HOTP authentication modules can use
-     HOTP passwords, but the way that users obtain passwords differs.
-     With the HOTP authentication module, users obtain HOTP passwords sent by
-     OpenAM over e-mail or SMS. See
-     <xref linkend="authn-2sv-differences-HOTP" /> for more information.
-    </para>
-   </note>
-
-   <para><command>ssoadm</command> service name:
-   <literal>iPlanetAMAuthOATHService</literal></para>
-
-   <variablelist>
-    <varlistentry>
-     <term>Authentication Level</term>
-     <listitem>
-      <para>Sets the authentication level used to indicate the level of security
-      associated with the module. The value can range from 0 to any positive integer.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-auth-level</literal></para></listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>One-Time Password Length</term>
-     <listitem>
-      <para>Sets the length of the OTP to six digits or longer. The default value is six.</para>
-
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-password-length</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Minimum Secret Key Length</term>
-     <listitem>
-      <para>The minimum number of hexidecimal characters allowed for the secret key.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-min-secret-key-length</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>OATH Algorithm to Use</term>
-     <listitem>
-      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
-      allow for a greater variety of devices. The default value is HOTP.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-algorithm</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>HOTP Window Size</term>
-     <listitem>
-      <para>The window that the OTP device and the server counter can be out of sync.
-      For example, if the window size is 100 and the server's last successful login was
-      at counter value 2, then the server will accept an OTP from device counter 3 to
-      102. The default value is 100.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-hotp-window-size</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Add Checksum Digit</term>
-     <listitem>
-      <para>Adds a checksum digit at the end of the HOTP password to verify the OTP was
-      generated correctly. This is in addition to the actual password length. Set this
-      only if your device supports it. The default value is No.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-add-checksum</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Truncation Offset</term>
-     <listitem>
-      <para>Advanced feature that is device-specific. Let this value default unless
-      you know your device uses a truncation offset. The default value is -1.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-truncation-offset</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>TOTP Time Step Interval</term>
-     <listitem>
-      <para>The time interval for which an OTP is valid. For example, if the time
-      step interval is 30 seconds, a new OTP will be generated every 30 seconds,
-      and an OTP will be valid for 30 seconds. The default value is 30 seconds.
-      </para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-size-of-time-step</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>TOTP Time Steps</term>
-     <listitem>
-      <para>The number of time step intervals that the system and the device can be off
-      before password resynchronization is required. For example, if the number
-      of TOTP time steps is 2 and the TOTP time step interval is 30 seconds, the server
-      will allow an 89 second clock skew between the client and the server&#x2014;two 30 second
-      steps plus 29 seconds for the interval in which the OTP arrived. The default value
-      is 2.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-steps-in-window</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Maximum Allowed Clock Drift</term>
-     <listitem>
-      <para>The maximum acceptable clock skew before authentication fails. When
-      this value is exceeded, the user must re-register the device.</para>
-
-      <para><command>ssoadm</command> attribute:
-      <literal>openam-auth-oath-maximum-clock-drift</literal></para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-   
-  </section>
-  
   <section xml:id="desktop-module-conf-hints">
    <title>Hints for the Windows Desktop SSO Authentication Module</title>
 
@@ -5608,26 +5840,6 @@ ssoadm \
    </variablelist>
   </section>
 
-<!--   <section xml:id="yubikey-module-conf-hints">
-   <title>Hints for the YubiKey Authentication Module</title>
-   <para>Use the following hints to configure the module.</para>
-   <indexterm>
-    <primary>Authentication</primary>
-    <secondary>YubiKey</secondary>
-   </indexterm>
-
-   <para><command>ssoadm</command> service name:
-   <literal>TODO</literal></para>
-
-   <variablelist>
-    <varlistentry>
-     <term>TODO</term>
-     <listitem>
-      <para>TODO</para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-  </section> -->
  </section>
 
  <section xml:id="configure-authn-chains">
@@ -6015,8 +6227,8 @@ ssoadm \
     provide multiple forms of identification when logging in to OpenAM. Two step
     verification provides a more secure method for users to access their
     accounts with the help of a <firstterm>device</firstterm> supported by the
-    Two Step Verification authentication module. Users can log in to OpenAM more
-    securely by using a generated one-time password.
+    ForgeRock Authenticator (OATH) authentication module. Users can log in to
+    OpenAM more securely by using a generated one-time password.
    </para>
 
    <para>
@@ -6033,7 +6245,7 @@ ssoadm \
      <listitem>
       <para>
        An OpenAM administrator configures an authentication chain with the
-       Data Store and Two Step Verification authentication modules.
+       Data Store and ForgeRock Authenticator (OATH) authentication modules.
       </para>
      </listitem>
      <listitem>
@@ -6073,8 +6285,8 @@ ssoadm \
     chain with two authentication modules. The initial module in the chain
     defines the first authentication module for two step verification. In the
     preceding scenario, the first authentication module is the Data Store
-    authentication module. The second module in the chain is the Two Step
-    Verification authentication module.
+    authentication module. The second module in the chain is the ForgeRock
+    Authenticator (OATH) authentication module.
    </para>
    <para>
     OpenAM supports the Open AuTHentication (OATH) protocols for
@@ -6085,8 +6297,9 @@ ssoadm \
     <title>About Open AuTHentication</title>
 
     <para>
-     The Two Step Verification module supports HMAC one-time password (HOTP)
-     and time-based one-time password (TOTP) authentication as defined in the
+     The ForgeRock Authenticator (OATH) module supports HMAC one-time password
+     (HOTP) and time-based one-time password (TOTP) authentication as defined in
+     the
      <link xlink:show="new"
            xlink:href="http://www.openauthentication.org/about/"
      >OATH</link>  standard protocols for HOTP
@@ -6133,43 +6346,48 @@ ssoadm \
    </section>
 
    <section xml:id="authn-2sv-differences-HOTP">
-    <title>Differences Between the Two Step Verification and HOTP Authentication Modules</title>
+    <title>Differences Among OpenAM Authentication Modules That Support HOTP</title>
     <indexterm>
      <primary>HOTP</primary>
     </indexterm>
 
     <para>
-     Both the Two Step Verification and HOTP authentication modules let
-     you configure authentication that prompts users to enter HMAC one-time
-     passwords. It is important that administrators understand the differences
-     between the two types of authentication modules:
+     The ForgeRock Authenticator (OATH), OATH, and HOTP authentication modules
+     all let you configure authentication that prompts users to enter HMAC
+     one-time passwords. It is important that administrators understand the
+     differences among these authentication modules:
      <itemizedlist>
       <listitem>
        <para>
-        The Two Step Verification authentication module accepts one-time
-        passwords generated by the end user's device, while the HOTP
-        authentication module generates passwords and sends them to users by
-        e-mail or SMS.
+        The ForgeRock Authenticator (OATH) and OATH authentication modules
+        accept one-time passwords generated by the end user's device, while the
+        HOTP authentication module generates passwords and sends them to users
+        by e-mail or SMS.
        </para>
       </listitem>
       <listitem>
        <para>
-        The Two Step Verification and HOTP authentication modules both support
-        HOTP passwords. The Two Step Verification authentication module also
-        supports TOTP passwords.
+        All three of the authentication modules support HOTP passwords. The
+        ForgeRock Authenticator (OATH) and OATH authentication modules also
+        support TOTP passwords.
        </para>
       </listitem>
       <listitem>
        <para>
-        The Two Step Verification authentication module requires users to
-        register their devices, and stores the device registration details in
-        the user profile. The HOTP authentication module requires the presence
-        of mobile phone numbers and/or e-mail addresses in user profiles.
+        The ForgeRock Authenticator (OATH) and OATH authentication modules
+        require users to register their devices, and store the device
+        registration details in the user profile. The HOTP authentication module
+        requires the presence of mobile phone numbers and/or e-mail addresses in
+        user profiles.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The ForgeRock Authenticator (OATH) authentication module can encrypt
+        stored device registration details.
        </para>
       </listitem>
      </itemizedlist>
-     For information about configuring the HOTP authentication module, see
-     <xref linkend="hotp-module-conf-hints" />.
     </para>
    </section>
 
@@ -6185,8 +6403,8 @@ ssoadm \
 
    <para>
     In this example, the OpenAM administrator has configured an authentication
-    chain with two modules: a Data Store module and a Two Step Verification
-    module. Both modules have the <literal>requisite</literal> flag set.
+    chain with two modules: a Data Store module and a ForgeRock Authenticator
+    (OATH) module. Both modules have the <literal>requisite</literal> flag set.
    </para>
 
    <para>
@@ -6233,11 +6451,6 @@ ssoadm \
         a decision to skip two step verification applies to a user, not a
         device.
        </para>
-       <para>
-        Once a user has made the decision to opt out&#x2014;or not opt
-        out&#x2014;of two step verification, that decision can only be
-        changed by an OpenAM administrator.
-       </para>
       </listitem>
       <listitem>
        <para>
@@ -6263,7 +6476,7 @@ ssoadm \
      chain is a Data Store module, OpenAM presents you with a page for
      entering your user ID and password. After you provide those credentials,
      OpenAM verifies them. If your credentials are valid, OpenAM proceeds
-     to the Two Step Verification authentication module.
+     to the ForgeRock Authenticator (OATH) authentication module.
     </para>
 
     <procedure xml:id="authn-2sv-first-procedure">
@@ -6666,13 +6879,13 @@ ssoadm \
    </para>
 
    <section xml:id="authn-2sv-vs-hotp">
-    <title>Deciding Between Two Step Verification and the HOTP Authentication
-     Module
+    <title>Deciding Between the ForgeRock Authenticator (OATH) and the HOTP
+     Authentication Module
     </title>
 
     <para>
-     Two step verification and the HOTP authentication module both have the
-     ability to process HMAC one-time passwords as a step in OpenAM
+     The ForgeRock Authenticator (OATH) and the HOTP authentication module both
+     have the ability to process HMAC one-time passwords as a step in OpenAM
      authentication. When implementing one-time passwords,
      choose the appropriate technique for your organization.
     </para>
@@ -6682,15 +6895,15 @@ ssoadm \
      <xref linkend="authn-2sv-differences-HOTP"/> and assess your
      requirements against the following capabilities in OpenAM:
      <table xml:id="authn-2sv-differences-HOTP-table" pgwide="1">
-      <title>Comparing Two Step Verification to the HOTP Authentication Module</title>
+      <title>Comparing the ForgeRock Authenticator (OATH) to the HOTP Authentication Module</title>
       <tgroup cols="3">
        <colspec colnum="1" colwidth="3*"/>
-       <colspec colnum="2" colwidth="1*"/>
-       <colspec colnum="3" colwidth="1*"/>
+       <colspec colnum="2" colwidth="2*"/>
+       <colspec colnum="3" colwidth="2*"/>
        <thead>
         <row>
          <entry>Requirement</entry>
-         <entry>Available With Two Step Verification?</entry>
+         <entry>Available With the ForgeRock Authenticator (OATH) Authentication Module?</entry>
          <entry>Available With the HOTP Authentication Module?</entry>
         </row>
        </thead>
@@ -6733,7 +6946,7 @@ ssoadm \
    </section>
 
    <section xml:id="authn-2sv-encryption">
-    <title>Configuring the Two Step Verification Service Settings</title>
+    <title>Configuring the ForgeRock Authenticator (OATH) Service Settings</title>
 
     <para>
      When implementing two step verification in OpenAM,
@@ -6768,19 +6981,17 @@ ssoadm \
 
     <para>
      You can configure the device profile encryption and attribute settings
-     globally for an OpenAM deployment under Configuration > Global > Two Step
-     Verification Service. If you need to configure the settings for a realm,
-     add an instance of the Two Step Verification Service to the realm.
+     globally for an OpenAM deployment under Configuration > Global > ForgeRock
+     Authenticator (OATH) Service. If you need to configure the settings for a
+     realm, add an instance of the the ForgeRock Authenticator (OATH) Service to
+     the realm.
     </para>
 
     <para>
-     For detailed information about the Two Step Verification Service
+     For detailed information about the ForgeRock Authenticator (OATH) Service
      configuration, see
-     <link xlink:href="reference#two-step-verification-service-configuration"
-           xlink:role="http://docbook.org/xlink/role/olink"
-           xlink:show="new"
-     ><citetitle>Two Step Verification Service</citetitle></link> in the
-     <citetitle>Reference</citetitle>.
+     <olink targetdoc="reference"
+            targetptr="fr-authenticator-oath-service-configuration" />.
     </para>
 
    </section>
@@ -6869,8 +7080,8 @@ ssoadm \
 
      <step>
       <para>
-       Create a Two Step Verification authentication module to be used for
-       the second step of two step verification as follows:
+       Create a ForgeRock Authenticator (OATH) authentication module to be used
+       for the second step of two step verification as follows:
       </para>
 
       <substeps>
@@ -6894,7 +7105,7 @@ ssoadm \
           </listitem>
           <listitem>
            <para>
-            Module Type: Select Two Step Verification.
+            Module Type: Select ForgeRock Authenticator (OATH).
            </para>
           </listitem>
          </itemizedlist>
@@ -6906,19 +7117,19 @@ ssoadm \
          Click Create.
         </para>
         <para>
-         A page that lets you configure the Two Step Verification authentication
-         module appears.
+         A page that lets you configure the ForgeRock Authenticator (OATH)
+         authentication module appears.
         </para>
        </step>
 
        <step>
         <para>
-         Configure the Two Step Verification authentication module to meet
-         your organization's requirements.
+         Configure the ForgeRock Authenticator (OATH) authentication module to
+         meet your organization's requirements.
         </para>
         <para>
          For more information about the authentication module's configuration
-         settings, see <xref linkend="OATH-module-conf-hints" />.
+         settings, see <xref linkend="fr-authenticator-oath-conf-hints" />.
         </para>
        </step>
       </substeps>
@@ -6988,7 +7199,7 @@ ssoadm \
 
        <step>
         <para>
-         Add the Two Step Verification authentication module to the
+         Add the ForgeRock Authenticator (OATH) authentication module to the
          authentication chain as follows:
         </para>
 
@@ -7005,9 +7216,9 @@ ssoadm \
 
          <step>
           <para>
-           Fill in the New Module dialog box, specifying the Two Step
-           Verification authentication module that you just created. For this
-           example, specify the <literal>Requisite</literal> flag.
+           Fill in the New Module dialog box, specifying the ForgeRock
+           Authenticator (OATH) authentication module that you just created. For
+           this example, specify the <literal>Requisite</literal> flag.
           </para>
          </step>
 
@@ -7017,7 +7228,7 @@ ssoadm \
           </para>
           <para>
            The graphic showing your authentication chain now includes the
-           Data Store and Two Step Verification authentication modules.
+           Data Store and ForgeRock Authenticator (OATH) authentication modules.
           </para>
          </step>
 
@@ -7103,8 +7314,9 @@ ssoadm \
     <para>
      When the Two Factor Authentication Mandatory setting is enabled, users must
      provide a one-time password every time they authenticate to a chain that
-     includes a Two Step Verification authentication module. When the setting is
-     disabled, the user can optionally skip providing one-time passwords.
+     includes a ForgeRock Authenticator (OATH) authentication module. When the
+     setting is disabled, the user can optionally skip providing one-time
+     passwords.
     </para>
 
     <para>
@@ -7145,14 +7357,14 @@ ssoadm \
      verification, you need to be aware that a user's decision to opt out of
      providing one-time passwords affects the authentication process. When a
      user who has opted out of providing one-time passwords authenticates to a
-     chain that includes a Two Step Verification authentication module, that
-     module <emphasis>always</emphasis> passes authentication.
+     chain that includes a ForgeRock Authenticator (OATH) authentication module,
+     that module <emphasis>always</emphasis> passes authentication.
     </para>
 
     <para>
      Consider the example authentication chain in <xref linkend="authn-2sv-chain" />.
      The first authentication module is a Data Store module and the second
-     authentication module is a Two Step Verification module. Both
+     authentication module is a ForgeRock Authenticator (OATH) module. Both
      authentication modules have the Requisite flag setting.
     </para>
 
@@ -7174,19 +7386,19 @@ ssoadm \
       <listitem>
        <para>
         Data Store authentication passes, and authentication proceeds to the
-        next module in the chain&#x2014;the Two Step Verification module.
+        next module in the chain&#x2014;the ForgeRock Authenticator (OATH) module.
        </para>
       </listitem>
       <listitem>
        <para>
-        The Two Step Verification authentication module determines that the
-        user has opted out of providing one-time passwords.
+        The ForgeRock Authenticator (OATH) authentication module determines that
+        the user has opted out of providing one-time passwords.
        </para>
       </listitem>
       <listitem>
        <para>
-        Two Step Verification authentication passes. Because it is the last
-        authentication module in the chain, OpenAM considers authentication
+        ForgeRock Authenticator (OATH) authentication passes. Because it is the
+        last authentication module in the chain, OpenAM considers authentication
         to have completed successfully.
        </para>
       </listitem>
@@ -7210,13 +7422,14 @@ ssoadm \
       <listitem>
        <para>
         Data Store authentication passes, and authentication proceeds to the
-        next module in the chain&#x2014;the Two Step Verification module.
+        next module in the chain&#x2014;the ForgeRock Authenticator (OATH)
+        module.
        </para>
       </listitem>
       <listitem>
        <para>
-        The Two Step Verification authentication module determines that the
-        user has not opted out of providing one-time passwords, and prompts
+        The ForgeRock Authenticator (OATH) authentication module determines that
+        the user has not opted out of providing one-time passwords, and prompts
         the user for a one time password.
        </para>
       </listitem>
@@ -7228,12 +7441,12 @@ ssoadm \
       </listitem>
       <listitem>
        <para>
-        If the one-time password is valid, Two Step Verification authentication
-        passes. Because it is the last authentication module in the chain,
-        OpenAM considers authentication to have completed successfully.
-        However, if the one-time password is not valid, Two Step Verification
-        authentication fails, and OpenAM considers authentication to have
-        failed.
+        If the one-time password is valid, ForgeRock Authenticator (OATH)
+        authentication passes. Because it is the last authentication module in
+        the chain, OpenAM considers authentication to have completed
+        successfully. However, if the one-time password is not valid, ForgeRock
+        Authenticator (OATH) authentication fails, and OpenAM considers
+        authentication to have failed.
        </para>
       </listitem>
      </orderedlist>
