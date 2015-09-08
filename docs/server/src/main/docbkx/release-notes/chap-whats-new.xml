@@ -133,7 +133,10 @@
      cross-site scripting attacks:
     </para>
     <itemizedlist>
-     <listitem>/openam/oauth/registerconsumer.jsp (Core Server, Server Only)
+     <listitem>
+      <para>
+       /openam/oauth/registerconsumer.jsp (Core Server, Server Only)
+      </para>
      </listitem>
     </itemizedlist>
     <para>
@@ -320,6 +323,21 @@
       xlink:role="http://docbook.org/xlink/role/olink"
      ><citetitle>Configuring Session State</citetitle></link>
      chapter in the <citetitle>Administration Guide</citetitle>.
+    </para>
+   </listitem>
+
+   <!-- AME-7894, AME-7896 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Recording troubleshooting information</emphasis>.
+     The new <command>ssoadm start-recording</command> command lets you
+     initiate events that monitor OpenAM, while saving output that is useful
+     when performing troubleshooting. You can also start a recording event
+     from the <literal>/json/records</literal> endpoint.
+    </para>
+    <para>For more information, see
+     <olink targetdoc="admin-guide" targetptr="recording"></olink> and
+     <olink targetdoc="dev-guide" targetptr="sec-rest-api-recording"></olink>.
     </para>
    </listitem>
 
