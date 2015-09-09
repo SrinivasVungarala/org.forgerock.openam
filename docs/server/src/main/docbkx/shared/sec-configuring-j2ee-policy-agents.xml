@@ -37,7 +37,7 @@
  </indexterm>
  <para>When you create a Java EE policy agent profile and install the agent,
   you can choose to store the agent configuration centrally and configure
-  the agent through OpenAM console. Alternatively, you can choose to store
+  the agent through OpenAM console. Alternatively, you can store
   the agent configuration locally and configure the agent by changing
   values in the properties file. This section covers centralized configuration,
   indicating the corresponding properties for use in a local configuration
@@ -55,7 +55,7 @@
    after editing agent properties.</para>
  </tip>
 
- <para>After changing properties specified as "Hot swap: no", you must
+ <para>After changing properties specified as <literal>Hot swap: no</literal>, you must
   restart the application server or web server, or the agent's container.</para>
 
  <section xml:id="configure-j2ee-pa-global-props">
@@ -209,7 +209,7 @@
    <varlistentry>
     <term>HTTP Session Binding</term>
     <listitem>
-     <para>When enabled the agent invalidates the HTTP session upon login
+     <para>When enabled, the agent invalidates the HTTP session upon login
       failure, when the user has no SSO session, or when the principal user
       name does not match the SSO user name.</para>
      <para>Property: <literal>com.sun.identity.agents.config.httpsession.binding</literal></para>
@@ -334,7 +334,7 @@
    <varlistentry>
     <term>Local Audit Log Rotation Size</term>
     <listitem>
-     <para>Beyond this size limit in bytes the agent rotates the local audit
+     <para>When beyond this size limit in bytes, the agent rotates the local audit
       log file if rotation is enabled.</para>
      <para>Property: <literal>com.sun.identity.agents.config.local.log.size</literal></para>
      <para>Default: 50 MB</para>
@@ -344,6 +344,7 @@
 
   <variablelist xml:id="j2ee-agent-fqdn-properties">
    <title>Fully Qualified Domain Name Checking Properties</title>
+
    <varlistentry>
     <term>FQDN Check</term>
     <listitem>
@@ -354,11 +355,12 @@
    <varlistentry>
     <term>FQDN Default</term>
     <listitem>
-     <para>Fully qualified domain name that the users should use in order to
-      access resources.</para>
+     <para>FQDN users should use to access resources.</para>
+
      <para>This property ensures that when users access protected resources
       on the web server without specifying the FQDN, the agent can redirect
       the users to URLs containing the correct FQDN.</para>
+
      <para>Property: <literal>com.sun.identity.agents.config.fqdn.default</literal></para>
     </listitem>
    </varlistentry>
@@ -771,10 +773,10 @@
 
   <variablelist xml:id="j2ee-agent-privilege-attributes-properties">
    <title>Privilege Attributes Processing Properties</title>
-   <para>Privileged attributes are sued when the agent is running in
+   <para>Privileged attributes are used when the agent is running in
     <literal>ALL</literal> or <literal>J2EE_POLICY</literal> filter mode.
     Privileged attributes contain the list of declarative Java EE roles that the
-    user can have.
+    user can have:
    </para>
 
    <varlistentry>
@@ -875,7 +877,7 @@
   <para>This section covers SSO J2EE agent properties. After creating the
    agent profile, you access these properties in the OpenAM console under
    Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
-   J2EE &gt; <replaceable>Agent Name</replaceable> &gt; SSO</para>
+   J2EE &gt; <replaceable>Agent Name</replaceable> &gt; SSO.</para>
 
   <variablelist xml:id="j2ee-agent-cookie-properties">
    <title>Cookie Properties</title>
@@ -907,7 +909,7 @@
    <varlistentry>
     <term>Cross-Domain SSO</term>
     <listitem>
-     <para>Enables Cross-Domain Single Sign-On.</para>
+     <para>Enables CDSSO.</para>
      <para>Property: <literal>com.sun.identity.agents.config.cdsso.enable</literal></para>
     </listitem>
    </varlistentry>
@@ -1274,7 +1276,7 @@
     <term>URL Policy Env GET Parameters</term>
     <listitem>
      <para>Specifies the list of HTTP GET request parameters whose names and
-      values the agents sets in the environment map for URL policy evaluation
+      values the agents set in the environment map for URL policy evaluation
       by the OpenAM server.</para>
      <para>Property: <literal>com.sun.identity.agents.config.policy.env.get.param</literal></para>
     </listitem>
@@ -1283,7 +1285,7 @@
     <term>URL Policy Env POST Parameters</term>
     <listitem>
      <para>Specifies the list of HTTP POST request parameters whose names and
-      values the agents sets in the environment map for URL policy evaluation
+      values the agents set in the environment map for URL policy evaluation
       by the OpenAM server.</para>
      <para>Property: <literal>com.sun.identity.agents.config.policy.env.post.param</literal></para>
     </listitem>
@@ -1292,7 +1294,7 @@
     <term>URL Policy Env jsession Parameters</term>
     <listitem>
      <para>Specifies the list of HTTP session attributes whose names and
-      values the agents sets in the environment map for URL policy evaluation
+      values the agents set in the environment map for URL policy evaluation
       by the OpenAM server.</para>
      <para>Property: <literal>com.sun.identity.agents.config.policy.env.jsession.param</literal></para>
     </listitem>
@@ -1463,14 +1465,16 @@
    <varlistentry>
     <term>Ignore Path Info in Request URL</term>
     <listitem>
-     <para>When enabled, strip path info from the request URL while doing the
+     <para>When enabled, strip the path information from the request URL while doing the
       Not Enforced List check, and URL policy evaluation. This is designed
       to prevent a user from accessing a URI by appending the matching pattern
       in the policy or not enforced list.</para>
+
      <para>For example, if the not enforced list includes
       <literal>/*.gif</literal>, then stripping path info from the request URL
       prevents access to <literal>http://host/index.html</literal> by using
       <literal>http://host/index.html?hack.gif</literal>.</para>
+
      <para>Property: <literal>com.sun.identity.agents.config.ignore.path.info</literal></para>
     </listitem>
    </varlistentry>
@@ -1535,7 +1539,7 @@
    <title>Client Identification Properties</title>
    <para>If the agent is behind a proxy or load balancer, then the agent can
     get client IP and host name values from the proxy or load balancer. For
-    proxies and load balancer that support providing the client IP and host
+    proxies and load balancers that support providing the client IP and host
     name in HTTP headers, you can use the following properties.</para>
    <para>When multiple proxies or load balancers sit in the request path,
     the header values can include a comma-separated list of values with the

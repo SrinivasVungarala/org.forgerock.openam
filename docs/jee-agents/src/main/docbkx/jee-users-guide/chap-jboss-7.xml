@@ -58,7 +58,7 @@
   policy agent as described in the <citetitle>Administration Guide</citetitle>
   section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
   xlink:show="new"><citetitle>Creating Agent
-  Profiles</citetitle></link>. To protect resources with the agent also create
+  Profiles</citetitle></link>. To protect resources with the agent, also create
   at least one policy as described in the section on <link
   xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
   xlink:show="new"><citetitle>Configuring
@@ -185,9 +185,9 @@ Install log file location:
 ...</computeroutput>
     </screen>
 
-    <para>Upon successful completion, the installer has updated the JBoss
-    configuration, added the agent web application under
-    <filename>JBOSS_HOME/server/standalone/deployments</filename>, and also set up
+    <para>Upon successful completion, the installer updates the JBoss
+    configuration, adds the agent web application under
+    <filename>JBOSS_HOME/server/standalone/deployments</filename>, and also sets up
     configuration and log directories for the agent.</para>
     <note>
      <para>If the agent is in a different domain than the server, refer to <citetitle>Administration Guide</citetitle> procedure, <link
@@ -201,27 +201,27 @@ Install log file location:
     <para>Each agent instance that you install on the system has its own
     numbered configuration and logs directory. The first agent's configuration
     and logs are thus located under the directory
-    <filename>j2ee_agents/jboss_v7_agent/Agent_001/</filename>.</para>
+    <filename>j2ee_agents/jboss_v7_agent/Agent_001/</filename>:</para>
     <variablelist>
      <varlistentry>
       <term><filename>config/<?eval ${agentsBootstrapFile}?></filename></term>
       <listitem>
        <para>Used to bootstrap the Java EE policy agent, allowing the agent to
-       connect to OpenAM and download its configuration</para>
+       connect to OpenAM and download its configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>config/<?eval ${agentsConfigurationFile}?></filename></term>
       <listitem>
        <para>Only used if you configured the Java EE policy agent to use local
-       configuration</para>
+       configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>logs/audit/</filename></term>
       <listitem>
        <para>Operational audit log directory, only used if remote logging
-       to OpenAM is disabled</para>
+       to OpenAM is disabled.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
@@ -244,7 +244,8 @@ Install log file location:
    <step>
     <para>To protect a web application, you must add the following filter
     to the application's <filename>WEB-INF/web.xml</filename> deployment descriptor,
-    following the opening &lt;web-app&gt; tag.</para>
+    following the opening &lt;web-app&gt; tag:</para>
+
     <programlisting language="xml"> &lt;filter&gt;
   &lt;filter-name&gt;Agent&lt;/filter-name&gt;
   &lt;display-name&gt;Agent&lt;/display-name&gt;
@@ -262,7 +263,7 @@ Install log file location:
 
     <para>
      You also need to add the following security constraint specification to the
-     application's <filename>WEB-INF/web.xml</filename> file.
+     application's <filename>WEB-INF/web.xml</filename> file:
     </para>
     <programlisting language="xml">&lt;security-constraint&gt;
   &lt;web-resource-collection&gt;
@@ -273,8 +274,10 @@ Install log file location:
   &lt;/security-constraint&gt;</programlisting>
 
     <para>You must also add the following security domain specification to the
-    <filename>jboss-web.xml</filename> configuration file of the application.</para>
+    <filename>jboss-web.xml</filename> configuration file of the application:</para>
+
     <programlisting language="xml">&lt;security-domain&gt;java:/jaas/AMRealm&lt;/security-domain&gt;</programlisting>
+
     <para>
      You can find that file packed in the <filename>agentsample.ear</filename>
      archive in the
@@ -289,8 +292,9 @@ Install log file location:
      If you typed in <literal>false</literal> to the <literal>Install
      agent as global module</literal> question during the installation process,
      you will need to add the following line to the
-     <filename>META-INF/MANIFEST.MF</filename> file of the application.
+     <filename>META-INF/MANIFEST.MF</filename> file of the application:
     </para>
+
     <programlisting language="xml">Dependencies: org.forgerock.openam.agent</programlisting>
    </step>
 
@@ -303,7 +307,7 @@ Install log file location:
     </para>
     <para>
      The reason manual deployment is required when running JBoss in domain
-     mode is that the agent installer takes advantage of auto-deployment
+     mode is that the agent installer uses auto-deployment
      capabilities provided by the JBoss deployment scanner. The deployment
      scanner is used only in standalone mode. When running JBoss in standalone
      mode, it is not necessary to manually deploy the
@@ -326,7 +330,7 @@ Install log file location:
    <step performance="optional">
     <para>If you have a policy configured, you can test your policy agent.
     For example, try to browse to a resource that your policy agent protects.
-    You should be redirected to OpenAM to authenticate, for example as user
+    You should be redirected to OpenAM to authenticate, for example, as user
     <literal>demo</literal>, password <literal>changeit</literal>. After
     you authenticate, OpenAM then redirects you back to the resource you tried
     to access.</para>

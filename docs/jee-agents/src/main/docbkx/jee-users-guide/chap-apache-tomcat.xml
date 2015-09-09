@@ -56,7 +56,7 @@
   policy agent as described in the <citetitle>Administration Guide</citetitle>
   section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
   xlink:show="new"><citetitle>Creating Agent
-  Profiles</citetitle></link>. To protect resources with the agent also create
+  Profiles</citetitle></link>. To protect resources with the agent, also create
   at least one policy as described in the section on <link
   xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
   xlink:show="new"><citetitle>Configuring
@@ -152,7 +152,7 @@ $ <userinput>echo $JAVA_HOME</userinput>
    </para>
 
    <step>
-    <para>Shut down the Tomcat server where you plan to install the agent.</para>
+    <para>Shut down the Tomcat server where you plan to install the agent:</para>
 
     <screen>
 $ <userinput>/path/to/tomcat/bin/shutdown.sh</userinput>
@@ -164,7 +164,7 @@ $ <userinput>/path/to/tomcat/bin/shutdown.sh</userinput>
    </step>
 
    <step>
-    <para>Run <command>agentadmin --install</command> to install the agent.</para>
+    <para>Run <command>agentadmin --install</command> to install the agent:</para>
     <screen>
 $ <userinput>/path/to/j2ee_agents/tomcat_v6_agent/bin/agentadmin --install --acceptLicense</userinput>
     </screen>
@@ -201,11 +201,11 @@ $ <userinput>/path/to/j2ee_agents/tomcat_v6_agent/bin/agentadmin --install --acc
     <step>
      <para>
       For Tomcat 6 Installs Only: you will be prompted if you want
-      the installer to deploy the agent filter in the global web.xml.
-      Press Enter to accept the default: <literal>true</literal> if you want
+      the installer to deploy the agent filter in the global <literal>web.xml</literal>.
+      Press Enter to accept the default value of <literal>true</literal> if you want
       to protect all applications in the container. If you want to protect
       only a few applications, enter <literal>false</literal>.
-      For this example, accept the default.
+      For this example, accept the default:
      </para>
      <screen>
 Choose yes to deploy the policy agent in the global web.xml file.
@@ -234,7 +234,7 @@ Install agent filter in global web.xml ? [true]:
 
    <step>
     <para>Next, review a summary of your responses and select an action
-     to continue, go back a step, start over, or exit from the install.
+     to continue, go back a step, start over, or exit from the install:
     </para>
     <screen><computeroutput>
 -----------------------------------------------
@@ -278,8 +278,8 @@ Thank you for using OpenAM Policy Agent</computeroutput>
     </screen>
 
     <para>
-     Upon successful completion, the installer has added the agent
-     configuration to the Tomcat configuration, and also set up the configuration
+     Upon successful completion, the installer adds the agent
+     configuration to the Tomcat configuration, and set up the configuration
      and log directories for the agent.
     </para>
 
@@ -303,7 +303,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
      Each agent instance that you install on the system has its own
      numbered configuration and logs directory. The first agent's configuration
      and logs are thus located under the directory
-     <filename>j2ee_agents/tomcat_v6_agent/Agent_001/</filename>.
+     <filename>j2ee_agents/tomcat_v6_agent/Agent_001/</filename>:
     </para>
 
     <variablelist>
@@ -311,7 +311,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
       <term><filename>config/<?eval ${agentsBootstrapFile}?></filename></term>
       <listitem>
        <para>Used to bootstrap the Java EE policy agent, allowing the agent to
-        connect to OpenAM and download its configuration</para>
+        connect to OpenAM and download its configuration.</para>
       </listitem>
      </varlistentry>
 
@@ -319,7 +319,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
       <term><filename>config/<?eval ${agentsConfigurationFile}?></filename></term>
       <listitem>
        <para>Only used if you configured the Java EE policy agent to use local
-        configuration</para>
+        configuration.</para>
       </listitem>
      </varlistentry>
 
@@ -327,7 +327,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
       <term><filename>logs/audit/</filename></term>
       <listitem>
        <para>Operational audit log directory, only used if remote logging
-        to OpenAM is disabled</para>
+        to OpenAM is disabled.</para>
       </listitem>
      </varlistentry>
 
@@ -351,7 +351,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
    </step>
 
    <step>
-    <para>Start the Tomcat server where you installed the agent.</para>
+    <para>Start the Tomcat server where you installed the agent:</para>
     <screen>
 $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
     </screen>
@@ -372,12 +372,12 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
     application-specific <filename>WEB-INF/web.xml</filename> file after basic
     installation is complete. The <filename>agentapp.war</filename>
     is automatically copied to the Tomcat <literal>webapps</literal> folder.
-    The Tomcat 8 install is identical to the Tomcat 7 installation process.
+    The Tomcat 8 install is identical to the Tomcat 7 installation process:
    </para>
 
    <step>
     <para>Shut down the Tomcat server where you plan to install the
-     agent.</para>
+     agent:</para>
 
     <screen>
 $ <userinput>/path/to/tomcat/bin/shutdown.sh</userinput>
@@ -389,7 +389,7 @@ $ <userinput>/path/to/tomcat/bin/shutdown.sh</userinput>
    </step>
 
    <step>
-   <para>Run <command>agentadmin --install</command> to install the agent.</para>
+   <para>Run <command>agentadmin --install</command> to install the agent:</para>
    <screen>
 $ <userinput>/path/to/j2ee_agents/tomcat_v6_agent/bin/agentadmin --install --acceptLicense</userinput>
    </screen>
@@ -442,7 +442,7 @@ $ <userinput>/path/to/j2ee_agents/tomcat_v6_agent/bin/agentadmin --install --acc
 
    <step>
     <para>Next, review a summary of your responses and select an action
-     to continue, go back a step, start over, or exit from the install.
+     to continue, go back a step, start over, or exit from the install:
     </para>
     <screen><computeroutput>
 -----------------------------------------------
@@ -486,7 +486,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
     </screen>
 
     <para>
-     Upon successful completion, the installer has added the agent
+     Upon successful completion, the installer adds the agent
      configuration to the Tomcat configuration, and also set up the configuration
      and log directories for the agent.
     </para>
@@ -511,7 +511,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
      Each agent instance that you install on the system has its own
      numbered configuration and logs directory. The first agent's configuration
      and logs are thus located under the directory
-     <filename>j2ee_agents/tomcat_v6_agent/Agent_001/</filename>.
+     <filename>j2ee_agents/tomcat_v6_agent/Agent_001/</filename>:
     </para>
 
     <variablelist>
@@ -519,7 +519,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
       <term><filename>config/<?eval ${agentsBootstrapFile}?></filename></term>
       <listitem>
        <para>Used to bootstrap the Java EE policy agent, allowing the agent to
-        connect to OpenAM and download its configuration</para>
+        connect to OpenAM and download its configuration.</para>
       </listitem>
      </varlistentry>
 
@@ -527,7 +527,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
       <term><filename>config/<?eval ${agentsConfigurationFile}?></filename></term>
       <listitem>
        <para>Only used if you configured the Java EE policy agent to use local
-        configuration</para>
+        configuration.</para>
       </listitem>
      </varlistentry>
 
@@ -535,7 +535,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
       <term><filename>logs/audit/</filename></term>
       <listitem>
        <para>Operational audit log directory, only used if remote logging
-        to OpenAM is disabled</para>
+        to OpenAM is disabled.</para>
       </listitem>
      </varlistentry>
 
@@ -564,7 +564,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
      add a filter manually for each protected application's
      <literal>WEB-INF/web.xml</literal>
      deployment descriptor file, following the opening &lt;web-app> tag.
-     Make sure that the agent filter is first in the filter chain.
+     Make sure that the agent filter is first in the filter chain:
     </para>
     <programlisting language="xml">
 &lt;filter>
@@ -585,7 +585,7 @@ Thank you for using OpenAM Policy Agent</computeroutput>
    </step>
 
    <step>
-    <para>Start the Tomcat server where you installed the agent.</para>
+    <para>Start the Tomcat server where you installed the agent:</para>
     <screen>
 $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
     </screen>
@@ -602,7 +602,7 @@ $ <userinput>/path/to/tomcat/bin/startup.sh</userinput>
 
    <step>
     <para>Check the Tomcat server log after you start the server to make
-    sure startup completed successfully.</para>
+    sure startup completed successfully:</para>
 
     <screen>
 $ <userinput>tail -n 1 /path/to/tomcat/logs/catalina.out</userinput>
@@ -612,7 +612,7 @@ $ <userinput>tail -n 1 /path/to/tomcat/logs/catalina.out</userinput>
    </step>
    <step>
     <para>Check the <filename>debug.out</filename> debug log to verify that
-    the agent did start up.</para>
+    the agent did start up:</para>
 
     <screen>
 $ <userinput>tail -n 7 /path/to/j2ee_agents/tomcat_v6_agent/Agent_001/logs/debug/debug.out</userinput>
@@ -628,7 +628,7 @@ Build Machine: builds.forgerock.org
    <step performance="optional">
     <para>If you have a policy configured, you can test your policy agent.
     For example, try to browse to a resource that your policy agent protects.
-    You should be redirected to OpenAM to authenticate, for example as user
+    You should be redirected to OpenAM to authenticate, for example, as user
     <literal>demo</literal>, password <literal>changeit</literal>. After
     you authenticate, OpenAM then redirects you back to the resource you tried
     to access.</para>
@@ -661,7 +661,7 @@ Build Machine: builds.forgerock.org
   </indexterm>
 
   <para>Shut down the Tomcat server before you uninstall the
-    policy agent.</para>
+    policy agent:</para>
   
   <screen>
 $ <userinput>/path/to/tomcat/bin/shutdown.sh</userinput>

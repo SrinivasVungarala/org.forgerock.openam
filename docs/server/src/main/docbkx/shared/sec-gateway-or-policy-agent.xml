@@ -48,13 +48,13 @@
   users and the protected applications. Policy agents are installed into the
   servers where applications run, intercepting requests in that context.</para>
 
- <para>OpenIG allows you to protect access to applications not
+ <para>Use OpenIG to protect access to applications not
   suited for a policy agent. Not all web servers and Java EE applications have
   policy agents. Not all operating systems work with policy agents.</para>
 
- <para>Policy agents have the advantage, where you can install them,
-  of sitting within your existing server infrastructure. Once you have
-  agents installed into the servers with web applications or sites to protect,
+ <para>Policy agents have the advantage
+  of sitting within your existing server infrastructure.
+  Once you have agents installed into the servers with web applications or sites to protect,
   then you can manage their configurations centrally from OpenAM.</para>
 
  <para>Of course, for organizations with both servers where you can install

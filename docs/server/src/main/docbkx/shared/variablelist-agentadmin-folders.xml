@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <variablelist xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
@@ -33,7 +33,7 @@
   <listitem>
    <para>The installation and configuration program
     <command>agentadmin</command> and a password hashing tool
-    <command>crypt_util</command>.</para>
+    <command>crypt_util</command></para>
   </listitem>
 </varlistentry>
 <varlistentry>

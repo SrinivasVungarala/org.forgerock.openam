@@ -36,7 +36,7 @@
   <secondary>Configuring</secondary>
  </indexterm>
  <para>This section covers version 2.2 policy agent properties. Version 2.2 agents
-  store their configurations locally, with a username-password combination
+  store their configurations locally with a username-password combination
   used to connect to OpenAM.</para>
 
  <warning>

@@ -20,7 +20,7 @@
  !
  ! CCPL HEADER END
  !
- !      Copyright 2014 ForgeRock AS
+ !      Copyright 2014-2015 ForgeRock AS.
  !
 -->
 <para xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
@@ -33,5 +33,5 @@
   <option>--acceptLicense</option> option on the command line.
   The inclusion of the option indicates that you have read and accepted
   the terms stated in the license.
-  To view the license agreement, open <filename>&lt;server-root&gt;/legal-notices/license.txt</filename>.
+  To view the license agreement, open <filename>&lt;server-root&gt;/legal-notices/license.txt</filename>:
  </para>

@@ -30,7 +30,7 @@
          xmlns:xlink='http://www.w3.org/1999/xlink'
          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
 
- <title>Kinds of Agent Profiles</title>
+ <title>Types of Agent Profiles</title>
 
  <indexterm>
   <primary>policy agent profiles</primary>
@@ -86,7 +86,7 @@
    <term>2.2 Agents</term>
    <listitem>
     <para>Version 2.2 web and Java EE policy agents hold their configuration
-     locally, connecting to OpenAM with a user name, password combination.
+     locally, connecting to OpenAM with a username/password combination.
      This kind of agent is provided for backwards compatibility.</para>
    </listitem>
   </varlistentry>

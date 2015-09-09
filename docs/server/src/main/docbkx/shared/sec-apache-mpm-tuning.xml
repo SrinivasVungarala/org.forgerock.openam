@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !
 -->
 <section
@@ -48,7 +48,7 @@
  </para>
  <para>
   The key area of performance tuning for Apache is
-  to run in worker mode ensuring that they are enough processes and threads
+  to run in worker mode ensuring that there are enough processes and threads
   available to service the expected number of client requests. Apache performance
   is configured in the <filename>conf/extra/http-mpm.conf</filename> file.</para>
 

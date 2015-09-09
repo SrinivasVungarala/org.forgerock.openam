@@ -47,19 +47,19 @@
   to take effect immediately without a server restart.
  </para>
  <para>Policy agent configuration settings can also be stored locally in a
-  Java properties flat-file, such as
+  Java properties flatfile, such as
   <filename>Agent_001/config/${agentsConfigurationFile}</filename>,
   which is created when you install the agent.
   If you implement a local properties file, you must make all
   configuration changes by modifying property values in the file.
  </para>
  <para>While the majority of agent properties are hot swap-enabled, there are
-  a number that are not. These non-hot swappable properties are indicated in the
-  OpenAM console or local properties file as such. Any changes to these non-hot swappable
+  a number that are not. These non-hot-swappable properties are indicated in the
+  OpenAM console or local properties file as such. Any changes to these non-hot-swappable
   properties require a container restart. To avoid any configuration errors that
   could take effect immediately, you can lock the properties by setting the
   <literal>com.sun.identity.agents.config.lock.enable</literal> to <literal>true</literal>
   in the OpenAM bootstrap file, <filename>${agentsBootstrapFile}</filename>,
-  and then re-start the container.
+  and then restart the container.
  </para>
 </section>

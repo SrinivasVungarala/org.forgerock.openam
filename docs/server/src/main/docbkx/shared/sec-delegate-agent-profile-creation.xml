@@ -42,7 +42,7 @@
   write agent profiles.</para>
 
  <para>You can use the OpenAM administrator account when creating policy agent
-  profiles. If however you delegate policy agent installation, then you might
+  profiles. If you delegate policy agent installation, then you might
   not want to share OpenAM administrator credentials with everyone who
   installs policy agents.</para>
 
@@ -74,7 +74,7 @@
   </step>
 
   <step>
-    <para>Select Read and write access to all configured Agents, and then
+    <para>Select Read and write access to all configured agents, and then
     Save your work.</para>
   </step>
 
