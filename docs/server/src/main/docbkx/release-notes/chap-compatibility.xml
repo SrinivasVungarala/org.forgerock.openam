@@ -44,6 +44,138 @@
     These changes are new in OpenAM ${serverDocTargetVersion}:
    </para>
 
+   <!-- OPENAM-6021/OPENAM-3470 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Changes to SAML 2.0 NameID Persistence</emphasis>.
+     OpenAM's SAML 2.0 account management and NameID persistence logic has been
+     updated to work better with non-persistent NameID formats.
+    </para>
+
+    <para>
+     The NameID persistence logic is summarized as follows:
+    </para>
+    <literallayout>
+     Persistent NameID         -> NameID MUST be stored
+     Transient NameID          -> NameID MUST NOT be stored
+     Ignored User Profile Mode -> NameID CANNOT be stored (fails if used in combination with persistent NameID-Format)
+     For Any Other Case        -> NameID MAY be stored based on customizable logic
+    </literallayout>
+
+    <itemizedlist>
+     <para>
+      The following changes have been made on the Identity Provider-side:
+     </para>
+     <listitem>
+      <para><emphasis role="bold">New Setting: idpDisableNameIDPersistence</emphasis>.
+       OpenAM now provides a new setting, <literal>idpDisableNameIDPersistence</literal>,
+       which disables the storage of the NameID values for all NameIDs issued
+       by that IdP instance, as long as the NameID-Format is anything but
+       <literal>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</literal>.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">SP's spDoNotWriteFederationInfo Repurposed</emphasis>.
+       The SP's <literal>spDoNotWriteFederationInfo</literal> setting has been
+       repurposed. It no longer is specific to unspecified NameID-Formats. Now,
+       it affects all non-persistent NameID-Formats, similar to the
+       <literal>idpDisableNameIDPersistence</literal> setting in the IdP
+       configuration.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">NameID Lookup Changes</emphasis>.
+       The NameID lookup mechanism has been modified, so that it only tries to
+       look up existing NameID values for the user if the NameID is actually
+       persisted for the corresponding NameID-Format.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">New Method in the IDPAccountMapper Interface</emphasis>.
+       The <literal>IDPAccountMapper</literal> interface has been extended with
+       the following new method:
+      </para>
+      <programlisting language="java">
+       /**
+       * Tells whether the provided NameID-Format should be persisted in the user data store or not.
+       *
+       * @param realm The hosted IdP's realm.
+       * @param hostEntityID The hosted IdP's entityID.
+       * @param remoteEntityID The remote SP's entityID.
+       * @param nameIDFormat The non-transient, non-persistent NameID-Format in question.
+       * @return <code>true</code> if the provided NameID-Format should be persisted in the user data store,
+       * <code>false</code> otherwise.
+       */
+       public boolean shouldPersistNameIDFormat(String realm, String hostEntityID, String remoteEntityID,String nameIDFormat);
+      </programlisting>
+      <para>
+       The default implementation of <literal>shouldPersistNameIDFormat</literal>
+       in <literal>DefaultIDPAccountMapper</literal> first checks whether
+       <literal>idpDisableNameIDPersistence</literal> is enabled in the hosted
+       SP configuration. If <literal>idpDisableNameIDPersistence</literal> is disabled,
+       the logic advances and accesses the remote SP's
+       <literal>spDoNotWriteFederationInfo</literal> flag.
+      </para>
+     </listitem>
+    </itemizedlist>
+
+    <itemizedlist>
+     <para>
+      The following changes have been made on the Service Provider-side:
+     </para>
+     <listitem>
+      <para><emphasis role="bold">Changes to SPAccountMapper</emphasis>.
+       The <literal>SPAccountMapper</literal> implementations now no longer
+       need to perform reverse lookups using the received NameID value.
+       The <literal>SPACSUtils</literal> now performs the reverse lookup if the
+       NameID-Format should be persisted. This change was made to ensure that
+       NameID values are only persisted in the data store if they have not been
+       stored there previously.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">SP's spDoNotWriteFederationInfo Repurposed</emphasis>.
+       The SP's <literal>spDoNotWriteFederationInfo</literal> setting has been
+       repurposed. It no longer is specific to unspecified NameID-Formats.
+       It affects all non-persistent NameID-Formats.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">New Method in the SPAccountMapper Interface</emphasis>.
+       The <literal>SPAccountMapper</literal> interface has been extended with
+       the following new method:
+      </para>
+      <programlisting language="java">
+       /**
+       * Tells whether the provided NameID-Format should be persisted in the user data store or not.
+       *
+       * @param realm The hosted SP's realm.
+       * @param hostEntityID The hosted SP's entityID.
+       * @param remoteEntityID The remote IdP's entityID.
+       * @param nameIDFormat The non-transient, non-persistent NameID-Format in question.
+       * @return <code>true</code> if the provided NameID-Format should be persisted in the user data store,
+       * <code>false</code> otherwise.
+       */
+       public boolean shouldPersistNameIDFormat(String realm, String hostEntityID, String remoteEntityID, String nameIDFormat);
+      </programlisting>
+      <para>
+       The default implementation of <literal>shouldPersistNameIDFormat</literal>
+       in <literal>DefaultIDPAccountMapper</literal> first checks whether
+       <literal>idpDisableNameIDPersistence</literal> is enabled in the hosted
+       IdP configuration. If <literal>idpDisableNameIDPersistence</literal> is disabled,
+       the logic advances and accesses the remote SP's
+       <literal>spDoNotWriteFederationInfo</literal> flag.
+      </para>
+     </listitem>
+    </itemizedlist>
+
+    <para>
+     For more information, see
+     <link xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3470"
+           xlink:show="new">OPENAM-3470</link>.
+    </para>
+   </listitem>
+
    <!-- OPENAM-3575/6212 -->
    <listitem>
     <para>
@@ -112,6 +244,65 @@
       >OPENAM-3575</link>.
     </para>
    </listitem>
+
+   <!-- OPENAM-6109 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Addional JVM Properties for WebSphere Installs</emphasis>.
+     OpenAM 12.0.1 requires an updated step when running OpenAM on WebSphere. The JVM
+     settings require additional properties to be set.
+    </para>
+    <screen>
+     -DamCryptoDescriptor.provider=IBMJCE
+     -DamKeyGenDescriptor.provider=IBMJCE
+     -Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl
+     -Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl
+    </screen>
+    <para>
+     Run the following procedures to set up the JVM properties on WebSphere. Note
+     that these steps were run on WebSphere 8.5 on a Windows platform:
+    </para>
+    <procedure>
+     <step>
+      <para>Log in to the WebSphere console.</para>
+     </step>
+     <step>
+      <para>In the left pane, expand Servers.</para>
+     </step>
+     <step>
+      <para>Expand Server Types.</para>
+     </step>
+     <step>
+      <para>Click WebSphere application servers.</para>
+     </step>
+     <step>
+      <para>In the right pane, click on the server name.</para>
+     </step>
+     <step>
+      <para>In the Server infrastructure section, expand Java and Process Management.</para>
+     </step>
+     <step>
+      <para>Click Process definition.</para>
+     </step>
+     <step>
+      <para>In the Advanced properties section, click Java Virtual Machine.</para>
+     </step>
+     <step>
+      <para>In the Generic JVM arguments text field, add the JVM properties.</para>
+     </step>
+     <step>
+      <para>Save the configuration.</para>
+     </step>
+    </procedure>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-6109"
+      xlink:show="new"
+      >OPENAM-6109</link>.
+    </para>
+   </listitem>
+
   </itemizedlist>
 
 
