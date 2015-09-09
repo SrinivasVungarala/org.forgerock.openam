@@ -98,9 +98,6 @@
      <para>Set debug level to <literal>error</literal>.</para>
     </listitem>
     <listitem>
-     <para>Disable session failover debugging.</para>
-    </listitem>
-    <listitem>
      <para>Set container-level logging to a low level, such as
      <literal>error</literal> or <literal>severe</literal>.</para>
     </listitem>
