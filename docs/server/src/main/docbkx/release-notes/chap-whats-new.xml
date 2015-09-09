@@ -335,6 +335,14 @@
      when performing troubleshooting. You can also start a recording event
      from the <literal>/json/records</literal> endpoint.
     </para>
+    <para>
+     After starting a recording event, you can use the new
+     <command>ssoadm get-recording-status</command> command to get the status
+     of the recording event and the new
+     <command>ssoadm stop-recording</command> command to terminate the
+     recording event.
+    </para>
+
     <para>For more information, see
      <olink targetdoc="admin-guide" targetptr="recording"></olink> and
      <olink targetdoc="dev-guide" targetptr="sec-rest-api-recording"></olink>.
