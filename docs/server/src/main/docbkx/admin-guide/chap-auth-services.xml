@@ -1911,7 +1911,23 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
        </varlistentry>
       </variablelist>
       <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-dynamic-profile-creation</literal></para>
+       <literal>iplanet-am-auth-dynamic-profile-creation</literal>. Set this
+       attribute's value to one of the following:
+       <itemizedlist>
+        <listitem>
+         <para><literal>true</literal> for Dynamic</para>
+        </listitem>
+        <listitem>
+         <para><literal>createAlias</literal> for Dynamic With User Alias</para>
+        </listitem>
+        <listitem>
+         <para><literal>ignore</literal> for Ignored</para>
+        </listitem>
+        <listitem>
+         <para><literal>false</literal> for Required</para>
+        </listitem>
+       </itemizedlist>
+      </para>
      </listitem>
     </varlistentry>
     <varlistentry>
