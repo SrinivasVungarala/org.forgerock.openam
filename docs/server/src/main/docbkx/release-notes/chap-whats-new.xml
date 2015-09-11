@@ -326,6 +326,20 @@
     </para>
    </listitem>
 
+   <!-- Epic: OPENAM-5334 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Two Step Verification With a Mobile Phone</emphasis>.
+     OpenAM ${serverDocTargetVersion} provides two step verification to
+     users who have an authenticator app that supports the Open AuTHentication
+     (OATH) protocol installed on their mobile phone.
+    </para>
+    <para>
+     For more information, see
+     <olink targetdoc="admin-guide" targetptr="authn-2sv"></olink>.
+    </para>
+   </listitem>
+
    <!-- AME-7894, AME-7896 -->
    <listitem>
     <para>
