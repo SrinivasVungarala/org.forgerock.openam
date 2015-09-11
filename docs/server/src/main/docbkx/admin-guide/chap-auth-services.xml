@@ -3145,6 +3145,17 @@ $ ssoadm set-realm-svc-attrs \
       <literal>openam-auth-fr-oath-maximum-clock-drift</literal></para>
      </listitem>
     </varlistentry>
+    <varlistentry>
+     <term>Name of the Issuer</term>
+     <listitem>
+      <para>A value that appears as an identifier on the user's device.
+      Common choices are a company name, a web site, or an OpenAM realm.
+      The value must be alphanumeric with no spaces. The default value is
+      <literal>ForgeRock</literal>.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>openam-auth-fr-oath-issuer-name</literal></para>
+     </listitem>
+    </varlistentry>
    </variablelist>
 
   </section>
