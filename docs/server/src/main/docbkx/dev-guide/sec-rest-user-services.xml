@@ -36,7 +36,8 @@
   <indexterm><primary>REST API</primary></indexterm>
 
   <para>This section shows how to use the OpenAM RESTful interfaces for user
-   self-service functionality: user self-registration and forgotten password reset.
+   self-service functionality: user self-registration, forgotten password reset,
+   dashboard configuration, and device profile reset.
   </para>
 
   <para>In this section, long URLs are wrapped to fit the printed page, as some
@@ -621,5 +622,62 @@ $ <userinput>curl \
     rely on OpenAM to handle authentication.</para>
    
   </section>
+
+ <section xml:id="rest-api-device-profile-reset">
+  <title>Resetting Device Profiles</title>
+  <indexterm>
+   <primary>Two Step Verification</primary>
+   <secondary>resetting device profile</secondary>
+  </indexterm>
+
+  <para>
+   The OpenAM REST API provides an action that lets a user reset their own
+   profile for a registered device running an authenticator app used for two
+   step verification. Administrators can also use this REST API to reset a
+   user's registered device profile.
+  </para>
+  <para>
+   Resetting a device profile deletes information about a user's registered
+   device from OpenAM.
+  </para>
+  <para>
+   Resetting a device profile is useful when:
+   <itemizedlist>
+    <listitem>
+     <para>
+      A user loses a registered device&#x2014;for example, a mobile
+      phone&#x2014;but had not saved the device recovery codes available in the
+      OpenAM dashboard.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      A user loses a registered device and has no device recovery codes
+      remaining.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <para>
+   An administrator or a user can perform an HTTP POST on
+   <literal>/json/<replaceable>subrealm</replaceable>/users/<replaceable>user</replaceable>/devices/2fa/oath?_action=reset</literal>
+   to reset the user's device profile:
+  </para>
+    <screen>
+$ <userinput>curl \
+ --request POST \
+ --header "Content-Type: application/json" \
+ --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
+ --data '{}' \
+ https://openam.example.com:8443/openam/json/<replaceable>mySubrealm</replaceable>/users/<replaceable>myUser</replaceable>/devices/2fa/oath?_action=reset</userinput>
+<computeroutput>{"result":true}</computeroutput></screen>
+
+  <para>
+   For more information about device registration, see
+   <olink targetdoc="admin-guide" targetptr="authn-2sv-using-initiating-first-attempt" />.
+  </para>
+
+ </section>
 
 </section>

@@ -6883,6 +6883,13 @@ ssoadm \
 
     </procedure>
 
+    <para>
+     Users who do not save recovery codes or who run out of recovery codes
+     and cannot authenticate to OpenAM without a verification code require
+     administrative support to reset their device profiles. See
+     <xref linkend="authn-2sv-issues" /> for more information.
+    </para>
+
    </section>
 
   </section>
@@ -7476,25 +7483,39 @@ ssoadm \
    <title>Supporting Two Step Verification</title>
 
    <para>
-    This is a placeholder for a section that will describe actions that
-    administrators might need to take on behalf of users in an OpenAM deployment
-    with two step verification.
+    As described in <xref linkend="authn-2sv-using-lost" />,
+    a user who has lost a mobile phone registered with OpenAM can
+    register a replacement device by authenticating using a recovery code,
+    deleting their existing device, and then re-registering a new device.
    </para>
-
    <para>
-    The following actions will be included in this section:
+    Additional support is required for users who lose mobile phones but did
+    not save their recovery codes when they initially registered the phone, and
+    for users who have used up all their recovery codes.
+   </para>
+   <para>
+    OpenAM provides a REST API to reset a device profile by deleting
+    information about a user's registered device. Either the user or an
+    administrator can call the REST API to reset a device profile. Device
+    profile reset can be implemented as follows:
     <itemizedlist>
      <listitem>
       <para>
-       Deregistering devices for end users who do not have recovery codes
+       Administrators provide authenticated users with a self-service page that
+       calls the REST API to let the users reset their own device profiles.
       </para>
      </listitem>
      <listitem>
       <para>
-       Resetting the Skip Two Step Verification flag
+       Administrators call the REST API themselves to reset users' device
+       profiles.
       </para>
      </listitem>
     </itemizedlist>
+   </para>
+   <para>
+    For details about the REST API to reset users' device profiles, see
+    <olink targetdoc="dev-guide" targetptr="rest-api-device-profile-reset" />.
    </para>
 
   </section>
