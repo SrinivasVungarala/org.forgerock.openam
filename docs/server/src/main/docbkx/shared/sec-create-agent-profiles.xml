@@ -46,9 +46,9 @@
   <title>To Create an Agent Profile</title>
 
   <para>
-   To create a new Java EE policy agent profile, you need a name and
-   password for the agent, and the URLs to OpenAM and the application to
-   protect:
+   To create a new Web or Java EE policy agent profile, you need to create a
+   name and password for the agent. You also need the URLs to OpenAM and the
+   application to protect:
   </para>
   <step>
    <para>
@@ -59,30 +59,50 @@
   <step>
    <para>
     Click the Agents tab, click the tab page for the kind of agent you
-    want to create, and then click the New... button in the Agent table.
+    want to create, and then click the New button in the Agent table.
    </para>
   </step>
   <step>
    <para>
-    Provide a name for the agent, and the URLs to OpenAM and to
-    the application to protect, then click Create. <!--Note that for web agents,
-    an example URL would look like: <uri>http://www.example.com:80</uri>;-->
-    Note that for Java EE policy agents, an example URL must include
+    In the Name field, enter a name for the policy agent.
+   </para>
+  </step>
+  <step>
+   <para>
+    In the Password and Re-Enter Password fields, enter a password for the new
+    agent.
+   </para>
+  </step>
+  <step>
+   <para>
+    Click <literal>Local</literal> or <literal>Centralized</literal> (Default)
+    to determine where the agent properties are stored.
+    If you select <literal>Local</literal>, the properties are stored on the
+    server on which the agent is running.
+    If you select <literal>Centralized</literal>, the properties are stored on the
+    OpenAM server.
+   </para>
+  </step>
+  <step>
+   <para>
+    In the Server URL field, enter the URL to OpenAM. For example,
+    <uri>http://openam.example.com:8080/openam</uri>.
+   </para>
+  </step>
+  <step>
+   <para>
+    In the Agent URL field, enter the primary URL of the web or application
+    server protected by the policy agent.
+    Note for web agents, an example URL would look like:
+    <uri>http://www.example.com:80</uri>.
+    For Java EE policy agents, an example URL must include
     the <literal>agentapp</literal> context:
     <uri>http://www.example.com:8080/agentapp</uri>.
    </para>
-
-   <mediaobject xml:id="figure-create-agent">
-    <alt>Creating a new agent profile</alt>
-    <imageobject>
-     <imagedata fileref="images/create-agent.png" format="PNG" />
-    </imageobject>
-    <textobject><para>At first, you provide only minimal configuration
-     for your new agent.</para></textobject>
-   </mediaobject>
   </step>
   <step>
    <para>
+    Click Create. 
     After creating the agent profile, you can click the link to the
     new profile to adjust and export the configuration.
    </para>
