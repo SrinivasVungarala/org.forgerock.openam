@@ -5875,16 +5875,23 @@ ssoadm \
     <primary>Authentication</primary>
     <secondary>chains</secondary>
    </indexterm>
-  <para>Once you have configured authentication modules, and added the modules
-  to the list of module instances, you can configure authentication chains.
-  Authentication chains let you handle situations where alternative modules
-  are needed, or where a single set of credentials is not sufficient.</para>
 
-  <tip><para>OpenAM provides a wizard for configuring authentication providers,
-   including Facebook, Google, and Microsoft. The wizard creates a
-   relevant authentication chain as part of the process. For more
-   information, see <xref linkend="configure-social-authn"  />.
-  </para></tip>
+  <para>
+   Once you have configured authentication modules and added the modules
+   to the list of module instances, you can configure authentication chains.
+   Authentication chains let you handle cases where alternate modules or credentials
+   are needed.
+   If you need modules in the chain to share user credentials, then set options for
+   the module.</para>
+
+  <tip>
+   <para>
+    OpenAM provides a wizard for configuring authentication providers,
+    including Facebook, Google, and Microsoft. The wizard creates a
+    relevant authentication chain as part of the process. For more
+    information, see <xref linkend="configure-social-authn"  />.
+   </para>
+  </tip>
 
   <procedure xml:id="create-authn-chain">
    <title>To Create an Authentication Chain</title>
@@ -5893,75 +5900,132 @@ ssoadm \
     realm for which to create the authentication chain.</para>
    </step>
    <step>
-    <para>On the Authentication tab page for the realm, scroll to the bottom
-    of the page, and click the New button in the Authentication Chaining
-    table.</para>
+    <para>
+     On the Realm Overview page, click Authentication in the left-hand menu,
+     and then click Chains.
+    </para>
    </step>
    <step>
-    <para>Give the new authentication chain a name, and add instances of the
-    modules to use in the chain.</para>
+    <para>On the Authentication Chains page,
+     click Add Chain. Enter new chain name, and then
+     click Create.
+    </para>
    </step>
    <step>
-    <para>Assign appropriate criteria (optional, required, requisite, sufficient)
-    as described above in <xref linkend="what-is-authn" />. You can also
-    configure where OpenAM redirects the user upon successful and failed
-    authentication, and plug in your post authentication processing classes
-    as necessary.</para>
+    <para>
+     On the New Module dialog, select the authentication module in the
+     chain, and then assign appropriate criteria (Optional, Required, Requisite, Sufficient)
+     as described in <xref linkend="what-is-authn" />. You can also
+     configure where OpenAM redirects the user upon successful and failed
+     authentication, and plug in your post authentication processing classes
+     as necessary.
+    </para>
    </step>
    <!-- Fix for OPENAM-1063: Document module-credential sharing properties -->
    <step performance="optional">
-    <para>If you need modules in the chain to share user credentials, then set
-    options for the module.</para>
+    <para>If you need modules in the chain to share user credentials, consider the
+     following available options. Enter the key and its value, and then click
+     Plus (+). When you finish entering the options, click OK.
+    </para>
+
     <variablelist>
      <varlistentry>
-      <term><option>iplanet-am-auth-shared-state-enabled</option></term>
-      <listitem>
-       <para>Set <literal>iplanet-am-auth-shared-state-enabled=true</literal>
-       to allow subsequent modules in the authentication chain to use
-       the credentials, such as user name and password, captured by this
-       module. (Default: <literal>true</literal>)</para>
-      </listitem>
-     </varlistentry>
-     <varlistentry>
-      <term><option>iplanet-am-auth-store-shared-state-enabled</option></term>
+      <term><option>iplanet-am-auth-store-shared-state-enabled (Default: <literal>true</literal>)
+      </option></term>
       <listitem>
        <para>Set <literal>iplanet-am-auth-store-shared-state-enabled=true</literal>
-       to store the captured credentials. Shared state is cleared when the
-       user successfully authenticates, quits the chain, or logs out.
-       (Default: <literal>false</literal>)</para>
+        to store the credentials captured by this module in shared state.
+        This enables subsequent modules in the chain to access the credentials
+        captured by this module. The shared state is cleared when the
+        user successfully authenticates, quits the chain, or logs out.
+       </para>
       </listitem>
      </varlistentry>
+
      <varlistentry>
-      <term><option>iplanet-am-auth-shared-state-behavior-pattern</option></term>
+      <term><option>iplanet-am-auth-shared-state-enabled (Default: <literal>false</literal>)</option></term>
+      <listitem>
+       <para>Set <literal>iplanet-am-auth-shared-state-enabled=true</literal>
+        to allow this module to access the credentials, such as user name and
+        password, that have been stored in shared state by previous modules in
+        the authentication chain.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>iplanet-am-auth-shared-state-behavior-pattern (Default: <literal>tryFirstPass</literal>)</option></term>
       <listitem>
        <para>Set <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>
-       (the default) to try authenticating with the captured password. If
-       authentication fails, then OpenAM prompts the user for the credentials
-       again.</para>
-       <para>Set <literal>iplanet-am-auth-shared-state-behavior-pattern=useFirstPass</literal>
-       to authenticate with the captured password. If authentication fails,
-       then the module fails.</para>
+        to try authenticating with the username and password stored in
+        shared state.
+        If authentication fails, OpenAM displays the login screen of this module
+        for the user to re-enter their credentials.
+        again.
+       </para>
+       <para>
+        Set <literal>iplanet-am-auth-shared-state-behavior-pattern=useFirstPass</literal>
+        to authenticate with the username and password stored in shared state.
+        If authentication fails, then the module fails.
+       </para>
       </listitem>
      </varlistentry>
     </variablelist>
-    <para>For example, consider a chain with two modules sharing credentials
-    according to the default settings. The first module in the chain has the
-    option <literal>iplanet-am-auth-shared-state-enabled=true</literal>, and
-    criteria <literal>REQUIRED</literal>. The second module in the chain has
-    options <literal>iplanet-am-auth-shared-state-enabled=true</literal>,
-    <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>,
-    and criteria <literal>REQUIRED</literal>. A successful authentication
-    sequence happens as follows.
-     </para>
-     <para>The user enters her credentials for the first
-    module, successfully authenticating. The first module shares the
-    credentials with the second module, successfully authenticating the user
-    without prompting again for her credentials, unless the credentials for
-    the first module do not successfully authenticate here to the second
-    module. Just be sure to separate the options with a space and not a comma.</para>
+
+    <para>
+     For example, consider a chain with two modules sharing credentials
+     according to the following settings:
+     The first module in the chain has the
+     option <literal>iplanet-am-auth-shared-state-enabled=true</literal>, and
+     criteria <literal>REQUIRED</literal>.
+    </para>
+
+    <mediaobject>
+     <alt>Configuring the first module in an authentication chain</alt>
+     <imageobject>
+      <imagedata fileref="images/auth-chain-first-module.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       Configuring the first module in an authentication chain in a shared
+       credentials configuration.
+      </para>
+     </textobject>
+    </mediaobject>
+
+    <para>
+     The second module in the chain has
+     options <literal>iplanet-am-auth-shared-state-enabled=true</literal>,
+     <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>
+     with criteria <literal>REQUIRED</literal>.
+
+    </para>
+    <mediaobject>
+     <alt>Configuring the second module in an authentication chain</alt>
+     <imageobject>
+      <imagedata fileref="images/auth-chain-second-module.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       Configuring the second module in an authentication chain in a shared
+       credentials configuration.
+      </para>
+     </textobject>
+    </mediaobject>
    </step>
+
    <step>
-    <para>Save your work.</para>
+    <para>Click Save Changes.</para>
+    <para>
+     The following authentication sequence
+     would occur:
+     The user enters their credentials for the first
+     module and successfully authenticates. The first module shares the
+     credentials with the second module, successfully authenticating the user
+     without prompting again for their credentials, unless the credentials for
+     the first module do not successfully authenticate the user to the second
+     module.
+    </para>
    </step>
   </procedure>
   
@@ -7532,7 +7596,6 @@ ssoadm \
   </section>
 
  </section>
-
 
  <section xml:id="session-upgrade">
   <title>Authentication Levels and Session Upgrade</title>
