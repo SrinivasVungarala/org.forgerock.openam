@@ -692,6 +692,10 @@ public class SampleAuthPrincipal implements Principal, Serializable
     &lt;/AttributeSchema&gt;
 
     &lt;SubSchema name="serverconfig" inheritance="multiple"&gt;
+   &lt;--
+     For OpenAM 13 and later, remove the preceding line and replace it with the following:
+     &lt;SubSchema name="serverconfig" inheritance="multiple" resourceName="USE-PARENT"&gt;
+   --&gt;
      &lt;AttributeSchema name="iplanet-am-auth-sampleauth-auth-level"
       type="single" syntax="number_range" rangeStart="0" rangeEnd="2147483647"
       i18nKey="a500"&gt;
@@ -768,6 +772,18 @@ $ <userinput>mvn install</userinput>
      <screen>
 $ <userinput>cp target/openam-auth-sample*.jar /path/to/tomcat/webapps/openam/WEB-INF/lib/</userinput>
      </screen>
+    </listitem>
+
+    <listitem>
+     <para>
+      Open the <filename>amAuthSampleAuth.xml</filename> file and locate the
+      following line:
+      <programlisting language="xml">&lt;SubSchema name="serverconfig" inheritance="multiple"&gt;</programlisting>
+     </para>
+     <para>
+      Modify the line as follows:
+      <programlisting language="xml">&lt;SubSchema name="serverconfig" inheritance="multiple" resourceName="USE-PARENT"&gt;</programlisting>
+     </para>
     </listitem>
 
     <listitem>
