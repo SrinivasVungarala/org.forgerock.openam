@@ -3616,9 +3616,8 @@ $ <userinput>curl \
    You can also import XACML 3.0 policy sets back into OpenAM by using the
    same endpoint.
    The endpoint's functionally is identical to that of the
-   <!--  Update when AME-4741 -->
-   <literal>ssoadm</literal> <literal>import-xacml</literal> and
-   <literal>export-xacml</literal> commands.
+   <command>ssoadm create-xacml</command> and
+   <command>ssoadm list-xacml</command> commands.
    For more information, see
    <link xlink:show="new" xlink:href="admin-guide#script-policy"
          xlink:role="http://docbook.org/xlink/role/olink">Importing and Exporting Policies</link>
