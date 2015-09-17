@@ -33,7 +33,7 @@
  <title>Customizing OpenAM</title>
  <para>Service provider interfaces (SPI's) provide a framework to customize all
   OpenAM service modules such as adding custom authentication modules,
-  federation plug-ins, and policy conditions.</para>
+  federation plugins, and policy conditions.</para>
 
  <para>This part of the guide covers customizing OpenAM functionality.</para>
 

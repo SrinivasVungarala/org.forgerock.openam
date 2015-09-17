@@ -32,21 +32,31 @@
  xmlns:xlink='http://www.w3.org/1999/xlink'
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>Building SAML v2.0 Service Providers With Fedlets</title>
+
  <indexterm>
   <primary>Fedlets</primary>
   <secondary>SAML v2.0</secondary>
  </indexterm>
- <para>This chapter introduces OpenAM Fedlets, and shows how to use the Fedlet
- as part of your Java web or .NET application.</para>
 
- <para>An OpenAM <firstterm>Fedlet</firstterm> is a small web application that
-  that acts as a lightweight SAML v2.0 service provider. </para>
- <para>Fedlets are easy to integrate into Java and .NET web applications. The
+ <para>
+  This chapter introduces OpenAM Fedlets, and shows how to use the Fedlet
+  as part of your Java web or .NET application.
+ </para>
+
+ <para>
+  An OpenAM <firstterm>Fedlet</firstterm> is a small web application that
+  that acts as a lightweight SAML v2.0 service provider.
+ </para>
+
+ <para>
+  Fedlets are easy to integrate into Java and .NET web applications. The
   Fedlet does not require an entire OpenAM installation alongside your
-  application, but instead can redirect to OpenAM for single sign on, and to
-  retrieve SAML assertions.</para>
+  application, but instead can redirect to OpenAM for single sign-on, and to
+  retrieve SAML assertions.
+ </para>
 
  <xinclude:include href="sec-fedlet-java.xml"/>
  <xinclude:include href="sec-fedlet-unconfigured.xml"/>
  <xinclude:include href="sec-fedlet-dotnet.xml"/>
+
 </chapter>

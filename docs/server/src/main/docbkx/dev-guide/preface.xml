@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2012 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <preface xml:id='preface'
@@ -31,26 +31,32 @@
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>Preface</title>
 
- <para>This guide demonstrates how to handle sessions to permit single sign
- on and single log out in OpenAM client applications. This guide further
- demonstrates how to use the OpenAM APIs including both APIs for client
- applications, and also SPIs for authentication, policy, service management,
- delegation, and identity storage. Finally, this guide demonstrates how to
- write your own web policy agent.</para>
+ <para>
+  This guide demonstrates how to handle sessions to permit single sign-on and
+  single logout in OpenAM client applications. This guide further
+  demonstrates how to use the OpenAM APIs including both APIs for client
+  applications, and also SPIs for authentication, policy, service management,
+  delegation, and identity storage. Finally, this guide demonstrates how to
+  write your own web policy agent.
+ </para>
 
  <section>
-  <title>Who Should Use this Guide</title>
+  <title>Who Should Use This Guide</title>
   
-  <para>This guide is written for developers who adapt client applications
-  to use OpenAM access management capabilities. It is also written for
-  designers and developers extending and integrating OpenAM services for
-  their organizations.</para>
+  <para>
+   This guide is written for developers who adapt client applications
+   to use OpenAM access management capabilities. It is also written for
+   designers and developers extending and integrating OpenAM services for
+   their organizations.
+  </para>
    
-  <para>You do not need to be an OpenAM wizard to learn something from
-  this guide, though a background in access management and developing
-  web applications or developing for web and application servers can help.
-  You can nevertheless get started with this guide, and then learn more as you
-  go along.</para>
+  <para>
+   You do not need to be an OpenAM wizard to learn something from
+   this guide, though a background in access management and developing
+   web applications or developing for web and application servers can help.
+   You can nevertheless get started with this guide, and then learn more as you
+   go along.
+  </para>
  </section>
 
  <xinclude:include href="../shared/sec-formatting-conventions.xml" />

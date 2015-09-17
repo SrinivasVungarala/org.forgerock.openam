@@ -1326,7 +1326,7 @@ $ <userinput>curl \
     to group expressions.</para>
      <para>Regular expressions are implemented for some operators, so you can
       create a filter that includes or excludes certain records.</para>
-     <para>You must URL encode the <replaceable>filter</replaceable> expression
+     <para>You must URL-encode the <replaceable>filter</replaceable> expression
     in <literal>_queryFilter=<replaceable>filter</replaceable></literal>.
    </para>
    <para>The following example returns resource types with a <emphasis>name</emphasis>

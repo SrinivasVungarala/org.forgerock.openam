@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS
   !    
 -->
 <chapter xml:id='chap-sms-spi'
@@ -32,9 +32,11 @@
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>Managing Custom Services</title>
 
- <para>This chapter explains how to use the Service Management System (SMS) to
- ensure the additional functionality you plug into OpenAM can be managed
- cohesively with other components.</para>
+ <para>
+  This chapter explains how to use the Service Management System (SMS) to
+  ensure the additional functionality you plug into OpenAM can be managed
+  cohesively with other components.
+ </para>
 
 </chapter>
 

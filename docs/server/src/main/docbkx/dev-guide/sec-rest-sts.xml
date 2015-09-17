@@ -209,7 +209,7 @@
    <title>Custom Plug-ins</title>
    <para>
     All statements constituting a SAML v2.0 assertion can be fully customized.
-    For each REST STS instance, you can write custom plug-ins for the
+    For each REST STS instance, you can write custom plugins for the
     <literal>Conditions</literal>, <literal>Subject</literal>,
     <literal>AuthenticationStatements</literal>,
     <literal>AttributeStatements</literal>, and

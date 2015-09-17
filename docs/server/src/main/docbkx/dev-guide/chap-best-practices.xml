@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-best-practices'
@@ -32,8 +32,10 @@
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>Best Practices For OpenAM Clients and Extensions</title>
 
- <para>This chapter presents best practices to keep in mind when developing
- OpenAM client applications and when extending OpenAM functionality.</para>
+ <para>
+  This chapter presents best practices to keep in mind when developing
+  OpenAM client applications and when extending OpenAM functionality.
+ </para>
 
 </chapter>
 

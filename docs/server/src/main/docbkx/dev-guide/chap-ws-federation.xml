@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS
   !    
 -->
 <chapter xml:id='chap-ws-federation'
@@ -32,8 +32,10 @@
  xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>Handling Federation With WS-Federation</title>
 
- <para>This chapter covers using WS-Federation with OpenAM to manage access
- across federated services.</para>
+ <para>
+  This chapter covers using WS-Federation with OpenAM to manage access
+  across federated services.
+ </para>
 
 </chapter>
 
