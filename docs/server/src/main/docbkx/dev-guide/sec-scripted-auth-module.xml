@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-scripted-auth-module'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'>
@@ -147,7 +147,7 @@ The script also uses the <literal>logger</literal> and
           is processed during working hours. Without the Data Store module, the
           username in the Scripted authentication module could not be determined.</para>
     </step>
-     <step><para>On the Edit Chain tab, click New Module.</para></step>
+     <step><para>On the Edit Chain tab, click Add Module.</para></step>
      <step>
       <para>In the New Module dialog box:</para>
          <substeps>

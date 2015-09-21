@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-scripting'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
@@ -104,7 +104,7 @@
      <para>
       Scripted authentication modules are an alternative to developing
       custom authentication modules by using Java as described in
-      <olink targetdoc="dev-guide" targetptr="sec-auth-spi"/>. A
+      <xref linkend="sec-auth-spi"/>. A
       scripted authentication module allows you to customize default authentication
       behavior by adding Groovy or JavaScript code to the module configuration.
      </para>

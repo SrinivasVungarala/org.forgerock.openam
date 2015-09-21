@@ -25,7 +25,7 @@
 -->
 <section xml:id="scripting-api"
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -51,7 +51,6 @@
   <itemizedlist>
    <para>Global API functionality includes:</para>
    <listitem><para><xref linkend="scripting-api-global-http-client" xrefstyle="select: title" /></para></listitem>
-   <listitem><para><xref linkend="scripting-api-global-id-repo" xrefstyle="select: title"/></para></listitem>
    <listitem><para><xref linkend="scripting-api-global-logger" xrefstyle="select: title"/></para></listitem>
   </itemizedlist>
 
@@ -732,110 +731,7 @@
     </tgroup>
    </table>
   </section>
-  <section xml:id="scripting-api-global-id-repo">
-   <title>Accessing Profile Data</title>
 
-   <para>
-    Server-side scripts can access profile data through
-    the methods of the <literal>idRepository</literal> object.
-   </para>
-
-   <table xml:id="scripted-auth-module-id-repo-methods" pgwide="1">
-    <title>Profile Data Methods</title>
-    <tgroup cols="4">
-     <colspec colnum="1" colwidth="2*"/>
-     <colspec colnum="2" colwidth="3*"/>
-     <colspec colnum="3" colwidth="1*"/>
-     <colspec colnum="4" colwidth="3*"/>
-     <thead>
-      <row>
-       <entry>Method</entry>
-       <entry>Parameters</entry>
-       <entry>Return Type</entry>
-       <entry>Description</entry>
-      </row>
-     </thead>
-     <tbody>
-      <row>
-       <entry>
-        <para>
-         <literal>idRepository.getAttribute</literal>
-        </para>
-       </entry>
-       <entry>
-        <para>
-         <literal><replaceable>userName</replaceable></literal> (type: String),
-         <literal><replaceable>attributeName</replaceable></literal> (type: String)
-        </para>
-       </entry>
-       <entry>
-        <para>
-         <literal>Set</literal>
-        </para>
-       </entry>
-       <entry>
-        <para>
-         Return the values of the named attribute for the named user.
-        </para>
-       </entry>
-      </row>
-
-      <row>
-       <entry>
-        <para>
-         <literal>idRepository.setAttribute</literal>
-        </para>
-       </entry>
-       <entry>
-        <para>
-         <literal><replaceable>userName</replaceable></literal> (type: String),
-         <literal><replaceable>attributeName</replaceable></literal> (type: String),
-         <literal><replaceable>attributeValue</replaceable></literal> (type: Array)
-        </para>
-       </entry>
-       <entry>
-        <para>
-         <literal>Void</literal>
-        </para>
-       </entry>
-       <entry>
-        <para>
-         Set the named attribute as specified by the attribute value for the
-         named user, and persist the result in the user's profile.
-        </para>
-       </entry>
-      </row>
-
-      <row>
-       <entry>
-        <para>
-         <literal>idRepository.addAttribute</literal>
-        </para>
-       </entry>
-       <entry>
-        <para>
-         <literal><replaceable>userName</replaceable></literal> (type: String),
-         <literal><replaceable>attributeName</replaceable></literal> (type: String),
-         <literal><replaceable>attributeValue</replaceable></literal> (type: String)
-        </para>
-       </entry>
-       <entry>
-        <para>
-         <literal>Void</literal>
-        </para>
-       </entry>
-       <entry>
-        <para>
-         Add an attribute value to the list of attribute values associated with the
-         attribute name for a particular user.
-        </para>
-       </entry>
-      </row>
-
-     </tbody>
-    </tgroup>
-   </table>
-  </section>
   <section xml:id="scripting-api-global-logger">
    <title>Debug Logging</title>
 
@@ -1029,6 +925,7 @@
   <itemizedlist>
    <para>Authentication API functionality includes:</para>
    <listitem><para><xref linkend="scripting-api-authn-state" xrefstyle="select: title" /></para></listitem>
+   <listitem><para><xref linkend="scripting-api-authn-id-repo" xrefstyle="select: title"/></para></listitem>
    <listitem><para><xref linkend="scripting-api-authn-client-data" xrefstyle="select: title" /></para></listitem>
    <listitem><para><xref linkend="scripting-api-authn-request-data" xrefstyle="select: title" /></para></listitem>
   </itemizedlist>
@@ -1193,7 +1090,110 @@
    </table>
    -->
   </section>
+  <section xml:id="scripting-api-authn-id-repo">
+   <title>Accessing Profile Data</title>
 
+   <para>
+    Server-side authentication scripts can access profile data through
+    the methods of the <literal>idRepository</literal> object.
+   </para>
+
+   <table xml:id="scripted-auth-module-id-repo-methods" pgwide="1">
+    <title>Profile Data Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="2*"/>
+     <colspec colnum="2" colwidth="3*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>idRepository.getAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>userName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeName</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Set</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return the values of the named attribute for the named user.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>idRepository.setAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>userName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeValue</replaceable></literal> (type: Array)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Set the named attribute as specified by the attribute value for the
+         named user, and persist the result in the user's profile.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>idRepository.addAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>userName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeValue</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Add an attribute value to the list of attribute values associated with the
+         attribute name for a particular user.
+        </para>
+       </entry>
+      </row>
+
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
   <section xml:id="scripting-api-authn-client-data">
    <title>Accessing Client-Side Script Output Data</title>
 
@@ -1380,7 +1380,7 @@
        <entry>
         <para>
          Return <literal>true</literal> if the authorization is currently successful,
-         or <literal>false</literal> if authentication has failed.
+         or <literal>false</literal> if authorization has failed.
          Server-side scripts must set a value for <literal>authorized</literal>
          before completing.
         </para>
@@ -1450,7 +1450,195 @@
     </tgroup>
    </table>
   </section>
+  <section xml:id="scripting-api-authz-id-repo">
+   <title>Accessing Profile Data</title>
 
+   <para>
+    Server-side authorization scripts can access profile data of the
+    subject of the authorization request through
+    the methods of the <literal>identity</literal> object.
+   </para>
+
+   <note><para>To access the profile data of the subject, they must be
+     logged in and their SSO token must be available.</para></note>
+
+   <table xml:id="scripted-authz-module-id-repo-methods" pgwide="1">
+    <title>Authorization Script Profile Data Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="2*"/>
+     <colspec colnum="2" colwidth="3*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>identity.getAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>attributeName</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Set</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Return the values of the named attribute for the subject of the
+         authorization request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>identity.setAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>attributeName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeValues</replaceable></literal> (type:
+         Array)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Set the named attribute to the values specified by the attribute value
+         for the subject of the authorization request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>identity.addAttribute</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>attributeName</replaceable></literal> (type: String),
+         <literal><replaceable>attributeValue</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Add an attribute value to the list of attribute values associated with the
+         attribute name for the subject of the authorization request.
+        </para>
+       </entry>
+      </row>
+
+      <row>
+       <entry>
+        <para>
+         <literal>identity.store</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         None
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>Void</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Commit any changes to the identity repository.
+        </para>
+        <caution>
+         <para>You must call <literal>store()</literal> otherwise changes
+         will be lost when the script completes.</para>
+        </caution>
+       </entry>
+      </row>
+
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
+   <section xml:id="scripting-api-authz-session">
+   <title>Accessing Session Data</title>
+
+   <para>
+    Server-side authorization scripts can access session data of the
+    subject of the authorization request through
+    the methods of the <literal>session</literal> object.
+   </para>
+
+    <note><para>To access the session data of the subject, they must be
+     logged in and their SSO token must be available.</para></note>
+
+   <table xml:id="scripted-authz-module-session-methods" pgwide="1">
+    <title>Authorization Script Session Methods</title>
+    <tgroup cols="4">
+     <colspec colnum="1" colwidth="2*"/>
+     <colspec colnum="2" colwidth="3*"/>
+     <colspec colnum="3" colwidth="1*"/>
+     <colspec colnum="4" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>Method</entry>
+       <entry>Parameters</entry>
+       <entry>Return Type</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <literal>session.getProperty</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal><replaceable>name</replaceable></literal> (type: String)
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <literal>String</literal>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Retrieve properties from the session associated with the subject of
+         the authorization request. For example, <literal>AuthLevel</literal>.</para>
+       </entry>
+      </row>
+
+     </tbody>
+    </tgroup>
+   </table>
+  </section>
  </section>
 
 </section>
