@@ -133,10 +133,7 @@ $ <userinput>curl \
 
   <para>
    The newer API for retrieving user information is demonstrated in
-   <link xlink:show="new"
-         xlink:href="dev-guide#rest-api-read-identity"
-         xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Reading Identities</citetitle></link>. What follows describes the
+   <xref linkend="rest-api-read-identity" />. What follows describes the
    legacy API:
   </para>
 
@@ -405,10 +402,7 @@ uri=http%3A%2F%2Fwww.example.com%3A8080%2Fexamples%2Findex.html\
    <para>
     Authentication for these interfaces uses cookies, so if your
     application is not running in a browser, first authenticate as described in
-    <link xlink:show="new"
-         xlink:href="dev-guide#rest-api-auth-json"
-         xlink:role="http://docbook.org/xlink/role/olink"
-    >REST APIs for Authentication and Logout</link>.
+     <xref linkend="rest-api-auth-json" />.
    </para>
 
    <para>
@@ -567,10 +561,7 @@ $ <userinput>curl \
    <para>
     Authentication for these interfaces uses cookies, so if your
     application is not running in a browser, first authenticate as described in
-    <link xlink:show="new"
-         xlink:href="dev-guide#rest-api-auth-json"
-         xlink:role="http://docbook.org/xlink/role/olink"
-    >REST APIs for Authentication &amp; Logout</link>.
+     <xref linkend="rest-api-auth-json"/>.
    </para>
   </section>
 
@@ -947,12 +938,9 @@ admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
 
    <para>
     Reading is similar to attribute retrieval, as described in
-    <link xlink:show="new"
-          xlink:href="dev-guide#rest-api-tokens"
-          xlink:role="http://docbook.org/xlink/role/olink">Token Validation</link>,
-    but obtained using the token of
-    a user with permissions to perform the search, as shown in the following
-    example:
+     <xref linkend="rest-api-tokens" />,
+    but obtained using the token of a user with permissions to perform the search,
+    as shown in the following example:
    </para>
 
    <screen>

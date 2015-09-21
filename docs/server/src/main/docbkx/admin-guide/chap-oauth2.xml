@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-oauth2'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -476,14 +476,9 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
     <xinclude:include href="../shared/variablelist-oauth2-endpoints.xml" />
 
     <para>
-     For examples, see the <citetitle>Developer's Guide</citetitle> section,
-     <link xlink:href="dev-guide#rest-api-oauth2" xlink:show="new"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OAuth 2.0
-     Authorization</citetitle></link>.
-
-     This section of the <citetitle>Developer's Guide</citetitle> also covers
-     OAuth 2.0 token administration and client administration endpoints
-     that are specific to OpenAM.
+     For examples, and information about OAuth 2.0 token administration and client administration endpoints
+     that are specific to OpenAM, see <olink targetdoc="dev-guide"
+                               targetptr="rest-api-oauth2" />.
     </para>
    </section>
   </section>
@@ -537,12 +532,7 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
 
    <para>
     To configure OpenAM as an OAuth 2.0 client, see the section
-    <link
-     xlink:href="admin-guide#oauth2-module-conf-hints"
-     xlink:show="new"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Hints for the OAuth 2.0 /
-     OpenID Connect Authentication Module</citetitle></link>.
+    <xref linkend="oauth2-module-conf-hints" />.
    </para>
   </section>
 
@@ -607,9 +597,7 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
 
    <para>OpenAM is designed to allow you to plug in your own scopes
    implementation if the default implementation does not do what your
-   deployment requires. See <link xlink:href="dev-guide#sec-oauth2-scopes"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Customizing
-   OAuth 2.0 Scope Handling</citetitle></link> for an example.</para>
+   deployment requires. See <olink targetdoc="dev-guide" targetptr="sec-oauth2-scopes" /> for an example.</para>
   </section>
  </section>
 
@@ -657,18 +645,8 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
     When configuring the policy allow all authenticated users
     to perform HTTP GET and POST requests on the authorization endpoint.
     The authorization endpoint is described
-    in the <citetitle>Developer's Guide</citetitle> section,
-    <link
-     xlink:href="dev-guide#rest-api-oauth2-client-endpoints"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>OAuth 2.0 Client and Resource Server Endpoints</citetitle></link>.
-    For details on creating policies, see the chapter on
-    <link
-     xlink:href="admin-guide#chap-authz-policy"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>Defining Authorization Policies</citetitle></link>:
+    in <olink targetdoc="dev-guide" targetptr="rest-api-oauth2-client-endpoints" />.
+    For details on creating policies, see <xref linkend="chap-authz-policy" />.
    </para>
 
    <step>
@@ -701,12 +679,8 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
     <para>If you have a custom scope validator implementation,
      put it on the OpenAM classpath,
      and provide the class name as Scope Implementation Class.
-     For an example, see the <citetitle>Developer's Guide</citetitle> chapter,
-     <link
-      xlink:href="dev-guide#sec-oauth2-scopes"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"
-      ><citetitle>Customizing OAuth 2.0 Scope Handling</citetitle></link>.
+     For an example, see <olink targetdoc="dev-guide"
+                                 targetptr="sec-oauth2-scopes" />.
     </para>
    </step>
    <step>
@@ -955,10 +929,8 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
      updating the identity repository to support use of the attribute,
      updating the AMUser Service for the attribute,
      and optionally allowing users to edit the attribute.
-     The process is described in the <citetitle>Developer's Guide</citetitle>
-     chapter, <link xlink:show="new" xlink:href="dev-guide#sec-custom-attr"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-     >Customizing Profile Attributes</citetitle></link>,
+     The process is described in <olink targetdoc="dev-guide"
+                                        targetptr="sec-custom-attr" />,
      which demonstrates adding a custom attribute
      when using OpenDJ directory services to store user profiles.
     </para>
@@ -1053,10 +1025,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
    </step>
    <step>
     <para>Adjust the configuration as needed using the inline help for hints,
-    and also the documentation section <link xlink:show="new"
-    xlink:href="admin-guide#configure-oauth2-client"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-    OAuth 2.0 and OpenID Connect 1.0 Clients</citetitle></link>.</para>
+    and also the documentation section <xref linkend="configure-oauth2-client" />.</para>
 
     <para>Examine the client type option. An important decision to make at this
     point is whether your client is a confidential client or a public client.
@@ -1085,61 +1054,8 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
   <para>OpenAM exposes a RESTful API that lets administrators read, list, and
   delete OAuth 2.0 tokens. OAuth 2.0 clients can also manage their own tokens.
-  See the <citetitle>Developer's Guide</citetitle> section on the <link
-  xlink:href="dev-guide#rest-api-oauth2-token-admin-endpoint"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OAuth 2.0 Token
-  Administration Endpoint</citetitle></link> for details.</para>
-
-  <!--
-       Fix for AME-2414 requires recompilation of XUI sources
-       so the following is no longer possible with a binary release:
-
-  <para>OpenAM also lets resource owners browse and delete OAuth 2.0 tokens
-  that they authorized. Resource owners can do this from the OAuth 2 Token
-  Manager page. The OAuth 2 Token Manager page is not visible by default,
-  however, as the page is designed for advanced users.</para>
-
-  <para>To make the OAuth 2 Token Manager page visible to users, edit
-  <filename>XUI/config/AppConfiguration.js</filename> under the deployment
-  directory for OpenAM, changing the following lines to uncomment the
-  <literal>"oauth2"</literal> configuration. Changes these lines:</para>
-
-  <programlisting language="none">}/*,
-"oauth2": {
-  "url": "#oauth2/tokens",
-  "name": "config.AppConfiguration.Navigation.links.oauthtokens"
-}*/</programlisting>
-
-  <para>The resulting lines should appear as follows.</para>
-
-  <programlisting language="none">},
-"oauth2": {
-  "url": "#oauth2/tokens",
-  "name": "config.AppConfiguration.Navigation.links.oauthtokens"
-}</programlisting>
-
-  <para>To access the page, login to OpenAM at <literal>/XUI</literal>, such as
-  <literal>https://openam.example.com:8443/openam/XUI/</literal>, as the
-  resource owner. Then click the OAuth 2 Token Manager link at the top of the
-  page.</para>
-
-  <para>For example, the following screen shows the demo user (user name:
-  <literal>demo</literal>, password: <literal>changeit</literal>) browsing
-  access tokens on OAuth 2 Token Manager page, after the OAuth 2.0 client with
-  identifier <literal>myClientID</literal> has been granted tokens by using the
-  Resource Owner Password Credentials Grant as shown in the
-  <citetitle>Developer's Guide</citetitle>.</para>
-
-  <mediaobject xml:id="figure-oauth2-tokens-gui">
-   <alt>Managing OAuth 2.0 tokens as a resource owner</alt>
-   <imageobject>
-    <imagedata fileref="images/oauth2-tokens-gui.png" format="PNG" />
-   </imageobject>
-   <textobject><para>The resource owner can browse and delete tokens issued to
-   clients.</para></textobject>
-  </mediaobject>
-
-  -->
+  For details, see <olink targetdoc="dev-guide"
+              targetptr="rest-api-oauth2-token-admin-endpoint" />.</para>
 
   <section xml:id="oauth2-client-plus-authz">
   <title>Configuring OpenAM as Authorization Server and Client</title>
@@ -1240,12 +1156,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
      Configure the other OpenAM server with the policy agent profile and policy
      as an OAuth 2.0 client, by setting up an OAuth 2.0 / OpenID Connect
      authentication module according to the section
-     <link
-      xlink:href="admin-guide#oauth2-module-conf-hints"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Hints for the OAuth 2.0 /
-     OpenID Connect Authentication Module</citetitle></link>.
+     <xref linkend="oauth2-module-conf-hints" />.
     </para>
    </listitem>
    <listitem>
@@ -1301,11 +1212,8 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
      <para>The policies for this example protect the Tomcat examples
      under <literal>http://www.example.com:8080/examples/</literal>, allowing
-     GET and POST operations by all authenticated users. For more information
-     on creating policies, see <link xlink:show="new"
-     xlink:href="admin-guide#configure-authz-policy"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-     Policies</citetitle></link>.</para>
+     GET and POST operations by all authenticated users. For more
+      information, see <xref linkend="chap-authz-policy" />.</para>
 
      <para>After setting up the policy agent and the policy, you can make sure
      everything is working by attempting to access a protected resource, in this
@@ -1395,9 +1303,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
         <para>The <literal>/oauth2/authorize</literal> endpoint can also take
         <literal>module</literal> and <literal>service</literal> parameters. Use
-        either as described in <link xlink:href="admin-guide#authn-from-browser"
-        xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-        >Authenticating To OpenAM</citetitle></link>, where
+        either as described in <xref linkend="authn-from-browser" />, where
         <literal>module</literal> specifies the authentication module instance
         to use or <literal>service</literal> specifies the authentication chain
         to use when authenticating the resource owner.</para>
@@ -1637,10 +1543,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
   identity provider for SAML v2.0 web SSO, get an assertion at the service
   provider, and retrieve an access token from the authorization server. In other
   words, once this scenario is configured, the client must only direct the
-  resource owner to start web SSO as described in <link
-  xlink:href="admin-guide#using-saml2-sso-slo"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Using SAML v2.0
-  Single Sign-On and Single Logout</citetitle></link>, and then retrieve the
+  resource owner to start web SSO as described in <xref linkend="using-saml2-sso-slo" />, and then retrieve the
   access token on success or handle the error condition on failure.</para>
 
   <procedure xml:id="configure-oauth2-sp-and-authz">
@@ -1724,9 +1627,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
     </substeps>
 
     <para>For more detail on configuring OpenAM as a SAML v2.0 identity provider,
-    see <link xlink:href="admin-guide#configure-idp"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-    Identity Providers</citetitle></link>.</para>
+    see <xref linkend="configure-idp" />.</para>
    </step>
 
    <step>
@@ -1740,9 +1641,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
       and selecting Use default attribute mapping from Identity Provider.</para>
 
       <para>For details on configuring OpenAM as a SAML v2.0 service provider,
-      see <link xlink:href="admin-guide#configure-sp"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-      Service Providers</citetitle></link>.</para>
+      see <xref linkend="configure-sp" />.</para>
      </step>
 
      <step>
@@ -1830,10 +1729,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
       >http://www.idp.example:8443/openam/saml2/jsp/idpSSOInit.jsp
  ?metaAlias=/idp&amp;spEntityID=http://www.sp.example:8443/openam</programlisting>
 
-      <para>For other configurations, see <link
-      xlink:href="admin-guide#using-saml2-sso-slo"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Using SAML v2.0
-      Single Sign-On and Single Logout</citetitle></link>.</para>
+      <para>For other configurations, see <xref linkend="using-saml2-sso-slo" />.</para>
      </step>
 
      <step>

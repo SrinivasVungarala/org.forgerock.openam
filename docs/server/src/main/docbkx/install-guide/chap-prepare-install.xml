@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-prepare-install'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -114,14 +114,10 @@
    <tertiary>Java requirements</tertiary>
   </indexterm>
 
-  <para>
-   OpenAM software depends on a Java runtime environment. Check the output
-   of <command>java -version</command> to make sure your the version is supported
-   according to the <citetitle>Release Notes</citetitle> section on <link
-   xlink:href="release-notes#java-requirements" xlink:show="new"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Java
-   Requirements</citetitle></link>.
-  </para>
+  <para> OpenAM software depends on a Java runtime environment. Check the output
+  of <command>java -version</command> to make sure your the version is supported
+  according to the <citetitle>Release Notes</citetitle> section on <olink
+  targetdoc="release-notes" targetptr="java-requirements" />. </para>
 
   <section xml:id="prepare-java-sun">
    <title>Settings For Sun/Oracle Java Environments</title>
@@ -336,11 +332,8 @@ $ <userinput>cat /proc/sys/fs/file-max</userinput>
    If you are configuring OpenAM to share data with other applications, or if you
    expect your deployment will have a large amount of uses, connect OpenAM to
    an external identity repository.
-   See <link xlink:show="new"
-             xlink:href="release-notes#data-store-requirements"
-             xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Data
-   Store Requirements</citetitle></link> in the <citetitle>Release Notes</citetitle> for
-   a list of supported external identity repositories.
+   For a list of supported external identity repositories, see <olink
+   targetdoc="release-notes" targetptr="data-store-requirements" />.
   </para>
 
   <important>
@@ -349,11 +342,7 @@ $ <userinput>cat /proc/sys/fs/file-max</userinput>
     meaning, it is not generally recommended for use in production environments.
     This section covers preparing directory servers as external identity
     repositories only. For more information about storing identity data in a
-    relational database, see <link xlink:show="new"
-                                   xlink:href="admin-guide#sec-data-stores-db"
-                                   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Hints
-    for Configuring Database Repository (Early Access) Data Stores</citetitle></link> in
-    the <citetitle>Administration Guide</citetitle>.
+    relational database, see <olink targetdoc="admin-guide" targetptr="sec-data-stores-db" />.
    </para>
   </important>
 
@@ -987,10 +976,7 @@ MODIFY operation successful for DN dc=example,dc=com</computeroutput></screen>
       </para>
       <para>
        For more information about running the OpenAM configurator,
-       see <link xlink:show="new"
-                 xlink:href="install-guide#chap-install-core"
-                 xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Installing
-       OpenAM Core Services</citetitle></link>.
+       see <xref linkend="chap-install-core" />.
       </para>
      </listitem>
 
@@ -1007,10 +993,7 @@ MODIFY operation successful for DN dc=example,dc=com</computeroutput></screen>
       </para>
       <para>
        For more information about defining OpenAM data stores,
-       see <link xlink:show="new"
-                 xlink:href="admin-guide#config-data-store"
-                 xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-       Data Stores</citetitle></link> in the <citetitle>Administration Guide</citetitle>.
+       see <olink targetdoc="admin-guide" targetptr="config-data-store" />.
       </para>
      </listitem>
 
@@ -1169,10 +1152,7 @@ $ dsconfig \
    directory that holds the OpenAM configuration. You can choose to create a
    separate directory store for CTS data. For information about creating a
    separate directory store for CTS data, see
-   the chapter, <link xlink:show="new"
-                      xlink:href="install-guide#chap-cts"
-                      xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Configuring the Core Token Service</citetitle></link>.
+   the chapter, <xref linkend="chap-cts" />.
   </para>
 
   <para>
@@ -1444,9 +1424,7 @@ $ <userinput>bin/dsconfig set-access-control-handler-prop \
    <step>
     <para>At this point, install the OpenAM server if you haven't done so
      already. For details,
-     see <link xlink:href="install-guide#chap-install-core"
-               xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Installing OpenAM Core Services</citetitle></link>.
+     see <xref linkend="chap-install-core" />.
     </para>
    </step>
 
@@ -1475,7 +1453,7 @@ $ <userinput>bin/dsconfig set-access-control-handler-prop \
       <tbody>
        <row>
         <entry>CTS attributes</entry>
-        <entry></entry>
+        <entry/>
         <entry>Specifies the CTS attributes required for stateful session high availability and persistence.
          Located in the <filename>WEB-INF/template/ldif/sfha/cts-add-schema.ldif</filename> file.
         </entry>
@@ -1666,10 +1644,7 @@ $ <userinput>bin/verify-index --baseDN dc=example,dc=com</userinput>
      you need to specify the host name, port and root suffix
      of the external directory server on the Configuration Data Store Settings
      screen of the OpenAM Configurator.
-     See <link xlink:show="new"
-               xlink:href="install-guide#configure-openam-custom"
-               xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>To Configure OpenAM</citetitle></link> for more
+     See <xref linkend="configure-openam-custom" /> for more
      information.
     </para>
    </step>
@@ -1787,9 +1762,7 @@ $ <userinput>unzip ~/Downloads/${coreDirectoryFile}</userinput>
      </para>
 
      <para>
-      For details, see <link xlink:href="admin-guide#deploy-idp-discovery"
-      xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Deploying the Identity Provider Discovery Service</citetitle></link>.
+      For details, see <olink targetdoc="admin-guide" targetptr="deploy-idp-discovery" />.
      </para>
     </listitem>
    </varlistentry>

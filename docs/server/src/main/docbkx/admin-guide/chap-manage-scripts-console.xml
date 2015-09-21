@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-manage-scripts-console'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'>
@@ -40,11 +40,9 @@
 
    <para>For information on managing scripts by using the OpenAM
   console, see <olink targetptr="sec-manage-scripts-rest"
-                      targetdoc="dev-guide" /> in the <citetitle>OpenAM
-  Developer's Guide</citetitle>. For information on configuring script
+                      targetdoc="dev-guide" />. For information on configuring script
     settings, see <olink targetptr="scripting-configuration"
-                      targetdoc="reference" /> in the <citetitle>OpenAM
-    Reference</citetitle>.</para>
+                      targetdoc="reference" />.</para>
 
  <procedure xml:id="manage-scripts-with-console">
   <title>To Manage Scripts by Using the OpenAM Console</title>

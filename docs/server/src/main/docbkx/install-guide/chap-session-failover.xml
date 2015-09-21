@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-session-failover'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -55,12 +55,8 @@
   Before configuring session failover,
   you must first make the overall OpenAM service highly available by setting
   up OpenAM in a site configuration.
-  You can find instructions for setting up a site configuration in the chapter,
-  <link
-   xlink:show="new"
-   xlink:href="install-guide#chap-install-multiple"
-   xlink:role="http://docbook.org/xlink/role/olink"
-  ><citetitle>Installing Multiple Servers</citetitle></link>.
+  You can find instructions for setting up a site configuration in
+  <xref linkend="chap-install-multiple" />.
  </para>
  
  <para>
@@ -75,11 +71,7 @@
   and can carry on serving users with active sessions.
   By default the Core Token Service uses the embedded OpenDJ directory server.
   For more information on configuring the Core Token Service, see the chapter,
-  <link
-   xlink:show="new"
-   xlink:href="install-guide#chap-cts"
-   xlink:role="http://docbook.org/xlink/role/olink"
-  ><citetitle>Configuring the Core Token Service (CTS)</citetitle></link>.
+  <xref linkend="chap-cts" />.
  </para>
 
  <para>
@@ -142,11 +134,7 @@
   </para>
   <para>
    For more information about stateful and stateless sessions, see
-   <link xlink:show="new"
-         xlink:href="admin-guide#chap-session-state"
-         xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Configuring Session State</citetitle></link> in the
-   <citetitle>Administration Guide</citetitle>.
+   <olink targetdoc="admin-guide" targetptr="chap-session-state" />.
   </para>
  </note>
 
@@ -167,11 +155,7 @@
    If you did not configure session persistence and availability during
    initial configuration,
    first complete the steps in the procedure,
-   <link
-    xlink:show="new"
-    xlink:href="install-guide#configure-site-load-balancing"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>To Configure Site Load Balancing</citetitle></link>,
+   <xref linkend="configure-site-load-balancing" />,
    and then follow these steps.
   </para>
 
@@ -213,11 +197,7 @@
     To ensure that local OpenAM instances resolve sessions from the Core
     Token Service session store instead of crosstalk, check the Reduce
     Crosstalk Enabled box. For more information about crosstalk, see the section,
-    <link
-     xlink:show="new"
-     xlink:href="install-guide#chap-install-multiple"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>To Configure Site Load Balancing</citetitle></link>.
+    <xref linkend="chap-install-multiple" />.
    </para>
 
    <para>Do not disable reduced crosstalk unless advised to do so by ForgeRock

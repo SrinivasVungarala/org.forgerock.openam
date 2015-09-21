@@ -3,7 +3,7 @@
     Copyright 2014 ForgeRock AS. All Rights Reserved.
 -->
 <chapter xml:id='chap-downstream'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -82,8 +82,7 @@
    You can implement self-registration using the membership authentication module,
    or using the OpenAM REST API, which also supports password reset and self-registration
    plus many other features. For more information, see
-   <link xlink:href="${docSetBaseURL}/dev-guide#chap-rest"
-         xlink:show="new"><citetitle>Using RESTful Web Services</citetitle></link>.
+   <olink targetdoc="dev-guide" targetptr="chap-rest" />.
 
   </para>
 
@@ -313,8 +312,7 @@
    OAuth 2.0 client and authorization server, and OAuth 2.0 client and resource server.
 
    For more information,
-   see <link xlink:href="${docSetBaseURL}/admin-guide#chap-oauth2"
-             xlink:show="new"><citetitle>Managing OAuth 2.0 Authorization</citetitle></link>.</para>
+   see <olink targetdoc="admin-guide" targetptr="chap-oauth2" />.</para>
 
   <para>OpenAM supports all of the OAuth 2.0 grant types (authorization code grant,
    implicit code grant, client credentials grant, and resource owner password
@@ -346,8 +344,7 @@
   </itemizedlist>
 
   <para>For more information on the grant types, see
-  <link xlink:href="${docSetBaseURL}/admin-guide#openam-oauth2-authz-server"
-        xlink:show="new"><citetitle>OpenAM as OAuth 2.0 Authorization Server</citetitle>.</link>.</para>
+  <olink targetdoc="admin-guide" targetptr="openam-oauth2-authz-server" />.</para>
 
   <para>OpenAM provides the following OAuth 2.0 endpoints that can be implemented
    with a resource server:
@@ -381,8 +378,7 @@
    authorization server, such as OpenAM, which allows the client or user access
    to a third-party resource.
    For more information, see
-   <link xlink:href="${docSetBaseURL}/admin-guide#oauth2-openid-connect"
-         xlink:show="new"><citetitle>Managing OpenID Connect 1.0 Authorization</citetitle></link>.
+   <olink targetdoc="admin-guide" targetptr="oauth2-openid-connect" />.
 
   </para>
 
@@ -390,8 +386,7 @@
    for OAuth 2.0 that provides a means to use SAML 2.0 assertions to authenticate
    OAuth 2.0 clients. OpenAM implements these assertion profiles to request OAuth2
    access tokens. For more information,
-   see <link xlink:href="${docSetBaseURL}/admin-guide#oauth2-saml2-bearer"
-             xlink:show="new"><citetitle>SAML 2.0 Bearer Assertion Profiles</citetitle></link>.</para>
+   see <olink targetdoc="admin-guide" targetptr="oauth2-saml2-bearer" />.</para>
 
  </section>
 

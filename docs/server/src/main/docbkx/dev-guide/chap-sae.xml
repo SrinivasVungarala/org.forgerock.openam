@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-sae'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'
@@ -109,33 +109,25 @@
  <section xml:id="sae-install-prerequisites">
   <title>Installing the Samples</title>
 
-  <para>
-   Set up an OpenAM server as an identity provider, and another as a
-   service provider, connecting the two in a circle of trust called
-   <literal>samplesaml2cot</literal>. Configure both the hosted providers and
-   also the remote providers as described in <link
-   xlink:href="admin-guide#set-up-federation"  xlink:show="new"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Setting Up SAML
-   2.0 SSO</citetitle></link>. This chapter assumes you set up the hosted
-   identity provider at <literal>http://idp.example.com:8080/openam</literal>
-   and the hosted service provider at
-   <literal>http://sp.example.com:8080/openam</literal>. Use Common Tasks &gt;
-   Test Federation Connectivity in OpenAM console to make sure Federation is
-   working before you add secure attribute exchange applications that rely
-   on functioning SAML v2.0 communications between the providers.
-  </para>
+  <para>Set up an OpenAM server as an identity provider, and another as a
+  service provider, connecting the two in a circle of trust called
+  <literal>samplesaml2cot</literal>. Configure both the hosted providers and
+  also the remote providers as described in <olink targetdoc="admin-guide"
+  targetptr="set-up-federation" />. This chapter assumes you set up the hosted
+  identity provider at <literal>http://idp.example.com:8080/openam</literal> and
+  the hosted service provider at
+  <literal>http://sp.example.com:8080/openam</literal>. Use Common Tasks &gt;
+  Test Federation Connectivity in OpenAM console to make sure Federation is
+  working before you add secure attribute exchange applications that rely on
+  functioning SAML v2.0 communications between the providers.</para>
 
-  <para>
-   Set up the sample web application as described in <link
-   xlink:href="dev-guide#install-jdk-samples" xlink:show="new"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Installing OpenAM
-   Client SDK Samples</citetitle></link>, both on the identity provider side
-   and also on the service provider side. The SAE samples are found under
-   <filename>/saml2/sae</filename> where you installed the samples.
-   <filename>saeIDPApp.jsp</filename> is the identity provider side external
-   application. <filename>saeSPApp.jsp</filename> is the service provider side
-   external application.
-  </para>
+  <para>Set up the sample web application as described in <xref 
+   linkend="install-sdk-samples" />, both on the identity provider side
+  and also on the service provider side. The SAE samples are found under
+  <filename>/saml2/sae</filename> where you installed the samples.
+  <filename>saeIDPApp.jsp</filename> is the identity provider side external
+  application. <filename>saeSPApp.jsp</filename> is the service provider side
+  external application.</para>
  </section>
 
  <section xml:id="sae-security-prerequisites">

@@ -25,7 +25,7 @@
 -->
  <section xml:id="global-configuration"
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -1000,9 +1000,7 @@
      </para>
 
      <para>
-      See <link xlink:show="new" xlink:href="admin-guide#change-signing-key"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-      >To Change the Signing Key for Federation</citetitle></link> for
+      See <olink targetdoc="admin-guide" targetptr="change-signing-key" /> for
       instructions on changing the key pair.
      </para>
 
@@ -1070,13 +1068,7 @@
      </para>
 
      <para>
-      For more information, see the <citetitle>Administration Guide</citetitle>
-      section,
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#mobile-connect-configure"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+      For more information, see <olink targetdoc="admin-guide" targetptr="mobile-connect-configure" />.
      </para>
 
      <para>
@@ -1110,12 +1102,7 @@
      </para>
 
      <para>
-      For more information, see the <citetitle>Administration Guide</citetitle> section,
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#mobile-connect-configure"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+      For more information, see <olink targetdoc="admin-guide" targetptr="mobile-connect-configure" />.
      </para>
 
      <para>
@@ -1135,13 +1122,7 @@
      </para>
 
      <para>
-      For more information, see the <citetitle>Administration
-      Guide</citetitle> section,
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#mobile-connect-configure"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+      For more information, see <olink targetdoc="admin-guide" targetptr="mobile-connect-configure" />.
      </para>
 
      <para>
@@ -1160,10 +1141,7 @@
    <varlistentry>
     <term>Realm Attributes</term>
     <listitem>
-     <para>See the <citetitle>Administration Guide</citetitle> chapter on
-     <link xlink:href="admin-guide#chap-pwd-reset"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-     Password Reset</citetitle></link> for details.</para>
+     <para>For details, see <olink targetdoc="admin-guide" targetptr="chap-pwd-reset" />.</para>
     </listitem>
    </varlistentry>
    </variablelist>

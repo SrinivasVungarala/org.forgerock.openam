@@ -39,10 +39,7 @@
  <important><para>To use the SecurID authentication module, you must first
   build an
   OpenAM war file that includes the supporting library. For more information,
-  see <link xlink:href="install-guide#sec-enable-securid"
-        xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Enabling RSA SecurID Support</citetitle></link> in the
-  <citetitle>OpenAM Installation Guide</citetitle>.</para></important>
+  see <olink targetdoc="install-guide" targetptr="sec-enable-securid" />.</para></important>
 
  <indexterm>
   <primary>Authentication</primary>

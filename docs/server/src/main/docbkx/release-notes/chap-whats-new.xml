@@ -24,7 +24,7 @@
   !    
 -->
 <chapter xml:id='chap-whats-new'
- xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+ xmlns='http://docbook.org/ns/docbook' version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -48,11 +48,8 @@
 
   <listitem>
    <para>
-    If you have already installed OpenAM, see <link
-    xlink:show="new"
-    xlink:href="release-notes#update-from-earlier-release"
-    xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>To Update OpenAM From 12.0</citetitle></link>.
+    If you have already installed OpenAM, see the <olink
+    targetdoc="upgrade-guide" targetptr="upgrade-guide"/>.
    </para>
 
    <para>
@@ -66,11 +63,8 @@
 
   <listitem>
    <para>
-    If you are installing OpenAM for the first time, see <link
-    xlink:show="new"
-    xlink:href="release-notes#install-fresh"
-    xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>To Install OpenAM</citetitle></link>.
+    If you are installing OpenAM for the first time, see the <olink
+    targetdoc="install-guide" targetptr="install-guide"/>.
    </para>
   </listitem>
  </itemizedlist>
@@ -336,7 +330,7 @@
     </para>
     <para>
      For more information, see
-     <olink targetdoc="admin-guide" targetptr="authn-2sv"></olink>.
+     <olink targetdoc="admin-guide" targetptr="authn-2sv"/>.
     </para>
    </listitem>
 
@@ -358,8 +352,8 @@
     </para>
 
     <para>For more information, see
-     <olink targetdoc="admin-guide" targetptr="recording"></olink> and
-     <olink targetdoc="dev-guide" targetptr="sec-rest-api-recording"></olink>.
+     <olink targetdoc="admin-guide" targetptr="recording"/> and
+     <olink targetdoc="dev-guide" targetptr="sec-rest-api-recording"/>.
     </para>
    </listitem>
 

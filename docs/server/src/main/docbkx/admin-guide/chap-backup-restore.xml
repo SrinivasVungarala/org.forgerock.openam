@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-backup-restore'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -189,13 +189,8 @@
     <para>
      If your deployment has long-lived sessions and you do not currently use
      session failover, you can limit the extent of reauthentication by
-     implementing session failover. For details, see the
-     <citetitle>Installation Guide</citetitle> chapter,
-     <link
-      xlink:href="install-guide#chap-session-failover"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Setting Up OpenAM Session Failover</citetitle></link>.
+     implementing session failover. For details, see <olink
+     targetdoc="install-guide" targetptr="chap-session-failover" />.
     </para>
    </listitem>
   </itemizedlist>
@@ -316,13 +311,7 @@ $ <userinput>ls /path/to/backup-2014-12-01-12-00.zip</userinput>
     <para>
      If your deployment has long-lived sessions and you do not currently use
      session failover, you can limit the extent of reauthentication by
-     implementing session failover. For details, see the
-     <citetitle>Installation Guide</citetitle> chapter,
-     <link
-      xlink:href="install-guide#chap-session-failover"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Setting Up OpenAM Session Failover</citetitle></link>.
+     implementing session failover. For details, see <olink targetdoc="install-guide" targetptr="chap-session-failover" />.
     </para>
    </listitem>
   </itemizedlist>

@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-rest-sts'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -543,9 +543,7 @@ X509|module|cert_module|x509_token_token_auth_target_header_key=client_cert
   <para>
    For more information on
    mapping x509 Certificate state to a subject in the OpenAM datastore, see
-   <link xlink:show="new" xlink:href="admin-guide#cert-module-conf-hints"
-         xlink:role="http://docbook.org/xlink/role/olink">Hints for the
-         Certificate Authentication module</link>.
+   <olink targetdoc="admin-guide" targetptr="cert-module-conf-hints" />.
   </para>
  </section>
 
@@ -594,9 +592,7 @@ X509|module|cert_module|x509_token_token_auth_target_header_key=client_cert
 
   <para>
    For additional details on the OpenID Connect authentication
-   module, <link xlink:show="new" xlink:href="admin-guide#oidc-module-conf-hints"
-                 xlink:role="http://docbook.org/xlink/role/olink">
-   Hints for the OpenID Connect Module</link>.
+   module, <olink targetdoc="admin-guide" targetptr="oidc-module-conf-hints" />.
   </para>
  </section>
  </section>

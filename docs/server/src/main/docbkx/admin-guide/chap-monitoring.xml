@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-monitoring'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -207,9 +207,7 @@ $ <userinput>ssoadm \
    </indexterm>
 
   <para>
-   The <link xlink:href="install-guide#chap-cts"
-   xlink:role="http://docbook.org/xlink/role/olink">OpenAM Core
-   Token Service</link> (CTS) provides persistent and highly available
+   The <olink targetdoc="install-guide" targetptr="chap-cts" /> (CTS) provides persistent and highly available
    token storage for a several components within OpenAM, including
    user sessions, OAuth 2.0, SAML v2.0 and UMA tokens.
   </para>
@@ -234,9 +232,7 @@ $ <userinput>ssoadm \
   </para>
 
   <para>
-   To enable SNMP, see <link xlink:href="admin-guide#monitoring-snmp"
-   xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>SNMP Monitoring</citetitle>.</link>
+   To enable SNMP, see <xref linkend="monitoring-snmp" />
   </para>
 
   <section xml:id="cts-monitor-commands">
@@ -261,11 +257,8 @@ $ <userinput>ssoadm \
    <!-- Discussion in progress about including the mib file in the binary -->
 
    <para>
-    For detailed information on configured OIDs, see the OpenAM Reference
-    chapter on the <link xlink:show="new" xlink:href="reference#chap-cts-oids"
-    xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Core Token Service (CTS) Object Identifiers (OIDs)</citetitle>.
-    </link>
+    For detailed information on configured OIDs, see <olink
+    targetdoc="reference" targetptr="chap-cts-oids" />.
    </para>
 
    <para>
@@ -326,19 +319,12 @@ $ <userinput>ssoadm \
     (You can configure the number in OpenAM console
     under Configuration > System > Monitoring.
     For details, see the system configuration reference section,
-    <link
-     xlink:href="reference#system-monitoring"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-     ><citetitle>Monitoring</citetitle></link>.)
+    <olink targetdoc="reference" targetptr="system-monitoring" />.)
    </para>
 
    <para>
     Interface Stability:
-    <link
-     xlink:show="new"
-     xlink:href="admin-guide#interface-stability"
-     xlink:role="http://docbook.org/xlink/role/olink">Evolving</link>
+    <xref linkend="interface-stability" />
    </para>
 
    <para>
@@ -636,11 +622,7 @@ $ <userinput>ssoadm \
     (You can configure the number in OpenAM console
     under Configuration > System > Monitoring.
     For details, see the system configuration reference section,
-    <link
-     xlink:href="reference#system-monitoring"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-     ><citetitle>Monitoring</citetitle></link>.)
+    <olink targetdoc="reference" targetptr="system-monitoring" />.)
    </para>
 
    <para>
@@ -649,10 +631,7 @@ $ <userinput>ssoadm \
 
    <para>
     Interface Stability:
-    <link
-     xlink:show="new"
-     xlink:href="admin-guide#interface-stability"
-     xlink:role="http://docbook.org/xlink/role/olink">Evolving</link>
+    <link linkend="interface-stability">Evolving</link>
    </para>
 
    <para>
@@ -1267,7 +1246,7 @@ $ <userinput>ssoadm \
       <para>
        You explicitly tell OpenAM to stop recording by executing the
        <command>ssoadm stop-recording</command> command. See
-       the <olink targetdoc="reference"/> for details about this
+       the <olink targetdoc="reference" targetptr="reference"/> for details about this
        command.
       </para>
      </listitem>

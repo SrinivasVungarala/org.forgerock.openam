@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-troubleshooting'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -234,10 +234,7 @@ $ <userinput>cat ~/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</userinput
     <answer>
      <para>
       Edit the start up script for WebLogic as described in
-      the <citetitle>Installation Guide</citetitle> section,
-      <link xlink:href="install-guide#prepare-oracle-weblogic" xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-      >Preparing Oracle WebLogic</citetitle></link>, and then restart WebLogic.
+      <olink targetdoc="install-guide" targetptr="prepare-oracle-weblogic" />, and then restart WebLogic.
      </para>
     </answer>
    </qandaentry>
@@ -543,9 +540,7 @@ $ <userinput>./ssoadm \
     <answer>
      <para>To change the <literal>UrlAccessAgent</literal> password, you can use
      the <command>ssoadm</command> that is installed with the OpenAM Administration tools,
-     as described in the <link xlink:href="install-guide#chap-install-tools" xlink:show="new"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Installing OpenAM Tools</citetitle>
-     Chapter of the Installation Guide.</link>
+     as described in the <olink targetdoc="install-guide" targetptr="chap-install-tools" />
      </para>
      <para>You can then change the password for the <literal>UrlAccessAgent</literal> for
      the root realm (/) with the following commands:</para>

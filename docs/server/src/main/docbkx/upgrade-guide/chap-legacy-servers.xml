@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-legacy-servers'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'>
@@ -53,11 +53,7 @@
 
   <step>
    <para>Prepare a new deployment, installing servers from the new, customized
-   .war file as described in the <citetitle>Installation Guide</citetitle>,
-   starting with the instructions in <link xlink:show="new"
-   xlink:href="install-guide#chap-install-core"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Installing OpenAM
-   Core Services</citetitle></link>.</para>
+   .war file, starting with the instructions in <olink targetdoc="install-guide" targetptr="chap-install-core" />.</para>
   </step>
 
   <step>

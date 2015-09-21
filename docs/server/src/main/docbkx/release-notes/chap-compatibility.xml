@@ -24,7 +24,7 @@
   !    
 -->
 <chapter xml:id='chap-compatibility'
- xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+ xmlns='http://docbook.org/ns/docbook' version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -553,27 +553,19 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
     <para>
      If you are upgrading from a previous release of OpenAM,
      see the step to add the ACI to the external configuration store
-     in  <link xlink:show="new"
-               xlink:href="upgrade-guide#upgrade-server"
-               xlink:role="http://docbook.org/xlink/role/olink"
-     >To Upgrade From OpenAM 9.5 or Later</link> in the
-     <citetitle>Upgrade Guide</citetitle> for more information.
+     in  <olink targetdoc="upgrade-guide" targetptr="upgrade-server" /> for more information.
     </para>
     <para>
      If you are a new OpenAM user,
      see the step to add the ACI to the external configuration store
-     in  <link xlink:show="new"
-               xlink:href="install-guide#install-prepare-opendj-external-config-store"
-               xlink:role="http://docbook.org/xlink/role/olink"
-     >To Install an External OpenDJ Directory Server</link> in the
-     <citetitle>Installation Guide</citetitle> for more information.
+     in  <olink targetdoc="install-guide" targetptr="install-prepare-opendj-external-config-store" /> for more information.
     </para>
    </listitem>
 
   </itemizedlist>
 
   <!-- Changes for OpenAM 12.0.0 -->
-  <itemizedlist>>
+  <itemizedlist>
    <para>
     The following changes were listed for OpenAM 12.0.0:
    </para>
@@ -591,7 +583,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
   </itemizedlist>
  </section>
 
- <section>
+ <section xml:id="deprecated">
   <title>Functionality Deprecated in OpenAM ${serverDocTargetVersion}</title>
 
     <itemizedlist>
@@ -657,12 +649,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
       <para>
        To see how to implement a custom policy plugin,
-       see the <citetitle>Developer's Guide</citetitle> chapter,
-       <link
-        xlink:href="dev-guide#chap-policy-spi"
-        xlink:show="new"
-        xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Customizing Policy Evaluation</citetitle></link>.
+       see <olink targetdoc="dev-guide" targetptr="sec-policy-spi" />.
       </para>
      </listitem>
 
@@ -773,10 +760,8 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
       <thead>
        <row>
-        <entry><link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                     xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link> URIs</entry>
-        <entry>Newer <link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                           xlink:role="http://docbook.org/xlink/role/olink">Evolving</link> URIs</entry>
+        <entry><olink targetdoc="admin-guide" targetptr="interface-stability" /> URIs</entry>
+        <entry>Newer <olink targetdoc="admin-guide" targetptr="interface-stability" /> URIs</entry>
        </row>
       </thead>
 
@@ -862,12 +847,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
       xlink:href="${javadocBase}?org/forgerock/oauth2/core/ScopeValidator.html"
       xlink:show="new"
       ><literal>ScopeValidator</literal></link> interface instead.
-     For an example, see the <citetitle>Developer's Guide</citetitle> chapter,
-     <link
-      xlink:href="dev-guide#chap-oauth2-scopes"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"
-      ><citetitle>Customizing OAuth 2.0 Scope Handling</citetitle></link>.
+     For an example, see <olink targetdoc="dev-guide" targetptr="sec-oauth2-scopes" />.
     </para>
    </listitem>
 
@@ -965,10 +945,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
     <para>
      The Persistent Cookie (Legacy) settings in the Core Authentication
      module have been removed. Configure persistent cookies with the
-     <link
-      xlink:href="admin-guide#persistent-cookie"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"><citetitle>Persistent Cookie module</citetitle></link>.
+     <olink targetdoc="admin-guide" targetptr="persistent-cookie" />.
     </para>
    </listitem>
 

@@ -884,12 +884,8 @@
     configure the load balancer or proxy to send the address
     by using the <literal>X-Forwarded-For</literal> header,
     and configure OpenAM to consume and forward the header as necessary.
-    For details, see the <citetitle>Installation Guide</citetitle> section,
-    <link
-     xlink:show="new"
-     xlink:href="install-guide#handle-request-headers"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Handling HTTP Request Headers</citetitle></link>.
+    For details, see <olink targetdoc="install-guide"
+                            targetptr="handle-request-headers" />.
    </para>
 
    <para><command>ssoadm</command> service name:
@@ -1309,7 +1305,7 @@
       <para>Path to GeoIP data file used to convert IP addresses to
       country locations. The geolocation database is not packaged with OpenAM. 
       You can download the GeoIP Country database from  <link
-      xlink:href="http://www.maxmind.com/en/country">MaxMind</link>. Use the binary 
+      xlink:href="http://dev.maxmind.com/geoip/legacy/downloadable/">MaxMind</link>. Use the binary
       .dat file format, rather than .csv. You can use the GeoLite Country database
       for testing.</para>
       <para><command>ssoadm</command> attribute:
@@ -1846,11 +1842,8 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <para>The Global Attributes includes the list of available modules, LDAP connection
             settings, authentication process options, and an option to disable the XUI
             and make the classic UI the default end user interface.
-            The Global Attributes are defined in the
-            <link xlink:href="reference#authentication-configuration" xlink:show="new"
-                  xlink:role="http://docbook.org/xlink/role/olink">
-                <citetitle>Authentication Configuration</citetitle></link> section of the
-            <citetitle>Reference</citetitle>.</para>
+            The Global Attributes are defined in
+            <olink targetdoc="reference" targetptr="authentication-configuration" />.</para>
     </section>
 
     <section xml:id="auth-core-realm-attributes">
@@ -2242,10 +2235,8 @@ $ ssoadm set-realm-svc-attrs \
        realm are assigned stateless sessions. Otherwise, OpenAM users authenticating
        to this realm are assigned stateful sessions.</para>
       <para>For more information about session state,
-       see <link xlink:show="new"
-                 xlink:href="admin-guide#chap-session-state"
-                 xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-       Session State</citetitle></link>.</para>
+       see <xref linkend="chap-session-state" />.
+      </para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-stateless-sessions</literal></para>
      </listitem>
@@ -2527,10 +2518,7 @@ $ ssoadm set-realm-svc-attrs \
        sessions, be careful not to add so many session attributes that the
        session cookie size exceeds the maximum allowable cookie size. For more
        information about stateless session cookies,
-      see <link xlink:href="admin-guide#session-state-cookies"
-                xlink:show="new"
-                xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Session Cookies</citetitle></link>.</para>
+      see <xref linkend="session-state-cookies" />.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMUserAttributesSessionMapping</literal></para>
      </listitem>
@@ -4643,10 +4631,8 @@ the '%' character is not included in the properties.
     </para>
    </note>
 
-    <para>The following tables show endpoint URLs for OpenAM when <link
-    xlink:href="admin-guide#chap-oauth2"
-    xlink:role="http://docbook.org/xlink/role/olink">configured as an
-    OAuth 2.0 provider</link>.
+    <para>The following tables show endpoint URLs for OpenAM when configured as an
+    OAuth 2.0 provider. For details, see <xref linkend="chap-oauth2" />.
     The default endpoints are for Facebook as the OAuth 2.0 provider.</para>
 
     <para>In addition to the endpoint URLs you can set other fields, like scope
@@ -4679,10 +4665,7 @@ the '%' character is not included in the properties.
 
            <para>The <literal>/oauth2/authorize</literal> endpoint can also take
            <literal>module</literal> and <literal>service</literal> parameters.
-           Use either as described in <link
-           xlink:href="admin-guide#authn-from-browser"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-           >Authenticating To OpenAM</citetitle></link>, where
+           Use either as described in <xref linkend="authn-from-browser" />, where
            <literal>module</literal> specifies the authentication module
            instance to use or <literal>service</literal> specifies the
            authentication chain to use when authenticating the resource
@@ -5088,12 +5071,8 @@ the '%' character is not included in the properties.
        configure the load balancer or proxy to send the address
        by using the <literal>X-Forwarded-For</literal> header,
        and configure OpenAM to consume and forward the header as necessary.
-       For details, see the <citetitle>Installation Guide</citetitle> section,
-       <link
-        xlink:show="new"
-        xlink:href="install-guide#handle-request-headers"
-        xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Handling HTTP Request Headers</citetitle></link>.
+       For details, see
+       <olink targetdoc="install-guide" targetptr="handle-request-headers" />.
       </para>
 
       <para>The Persistent Cookie module belongs with a second module in an
@@ -5387,13 +5366,8 @@ ssoadm \
    </para>
 
    <para>
-    For details on writing authentication module scripts, see the
-    <citetitle>Developer Guide</citetitle> chapter,
-    <link
-     xlink:href="dev-guide#sec-scripted-auth-module"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>Scripting Authentication</citetitle></link>.
+    For details on writing authentication module scripts, see
+    <olink targetdoc="dev-guide" targetptr="sec-scripted-auth-module" />.
    </para>
 
    <para>
@@ -5728,11 +5702,7 @@ ssoadm \
       Kerberos token is not found, authentication will fail. If an authentication
       chain is set, the user is able to authenticate through another module.
       This search uses the <literal>Alias Search Attribute Name</literal> from
-      the core realm attributes. See
-      <link xlink:show="new"
-            xlink:href="admin-guide#auth-core-realm-attributes"
-            xlink:role="http://docbook.org/xlink/role/olink">
-       <citetitle>Core - Realm Attributes</citetitle></link> for more information.
+      the core realm attributes. See <xref linkend="auth-core-realm-attributes" />.
      </para>
      <para><command>ssoadm</command> attribute:
      <literal>iplanet-am-auth-windowsdesktopsso-lookupUserInRealm</literal></para>
@@ -6138,10 +6108,7 @@ ssoadm \
   </variablelist>
 
   <para>If necessary, you can also write your own custom post authentication
-  plugin as described in the <citetitle>Developer's Guide</citetitle> chapter
-  on <link xlink:href="dev-guide#sec-post-auth"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Creating a Post
-  Authentication Plugin</citetitle></link>.</para>
+  plugin as described in <olink targetdoc="dev-guide" targetptr="sec-post-auth" />.</para>
  </section>
 
  <section xml:id="authn-from-browser">
@@ -7656,19 +7623,14 @@ ssoadm \
    as policy agents are built to handle OpenAM's advices.
    If you build your own policy enforcement point (PEP), however,
    take advices and session upgrade into consideration.
-   For RESTful PEPs, see the <citetitle>Developer's Guide</citetitle> sections,
-   <link
-    xlink:show="new"
-    xlink:href="dev-guide#rest-api-authz-policy-decisions"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Requesting Policy Decisions</citetitle></link>
-   and
-   <link
-    xlink:show="new"
-    xlink:href="dev-guide#rest-api-auth-json"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Authentication and Logout</citetitle></link>,
-   for indications on how to handle advices and session upgrade.
+   For RESTful PEPs, see
+   <olink
+    targetdoc="dev-guide"
+    targetptr="rest-api-authz-policy-decisions" />,
+   and for indications on how to handle advices and session upgrade see
+   <olink
+    targetdoc="dev-guide"
+    targetptr="rest-api-auth-json" />.
   </para>
 
   <para>
@@ -7711,13 +7673,13 @@ ssoadm \
   </itemizedlist>
 
   <itemizedlist>
-   <para>You configure account lockout by editing settings for the <link
-   xlink:href="admin-guide#core-module-conf-hints"
-   xlink:role="http://docbook.org/xlink/role/olink">core authentication
-   module</link>. Access the settings in OpenAM console under Access Control
-   &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; All
-   Core Settings..., and then scroll down to the Account Lockout section.
-   The inline help explains the settings in detail. To do this: </para>
+   <para>You configure account lockout by editing settings for the core
+   authentication module. For details, see <xref
+   linkend="core-module-conf-hints" />. Access the settings in OpenAM console
+   under Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
+   Authentication &gt; All Core Settings..., and then scroll down to the Account
+   Lockout section. The inline help explains the settings in detail. To do this:
+   </para>
 
    <listitem>
     <para>Enable lockout by checking Login Failure Lockout Mode, setting
@@ -7771,10 +7733,8 @@ ssoadm \
 
   <important>
    <para>To enforce session quotas across multiple servers in a site, configure
-   session failover as described in the <citetitle>Installation Guide</citetitle>
-   chapter, <link xlink:href="install-guide#chap-session-failover"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Setting Up OpenAM
-   Session Failover</citetitle></link>.</para>
+   session failover as described in
+    <olink targetdoc="install-guide" targetptr="chap-session-failover" />.</para>
   </important>
 
   <procedure xml:id="session-quotas-and-exhaustion-actions">
@@ -7838,11 +7798,8 @@ ssoadm \
    </variablelist>
 
    <para>If none of these session quota exhaustion actions fit your deployment,
-   you can implement a custom session quota exhaustion action. See the
-   <citetitle>Developer's Guide</citetitle> chapter on <link
-   xlink:href="dev-guide#sec-custom-quota-exhaustion-action"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Customizing
-   Session Quota Exhaustion Actions</citetitle></link> for an example.</para>
+   you can implement a custom session quota exhaustion action. For an
+    example, see <olink targetdoc="dev-guide" targetptr="sec-custom-quota-exhaustion-action" />.</para>
   </step>
 
   <step>
@@ -7919,10 +7876,7 @@ ssoadm \
 
   <para>
    The URL whitelisting and pattern matching follow the wildcard rules as specified in
-   <link
-    xlink:href="admin-guide#define-rules"
-    xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>To Configure a Policy for a Web Site</citetitle></link>.
+   <xref linkend="policy-patterns-wildcards"/>.
    There is one main difference: when creating applications, the URL pattern
    matching for <literal>ApplicationTypes</literal> is different from the way
    Applications are matched when creating policies.

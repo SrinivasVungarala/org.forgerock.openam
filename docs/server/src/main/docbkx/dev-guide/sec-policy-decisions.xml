@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-policy-decisions'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -42,10 +42,9 @@
  demonstrates making a request to OpenAM for a policy decision about access to
  a web resource.</para>
 
- <para>Before you continue, make sure that the packages described in the
-   <link xlink:show="new" xlink:href="dev-guide#chap-jdk"
-   xlink:role="http://docbook.org/xlink/role/olink">Using the OpenAM Java SDK</link>
-   chapter are installed.</para>
+ <para>Before you continue, make sure that the packages described in
+   <xref linkend="install-sdk-samples" />
+   are installed.</para>
 
  <para>OpenAM centralizes policy administration, policy evaluation, and policy
  decision making so that your applications do not have to do so. In many

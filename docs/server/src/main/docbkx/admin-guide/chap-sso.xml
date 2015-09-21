@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-sso'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'
@@ -65,10 +65,8 @@
       Normally set to the domain from where the cookie was issued.
       To work with multiple subdomains, the <varname>Domain</varname> should be
       set to a URL like <varname>Domain</varname><literal>=example.net</literal>.
-      This is also known as the cookie domain, as defined in the
-      <link xlink:href="reference#chap-config-ref" xlink:role="http://docbook.org/xlink/role/olink">
-       <citetitle>Configuration Reference</citetitle></link> chapter of the
-      <citetitle>Reference</citetitle>.</para>
+      This is also known as the cookie domain, as defined in
+      <olink targetdoc="reference" targetptr="chap-config-ref" />.</para>
 
      <para>
       A cookie domain set to <literal>example.net</literal> will work for subdomains, such as
@@ -303,10 +301,7 @@
 
     <para>
      As described in
-     <link xlink:show="new"
-           xlink:href="admin-guide#session-state-cookies"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
-      Cookies</citetitle></link>, the default size of the
+     <xref linkend="session-state-cookies" />, the default size of the
      <literal>iPlanetDirectoryPro</literal> cookie
      is approximately 2,000 bytes. When you customize OpenAM sessions by adding
      attributes, the cookie size grows. Browsers allow cookie sizes between
@@ -334,9 +329,7 @@
 
    <step>
     <para>Install OpenAM as described in the
-     <link xlink:href="install-guide#install-guide"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OpenAM
-      <?eval ${serverDocTargetVersion}?> Installation Guide</citetitle></link>.
+     <olink targetdoc="install-guide" targetptr="install-guide" />.
      This procedure uses a Server URL of
      <literal>http://openam.example.net:8080/openam</literal>.</para>
    </step>
@@ -359,10 +352,7 @@
 
    <step>
     <para>Make sure that both URLs are configured with IP addresses, as described
-     in the chapter on
-     <link xlink:href="install-guide#chap-install-core"
-           xlink:role="http://docbook.org/xlink/role/olink">
-      <citetitle>Installing OpenAM Core Services</citetitle></link>.</para>
+     in <olink targetdoc="install-guide" targetptr="chap-install-core" />.</para>
    </step>
 
    <step>
@@ -424,9 +414,7 @@
    If you want to configure OpenAM and an application on two different cookie
    domains, such as <literal>example.org</literal> and <literal>example.net</literal>,
    you will need to set up Cross-Domain SSO (CDSSO). For more information, see the
-   chapter on <link
-   xlink:href="admin-guide#chap-cdsso" xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Configuring Cross-Domain Single Sign On</citetitle></link>.
+   chapter on <xref linkend="chap-cdsso" />.
   </para>
  </section>
 </chapter>

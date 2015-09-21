@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-rest-authz-policy'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -106,10 +106,7 @@
      Under <literal>/identity/authorize</literal>
      and <literal>/ws/1/entitlement/</literal>,
      you find the backwards-compatible, legacy APIs.
-     See <link xlink:show="new"
-               xlink:href="dev-guide#deprecated-apis-policy"
-               xlink:role="http://docbook.org/xlink/role/olink">Deprecated
-     Authorization and Policy Management APIs</link>.
+     See <xref linkend="deprecated-apis-policy" />.
     </para>
    </listitem>
   </itemizedlist>
@@ -132,10 +129,7 @@
    </itemizedlist>
    When making the REST API call, pass the session token in the HTTP header.
    For more information about the OpenAM session token and its use in REST API
-   calls, see <link xlink:show="new"
-                    xlink:href="dev-guide#rest-api-ssotoken"
-                    xlink:role="http://docbook.org/xlink/role/olink">Using the
-   Session Token After Authentication</link>.
+   calls, see <xref linkend="rest-api-ssotoken" />.
   </para>
  </section>
 
@@ -279,11 +273,7 @@
          <para>
           The value is the SSO token ID string for the subject,
           returned for example on successful authentication as described in
-          <link
-           xlink:show="new"
-           xlink:href="dev-guide#rest-api-auth-json"
-           xlink:role="http://docbook.org/xlink/role/olink"
-          ><citetitle>REST APIs for Authentication &amp; Logout</citetitle></link>.
+          <xref linkend="rest-api-auth-json" />.
          </para>
         </listitem>
        </varlistentry>
@@ -810,11 +800,7 @@ $ <userinput>curl \
          <para>
           The value is the SSO token ID string for the subject,
           returned for example on successful authentication as described in,
-          <link
-           xlink:show="new"
-           xlink:href="dev-guide#rest-api-auth-json"
-           xlink:role="http://docbook.org/xlink/role/olink"
-          ><citetitle>REST APIs for Authentication &amp; Logout</citetitle></link>.
+          <xref linkend="rest-api-auth-json" />.
          </para>
         </listitem>
        </varlistentry>
@@ -1043,11 +1029,7 @@ $ <userinput>curl \
   </para>
 
   <para>For information on creating resource types by using the OpenAM
-  console, see <link xlink:show="new"
-                 xlink:href="admin-guide#what-is-authz-policies"
-      xlink:role="http://docbook.org/xlink/role/olink">Configuring Resource
-  Types, Applications, and Policies</link> in the <citetitle>OpenAM
-  Administration Guide</citetitle>.</para>
+  console, see <olink targetdoc="admin-guide" targetptr="what-is-authz-policies" />.</para>
 
   <itemizedlist>
    <para>OpenAM provides the <literal>resourcetypes</literal> REST endpoint
@@ -1150,11 +1132,7 @@ $ <userinput>curl \
      </para>
      <para>For more information on patterns in resource types and
       policies, see
-      <link
-      xlink:show="new"
-      xlink:href="admin-guide#policy-patterns-wildcards"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Specifying Resource Patterns with Wildcards</citetitle></link></para>
+      <olink targetdoc="admin-guide" targetptr="policy-patterns-wildcards" /></para>
     </listitem>
    </varlistentry>
 
@@ -1261,10 +1239,7 @@ https://openam.example.com:8443/openam/json/myrealm/resourcetypes?_queryFilter=t
    <para>
     Additional query strings can be specified to alter the returned results.
     For more information,
-    see <link xlink:show="new"
-              xlink:href="dev-guide#rest-api-filter-sort-page"
-              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
-    Sorting, and Paging Results</link>.
+    see <xref linkend="rest-api-filter-sort-page" />.
    </para>
 
    <table>
@@ -1682,10 +1657,7 @@ https://openam.example.com:8443/openam/json/applicationtypes?_queryFilter=true</
    <para>
     Additional query strings can be specified to alter the returned results.
     For more information,
-    see <link xlink:show="new"
-              xlink:href="dev-guide#rest-api-filter-sort-page"
-              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
-    Sorting, and Paging Results</link>.
+    see <xref linkend="rest-api-filter-sort-page" />.
    </para>
   </section>
 
@@ -1744,11 +1716,7 @@ https://openam.example.com:8443/openam/json/applicationtypes/iPlanetAMWebAgentSe
   </para>
 
   <para>For information on creating applications by using the OpenAM
-  console, see <link xlink:show="new"
-                 xlink:href="admin-guide#what-is-authz-policies"
-      xlink:role="http://docbook.org/xlink/role/olink">Configuring Resource
-  Types, Applications, and Policies</link> in the <citetitle>OpenAM
-  Administration Guide</citetitle>.</para>
+  console, see <olink targetdoc="admin-guide" targetptr="what-is-authz-policies" />.</para>
 
   <itemizedlist>
    <para>OpenAM provides the <literal>applications</literal> REST endpoint
@@ -2111,10 +2079,7 @@ https://openam.example.com:8443/openam/json/applications?_queryFilter=true
    <para>
     Additional query strings can be specified to alter the returned results.
     For more information,
-    see <link xlink:show="new"
-              xlink:href="dev-guide#rest-api-filter-sort-page"
-              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
-    Sorting, and Paging Results</link>.
+    see <xref linkend="rest-api-filter-sort-page" />.
    </para>
 
    <table>
@@ -2502,11 +2467,8 @@ https://openam.example.com:8443/openam/json/applications/myapplication</userinpu
   </para>
 
   <para>For information on creating policies by using the OpenAM
-  console, see <link xlink:show="new"
-                 xlink:href="admin-guide#what-is-authz-policies"
-      xlink:role="http://docbook.org/xlink/role/olink">Configuring Resource
-  Types, Applications, and Policies</link> in the <citetitle>OpenAM
-  Administration Guide</citetitle>.</para>
+  console, see <olink targetdoc="admin-guide"
+                      targetptr="what-is-authz-policies" />.</para>
 
   <itemizedlist>
    <para>OpenAM provides the <literal>policies</literal> REST endpoint
@@ -3050,11 +3012,8 @@ https://openam.example.com:8443/openam/json/applications/myapplication</userinpu
         active, and to terminate the session if deemed too old,
         such that the user must authenticate again. Note that OpenAM terminates
         stateless sessions only if session blacklisting is in effect.
-        See <link xlink:show="new"
-                  xlink:href="admin-guide#session-state-session-termination"
-                  xlink:role="http://docbook.org/xlink/role/olink">Session
-        Termination</link> in the <citetitle>Administration Guide</citetitle>
-        for more information about session blacklisting.
+        For more information about session blacklisting, see <olink
+        targetdoc="admin-guide" targetptr="session-state-session-termination" />.
        </para>
        <programlisting language="javascript">{
     "type": "Session",
@@ -3273,10 +3232,7 @@ $ <userinput>curl \
      <para>
       Additional query strings can be specified to alter the returned results.
       For more information,
-      see <link xlink:show="new"
-                xlink:href="dev-guide#rest-api-filter-sort-page"
-                xlink:role="http://docbook.org/xlink/role/olink">Filtering,
-      Sorting, and Paging Results</link>.
+      see <xref linkend="rest-api-filter-sort-page" />.
      </para>
 
 
@@ -3619,8 +3575,7 @@ $ <userinput>curl \
    <command>ssoadm create-xacml</command> and
    <command>ssoadm list-xacml</command> commands.
    For more information, see
-   <link xlink:show="new" xlink:href="admin-guide#script-policy"
-         xlink:role="http://docbook.org/xlink/role/olink">Importing and Exporting Policies</link>
+   <olink targetdoc="admin-guide" targetptr="script-policy" />
   </para>
 
   <note>
@@ -4244,10 +4199,7 @@ $ <userinput>curl \
    <para>
     Additional query strings can be specified to alter the returned results.
     For more information,
-    see <link xlink:show="new"
-              xlink:href="dev-guide#rest-api-filter-sort-page"
-              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
-    Sorting, and Paging Results</link>.
+    see <xref linkend="rest-api-filter-sort-page" />.
    </para>
 
   </section>
@@ -4459,10 +4411,7 @@ $ <userinput>curl \
    <para>
     Additional query strings can be specified to alter the returned results.
     For more information,
-    see <link xlink:show="new"
-              xlink:href="dev-guide#rest-api-filter-sort-page"
-              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
-    Sorting, and Paging Results</link>.
+    see <xref linkend="rest-api-filter-sort-page" />.
    </para>
 
   </section>
@@ -4525,9 +4474,7 @@ $ <userinput>curl \
   <para>
    Subject attributes derive from the list of LDAP user attributes configured
    for the Identity data store. For more information, see
-   <link xlink:show="new"
-         xlink:href="admin-guide#config-data-store"
-         xlink:role="http://docbook.org/xlink/role/olink">Configuring Data Stores</link>.
+   <olink targetdoc="admin-guide" targetptr="config-data-store" />.
 
   </para>
 
@@ -4634,10 +4581,7 @@ $ <userinput>curl \
    <para>
     Additional query strings can be specified to alter the returned results.
     For more information,
-    see <link xlink:show="new"
-              xlink:href="dev-guide#rest-api-filter-sort-page"
-              xlink:role="http://docbook.org/xlink/role/olink">Filtering,
-    Sorting, and Paging Results</link>.
+    see <xref linkend="rest-api-filter-sort-page" />.
    </para>
 
   </section>

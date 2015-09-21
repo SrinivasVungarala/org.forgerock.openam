@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-session'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -47,8 +47,7 @@
  is reached. At that point the SSO token is no longer valid.</para>
 
  <para>Before you continue, make sure that the packages described in the
-   <link xlink:show="new" xlink:href="dev-guide#chap-jdk"
-   xlink:role="http://docbook.org/xlink/role/olink">Using the OpenAM Java SDK</link>
+   <xref linkend="install-sdk-samples" />
    chapter are installed.</para>
 
  <para>When your application has an <literal>AuthContext</literal> after

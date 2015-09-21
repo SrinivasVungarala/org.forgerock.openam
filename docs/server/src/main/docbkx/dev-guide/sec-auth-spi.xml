@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-auth-spi'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -807,9 +807,7 @@ $ <userinput>ssoadm \
 <computeroutput>Authentication module was registered.</computeroutput>
      </screen>
 
-     <para>See the <link xlink:href="reference#ssoadm-1" xlink:show="new"
-     xlink:role="http://docbook.org/xlink/role/olink"><command>ssoadm</command>
-     reference</link> a full list of Authentication Service Management
+     <para>See the <olink targetdoc="reference" targetptr="ssoadm-1" /> a full list of Authentication Service Management
      subcommands.</para>
     </listitem>
 

@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-topologies'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -736,9 +736,7 @@
     Session failover requires that all servers in a site use the same Core Token
     Service, which is replicated across all servers.
     For more information, see
-    <link xlink:href="${backstageAMBaseURL}/install-guide/chap-session-failover"
-          xlink:show="new">
-     <citetitle>OpenAM Session Failover</citetitle></link>.
+    <olink targetdoc="install-guide" targetptr="chap-session-failover" />.
    </para>
 
    <para>
@@ -888,9 +886,7 @@
 
    <para>
     For more information, see
-    <link xlink:href="${backstageAMBaseURL}/install-guide/chap-install-multiple"
-          xlink:show="new">
-     <citetitle>Installing Multiple Servers</citetitle></link>.
+    <olink targetdoc="install-guide" targetptr="chap-install-multiple" />.
    </para>
    </section>
   </section>
@@ -954,9 +950,7 @@
      run method calls to fetch, read, create, delete, edit, or authenticate to your
      identity store data.
      For more information, see
-     <link xlink:href="${backstageAMBaseURL}/dev-guide/chap-identity-repo-spi"
-           xlink:show="new">
-      <citetitle>Customizing Identity Data Storage</citetitle></link>.
+     <olink targetdoc="dev-guide" targetptr="sec-identity-repo-spi" />.
     </para>
     <para>
      You can configure the Data Store authentication module to require the
@@ -970,9 +964,7 @@
      and authorization services as well as different identity repositories if you
      have enough identity data.
      For more information, see
-     <link xlink:href="${backstageAMBaseURL}/admin-guide/chap-realms"
-           xlink:show="new">
-      <citetitle>Configuring Realms</citetitle></link>.
+     <olink targetdoc="admin-guide" targetptr="chap-realms" />.
     </para>
    </listitem>
    <listitem>
@@ -1031,9 +1023,7 @@
      CTS as a dedicated external data store is advantageous for systems with many
      users and many sessions.
      For more information, see
-     <link xlink:href="${backstageAMBaseURL}/install-guide/chap-cts"
-           xlink:show="new">
-      <citetitle>Configuring the CTS Service</citetitle></link>.
+     <olink targetdoc="install-guide" targetptr="chap-cts" />.
     </para>
    </listitem>
   </itemizedlist>

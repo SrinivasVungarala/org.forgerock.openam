@@ -24,7 +24,7 @@
   !    
 -->
 <chapter xml:id='chap-realms'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -559,11 +559,7 @@
      other than the OpenAM embedded repository. Before configuring an OpenAM data
      store as an external identity repository, make sure that you
      have prepared the external identity repository for OpenAM. For more information,
-     see <link xlink:show="new"
-                xlink:href="install-guide#prepare-identity-repository"
-                xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Preparing
-     an External Identity Repository</citetitle></link> in the
-     <citetitle>Installation Guide</citetitle>.
+     see <olink targetdoc="install-guide" targetptr="prepare-identity-repository" />.
     </para>
    </step>
 
@@ -606,71 +602,43 @@
 
      <listitem>
       <para>
-       <link
-        xlink:href="admin-guide#sec-data-stores-active-directory"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-       ><citetitle>Hints for Configuring Active Directory Data Stores</citetitle></link>
+       <xref linkend="sec-data-stores-active-directory" />
       </para>
      </listitem>
 
      <listitem>
       <para>
-       <link
-        xlink:href="admin-guide#sec-data-stores-adam"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-       ><citetitle>Hints for Configuring Active Directory Application Mode (ADAM) Data Stores</citetitle></link>
+       <xref linkend="sec-data-stores-adam" />
       </para>
      </listitem>
 
      <listitem>
       <para>
-       <link
-        xlink:href="admin-guide#sec-data-stores-db"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-       ><citetitle>Hints for Configuring Database Repository (Early Access) Data Stores</citetitle></link>
+       <xref linkend="sec-data-stores-db" />
       </para>
      </listitem>
 
      <listitem>
       <para>
-       <link
-        xlink:href="admin-guide#sec-data-stores-generic-ldapv3"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-       ><citetitle>Hints for Configuring Generic LDAPv3 Data Stores</citetitle></link>
+       <xref linkend="sec-data-stores-generic-ldapv3" />
       </para>
      </listitem>
 
      <listitem>
       <para>
-       <link
-        xlink:href="admin-guide#sec-data-stores-opendj"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-       ><citetitle>Hints for Configuring OpenDJ Data Stores</citetitle></link>
+       <xref linkend="sec-data-stores-opendj" />
       </para>
      </listitem>
 
      <listitem>
       <para>
-       <link
-        xlink:href="admin-guide#sec-data-stores-dsee"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-       ><citetitle>Hints for Configuring Sun/Oracle DSEE Data Stores</citetitle></link>
+       <xref linkend="sec-data-stores-dsee" />
       </para>
      </listitem>
 
      <listitem>
       <para>
-       <link
-        xlink:href="admin-guide#sec-data-stores-tivoli"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-        ><citetitle>Hints for Configuring Tivoli Directory Server Data Stores</citetitle></link>
+       <xref linkend="sec-data-stores-tivoli" />
       </para>
      </listitem>
     </itemizedlist>
@@ -693,11 +661,7 @@
       </listitem>
      </itemizedlist>
      For more information about indexing external identity repository attributes,
-     see <link xlink:show="new"
-                xlink:href="install-guide#install-index-opendj-external-idrepo"
-                xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To
-     Index External Identity Repository Attributes</citetitle></link> in the
-     <citetitle>Installation Guide</citetitle>.
+     see <olink targetdoc="install-guide" targetptr="install-index-opendj-external-idrepo" />.
     </para>
    </step>
 
@@ -724,13 +688,9 @@
 
     <para>
      Also, once you change the data store for a realm,
-     you might opt to change the
-     <link
-      xlink:href="admin-guide#configure-authn-modules"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     >authentication module configuration</link>
-     as described in the chapter on authentication
-     to use your realm data store, rather than the inherited settings.
+     you might opt to change the authentication module configuration to use
+     your realm data store, rather than the inherited settings. See
+     <xref linkend="configure-authn-modules" />.
     </para>
    </step>
   </procedure>

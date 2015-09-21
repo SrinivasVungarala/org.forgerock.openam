@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-rest-identity-realm-mgmt'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -59,10 +59,7 @@
     </itemizedlist>
     When making the REST API call, pass the session token in the HTTP header.
     For more information about the OpenAM session token and its use in REST API
-    calls, see <link xlink:show="new"
-                     xlink:href="dev-guide#rest-api-ssotoken"
-                     xlink:role="http://docbook.org/xlink/role/olink">Using the
-    Session Token After Authentication</link>.
+    calls, see <xref linkend="rest-api-ssotoken" />.
   </para>
 
  <section xml:id="rest-api-crud-identity">
@@ -127,10 +124,7 @@
     <para>
      Under the <literal>/identity</literal> endpoint,
      you find the backwards-compatible, legacy APIs.
-     See <link xlink:show="new"
-               xlink:href="dev-guide#deprecated-apis-identity"
-               xlink:role="http://docbook.org/xlink/role/olink">Deprecated
-     Identity Management APIs</link>.
+     See <xref linkend="deprecated-apis-identity" />.
     </para>
    </listitem>
   </itemizedlist>
@@ -890,11 +884,7 @@ $ <userinput>curl \
     as the value of the <literal>currentpassword</literal>.</para>
 
    <para>For the case where the user has forgotten their password, see
-    <link
-     xlink:show="new"
-     xlink:href="dev-guide#rest-api-password-reset"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     >Resetting Forgotten Passwords</link> instead.
+    <xref linkend="rest-api-password-reset" /> instead.
    </para>
 
    <para>
@@ -921,9 +911,7 @@ $ <userinput>curl \
 
    <para>On failure, OpenAM returns a JSON representation of the error including the
     <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-    xlink:show="new">HTTP status code</link>. See also <link xlink:show="new"
-    xlink:href="dev-guide#rest-api-status-codes"
-    xlink:role="http://docbook.org/xlink/role/olink">REST Status Codes</link>
+    xlink:show="new">HTTP status code</link>. See also <xref linkend="rest-api-status-codes" />
     for more information.
    </para>
   </section>

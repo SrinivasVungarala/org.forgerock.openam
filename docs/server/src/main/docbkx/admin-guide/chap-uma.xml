@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-uma'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -98,11 +98,8 @@
    </para>
 
    <para>
-    For information about the available attributes, see the
-    <citetitle>Reference</citetitle> section <link xlink:show="new"
-       xlink:href="reference#uma-provider-configuration"
-       xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>UMA Provider Configuration</citetitle></link>.
+    For information about the available attributes, see <olink
+    targetdoc="reference" targetptr="uma-provider-configuration" />.
    </para>
   </step>
 
@@ -168,10 +165,7 @@
      <para>
       In the External Resource Sets Store Configuration section, enter
       the properties for the store. For information about the available
-      settings, see the <citetitle>Reference</citetitle> section
-      <link xlink:show="new" xlink:href="reference#servers-uma"
-       xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Servers and UMA</citetitle></link>.
+      settings, see <olink targetdoc="reference" targetptr="servers-uma" />.
      </para>
     </step>
 
@@ -218,10 +212,7 @@
      <para>
       In the External UMA Audit Store Configuration section, enter the
       properties for the store. For information about the available
-      settings, see the <citetitle>Reference</citetitle> section
-      <link xlink:show="new" xlink:href="reference#servers-uma"
-           xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Servers &gt; UMA</citetitle></link>.
+      settings, see <olink targetdoc="reference" targetptr="servers-uma" />.
      </para>
     </step>
 
@@ -378,10 +369,7 @@
     <listitem>
      <para>The URI to introspect an RPT.</para>
      <para>For more information, see
-      <link xlink:show="new"
-            xlink:href="dev-guide#rest-api-oauth2-client-endpoints"
-            xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>OAuth 2.0 Client and Resource Server Endpoints</citetitle></link>.</para>
+      <olink targetdoc="dev-guide" targetptr="rest-api-oauth2-client-endpoints" />.</para>
     </listitem>
    </varlistentry>
 
@@ -470,10 +458,7 @@
    <title>To Acquire a Protection API Token</title>
 
    <para>
-    You must have first <link xlink:show="new"
-                                   xlink:href="admin-guide#register-oauth2-client"
-                                   xlink:role="http://docbook.org/xlink/role/olink"
-    >registered an OAuth 2.0/OpenID Connect client</link>
+    You must have first <xref linkend="register-oauth2-client" />
     with a name, such as <replaceable>UMA-Resource-Server</replaceable> and a
     client password, such as <replaceable>password</replaceable>. Ensure that
     <literal>uma_protection</literal> is in the list of available scopes in the
@@ -1008,10 +993,7 @@ $ <userinput>curl \
     </para>
 
     <para>
-     For more information about the introspection endpoint, see <link xlink:show="new"
-     xlink:href="dev-guide#rest-api-oauth2-client-endpoints"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>OAuth 2.0 Client and Resource Server Endpoints</citetitle></link>.
+     For more information about the introspection endpoint, see <olink targetdoc="dev-guide" targetptr="rest-api-oauth2-client-endpoints" />.
     </para>
 
     <para>If the RPT is confirmed to be valid, and non-expired (<keycap>9</keycap>)
@@ -1089,10 +1071,7 @@ $ <userinput>curl \
    <title>To Acquire an Authorization API Token</title>
 
    <para>
-    You must have first <link xlink:show="new"
-                                   xlink:href="admin-guide#register-oauth2-client"
-                                   xlink:role="http://docbook.org/xlink/role/olink"
-    >registered an OAuth 2.0/OpenID Connect client</link>
+    You must have first <xref linkend="register-oauth2-client" />
     with a name, such as <replaceable>UMA-Client</replaceable> and a
     client password, such as <replaceable>password</replaceable>. Ensure that
     <literal>uma_authorization</literal> is in the list of available scopes in

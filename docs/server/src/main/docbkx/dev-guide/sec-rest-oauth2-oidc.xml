@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-rest-oauth2-oidc'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -83,9 +83,7 @@
   the operations in the browser session.</para>
 
   <para>Clients not running in a browser can authenticate as described in
-   <link xlink:href="dev-guide#rest-api-auth"
-         xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>Authorization &amp; Policy Management</citetitle></link>, whereby
+   <xref linkend="rest-api-auth" />, whereby
    OpenAM returns a
    <literal>token.id</literal> value. Clients pass the
    <literal>token.id</literal> value in a header named after the
@@ -94,11 +92,9 @@
   <section xml:id="rest-api-oauth2-client-endpoints">
    <title>OAuth 2.0 Client &amp; Resource Server Endpoints</title>
 
-   <para>As described in the <citetitle>Administration Guide</citetitle> chapter
-   on <link xlink:href="admin-guide#chap-oauth2"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing OAuth
-   2.0 Authorization</citetitle></link>, OpenAM exposes REST endpoints for
-   making calls to OpenAM acting as an authorization server.</para>
+   <para>OpenAM exposes REST endpoints for making calls to OpenAM acting as an
+    authorization server, as described in
+    <olink targetdoc="admin-guide" targetptr="chap-oauth2" />.</para>
 
    <xinclude:include href="../shared/variablelist-oauth2-endpoints.xml" />
 
@@ -156,7 +152,8 @@ $ <userinput>curl https://openam.example.com:8443/openam/oauth2/tokeninfo\
    can thus use the <literal>/oauth2/tokeninfo</literal> endpoint to retrieve
    expiration information about the token. Depending on the scopes
    implementation, the JSON response about the token can also contain scope
-   information. As described in the <citetitle>Administration Guide</citetitle>,
+   information. As described in <olink targetdoc="admin-guide"
+                                       targetptr="oauth2-byo-client" />,
    the default scopes implementation in OpenAM considers scopes to be names of
    attributes in the resource owner's user profile. Notice that the JSON
    response contains the values for those attributes from the user's profile,
@@ -181,10 +178,9 @@ $ <userinput>curl https://openam.example.com:8443/openam/oauth2/tokeninfo\
 
    <para>The <literal>/oauth2/authorize</literal> endpoint can also take
    <literal>module</literal> and <literal>service</literal> parameters. Use
-   either as described in <link xlink:href="admin-guide#authn-from-browser"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Authenticating
-   To OpenAM</citetitle></link>, where <literal>module</literal> specifies the
-   authentication module instance to use or <literal>service</literal>
+   either as described in <olink targetdoc="admin-guide"
+   targetptr="authn-from-browser" />, where <literal>module</literal> specifies
+   the authentication module instance to use or <literal>service</literal>
    specifies the authentication chain to use when authenticating the resource
    owner.</para>
   </section>
@@ -277,19 +273,6 @@ https://openam.example.com:8443/openam/json/users/demo\
    <para>The OpenAM-specific OAuth 2.0 token administration endpoint lets
    administrators read, list, and delete OAuth 2.0 tokens. OAuth 2.0 clients
    can also manage their own tokens.</para>
-
-   <!--
-       Fix for AME-2414 requires recompilation of XUI sources
-       so the following is no longer possible with a binary release:
-
-   <para>Resource owners can manage OAuth 2.0 tokens that they authorized by
-   using the web-based OAuth 2 Token Manager. See the <citetitle>Administration
-   Guide</citetitle> section on <link
-   xlink:href="admin-guide#oauth2-manage-tokens"
-   xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Managing OAuth 2.0 Tokens</citetitle></link> for details.</para>
-
-   -->
 
    <para>OpenAM exposes the token administration endpoint at
    <literal>/frrest/oauth2/token</literal>, such as
@@ -732,10 +715,9 @@ $ <userinput>curl \
    <para>OpenAM allows both static and dynamic registration of OpenID Connect
    client applications. For dynamic registration according to the OpenID Connect
    Dynamic Client Registration 1.0 specification, the endpoint is
-   <literal>/oauth2/connect/register</literal>. See <link xlink:show="new"
-   xlink:href="admin-guide#register-openid-connect-client-dynamic"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Register a
-   Client Dynamically</citetitle></link> for details.</para>
+   <literal>/oauth2/connect/register</literal>. See <olink
+   targetdoc="admin-guide" targetptr="register-openid-connect-client-dynamic" />
+   for details.</para>
   </section>
 
   <section xml:id="rest-api-openid-connect-authorization">
@@ -753,10 +735,8 @@ $ <userinput>curl \
    the OpenID Connect 1.0 specific endpoint
    <literal>/oauth2/userinfo</literal>.</para>
 
-   <para>For examples, see <link xlink:show="new"
-   xlink:href="admin-guide#openid-connect-examples"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Client
-   Examples</citetitle></link>.</para>
+   <para>For examples, see <olink targetdoc="admin-guide"
+   targetptr="openid-connect-examples" />.</para>
   </section>
 
   <section xml:id="rest-api-openid-connect-session">
@@ -777,10 +757,7 @@ $ <userinput>curl \
     </listitem>
    </itemizedlist>
 
-   <para>For an example, see <link xlink:show="new"
-   xlink:href="admin-guide#manage-sessions-openid-connect"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing User
-   Sessions</citetitle></link>.</para>
+   <para>For an example, see <olink targetdoc="admin-guide" targetptr="manage-sessions-openid-connect" />.</para>
   </section>
  </section>
 

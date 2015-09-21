@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-rest-user-services'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -256,16 +256,11 @@ $ <userinput>curl \
    for handling forgotten passwords
    as long as the user has a valid email address in their profile.
    This is an alternative to the password reset capability described in
-   the <citetitle>Administration Guide</citetitle> chapter,
-   <link xlink:show="new" xlink:href="admin-guide#chap-pwd-reset"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   >Configuring Password Reset</citetitle></link>.
+    <olink targetdoc="admin-guide" targetptr="chap-pwd-reset" />.
   </para>
 
   <tip><para>If the current password is known, use the
-   <link xlink:show="new"
-         xlink:href="dev-guide#rest-api-change-password"
-         xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Change Password</citetitle></link>
+   <xref linkend="rest-api-change-password" />
    feature to change a password.</para></tip>
 
   <para>The option is disabled by default. You can enable it in the OpenAM Console

@@ -25,7 +25,7 @@
 -->
  <section xml:id="system-configuration"
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -537,9 +537,7 @@
      and password used to protect access to monitoring information. The
      default user name password combination is <literal>demo</literal> and
      <literal>changeit</literal>. You can encode a new password using the
-     <link xlink:href="reference#ampassword-1"
-     xlink:role="http://docbook.org/xlink/role/olink"><command
-     >ampassword</command></link>command.</para>
+     <xref linkend="ampassword-1" />command.</para>
 
      <para><command>ssoadm</command> attribute:
      <literal>iplanet-am-monitoring-authfile-path</literal></para>
@@ -827,11 +825,8 @@
       is set.
      </para>
      <para>You can also configure cross domain single sign on (CDSSO) to allow
-      single sign on across multiple domains managed by your organization. See
-      the <citetitle>Administration Guide</citetitle> chapter on <link
-       xlink:href="admin-guide#chap-cdsso"
-       xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-     Cross-Domain Single Sign On</citetitle></link> for details.
+      single sign on across multiple domains managed by your organization.
+      For details, see <olink targetdoc="admin-guide" targetptr="chap-cdsso" />.
      </para>
 
      <para><command>ssoadm</command> attribute:

@@ -26,7 +26,7 @@
 <chapter xml:id='chap-first-steps'
          xmlns='http://docbook.org/ns/docbook'
          version='5.0'
-         xml:lang='en'
+
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -692,11 +692,9 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      <literal>/ (Top Level Realm)</literal> in the Realms table.</para>
 
     <para>OpenAM allows you to organize identities, policies, and policy agent
-    profiles into realms as described in the <citetitle>Administration
-    Guide</citetitle> chapter, <link xlink:show="new"
-    xlink:href="admin-guide#chap-realms"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-    Realms</citetitle></link>. For now, use the default top level realm.</para>
+    profiles into realms as described in
+     <olink targetdoc="admin-guide" targetptr="chap-realms" />. For now, use the
+     default top level realm.</para>
    </step>
 
    <step>
@@ -705,11 +703,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      <literal>iPlanetAMWebAgentService</literal>, and
      then click Add New Policy.</para>
     <para>For more information on the relationship between realms,
-     applications, and policies, see <citetitle>Administration
-      Guide</citetitle> chapter, <link xlink:show="new"
-      xlink:href="admin-guide#what-is-authz"
-      xlink:role="http://docbook.org/xlink/role/olink">
-      <citetitle>About Authorization in OpenAM</citetitle></link>.</para>
+     applications, and policies, see <olink targetdoc="admin-guide" targetptr="what-is-authz" />.</para>
    </step>
 
    <step>
@@ -1124,9 +1118,7 @@ $ <userinput>tail /path/to/apache/logs/error_log</userinput>
   </para>
   <para>
    To try out stateless sessions, see
-   <link xlink:href="admin-guide#chap-session-state"
-         xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Configuring Session State</citetitle></link>.
+   <olink targetdoc="admin-guide" targetptr="chap-session-state" />.
   </para>
  </section>
 

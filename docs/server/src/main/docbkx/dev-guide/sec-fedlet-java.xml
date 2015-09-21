@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-fedlet-java'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -1141,10 +1141,8 @@ cGy/F2Zuj8XJJpuQRSE6PtQqBuDEHjjmOQJ0rV/r8mO1ZCtHRhpZ5zYRjhRC9eCbjx9VrFax0JDC
 
   <para>You can customize the Java Fedlet to perform many of the SAML v2.0
   service provider operations. The Java Fedlet has the SAML v2.0 capabilities
-  identified in the table in the <citetitle>Administration Guide</citetitle>,
-  <link xlink:show="new" xlink:href="admin-guide#fedlet-saml2-features"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Fedlet Support for
-  SAML v2.0 Features</citetitle></link>.</para>
+  identified in
+  <olink targetdoc="admin-guide" targetptr="fedlet-saml2-features" />.</para>
 
   <procedure xml:id="hello-world-with-fedlet">
    <title>To Add Your Application</title>
@@ -1341,17 +1339,11 @@ $ <userinput>cp fedletSampleApp.jsp fedletSampleApp.jsp.orig</userinput>
 
    <para>When calling this JSP, the parameters to use are those also used by
    <filename>saml2/jsp/spSSOInit.jsp</filename> in OpenAM. Those parameters are
-   described in the <citetitle>Administration Guide</citetitle> section,
-   <link xlink:show="new" xlink:href="admin-guide#spssoinit-parameters"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   ><filename>spSSOInit.jsp</filename> Parameters</citetitle></link>.</para>
+   described in <olink targetdoc="admin-guide" targetptr="spssoinit-parameters" />.</para>
 
    <para>For IDP-initiated single sign-on, call the appropriate page on the
-   Identity Provider. OpenAM's page is described in the
-   <citetitle>Administration Guide</citetitle> section,
-   <link xlink:show="new" xlink:href="admin-guide#idpssoinit-parameters"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   ><filename>idpSSOInit.jsp</filename> Parameters</citetitle></link>.</para>
+   Identity Provider. OpenAM's page is described in
+   <olink targetdoc="admin-guide" targetptr="idpssoinit-parameters" />.</para>
 
    <para>After single sign-on, the user-agent is directed by default to the
    assertion consumer URI set in the Fedlet metadata, which by default is
@@ -1370,17 +1362,11 @@ $ <userinput>cp fedletSampleApp.jsp fedletSampleApp.jsp.orig</userinput>
 
    <para>When calling this JSP, the parameters to use are those also used by
    <filename>saml2/jsp/spSingleLogoutInit.jsp</filename> in OpenAM. Those
-   parameters are described in the <citetitle>Administration Guide</citetitle>
-   section, <link xlink:show="new" xlink:href="admin-guide#spsloinit-parameters"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   ><filename>spSingleLogoutInit.jsp</filename> Parameters</citetitle></link>.</para>
+   parameters are described in <olink targetdoc="admin-guide" targetptr="spsloinit-parameters" />.</para>
 
    <para>For IDP-initiated single logout, call the appropriate page on the
-   Identity Provider. OpenAM's page is described in the
-   <citetitle>Administration Guide</citetitle> section,
-   <link xlink:show="new" xlink:href="admin-guide#idpsloinit-parameters"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   ><filename>idpSingleLogoutInit.jsp</filename> Parameters</citetitle></link>.</para>
+   Identity Provider. OpenAM's page is described in
+   <olink targetdoc="admin-guide" targetptr="idpsloinit-parameters" />.</para>
 
    <para>Set the <literal>RelayState</literal> parameter when initiating logout
    to redirect the user-agent appropriately when the process is complete.</para>

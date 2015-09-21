@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-cdsso'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -113,11 +113,7 @@
   While using SAML v2.0 adds complexity, it supports attribute mapping,
   which may be useful when the two domains are associated
   with data stores that use different attribute names.
-  See the section,
-  <link xlink:href="admin-guide#using-saml2-with-policy-agents"
-        xlink:show="new"
-        xlink:role="http://docbook.org/xlink/role/olink"
-  ><citetitle>SAML v2.0 and Policy Agents</citetitle></link>, for details.
+  For details, see  <xref linkend="using-saml2-with-policy-agents" />.
  </para>
 
  <procedure xml:id="enable-cdsso-jee-agent">
@@ -317,12 +313,8 @@
 
    <para>
     For more information about this property,
-    see the <citetitle>Reference</citetitle> section on advanced properties,
-    <link
-     xlink:show="new"
-     xlink:href="reference#servers-advanced-configuration"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Servers &gt; Advanced</citetitle></link>.
+    see <olink targetdoc="reference"
+                targetptr="servers-advanced-configuration" />.
    </para>
   </step>
  </procedure>

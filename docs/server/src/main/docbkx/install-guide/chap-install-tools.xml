@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-install-tools'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -330,10 +330,7 @@ http://openam.example.com:8080/openam</computeroutput>
     The <command>ssoadm</command> commands can also be run from
     <filename>ssoadm.jsp</filename> in OpenAM, for example, at
     <literal>http://openam.example.com:8080/openam/ssoadm.jsp</literal>,
-    once the page has been enabled as described in the section on <link
-    xlink:href="admin-guide#openam-ssoadm-jsp-overview"
-    xlink:role="http://docbook.org/xlink/role/olink">OpenAM ssoadm.jsp</link>
-    in the <citetitle>Administration Guide</citetitle>.
+    once the page has been enabled as described in <olink targetdoc="admin-guide" targetptr="openam-ssoadm-jsp-overview" />.
    </para>
 
    <para>
@@ -359,10 +356,7 @@ http://openam.example.com:8080/openam</computeroutput>
     fails.
 
     For example, if you used a self-signed certificate as described in
-    <link
-     xlink:href="admin-guide#openam-with-https-on-tomcat"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up OpenAM
-     With HTTPS on Tomcat</citetitle></link>, then the <command>ssoadm</command>
+    <olink targetdoc="admin-guide" targetptr="openam-with-https-on-tomcat" />, then the <command>ssoadm</command>
     command cannot trust that certificate by default. To allow the
     <command>ssoadm</command> command to trust the certificate, edit the
     <command>ssoadm</command> (<command>ssoadm.bat</command> on Windows)
@@ -645,11 +639,7 @@ java '-Djavax.net.ssl.trustStore=PATH_TO_JKS_TRUSTSTORE' \
  <para>
   For additional information about the command-line tool,
   see the reference documentation for
-    <link
-     xlink:show="new"
-     xlink:href="reference#man-configurator-jar-1"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     ><command>configurator.jar</command></link>.
+    <olink targetdoc="reference" targetptr="man-configurator-jar-1" />.
  </para>
 
  <indexterm class="endofrange" startref="idx-config-tools">

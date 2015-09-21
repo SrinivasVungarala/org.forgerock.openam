@@ -23,8 +23,8 @@
   !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
-<book xml:id='upgrade-guide'
- xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+<book xml:id='upgrade-guide' xml:lang='en'
+ xmlns='http://docbook.org/ns/docbook' version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -38,8 +38,8 @@
    Authentication, Authorization, Entitlement, and Federation software.</para>
   </abstract>
   <copyright>
-   <year>2011-2014</year>
-   <holder>ForgeRock AS</holder>
+   <year>2011-2015</year>
+   <holder>ForgeRock AS.</holder>
   </copyright>
   <authorgroup>
    <author>

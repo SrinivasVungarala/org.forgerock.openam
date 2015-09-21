@@ -25,7 +25,7 @@
 -->
  <section xml:id="authentication-configuration"
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -40,10 +40,7 @@
   authentication services globally using the same attributes you use to
   configure authentication modules per realm under Access Control &gt;
   <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Module
-  Instances, as described in the <citetitle>Administration Guide</citetitle>
-  chapter on <link xlink:href="admin-guide#chap-auth-services"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Defining
-  Authentication Services</citetitle></link>.</para>
+  Instances, as described in <olink targetdoc="admin-guide" targetptr="chap-auth-services" />.</para>
 
   <para>The primary difference is that when configuring services globally,
   you set the default values to be used when a module is configured further
@@ -60,11 +57,8 @@
   
   <para>The following are the global fields you can configure for the Core Authentication 
   module under the <literal>Configuration</literal> tab. The realm attributes
-  are described in the
-  <link xlink:href="admin-guide#core-module-conf-hints"
-        xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Hints for the Core Authentication Module</citetitle>
-  </link>section of the <citetitle>Administration Guide</citetitle>.</para>
+  are described in
+  <olink targetdoc="admin-guide" targetptr="core-module-conf-hints" />.</para>
   
    <variablelist>
     <varlistentry>

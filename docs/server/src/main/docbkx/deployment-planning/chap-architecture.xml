@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-deployments'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -383,10 +383,8 @@
      <listitem>
       <para>
        Install and configure the OpenAM server, datastores, and components.
-       For information on installing OpenAM, see
-       <!-- This link will need to be changed for 13.0.0 before the release. -->
-       <link xlink:href="${backstageAMBaseURL}/install-guide/toc"
-        ><citetitle>OpenAM Installation Guide</citetitle></link>.
+       For information on installing OpenAM, see the <olink
+       targetdoc="install-guide" targetptr="install-guide"/>.
        <indexterm>
         <primary>deployment implementation</primary>
         <secondary>installing</secondary>
@@ -406,9 +404,7 @@
       <para>Tune OpenAM's JVM, caches, LDAP connection pools, container thread pools,
        and other items.
        For information on tuning OpenAM, see
-       <!--olink targetptr="chap-tuning" targetdoc="admin-guide"/-->
-       <link xlink:href="${backstageAMBaseURL}/admin-guide/chap-tuning"
-        ><citetitle>Tuning OpenAM</citetitle></link>.
+       <olink targetdoc="admin-guide" targetptr="chap-tuning"/>.
        <indexterm>
         <primary>deployment implementation</primary>
         <secondary>tuning</secondary>
@@ -667,7 +663,7 @@
     or custom extensions (authentication modules, policy conditions, and so forth),
     then have a team member involved in the development
     help you plan the work.
-    The <citetitle>OpenAM Developer's Guide</citetitle> can be useful
+    The <olink targetdoc="dev-guide" targetptr="dev-guide" /> can be useful
     when scoping a development project.
    </para>
 
@@ -879,10 +875,7 @@
 
    <para>
     You must therefore plan to secure the deployment
-    as described in the <citetitle>Administration Guide</citetitle> chapter on
-    <link
-     xlink:href="${backstageAMBaseURL}/admin-guide/chap-securing"
-    ><citetitle>Securing OpenAM</citetitle></link>.
+    as described in <olink targetdoc="admin-guide" targetptr="chap-securing" />.
    </para>
 
    <itemizedlist>
@@ -1229,7 +1222,7 @@
     Log volumes depend on usage and on logging levels.
     By default, OpenAM generates both access and error messages for each service,
     providing the raw material for auditing the deployment.
-    The OpenAM <citetitle>Reference</citetitle> covers
+    The <olink targetdoc="reference" targetptr="reference" /> covers
     what you can expect to find in log messages.
    </para>
 
@@ -1764,10 +1757,8 @@
    <para>
     In this section, "upgrade" means moving to a more recent release,
     whether it is a patch, maintenance release, minor release, or major release.
-    (See the OpenAM Administration Guide
-    <link xlink:href="${backstageAMBaseURL}/admin-guide/appendix-interface-stability"
-     ><citetitle>Appendix A. Release Levels and Interface Stability</citetitle></link>
-    for definitions of the types of release.)
+    For definitions of the types of release, see <olink
+    targetdoc="admin-guide" targetptr="appendix-interface-stability" />.
    </para>
 
    <para>

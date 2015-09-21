@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-rest'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -213,11 +213,7 @@
 
   <para>
    Interface Stability:
-   <link
-    xlink:show="new"
-    xlink:href="admin-guide#interface-stability"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   >Evolving</link>
+   <olink targetdoc="admin-guide" targetptr="interface-stability" />
   </para>
 
   <para>
@@ -226,106 +222,63 @@
 
   <itemizedlist>
    <listitem>
-    <para><link linkend="rest-api-auth">Authentication</link> (login)</para>
+    <para><xref linkend="rest-api-auth" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para><link linkend="rest-api-auth">Logout</link></para>
+    <para><xref linkend="rest-api-cookie-info" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para><link linkend="rest-api-cookie-info">Cookie information</link></para>
+    <para><xref linkend="rest-api-tokens" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para><link linkend="rest-api-tokens">Token attribute retrieval</link></para>
+    <para><xref linkend="rest-api-logging" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para><link linkend="rest-api-tokens">Token validation</link></para>
+    <para><xref linkend="sec-rest-authz-policy"  xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para><link linkend="rest-api-logging">Logging</link></para>
+    <para><xref linkend="rest-api-oauth2"  xrefstyle="select: title"/></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-openid-connect"  xrefstyle="select: title"/></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="sec-rest-uma"  xrefstyle="select: title"/></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-self-registration" xrefstyle="select: title"/></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-password-reset" xrefstyle="select: title"/></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-dashboard" xrefstyle="select: title"/></para>
+   </listitem>
+   <listitem>
+    <para><xref linkend="rest-api-device-profile-reset" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
     <para>
-     <link
-      xlink:show="new"
-      xlink:href="dev-guide#sec-rest-authz-policy"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      >Authorization and policy management</link>
+     <xref linkend="rest-api-crud-identity" xrefstyle="select: title"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <link
-      xlink:show="new"
-      xlink:href="dev-guide#rest-api-oauth2"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      >OAuth 2.0 authorization</link>
+     <xref linkend="rest-api-crud-realm" xrefstyle="select: title"/>
     </para>
    </listitem>
    <listitem>
-    <para><link
-     xlink:show="new"
-     xlink:href="dev-guide#rest-api-openid-connect"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     >OpenID Connect 1.0</link></para>
-   </listitem>
-   <listitem>
-    <para><link
-     xlink:show="new"
-     xlink:href="dev-guide#sec-rest-uma"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     >User-Managed Access (UMA) 1.0</link></para>
-   </listitem>
-   <listitem>
     <para>
-     <link
-      xlink:show="new"
-      xlink:href="dev-guide#sec-rest-user-services"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      >User self-registration</link></para>
+     <xref linkend="sec-manage-scripts-rest" xrefstyle="select: title"/>
+    </para>
    </listitem>
    <listitem>
-    <para><link
-     xlink:show="new"
-     xlink:href="dev-guide#sec-rest-user-services"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     >Resetting forgotten passwords</link></para>
+    <para><xref linkend="sec-rest-sts" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para><link
-     xlink:show="new"
-     xlink:href="dev-guide#sec-rest-user-services"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     >Dashboard Service</link></para>
+    <para><xref linkend="sec-rest-api-recording" xrefstyle="select: title"/></para>
    </listitem>
 
-   <listitem>
-    <para>
-     <link
-      xlink:show="new"
-      xlink:href="dev-guide#sec-rest-identity-realm-mgmt"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      >Identity management
-      (creating, reading, updating, deleting identities)
-     </link>
-    </para>
-   </listitem>
-   <listitem>
-    <para><link
-     xlink:show="new"
-     xlink:href="dev-guide#sec-rest-identity-realm-mgmt"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     >Realm management
-     (creating, reading, updating, deleting realms)
-    </link></para>
-   </listitem>
-   <listitem>
-    <para><link
-     xlink:show="new"
-     xlink:href="dev-guide#sec-rest-sts"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     >Secure Token Service (STS)
-    </link></para>
-   </listitem>
   </itemizedlist>
 
   <para>This section also covers <link
@@ -534,11 +487,7 @@
   </variablelist>
 
   <para>The <citetitle>OpenAM Release Notes</citetitle> section,
-     <link
-      xlink:show="new"
-      xlink:href="release-notes#chap-compatibility"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>OpenAM Changes &amp; Deprecated Functionality</citetitle></link>
+     <olink targetdoc="release-notes" targetptr="chap-compatibility" />
      describes the differences between API versions.</para>
   </section>
 
@@ -562,12 +511,7 @@ $ <userinput>curl \
 
    <para>You can configure the default behavior OpenAM will take when a REST
     call does not specify explicit version information. For more
-    information, see <link
-     xlink:show="new"
-     xlink:href="admin-guide#chap-rest"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Configuring REST APIs</citetitle></link>
-    in the <citetitle>OpenAM Administration Guide</citetitle>.</para>
+    information, see <olink targetdoc="admin-guide" targetptr="sec-rest" />.</para>
 
   </section>
 
@@ -575,12 +519,8 @@ $ <userinput>curl \
   <title>REST API Versioning Messages</title>
   <para>OpenAM provides REST API version messages in the JSON response to a
    REST API call. You can also configure OpenAM to return version messages
-   in the response headers. See <link
-    xlink:show="new"
-    xlink:href="admin-guide#chap-rest"
-    xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Configuring REST APIs</citetitle></link>
-   in the <citetitle>OpenAM Administration Guide</citetitle></para>
+   in the response headers. See <olink targetdoc="admin-guide"
+                                       targetptr="sec-rest" />.</para>
 
   <para>Messages include:</para>
 
@@ -654,12 +594,7 @@ $ <userinput>curl \
 </screen>
 
    <tip><para>For more information on setting the default REST API
-   version behavior, see <link
-     xlink:show="new"
-     xlink:href="admin-guide#chap-rest"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Configuring REST APIs</citetitle></link>
-    in the <citetitle>OpenAM Administration Guide</citetitle>.</para></tip>
+   version behavior, see <olink targetdoc="admin-guide" targetptr="sec-rest" />.</para></tip>
   </section>
  </section>
 
@@ -722,10 +657,7 @@ $ <userinput>curl \
     <literal>/identity/logout</literal>, you find the backwards-compatible,
     legacy API.</para>
 
-    <para>See <link xlink:show="new"
-                    xlink:href="dev-guide#deprecated-apis-auth"
-                    xlink:role="http://docbook.org/xlink/role/olink">Deprecated
-     Authentication and Logout APIs</link>.
+    <para>See <xref linkend="deprecated-apis-auth" />.
     </para>
    </listitem>
   </itemizedlist>
@@ -737,12 +669,7 @@ $ <userinput>curl \
     configure the load balancer or proxy to send the address
     by using the <literal>X-Forwarded-For</literal> header,
     and configure OpenAM to consume and forward the header as necessary.
-    For details, see the <citetitle>Installation Guide</citetitle> section,
-    <link
-    xlink:show="new"
-    xlink:href="install-guide#handle-request-headers"
-    xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Handling HTTP Request Headers</citetitle></link>.
+    For details, see <olink targetdoc="install-guide" targetptr="handle-request-headers" />.
    </para>
   </tip>
 
@@ -772,11 +699,7 @@ $ <userinput>curl \
    for stateless sessions&#x2014;2000 bytes or greater&#x2014;is
    considerably longer than for stateful sessions&#x2014;approximately 100 bytes.
    For more information about stateful and stateless session tokens,
-   see <link xlink:show="new"
-             xlink:href="admin-guide#session-state-cookies"
-             xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
-   Cookies</citetitle></link> in the
-   <citetitle>Administration Guide</citetitle>.
+   see <olink targetdoc="admin-guide" targetptr="session-state-cookies" />.
    </para>
 
    <para> When authenticating with a user name and password, use
@@ -921,9 +844,7 @@ $ <userinput>curl \
 
    <para>OpenAM can be configured to return a failure URL value when
    authentication fails. No failure URL is configured by default. The Default
-   Failure Login URL can be configured for the <link xlink:show="new"
-   xlink:href="admin-guide#core-module-conf-hints"
-   xlink:role="http://docbook.org/xlink/role/olink">Core</link> authentication
+   Failure Login URL can be configured for the <olink targetdoc="admin-guide" targetptr="core-module-conf-hints" /> authentication
    module. Alternatively, failure URLs can be configured per authentication
    chain, which your client can specify using the <literal>service</literal>
    parameter described below. On failure OpenAM then returns HTTP status
@@ -1024,12 +945,7 @@ $ <userinput>curl \
     <literal>sessionUpgradeSSOTokenId=<replaceable>tokenId</replaceable></literal>,
     to request session upgrade.
     For an explanation of session upgrade,
-    see the <citetitle>Administration Guide</citetitle> section on,
-    <link
-     xlink:show="new"
-     xlink:href="admin-guide#session-upgrade"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Authentication Levels &amp; Session Upgrade</citetitle></link>.
+    see <olink targetdoc="admin-guide" targetptr="session-upgrade" />.
    </para>
 
    <itemizedlist>
@@ -1215,10 +1131,7 @@ $ <userinput>curl \
      access OpenAM functionality using the REST API. For example,
      users who lack administrative privileges cannot create OpenAM realms.
      For more information on the OpenAM privilege model,
-     see <link xlink:show="new"
-               xlink:href="admin-guide#manage-realms"
-               xlink:role="http://docbook.org/xlink/role/olink">Managing
-     Realms</link> in the <citetitle>Administration Guide</citetitle>.
+     see <olink targetdoc="admin-guide" targetptr="manage-realms" />.
     </para>
    </listitem>
    <listitem>
@@ -1522,10 +1435,7 @@ string=amlbcookie</computeroutput>
      you find the backwards-compatible, legacy APIs.
     </para>
 
-    <para>See <link xlink:show="new"
-                    xlink:href="dev-guide#deprecated-apis-tokens"
-                    xlink:role="http://docbook.org/xlink/role/olink">Deprecated
-     Token Validation and Attribute Retrieval APIs</link>.
+    <para>See <xref linkend="deprecated-apis-tokens" />.
     </para>
    </listitem>
   </itemizedlist>
@@ -1728,10 +1638,12 @@ $ <userinput>curl \
  <section xml:id="rest-api-logging">
   <title>Logging</title>
 
-  <!-- Pending replacement
-  <para>Interface Stability: <link xlink:show="new"
-  xlink:href="admin-guide#interface-stability"
-  xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>-->
+   <para>
+    Interface Stability:
+    <link
+     xlink:show="new"
+     xlink:href="admin-guide#interface-stability">Evolving</link>
+   </para>
 
   <para>
    OpenAM supports access and audit logging for any request going to
