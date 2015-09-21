@@ -213,11 +213,14 @@
 
   <para>
    Interface Stability:
-   <olink targetdoc="admin-guide" targetptr="interface-stability" />
+   <link
+    xlink:show="new"
+    xlink:href="admin-guide#interface-stability">Evolving
+   </link>
   </para>
 
   <para>
-   OpenAM offers RESTful APIs for these access and identity management operations:
+   OpenAM offers RESTful APIs for access and identity management as follows:
   </para>
 
   <itemizedlist>
@@ -258,25 +261,19 @@
     <para><xref linkend="rest-api-device-profile-reset" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para>
-     <xref linkend="rest-api-crud-identity" xrefstyle="select: title"/>
-    </para>
+    <para><xref linkend="rest-api-crud-identity" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para>
-     <xref linkend="rest-api-crud-realm" xrefstyle="select: title"/>
-    </para>
+    <para><xref linkend="rest-api-crud-realm" xrefstyle="select: title"/></para>
    </listitem>
    <listitem>
-    <para>
-     <xref linkend="sec-manage-scripts-rest" xrefstyle="select: title"/>
-    </para>
+    <para><link linkend="sec-manage-scripts-rest">Script Management</link></para>
    </listitem>
    <listitem>
-    <para><xref linkend="sec-rest-sts" xrefstyle="select: title"/></para>
+    <para><link linkend="sec-rest-sts">Secure Token Service</link></para>
    </listitem>
    <listitem>
-    <para><xref linkend="sec-rest-api-recording" xrefstyle="select: title"/></para>
+    <para><link linkend="sec-rest-api-recording">Troubleshooting Information Recording</link></para>
    </listitem>
 
   </itemizedlist>
