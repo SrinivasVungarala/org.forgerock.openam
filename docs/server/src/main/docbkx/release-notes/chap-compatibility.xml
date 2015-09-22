@@ -760,8 +760,11 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
       <thead>
        <row>
-        <entry><olink targetdoc="admin-guide" targetptr="interface-stability" /> URIs</entry>
-        <entry>Newer <olink targetdoc="admin-guide" targetptr="interface-stability" /> URIs</entry>
+        <entry> <olink targetdoc="admin-guide"
+                       targetptr="interface-stability" xrefstyle="select: nodocname">Deprecated URIs</olink></entry>
+        <entry>Newer <olink targetdoc="admin-guide"
+                       targetptr="interface-stability"
+                            xrefstyle="select: nodocname">Evolving URIs</olink></entry>
        </row>
       </thead>
 

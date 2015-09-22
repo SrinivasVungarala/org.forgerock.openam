@@ -124,12 +124,9 @@
   </para>
 
   <para>
-   Interface Stability:
-   <link
-       xlink:show="new"
-       xlink:href="admin-guide#interface-stability"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      >Evolving</link>
+   Interface Stability: <olink
+   targetdoc="admin-guide" targetptr="interface-stability"
+   xrefstyle="select: nodocname">Evolving</olink>
   </para>
 
   <para>
@@ -279,12 +276,9 @@
   </para>
 
   <para>
-   Interface Stability:
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#interface-stability"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      >Deprecated</link>
+   Interface Stability: <olink
+   targetdoc="admin-guide" targetptr="interface-stability"
+   xrefstyle="select: nodocname">Deprecated</olink>
   </para>
 
   <para>

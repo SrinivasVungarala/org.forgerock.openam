@@ -47,12 +47,9 @@
     </para>
 
     <para>
-     Interface Stability:
-     <link
-      xlink:show="new"
-      xlink:href="admin-guide#interface-stability"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     >Evolving</link>
+     Interface Stability: <olink
+   targetdoc="admin-guide" targetptr="interface-stability"
+   xrefstyle="select: nodocname">Evolving</olink>
     </para>
 
     <para>The following table depicts the parameters found in this file. All color codes are standard

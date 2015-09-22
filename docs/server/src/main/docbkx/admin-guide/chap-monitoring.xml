@@ -323,8 +323,7 @@ $ <userinput>ssoadm \
    </para>
 
    <para>
-    Interface Stability:
-    <xref linkend="interface-stability" />
+    Interface Stability: <link linkend="interface-stability" >Evolving</link>
    </para>
 
    <para>
@@ -630,8 +629,7 @@ $ <userinput>ssoadm \
    </para>
 
    <para>
-    Interface Stability:
-    <link linkend="interface-stability">Evolving</link>
+    Interface Stability: <link linkend="interface-stability">Evolving</link>
    </para>
 
    <para>
