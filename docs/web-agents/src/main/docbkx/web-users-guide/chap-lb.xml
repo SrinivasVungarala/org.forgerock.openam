@@ -156,7 +156,7 @@
 
    <step>
     <para>
-     Browse to Access Control > <replaceable>Realm Name</replaceable>
+     Browse to Realms > <replaceable>Realm Name</replaceable>
      > Agents > Web > <replaceable>Agent Name</replaceable>
      to open the web agent profile for editing.
     </para>
@@ -259,7 +259,7 @@
 
    <step>
     <para>
-     Browse to Access Control > <replaceable>Realm Name</replaceable>
+     Browse to Realms > <replaceable>Realm Name</replaceable>
      > Agents > Web > <replaceable>Agent Name</replaceable>
      to open the web agent profile for editing.
     </para>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<chapter xml:id='chap-web-agents'
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                             http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+
+  <title>Configuring Web Policy Agents</title>
+
+  <indexterm>
+   <primary>web policy agent</primary>
+   <secondary>configuration</secondary>
+  </indexterm>
+
+ <!-- The following two paras are used in the admin guide, j2ee pa users and
+ web pa users guides -->
+
+
+
+ <para>
+  You install policy agents in web servers and web application containers
+  to enforce access policies OpenAM applies to protected web sites and web
+  applications. Policy agents depend on OpenAM for all authentication and
+  authorization decisions. Their primary responsibility consists in enforcing
+  what OpenAM decides in a way that is unobtrusive to the user. In organizations
+  with many servers, you might well install many policy agents.
+ </para>
+
+	<para>
+  Policy agent configuration is distinct from policy configuration. The only
+  policy-like configurations that you apply to policy agents are:
+ 	<itemizedlist>
+<listitem>
+<para>
+URLs to exclude from policy enforcement (<firstterm>not enforced
+URLs</firstterm>)
+ 	   </para>
+ 	 	  </listitem>
+ 	 		  <listitem>
+ 	 		   <para>
+ 	 		    Client IP addresses to exclude from policy enforcement (<firstterm>not
+ 	 		    enforced IPs</firstterm>)
+ 	 		   </para>
+ 	 		  </listitem>
+ 	 		 </itemizedlist>
+ 	 		</para>
+
+ 	 		<section xml:id="web-agents-configuration-location">
+ 	 		 <title>Configuration Location</title>
+
+ 	 		 <para>
+ 	 		  Policy agent configuration properties are either stored:
+ 	 		  <itemizedlist>
+ 	 		   <listitem>
+ 	 		    <para>
+ 	 		     Centrally, in the OpenAM configuration store
+ 	 		    </para>
+ 	 		   </listitem>
+<listitem>
+ 	 		    <para>
+ 	 		     Locally, as a flat file
+ 	 		    </para>
+ 	 		   </listitem>
+ 	 		  </itemizedlist>
+ 	 		 </para>
+
+ 	 		 <section xml:id="centrally-stored-configuration">
+
+ 	 		  <title>Centrally Stored Agent Configuration</title>
+
+ 	 		  <para>
+ 	 		   By default, policy agent configuration settings are stored centrally in the
+ 	 		   OpenAM configuration store. Storing the policy agent configuration centrally
+ 	 		   allows you to configure your policy agents by using the OpenAM console,
+ 	     	   the <command>ssoadm</command> command line tool, or the REST API for easier
+ 	 		   management. Any property change made in OpenAM is immediately communicated to
+ 	 		   the agent by using a notification. Many policy agent properties are hot-swap
+ 	 		   enabled, allowing the change to take effect immediately without restarting
+ 	 		   the policy agent.
+ 	 		  </para>
+
+ 	 		  <para>
+ 	 		   You configure policy agents in realms. To access the centralized web policy
+ 	 		   agent configuration, select Realms &gt; <replaceable>Realm Name</replaceable>
+ 	 		   &gt; Agents &gt; Web &gt; <replaceable>Agent Name</replaceable> in the OpenAM
+ 	 		   console.
+ 	 		  </para>
+ 	 		  <para>
+ 	 		   For more information on creating centrally-stored agent profiles,
+ 	 		   see <xref linkend="create-agent-profiles"/>.
+ 	 		  </para>
+ 	 		 </section>
+
+ 	 		 <section xml:id="locally-stored-configuration">
+
+ 	 		  <title>Locally Stored Agent Configuration</title>
+
+ 	 		  <para>
+ 	 		   The policy agent installer can create a flat file with the agent
+ 	 		   configuration. The file is named <filename>${agentsConfigurationFile}</filename>
+ 	 		   and is stored at the path
+ 	 		   <filename>/web_agents/<replaceable>agent_version</replaceable>instances/Agent_<replaceable>nnn</replaceable>/config</filename>.
+ 	 		  </para>
+ 	 		  <para>
+ 	 		   If you choose to use a locally-stored agent configuration, you make all
+ 	 		   configuration changes by modifying property values in the
+ 	 		   <filename>${agentsConfigurationFile}</filename> file. You cannot make changes
+ 	 		   using the OpenAM console, command-line interface, or REST API.
+ 	 		  </para>
+
+ 	 		  <para>
+ 	 		   When using a locally-stored agent configuration, provide valid
+ 	 		   values for configuration properties ending in the following strings:
+ 	 		  </para>
+
+ 	 		  <!-- Fix for OPENAM-724. -->
+ 	 		  <itemizedlist>
+ 	 		   <listitem><para><literal>.cookie.name</literal></para></listitem>
+ 	 		   <listitem><para><literal>.fqdn.default</literal></para></listitem>
+ 	 		   <listitem><para><literal>.agenturi.prefix</literal></para></listitem>
+ 	 		   <listitem><para><literal>.naming.url</literal></para></listitem>
+ 	 		   <listitem><para><literal>.login.url</literal></para></listitem>
+ 	 		   <listitem><para><literal>.instance.name</literal></para></listitem>
+ 	 		   <listitem><para><literal>.username</literal></para></listitem>
+ 	 		   <listitem><para><literal>.password</literal></para></listitem>
+ 	 		   <listitem><para><literal>.connection_timeout</literal></para></listitem>
+ 	 		   <listitem><para><literal>.policy_clock_skew</literal></para></listitem>
+ 	 		  </itemizedlist>
+
+ 	 		  <para>
+ 	 		   The web policy agent installer populates properties required to connect to an
+ 	 		   OpenAM instance. Additional properties are needed when settings are stored
+ 	 		   locally.
+ 	 		  </para>
+ </section>
+</section>
+ <!-- The following sections are being reused in multiple docs -->
+ <xinclude:include href="../shared/sec-gateway-or-policy-agent.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+ <xinclude:include href="../shared/sec-kinds-of-agent-profiles.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+ <xinclude:include href="../shared/sec-create-agent-profiles.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+ <xinclude:include href="../shared/sec-delegate-agent-profile-creation.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+ <xinclude:include href="../shared/sec-configuring-web-policy-agents.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+ <xinclude:include href="../shared/sec-configure-agent-authenticators.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+</chapter>

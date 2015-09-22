@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !
+-->
+  <procedure  xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://docbook.org/ns/docbook
+                          http://docbook.org/xml/5.0/xsd/docbook.xsd"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+   <title>To Check the Policy Agent Installation</title>
+
+   <indexterm>
+    <primary>Apache web policy agent</primary>
+    <secondary>installing</secondary>
+    <tertiary>checking the install</tertiary>
+   </indexterm>
+
+   <step>
+    <para>
+     Check the Apache HTTP server error log after you start the server to make
+     sure startup completed successfully:
+    </para>
+
+    <screen>
+<computeroutput>[Tue Sep 08 15:51:27.667625 2015] AH00163:
+ Apache/2.4.6 (CentOS) OpenAM Web Agent/${agentsDocTargetVersion} configured
+ -- resuming normal operations</computeroutput></screen>
+   </step>
+
+   <step>
+    <para>
+     Check the
+     <filename>/web_agents/apache24_agent/instances/Agent_1/logs/debug/debug.log</filename>
+     file to verify that no errors occurred on startup. Expected output
+     should resemble the following:
+    </para>
+
+    <screen><computeroutput>2015-09-08 16:02:24.573 -0700 INFO [0x7f7470064840:5748]
+
+######################################################
+  OpenAM Web Agent
+  Version: ${agentsDocTargetVersion}
+  Revision: 15441
+  Build date: Aug 29 2015 02:48:01
+######################################################</computeroutput></screen>
+   </step>
+
+   <step performance="optional">
+    <para>
+     If you have a policy configured, you can test your policy agent.
+     For example, try to browse to a resource that your policy agent protects.
+     You should be redirected to OpenAM to authenticate, for example, as user
+     <literal>demo</literal>, password <literal><replaceable>changeit</replaceable></literal>.
+     After you authenticate, OpenAM redirects you back to the resource you tried
+     to access.
+    </para>
+   </step>
+  </procedure>

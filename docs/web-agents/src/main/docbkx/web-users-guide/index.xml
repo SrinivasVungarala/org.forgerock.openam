@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <book xml:id='web-users-guide'
@@ -38,8 +38,8 @@
    Authentication, Authorization, Entitlement and Federation software.</para>
   </abstract>
   <copyright>
-   <year>2011-2014</year>
-   <holder>ForgeRock AS</holder>
+   <year>2011-2015</year>
+   <holder>ForgeRock AS.</holder>
   </copyright>
   <authorgroup>
    <author>
@@ -55,6 +55,11 @@
    <author>
     <personname>
      <firstname>Mike </firstname><surname>Jang</surname>
+    </personname>
+   </author>
+   <author>
+    <personname>
+     <firstname>Chris </firstname><surname>Lee</surname>
     </personname>
    </author>
    <author>
@@ -77,13 +82,11 @@
  
  <xinclude:include href="preface.xml" />
  <xinclude:include href='chap-about-web-agents.xml' />
- <xinclude:include href='chap-apache-22.xml' />
- <xinclude:include href='chap-apache-24.xml' />
- <xinclude:include href='chap-msiis-6.xml' />
- <xinclude:include href='chap-msiis-7.xml' />
- <xinclude:include href='chap-sun-websvr.xml' />
+ <xinclude:include href="chap-web-agent-features.xml" />
+ <xinclude:include href="chap-web-agent-config.xml" />
+ <xinclude:include href='chap-apache.xml' />
+ <xinclude:include href='chap-iis.xml' />
  <xinclude:include href="chap-lb.xml" />
  <xinclude:include href='chap-troubleshooting.xml' />
-
  <index />
 </book>
