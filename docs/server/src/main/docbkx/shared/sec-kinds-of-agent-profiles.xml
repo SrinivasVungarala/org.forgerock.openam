@@ -24,26 +24,33 @@
   !
 -->
 <section xml:id="kinds-of-agent-profiles"
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
          xmlns:xlink='http://www.w3.org/1999/xlink'
          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
 
- <title>Types of Agent Profiles</title>
+ <title>Types of Agent</title>
 
  <indexterm>
-  <primary>policy agent profiles</primary>
-  <secondary>kinds of</secondary>
+  <primary>policy agent</primary>
+  <secondary>profiles</secondary>
+ </indexterm>
+
+  <indexterm>
+  <primary>policy agent</primary>
+  <secondary>types of</secondary>
  </indexterm>
 
  <para>When you open the OpenAM console to configure agents for the top-level
-  realm, you can choose from a number of different types of agents. Web and J2EE policy
-  agents are the most common, requiring the least integration effort:</para>
- <indexterm>
-  <primary>Policy agents</primary>
-  <secondary>Profiles</secondary>
- </indexterm>
+ realm, you can choose from a number of different types of agents.</para>
+ <para>Each agent type requires an <firstterm>agent profile</firstterm> in
+ OpenAM.  The agent  profile contains essential configuration for agent
+ operation, such as a password to authenticate the agent, and the URL the agent
+ resides at. For agents that support it, the agent profile can store all agent
+ configuration centrally, rather than locally on the agent server.</para>
+ <para>Web and J2EE policy agents are the most common, requiring the least
+ integration effort. The available agent types are:</para>
  <variablelist>
   <varlistentry>
    <term>Web</term>
@@ -87,7 +94,7 @@
    <listitem>
     <para>Version 2.2 web and Java EE policy agents hold their configuration
      locally, connecting to OpenAM with a username/password combination.
-     This kind of agent is provided for backwards compatibility.</para>
+     This agent type is provided for backwards compatibility.</para>
    </listitem>
   </varlistentry>
 

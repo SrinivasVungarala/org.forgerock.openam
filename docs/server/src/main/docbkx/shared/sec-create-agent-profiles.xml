@@ -24,7 +24,7 @@
   !
 -->
 <section xml:id="create-agent-profiles"
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -50,27 +50,24 @@
    name and password for the agent. You also need the URLs to OpenAM and the
    application to protect:
   </para>
+  <step><para>Login to OpenAM Console as an administrative user.</para></step>
   <step>
-   <para>
-    On the Access Control tab page of the OpenAM console, click the link
-    for the realm in which you manage agents.
-   </para>
+   <para>On the Realms menu of the OpenAM console, select the realm in which
+    the agent profile is to be managed.</para>
+  </step>
+  <step>
+   <para>Click the Agents link, click the tab page for the kind of agent
+    profile you want to create, and then click the New button in the Agent table.</para>
   </step>
   <step>
    <para>
-    Click the Agents tab, click the tab page for the kind of agent you
-    want to create, and then click the New button in the Agent table.
-   </para>
-  </step>
-  <step>
-   <para>
-    In the Name field, enter a name for the policy agent.
+    In the Name field, enter a name for the agent profile.
    </para>
   </step>
   <step>
    <para>
     In the Password and Re-Enter Password fields, enter a password for the new
-    agent.
+    agent profile.
    </para>
   </step>
   <step>
@@ -99,6 +96,15 @@
     the <literal>agentapp</literal> context:
     <uri>http://www.example.com:8080/agentapp</uri>.
    </para>
+
+   <mediaobject xml:id="figure-create-agent">
+    <alt>Creating a new agent profile</alt>
+    <imageobject>
+     <imagedata fileref="images/create-agent.png" format="PNG" />
+    </imageobject>
+    <textobject><para>At first, you provide only minimal configuration
+     for your new agent.</para></textobject>
+   </mediaobject>
   </step>
   <step>
    <para>
@@ -116,16 +122,17 @@
    <secondary>Group inheritance</secondary>
   </indexterm>
   <para>Agent profile groups let you set up multiple agents to inherit
-   settings from the group. To create a new Java EE agent profile group,
+   settings from the group. To create a new agent profile group,
    you need a name and the URL to the OpenAM server in which you store the
    profile:</para>
+  <step><para>Login to OpenAM Console as an administrative user.</para></step>
   <step>
-   <para>On the Access Control tab page of the OpenAM console, click the link
-    for the realm in which you manage agents.</para>
+   <para>On the Realms menu of the OpenAM console, Select the realm in which
+    you manage agents.</para>
   </step>
   <step>
-   <para>Click the Agents tab, click the tab page for the kind of agent you
-    want to create, and then click the New... button in the Group table.</para>
+   <para>Click the Agents link, click the tab page for the kind of agent group
+    you want to create, and then in the Group table, click New.</para>
    <para>After creating the group profile, you can click the link to the new
     group profile to fine-tune or export the configuration.</para>
   </step>
@@ -152,11 +159,9 @@
    profile using the <command>ssoadm</command> command:</para>
 
   <step>
-   <para>Make sure the <command>ssoadm</command> command is installed as
-    described in the <citetitle>Installation Guide</citetitle> procedure,
-    <link xlink:show="new" xlink:href="install-guide#install-openam-admin-tools"
-          xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up
-     Administration Tools</citetitle></link>.</para>
+   <para>Make sure the <command>ssoadm</command> command is installed. See <link
+  xlink:href="${serverDocBase}/install-guide/#install-openam-admin-tools"
+  xlink:show="new">"To Set Up Administration Tools"</link> in the <citetitle>OpenAM Installation Guide</citetitle>.</para>
   </step>
 
   <step>
@@ -168,25 +173,21 @@
     <screen>
 $ <userinput>cat myAgent.properties</userinput>
 com.sun.identity.agents.config.agenturi.prefix=http://www.example.com:80/amagent
-com.sun.identity.agents.config.cdsso.cdcservlet.url[0]=https://openam.example.com:8443/
-  openam/cdcservlet
+com.sun.identity.agents.config.cdsso.cdcservlet.url[0]= \
+     https://openam.example.com:8443/openam/cdcservlet
 com.sun.identity.agents.config.fqdn.default=www.example.com
-com.sun.identity.agents.config.login.url[0]=http://openam.example.com:8443/
-  openam/UI/Login
-com.sun.identity.agents.config.logout.url[0]=http://openam.example.com:8443/
-  openam/UI/Logout
+com.sun.identity.agents.config.login.url[0]= \
+     http://openam.example.com:8443/openam/UI/Login
+com.sun.identity.agents.config.logout.url[0]= \
+     http://openam.example.com:8443/openam/UI/Logout
 com.sun.identity.agents.config.remote.logfile=amAgent_www_example_com_80.log
 com.sun.identity.agents.config.repository.location=centralized
-com.sun.identity.client.notification.url=http://www.example.com:80/
-  UpdateAgentCacheServlet?shortcircuit=false
-com.sun.identity.client.notification.url=http://www.example.com:80/
-  UpdateAgentCacheServlet?shortcircuit=false
+com.sun.identity.client.notification.url= \
+     http://www.example.com:80/UpdateAgentCacheServlet?shortcircuit=false
 sunIdentityServerDeviceKeyValue[0]=agentRootURL=http://www.example.com:80/
 sunIdentityServerDeviceStatus=Active
-userpassword=password
-    </screen>
+userpassword=password</screen>
   </step>
-  <!-- Consider moving this: ssoadm pwd should be part of the ssoadm install procedure-->
   <step>
    <para>Set up a password file used when authenticating to OpenAM.
     The password file must be read-only for the user who creates the policy
@@ -195,14 +196,13 @@ userpassword=password
 
    <screen>
 $ <userinput>echo password > /tmp/pwd.txt</userinput>
-$ <userinput>chmod 400 /tmp/pwd.txt</userinput>
-   </screen>
+$ <userinput>chmod 400 /tmp/pwd.txt</userinput></screen>
   </step>
 
   <step>
    <para>Create the profile in OpenAM:</para>
 
-   <screen>
+<screen>
 $ <userinput>ssoadm create-agent \
   --realm / \
   --agentname myAgent \
@@ -211,11 +211,10 @@ $ <userinput>ssoadm create-agent \
   --password-file /tmp/pwd.txt \
   --datafile myAgent.properties</userinput>
 
-    <computeroutput>Agent configuration was created.</computeroutput>
-   </screen>
+<computeroutput>Agent configuration was created.</computeroutput></screen>
 
    <para>At this point you can view the profile in OpenAM Console under
-    Access Control > <replaceable>Realm Name</replaceable> > Agents to make
+    Realms > <replaceable>Realm Name</replaceable> > Agents to make
     sure the configuration is what you expect.</para>
   </step>
  </procedure>

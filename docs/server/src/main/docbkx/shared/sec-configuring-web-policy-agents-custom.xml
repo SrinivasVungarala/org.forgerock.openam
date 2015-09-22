@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<section xml:id="configure-web-pa-custom-props"
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+  <title>Configuring Web Policy Agent Custom Properties</title>
+
+  <indexterm>
+   <primary>web policy agents</primary>
+   <secondary>custom properties</secondary>
+   <tertiary>configuring</tertiary>
+  </indexterm>
+
+  <para>This section covers custom web agent properties.</para>
+ <note><para>These settings do not appear as configurable options in the
+ OpenAM Console, so must be added as custom properties, or set in the local
+ configuration file.</para> <para> If using a centralized configuration, you
+ create these  properties in the OpenAM console under Realms &gt;
+ <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
+ <replaceable>Agent Name</replaceable> &gt; Advanced &gt; Custom
+ Properties.</para></note>
+
+   <para>This section describes the following property groups:</para>
+ <itemizedlist>
+  <listitem>
+   <para><xref linkend="web-agent-bootstrap-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-encryption-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-misc-custom-properties"/></para>
+  </listitem>
+ </itemizedlist>
+
+  <variablelist xml:id="web-agent-bootstrap-properties">
+   <title>Bootstrap Properties</title>
+   <para>These properties are only used within the local configuration
+    file. They are not available in the OpenAM admin console. The agent uses
+    these bootstrap properties to connect to OpenAM.</para>
+   <varlistentry>
+          <term><literal>com.sun.identity.agents.config.organization.name</literal></term>
+          <listitem>
+              <para>The OpenAM realm where the agent profile is located.</para>
+              <para>Default: <literal>/</literal></para>
+          </listitem>
+   </varlistentry>
+   <varlistentry>
+          <term><literal>com.sun.identity.agents.config.username</literal></term>
+          <listitem>
+              <para>The name of the agent profile in OpenAM.</para>
+          </listitem>
+   </varlistentry>
+   <varlistentry>
+          <term><literal>com.sun.identity.agents.config.password</literal></term>
+          <listitem>
+              <para>The password required by the agent profile, encrypted
+               with the key specified in
+               <literal>com.sun.identity.agents.config.key</literal>.</para>
+          </listitem>
+   </varlistentry>
+   <varlistentry>
+          <term><literal>com.sun.identity.agents.config.key</literal></term>
+          <listitem>
+              <para>The encryption key used to encrypt the agent profile
+               password, which should be provided in <literal>com.sun.identity.agents.config.password</literal>.</para>
+          </listitem>
+   </varlistentry>
+
+
+
+
+
+  </variablelist>
+
+  <variablelist xml:id="web-agent-encryption-properties">
+   <title>Encryption Properties</title>
+   <varlistentry>
+          <term><literal>com.forgerock.agents.config.cert.ca.file</literal></term>
+          <listitem>
+              <para>Set this property to the file name that contains one or more CA certificates.
+                  If <literal>trust.server.certs=false</literal>, the file should be PEM encoded.</para>
+              <note><para>For OpenSSL, PEM format is base 64 encoded ASCII data. The acronym stands for
+                  Privacy Enhanced Mail format, as it was originally designed to secure email using public-key
+                  cryptography.</para></note>
+          </listitem>
+   </varlistentry>
+
+   <varlistentry>
+       <term><literal>com.forgerock.agents.config.cert.file</literal></term>
+       <listitem>
+           <para>Set this property to the name of the file that contains the PEM encoded
+           public key certificate.</para>
+       </listitem>
+   </varlistentry>
+
+   <varlistentry>
+          <term><literal>com.forgerock.agents.config.cert.key</literal></term>
+          <listitem>
+              <para>Set this property to the name of the file that contains the private key.
+                  On UNIX systems, that key should be encoded in PEM format.</para>
+              <para>On Windows systems,
+                  that entry depends. If SSL mutual authentication is required with OpenAM, that
+                  entry should contain the name of the private key or certificate imported
+                  in the Windows Certificate Manager, part of the Microsoft Management Console.
+                  For a web server, that should point to the Local Machine or Service certificate
+                  store, depending on the account associated with the Web server.</para>
+          </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.forgerock.agents.config.cert.key.password</literal></term>
+    <listitem>
+     <para>
+      Set this property to the obfuscated private key password
+      by using the <command>crypt_util</command> command
+      as in the following example to generate the value.
+     </para>
+
+     <screen>
+$ <userinput>cd /web_agents/<replaceable>agent-type</replaceable>/bin</userinput>
+$ <userinput>crypt_util <replaceable>password</replaceable> <replaceable>key</replaceable></userinput>
+     </screen>
+
+     <para>
+      Here, <replaceable>agent-type</replaceable> corresponds to
+      the file system directory for the particular agent type,
+      such as <literal>apache24_agent</literal>,
+      <replaceable>password</replaceable> is the private key password,
+      and <replaceable>key</replaceable> is the obfuscation key.
+     </para>
+
+     <para>
+      This property is not used on Microsoft Windows systems.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+       <term><literal>org.forgerock.agents.config.tls</literal> (Not Yet
+        in OpenAM Console)</term>
+       <listitem>
+           <para>Set this property to a list of protocols to support. The list
+            consists of one or more protocol strings separated by colons. For
+            example <literal>TLSv1.2:TLSv1.1:TLSv1</literal>.
+           </para>
+
+       </listitem>
+   </varlistentry>
+   <varlistentry>
+       <term><literal>com.forgerock.agents.config.ciphers</literal></term>
+       <listitem>
+           <para>Set this property to a list of ciphers to support. The list
+            consists of one or more cipher strings separated by colons, as
+            defined in the man page for <filename>ciphers</filename> available at
+           <link xlink:show="new" xlink:href="http://www.openssl.org/docs/apps/ciphers.html" />.
+           </para>
+           <para>Default: <literal>HIGH:MEDIUM</literal>.</para>
+       </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><literal>com.sun.identity.agents.config.trust.server.certs</literal></term>
+    <listitem>
+     <para>When SSL is configured, set to <literal>false</literal> to trust the
+     OpenAM SSL certificate only if the certificate is found to be correct and
+     valid. Default is <literal>true</literal> to make it easy to try SSL during
+     evaluation.</para>
+
+     <important>
+      <para>Notice that the default setting, <literal>true</literal>, means that
+      the web policy agent trusts all server certificates. Change this to
+      <literal>false</literal>, and test that your web policy agent can trust
+      server certificates before deploying the policy agent in production.</para>
+     </important>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-naming-and-failover-properties">
+   <title>Naming URL and Failover Properties</title>
+   <varlistentry>
+    <term><literal>com.forgerock.agents.ext.url.validation.default.url.set</literal></term>
+    <listitem>
+     <para>This property takes a comma-separated list of indexes for URL values
+     indicating the order in which to fail over, where the indexes are taken
+     from the values set for
+     <literal>com.sun.identity.agents.config.naming.url</literal>,
+     <literal>com.sun.identity.agents.config.login.url</literal>,
+     <literal>com.sun.identity.agents.config.cdsso.cdcservlet.url</literal>, and
+     <literal>com.sun.identity.agents.config.logout.url</literal>.</para>
+
+     <para>For example if
+     <literal>com.sun.identity.agents.config.naming.url</literal> is set as
+     follows:</para>
+
+     <literallayout class="monospaced"
+     >com.sun.identity.agents.config.naming.url=
+ http://zero.example.com:8080/openam/namingservice
+ http://one.example.com:8080/openam/namingservice</literallayout>
+
+     <para>Then the following setting means first use OpenAM on
+     <literal>zero.example.com</literal>, then fail over if necessary to OpenAM
+     on <literal>one.example.com</literal>, assuming
+     <literal>com.forgerock.agents.ext.url.validation.level</literal> is set
+     to enable validation.</para>
+
+     <literallayout class="monospaced"
+     >com.forgerock.agents.ext.url.validation.default.url.set=0,1</literallayout>
+
+     <para>When using this failover capability make sure you synchronize URL
+     settings in <literal>com.sun.identity.agents.config.naming.url</literal>,
+     <literal>com.sun.identity.agents.config.login.url</literal>,
+     <literal>com.sun.identity.agents.config.cdsso.cdcservlet.url</literal>, and
+     <literal>com.sun.identity.agents.config.logout.url</literal> such that
+     each service shares the same index across all properties. In other words,
+     in the example above each service under
+     <literal>http://zero.example.com:8080/openam</literal> would be the first
+     item (index: 0) for each property. This ensures the policy agent fails over
+     and fails back from one server to another in synchronized fashion for all
+     services.</para>
+
+     <para>This property has no default setting.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.forgerock.agents.ext.url.validation.level</literal></term>
+    <listitem>
+     <para>This bootstrap configuration property lets you configure naming URL
+     validation during the initial bootstrap phase when the policy agent reads
+     its configuration, and then thereafter if the policy agent is configured
+     fail over when a naming URL becomes invalid.</para>
+
+     <para>When URL validation is fully disabled the policy agent does not need
+     to connect to OpenAM during the bootstrap phase.</para>
+
+     <para>If you leave naming URL validation disabled, then make sure that the
+     URLs in the policy agent bootstrap configuration file are valid and
+     correct. As the policy agent performs no further validation after the
+     bootstrap phase, incorrect naming URLs can cause the agent to crash.</para>
+
+     <para>To enable full URL validation, set the property as shown:</para>
+     <literallayout class="monospaced"
+     >com.forgerock.agents.ext.url.validation.level = 0</literallayout>
+
+     <variablelist>
+      <para>This property can take the following values.</para>
+
+      <varlistentry>
+       <term>0</term>
+       <listitem>
+        <para>Fully validate naming URLs specified by using the
+        <literal>com.sun.identity.agents.config.naming.url</literal> property.
+        The web policy agent logs into and logs out of OpenAM to check that
+        a naming URL is valid.</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>1</term>
+       <listitem>
+        <para>Check that naming URLs are valid by performing an HTTP GET, which
+        should receive an HTTP 200 response.</para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term>2 (Default)</term>
+       <listitem>
+        <para>Disable all naming URL validation.</para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+
+     <itemizedlist>
+      <para>When naming URL validation is enabled, then set the following
+      properties.</para>
+
+      <listitem>
+       <para><literal>com.sun.identity.agents.config.connect.timeout</literal></para>
+      </listitem>
+
+      <listitem>
+       <para><literal>com.sun.identity.agents.config.receive.timeout</literal></para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.forgerock.agents.ext.url.validation.ping.interval</literal></term>
+    <listitem>
+     <para>Set this to the seconds between validation requests against the
+     current naming URL.</para>
+
+     <para>The sum of the values of
+     <literal>com.sun.identity.agents.config.connect.timeout</literal> and
+     <literal>com.sun.identity.agents.config.receive.timeout</literal> must not
+     exceed this value. Notice that the two timeout values are specified in
+     milliseconds, whereas this property's value is specified in seconds.</para>
+
+     <para>Default: 60 (seconds)</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.sun.identity.agents.config.connect.timeout</literal></term>
+    <listitem>
+     <para>Set this to the number of milliseconds to keep the socket connection
+     open before timing out. If you have the web policy agent perform naming
+     URL validation, then set this property to a reasonable value such as
+     2000 (2 seconds). The default value is 0 which implies no timeout.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.forgerock.agents.ext.url.validation.ping.miss.count</literal></term>
+    <listitem>
+     <para>If validation requests against the current naming URL fail this
+     number of times in a row, the web policy agent fails over to the next
+     service in
+     <literal>com.forgerock.agents.ext.url.validation.default.url.set</literal>.</para>
+
+     <para>Default: 3</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>com.forgerock.agents.ext.url.validation.ping.ok.count</literal></term>
+    <listitem>
+     <para>After failover, if validation requests against the default naming URL
+     succeed this number of times in a row, the web policy agent fails back to
+     that service, the first URL in the
+     <literal>com.forgerock.agents.ext.url.validation.default.url.set</literal>
+     list.</para>
+
+     <para>Default: 3</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><literal>com.sun.identity.agents.config.naming.url</literal></term>
+    <listitem>
+     <para>Set this to the naming service URL(s) used for naming lookups in
+     OpenAM. Separate multiple URLs with single space characters.</para>
+    </listitem>
+   </varlistentry>
+</variablelist>
+
+  <variablelist xml:id="web-agent-misc-custom-properties">
+   <title>Miscellaneous Custom Properties</title>
+   <varlistentry>
+    <term><literal>com.forgerock.agents.cache_control_header.enable</literal></term>
+    <listitem>
+     <para>Set this property to <literal>true</literal> to enable use of
+     Cache-Control headers that prevent proxies from caching resources accessed
+     by unauthenticated users. Default: <literal>false</literal>.</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><literal>org.forgerock.agents.config.json.url</literal></term>
+    <listitem>
+     <para>Use regular expressions to specify a list of resource URLs that
+      should trigger JSON-formatted errors to be returned rather than HTTP error codes.</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><literal>org.forgerock.agents.config.keepalive.disable</literal></term>
+    <listitem>
+     <para>The web policy agents by default use a single connection and
+      specify <literal>Connection:Keep-alive</literal> when logging in to OpenAM
+      and fetching attributes or policy decisions.</para>
+     <para>If a load-balancer or reverse-proxy is being used it may be
+      necessary to disable the use of keep-alive, in which case set this
+      property to <literal>true</literal>.</para>
+     <para>Default: false</para>
+    </listitem>
+   </varlistentry>
+
+  </variablelist>
+ </section>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<section xml:id="configure-web-pa-services-props"
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+  <title>Configuring Web Policy Agent OpenAM Services Properties</title>
+
+  <indexterm>
+   <primary>web policy agents</primary>
+   <secondary>OpenAM services properties</secondary>
+   <tertiary>configuring</tertiary>
+  </indexterm>
+
+  <para>This section covers OpenAM services web agent properties. After
+   creating the agent profile, you access these properties in the OpenAM console
+   under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+   Agents &gt; Web &gt; <replaceable>Agent Name</replaceable> &gt; OpenAM
+   Services.</para>
+
+     <para>This section describes the following property groups:</para>
+ <itemizedlist>
+  <listitem>
+   <para><xref linkend="web-agent-login-url-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-logout-url-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-agent-logout-url-properties"/></para>
+  </listitem>
+      <listitem>
+   <para><xref linkend="web-agent-policy-client-service-properties"/></para>
+  </listitem>
+ </itemizedlist>
+
+  <variablelist xml:id="web-agent-login-url-properties">
+   <title>Login URL Properties</title>
+   <varlistentry>
+    <term>OpenAM Login URL</term>
+    <listitem>
+     <para>OpenAM login page URL, such as
+      <literal>http://openam.example.com:8080/openam/UI/Login</literal>, to
+      which the agent redirects incoming users without sufficient credentials
+      so that they can authenticate.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.login.url</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <!-- OPENAM-849: Policy Agent needs conditional redirect to a login URL
+    based on incoming request URL -->
+    <term>OpenAM Conditional Login URL (Not yet in OpenAM console)</term>
+
+    <xinclude:include href="../shared/listitem-conditional-login-url-web.xml" />
+
+   </varlistentry>
+   <varlistentry>
+    <term>Agent Connection Timeout</term>
+    <listitem>
+     <para>Timeout period in seconds for an agent connection with OpenAM auth
+      server.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.auth.connection.timeout</literal></para>
+     <para>Default: 2</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Polling Period for Primary Server</term>
+    <listitem>
+     <para>Interval in minutes, agent polls to check the primary server is up
+      and running. Default: 5.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.poll.primary.server</literal></para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-logout-url-properties">
+   <title>Logout URL Properties</title>
+   <varlistentry>
+    <term>OpenAM Logout URL</term>
+    <listitem>
+     <para>OpenAM logout page URL, such as
+      <literal>http://openam.example.com:8080/openam/UI/Logout</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.logout.url</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Logout URL Redirect (Not yet in OpenAM console)</term>
+    <listitem>
+     <para>Logout URL redirect is enabled by default.</para>
+
+     <para>When this is disabled, instead of redirecting the user-agent, the
+      policy agent performs session logout in the background and then continues
+      processing access to the current URL. Disable this using Advanced &gt;
+      Custom Properties in the agent profile.</para>
+
+     <para>Property: <literal>com.forgerock.agents.config.logout.redirect.disable</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-agent-logout-url-properties">
+   <title>Agent Logout URL Properties</title>
+   <varlistentry>
+    <term>Logout URL List</term>
+    <listitem>
+     <para>List of application logout URLs, such as
+      <literal>http://www.example.com/logout.html</literal>.
+      The user is logged out of the OpenAM session when these URLs are accessed.
+      When using this property, specify a value for the Logout Redirect URL
+      property.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.agent.logout.url</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Agent Logout URL Regular Expression (Not yet in OpenAM console)</term>
+    <listitem>
+     <para><link xlink:href="http://www.pcre.org/pcre.txt" xlink:show="new"
+      >Perl-compatible regular expression</link> that matches logout URLs.
+      Set this using Advanced &gt; Custom Properties in the agent profile.</para>
+
+     <para>For example, to match URLs with <literal>protectedA</literal> or
+      <literal>protectedB</literal> in the path and <literal>op=logout</literal>
+      in the query string, use the following setting:</para>
+
+     <programlisting language="ini">com.forgerock.agents.agent.logout.url.regex= \
+      .*(/protectedA\?|/protectedB\?/).*(\&amp;op=logout\&amp;)(.*|$)</programlisting>
+
+     <para>When you use this property, the agent ignores the settings for
+      Logout URL List.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Logout Cookies List for Reset</term>
+    <listitem>
+     <para>Cookies to be reset upon logout in the same format as the cookie
+      reset list.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.logout.cookie.reset</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Logout Redirect URL</term>
+    <listitem>
+     <para>User gets redirected to this URL after logout. Specify this
+      property alongside a Logout URL List.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.logout.redirect.url</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-policy-client-service-properties">
+   <title>Policy Client Service Properties</title>
+   <varlistentry>
+    <term>Policy Cache Polling Period</term>
+    <listitem>
+     <para>Polling interval in minutes during which an entry remains valid
+      after being added to the agent's cache.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.policy.cache.polling.interval</literal></para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>SSO Cache Polling Period</term>
+    <listitem>
+     <para>Polling interval in minutes during which an SSO entry remains valid
+      after being added to the agent's cache.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.sso.cache.polling.interval</literal></para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>User ID Parameter</term>
+    <listitem>
+     <para>Agent sets this value for User Id passed in the session from
+      OpenAM to the <literal>REMOTE_USER</literal> server variable. Default:
+      <literal>UserToken</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.userid.param</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>User ID Parameter Type</term>
+    <listitem>
+     <para>User ID can be fetched from either SESSION or LDAP attributes.
+      Default: <literal>SESSION</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.userid.param.type</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Fetch Policies From The Root Resource</term>
+    <listitem>
+     <para>When enabled, the agent caches the policy decision of the
+      resource and all resources from the root of the resource down. For
+      example, if the resource is <literal>http://host/a/b/c</literal>, then
+      the root of the resource is <literal>http://host/</literal>. This setting
+      can be useful when a client is expect to access multiple resources on the
+      same path. Yet, caching can be expensive if very many policies are
+      defined for the root resource.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.fetch.from.root.resource</literal></para>
+     <para>Default: false</para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Retrieve Client Hostname</term>
+    <listitem>
+     <para>When enabled, get the client hostname through DNS reverse lookup
+      for use in policy evaluation. This setting can impact performance.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.get.client.host.name</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Policy Clock Skew</term>
+    <listitem>
+     <para>Time in seconds used adjust time difference between agent system
+      and OpenAM. Clock skew in seconds = AgentTime - OpenAMServerTime.</para>
+     <para>Use this property to adjust for small time differences encountered
+      despite use of a time-synchronization service. When this property is
+      not set and agent time is greater than OpenAM server time, the agent
+      can make policy calls to the OpenAM server before the policy subject
+      cache has expired, or you can see infinite redirection occur.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.policy.clock.skew</literal></para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Realm</term>
+    <listitem>
+     <para>
+      Realm where OpenAM starts policy evaluation for this policy agent.
+     </para>
+
+     <para>
+      Default: / (top-level realm)
+     </para>
+
+     <para>
+      Edit this property when OpenAM should start policy evaluation
+      in a realm other than the top-level realm, <literal>/</literal>,
+      when handling policy decision requests from this policy agent.
+     </para>
+
+     <para>
+      This property is recognized by OpenAM, not the policy agent.
+     </para>
+
+     <para>
+      Property: <literal>org.forgerock.openam.agents.config.policy.evaluation.realm</literal>
+     </para>
+
+     <para>
+      Hot swap: yes
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Application</term>
+    <listitem>
+     <para>
+      Application where OpenAM looks for policies to evaluate
+      for this policy agent.
+     </para>
+
+     <para>
+      Default: <literal>iPlanetAMWebAgentService</literal>
+     </para>
+
+     <para>
+      Edit this property when OpenAM should look for policies
+      that belong to an application other than
+      <literal>iPlanetAMWebAgentService</literal>
+      when handling policy decision requests from this policy agent.
+     </para>
+
+     <para>
+      This property is recognized by OpenAM, not the policy agent.
+     </para>
+
+     <para>
+      Property: <literal>org.forgerock.openam.agents.config.policy.evaluation.application</literal>
+     </para>
+
+     <para>
+      Hot swap: yes
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </section>

@@ -24,7 +24,7 @@
   !
 -->
 <section xml:id="configure-j2ee-policy-agent"
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
          xmlns:xlink='http://www.w3.org/1999/xlink'
@@ -63,7 +63,7 @@
 
   <para>This section covers global Java EE agent properties. After creating the
    agent profile, you access these properties in the OpenAM console under
-   Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
    Java EE &gt; <replaceable>Agent Name</replaceable> &gt; Global.</para>
 
   <variablelist xml:id="j2ee-agent-profile-properties">
@@ -388,7 +388,7 @@
 
   <para>This section covers application J2EE agent properties. After creating
    the agent profile, you access these properties in the OpenAM console under
-   Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; Application.</para>
 
   <variablelist xml:id="j2ee-agent-login-processing-properties">
@@ -876,7 +876,7 @@
 
   <para>This section covers SSO J2EE agent properties. After creating the
    agent profile, you access these properties in the OpenAM console under
-   Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; SSO.</para>
 
   <variablelist xml:id="j2ee-agent-cookie-properties">
@@ -1005,7 +1005,7 @@
 
   <para>This section covers OpenAM services J2EE agent properties. After
    creating the agent profile, you access these properties in the OpenAM console
-   under Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
+   under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
    Agents &gt; J2EE &gt; <replaceable>Agent Name</replaceable> &gt; OpenAM
    Services.</para>
 
@@ -1382,7 +1382,7 @@
 
   <para>This section covers miscellaneous J2EE agent properties. After creating
    the agent profile, you access these properties in the OpenAM console under
-   Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; Miscellaneous.</para>
 
   <variablelist xml:id="j2ee-agent-locale-properties">
@@ -1532,7 +1532,7 @@
 
   <para>This section covers advanced J2EE agent properties. After creating the
    agent profile, you access these properties in the OpenAM console under
-   Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
    J2EE &gt; <replaceable>Agent Name</replaceable> &gt; Advanced.</para>
 
   <variablelist xml:id="j2ee-agent-client-identification-properties">

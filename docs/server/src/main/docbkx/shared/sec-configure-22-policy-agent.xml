@@ -24,7 +24,7 @@
   !
 -->
 <section xml:id="configure-22-policy-agent"
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
          xmlns:xlink='http://www.w3.org/1999/xlink'
@@ -46,7 +46,7 @@
  </warning>
 
  <para>After creating the agent profile, you access agent properties in the
-  OpenAM console under Access Control &gt; <replaceable>Realm Name</replaceable>
+  OpenAM console under Realms &gt; <replaceable>Realm Name</replaceable>
   &gt; Agents &gt; 2.2 Agents &gt; <replaceable>Agent Name</replaceable>.
   Properties include:
  </para>
