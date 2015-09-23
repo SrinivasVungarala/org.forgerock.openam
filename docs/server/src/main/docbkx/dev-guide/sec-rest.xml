@@ -1345,7 +1345,7 @@ $ <userinput>curl https://openam.example.com:8443/openam/json/serverinfo/*</user
     "successfulUserRegistrationDestination": "default",
     "socialImplementations": [
         {
-            "iconPath": "XUI/images/dashboard/facebook.png",
+            "iconPath": "XUI/images/logos/facebook.png",
             "authnChain": "FacebookSocialAuthenticationService",
             "displayName": "Facebook",
             "valid": true
