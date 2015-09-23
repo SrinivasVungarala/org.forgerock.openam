@@ -352,9 +352,7 @@ Installation complete.</screen>
     <listitem>
      <para>Enter the ID number of the IIS site in which to install the web
       policy agent.</para>
-     <tip><para>To list the sites in an IIS server, run
-      <command>agentadmin.exe</command> with the <literal>--n</literal>
-      parameter:</para>
+     <tip><para>To list the sites in an IIS server, run <command>agentadmin.exe --n</command>:</para>
      <screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --n</userinput>
 
 IIS Server Site configuration:
