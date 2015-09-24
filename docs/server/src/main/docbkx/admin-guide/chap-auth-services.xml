@@ -6512,16 +6512,16 @@ ssoadm \
       </listitem>
       <listitem>
        <para>
-        Registering your device with OpenAM. If you have not opted out of two
-        step verification, you must register your device before you can use it
-        to provide one-time passwords to OpenAM.
+        Registering your device with OpenAM. Unless you opt out of two step
+        verification, you must register your device before you can use it to
+        provide one-time passwords to OpenAM.
        </para>
       </listitem>
       <listitem>
        <para>
         Saving recovery codes. Recovery codes let users who have lost their
-        phones authenticate. Users who have not opted out of two
-        step verification should perform this step.
+        phones authenticate. Users who do not opt out of two step verification
+        should perform this step.
        </para>
       </listitem>
      </itemizedlist>
@@ -6570,7 +6570,7 @@ ssoadm \
       </para>
 
       <para>
-       Click Register Device on the OpenAM Two Step Verification screen.
+       Click Register Device on the ForgeRock Authenticator (OATH) screen.
       </para>
      </step>
 
@@ -6678,14 +6678,15 @@ ssoadm \
      <step>
       <para>
        On the OpenAM page containing the QR code, click Login
-       Using Verification Code. The Two Step Verification page appears.
+       Using Verification Code. The ForgeRock Authenticator (OATH) page appears.
       </para>
      </step>
 
      <step>
       <para>
-       On the Two Step Verification page in OpenAM, enter the one-time password
-       that the authenticator app generated on your phone. Click Submit:
+       On the ForgeRock Authenticator (OATH) page in OpenAM, enter the one-time
+       password that the authenticator app generated on your phone. Click
+       Submit:
       </para>
 
       <mediaobject xml:id="authn-2sv-enter-code">
@@ -6830,7 +6831,7 @@ ssoadm \
        chain is a Data Store module, OpenAM presents you with a page for
        entering your user ID and password. After you provide those credentials,
        OpenAM verifies them. If your credentials are valid, OpenAM proceeds
-       to the Two Step Verification authentication module.
+       to the ForgeRock Authenticator (OATH) authentication module.
       </para>
      </step>
 
@@ -6843,10 +6844,10 @@ ssoadm \
 
      <step>
       <para>
-       Enter the one-time password from your mobile phone on the Two Step
-       Verification page in OpenAM to complete authentication. Depending on your
-       access privileges, the policy agent authorizes or denies access to the
-       URL you requested.
+       Enter the one-time password from your mobile phone on the ForgeRock
+       Authenticator (OATH) page in OpenAM to complete authentication. Depending
+       on your access privileges, the policy agent authorizes or denies access
+       to the URL you requested.
       </para>
      </step>
 
