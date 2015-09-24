@@ -1272,7 +1272,8 @@ $ <userinput>cp fedletSampleApp.jsp fedletSampleApp.jsp.orig</userinput>
         // necessary processing conforming to SAML v2.0 specifications,
         // such as XML signature validation, Audience and Recipient
         // validation etc.
-        map = SPACSUtils.processResponseForFedlet(request, response);
+        map = SPACSUtils.processResponseForFedlet(request, response,
+            new PrintWriter(out, true));
         response.sendRedirect(&quot;myapp.jsp&quot;);
     } catch (SAML2Exception sme) {
         SAMLUtils.sendError(request, response,
