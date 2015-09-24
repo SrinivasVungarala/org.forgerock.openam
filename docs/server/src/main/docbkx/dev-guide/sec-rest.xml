@@ -33,9 +33,13 @@
          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
 
  <title>Using the REST API</title>
+
  <indexterm><primary>REST API</primary></indexterm>
- <para>This section shows how to use the OpenAM RESTful interfaces for direct
- integration between web client applications and OpenAM.</para>
+
+ <para>
+  This section shows how to use the OpenAM RESTful interfaces for direct
+  integration between web client applications and OpenAM.
+ </para>
  
  <section xml:id="about-openam-rest-api">
   <title>About the RESTful APIs</title>
@@ -47,11 +51,13 @@
    >Representational State Transfer</link> (REST) is an architectural style
    that sets certain constraints for designing and building
    large-scale distributed hypermedia systems.
-   As an architectural style, REST has very broad application.
-   The designs of both HTTP 1.1 and also URIs follow RESTful principles.
+  </para>
+  <para>
+   As an architectural style, REST has very broad applications.
+   The designs of both HTTP 1.1 and URIs follow RESTful principles.
    The World Wide Web is no doubt the largest and best known REST application.
    Many other web services also follow the REST architectural style.
-   Examples include OAuth 2.0, OpenID Connect 1.0 and User-Managed Access
+   Examples include OAuth 2.0, OpenID Connect 1.0, and User-Managed Access
    (UMA) 1.0.
   </para>
 
@@ -81,7 +87,7 @@
 
   <variablelist>
    <para>
-    CREST APIs use these verbs.
+    CREST APIs use these verbs:
    </para>
 
    <varlistentry>
@@ -161,7 +167,7 @@
      </para>
 
      <para>
-      The generic _action verb extends what the API can do
+      The generic <literal>_action</literal> verb extends the API's capabilities
       where none of the other standard CREST verbs fit,
       as in <literal>_action=logout</literal>.
      </para>
@@ -194,12 +200,12 @@
    IDs are exposed in the resource URIs
    as in <literal>/users/<replaceable>id</replaceable></literal>
    and <literal>/groups/<replaceable>id</replaceable></literal>.
-   The ID is also in the "_id" field of the resource.
+   The ID is also in the <literal>_id</literal> field of the resource.
   </para>
 
   <para>
    In CREST, resources are versioned using revision numbers.
-   A revision is specified in the resource's "_rev" field.
+   A revision is specified in the resource's <literal>_rev</literal> field.
    Revisions make it possible to figure out whether to apply changes
    without resource locking and without distributed transactions.
   </para>
@@ -305,7 +311,7 @@
     <para>
      Any changes to the structure or syntax of a returned response will incur
      a <emphasis>resource</emphasis> version change. For example changing
-     <literal>"errorMessage"</literal> to <literal>"message"</literal> in a
+     <literal>errorMessage</literal> to <literal>message</literal> in a
      JSON response.
     </para>
    </listitem>
@@ -315,8 +321,9 @@
    <listitem>
     <para>
      Any changes to the methods used to make REST API calls will incur
-     a <emphasis>protocol</emphasis> version change. For example changing <literal>_action</literal>
-     to <literal>$action</literal> in the required parameters of an API feature.
+     a <emphasis>protocol</emphasis> version change. For example changing
+     <literal>_action</literal> to <literal>$action</literal> in the required
+     parameters of an API feature.
     </para>
     </listitem>
    </varlistentry>
@@ -492,7 +499,7 @@
    <para>You can specify which version of the REST API to use by adding an
     <literal>Accept-API-Version</literal> header to the request, as in the
     following example, which is requesting <emphasis>resource</emphasis> version
-    2.0 and <emphasis>protocol</emphasis> version 1.0.</para>
+    2.0 and <emphasis>protocol</emphasis> version 1.0:</para>
 
 <screen>
 $ <userinput>curl \
@@ -528,7 +535,7 @@ $ <userinput>curl \
 
   <para>The <literal>resource</literal> and <literal>protocol</literal> version
    used to service a REST API call are returned in the
-   <literal>Content-API-Version</literal> header, as shown below.</para>
+   <literal>Content-API-Version</literal> header, as shown below:</para>
 <screen>
 $ <userinput>curl \
  -i \
@@ -554,7 +561,7 @@ Content-Type: application/json;charset=UTF-8
    and a REST API call does not include the <literal>Accept-API-Version</literal>
    header, or does not specify a <literal>resource</literal> version, then a
    <literal>400 Bad Request</literal> status code is returned,
-   as shown below.</para>
+   as shown below:</para>
 
 <screen>
 $ <userinput>curl \
@@ -573,7 +580,7 @@ $ <userinput>curl \
    header, but the specified <literal>resource</literal> or
    <literal>protocol</literal> version does not exist in OpenAM, then a
    <literal>404 Not Found</literal> status code is returned,
-   as shown below.</para>
+   as shown below:</para>
 
 <screen>
 $ <userinput>curl \
@@ -669,7 +676,7 @@ $ <userinput>curl \
   </tip>
 
   <section xml:id="rest-api-auth-json">
-   <title>REST APIs for Authentication &amp; Logout</title>
+   <title>REST APIs for Authentication and Logout</title>
 
    <para>The simplest user name/password authentication returns a
    <literal>tokenId</literal> that applications can present as a cookie
@@ -700,7 +707,7 @@ $ <userinput>curl \
    <para> When authenticating with a user name and password, use
    HTTP POST to prevent the web container from logging the credentials.
    Pass the user name in an <literal>X-OpenAM-Username</literal> header, and
-   the password in an <literal>X-OpenAM-Password</literal> header.</para>
+   the password in an <literal>X-OpenAM-Password</literal> header:</para>
 
    <screen>
 $ <userinput>curl \
@@ -714,7 +721,7 @@ $ <userinput>curl \
    </screen>
    <tip><para>When authenticating with Windows Desktop SSO, add an
     <literal>Authorization</literal> header containing the string
-    <literal>Basic </literal>, followed by a Base64 encoded string
+    <literal>Basic </literal>, followed by a Base64-encoded string
     of the username, a colon character, and the password. In the following
     example, the credentials <literal>demo:changeit</literal> are
     base64 encoded into the string <literal>ZGVtbzpjaGFuZ2VpdA==</literal>:
@@ -730,7 +737,7 @@ $ <userinput>curl \
  https://openam.example.com:8443/openam/json/authenticate</userinput>
  <computeroutput>{ "tokenId": "AQIC5w...NTcy*", "successUrl": "/openam/console" }</computeroutput>
 </screen></tip>
-   <para>This "zero page login" mechanism works only for name/password
+   <para>This zero page login mechanism works only for name/password
    authentication. If you include a POST body with the request, it must
    be an empty JSON string as shown in the example. Alternatively, you can
    leave the POST body empty. Otherwise, OpenAM interprets the body as a
@@ -745,7 +752,7 @@ $ <userinput>curl \
    HTTP request are returned in JSON as a response to the request. Each
    callback has an array of output suitable for displaying to the end user,
    and input which is what the client must complete and send back to
-   OpenAM. The default is still user name/password authentication.</para>
+   OpenAM. The default is still user name/password authentication:</para>
 
    <screen>
 $ <userinput>curl \
@@ -792,13 +799,14 @@ $ <userinput>curl \
 }</computeroutput>
    </screen>
 
-   <para>The "authId" value is a JSON Web Token (JWT) that uniquely identifies
-   the authentication context to OpenAM, and so must also be sent back with the
-   requests.</para>
+   <para>The <literal>authID</literal> value is a JSON Web Token (JWT) that
+    uniquely identifies
+    the authentication context to OpenAM, and so must also be sent back with the
+    requests.</para>
 
    <para>To respond to the callback, send back the JSON object with the missing
    values filled, as in this case where the user name is <literal>demo</literal>
-   and the password is <literal>changeit</literal>.</para>
+   and the password is <literal>changeit</literal>:</para>
 
    <informalexample>
    <screen>
@@ -819,7 +827,7 @@ $ <userinput>curl \
    <para>The response is a token ID holding the SSO Token value.</para>
 
    <para>Alternatively, you can authenticate without requesting a session
-   using the <literal>noSession</literal> query string parameter.</para>
+   using the <literal>noSession</literal> query string parameter:</para>
 
    <informalexample>
    <screen>
@@ -844,7 +852,7 @@ $ <userinput>curl \
    chain, which your client can specify using the <literal>service</literal>
    parameter described below. On failure OpenAM then returns HTTP status
    code 401 Unauthorized, and the JSON in the reply indicates the failure
-   URL.</para>
+   URL:</para>
 
    <screen>
 $ <userinput>curl \
@@ -864,7 +872,7 @@ $ <userinput>curl \
    <para>To specify a realm in your request, first make sure that the name of your realm does not match
        an endpoint name to avoid any potential routing errors.
        Then, specify the realm in one of two ways. For example, if you have a realm
-       titled "<literal>myRealm</literal>," you can use it in your request as follows:</para>
+       titled <literal>myRealm</literal>, you can use it in your request as follows:</para>
     <itemizedlist>
         <listitem>
             <para>Using the realm in the URI to the endpoint (preferred method):</para>
@@ -945,61 +953,62 @@ $ <userinput>curl \
 
    <itemizedlist>
     <para>OpenAM uses the following callback types depending on the
-    authentication module in use.</para>
+    authentication module in use:</para>
 
     <listitem>
      <para>
       <literal>ChoiceCallback</literal>:
-      Used to display a list of choices and retrieve the selected choice
+      Used to display a list of choices and retrieve the selected choice.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>ConfirmationCallback</literal>:
-      Used to ask for a confirmation such as Yes, No, or Cancel and retrieve the selection
+      Used to ask for a confirmation such as Yes, No, or Cancel and retrieve
+      the selection.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>HiddenValueCallback</literal>:
-      Used to return form values that are not visually rendered to the end user
+      Used to return form values that are not visually rendered to the end user.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>HttpCallback</literal>:
-      Used for HTTP handshake negotiations
+      Used for HTTP handshake negotiations.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>LanguageCallback</literal>:
-      Used to retrieve the locale for localizing text presented to the end user
+      Used to retrieve the locale for localizing text presented to the end user.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>NameCallback</literal>:
-      Used to retrieve a name string
+      Used to retrieve a name string.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>PasswordCallback</literal>:
-      Used to retrieve a password value
+      Used to retrieve a password value.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>RedirectCallback</literal>:
-      Used to redirect the client user-agent
+      Used to redirect the client user-agent.
      </para>
     </listitem>
 
@@ -1014,27 +1023,27 @@ $ <userinput>curl \
     <listitem>
      <para>
       <literal>TextInputCallback</literal>:
-      Used to retrieve text input from the end user
+      Used to retrieve text input from the end user.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>TextOutputCallback</literal>:
-      Used to display a message to the end user
+      Used to display a message to the end user.
      </para>
     </listitem>
 
     <listitem>
      <para>
       <literal>X509CertificateCallback</literal>:
-      Used to retrieve the content of an x.509 certificate
+      Used to retrieve the content of an x.509 certificate.
      </para>
     </listitem>
    </itemizedlist>
 
    <para>Authenticated users can log out with the token cookie value and an HTTP
-   POST to <literal>/json/sessions/?_action=logout</literal>.</para>
+   POST to <literal>/json/sessions/?_action=logout</literal>:</para>
 
    <screen>
 $ <userinput>curl \
@@ -1066,7 +1075,7 @@ $ <userinput>curl \
     <para>
      First, call the <literal>/json/authenticate</literal> endpoint to log a
      user in to OpenAM. This REST API call returns a <literal>tokenID</literal>
-     value, which is used in subsequent REST API calls to identify the user.
+     value, which is used in subsequent REST API calls to identify the user:
     </para>
 
 <screen>$ <userinput>curl \
@@ -1179,7 +1188,7 @@ $ <userinput>curl \
 
     <listitem>
      <para>
-      <literal>eq</literal>: equals.
+      <literal>eq</literal>: equals
      </para>
      <para>Used for matching strings, and supports regular expression pattern
       matching.</para>
@@ -1238,8 +1247,8 @@ $ <userinput>curl \
     in <literal>_queryFilter=<replaceable>filter</replaceable></literal>.
    </para>
    <para>The following example returns resource types with a <emphasis>name</emphasis>
-      that contains <literal>"Service"</literal> and also has a
-      <emphasis>pattern</emphasis> that starts with <literal>"http"</literal>:</para>
+      that contains <literal>Service</literal> and also has a
+      <emphasis>pattern</emphasis> that starts with <literal>http</literal>:</para>
 
 <screen>$ <userinput>curl \
 --header "iPlanetDirectoryPro: AQIC5..." \
@@ -1329,7 +1338,7 @@ https://openam.example.com:8443/openam/json/applications</userinput></screen>
   <title>Server Information</title>
 
   <para>You can retrieve OpenAM server information by using HTTP GET on
-   <literal>/json/serverinfo/*</literal>.</para>
+   <literal>/json/serverinfo/*</literal> as follows:</para>
 
 <screen>
 $ <userinput>curl https://openam.example.com:8443/openam/json/serverinfo/*</userinput>
@@ -1368,7 +1377,7 @@ $ <userinput>curl https://openam.example.com:8443/openam/json/serverinfo/*</user
   <title>Cookie Information</title>
 
   <para>You can retrieve the cookie domains that OpenAM supports by HTTP GET on
-  <literal>/json/serverinfo/cookieDomains</literal>.</para>
+  <literal>/json/serverinfo/cookieDomains</literal>:</para>
 
   <screen>
 $ <userinput>curl https://openam.example.com:8443/openam/json/serverinfo/cookieDomains</userinput>
@@ -1380,11 +1389,11 @@ $ <userinput>curl https://openam.example.com:8443/openam/json/serverinfo/cookieD
 
   <screen>
 $ <userinput>curl https://openam.example.com:8443/openam/identity/getCookieNameForToken</userinput>
-<computeroutput>string=iPlanetDirectoryPro</computeroutput>
+<computeroutput>string=iPlanetDirectoryPro</computeroutput>:
   </screen>
 
   <para>You can also retrieve the name of the cookie used for storing the session
-  token and the names of the cookies to forward with requests.</para>
+  token and the names of the cookies to forward with requests:</para>
 
   <screen>
 $ <userinput>curl https://openam.example.com:8443/openam/identity/getCookieNamesToForward</userinput>
@@ -1456,7 +1465,7 @@ $ <userinput>curl \
    </screen>
 
    <para>
-    An invalid session token returns only information about the validity.
+    An invalid session token returns only information about the validity:
    </para>
 
    <screen>
@@ -1741,7 +1750,7 @@ amRest.authz    127.0.0.1</computeroutput>
    and the log file in which to write your message.
    Logging takes a valid <literal>appid</literal> token for the subject
    with access to log the message, and also a <literal>subjectid</literal> token
-   for the user whom the message concerns. If the tokens are valid and the
+   for the user the message concerns. If the tokens are valid and the
    access rights correct, your message ends up in the log specified.
   </para>
 
@@ -1761,7 +1770,7 @@ appid=AQIC5wM2LY4SfcwyCZkk-1JXzx6q1EzgagabHfBjMidb5jI.*AAJTSQACMDE.*\
    <para>OpenAM REST APIs respond to successful requests with HTTP status codes
    in the 2xx range. OpenAM REST APIs respond to error conditions with HTTP
    status codes in the 4xx and 5xx range. Status codes used are described in
-   the following list.</para>
+   the following list:</para>
 
    <variablelist>
     <varlistentry>
@@ -1787,7 +1796,7 @@ appid=AQIC5wM2LY4SfcwyCZkk-1JXzx6q1EzgagabHfBjMidb5jI.*AAJTSQACMDE.*\
      <listitem>
       <para>The request was malformed. Either parameters required by the
        action were missing, or as in the following example incorrect data was
-       sent in the payload for the action.</para>
+       sent in the payload for the action:</para>
 
 <screen>
 $ <userinput>curl \
@@ -1809,7 +1818,7 @@ $ <userinput>curl \
      <term>401 Unauthorized</term>
      <listitem>
       <para>The request requires user authentication as in the following
-      example, which is missing an SSO Token value.</para>
+      example, which is missing an SSO Token value:</para>
 
 <screen>
 $ <userinput>curl \
@@ -1830,7 +1839,7 @@ $ <userinput>curl \
      <listitem>
       <para>Access was forbidden during an operation on a resource as in the
       following example, which has a regular user trying to read the OpenAM
-      administrator profile.</para>
+      administrator profile:</para>
 
 <screen>
 $ <userinput>curl \
@@ -1859,7 +1868,7 @@ $ <userinput>curl \
      <term>404 Not Found</term>
      <listitem>
       <para>The specified resource could not be found as in the following
-      example, which is attempting to read a nonexistent user's profile.</para>
+      example, which is attempting to read a nonexistent user's profile:</para>
 
 <screen>
 $ <userinput>curl \
@@ -1887,7 +1896,7 @@ $ <userinput>curl \
     <listitem>
     <para>The request contains parameters that are not acceptable as in
      the following example, which specifies an API version parameter that
-     is not supported by OpenAM.</para>
+     is not supported by OpenAM:</para>
 
 <screen>
 $ <userinput>curl \
@@ -1914,7 +1923,7 @@ $ <userinput>curl \
       <para>The request would have resulted in a conflict with the current
       state of the resource. For example using the Forgot Password feature
        and specifying the user's email address as in the following
-       example, where multiple users have the same email address.</para>
+       example, where multiple users have the same email address:</para>
 
 <screen>
 $ <userinput>curl \
@@ -1972,7 +1981,7 @@ $ <userinput>curl \
       <para>The request is in a format not supported by the requested resource
       for the requested method as in the following example, which is attempting
       to pass basic authentication credentials as form-encoded data rather than
-      query string parameters.</para>
+      query string parameters:</para>
 
 <screen>
 $ <userinput>curl \
@@ -2007,7 +2016,7 @@ format not supported by the requested resource for the requested method
       from fulfilling the request. This could be caused by an invalid
        configuration in the Email Service, or as in the following example the
        specified user account not  having an associated email address to send
-       the Forgot Password URI to.</para>
+       the Forgot Password URI to:</para>
 
 <screen>
 $ <userinput>curl \
@@ -2030,7 +2039,7 @@ $ <userinput>curl \
      <listitem>
       <para>The resource does not support the functionality required to fulfill
       the request as in the following example, which is attempting to delete
-      an entry as a delete action instead of using an HTTP DELETE request.</para>
+      an entry as a delete action instead of using an HTTP DELETE request:</para>
 
 <screen>
 $ <userinput>curl \
@@ -2052,7 +2061,7 @@ $ <userinput>curl \
      <listitem>
       <para>The requested resource was temporarily unavailable. The
        service may have been disabled, as in the following example,
-       where the Forgot Password functionality has been disabled.</para>
+       where the Forgot Password functionality has been disabled:</para>
 
 <screen>
 $ <userinput>curl \

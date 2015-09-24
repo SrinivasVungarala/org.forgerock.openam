@@ -32,15 +32,19 @@
          xmlns:xlink='http://www.w3.org/1999/xlink'
          xmlns:xinclude='http://www.w3.org/2001/XInclude'>
  <title>RESTful Troubleshooting Information Recording</title>
+
  <indexterm>
   <primary>Recording</primary>
   <secondary>Using the REST API</secondary></indexterm>
-  <para>This section shows you how to start, stop, and get the
+
+  <para>
+   This section shows you how to start, stop, and get the
    status of a troubleshooting recording event using the REST API.
   </para>
 
   <itemizedlist>
-   <para>OpenAM provides the <literal>/json/records</literal> REST endpoint
+   <para>
+    OpenAM provides the <literal>/json/records</literal> REST endpoint
     for the following:
    </para>
    <listitem>
@@ -98,7 +102,7 @@
     <olink targetdoc="admin-guide" targetptr="recording-json" />:
    </para>
 
-<screen>$ <userinput>curl \
+   <screen>$ <userinput>curl \
 --header "iPlanetDirectoryPro: AQIC5..." \
 --header "Content-Type: application/json" \
 --request POST \
@@ -173,35 +177,36 @@ https://openam.example.com:8443/openam/json/records?_action=start</userinput>
 }</computeroutput></screen>
   </section>
 
-   <section xml:id="rest-api-records-get-status">
-    <title>Getting the Status of a Recording Event</title>
 
-    <para>
-     To get the status of a recording event, perform an HTTP POST using the
-     <literal>/json/records</literal> endpoint, specifying the
-     <literal>_action=status</literal> parameter in the URL:
-    </para>
+  <section xml:id="rest-api-records-get-status">
+   <title>Getting the Status of a Recording Event</title>
 
-<screen>$ <userinput>curl \
+   <para>
+    To get the status of a recording event, perform an HTTP POST using the
+    <literal>/json/records</literal> endpoint, specifying the
+    <literal>_action=status</literal> parameter in the URL:
+   </para>
+
+   <screen>$ <userinput>curl \
 --header "iPlanetDirectoryPro: AQIC5..." \
 --header "Content-Type: application/json" \
 --request POST \
 https://openam.example.com:8443/openam/json/records?_action=status</userinput></screen>
 
-    <para>
-     If there is no active recording event, the following output appears:
-    </para>
+   <para>
+    If there is no active recording event, the following output appears:
+   </para>
 
-<screen><computeroutput>{
+   <screen><computeroutput>{
   "recording":false
 }</computeroutput></screen>
 
-    <para>
-     If there is an active recording event, output similar to the following
-     appears:
-    </para>
+   <para>
+    If there is an active recording event, output similar to the following
+    appears:
+   </para>
 
-<screen><computeroutput>{
+   <screen><computeroutput>{
  "recording":true,
  "record":{
   "issueID":103572,
@@ -237,34 +242,33 @@ https://openam.example.com:8443/openam/json/records?_action=status</userinput></
   "folder":"/opt/demo/openam/config/openam/debug/record/103572/policyEvalFails/"
  }
 }</computeroutput></screen>
-
   </section>
 
-   <section xml:id="rest-api-records-stop">
-    <title>Stopping a Recording Event</title>
+  <section xml:id="rest-api-records-stop">
+   <title>Stopping a Recording Event</title>
 
-    <para>
-     To stop a recording event, perform an HTTP POST using the
-     <literal>/json/records</literal> endpoint, specifying the
-     <literal>_action=stop</literal> parameter in the URL:
-    </para>
+   <para>
+    To stop a recording event, perform an HTTP POST using the
+    <literal>/json/records</literal> endpoint, specifying the
+    <literal>_action=stop</literal> parameter in the URL:
+   </para>
 
-<screen>$ <userinput>curl \
+   <screen>$ <userinput>curl \
 --header "iPlanetDirectoryPro: AQIC5..." \
 --header "Content-Type: application/json" \
 --request POST \
 https://openam.example.com:8443/openam/json/records?_action=stop</userinput></screen>
 
-    <para>
-     If there is no active recording event, OpenAM returns a 400 error code.
-    </para>
+   <para>
+    If there is no active recording event, OpenAM returns a 400 error code.
+   </para>
 
-    <para>
-     If there is an active recording event, output similar to the following
-     appears:
-    </para>
+   <para>
+    If there is an active recording event, output similar to the following
+    appears:
+   </para>
 
-<screen><computeroutput>{
+   <screen><computeroutput>{
  "recording":false,
  "record":{
   "issueID":103572,

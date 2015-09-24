@@ -40,6 +40,7 @@
   that allows OpenAM to bridge identities across web and enterprise identity
   access management (IAM) systems through its token transformation process.
  </para>
+
  <para>
   If you are unfamiliar with STS, you can read the
   <link xlink:show="new"
@@ -51,6 +52,7 @@
 
  <section xml:id="rest-sts-intro">
   <title>Introduction</title>
+
   <para>
    OpenAM's REST STS framework provides
    a programmatic means to create STS instances, extending single
@@ -65,7 +67,7 @@
    with this principal is used to create the claims in the issued SAML2 assertion.
    Specifically, the process of
    authenticating the input token type involves mapping an input token state to a
-   principal (for example, for a &lt;username, password> combination).
+   principal (for example, for a username/password combination).
    The issued SAML2 assertion asserts the
    identity of this subject, which can contain AttributeStatements that assert claims
    related to LDAP attribute state associated with this subject.
@@ -73,7 +75,7 @@
 
   <para>
    For example, you can create a REST
-   STS instance programmatically or through the Admin console
+   STS instance programmatically or through the admin console
    to transform a validated OpenID Connect (OIDC) 1.0 access token,
    whose principal is mapped to a new SAML v2.0 token, asserting claims mapped
    in the OIDC access token's scope.
@@ -99,13 +101,14 @@
  </itemizedlist>
 
   <para>
-  The generated SAML v2.0 token supports assertion signing and encryption as well
-  as with the Bearer, Holder of Key, or Sender Vouches Subject confirmation:
- </para>
+   The generated SAML v2.0 token supports assertion signing and encryption as well
+   as with the Bearer, Holder of Key, or Sender Vouches Subject confirmation:
+  </para>
 
   <itemizedlist>
   <listitem>
-   <para><emphasis role="bold">Holder of Key</emphasis>. Specifies that the subject
+   <para>
+    <emphasis role="bold">Holder of Key</emphasis>. Specifies that the subject
     must contain one or more
     <literal>KeyInfo</literal> elements
     within the <literal>subjectConfirmationData</literal> element so that
@@ -141,11 +144,12 @@
  <section xml:id="rest-sts-saml-config">
   <title>REST STS Configuration</title>
 
-  <para>The following sections presents points about the REST STS configuration.
+  <para>The following sections present points about the REST STS configuration.
   </para>
 
   <section xml:id="rest-sts-instance-config">
    <title>Instance Configuration</title>
+
    <para>
     Each REST STS instance issues SAML v2.0 assertions for a single ServiceProvider.
     As a result, each REST STS instance is configured with the following elements:
@@ -206,7 +210,8 @@
   </section>
 
   <section xml:id="rest-sts-plugins">
-   <title>Custom Plug-ins</title>
+   <title>Custom Plugins</title>
+
    <para>
     All statements constituting a SAML v2.0 assertion can be fully customized.
     For each REST STS instance, you can write custom plugins for the
@@ -350,7 +355,7 @@ X->Y;(don’t) invalidate interim OpenAM session
    the <literal>OPENIDCONNECT</literal> token.
   </para>
   <para>
-   The elements of the configuration tuple are separated by '|'.
+   The elements of the configuration tuple are separated by '|':
   </para>
   <itemizedlist>
    <listitem>
@@ -382,7 +387,7 @@ X->Y;(don’t) invalidate interim OpenAM session
    tokens, the OpenID Connect authentication module must be consumed, and thus a
    deployed REST STS instance must be configured with the name of the header/cookie
    element where the OpenID Connect ID token is placed.
-   For example, the following Admin Console string defines these
+   For example, the following admin console string defines these
    configurations:
   </para>
 
@@ -551,7 +556,7 @@ X509|module|cert_module|x509_token_token_auth_target_header_key=client_cert
   <title>Authentication: Username</title>
 
   <para>
-   The Username token passed to the REST STS represents the &lt;username, password>
+   The Username token passed to the REST STS represents the username/password
    combination in clear text. This means that REST STS instances that support
    Username Token-based token transformations should only be deployed on TLS.
   </para>
@@ -561,7 +566,7 @@ X509|module|cert_module|x509_token_token_auth_target_header_key=client_cert
   <title>Authentication: OpenID Connect</title>
 
   <para>
-   REST STS instances must be configured to consume an appropriately-configured
+   REST STS instances must be configured to consume an appropriately configured
    OpenID Connect authentication module for OpenID Connect-based token transformations.
    The OIDC authentication module expects to reference the <literal>id</literal>
    token in a header value.
@@ -573,7 +578,7 @@ X509|module|cert_module|x509_token_token_auth_target_header_key=client_cert
   <para>
    The OIDC authentication module must be configured with
    either the discovery URL, the jwk URL or the client secret corresponding to the
-   issuer, and the issuer name must be set (for OpenAM issued OIDC tokens, the
+   issuer. The Issuer name must be set (for OpenAM issued OIDC tokens, the
    issuer name corresponds to the OpenAM deployment url).
   </para>
 
@@ -634,7 +639,7 @@ Realm Name/{deployment_url_element},
    All published REST STS instances are exposed relative to
    <literal>/rest-sts</literal>, so if OpenAM is exposed at
    <literal>https://host.com:443/openam</literal>, and the REST STS instance is published
-   in a realm called "accounting" with a Deployment URl element of
+   in a realm called <literal>accounting</literal> with a Deployment URl element of
    <literal>accountingsts</literal>, then the URL would be:
   </para>
 
@@ -643,7 +648,7 @@ https://host.com:443/openam/rest-sts/accounting/accountingsts
   </programlisting>
 
   <para>
-   A json representation of this instance’s configuration state could be examined
+   A JSON representation of this instance’s configuration state could be examined
    by a GET method to:
   </para>
 
@@ -673,8 +678,9 @@ https://host.com:443/openam/rest-sts-publish/publish/accounting/accountingsts
  <section xml:id="rest-sts-code-examples">
   <title>REST STS Code Examples</title>
   <para>
-   The code example shows how to programmatically publish REST STS instances.
+   The code example shows how to programmatically publish REST STS instances:
   </para>
+
   <programlisting>
 package org.forgerock.openam.sts.rest;
 import org.forgerock.json.fluent.JsonException;

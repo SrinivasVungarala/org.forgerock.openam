@@ -34,83 +34,101 @@
  <title>RESTful Identity and Realm Management Services</title>
 
  <indexterm><primary>REST API</primary></indexterm>
- <para>This section shows how to use the OpenAM RESTful interfaces for identity
+
+ <para>
+  This section shows how to use the OpenAM RESTful interfaces for identity
   and realm management.
  </para>
 
- <para>In this section, long URLs are wrapped to fit the printed page, as some
-  of the output is formatted for easier reading.</para>
+ <para>
+  In this section, long URLs are wrapped to fit the printed page, as some
+  of the output is formatted for easier reading.
+ </para>
 
-  <para>
-   Before making a REST API call to manage a realm or an identity, make sure
-   that you have:
-    <itemizedlist>
-     <listitem>
-      <para>
-       Authenticated successfully to OpenAM as a user with sufficient privileges
-       to make the REST API call
-      </para>
-     </listitem>
-     <listitem>
-      <para>
-       Obtained the session token returned after successful authentication
-      </para>
-     </listitem>
-    </itemizedlist>
-    When making the REST API call, pass the session token in the HTTP header.
-    For more information about the OpenAM session token and its use in REST API
-    calls, see <xref linkend="rest-api-ssotoken" />.
-  </para>
+ <para>
+  Before making a REST API call to manage a realm or an identity, make sure
+  that you have:
+
+  <itemizedlist>
+   <listitem>
+    <para>
+     Authenticated successfully to OpenAM as a user with sufficient privileges
+     to make the REST API call
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Obtained the session token returned after successful authentication
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  When making the REST API call, pass the session token in the HTTP header.
+  For more information about the OpenAM session token and its use in REST API
+  calls, see <xref linkend="rest-api-ssotoken" />.
+ </para>
 
  <section xml:id="rest-api-crud-identity">
   <title>Identity Management</title>
+
   <indexterm>
    <primary>User data</primary>
    <secondary>REST access</secondary>
   </indexterm>
-  <para>This section shows how to create, read, update, delete, and list
-  identities using the RESTful APIs.</para>
+
+  <para>
+   This section shows how to create, read, update, delete, and list
+   identities using the RESTful APIs.
+  </para>
 
   <important>
-   <para>OpenAM is not primarily an identity data store, nor is it provisioning
-   software. For storing identity data, consider <link xlink:show="new"
-   xlink:href="http://forgerock.com/what-we-offer/open-identity-stack/opendj/">OpenDJ</link>.
-   For provisioning, consider <link xlink:show="new"
-   xlink:href="http://forgerock.com/what-we-offer/open-identity-stack/openidm/">OpenIDM</link>.
-   Both of these products provide REST APIs as well.</para>
-  </important>
+   <para>
+    OpenAM is not primarily an identity data store, nor is it provisioning
+    software. For storing identity data, consider <link xlink:show="new"
+    xlink:href="http://forgerock.com/what-we-offer/open-identity-stack/opendj/">OpenDJ</link>.
+    For provisioning, consider <link xlink:show="new"
+    xlink:href="http://forgerock.com/what-we-offer/open-identity-stack/openidm/">OpenIDM</link>.
+    Both of these products provide REST APIs as well.
+   </para>
+   </important>
 
   <itemizedlist>
-   <para>OpenAM has two REST APIs for managing identities.</para>
+   <para>OpenAM has two REST APIs for managing identities:</para>
 
    <listitem>
-    <para>Under the <literal>/json/agents</literal>,
-    <literal>/json/groups</literal>, and <literal>/json/users</literal>,
-    you find the newer JSON-based APIs. The newer APIs follow the ForgeRock
-    common REST pattern creating, reading, updating, deleting, and querying
-    resources.</para>
+    <para>
+     Under the <literal>/json/agents</literal>,
+     <literal>/json/groups</literal>, and <literal>/json/users</literal>,
+     you find the newer JSON-based APIs. The newer APIs follow the ForgeRock
+     common REST pattern creating, reading, updating, deleting, and querying
+     resources.
+    </para>
 
-    <para>Examples in this section do not repeat the authentication shown
-    in <link
+    <para>
+     Examples in this section do not repeat the authentication shown
+     in <link
         xlink:show="new"
         xlink:href="dev-guide#rest-api-auth"
         xlink:role="http://docbook.org/xlink/role/olink"
-        >Authorization &amp; Policy Management</link>.
+        >Authorization and Policy Management</link>.
 
-    For browser-based clients, you
-    can rely on OpenAM cookies rather than construct the header in your
-    application. Managing agent profiles, groups, realms, and users with
-    these APIs of course require authorization. The examples shown in this
-    section were performed with the token ID gained after authenticating
-    as OpenAM administrator.</para>
+     For browser-based clients, you
+     can rely on OpenAM cookies rather than construct the header in your
+     application. Managing agent profiles, groups, realms, and users with
+     these APIs of course require authorization. The examples shown in this
+     section were performed with the token ID gained after authenticating
+     as OpenAM administrator.
+    </para>
 
-    <para>Although the examples here show user management, you can use
-    <literal>/json/agents</literal>, <literal>/json/groups</literal>,
-    <literal>/json/realms</literal> in similar fashion. See
-    <xref linkend="rest-api-crud-realm" /> for examples related to realms.</para>
+    <para>
+     Although the examples here show user management, you can use
+     <literal>/json/agents</literal>, <literal>/json/groups</literal>,
+     <literal>/json/realms</literal> in similar fashion. See
+     <xref linkend="rest-api-crud-realm" /> for examples related to realms.
+    </para>
 
     <itemizedlist>
-     <para>The following sections cover this JSON-based API.</para>
+     <para>The following sections cover this JSON-based API:</para>
      <listitem><para><xref linkend="rest-api-create-identity" /></para></listitem>
      <listitem><para><xref linkend="rest-api-read-identity" /></para></listitem>
      <listitem><para><xref linkend="rest-api-update-identity" /></para></listitem>
@@ -132,16 +150,19 @@
   <section xml:id="rest-api-create-identity">
    <title>Creating Identities</title>
 
-   <para>OpenAM lets administrators create a user profile by making 
-   an HTTP POST of the JSON representation of the profile to
-   <literal>/json/<replaceable>subrealm</replaceable>/users/?_action=create</literal>.
-   To add a user to the Top Level Realm, you do not need to specify the realm.</para>
+   <para>
+    OpenAM lets administrators create a user profile by making
+    an HTTP POST of the JSON representation of the profile to
+    <literal>/json/<replaceable>subrealm</replaceable>/users/?_action=create</literal>.
+    To add a user to the Top Level Realm, you do not need to specify the realm.</para>
 
-   <para>The following example shows an administrator creating a new user. The
-   only required fields are <literal>username</literal> and
-   <literal>userpassword</literal>. If no other name is provided, the entry
-   you make for <literal>username</literal> defaults to both the user id and the
-   user's last name.</para>
+   <para>
+    The following example shows an administrator creating a new user. The
+    only required fields are <literal>username</literal> and
+    <literal>userpassword</literal>. If no other name is provided, the entry
+    you make for <literal>username</literal> defaults to both the user id and the
+    user's last name:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -200,12 +221,14 @@ $ <userinput>curl \
 }</computeroutput>
    </screen>
 
-    <para>Alternatively, administrators can create user profiles with specific
+   <para>
+    Alternatively, administrators can create user profiles with specific
     user IDs by doing an HTTP PUT of the JSON representation of the changes to
     <literal>/json/users/<replaceable>user-id</replaceable></literal>, as
-    shown in the following example:</para>
+    shown in the following example:
+   </para>
 
-    <screen>
+   <screen>
 $ <userinput>curl \
  --request PUT \
  --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
@@ -263,20 +286,24 @@ $ <userinput>curl \
         "id=janedoe,ou=user,dc=openam,dc=forgerock,dc=org"
     ]
 }</computeroutput>
-    </screen>
+   </screen>
 
-   <para>As shown in the examples, OpenAM returns the JSON representation of
+   <para>
+    As shown in the examples, OpenAM returns the JSON representation of
     the profile on successful creation. On failure, OpenAM returns a JSON
     representation of the error including the
     <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
     xlink:show="new">HTTP status code</link>. For example,
-    version 2.0 of the CREST <literal>/json/users</literal>, <literal>/json/groups</literal>,
+    version 2.0 of the CREST <literal>/json/users</literal>,
+    <literal>/json/groups</literal>,
     and <literal>/json/agents</literal> endpoints return 403 if the user making
     the request is not authorized to do so.
    </para>
 
-   <para>The same HTTP POST and PUT mechanisms also work for other objects
-   such as policy agent profiles and groups.</para>
+   <para>
+    The same HTTP POST and PUT mechanisms also work for other objects
+    such as policy agent profiles and groups:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -331,9 +358,13 @@ $ <userinput>curl \
 }</computeroutput>
    </screen>
 
-   <note><para>The command output above has been truncated to be more
-    readable. When you create a policy agent profile, OpenAM returns the full
-    profile in JSON format.</para></note>
+   <note>
+    <para>
+     The command output above has been truncated to be more
+     readable. When you create a policy agent profile, OpenAM returns the full
+     profile in JSON format.
+    </para>
+   </note>
 
    <screen>
 $ <userinput>curl \
@@ -402,27 +433,38 @@ $ <userinput>curl \
   <section xml:id="rest-api-read-identity">
    <title>Reading Identities</title>
 
-   <para>OpenAM lets users and administrators read profiles by requesting an HTTP
-   GET on <literal>/json/<replaceable>subrealm</replaceable
-   >/users/<replaceable>user-id</replaceable></literal>.
-   This allows users and administrators to verify user data, status, and directory.
-   If users or administrators see missing or incorrect information, they can write 
-   down the correct information and add it using <xref linkend="rest-api-update-identity" />.
-   To read a profile on the Top Level Realm, you do not need to specify the realm.</para>
-   
-   <para>Users can review the data associated with their own accounts, and
-    administrators can also read other user's profiles.</para>
+   <para>
+    OpenAM lets users and administrators read profiles by requesting an HTTP
+    GET on <literal>/json/<replaceable>subrealm</replaceable
+    >/users/<replaceable>user-id</replaceable></literal>.
+    This allows users and administrators to verify user data, status, and directory.
+    If users or administrators see missing or incorrect information, they can write
+    down the correct information and add it using
+    <xref linkend="rest-api-update-identity" />.
+    To read a profile on the Top Level Realm, you do not need to specify the realm.
+   </para>
 
-   <note><para>If an administrator user is reading their own profile,
-    an additional <literal>roles</literal> element, with a value of
-    <literal>ui-admin</literal> is returned in the JSON response.
-    The XUI verifies this element to grant or deny access to the OpenAM
-    Console.</para></note>
+   <para>
+    Users can review the data associated with their own accounts, and
+    administrators can also read other user's profiles.
+   </para>
 
-    <para>The following example shows an administrator
-    accessing user data belonging to <literal>demo</literal>.</para>
+   <note>
+    <para>
+     If an administrator user is reading their own profile,
+     an additional <literal>roles</literal> element, with a value of
+     <literal>ui-admin</literal> is returned in the JSON response.
+     The XUI verifies this element to grant or deny access to the OpenAM
+     Console.
+    </para>
+   </note>
 
-    <screen>
+   <para>
+    The following example shows an administrator
+    accessing user data belonging to <literal>demo</literal>:
+   </para>
+
+   <screen>
 $ <userinput>curl \
  --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
  https://openam.example.com:8443/openam/json/users/demo</userinput>
@@ -468,11 +510,13 @@ $ <userinput>curl \
         "id=demo,ou=user,dc=openam,dc=forgerock,dc=org"
     ]
 }</computeroutput>
-    </screen>
+   </screen>
 
-   <para>Use the <literal>_fields</literal> query string parameter to restrict
-   the list of attributes returned. This parameter takes a comma-separated list
-   of JSON object fields to include in the result.</para>
+   <para>
+    Use the <literal>_fields</literal> query string parameter to restrict
+    the list of attributes returned. This parameter takes a comma-separated list
+    of JSON object fields to include in the result:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -481,14 +525,18 @@ $ <userinput>curl \
 <computeroutput>{"username":"demo","uid":["demo"]}</computeroutput>
    </screen>
 
-   <para>As shown in the examples, OpenAM returns the JSON representation of the
-   profile on success. On failure, OpenAM returns a JSON representation of the
-   error including the
-   <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-   xlink:show="new">HTTP status code</link>.</para>
+   <para>
+    As shown in the examples, OpenAM returns the JSON representation of the
+    profile on success. On failure, OpenAM returns a JSON representation of the
+    error including the
+    <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
+    xlink:show="new">HTTP status code</link>.
+   </para>
 
-   <para>Using HTTP GET to read also works for other objects such as agent
-   profiles and groups.</para>
+   <para>
+    Using HTTP GET to read also works for other objects such as agent
+    profiles and groups:
+   </para>
 
 <screen>
 $ <userinput>curl \
@@ -526,13 +574,19 @@ $ <userinput>curl \
 }</computeroutput>
 </screen>
 
-   <note><para>The command output above has been truncated to be more
-    readable. When you read a policy agent profile, OpenAM returns the full
-    profile in JSON format.</para></note>
+   <note>
+    <para>
+     The command output above has been truncated to be more
+     readable. When you read a policy agent profile, OpenAM returns the full
+     profile in JSON format.
+    </para>
+   </note>
 
-   <para>The <literal>_prettyPrint</literal> query string parameter can make
-   the resulting JSON easier to read when you are viewing the resulting JSON
-   directly.</para>
+   <para>
+    The <literal>_prettyPrint</literal> query string parameter can make
+    the resulting JSON easier to read when you are viewing the resulting JSON
+    directly:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -564,16 +618,20 @@ $ <userinput>curl \
   <section xml:id="rest-api-update-identity">
    <title>Updating Identities</title>
 
-   <para>OpenAM lets users update their own profiles, and lets administrators
-   update other users' profiles. To update an identity do an HTTP PUT of the JSON 
-   representation of the changes to <literal>/json/<replaceable
-   >subrealm</replaceable>/users/<replaceable>user-id</replaceable></literal>.
-   To update a profile on the Top Level Realm, you do not need to specify the realm.</para>
+   <para>
+    OpenAM lets users update their own profiles, and lets administrators
+    update other users' profiles. To update an identity do an HTTP PUT of the JSON
+    representation of the changes to <literal>/json/<replaceable
+    >subrealm</replaceable>/users/<replaceable>user-id</replaceable></literal>.
+    To update a profile on the Top Level Realm, you do not need to specify the realm.
+   </para>
 
-    <para>The following example shows how users can update their own
-    profiles.</para>
+   <para>
+    The following example shows how users can update their own
+    profiles:
+   </para>
 
-    <screen>
+   <screen>
 $ <userinput>curl \
  --request PUT \
  --header "iplanetDirectoryPro: AQIC5...Y3MTAx*" \
@@ -623,13 +681,15 @@ $ <userinput>curl \
         "id=demo,ou=user,dc=openam,dc=forgerock,dc=org"
     ]
 }</computeroutput>
-    </screen>
+   </screen>
 
-   <para>As shown in the example, OpenAM returns the JSON representation of the
-   profile on success. On failure, OpenAM returns a JSON representation of the
-   error including the
-   <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-   xlink:show="new">HTTP status code</link>.</para>
+   <para>
+    As shown in the example, OpenAM returns the JSON representation of the
+    profile on success. On failure, OpenAM returns a JSON representation of the
+    error including the
+    <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
+    xlink:show="new">HTTP status code</link>.
+   </para>
 
    <para>
     You can use HTTP PUT to update other objects as well,
@@ -637,7 +697,7 @@ $ <userinput>curl \
    </para>
 
    <para>
-    The following example updates a web policy agent profile.
+    The following example updates a web policy agent profile:
    </para>
 
    <screen>
@@ -679,14 +739,20 @@ $ <userinput>curl \
          "Inactive"
      ]
  }</computeroutput>
- </screen>
+   </screen>
 
-   <note><para>The command output above has been truncated to be more
-    readable. When you update a policy agent profile, OpenAM returns the full profile
-    in JSON format.</para></note>
+   <note>
+    <para>
+     The command output above has been truncated to be more
+     readable. When you update a policy agent profile, OpenAM returns the full profile
+     in JSON format.
+    </para>
+   </note>
 
-   <para>Notice in the following example that updates <literal>newGroup</literal>
-   the object class value is not included in the JSON sent to OpenAM.</para>
+   <para>
+    Notice in the following example that updates <literal>newGroup</literal>
+    the object class value is not included in the JSON sent to OpenAM:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -727,14 +793,18 @@ $ <userinput>curl \
   <section xml:id="rest-api-delete-identity">
    <title>Deleting Identities</title>
 
-   <para>OpenAM lets administrators delete a user profile by making an HTTP DELETE 
-   call to <literal>/json/<replaceable>subrealm</replaceable
-   >/users/<replaceable>user-id</replaceable></literal>.
-   To delete a user from the Top Level Realm, you do not need to specify the realm.</para>
+   <para>
+    OpenAM lets administrators delete a user profile by making an HTTP DELETE
+    call to
+    <literal>/json/<replaceable>subrealm</replaceable>/users/<replaceable>user-id</replaceable></literal>.
+    To delete a user from the Top Level Realm, you do not need to specify the realm.
+   </para>
 
-   <para>The following example removes a user from the top level
-   realm. Only administrators should delete users. The user id is the only
-   field required to delete a user.</para>
+   <para>
+    The following example removes a user from the top level
+    realm. Only administrators should delete users. The user id is the only
+    field required to delete a user:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -744,13 +814,17 @@ $ <userinput>curl \
 <computeroutput>{"success":"true"}</computeroutput>
    </screen>
 
-   <para>On success, OpenAM returns a JSON object indicating success. On
-   failure, OpenAM returns a JSON representation of the error including the
-   <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-   xlink:show="new">HTTP status code</link>.</para>
+   <para>
+    On success, OpenAM returns a JSON object indicating success. On
+    failure, OpenAM returns a JSON representation of the error including the
+    <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
+    xlink:show="new">HTTP status code</link>.
+   </para>
 
-   <para>You can use this same logic for other resources such as performing an
-   HTTP DELETE of an agent profile or of a group.</para>
+   <para>
+    You can use this same logic for other resources such as performing an
+    HTTP DELETE of an agent profile or of a group:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -776,17 +850,18 @@ $ <userinput>curl \
      console's Sessions tab. If you are using stateless sessions, you cannot
      remove users' sessions; you must wait for the sessions to expire.
     </para>
-  </note>
-   
+   </note>
   </section>
 
   <section xml:id="rest-api-query-identity">
    <title>Listing Identities</title>
 
-   <para>OpenAM lets administrators list identities by making an HTTP GET
-   call to <literal>/json/<replaceable>subrealm</replaceable
-   >/users/?_queryId=*</literal>. To query the Top Level Realm, you do not need
-   to specify the realm.</para>
+   <para>
+    OpenAM lets administrators list identities by making an HTTP GET
+    call to
+    <literal>/json/<replaceable>subrealm</replaceable>/users/?_queryId=*</literal>. To query the Top Level Realm, you do not need
+    to specify the realm:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -800,8 +875,10 @@ $ <userinput>curl \
 }</computeroutput>
    </screen>
 
-   <para>This also works for other types of objects, such as agent profiles and
-   groups.</para>
+   <para>
+    This also works for other types of objects, such as agent profiles and
+    groups:
+   </para>
 
    <screen>
 $ <userinput>curl \
@@ -827,23 +904,30 @@ $ <userinput>curl \
 }</computeroutput>
    </screen>
 
-   <para>As the result lists include all objects, this capability to list
-   identity names is mainly useful in testing.</para>
+   <para>
+    As the result lists include all objects, this capability to list
+    identity names is mainly useful in testing.
+   </para>
 
-   <para>As shown in the examples, OpenAM returns the JSON representation of
-   the resource list if successful. On failure, OpenAM returns a JSON
-   representation of the error including the
-   <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-   xlink:show="new">HTTP status code</link>.</para>
+   <para>
+    As shown in the examples, OpenAM returns the JSON representation of
+    the resource list if successful. On failure, OpenAM returns a JSON
+    representation of the error including the
+    <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
+    xlink:show="new">HTTP status code</link>.
+   </para>
   </section>
 
   <section xml:id="rest-api-retrieve-identity-using-session-cookie">
    <title>Retrieving Identities Using the Session Cookie</title>
-   <para>If you only have access to the <literal>iPlanetDirectoryPro</literal>
+
+   <para>
+    If you only have access to the <literal>iPlanetDirectoryPro</literal>
     session cookie, you can retrieve the user ID by performing an HTTP POST
     operation on the <literal>/json/users</literal>
-    endpoint using the <literal>idFromSession</literal> action.
+    endpoint using the <literal>idFromSession</literal> action:
    </para>
+
    <screen>
 $ <userinput>curl \
  --verbose \
@@ -864,6 +948,7 @@ $ <userinput>curl \
 
   <section xml:id="rest-api-change-password">
    <title>Changing Passwords</title>
+
    <indexterm>
     <primary>Passwords</primary>
     <secondary>Reset</secondary>
@@ -874,22 +959,26 @@ $ <userinput>curl \
    </indexterm>
 
    <para>
-   A user can change their own password
+    A user can change their own password
     with an HTTP POST to <literal>/json/<replaceable>subrealm</replaceable
     >/users/<replaceable>username</replaceable>?_action=changePassword</literal>
     including the new password as the value of <literal>userpassword</literal> in the request
-    data.</para>
+    data.
+   </para>
 
-   <para> A user must provide the current password, which is set in the request
-    as the value of the <literal>currentpassword</literal>.</para>
+   <para>
+    A user must provide the current password, which is set in the request
+    as the value of the <literal>currentpassword</literal>.
+   </para>
 
-   <para>For the case where the user has forgotten their password, see
+   <para>
+    For the case where the user has forgotten their password, see
     <xref linkend="rest-api-password-reset" /> instead.
    </para>
 
    <para>
-    The following example shows a successful request to change the <emphasis>demo</emphasis>
-    user's password to <emphasis>password</emphasis>.
+    The following example shows a successful request to change the
+    <emphasis>demo</emphasis> user's password to <emphasis>password</emphasis>:
    </para>
 
    <screen>
@@ -907,9 +996,11 @@ $ <userinput>curl \
 
    <para>
     On success, the response is an empty JSON object {} as shown in the
-    example.</para>
+    example.
+   </para>
 
-   <para>On failure, OpenAM returns a JSON representation of the error including the
+   <para>
+    On failure, OpenAM returns a JSON representation of the error including the
     <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
     xlink:show="new">HTTP status code</link>. See also <xref linkend="rest-api-status-codes" />
     for more information.
@@ -919,18 +1010,23 @@ $ <userinput>curl \
  
  <section xml:id="rest-api-crud-realm">
   <title>Realm Management</title>
+
   <indexterm>
    <primary>Realm data</primary>
    <secondary>REST access</secondary>
   </indexterm>
-  
-    <para>This section shows how to create, read, update, and delete realms 
-  using the RESTful APIs.</para>
+
+  <para>
+   This section shows how to create, read, update, and delete realms
+   using the RESTful APIs:
+  </para>
 
   <itemizedlist>
    <listitem>
-    <para>Under the <literal>/json/realms</literal> endpoint, you find the 
-    newer JSON-based API.</para>
+    <para>
+     Under the <literal>/json/realms</literal> endpoint, you find the
+     newer JSON-based API:
+    </para>
 
     <itemizedlist>
      <para>The following sections cover this JSON-based API.</para>
@@ -946,13 +1042,16 @@ $ <userinput>curl \
 
   <section xml:id="rest-api-parameters-realm">
    <title>Default Parameters for Realms</title>
-    <para>Realms have a number of fields entered with the default loading.
+
+   <para>
+    Realms have a number of fields entered with the default loading.
     The following table provides information on what the default realm settings are,
-    and these settings can be updated, added, or deleted when updating
-    a realm.</para>
+    and whether they can be updated, added, or deleted when updating
+    a realm.
+   </para>
      
-     <table xml:id="realm-parameter" pgwide="1">
-     <title>Realm Parameters for JSON-based API</title>
+   <table xml:id="realm-parameter" pgwide="1">
+    <title>Realm Parameters for JSON-based API</title>
      <tgroup cols="3">
       <thead>
        <row>
@@ -977,9 +1076,13 @@ $ <userinput>curl \
        <row>
         <entry>sunOrganizationAliases</entry>
         <entry>None</entry>
-        <entry><para>Any applicable aliases associated with the realm. Be aware that
-        an alias can only be used once. Entering an alias used by another realm
-        will remove the alias from that realm and you will lose configuration.</para>
+        <entry>
+         <para>
+          Any applicable aliases associated with the realm. Be aware that
+          an alias can only be used once. Entering an alias used by another realm
+          will remove the alias from that realm and you will lose configuration.
+         </para>
+
          <para>Example: <literal>opensso.example.com</literal></para></entry>
        </row>
        <row>
@@ -1007,15 +1110,19 @@ $ <userinput>curl \
   <section xml:id="rest-api-create-realm">
    <title>Creating Realms</title>
 
-   <para>OpenAM lets administrators create a realm by making 
-   an HTTP POST of the JSON representation of the profile to
-   <literal>/json/realms/?_action=create</literal>.</para>
-   
-    <para>You can create realms using an HTTP POST of the JSON representation 
+   <para>
+    OpenAM lets administrators create a realm by making
+    an HTTP POST of the JSON representation of the profile to
+    <literal>/json/realms/?_action=create</literal>.
+   </para>
+
+   <para>
+    You can create realms using an HTTP POST of the JSON representation
     of the profile to <literal>/json/realms/?_action=create</literal>, as shown in 
-    the following example. The only required data field is <literal>realm</literal>.</para>
+    the following example. The only required data field is <literal>realm</literal>:
+   </para>
    
-     <screen>
+   <screen>
 $ <userinput>curl \
  --request POST \
  --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
@@ -1023,23 +1130,31 @@ $ <userinput>curl \
  --data '{ "realm": "myRealm" }' \
  https://openam.example.com:8443/openam/json/realms/?_action=create</userinput>
 <computeroutput>{"realmCreated":"/myRealm"}</computeroutput>
-     </screen>
+   </screen>
 
-   <note><para>Do not use the names of OpenAM REST endpoints as the name of a realm.
-    The OpenAM REST endpoint names that should not be used includes: "users",
-    "groups", "realms", "policies" and "applications".</para></note>
+   <note>
+    <para>
+     Do not use the names of OpenAM REST endpoints as the name of a realm.
+     The OpenAM REST endpoint names that should not be used includes: users,
+     groups, realms, policies and applications.
+    </para>
+   </note>
 
-   <para>You can also set the <literal>sunOrganizationAliases</literal> parameter,
+   <para>
+    You can also set the <literal>sunOrganizationAliases</literal> parameter,
     but it can only be assigned to one realm (usually the top level realm). Before
     setting this parameter, make sure it is not already assigned elsewhere. If you 
-    replace remove it from another realm, you will lose your configuration.</para>
+    remove it from another realm, you will lose your configuration.
+   </para>
     
-    <para>Alternatively, administrators can create realms by the specific realm
+   <para>
+    Alternatively, administrators can create realms by the specific realm
     name using the HTTP PUT of the JSON representation of the changes to 
     <literal>/json/realms/<replaceable>realm-id</replaceable></literal>, as
-    shown in the following example:</para>
+    shown in the following example:
+   </para>
    
-     <screen>
+   <screen>
 $ <userinput>curl \
  --request PUT \
  --header "If-None-Match: *" \
@@ -1052,33 +1167,40 @@ $ <userinput>curl \
   "realmCreated": "/myRealm"
  }
 </computeroutput>
-     </screen>
-    <para>
-     OpenAM returns an HTTP 201 Created status code, and the JSON representation
-     of the realm on success. On failure, OpenAM returns a JSON representation
-     of the error including the
-     <link
+   </screen>
+
+   <para>
+    OpenAM returns an HTTP 201 Created status code, and the JSON representation
+    of the realm on success. On failure, OpenAM returns a JSON representation
+    of the error including the
+    <link
       xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
       xlink:show="new"
      >HTTP status code</link>. For example, if the
      <literal>If-None-Match</literal> header with a value of <literal>*</literal>
-     is absent, an HTTP 404 Not Found status code is returned.</para>
-   </section>
+     is absent, an HTTP 404 Not Found status code is returned.
+   </para>
+  </section>
 
   <section xml:id="rest-api-read-realm">
    <title>Reading Realms</title>
 
-   <para>OpenAM lets administrators read realms by requesting an HTTP GET on 
-   <literal>/json/realms/<replaceable>realm-id</replaceable></literal>. This 
-   allows administrators to review all active realm services for the realm, 
-   like policy configuration and modules. If users or administrators see missing 
-   information (such as Active status) or incorrect information, they can write 
-   down the correct information and add it using <xref linkend="rest-api-update-realm" /></para>
+   <para>
+    OpenAM lets administrators read realms by requesting an HTTP GET on
+    <literal>/json/realms/<replaceable>realm-id</replaceable></literal>. This
+    allows administrators to review all active realm services for the realm,
+    like policy configuration and modules. If users or administrators see missing
+    information (such as Active status) or incorrect information, they can write
+    down the correct information and add it using
+    <xref linkend="rest-api-update-realm" />.
+   </para>
    
-    <para>The following example shows an administrator receiving information about
-    a realm called <literal>myRealm</literal>.</para>
+   <para>
+    The following example shows an administrator receiving information about
+    a realm called <literal>myRealm</literal>:
+   </para>
 
-    <screen>
+   <screen>
 $ <userinput>curl \
  --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
  https://openam.example.com:8443/openam/json/realms/myRealm</userinput>
@@ -1098,19 +1220,22 @@ $ <userinput>curl \
       "iPlanetAMAuthOATHService"
     ]
 }</computeroutput>
-    </screen>
+   </screen>
 
-    <para>As shown in the example, OpenAM returns the JSON representation of the
+   <para>
+    As shown in the example, OpenAM returns the JSON representation of the
     profile on success. On failure, OpenAM returns a JSON representation of the
     error including the
     <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-    xlink:show="new">HTTP status code</link>.</para>
+    xlink:show="new">HTTP status code</link>.
+   </para>
 
    <para>
     To read the top-level realm,
     use <literal>toplevelrealm</literal> with the
-    <literal>realms</literal> endpoint.
+    <literal>realms</literal> endpoint:
    </para>
+
    <screen>
 $ <userinput>curl \
  --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
@@ -1137,11 +1262,13 @@ $ <userinput>curl \
    </screen>
 
    <para>
-    If the realm you want to read is not an immediate subrealm of the top-level realm,
-    specify its parent realm to the left of <literal>realms</literal> in the URL,
-    and specify the realm's final qualifier to the right of <literal>realms</literal>.
-    For example, to read the <literal>/myRealm/myRealmsChildRealm</literal> realm:
+    If the realm you want to read is not an immediate subrealm of the top-level
+    realm, specify its parent realm to the left of <literal>realms</literal>
+    in the URL, and specify the realm's final qualifier to the right of
+    <literal>realms</literal>. For example, to read the
+    <literal>/myRealm/myRealmsChildRealm</literal> realm:
    </para>
+
    <screen>
 $ <userinput>curl \
  --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
@@ -1163,15 +1290,14 @@ $ <userinput>curl \
       ]
 }</computeroutput>
    </screen>
-
-   </section>
+  </section>
 
   <section xml:id="rest-api-list-realm">
    <title>Listing Realms</title>
 
    <para>
     To list a realm and its subrealms, perform an HTTP GET on the endpoint,
-    setting the <literal>_queryFilter</literal> query string parameter
+    set the <literal>_queryFilter</literal> query string parameter
     as in the following example, which lists the top-level realm and all of
     its subrealms:
    </para>
@@ -1191,7 +1317,7 @@ $ <userinput>curl \
    <para>
     You can start listing realms from below the top-level realm by placing the
     starting realm name in the URL. The following example lists the realm
-    <literal>myRealm</literal> and all of its subrealms.
+    <literal>myRealm</literal> and all of its subrealms:
    </para>
 
    <screen>
@@ -1204,65 +1330,77 @@ $ <userinput>curl \
      "pagedResultsCookie" : null,
      "remainingPagedResults" : -1
  }</computeroutput>
- </screen>
-
+   </screen>
   </section>
 
   <section xml:id="rest-api-update-realm">
    <title>Updating Realms</title>
 
-   <para>OpenAM lets administrators update realms. To update a realm, do an HTTP PUT 
-   of the JSON representation of the changes to
-   <literal>/json/realms/<replaceable>realm-id</replaceable></literal>.</para>
+   <para>
+    OpenAM lets administrators update realms. To update a realm, do an HTTP PUT
+    of the JSON representation of the changes to
+    <literal>/json/realms/<replaceable>realm-id</replaceable></literal>.
+   </para>
 
-    <para>The following example shows how to update a realm called
-     <literal>myRealm</literal>. The example command sets the realm's
-     status to Inactive.
-    </para>
+   <para>
+    The following example shows how to update a realm called
+    <literal>myRealm</literal>. The example command sets the realm's
+    status to Inactive:
+   </para>
    
-     <screen>
+   <screen>
 $ <userinput>curl \
  --request PUT \
  --header "iplanetDirectoryPro: AQIC5...Y3MTAx*" \
  --header "Content-Type: application/json" \
  --data '{ "sunOrganizationStatus": "Inactive" }' \
  https://openam.example.com:8443/openam/json/realms/myRealm</userinput>
-     </screen>
+   </screen>
 
-    <para>OpenAM returns the JSON representation of the
+   <para>
+    OpenAM returns the JSON representation of the
     profile on success. On failure, OpenAM returns a JSON representation of the
     error including the
     <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-    xlink:show="new">HTTP status code</link>.</para>
-   </section>
+    xlink:show="new">HTTP status code</link>.
+   </para>
+  </section>
 
   <section xml:id="rest-api-delete-realm">
    <title>Deleting Realms</title>
 
-   <para>OpenAM lets administrators delete a realm by making an HTTP DELETE call to
-   <literal>/json/realms/<replaceable>realm-id</replaceable></literal>.</para>
+   <para>
+    OpenAM lets administrators delete a realm by making an HTTP DELETE call to
+    <literal>/json/realms/<replaceable>realm-id</replaceable></literal>.
+   </para>
 
-    <para>The following example deletes a realm called <literal>myRealm</literal>.
-     The top level realm cannot be deleted. Only administrators
-     should delete realms. The name of the realm is the only field required to
-     delete the realm.</para>
+   <para>
+    The following example deletes a realm called <literal>myRealm</literal>.
+    The top level realm cannot be deleted. Only administrators
+    should delete realms. The name of the realm is the only field required to
+    delete the realm.
+   </para>
 
-    <para>Make sure that you do not have any information you need within a realm 
+   <para>
+    Make sure that you do not have any information you need within a realm
     before deleting it. Once a realm is deleted, the only way to restore it is 
-    to return to a backed up deployment of OpenAM.</para>
+    to return to a backed up deployment of OpenAM:
+   </para>
 
-    <screen>
+   <screen>
 $ <userinput>curl \
  --request DELETE \
  --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
  https://openam.example.com:8443/openam/json/realms/myRealm</userinput>
 <computeroutput>{"success":"true"}</computeroutput>
-    </screen>
+   </screen>
 
-    <para>On success, OpenAM returns a JSON object indicating success. On
+   <para>
+    On success, OpenAM returns a JSON object indicating success. On
     failure, OpenAM returns a JSON representation of the error including the
     <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
-    xlink:show="new">HTTP status code</link>.</para>
+    xlink:show="new">HTTP status code</link>.
+   </para>
 
    <para>
     If the realm you want to delete is not an immediate subrealm
@@ -1273,6 +1411,7 @@ $ <userinput>curl \
     right of <literal>realms</literal>. For example,
     to delete the <literal>/myRealm/myRealmsChildRealm</literal> realm:
    </para>
+
    <screen>
  $ <userinput>curl \
  --request DELETE
@@ -1280,9 +1419,6 @@ $ <userinput>curl \
  https://openam.example.com:8443/openam/json/myRealm/realms/myRealmsChildRealm</userinput>
  <computeroutput>{ "success":"true" }</computeroutput>
    </screen>
-   
-   </section>
-
+  </section>
  </section>
-
 </section>

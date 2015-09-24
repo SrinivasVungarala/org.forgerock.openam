@@ -69,7 +69,7 @@
   </itemizedlist>
 
   <para>
-   User-created scripts are realm-specific, hence the URI for the scripts API
+   User-created scripts are realm-specific, hence the URI for the scripts' API
    can contain a realm component, such as
    <literal>/json{<replaceable>/realm</replaceable>}/scripts</literal>.
    If the realm is not specified in the URI, the top level realm is
@@ -85,7 +85,7 @@
    <literal>false</literal>, and <literal>null</literal>). Each script
    has a system-generated <firstterm>universally unique
    identifier</firstterm> (UUID), which must be used when modifying
-   existing scripts. Renaming a script will not affect the UUID.
+   existing scripts. Renaming a script will not affect the UUID:
   </para>
 
 <programlisting language="json">{
@@ -288,7 +288,7 @@ var b = 456;</programlisting>
    <para>
     The <literal>iPlanetDirectoryPro</literal> header is required and should
     contain the SSO token of an Administrator user who has access to perform
-    the operation.
+    the operation:
    </para>
 
 <screen>$ <userinput>curl \
@@ -407,7 +407,7 @@ https://openam.example.com:8443/openam/json/myrealm/scripts?_queryFilter=true</u
    <para>
     The <literal>iPlanetDirectoryPro</literal> header is required and should
     contain the SSO token of an Administrator user who has access to perform
-    the operation.
+    the operation:
    </para>
 
 <screen>$ <userinput>curl \
@@ -445,7 +445,7 @@ https://openam.example.com:8443/openam/json/myrealm/scripts/9de3eb62-f131-4fac-a
    <para>
     The <literal>iPlanetDirectoryPro</literal> header is required and should
     contain the SSO token of an Administrator user who has access to perform
-    the operation.
+    the operation:
    </para>
 
 <screen>$ <userinput>curl \
@@ -467,7 +467,8 @@ https://openam.example.com:8443/openam/json/myrealm/scripts/?_action=validate</u
     <para>If the script is invalid the JSON response contains a
      <literal>success</literal> key with a value of
      <literal>false</literal>, and an indication of the problem and where it
-     occurs, as shown below.</para>
+     occurs, as shown below:</para>
+
     <screen>$ <userinput>curl \
 --header "iPlanetDirectoryPro: AQIC5..." \
 --header "Content-Type: application/json" \
@@ -509,7 +510,7 @@ https://openam.example.com:8443/openam/json/myrealm/scripts/?_action=validate</u
    <para>
     The <literal>iPlanetDirectoryPro</literal> header is required and should
     contain the SSO token of an Administrator user who has access to perform
-    the operation.
+    the operation:
    </para>
 
 <screen>$ <userinput>curl \
@@ -553,7 +554,7 @@ https://openam.example.com:8443/openam/json/myrealm/scripts/?_action=create</use
    <para>
     The <literal>iPlanetDirectoryPro</literal> header is required and should
     contain the SSO token of an Administrator user who has access to perform
-    the operation.
+    the operation:
    </para>
 
 <screen>$ <userinput>curl \
@@ -595,7 +596,7 @@ https://openam.example.com:8443/openam/json/myrealm/scripts/0168d494-015a-420f-a
    <para>
     The <literal>iPlanetDirectoryPro</literal> header is required and should
     contain the SSO token of an Administrator user who has access to perform
-    the operation.
+    the operation:
    </para>
 
 <screen>$ <userinput>curl \

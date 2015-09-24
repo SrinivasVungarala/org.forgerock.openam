@@ -41,9 +41,9 @@
   <title>Deprecated Authentication and Logout APIs</title>
 
   <para>
-   Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   Interface Stability: <link xlink:show="new"
+    xlink:href="admin-guide#interface-stability"
+    xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
   </para>
 
   <para>
@@ -96,9 +96,9 @@ $ <userinput>curl \
   <title>Deprecated Token Validation and Attribute Retrieval APIs</title>
 
   <para>
-   Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   Interface Stability: <link xlink:show="new"
+   xlink:href="admin-guide#interface-stability"
+   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
   </para>
 
   <para>
@@ -255,9 +255,10 @@ userdetails.attribute.value=6319</computeroutput>
   <section xml:id="deprecated-apis-authz">
    <title>Authorization</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>
@@ -282,9 +283,10 @@ uri=http%3A%2F%2Fwww.example.com%3A8080%2Fexamples%2Findex.html\
   <section xml:id="deprecated-apis-policy-decisions">
    <title>Requesting Policy Decisions</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>
@@ -543,9 +545,10 @@ $ <userinput>curl \
   <section xml:id="deprecated-apis-policy-management">
    <title>Managing Policies</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>
@@ -565,9 +568,10 @@ $ <userinput>curl \
   <section xml:id="rest-api-policy-management-create">
    <title>Creating Policies</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+         xlink:href="admin-guide#interface-stability"
+         xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
     <para>
@@ -645,9 +649,10 @@ $ <userinput>curl \
   <section xml:id="deprecated-apis-policy-management-read">
    <title>Reading Policies</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>
@@ -724,9 +729,10 @@ $ <userinput>curl \
   <section xml:id="deprecated-apis-policy-management-update">
    <title>Updating Policies</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>
@@ -772,9 +778,10 @@ $ <userinput>curl \
   <section xml:id="deprecated-apis-policy-management-delete">
    <title>Deleting Policies</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>
@@ -794,9 +801,10 @@ $ <userinput>curl \
   <section xml:id="deprecated-apis-policy-management-query">
    <title>Querying Policies</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+   <para>Interface Stability:
+    <link xlink:show="new"
+          xlink:href="admin-guide#interface-stability"
+          xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>
@@ -855,9 +863,9 @@ $ <userinput>curl \
   <section xml:id="deprecated-apis-create-identity">
    <title>Creating Identities</title>
 
-   <para>Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink></para>
+   <para>Interface Stability: <link xlink:show="new"
+   xlink:href="admin-guide#interface-stability"
+   xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
 
    <para>
     OpenAM lets you create user profiles, and also create web and J2EE
@@ -924,9 +932,9 @@ admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
    <title>Reading and Searching for Identities</title>
 
    <para>
-    Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink></para>
+    Interface Stability: <link xlink:show="new"
+    xlink:href="admin-guide#interface-stability"
+    xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
 
    <para>
     Reading is similar to attribute retrieval, as described in
@@ -1033,9 +1041,9 @@ admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
    <title>Updating Identities</title>
 
    <para>
-    Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink></para>
+    Interface Stability: <link xlink:show="new"
+    xlink:href="admin-guide#interface-stability"
+    xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link></para>
 
    <para>
     You can update an identity with the same parameters used to create
@@ -1058,9 +1066,9 @@ admin=AQIC5wM2LY4SfcxSYA8eG-vrNHb_W7nG8XkfAGyRyuaebDY.*AAJTSQACMDE.*\
    <title>Deleting Identities</title>
 
    <para>
-    Interface Stability: <olink
-   targetdoc="admin-guide" targetptr="interface-stability"
-   xrefstyle="select: nodocname">Deprecated</olink>
+    Interface Stability: <link xlink:show="new"
+    xlink:href="admin-guide#interface-stability"
+    xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link>
    </para>
 
    <para>You can also delete an identity:</para>
