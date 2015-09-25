@@ -282,7 +282,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
    <para>
     You can update the client password by using either OpenAM console
-    or the <command>ssoadm update-agent</command>
+    or the <command>ssoadm update-agent</command> command
     with the <option>--attributevalues</option> option
     to update the value of the <literal>userpassword</literal> attribute.
    </para>
