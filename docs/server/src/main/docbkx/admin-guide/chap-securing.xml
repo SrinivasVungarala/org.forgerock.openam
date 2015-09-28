@@ -303,22 +303,35 @@
    </listitem>
 
    <listitem>
-    <para>When using SAML v2.0:</para>
-    <itemizedlist>
-     <listitem>
-      <para>Sign authentication requests, authentication responses, and single
-      logout requests.</para>
-     </listitem>
-     <listitem>
-      <para>If the other entities in your circle of trust can handle encryption,
-      then use encryption as well.</para>
-     </listitem>
-     <listitem>
-      <para>Use your own key, not the <literal>test</literal> key provided with
-      OpenAM.</para>
-     </listitem>
-    </itemizedlist>
+    <para>
+     Use your own key, not the <literal>test</literal> key provided with
+     OpenAM, to sign:
+    </para>
+     <itemizedlist>
+      <listitem>
+       <para>
+        SAML 2.0 authentication requests, authentication responses, and single
+        logout requests
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        XUI authentication IDs
+       </para>
+      </listitem>
+     </itemizedlist>
+     <para>
+      See <xref linkend="change-signing-key" /> for instructions.
+     </para>
    </listitem>
+
+   <listitem>
+    <para>When using SAML v2.0, if the other entities in your circle of trust
+     can handle encryption, then use encryption in addition to signing requests
+     and responses.
+    </para>
+   </listitem>
+
   </itemizedlist>
  </section>
 
