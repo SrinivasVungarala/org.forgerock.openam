@@ -64,13 +64,21 @@ init_ssl(): libeay32.dll is not available (error: 87)</screen>
    </question>
 
    <answer>
-    <para>You must install OpenSSL when connecting to an OpenAM server
-    running over HTTPS.</para>
-    <para>If OpenSSL is correctly installed, you may need to apply the update
+    <para>If OpenSSL is correctly installed, the following steps may resolve
+     the cause of this error message:</para>
+    <itemizedlist>
+     <listitem>
+      <para>On Windows 7 or Windows Server 2008 R2 systems, apply the update
     provided in Microsoft knowledge base article KB2533623. See <link
     xlink:href="https://support.microsoft.com/en-us/kb/2533623">Microsoft
     Security Advisory: Insecure library loading could allow remote code
-    execution</link></para>
+    execution</link>.</para>
+     </listitem>
+     <listitem>
+      <para>On Windows 2012 systems, place a copy of the
+      OpenSSL library DLLs into <filename>%SystemRoot%/System32/</filename>.</para>
+     </listitem>
+    </itemizedlist>
    </answer>
   </qandaentry>
 
