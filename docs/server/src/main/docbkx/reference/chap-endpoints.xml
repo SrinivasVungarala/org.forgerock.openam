@@ -97,7 +97,7 @@
   directly to a URL such as
   <literal>http://sp.example.com:8080/openam/console/agentconfig/AgentAdd.jsp</literal>.
   For that particular endpoint, you will have click through the options required
-  to add an agent. (Access Control &gt; <replaceable>realm name</replaceable> &gt;
+  to add an agent. (Realms &gt; <replaceable>Realm Name</replaceable> &gt;
   Agents &gt; Agent &gt; New)</para>
 
  <para>In general, this chapter does not include dynamic endpoints, such as those
@@ -533,8 +533,8 @@
      <term><literal>disclaimer.jsp</literal></term>
      <listitem>
       <para>Associated with the self-registration module, which can be configured
-       in the OpenAM Console, under Access Control &gt; Realm Name &gt; Authentication
-       &gt; Module Instances.
+       in the OpenAM Console, under Realms &gt; <replaceable>Realm Name</replaceable> &gt; Authentication
+       &gt; Modules.
        The default disclaimer is associated with the <literal>disclaimer.notice</literal>
        parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
      </listitem>
@@ -544,7 +544,7 @@
             <term><literal>disclaimerDeclined.jsp</literal></term>
             <listitem>
                 <para>Associated with the self-registration module, which can be configured in the OpenAM Console, under
-                    Access Control > Realm Name > Authentication > Module Instances. The default disclaimer_denied message is
+                    Realm &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Modules. The default disclaimer_denied message is
                     associated with the <literal>disclaimer.declined</literal> parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
@@ -895,8 +895,8 @@
         </indexterm>
 
         <para>The JSP files in the <filename>console/agentconfig</filename> subdirectory relate to the configuration of Web Agents. To see
-        what is done by each JSP file, log into the console as the administrator. Select Access Control >
-            <replaceable>[Some Realm]</replaceable> >
+        what is done by each JSP file, log into the console as the administrator. Select Realms &gt;
+            <replaceable>Realm Name</replaceable> &gt;
         Agents. Several of the options that appear corresponds to the JSP files in the target subdirectory.</para>
 
         <para>Some of the endpoints include messages from relevant sections of the <filename>amConsole.properties</filename> file. The agents
@@ -961,7 +961,7 @@
           <term><literal>Agents.jsp</literal></term>
           <listitem>
               <para>Enables access to a form to specify a new agent to add. The same form is used for every category of
-              new agents configured from the OpenAM console, when you navigate to Access Control > <replaceable>[Realm name]</replaceable> >
+              new agents configured from the OpenAM console, when you navigate to Realms &gt; <replaceable>Realm Name</replaceable> &gt;
               Agents.</para>
           </listitem>
       </varlistentry>
@@ -1064,8 +1064,8 @@
         </indexterm>
 
     <para>You can find console authentication endpoints in the console/authentication subdirectory. The associated
-    endpoints relate to authentication settings in a realm. To access these endpoints, navigate to Access Control &gt;
-        <replaceable>[some realm]</replaceable> &gt; Authentication.</para>
+    endpoints relate to authentication settings in a realm. To access these endpoints, navigate to Realms &gt;
+        <replaceable>Realm Name</replaceable> &gt; Authentication.</para>
 
         <variablelist>
 
@@ -1237,7 +1237,7 @@
                 <term><literal>Delegation.jsp</literal></term>
                 <listitem>
                     <para>Associated with the privileges for a realm. The privileges can be assigned for different
-                        groups of users, as configured via Access Control &gt; <replaceable>[realm]</replaceable> &gt;
+                        groups of users, as configured via Realms &gt; <replaceable>Realm Name</replaceable> &gt;
                     Subjects &gt; Group.</para>
                 </listitem>
             </varlistentry>
@@ -1246,8 +1246,8 @@
                 <term><literal>DelegationProperties.jsp</literal></term>
                 <listitem>
                     <para>Supports changes in properties for group privileges, described in the <filename>Delegation.jsp</filename> endpoint.
-                        To get to these properties, select Access Control &gt; <replaceable>[some realm]</replaceable>
-                        &gt; Privileges &gt; <replaceable>[name of group]</replaceable>.</para>
+                        To get to these properties, select Realms &gt; <replaceable>Realm Name</replaceable>
+                        &gt; Privileges &gt; <replaceable>Group Name</replaceable>.</para>
                 </listitem>
             </varlistentry>
 
@@ -1597,8 +1597,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>Entities.jsp</literal></term>
                 <listitem>
-                    <para>Opens the list of currently configured users, available via Access Control &gt;
-                        <replaceable>[selected realm]</replaceable> &gt; Subjects.</para>
+                    <para>Opens the list of currently configured users, available via Realms &gt;
+                        <replaceable>Realm Name</replaceable> &gt; Subjects.</para>
                 </listitem>
             </varlistentry>
 
@@ -1743,7 +1743,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>HomePage.jsp</literal></term>
                 <listitem>
-                    <para>Associated with the main Access Control page in the OpenAM GUI console, which lists configured
+                    <para>Associated with the main Access Control page in the legacy OpenAM console, which lists configured
                         realms. If you call <filename>realm/HomePage.jsp</filename> directly, it cites messages associated with changes for
                         a specific user, and functions more closely associated with JSP endpoints in the <filename>console/idm</filename>
                         subdirectory.</para>
@@ -1753,8 +1753,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>IDRepo.jsp</literal></term>
                 <listitem>
-                    <para>Enables links with directory server data stores within a realm. To access, select Access
-                    Control &gt; <replaceable>[some realm]</replaceable> &gt; Data Stores &gt; New. You should see
+                    <para>Enables links with directory server data stores within a realm. To access, select Realms
+                    &gt; <replaceable>Realm Name</replaceable> &gt; Data Stores &gt; New. You should see
                     a variety of supported directory server data stores, such as Active Directory, OpenDJ, and
                     Tivoli Directory Server.</para>
                 </listitem>
@@ -1920,16 +1920,16 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>G11NCharsetAliasAdd.jsp</literal></term>
                 <listitem>
-                    <para>Supports the configuration of a new character set alias. Accessible from the Globalization
-                        Settings &gt; Charset Aliases submenu.</para>
+                    <para>Supports the configuration of a new character set alias. Accessible from the
+                        Configuration &gt; Console &gt; Globalization Settings &gt; Charset Aliases submenu.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>G11NCharsetAliasEdit.jsp</literal></term>
                 <listitem>
-                    <para>Supports the editing of an existing character set alias. Accessible from the Globalization
-                        Settings &gt; Charset Aliases submenu.</para>
+                    <para>Supports the editing of an existing character set alias. Accessible from the
+                     Configuration &gt; Console &gt; Globalization Settings &gt; Charset Aliases submenu.</para>
                 </listitem>
             </varlistentry>
 
@@ -1937,7 +1937,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>G11NSupportedCharsetAdd.jsp</literal></term>
                 <listitem>
                     <para>Supports the configuration of a new character set supported by a locale. Accessible from the
-                        Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
+                     Configuration &gt; Console &gt; Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
                 </listitem>
             </varlistentry>
 
@@ -1945,7 +1945,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>G11NSupportedCharsetEdit.jsp</literal></term>
                 <listitem>
                     <para>Supports the editing of an existing character set supported by a locale. Accessible from the
-                        Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
+                     Configuration &gt; Console &gt; Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
                 </listitem>
             </varlistentry>
 
@@ -2563,8 +2563,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
         </indexterm>
 
         <para>Endpoints in the console/user subdirectory support account configuration tasks. Many of these
-        endpoints are accessible by realm. From the home page screen, select Access Control &gt;
-            <replaceable>[realm]</replaceable> &gt; Subjects &gt; <replaceable>[name of user]</replaceable>. This
+        endpoints are accessible by realm. From the home page screen, select Realms &gt;
+            <replaceable>Realm Name</replaceable> &gt; Subjects &gt; <replaceable>User Name</replaceable>. This
         should open up an Edit User screen</para>
 
         <variablelist>
@@ -2724,7 +2724,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
         <para>
          The OpenAM console uses the JSP files in this section to configure REST STS instances.
          The endpoints in this section are accessible from the OpenAM console and can be
-         reached by using the path Access Control &gt; <replaceable>Realm Name</replaceable> &gt; STS.
+         reached by using the path Realms &gt; <replaceable>Realm Name</replaceable> &gt; STS.
         </para>
         <para>
          You can find the JSP files in the <filename>console/reststs</filename> subdirectory.
@@ -3538,8 +3538,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Associated with the servlet named <literal>AgentConfigurationServlet</literal>. The associated
                         <literal>AgentConfigurationServlet</literal> class is called by the <filename>amAccessControl.xml</filename> file, which
-                        suggests that it can be configured from the console from the Agents section of the
-                        Access Control menu. It is rarely used otherwise. any URL entered prior to login defaults to the standard login page.</para>
+                        suggests that it can be configured from the console from Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents.
+                        It is rarely used otherwise. any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
@@ -4216,7 +4216,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/RealmSelection/*</literal></term>
                 <listitem>
-                    <para>Used by an endpoint named <filename>realmSelection.jsp</filename>filename>, which was defined in the WS-Federation
+                    <para>Used by an endpoint named <filename>realmSelection.jsp</filename>, which was defined in the WS-Federation
                         JSP Endpoints section.
                     </para>
                 </listitem>

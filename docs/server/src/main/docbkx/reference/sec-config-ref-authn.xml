@@ -36,28 +36,42 @@
    <secondary>Authentication</secondary>
   </indexterm>
 
-  <para>Under Configuration &gt; Authentication, you can configure
-  authentication services globally using the same attributes you use to
-  configure authentication modules per realm under Access Control &gt;
-  <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Module
-  Instances, as described in <olink targetdoc="admin-guide" targetptr="chap-auth-services" />.</para>
+  <para>As described in <olink targetdoc="admin-guide" targetptr="chap-auth-services" />,
+  you configure authentication by realm at the following locations in the OpenAM
+  console:
+   <itemizedlist>
+    <listitem>
+     <para>
+      Under Realms &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Under Realms &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Modules
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <para>You can configure authentication services globally under
+  Configuration &gt; Authentication using the same attributes you use to
+  configure authentication per realm.</para>
 
   <para>The primary difference is that when configuring services globally,
   you set the default values to be used when a module is configured further
   for a specific realm.</para>
   
   <para>The Core Authentication module includes some fields under this tab that are not 
-  available through the realm changes under the <literal>Access Control</literal> tab. 
-  Because attributes set under the <literal>Configuration</literal> tab apply on a 
+  available under Realms &gt; <replaceable>Realm Name</replaceable> &gt; Authentication
+  &gt; Settings. Because attributes set under the Configuration tab apply on a
   server level, the changes you make here will apply to all realms. Attributes
-  set under the <literal>Access Control</literal> tab only apply to the realms that
-  you specify. The Authentication table under the <literal>Configuration</literal> tab
+  set by Realm only apply to the realm that
+  you specify. The Authentication table under the Configuration tab
   lists all existing types of modules available for configuration, including any
   customized modules you have added.</para>
   
   <para>The following are the global fields you can configure for the Core Authentication 
-  module under the <literal>Configuration</literal> tab. The realm attributes
-  are described in
+  module under the Configuration tab. The realm attributes are described in
   <olink targetdoc="admin-guide" targetptr="core-module-conf-hints" />.</para>
   
    <variablelist>
