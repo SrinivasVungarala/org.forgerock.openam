@@ -42,46 +42,10 @@
   you can choose to store the agent configuration centrally and configure
   the agent through OpenAM console. Alternatively, you can choose to store
   the agent configuration locally and configure the agent by changing
-  values in the properties file. This section covers centralized configuration,
-  indicating the corresponding properties for use in a local configuration
-  file where applicable.
-
-  <footnote><para>The configuration file syntax is that
-   of a standard Java properties file. See <link
-    xlink:href="http://download.oracle.com/javase/6/docs/api/java/util/Properties.html#load%28java.io.Reader%29"
-    >java.util.Properties.load</link> for a description of the format. The value
-   of a property specified multiple times is not defined.</para></footnote>
- </para>
-
- <para>Some properties do not yet appear in the OpenAM Console, so they need
-  to be configured as custom properties, see <xref
- linkend="configure-web-pa-custom-props"/>, or locally in the agent properties
- configuration file, <filename>${agentsBootstrapFile}</filename>.</para>
-
- <tip>
-  <para>To show the agent properties in configuration file format that
-   correspond to what you see in the console, click Export Configuration
-   after editing agent properties.</para>
-
-  <para>This corresponds to the local Java properties configuration file
-   that is set up when you install an agent, for example in
-   <filename>Agent_001/config/<?eval ${agentsConfigurationFile}?></filename>.</para>
- </tip>
-
- <para>After changing properties specified as "Hot swap: no", you must
-  restart the agent's container for the changes to take effect.</para>
-
- <xinclude:include href="sec-configuring-web-policy-agents-global.xml" />
-
- <xinclude:include href="sec-configuring-web-policy-agents-application.xml" />
-
- <xinclude:include href="sec-configuring-web-policy-agents-sso.xml" />
-
- <xinclude:include href="sec-configuring-web-policy-agents-openam-services.xml" />
-
- <xinclude:include href="sec-configuring-web-policy-agents-miscellaneous.xml" />
-
- <xinclude:include href="sec-configuring-web-policy-agents-advanced.xml" />
-
- <xinclude:include href="sec-configuring-web-policy-agents-custom.xml" />
+  values in the properties file. For information on the properties
+  used in a centralized configuration, and the corresponding properties for use in a local configuration
+  file where applicable, see <link
+   xlink:href="${backstageWPABaseURL}/web-users-guide#configure-web-policy-agent">Configuring Web Policy Agent
+   Properties</link> in the <citetitle>OpenAM Web Policy Agent User's
+ Guide</citetitle>.</para>
 </section>

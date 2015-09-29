@@ -43,11 +43,6 @@
    </file>
 
    <file>
-    <source>src/main/docbkx/shared/listitem-conditional-login-url-web.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
     <source>src/main/docbkx/shared/para-licensing-agreement-procedure.xml</source>
     <outputDirectory>shared</outputDirectory>
    </file>
@@ -64,11 +59,6 @@
 
    <file>
     <source>src/main/docbkx/shared/procedure-create-password-file.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/procedure-create-web-agent-profile.xml</source>
     <outputDirectory>shared</outputDirectory>
    </file>
 
@@ -104,46 +94,6 @@
 
    <file>
     <source>src/main/docbkx/shared/sec-configuring-web-policy-agents.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/images/create-agent.png</source>
-    <outputDirectory>shared/images</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/sec-configuring-web-policy-agents-advanced.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/sec-configuring-web-policy-agents-application.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/sec-configuring-web-policy-agents-global.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/sec-configuring-web-policy-agents-miscellaneous.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/sec-configuring-web-policy-agents-openam-services.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/sec-configuring-web-policy-agents-sso.xml</source>
-    <outputDirectory>shared</outputDirectory>
-   </file>
-
-   <file>
-    <source>src/main/docbkx/shared/sec-configuring-web-policy-agents-custom.xml</source>
     <outputDirectory>shared</outputDirectory>
    </file>
 
