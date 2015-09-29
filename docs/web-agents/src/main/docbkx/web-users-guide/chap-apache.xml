@@ -140,7 +140,7 @@ User and Group settings in httpd.conf
    </listitem>
   </itemizedlist>
 
- <xinclude:include href="../shared/sec-apache-mpm-tuning.xml">
+ <xinclude:include href="sec-apache-mpm-tuning.xml">
   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
  </xinclude:include>
 
@@ -184,11 +184,11 @@ User and Group settings in httpd.conf
   <tip><para>The following procedures show how to install into Apache
   2.4. If installing into Apache 2.2, alter the path names accordingly.</para></tip>
 
-  <xinclude:include href="../shared/procedure-create-web-agent-profile.xml">
+  <xinclude:include href="procedure-create-web-agent-profile.xml">
    <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
   </xinclude:include>
 
-  <xinclude:include href="../shared/procedure-create-password-file.xml">
+  <xinclude:include href="procedure-create-password-file.xml">
    <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
   </xinclude:include>
   
@@ -411,7 +411,7 @@ Installation complete.</computeroutput></screen>
    default root Apache configuration file before installing into a virtual host. See <xref
   linkend="install-apache-web-agent" />.</para>
 
-  <xinclude:include href="../shared/procedure-create-web-agent-profile.xml">
+  <xinclude:include href="procedure-create-web-agent-profile.xml">
    <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
   </xinclude:include>
 

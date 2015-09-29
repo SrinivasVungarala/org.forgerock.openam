@@ -86,7 +86,6 @@
  <xinclude:include href="chap-web-agent-config.xml" />
  <xinclude:include href='chap-apache.xml' />
  <xinclude:include href='chap-iis.xml' />
- <xinclude:include href="chap-lb.xml" />
  <xinclude:include href='chap-troubleshooting.xml' />
  <index />
 </book>

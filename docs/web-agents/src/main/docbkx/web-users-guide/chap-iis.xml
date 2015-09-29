@@ -147,11 +147,11 @@
     <tip><para>Check that you have completed the prerequisite steps before
    proceeding. See <xref linkend="before-iis-agent-install" />.</para></tip>
 
-  <xinclude:include href="../shared/procedure-create-web-agent-profile.xml">
+  <xinclude:include href="procedure-create-web-agent-profile.xml">
    <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
   </xinclude:include>
 
-  <xinclude:include href="../shared/procedure-create-password-file.xml">
+  <xinclude:include href="procedure-create-password-file.xml">
    <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
   </xinclude:include>
   

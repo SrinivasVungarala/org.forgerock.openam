@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<section xml:id="configure-web-pa-application-props"
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+  <title>Configuring Web Policy Agent Application Properties</title>
+
+  <indexterm>
+   <primary>web policy agents</primary>
+   <secondary>application properties</secondary>
+   <tertiary>configuring</tertiary>
+  </indexterm>
+
+  <para>This section covers application web agent properties. After creating
+   the agent profile, you access these properties in the OpenAM console under
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+   Web &gt; <replaceable>Agent Name</replaceable> &gt; Application.</para>
+
+  <para>This section describes the following property groups:</para>
+ <itemizedlist>
+  <listitem>
+   <para><xref linkend="web-agent-not-enforced-url-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-not-enforced-ip-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-not-enforced-ipurl-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-profile-attributes-processing-properties"/></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-response-attributes-processing-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-session-attributes-processing-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-attributes-fetching-properties" /></para>
+  </listitem>
+ </itemizedlist>
+
+  <variablelist xml:id="web-agent-not-enforced-url-properties">
+   <title>Not Enforced URL Processing Properties</title>
+   <varlistentry>
+    <term>Ignore Path Info for Not Enforced URLs</term>
+    <listitem>
+     <para>When enabled, the path info and query are stripped from the
+      request URL before being compared with the URLs of the not enforced list
+      for those URLs containing a wildcard character. This prevents a user
+      from accessing <literal>http://host/index.html</literal> by requesting
+      <literal>http://host/index.html/hack.gif</literal> when the not enforced
+      list includes <literal>http://host/*.gif</literal>.</para>
+
+     <!--<note><para>This setting is not supported by the Varnish Cache agent.</para></note>-->
+
+     <para>For a more generally applicable setting, see
+      <xref linkend="web-agent-ignore-path-info-properties" />.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.ignore.path.info.for.not.enforced.list</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Enable Regular Expressions for Not Enforced URLs (Not yet in OpenAM console)</term>
+    <listitem>
+     <para>Enable use of <link xlink:href="http://www.pcre.org/pcre.txt"
+                               xlink:show="new">Perl-compatible regular expressions</link> in
+      Not Enforced URL settings by using the following property under Advanced
+      &gt; Custom Properties in the agent profile.</para>
+
+     <para>Property: <literal>org.forgerock.agents.notenforced.url.regex.enable</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Not Enforced URLs</term>
+    <listitem>
+     <para>List of URLs for which no authentication is required. You can use
+      wildcards to define a pattern for a URL.</para>
+     <para>The <literal>*</literal> wildcard matches all characters except
+      question mark (<literal>?</literal>), cannot be escaped, and spans
+      multiple levels in a URL. Multiple forward slashes do not match a
+      single forward slash, so <literal>*</literal> matches
+      <literal>mult/iple/dirs</literal>, yet <literal>mult/*/dirs</literal>
+      does not match <literal>mult/dirs</literal>.</para>
+     <para>The <literal>-*-</literal> wildcard matches all characters except
+      forward slash (<literal>/</literal>) or question mark
+      (<literal>?</literal>), and cannot be escaped. As it does not match
+      <literal>/</literal>, <literal>-*-</literal> does not span multiple
+      levels in a URL.</para>
+     <para>OpenAM does not let you mix <literal>*</literal> and
+      <literal>-*-</literal> in the same URL.</para>
+     <para>Examples include
+      <literal>http://www.example.com/logout.html</literal>,
+      <literal>http://www.example.com/images/*</literal>,
+      <literal>http://www.example.com/css/-*-</literal>, and
+      <literal>http://www.example.com/*.jsp?locale=*</literal>.</para>
+     <para>Trailing forward slashes are not recognized as part of a resource
+      name. Therefore <literal>http://www.example.com/images//</literal> and
+      <literal>http://www.example.com/images</literal> are equivalent.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.notenforced.url</literal></para>
+
+     <para>If you enabled use of <link xlink:href="http://www.pcre.org/pcre.txt"
+                                       xlink:show="new">Perl-compatible regular expressions</link> to match
+      Not Enforced URLs, then all your settings must be done using regular
+      expressions. (Do not mix settings; use either the mechanism
+      described above or Perl-compatible regular expressions, but not both.)</para>
+
+     <para>The following example shows settings where no authentication is
+      required for URLs whose path ends <literal>/PublicServletA</literal> or
+      <literal>/PublicServletB</literal> (with or without query string parameters),
+      and no authentication is required to access .png, .jpg, .gif, .js, or .css
+      files under URLs that do not contain <literal>/protectedA/</literal>
+      or <literal>/protectedB/</literal>.</para>
+
+     <screen >.*/(PublicServletA|PublicServletB)(\?.*|$)
+      ^(?!.*(/protectedA/|/protectedB/)).*\.(png|jpg|gif|js|css)(\?.*|$)</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Invert Not Enforced URLs</term>
+    <listitem>
+     <para>Only invert the Not Enforced list of URLs. In other words, enforce
+      policy only for those URLs and patterns specified in the list.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.notenforced.url.invert</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Fetch Attributes for Not Enforced URLs</term>
+    <listitem>
+     <para>When enabled, the agent fetches profile, response, and session
+      attributes that are mapped by doing policy evaluation, and forwards
+      these attributes to not enforced URLs.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.notenforced.url.attributes.enable</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-not-enforced-ip-properties">
+   <title>Not Enforced IP Processing Properties</title>
+   <varlistentry>
+    <term>Not Enforced Client IP List</term>
+    <listitem>
+     <para>No authentication and authorization are required for the requests
+      coming from these client IP addresses.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.notenforced.ip</literal></para>
+     <note>
+      <para>
+       Loopback addresses are not considered valid IPs on the Not Enforced IP list.
+       If specified, the policy agent ignores the loopback address.
+      </para>
+     </note>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <!-- Fix for OPENAM-717: Document com.forgerock.agents.config.notenforced.ip.handler enhancement -->
+    <term>CIDR Client IP Specification (Not yet in OpenAM console)</term>
+    <listitem>
+     <para>As of version 3.0.4, web policy agents with this property set to
+      <literal>cidr</literal> can use IPv4 netmasks and IP ranges instead of
+      wildcards as values for Not Enforced Client IP addresses. Version 3.0.5
+      adds support for IPv6, including the IPv6 loopback address,
+      <literal>::1</literal>.</para>
+     <para>When the parameter is defined, wildcards are ignored in Not
+      Enforced Client IP settings. Instead, you can use settings, such as
+      those shown in the following examples.</para>
+     <variablelist>
+      <varlistentry>
+       <term>Netmask Example</term>
+       <listitem>
+        <para>To disable policy agent enforcement for addresses in
+         192.168.1.1 to 192.168.1.255, use the following setting.</para>
+        <screen
+         >com.sun.identity.agents.config.notenforced.ip = 192.168.1.1/24</screen>
+        <para>The following example shows an IPv6 address with a corresponding network mask.</para>
+        <screen
+         >com.sun.identity.agents.config.notenforced.ip = 2001:5c0:9168:0:0:0:0:2/128</screen>
+        <para>Currently the policy agent stops evaluating properties after
+         reaching an invalid netmask in the list.</para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>IP Range Example</term>
+       <listitem>
+        <para>To disable policy agent enforcement for addresses between
+         192.168.1.1 to 192.168.4.3 inclusive, use the following setting.</para>
+        <screen
+         >com.sun.identity.agents.config.notenforced.ip = 192.168.1.1-192.168.4.3</screen>
+        <para>The following example shows a range of IPv6 addresses. The example
+         is displayed over two lines for formatting purposes.
+        </para>
+        <screen
+         >com.sun.identity.agents.config.notenforced.ip = \
+    2001:5c0:9168:0:0:0:0:1-2001:5c0:9168:0:0:0:0:2</screen>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+     <para>Property: <literal>com.forgerock.agents.config.notenforced.ip.handler</literal></para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Client IP Validation</term>
+    <listitem>
+     <para>When enabled, validate that the subsequent browser requests come
+      from the same IP address that the SSO token is initially issued
+      against.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.client.ip.validation.enable</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-not-enforced-ipurl-properties">
+   <title>Not Enforced URL from IP Processing Properties (Not yet in OpenAM
+    console)</title>
+   <varlistentry>
+    <term><literal>org.forgerock.agents.config.notenforced.ipurl</literal></term>
+    <listitem>
+     <para>No authentication and authorization are required for requests
+      coming from specified client IP addresses that are requesting specified
+      resource URLs.</para>
+<para>Specify a list of IP addresses separated by spaces, the pipe
+ (<keycap>|</keycap>) character, and a list of URLs separated by spaces.</para>
+     <para>The IP list can be specified by using either netmask or IP
+      range notation:</para>
+     <variablelist>
+      <varlistentry>
+       <term>Netmask Example</term>
+       <listitem>
+        <para>To specify requests coming from addresses in the range
+         192.168.1.1 to 192.168.1.255, use the following setting.</para>
+        <screen >192.168.1.1/24</screen>
+        <para>The following example shows an IPv6 address with a corresponding network mask.</para>
+        <screen
+         >2001:5c0:9168:0:0:0:0:2/128</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>IP Range Example</term>
+       <listitem>
+        <para>To specify requests coming from addresses in the range
+         192.168.1.1 to 192.168.4.3 inclusive, use the following setting.</para>
+        <screen
+         >192.168.1.1-192.168.4.3</screen>
+        <para>The following example shows a range of IPv6 addresses.</para>
+        <screen
+         >2001:5c0:9168:0:0:0:0:1-2001:5c0:9168:0:0:0:0:2</screen>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+     <para>The URL list can be specified by using wildcards (<keycap>*</keycap>)
+      or regular expressions. To use regular expression matches in the URL list, set
+<literal>org.forgerock.agents.config.notenforced.ext.regex.enable=true</literal>.
+      Do not mix using wildcards and regular expressions. Multiple values should
+      be separated by space characters.</para>
+     <para>The following example will not require authentication or
+      authorization for any requests coming from the specified IP addresses,
+      when also requesting access to a <literal>/reports</literal> URL, or certain files under the <literal>
+      /images</literal> URL. The example is displayed over three lines for
+      formatting purposes.</para>
+     <screen>org.forgerock.agents.config.notenforced.ipurl[0]= \
+      10.1.2.1-10.1.2.7|/reports ^(?=.*(/images/)).*\.(png|jpg|gif)(\?.*|$)
+org.forgerock.agents.config.notenforced.ext.regex.enable=true</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><literal>org.forgerock.agents.config.notenforced.ext.regex.enable</literal></term>
+    <listitem>
+     <para>Enable use of <link xlink:href="http://www.pcre.org/pcre.txt"
+                               xlink:show="new">Perl-compatible regular expressions</link> in
+      Not Enforced URL from IP settings.</para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-profile-attributes-processing-properties">
+   <title>Profile Attributes Processing Properties</title>
+   <varlistentry>
+    <term>Profile Attribute Fetch Mode</term>
+    <listitem>
+     <para>When set to <literal>HTTP_COOKIE</literal> or
+      <literal>HTTP_HEADER</literal>, profile attributes are introduced into
+      the cookie or the headers, respectively.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.profile.attribute.fetch.mode</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Profile Attribute Map</term>
+    <listitem>
+     <para>Maps the profile attributes to HTTP headers for the currently
+      authenticated user. Map keys are LDAP attribute names, and map values
+      are HTTP header names.</para>
+     <para>To populate the value of profile attribute CN under
+      <literal>CUSTOM-Common-Name</literal>, enter CN in the Map Key field,
+      and enter <literal>CUSTOM-Common-Name</literal> in the Corresponding
+      Map Value field. This corresponds to
+      <literal>com.sun.identity.agents.config.profile.attribute.mapping[cn]=CUSTOM-Common-Name</literal>.</para>
+     <para>In most cases, in a destination application where an HTTP header
+      name shows up as a request header, it is prefixed by
+      <literal>HTTP_</literal>, lower case letters become upper case, and
+      hyphens (<literal>-</literal>) become underscores (<literal>_</literal>).
+      For example, <literal>common-name</literal> becomes
+      <literal>HTTP_COMMON_NAME</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.profile.attribute.mapping</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-response-attributes-processing-properties">
+   <title>Response Attributes Processing Properties</title>
+   <varlistentry>
+    <term>Response Attribute Fetch Mode</term>
+    <listitem>
+     <para>When set to <literal>HTTP_COOKIE</literal> or
+      <literal>HTTP_HEADER</literal>, response attributes are introduced into
+      the cookie or the headers, respectively.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.response.attribute.fetch.mode</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Response Attribute Map</term>
+    <listitem>
+     <para>Maps the policy response attributes to HTTP headers for the
+      currently authenticated user. The response attribute is
+      the attribute in the policy response to be fetched.</para>
+     <para>To populate the value of response attribute <literal>uid</literal>
+      under <literal>CUSTOM-User-Name</literal>: enter <literal>uid</literal>
+      in the Map Key field, and enter <literal>CUSTOM-User-Name</literal> in
+      the Corresponding Map Value field. This corresponds to
+      <literal>com.sun.identity.agents.config.response.attribute.mapping[uid]=Custom-User-Name</literal>.</para>
+     <para>In most cases, in a destination application where an HTTP header
+      name shows up as a request header, it is prefixed by
+      <literal>HTTP_</literal>, lower case letters become upper case, and
+      hyphens (<literal>-</literal>) become underscores (<literal>_</literal>).
+      For example, <literal>response-attr-one</literal> becomes
+      <literal>HTTP_RESPONSE_ATTR_ONE</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.response.attribute.mapping</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-session-attributes-processing-properties">
+   <title>Session Attributes Processing Properties</title>
+   <varlistentry>
+    <term>Session Attribute Fetch Mode</term>
+    <listitem>
+     <para>When set to <literal>HTTP_COOKIE</literal> or
+      <literal>HTTP_HEADER</literal>, session attributes are introduced into the
+      cookie or the headers, respectively.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.session.attribute.fetch.mode</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Session Attribute Map</term>
+    <listitem>
+     <para>Maps session attributes to HTTP headers for the currently
+      authenticated user. The session attribute is the attribute in the session
+      to be fetched.</para>
+     <para>To populate the value of session attribute
+      <literal>UserToken</literal> under <literal>CUSTOM-userid</literal>:
+      enter <literal>UserToken</literal> in the Map Key field, and enter
+      <literal>CUSTOM-userid</literal> in
+      the Corresponding Map Value field. This corresponds to
+      <literal>com.sun.identity.agents.config.session.attribute.mapping[UserToken] =CUSTOM-userid</literal>.</para>
+     <para>In most cases, in a destination application where an HTTP header
+      name shows up as a request header, it is prefixed by
+      <literal>HTTP_</literal>, lower case letters become upper case, and
+      hyphens (<literal>-</literal>) become underscores (<literal>_</literal>).
+      For example, <literal>success-url</literal> becomes
+      <literal>HTTP_SUCCESS_URL</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.session.attribute.mapping</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-attributes-fetching-properties">
+   <title>Common Attributes Fetching Processing Properties</title>
+   <varlistentry>
+    <term>Attribute Multi-Value Separator</term>
+    <listitem>
+     <para>Specifies separator for multiple values. Applies to all types of
+      attributes, such as profile, session, and response attributes. Default:
+      <literal>|</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.attribute.multi.value.separator</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </section>
