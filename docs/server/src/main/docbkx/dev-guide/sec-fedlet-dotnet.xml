@@ -42,7 +42,7 @@
  <para>Before you try the .NET Fedlet with OpenAM, create a hosted identity
  provider in a Circle of Trust to which you plan to add the Fedlet. You can
  perform these steps using the Create Hosted Identity Provider wizard on the
- Common Tasks page of the OpenAM console. The .NET Fedlet demo requires a
+ Dashboard page of the OpenAM console. The .NET Fedlet demo requires a
  signing key for the Identity Provider. For evaluation, use the
  <literal>test</literal> certificate installed with OpenAM.</para>
 

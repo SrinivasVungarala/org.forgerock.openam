@@ -134,9 +134,20 @@
 
   <para>
    You can publish REST STS instances in a given realm, each with different
-   configuration characteristics, or update an existing STS instance using the
-   Admin Console (click Access Control &gt; <replaceable>Realm Name</replaceable>
-   &gt; STS) or programmatically using the Client SDK.
+   configuration characteristics, or update an existing STS instance as follows:
+   <itemizedlist>
+    <listitem>
+     <para>
+      Under Realms &gt; <replaceable>Realm Name</replaceable> &gt; STS
+      in the console
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Programmatically using the Client SDK
+     </para>
+    </listitem>
+   </itemizedlist>
  </para>
 
  </section>

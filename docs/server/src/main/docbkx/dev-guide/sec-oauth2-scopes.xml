@@ -347,7 +347,7 @@ $ <userinput>mvn install</userinput>
    <listitem>
     <para>
      To configure a specific OAuth 2.0 provider to use your plugin,
-     add the class name of your scopes plugin under Access Control &gt;
+     add the class name of your scopes plugin under Realms &gt;
      <replaceable>Realm Name</replaceable> &gt; Services &gt; <replaceable
      >OAuth2 Provider Name</replaceable> &gt; Scope Implementation Class.
     </para>

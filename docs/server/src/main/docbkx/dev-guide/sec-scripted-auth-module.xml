@@ -48,7 +48,7 @@ The script also uses the <literal>logger</literal> and
  API. </para>
  <para>To examine the contents of the default server-side
                    authentication
-  script in the OpenAM console browse to REALMS > Top Level Realm > Scripts,
+  script in the OpenAM console browse to Realms > Top Level Realm > Scripts,
   and then click Scripted Module - Server Side.</para>
  <para>For more information on the functions available for use in server-side
   authentication scripts, see <xref linkend="scripting-api"/>.</para>
@@ -80,7 +80,7 @@ The script also uses the <literal>logger</literal> and
             <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
         </step>
         <step>
-            <para>Click REALMS &gt; Top Level Realm &gt; Authentication &gt; Modules.</para>
+            <para>Click Realms &gt; Top Level Realm &gt; Authentication &gt; Modules.</para>
         </step>
         <step>
             <para>On the Authentication Modules page, click Add Module.</para>
@@ -118,7 +118,7 @@ The script also uses the <literal>logger</literal> and
         <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
     </step>
     <step>
-        <para>Click REALMS &gt; Top Level Realm &gt; Authentication &gt; Chains.</para>
+        <para>Click Realms &gt; Top Level Realm &gt; Authentication &gt; Chains.</para>
     </step>
     <step>
         <para>On the Authentication Chains page, click Add Chain.</para>
@@ -244,7 +244,7 @@ Authentication allowed!</programlisting>
         <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
     </step>
     <step>
-        <para>Click REALMS &gt; Top Level Realm &gt; Scripts &gt; Scripted
+        <para>Click Realms &gt; Top Level Realm &gt; Scripts &gt; Scripted
          Module - Server Side.</para>
     </step>
        <step>

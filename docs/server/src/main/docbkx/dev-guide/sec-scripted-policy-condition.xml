@@ -40,7 +40,7 @@
   This section demonstrates how to use the sample policy condition script
   as part of an authorization policy. To examine the
   contents of the sample policy condition script in the OpenAM console browse
-  to REALMS &gt; Top Level Realm &gt; Scripts, and then click
+  to Realms &gt; Top Level Realm &gt; Scripts, and then click
   <emphasis>Scripted Policy Condition</emphasis>.
  </para>
 
@@ -82,7 +82,7 @@
    <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
   </step>
   <step>
-   <para>Click REALMS &gt; Top Level Realm &gt; Subjects.</para>
+   <para>Click Realms &gt; Top Level Realm &gt; Subjects.</para>
   </step>
   <step>
    <para>On the User tab, click the <literal>demo</literal> user.</para>
@@ -104,7 +104,7 @@
    <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
   </step>
   <step>
-   <para>Click REALMS &gt; Top Level Realm &gt; Subjects.</para>
+   <para>Click Realms &gt; Top Level Realm &gt; Subjects.</para>
   </step>
   <step>
    <para>On the Group tab, click New, enter an ID for the group, such as
@@ -129,7 +129,7 @@
    </substeps>
   </step>
   <step>
-   <para>Click REALMS &gt; Top Level Realm &gt; Privileges.</para>
+   <para>Click Realms &gt; Top Level Realm &gt; Privileges.</para>
   </step>
   <step>
    <para>Click the group created in step 3, for example <literal>policyEval</literal>.</para>
@@ -151,10 +151,10 @@
    <para>Log in as an OpenAM administrator, for example <literal>amadmin</literal>.</para>
   </step>
   <step>
-   <para>Click REALMS &gt; Top Level Realm &gt; Policies &gt; Applications.</para>
+   <para>Click Realms &gt; Top Level Realm &gt; Authorization &gt; Policies.</para>
   </step>
   <step>
-   <para>On the Applications page, click <literal>iPlanetAMWebAgentService</literal>.</para>
+   <para>On the Policies page, click <literal>iPlanetAMWebAgentService</literal>.</para>
   </step>
   <step>
    <para>On the iPlanetAMWebAgentService page, click New Policy.</para>

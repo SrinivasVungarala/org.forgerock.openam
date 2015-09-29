@@ -291,9 +291,9 @@ $ <userinput>cp target/*.jar /path/to/tomcat/webapps/openam/WEB-INF/lib/</userin
   </para>
 
   <para>
-   In OpenAM Console, browse to Access Control &gt; <replaceable>Realm
-   Name</replaceable> &gt; Authentication &gt; All Core Settings.
-   In the Authentication Post Processing Classes list,
+   In OpenAM Console, browse to Realms &gt; <replaceable>Realm
+   Name</replaceable> &gt; Authentication &gt; Settings &gt; Post Authentication
+   Processing. In the Authentication Post Processing Classes list,
    add the sample plugin class,
    <literal>com.forgerock.openam.examples.SamplePAP</literal>,
    and then click Save.

@@ -155,7 +155,7 @@ MODIFY operation successful for DN cn=schema</computeroutput>
 
   </step>
   <step>
-   <para>In OpenAM console, browse to Access Control &gt; <replaceable>Realm
+   <para>In OpenAM console, browse to Realms &gt; <replaceable>Realm
    Name</replaceable> &gt; Data Stores &gt; <replaceable>Data Store
    Name</replaceable>.</para>
   </step>

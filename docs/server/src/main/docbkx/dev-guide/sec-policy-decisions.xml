@@ -194,8 +194,8 @@ resource.name=http://www.example.com:80/banner.html
 action.name=GET</programlisting>
 
  <para>Also, set up a policy in OpenAM that corresponds to the resource in
- question. You can set up the policy in OpenAM console under Access Control
- &gt; <replaceable>Realm Name</replaceable> &gt; Policies. Concerning the
+ question. You can set up the policy in OpenAM console under Realms
+ &gt; <replaceable>Realm Name</replaceable> &gt; Authorization. Concerning the
  <replaceable>Realm Name</replaceable>, notice that unless you change the code,
  the sample uses the top-level realm, <literal>/</literal> to authenticate the
  user.</para>

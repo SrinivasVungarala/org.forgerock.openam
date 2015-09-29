@@ -116,8 +116,9 @@
   targetptr="set-up-federation" />. This chapter assumes you set up the hosted
   identity provider at <literal>http://idp.example.com:8080/openam</literal> and
   the hosted service provider at
-  <literal>http://sp.example.com:8080/openam</literal>. Use Common Tasks &gt;
-  Test Federation Connectivity in OpenAM console to make sure Federation is
+  <literal>http://sp.example.com:8080/openam</literal>. Use Realms &gt;
+  <replaceable>Realm Name</replaceable> &gt;
+  Test Federation Connectivity in the OpenAM console to make sure Federation is
   working before you add secure attribute exchange applications that rely on
   functioning SAML v2.0 communications between the providers.</para>
 
@@ -182,10 +183,10 @@
    </listitem>
 
    <listitem>
-    <para>As the sample includes a <literal>branch</literal> attribute not
-    found in user profiles by default, under Access Control &gt;
-    <replaceable>Realm Name</replaceable> &gt; Authentication &gt; All Core
-    Settings..., set User Profile to Ignored, and then Save your work.</para>
+    <para>The sample includes a <literal>branch</literal> attribute not
+    found in user profiles by default. Therefore, under Realms &gt;
+    <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+    &gt; User Profile, set User Profile to Ignored, and then save your work.</para>
    </listitem>
 
    <listitem>
@@ -266,10 +267,10 @@
    you set up the hosted service provider (SP):</para>
 
    <listitem>
-    <para>As the sample includes a <literal>branch</literal> attribute not
-    found in user profiles by default, under Access Control &gt;
-    <replaceable>Realm Name</replaceable> &gt; Authentication &gt; All Core
-    Settings..., set User Profile to Ignored, and then Save your work.</para>
+    <para>The sample includes a <literal>branch</literal> attribute not
+    found in user profiles by default. Therefore, under Realms &gt;
+    <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+    &gt; User Profile, set User Profile to Ignored, and then Save your work.</para>
    </listitem>
 
    <listitem>
