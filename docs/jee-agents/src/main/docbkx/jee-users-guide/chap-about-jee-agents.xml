@@ -766,7 +766,7 @@
   </para>
 
   <para>You configure Java EE policy agents per OpenAM realm. Thus, to access
-   centralized configuration, you select Access Control &gt; <replaceable>Realm
+   centralized configuration, you select Realms &gt; <replaceable>Realm
     Name</replaceable> &gt; Agents &gt; Java EE &gt; <replaceable>Agent
     Name</replaceable>. Java EE policy agent configuration is distinct from
    policy configuration. The only policy-like configuration that you apply to

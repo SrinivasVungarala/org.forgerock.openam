@@ -139,8 +139,8 @@ verifying OpenAM server URL.</screen>
 
     <orderedlist>
      <listitem>
-      <para>In the OpenAM console, browse to Servers &gt; Server Types,
-      and then click WebSphere application servers.</para>
+      <para>In the WebSphere administrative console, browse to Servers &gt;
+      Server Types, and then click WebSphere application servers.</para>
      </listitem>
 
      <listitem>

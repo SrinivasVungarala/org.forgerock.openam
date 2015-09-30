@@ -145,7 +145,7 @@
 
    <step>
     <para>
-     Browse to Access Control > <replaceable>Realm Name</replaceable>
+     Browse to Realms > <replaceable>Realm Name</replaceable>
      > Agents > J2EE > <replaceable>Agent Name</replaceable>
      to open the Java EE agent profile for editing.
     </para>
@@ -226,7 +226,7 @@
 
    <step>
     <para>
-     Browse to Access Control > <replaceable>Realm Name</replaceable>
+     Browse to Realms > <replaceable>Realm Name</replaceable>
      > Agents > J2EE > <replaceable>Agent Name</replaceable>
      to open the Java EE agent profile for editing.
     </para>
