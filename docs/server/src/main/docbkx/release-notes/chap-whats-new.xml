@@ -320,6 +320,67 @@
     </para>
    </listitem>
 
+   <!-- XUI changes - multiple epics -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Improvements to the OpenAM Administration Console</emphasis>.
+     Revisions to the console provide the following usability improvements and
+     new capabilities:
+     <itemizedlist>
+      <listitem>
+       <para>
+        In OpenAM ${serverDocTargetVersion}, the console takes on a
+        realm-centric approach. The revised Realms page now serves as the
+        console's initial page.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Configuration of authentication chains has been greatly simplified.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The revised policy editor provides easier configuration and management
+        of policies and resource types.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        New pages in the console let you create and manage scripts for
+        customizing OpenAM.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <emphasis role="bold">Improvements to OpenAM End User Pages</emphasis>.
+     New extended user interface (XUI) theming capabilities let administrators
+     customize the look and feel of the XUI by specifying custom themes for
+     realms, authentication chains, and login templates.
+    </para>
+    <para>
+     In addition, the XUI provides two new end user pages:
+    </para>
+     <itemizedlist>
+      <listitem>
+       <para>
+        The Dashboard page lets users manage their assigned applications and
+        registered OATH devices.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The Shares page lets users control resource sharing in a User-Managed
+        Access (UMA) deployment.
+       </para>
+      </listitem>
+     </itemizedlist>
+
+   </listitem>
+
    <!-- Epic: OPENAM-5334 -->
    <listitem>
     <para>
