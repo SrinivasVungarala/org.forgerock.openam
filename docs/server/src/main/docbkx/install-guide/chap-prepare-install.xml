@@ -1068,7 +1068,7 @@ $ dsconfig \
      <listitem>
       <para>
        Attempt to create an OpenAM user from the
-       Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Subjects
+       Realms &gt; <replaceable>Realm Name</replaceable> &gt; Subjects
        tab in the OpenAM console. Run this test only if you have
        given the OpenAM data store administrator write privileges to your
        identity repository.
@@ -1077,7 +1077,7 @@ $ dsconfig \
      <listitem>
       <para>
        Attempt to access an OpenAM user from the
-       Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Subjects
+       Realms &gt; <replaceable>Realm Name</replaceable> &gt; Subjects
        tab in the OpenAM console.
       </para>
      </listitem>

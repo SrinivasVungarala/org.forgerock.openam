@@ -707,8 +707,8 @@ $ <userinput>cp ${coreLibrary} /path/to/tomcat/webapps/openam/WEB-INF/lib/</user
      <para>
       You set the default locale in OpenAM when you install OpenAM core services.
       You can change the default locale either through OpenAM console under
-      Configuration > Servers and Sites > <replaceable>server-name</replaceable>
-      > General > System > Default Locale,
+      Configuration &gt; Servers and Sites &gt; <replaceable>Server Name</replaceable>
+      &gt; General &gt; System &gt; Default Locale,
       or by setting the server configuration property,
       <literal>com.iplanet.am.locale</literal>.
      </para>
