@@ -637,9 +637,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
      then log in as <literal>amadmin</literal> with password
     <literal>password</literal>.</para>
 
-    <para>After login, OpenAM should direct you to the console at
-    <literal>http://openam.example.com:8080/openam/task/Home</literal> and then
-    to the Common Tasks tab.</para>
+    <para>After login, OpenAM should direct you to the Realms page.</para>
 
     <mediaobject xml:id="figure-openam-common-tasks">
      <alt>OpenAM Common Tasks</alt>
@@ -687,9 +685,7 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
     earlier.</para>
 
    <step>
-    <para>In OpenAM Console, click the Access Control,
-     then click
-     <literal>/ (Top Level Realm)</literal> in the Realms table.</para>
+    <para>In the OpenAM console, select the Top Level Realm on the Realms page.</para>
 
     <para>OpenAM allows you to organize identities, policies, and policy agent
     profiles into realms as described in
@@ -808,8 +804,8 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
     installing the policy agent itself.</para>
 
    <step>
-    <para>In OpenAM Console, browse to Access Control > / (Top Level Realm) >
-    Agents > Web, and then click New in the Agents table.</para>
+    <para>In OpenAM Console, browse to Realms &gt; / Top Level Realm &gt;
+    Agents &gt; Web, and then click New in the Agents table.</para>
    </step>
 
    <step>
