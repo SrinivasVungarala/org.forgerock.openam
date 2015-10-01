@@ -782,8 +782,8 @@ Key ==> sxVoaDRAN0o=</screen>
      <step>
       <para>
        In the OpenAM console navigate to Realms &gt;
-       <userinput>realm-name</userinput> &gt; Agents &gt; Web &gt;
-       <userinput>agent-name</userinput> &gt; Advanced &gt; Microsoft IIS
+       <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
+       <replaceable>Agent Name</replaceable> &gt; Advanced &gt; Microsoft IIS
        Server &gt; Replay Password Key (property name:
        <literal>com.sun.identity.agents.config.replaypasswd.key</literal>),
        enter the generated key, and then click Save.
@@ -792,7 +792,7 @@ Key ==> sxVoaDRAN0o=</screen>
 
      <step>
       <para>In the OpenAM console, navigate to Configuration &gt; Servers and Sites &gt;
-      <userinput>server-name</userinput> &gt; Advanced &gt; Add..., then add
+      <replaceable>Server Name</replaceable> &gt; Advanced &gt; Add..., then add
        a property <literal>com.sun.am.replaypasswd.key</literal> with the
       key you generated as the value, and then click Save.</para>
      </step>
@@ -801,7 +801,7 @@ Key ==> sxVoaDRAN0o=</screen>
 
    <step>
     <para>In the OpenAM console, navigate to Realms &gt;
-      <userinput>realm-name</userinput> &gt; Authentication &gt; Settings &gt;
+      <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings &gt;
      Post Authentication Processing &gt; Authentication Post Processing
      Classes, then add the class
      <literal>com.sun.identity.authentication.spi.ReplayPasswd</literal>,
@@ -830,10 +830,10 @@ Key ==> sxVoaDRAN0o=</screen>
 
     <para>
      In the OpenAM console under Realms &gt;
-     <userinput>realm-name</userinput> &gt; Agents &gt; Web &gt;
-     <userinput>agent-name</userinput> &gt; OpenAM Services &gt; Policy
+     <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
+     <replaceable>Agent Name</replaceable> &gt; OpenAM Services &gt; Policy
      Client Service, set User ID Parameter and User ID Parameter Type, and then
-     Save your work. For example if the real username for Windows domain logon
+     save your work. For example if the real username for Windows domain logon
      in Active Directory is stored on the <literal>sAMAccountName</literal>
      attribute, then set the User ID Parameter to
      <literal>sAMAccountName</literal>, and the User ID Parameter Type to
@@ -856,8 +856,8 @@ Key ==> sxVoaDRAN0o=</screen>
     <para>
      To set the encrypted password in the <literal>AUTH_PASSWORD</literal> header,
      browse in the OpenAM console to Realms >
-     <userinput>realm-name</userinput> > Agents > Web >
-     <userinput>agent-name</userinput> > Advanced > Microsoft IIS Server, then
+     <replaceable>Realm Name</replaceable> > Agents > Web >
+     <replaceable>Agent Name</replaceable> > Advanced > Microsoft IIS Server, then
      select Show Password in HTTP Header, and then click Save.
     </para>
    </step>
@@ -866,8 +866,8 @@ Key ==> sxVoaDRAN0o=</screen>
     <para>
      To have the agent perform Windows logon (for user token impersonation),
      browse in the OpenAM console to Realms >
-     <userinput>realm-name</userinput> > Agents > Web >
-     <userinput>agent-name</userinput> > Advanced > Microsoft IIS Server, then
+     <replaceable>Realm Name</replaceable> > Agents > Web >
+     <replaceable>Agent Name</replaceable> > Advanced > Microsoft IIS Server, then
      select Logon and Impersonation, and then click Save.
     </para>
    </step>
@@ -875,8 +875,8 @@ Key ==> sxVoaDRAN0o=</screen>
    <step>
     <para>
      In the OpenAM console, navigate to Realms &gt;
-     <userinput>realm-name</userinput> &gt; Agents &gt; Web &gt;
-     <userinput>agent-name</userinput> &gt; Advanced &gt; Microsoft IIS
+     <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
+     <replaceable>Agent Name</replaceable> &gt; Advanced &gt; Microsoft IIS
      Server, then set Authentication Type to <literal>basic</literal>, and
      then click Save.
     </para>
@@ -891,7 +891,7 @@ Key ==> sxVoaDRAN0o=</screen>
 
     <para>
      In the OpenAM console under Realms &gt;
-     <userinput>realm-name</userinput> &gt; Authentication &gt; All Core
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; All Core
      Settings... &gt; Persistent Cookie Mode, select Enabled, and then Save
      your work.
     </para>
