@@ -58,11 +58,11 @@
  
  <para>
   When you first configure OpenAM,
-  OpenAM sets up the default <literal>/ (Top-Level Realm)</literal>,
-  containing OpenAM configuration data,
-  and allowing authentication using the identity repository
-  that you choose during initial configuration.
-  The top-level realm might hold the overall configuration
+  OpenAM sets up the default Top Level Realm, sometimes referred to as the
+  <literal>/</literal> realm or root realm. The Top Level Realm
+  contains OpenAM configuration data and allows authentication using the
+  identity repository that you choose during initial configuration.
+  The Top Level Realm might hold the overall configuration
   for Example.com, for instance.
  </para>
  
@@ -87,9 +87,9 @@
   <title>Managing Realms</title>
 
   <para>
-   You create and configure realms through the console,
-   starting from the Access Control tab > Realms table.
-   You delegate administration for a realm by setting privileges in the realm.
+   You create and configure realms through the console, starting from the Realms
+   page. You delegate administration for a realm by setting privileges in the
+   realm.
   </para>
 
   <itemizedlist>
@@ -118,8 +118,8 @@
 
    <step>
     <para>
-     On the Access Control tab > Realms table,
-     click New to open the New Realm page, where you configure the realm.
+     On the Realms page, click New Realm. The New Realm dialog box appears.
+     Use this dialog box to configure the realm.
     </para>
 
     <note><para>Do not use the names of OpenAM REST endpoints as the name of a realm.
@@ -177,9 +177,8 @@
 
    <step>
     <para>
-     On the Access Control tab > Realms table,
-     click the realm for which you want to delegate administration
-     to view the realm configuration.
+     On the Realms page, click the realm for which you want to delegate
+     administration to view the realm configuration.
     </para>
    </step>
 
@@ -431,8 +430,7 @@
 
    <para>
     By default, policy agents request policy decisions
-    in the top-level realm (/)
-    and for the default policy agent application,
+    in the Top Level Realm (/) and for the default policy agent application,
     <literal>iPlanetAMWebAgentService</literal>.
     When the realm and application differ for your policy agent,
     you can specify the realm and application in the policy agent profile.
@@ -444,9 +442,9 @@
    <step>
     <para>
      In the OpenAM console, browse to
-     Access Control > <replaceable>Realm Name</replaceable> > Agents >
-     <replaceable>Web or Java EE Agent Type</replaceable> >
-     <replaceable>Agent Name</replaceable> > OpenAM Services >
+     Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+     <replaceable>Web or Java EE Agent Type</replaceable> &gt;
+     <replaceable>Agent Name</replaceable> &gt; OpenAM Services &gt;
      Policy Client Service.
     </para>
    </step>
@@ -497,9 +495,9 @@
    <step>
     <para>
      In the OpenAM console, browse to
-     Access Control > <replaceable>Realm Name</replaceable> > Agents >
-     <replaceable>Web or Java EE Agent Type</replaceable> >
-     <replaceable>Agent Name</replaceable> > OpenAM Services.
+     Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+     <replaceable>Web or Java EE Agent Type</replaceable> &gt;
+     <replaceable>Agent Name</replaceable> &gt; OpenAM Services.
     </para>
    </step>
 
@@ -565,8 +563,8 @@
 
    <step>
     <para>
-     In OpenAM console, browse to
-     Access Control > <replaceable>Realm Name</replaceable> > Data Stores.
+     In the OpenAM console, browse to
+     Realms > <replaceable>Realm Name</replaceable> > Data Stores.
     </para>
    </step>
 

@@ -120,7 +120,7 @@
   <title>To Enable CDSSO For a Java EE Policy Agent</title>
 
   <step>
-   <para>In the OpenAM console, browse to Access Control &gt;
+   <para>In the OpenAM console, browse to Realms &gt;
    <replaceable>Realm Name</replaceable> &gt; Agents &gt; J2EE &gt;
    <replaceable>Agent Name</replaceable> &gt; SSO.</para>
   </step>
@@ -179,7 +179,7 @@
   <title>To Enable CDSSO For a Web Policy Agent</title>
 
   <step>
-   <para>In the OpenAM console, browse to Access Control &gt;
+   <para>In the OpenAM console, browse to Realms &gt;
    <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
    <replaceable>Agent Name</replaceable> &gt; SSO.</para>
   </step>
@@ -388,8 +388,8 @@
    <para>Save your work.</para>
   </step>
   <step performance="optional">
-   <para>For each Java EE policy agent, browse in the OpenAM console to Access
-   Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt; J2EE &gt;
+   <para>For each Java EE policy agent, browse in the OpenAM console to
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt; J2EE &gt;
    <replaceable>Agent Name</replaceable> &gt; Advanced &gt; Custom Properties,
    and add <literal>com.sun.identity.enableUniqueSSOTokenCookie=true</literal>
    to the list.</para>

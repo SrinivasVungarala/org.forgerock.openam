@@ -605,8 +605,9 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
   <title>Configuring the OAuth 2.0 Authorization Service</title>
 
   <para>
-   You configure the OAuth 2.0 authorization service for a particular realm,
-   starting from the Common Tasks page of the OpenAM console.
+   You configure the OAuth 2.0 authorization service for a particular realm
+   from the Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+   Dashboard page of the OpenAM console.
   </para>
 
   <procedure xml:id="common-task-oauth2-authz">
@@ -620,12 +621,12 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
 
    <para>
     Follow the steps in this procedure
-    to set up the service with the Common Tasks wizard:
+    to set up the service with the Configure OAuth2/OpenID Connect wizard:
    </para>
 
    <para>
-    When you create the service with the Common Tasks wizard,
-    the wizard also creates a standard policy in the top-level realm (/)
+    When you create the service with the Configure OAuth2/OpenID Connect wizard,
+    the wizard also creates a standard policy in the Top Level Realm (/)
     to protect the authorization endpoint.
     In this configuration, OpenAM serves the resources to protect,
     and no separate application is involved.
@@ -636,7 +637,7 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
 
    <para>
     There is no requirement to use the wizard
-    or to create the policy in the top-level realm.
+    or to create the policy in the Top Level Realm.
     However, if you create the OAuth 2.0 authorization service without the wizard,
     then you must set up the policy independently as well.
     The policy must appear in an application of type
@@ -650,8 +651,8 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
    </para>
 
    <step>
-    <para>In the OpenAM console, select Common Tasks &gt; Configure
-    OAuth2.</para>
+    <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+    Name</replaceable> &gt; Dashboard &gt; Configure OAuth2/OpenID Connect.</para>
    </step>
    <step>
     <para>On the Configure OAuth2 page, enter the Realm for the authorization
@@ -688,13 +689,13 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
 
     <para>
      To access the authorization server configuration in OpenAM console,
-     browse to Access Control > <replaceable>Realm Name</replaceable> > Services,
+     browse to Realms &gt; <replaceable>Realm Name</replaceable> &gt; Services,
      and then click OAuth2 Provider.
     </para>
 
     <para>
      As mentioned at the outset of this procedure,
-     the wizard sets up a policy in the top-level realm
+     the wizard sets up a policy in the Top Level Realm
      to protect the authorization endpoint.
      The policy appears in
      the <literal>iPlanetAMWebAgentService</literal> application.
@@ -735,7 +736,7 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
        and that you set the Authentication Naming Attribute
        to <literal>mail</literal>.
        You can find the data store configuration under
-       Access Control > <replaceable>Realm Name</replaceable> > Data Stores.
+       Realms &gt; <replaceable>Realm Name</replaceable> &gt; Data Stores.
       </para>
      </step>
 
@@ -746,7 +747,7 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
       </para>
 
       <para>
-       To make the change, browse to Access Control &gt; <replaceable>Realm
+       To make the change, browse to Realms &gt; <replaceable>Realm
        Name</replaceable> &gt; Services &gt; OAuth2 Provider, add the profile
        attributes to the list titled User Profile Attribute(s)
        the Resource Owner is Authenticated On, and then click Save.
@@ -761,8 +762,8 @@ assertion=eyAiYWxnIjogIlJTMjU2IiB9.eyAic3ViIjogImp3...
       <substeps>
        <step>
         <para>
-         In OpenAM console under Access Control > <replaceable>Realm
-         Name</replaceable> > Authentication > Module Instances,
+         In OpenAM console under Realms &gt; <replaceable>Realm
+         Name</replaceable> &gt; Authentication &gt; Modules,
          create a module to access the LDAP identity repository,
          such as <literal>LDAPAuthUsingMail</literal>.
         </para>
@@ -938,7 +939,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
    <step>
     <para>
-     Navigate to Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
+     Navigate to Realms &gt; <replaceable>Realm Name</replaceable> &gt;
      Services &gt; OAuth2 Provider and specify the name of the attribute created
      in the previous step in the Saved Consent Attribute Name field.
     </para>
@@ -950,7 +951,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
   </procedure>
 
   <para>You can further adjust the authorization server configuration after you
-  create it in the OpenAM console under Access Control &gt; <replaceable>Realm
+  create it in the OpenAM console under Realms &gt; <replaceable>Realm
   Name</replaceable> &gt; Services &gt; OAuth2 Provider.</para>
 
   <para>You can adjust global defaults in the OpenAM console under Configuration
@@ -994,7 +995,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
       an OAuth 2.0 client in a simple web page without inline help.</para>
      </step>
      <step>
-      <para>In the OpenAM console under Access Control &gt; <replaceable>Realm
+      <para>In the OpenAM console under Realms &gt; <replaceable>Realm
       Name</replaceable> &gt; Agents &gt; OAuth 2.0/OpenID Connect Client &gt; Agent, click
       New, then provide the client identifier and client password, and
       finally click Create to create the profile.</para>
@@ -1018,7 +1019,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
    necessary.</para>
 
    <step>
-    <para>In the OpenAM console, browse to Access Control &gt;
+    <para>In the OpenAM console, browse to Realms &gt;
     <replaceable>Realm Name</replaceable> &gt; Agents &gt; OAuth 2.0/OpenID Connect Client
     &gt; Agent &gt; <replaceable>Client Name</replaceable> to open the Edit
     <replaceable>Client Name</replaceable> page.</para>
@@ -1191,7 +1192,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
     <listitem>
      <para>
       On the OpenAM server that will be configured as an OAuth 2.0 client,
-      set up an OpenAM policy agent and policy in the top-level realm,
+      set up an OpenAM policy agent and policy in the Top Level Realm,
       <literal>/</literal>, to protect resources.
      </para>
 
@@ -1254,17 +1255,15 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
      <para>
       On the OpenAM server to be configured as an OAuth 2.0 client,
       configure an OpenAM OAuth 2.0 / OpenID Connect authentication module
-      instance for the top-level realm:
+      instance for the Top Level Realm:
      </para>
 
-     <para>Under Access Control &gt; / (Top-Level Realm) &gt; Authentication
-     &gt; Module Instances, click New. Name the module
-     <literal>OAuth2</literal>, and select the OAuth 2.0 type, then click
-     OK to save your work.</para>
-
-     <para>Then click Authentication &gt; Module Instances &gt; OAuth2 to open
-     the OAuth 2.0 client configuration page. This page offers numerous options.
-     The key settings for this example are the following.</para>
+     <para>Under Realms &gt; Top Level Realm &gt; Authentication
+     &gt; Modules, click Add Module. Name the module
+     <literal>OAuth2</literal>, and select the OAuth 2.0 / OpenID Connect type,
+     then click Create. The OAuth 2.0 client configuration page appears.
+     This page offers numerous options. The key settings for this example are
+     the following:</para>
 
      <variablelist>
       <varlistentry>
@@ -1294,8 +1293,8 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
         <para>This OpenAM endpoint can take additional parameters. In
         particular, you must specify the realm if the OpenAM OAuth 2.0
-        provider is configured for a subrealm rather than / (Top-Level
-        Realm).</para>
+        provider is configured for a subrealm rather than for the Top Level
+        Realm.</para>
 
         <para>For example, if the OAuth 2.0 provider is configured for the
         realm <literal>/customers</literal>, then use the following URL:
@@ -1317,8 +1316,8 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
         <para>This OpenAM endpoint can take additional parameters. In
         particular, you must specify the realm if the OpenAM OAuth 2.0
-        provider is configured for a subrealm rather than / (Top-Level
-        Realm).</para>
+        provider is configured for a subrealm rather than the Top Level
+        Realm (/).</para>
 
         <para>For example, if the OAuth 2.0 provider is configured for the
         realm <literal>/customers</literal>, then use the following URL:
@@ -1402,9 +1401,9 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
       <xref linkend="register-oauth2-client" />.
      </para>
 
-     <para>Under Access Control &gt; / (Top-Level Realm) &gt; Agents &gt;
+     <para>Under Realms &gt; Top Level Realm &gt; Agents &gt;
      OAuth 2.0/OpenID Connect Client &gt; Agents &gt; <literal>myClientID</literal>, adjust
-     the following settings.</para>
+     the following settings:</para>
 
      <variablelist>
       <varlistentry>
@@ -1447,7 +1446,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
      <para>To cause the policy agent to request your OAuth 2.0 client
      authentication module explicitly, browse in OpenAM console to your
      <emphasis>policy agent profile configuration</emphasis>, in this case
-     Access Control &gt; / (Top-Level Realm) &gt; Agents &gt; J2EE &gt;
+     Realms &gt; Top Level Realm &gt; Agents &gt; J2EE &gt;
      Agents > <replaceable>Agent Name</replaceable> > OpenAM Services > OpenAM
      Login URL, and add
      <literal>http://client.example.com:8080/openam/UI/Login?module=OAuth2</literal>,
@@ -1611,15 +1610,15 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
       <para>Make sure the Signing Key is properly configured on setup.</para>
 
       <para>For a test configuration, select the <literal>test</literal>
-      certificate shown in the Common Tasks &gt; Create Hosted Service Provider
-      wizard.</para>
+      certificate shown in the Realms &gt; <replaceable>Realm Name</replaceable>
+      &gt; Dashboard &gt; Create Hosted Service Provider wizard.</para>
      </step>
 
      <step>
       <para>Make sure name IDs are properly configured.</para>
 
       <para>For a test configuration, in the OpenAM console under Federation
-      &gt; Entity Providers &gt; <replaceable>IDP name</replaceable> &gt;
+      &gt; Entity Providers &gt; <replaceable>IdP Name</replaceable> &gt;
       NameID Value Map, add
       <literal>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=cn</literal>
       and then Save your work.</para>
@@ -1636,7 +1635,8 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
     <substeps>
      <step>
       <para>Set up a hosted service provider in OpenAM console under
-      Common Tasks &gt; Create Hosted Service Provider, keeping track of
+      Realms &gt; <replaceable>Realm Name</replaceable>
+      &gt; Dashboard &gt; Create Hosted Service Provider, keeping track of
       the name, such as <literal>https://www.sp.example:8443/openam</literal>,
       and selecting Use default attribute mapping from Identity Provider.</para>
 
@@ -1646,13 +1646,13 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
      <step>
       <para>Under Federation &gt; Entity Providers &gt; <replaceable>SP
-      name</replaceable> &gt; Assertion Content &gt; Request/Response Signing,
+      Name</replaceable> &gt; Assertion Content &gt; Request/Response Signing,
       check Assertions Signed.</para>
      </step>
 
      <step>
       <para>For a test configuration, in Federation &gt; Entity Providers &gt;
-      <replaceable>SP name</replaceable> &gt; Assertion Content &gt; NameID
+      <replaceable>SP Name</replaceable> &gt; Assertion Content &gt; NameID
       Format List, remove all but
       <literal>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</literal>,
       and then Save your work.</para>
@@ -1660,7 +1660,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
 
      <step>
       <para>In Federation &gt; Entity Providers &gt; <replaceable>SP
-      name</replaceable> &gt; Assertion Processing &gt; Adapter, add
+      Name</replaceable> &gt; Assertion Processing &gt; Adapter, add
       <literal>org.forgerock.openam.oauth2.saml2.core.OAuth2Saml2GrantSPAdapter</literal>,
       and then Save your work.</para>
 
@@ -1669,8 +1669,9 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
      </step>
 
      <step>
-      <para>Use the wizard under Common Tasks &gt; Register Remote Identity
-      Provider to import the identity provider metadata.</para>
+      <para>Use the wizard under Realms &gt; <replaceable>Realm Name</replaceable>
+      &gt; Dashboard &gt; Register Remote Identity Provider to import the
+      identity provider metadata.</para>
      </step>
     </substeps>
    </step>
@@ -1697,7 +1698,7 @@ http://openam.example.com:8080/openam/frrest/oauth2/token/4298c411-3581-4778-942
    <step>
     <para>On the service provider and authorization server OpenAM server, set
     up an OAuth 2.0 client profile with the same name as the service
-    provider under Access Control &gt; <replaceable>realm</replaceable> &gt;
+    provider under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
     Agents &gt; OAuth 2.0/OpenID Connect Client &gt; New...</para>
 
     <para>For example, if the service provider name is

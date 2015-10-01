@@ -278,9 +278,10 @@
      the social authentication provider, follow the steps below to configure
      authentication with the provider:</para>
     <step>
-     <para>On the Common Tasks tab page of the OpenAM console, click the link
-      for the social authentication provider you want to configure,
-      <emphasis>Configure Facebook Authentication</emphasis>,
+     <para>Select Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+      Dashboard &gt; Configure Social Authentication, and then click the link
+      for the social authentication provider you want to
+      configure&#x2014;<emphasis>Configure Facebook Authentication</emphasis>,
       <emphasis>Configure Google Authentication</emphasis>, or
       <emphasis>Configure Microsoft Authentication</emphasis>.
      </para>
@@ -356,8 +357,9 @@
      credentials from the social authentication provider,
      follow the steps below to configure authentication with the provider:</para>
     <step>
-     <para>On the Common Tasks tab page of the OpenAM console, click the
-      <literal>Configure Other Authentication</literal> link.
+     <para>Select Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+      Dashboard &gt; Configure Social Authentication, and then click the
+      <emphasis>Configure Other Authentication</emphasis> link.
      </para>
     </step>
     <step>
@@ -451,7 +453,7 @@
      2.0/OpenID Connect authentication module, follow the steps below to add a
      logo for the authentication provider to the login screen:</para>
     <step>
-     <para>On the Access Control tab page of the OpenAM console, click the
+     <para>On the Realms page of the OpenAM console, click the
       realm containing the authentication module and authentication chain to
       be added to the login screen.
      </para>
@@ -543,8 +545,8 @@
     for use elsewhere.</para>
    </listitem>
    <listitem>
-    <para>Under Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
-    Authentication, you configure modules for your realm. What you set up
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Authentication &gt; Modules, you configure modules for your realm. What you set up
     at this level inherits from the global configuration, but you can override
     what is inherited. You can also add your own modules if necessary.</para>
    </listitem>
@@ -1509,9 +1511,9 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     </varlistentry>
 
    </variablelist>
-      <note><para>You can configure the Anonymous Authentication module using the
-          OpenAM console by clicking <literal>Configuration</literal> &gt;
-          <literal>Authentication</literal> &gt; <literal>Anonymous</literal>.</para></note>
+      <note><para>You can configure the Anonymous Authentication module using
+       the OpenAM console by clicking Configuration &gt; Authentication &gt;
+       Anonymous.</para></note>
 
    <indexterm class="endofrange" startref="idx-auth-hints-anonymous">
     <primary>Authentication</primary>
@@ -2759,13 +2761,16 @@ $ ssoadm set-realm-svc-attrs \
     </listitem>
    </orderedlist>
 
-   <para>You can create modules instances for a particular realm by clicking Access Control
-    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication, and then
-    click New under Module Instances to add Device Id (Match) and Device Id (Save).
+   <para>To create module instances for a particular realm, click Realms
+    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Modules, and then
+    click Add Module. Then select Device Id (Match) or Device Id (Save) as the module type.
    </para>
-   <para>Under Authentication Chaining, click New to create a new chain, and then enter
-    a name for the chain. On the <replaceable>Chain Name</replaceable> - Properties
-    page, click Add to set up the modules for your authentication chain.
+   <para>Under Realms
+    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Chains,
+    click Add Chain to create a new chain, and then enter
+    a name for the chain. Add the first module in the chain by using the
+    New Module dialog box. Then use the Edit Chain tab to
+    set up additional modules for your authentication chain.
    </para>
 
    <figure xml:id="figure-device-id-auth-chain">
@@ -4655,8 +4660,8 @@ the '%' character is not included in the properties.
           URL.<footnote xml:id="oauth2-realms-footnote">
            <para>This OpenAM endpoint can take additional parameters. In
            particular, you must specify the realm if the OpenAM OAuth 2.0
-           provider is configured for a subrealm rather than / (Top-Level
-           Realm).</para>
+           provider is configured for a subrealm rather than the Top Level
+           Realm (/).</para>
 
            <para>For example, if the OAuth 2.0 provider is configured for the
            realm <literal>/customers</literal>, then the authentication endpoint
@@ -4991,13 +4996,14 @@ the '%' character is not included in the properties.
     <literal>iPlanetAMAuthPersistentCookieService</literal></para>
 
    <para>Before you begin, make sure a public key alias is defined in OpenAM.
-    The Persistent Cookie module encrypts a JSON Web Token (JWT) using a public key
-    from the OpenAM keystore. The keystore must be configured under
-    Authentication &gt; All Core Settings &gt; Security. If the keystore changes
-    and the default <literal>test</literal> key is no longer present, the public
-    key alias must be updated to reflect the change, otherwise the module will
-    fail. Similarly, in multi-instance deployments, the keypair must be available
-    on all OpenAM instances.</para>
+    The Persistent Cookie module encrypts a JSON Web Token (JWT) using a public
+    key from the OpenAM keystore. The keystore must be configured under Realms
+    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+    &gt; Security &gt; Organization Authentication Certificate Alias. If the
+    keystore changes and the default <literal>test</literal> key is no longer
+    present, the public key alias must be updated to reflect the change,
+    otherwise the module will fail. Similarly, in multi-instance deployments,
+    the keypair must be available on all OpenAM instances.</para>
 
    <para>To configure the Persistent Cookie module globally in the console,
     navigate to Configuration &gt; Authentication &gt; Persistent Cookie.
@@ -5076,9 +5082,9 @@ the '%' character is not included in the properties.
       </para>
 
       <para>The Persistent Cookie module belongs with a second module in an
-       authentication chain. To see how this works, navigate to Access Control
-       &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; New.
-       Enter a name for the chain and add modules as shown in the figure.
+       authentication chain. To see how this works, navigate to Realms
+       &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Chains.
+       Create a new chain and add modules as shown in the figure.
        The following example shows how a Persistent Cookie module is sufficient;
        if that cookie does not yet exist, authentication in this case relies on
        a data store module, such as LDAP:</para>
@@ -5379,8 +5385,8 @@ ssoadm \
     <para>
      Use the following settings at the realm level
      when configuring an individual scripted authentication module,
-     in OpenAM console under Access Control >
-     <replaceable>Realm Name</replaceable> > Authentication > Module Instances.
+     in OpenAM console under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Modules.
     </para>
 
     <varlistentry>
@@ -5483,8 +5489,8 @@ ssoadm \
              <para>
      Use the following global configuration settings
      for all scripted authentication modules
-     in OpenAM console under Configuration > Global > Scripting >
-     <emphasis>Context Type</emphasis> > Engine Configuration.
+     in OpenAM console under Configuration &gt; Global &gt; Scripting &gt;
+     <replaceable>Context Type</replaceable> &gt; Engine Configuration.
     </para>
          <note><para>Only server-side script context types have
            engine configurations.</para></note>
@@ -5551,7 +5557,7 @@ ssoadm \
       <varlistentry>
        <term>Java class whitelist</term>
        <listitem>
-        <para>Specifies the list of class-name patterns allowed to be invoked
+        <para>Specifies the list of class name patterns allowed to be invoked
          by the script. Every class accessed by the script must match at least
          one of these patterns.</para>
         <para>You can specify the class name as-is or use a
@@ -5564,7 +5570,7 @@ ssoadm \
       <varlistentry>
        <term>Java class blacklist</term>
        <listitem>
-        <para>Specifies the list of class-name patterns that are NOT allowed
+        <para>Specifies the list of class name patterns that are NOT allowed
          to be invoked by the script. The blacklist is applied AFTER the
          whitelist to exclude those classes. Access to a class
          specified in both the whitelist and the blacklist will be denied.
@@ -5866,7 +5872,7 @@ ssoadm \
   <procedure xml:id="create-authn-chain">
    <title>To Create an Authentication Chain</title>
    <step>
-    <para>On the Access Control tab page of the OpenAM console, click the
+    <para>On the Realms page of the OpenAM console, click the
     realm for which to create the authentication chain.</para>
    </step>
    <step>
@@ -6008,7 +6014,7 @@ ssoadm \
    configuration before making it the default.</para>
    
    <step>
-    <para>On the Access Control tab page of the OpenAM console, click the
+    <para>On the Realms page of the OpenAM console, click the
     realm for which to set the default authentication chain.</para>
    </step>
    <step performance="optional">
@@ -6048,10 +6054,10 @@ ssoadm \
   request header to the protected application.</para>
 
   <para>In the OpenAM console, you add post authentication plugins to an
-  authentication chain. Navigate to Access Control &gt; <replaceable>Realm
-  Name</replaceable> &gt; Authentication &gt; Authentication Chaining &gt;
-  <replaceable>Auth Chain Name</replaceable>. Scroll down to the Post Authentication
-  Processing Class list.</para>
+  authentication chain. Navigate to Realms &gt; <replaceable>Realm
+  Name</replaceable> &gt; Authentication &gt; Chains &gt;
+  <replaceable>Auth Chain Name</replaceable> &gt; Settings &gt; Post
+  Authentication Processing Class &gt; Class Name.</para>
 
   <variablelist>
    <title>Standard Post Authentication Plugins</title>
@@ -7122,7 +7128,7 @@ ssoadm \
       <substeps>
        <step>
         <para>
-         Select Authentication > General > Settings.
+         Select Authentication &gt; Settings &gt; General.
         </para>
        </step>
 
@@ -7373,8 +7379,9 @@ ssoadm \
     <para>
      Letting users opt out of providing one-time passwords when they
      perform two step verification is an important implementation decision.
-     The Two Factor Authentication Mandatory setting under Realms >
-     Authentication > Settings > General configures whether users can opt out.
+     The Two Factor Authentication Mandatory setting under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+     &gt; General configures whether users can opt out.
     </para>
 
     <para>
@@ -7677,9 +7684,9 @@ ssoadm \
    <para>You configure account lockout by editing settings for the core
    authentication module. For details, see <xref
    linkend="core-module-conf-hints" />. Access the settings in OpenAM console
-   under Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
-   Authentication &gt; All Core Settings..., and then scroll down to the Account
-   Lockout section. The inline help explains the settings in detail. To do this:
+   under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+   Authentication &gt; Settings &gt; Account Lockout.
+   The inline help explains the settings in detail. To do this:
    </para>
 
    <listitem>
@@ -7705,8 +7712,8 @@ ssoadm \
    </listitem>
   </itemizedlist>
 
-  <para>If you need to unlock a user's account, find the user under Access
-  Control &gt; <replaceable>Realm Name</replaceable> &gt; Subjects &gt; User,
+  <para>If you need to unlock a user's account, find the user under
+  Realms &gt; <replaceable>Realm Name</replaceable> &gt; Subjects &gt; User,
   set the user's User Status to Active, and click Save.</para>
  </section>
 

@@ -47,9 +47,8 @@
         <title>To Configure a Resource Type by Using the Policy Editor</title>
 
         <step>
-            <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
-            Name</replaceable> &gt; Policies, and then click the Resource
-             Types tab.</para>
+            <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+            Name</replaceable> &gt; Authorization &gt; Resource Types.</para>
             <substeps>
              <step>
               <para>To create a new resource type, click Add New

@@ -197,7 +197,7 @@ $ <userinput>cat ~/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</userinput
     <answer>
      <para>For security reasons, <literal>ssoadm.jsp</literal> is not activated
      by default. To activate it, browse to Configuration &gt; Servers and Sites
-     &gt; Servers &gt; <replaceable>ServerName</replaceable> &gt; Advanced,
+     &gt; Servers &gt; <replaceable>Server Name</replaceable> &gt; Advanced,
      and then add a property named <literal>ssoadm.disabled</literal> with
      value <literal>false</literal>.</para>
     </answer>
@@ -251,7 +251,7 @@ $ <userinput>cat ~/.openamcfg/AMConfig_path_to_tomcat_webapps_openam_</userinput
     </question>
     <answer>
      <para>When you set up a New Data Store to use OpenDJ as an identity
-     repository under Access Control &gt; <replaceable>Realm Name</replaceable>
+     repository under Realms &gt; <replaceable>Realm Name</replaceable>
      &gt; Data Stores &gt; New..., you need to check the Load schema when
      saved box if you want OpenAM to add the schema to OpenDJ. The box is
      not selected by default.</para>
@@ -574,7 +574,7 @@ $ <userinput>./ssoadm \
      change the default timeout by setting the
      <literal>org.forgerock.openam.url.connectTimeout</literal> property.</para>
      <para>On the OpenAM console, go to Configuration &gt; Server &amp; Sites &gt;
-     <replaceable>server-instance</replaceable> &gt; Advanced, and then set the property with a
+     <replaceable>Server Instance</replaceable> &gt; Advanced, and then set the property with a
      value representing the TCP connection timeout in milliseconds.</para>
     </answer>
    </qandaentry>

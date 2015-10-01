@@ -78,9 +78,9 @@
 
   <para>
    User dashboard pages require the XUI,
-   which can be enabled by logging in to OpenAM console as administrator
-   and making sure that XUI is enabled
-   under Configuration > Authentication > Core > XUI Interface > Enabled.
+   which is enabled by default in OpenAM. To verify that XUI is enabled,
+   log in to the OpenAM console as administrator and navigate to
+   Configuration &gt; Authentication &gt; Core &gt; XUI Interface &gt; Enabled.
   </para>
 
   <para>
@@ -116,7 +116,7 @@
      <literal>amadmin</literal>.</para>
     </step>
     <step>
-     <para>On the Configuration tab &gt; Global &gt; Dashboard, click New
+     <para>Under Configuration &gt; Global &gt; Dashboard, click New
      to add a new application to the Dashboard Service and to provide the information
      needed to connect to the app. </para>
 
@@ -169,8 +169,8 @@
     &gt; Dashboard:</para>
  
     <step>
-     <para>On the Access Control &gt; <replaceable>Realm Name</replaceable>
-     &gt; Services, click Add.</para>
+     <para>Select Realms &gt; <replaceable>Realm Name</replaceable>
+     &gt; Services and click Add.</para>
     </step>
     <step>
      <para>Select the Dashboard Service, then click Next.</para>
@@ -196,8 +196,8 @@
      <para>Use the following steps to add an application to a user's dashboard:</para>
    
      <step>
-      <para>On the Access Control &gt; <replaceable>Realm Name</replaceable>
-      &gt; Subjects, click the user identifier to edit the user's profile.</para>
+      <para>Select Realms &gt; <replaceable>Realm Name</replaceable>
+      &gt; Subjects and click the user identifier to edit the user's profile.</para>
      </step>
 
      <step>
@@ -223,8 +223,8 @@
      removing an application from a user's dashboard:</para>
 
      <step>
-      <para>On the Access Control &gt; <replaceable>Realm Name</replaceable>
-      &gt; Subjects, click the user identifier to edit the user's profile.</para>
+      <para>Select Realms &gt; <replaceable>Realm Name</replaceable>
+      &gt; Subjects and click the user identifier to edit the user's profile.</para>
      </step>
 
      <step>

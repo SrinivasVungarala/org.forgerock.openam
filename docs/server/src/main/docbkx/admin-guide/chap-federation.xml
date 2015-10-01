@@ -163,8 +163,8 @@
     <secondary>Configuring</secondary>
    </indexterm>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Create Hosted Identity
-    Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Create Hosted Identity Provider.</para>
    </step>
    <step>
     <para>Unless you already have metadata for the provider, accept the
@@ -206,9 +206,9 @@ $ <userinput>curl \
 http://www.idp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceable>"</userinput>
     </screen>
 
-    <para>When you have configured only the top-level realm,
+    <para>When you have configured only the Top Level Realm,
     <literal>/</literal>, you can omit the query string.</para>
-    <para>Alternatively, provide the URL, to other providers so they can load
+    <para>Alternatively, provide the URL to other providers so they can load
     the metadata.</para>
    </step>
   </procedure>
@@ -220,8 +220,8 @@ http://www.idp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceab
     <secondary>Configuring</secondary>
    </indexterm>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Create Hosted Service
-    Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Create Hosted Service Provider.</para>
    </step>
    <step>
     <para>Unless you already have metadata for the provider, accept the
@@ -253,9 +253,9 @@ $ <userinput>curl \
 http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceable>"</userinput>
     </screen>
 
-    <para>When you have configured only the top-level realm,
+    <para>When you have configured only the Top Level Realm,
     <literal>/</literal>, you can omit the query string.</para>
-    <para>Alternatively, provide the URL, to other providers so they can load
+    <para>Alternatively, provide the URL to other providers so they can load
     the metadata.</para>
    </step>
   </procedure>
@@ -271,8 +271,8 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
     obtain it.</para>
    </step>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Register Remote
-    Identity Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Register Remote Identity Provider.</para>
    </step>
    <step>
     <para>Provide the identity provider metadata or link to obtain
@@ -298,8 +298,8 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
     obtain it.</para>
    </step>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Register Remote Service
-    Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Register Remote Service Provider.</para>
    </step>
    <step>
     <para>Provide the identity provider metadata or link to obtain
@@ -723,7 +723,8 @@ Import file, /Users/mark/Downloads/that-extended.xml.</computeroutput>
 
     <step>
      <para>Test your work by using the Federation Connectivity Test that
-     you start from the service provider console under Common Tasks &gt;
+     you start from the service provider console under Under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Dashboard &gt;
      Test Federation Connectivity.</para>
 
      <para>When the test is done, you can see messages from the
@@ -946,7 +947,7 @@ CookieWriterServlet.doGetPost: Redirect to
 
       <para>To specify the list of profile attributes for an LDAP identity
       repository, login to OpenAM console as administrator and browse to
-      Access Control > <replaceable>Realm Name</replaceable> > Data Stores, and
+      Realms &gt; <replaceable>Realm Name</replaceable> &gt; Data Stores, and
       click the data store name to open the configuration page. Scroll down to
       User Configuration, and edit the LDAP User Attributes list, and then
       click Save to keep your work.</para>
@@ -1786,8 +1787,8 @@ $ <userinput>ssoadm \
    </step>
 
    <step>
-    <para>On the OpenAM console Common Tasks page, click Configure Google
-    Apps.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Configure Google Apps.</para>
    </step>
 
    <step>
@@ -1880,8 +1881,8 @@ $ <userinput>ssoadm \
    </step>
 
    <step>
-    <para>On the OpenAM console Common Tasks page, click Configure Salesforce
-    CRM.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Configure Salesforce CRM.</para>
    </step>
 
    <step>
@@ -2195,7 +2196,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <literal>/<replaceable>realm-name</replaceable>/<replaceable
      >provider-name</replaceable></literal> as described in <xref
      linkend="idp-meta-alias"/>. You do not repeat the slash for
-     the top-level realm, for example <literal>metaAlias=/idp</literal>.</para>
+     the Top Level Realm, for example <literal>metaAlias=/idp</literal>.</para>
     </listitem>
    </varlistentry>
 
@@ -2281,7 +2282,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      takes the format <literal>/<replaceable>realm-name</replaceable>/<replaceable
      >provider-name</replaceable></literal> as described in <xref
      linkend="sp-meta-alias"/>. You do not repeat the slash for the
-     top-level realm, <literal>metaAlias=/sp</literal>.</para>
+     Top Level Realm, <literal>metaAlias=/sp</literal>.</para>
     </listitem>
    </varlistentry>
 
@@ -2746,13 +2747,13 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   default session mapper uses OpenAM cookies as it would for any other client
   application. If for some reason you must change the mapping after writing
   and installing your own session mapper, you can change the class under
-  Federation &gt; Entity Providers &gt; <replaceable>idp-name</replaceable>
+  Federation &gt; Entity Providers &gt; <replaceable>IdP Name</replaceable>
   &gt; IDP &gt; Advanced &gt; ECP Configuration.</para>
 
   <para>By default, an OpenAM service provider uses the
   <literal>com.sun.identity.saml2.plugins.ECPIDPFinder</literal> class to
   return identity providers from the list under Federation &gt; Entity
-  Providers &gt; <replaceable>sp-name</replaceable> &gt; SP &gt; Advanced
+  Providers &gt; <replaceable>SP Name</replaceable> &gt; SP &gt; Advanced
   &gt; ECP Configuration &gt; Request IDP List. You must populate the list
   with identity provider entity IDs.</para>
 
@@ -2980,7 +2981,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       <literal>/<replaceable>realm-name</replaceable>/<replaceable
       >provider-name</replaceable></literal> as described in <xref
       linkend="idp-meta-alias"/>. You do not repeat the slash for
-      the top-level realm, for example <literal>metaAlias=/idp</literal>.</para>
+      the Top Level Realm, for example <literal>metaAlias=/idp</literal>.</para>
      </listitem>
     </varlistentry>
 
@@ -3067,7 +3068,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       takes the format <literal>/<replaceable>realm-name</replaceable>/<replaceable
       >provider-name</replaceable></literal> as described in <xref
       linkend="sp-meta-alias"/>. You do not repeat the slash for the
-      top-level realm, <literal>metaAlias=/sp</literal>.</para>
+      Top Level Realm, <literal>metaAlias=/sp</literal>.</para>
      </listitem>
     </varlistentry>
 
@@ -3208,7 +3209,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     </step>
     <step>
      <para>Browse to Federation &gt; <replaceable
-     >hosted-provider-name</replaceable> &gt; Assertion Processing.</para>
+     >Hosted Provider Name</replaceable> &gt; Assertion Processing.</para>
     </step>
     <step>
      <para>
@@ -3237,7 +3238,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     </step>
     <step>
      <para>Browse to Federation &gt; <replaceable
-     >hosted-provider-name</replaceable> &gt; Assertion Processing.</para>
+     >Hosted Provider Name</replaceable> &gt; Assertion Processing.</para>
     </step>
     <step>
      <para>If you want to get attributes from the identity provider and the
@@ -3271,11 +3272,11 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      the dynamically created accounts.</para>
     </step>
     <step>
-     <para>On the service provider console, browse to Access Control &gt;
-     <replaceable>realm-name</replaceable> &gt; Authentication &gt; All Core
-     Settings..., and Dynamic or Dynamic with User Alias, which are described
-     in <xref linkend="core-module-conf-hints" />, and then save your
-     work.</para>
+     <para>On the service provider console, browse to Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+     &gt; User Profile. For the User Profile field, select Dynamic or Dynamic
+     with User Alias, which are described in
+     <xref linkend="core-module-conf-hints" />, and then save your work.</para>
     </step>
     <step>
      <para>To test your work, create a user on the identity provider, log
@@ -3508,7 +3509,7 @@ $ <userinput>ssoadm \
       <para>
        If you have configured the Web policy agents to store their properties
        centralized on an OpenAM server, navigate to the URL for the OpenAM console.
-       Select Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
+       Select Realms &gt; <replaceable>Realm Name</replaceable> &gt;
        Agents &gt; Web &gt; <replaceable>Agent Name</replaceable> &gt; OpenAM Services.
       </para>
 

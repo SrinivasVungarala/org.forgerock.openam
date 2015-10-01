@@ -42,8 +42,7 @@
   <secondary>types of</secondary>
  </indexterm>
 
- <para>When you open the OpenAM console to configure agents for the top-level
- realm, you can choose from a number of different types of agents.</para>
+ <para>You can configure a number of different types of agents.</para>
  <para>Each agent type requires an <firstterm>agent profile</firstterm> in
  OpenAM.  The agent  profile contains essential configuration for agent
  operation, such as a password to authenticate the agent, and the URL the agent

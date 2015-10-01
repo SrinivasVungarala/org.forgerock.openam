@@ -115,7 +115,7 @@
    <section xml:id="tuning-ldap-settings-data-stores">
     <title>Tuning LDAP Data Store Settings</title>
 
-    <para>To change LDAP data store settings, browse to Access Control &gt;
+    <para>To change LDAP data store settings, browse to Realms &gt;
     <replaceable>Realm Name</replaceable> &gt; Data Stores &gt;
     <replaceable>Data Store Name</replaceable> in the OpenAM console.
     Each data store has its own connection pool and therefore each data store
@@ -281,7 +281,7 @@
      If the same directory service backs
      both the CTS and also OpenAM configuration,
      then set pool sizes under
-     Configuration > Servers and Sites > <replaceable>server name</replaceable>
+     Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
      > Directory Configuration.
     </para>
 
@@ -289,14 +289,14 @@
      If the directory service backing the CTS is external
      (differs from the directory service backing the OpenAM configuration),
      then set the maximum connection pool size under
-     Configuration > Servers and Sites > <replaceable>server name</replaceable>
+     Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
      > CTS > External Store Configuration.
     </para>
 
     <para>
      In both cases, if you must change the default connection timeouts,
      set the advanced properties described below under
-     Configuration > Servers and Sites > <replaceable>server name</replaceable>
+     Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
      > Advanced:
     </para>
 
@@ -320,7 +320,7 @@
         <entry>
          <para>
           Find this setting in OpenAM console under
-          Configuration > Servers and Sites > <replaceable>server name</replaceable>
+          Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
           > Directory Configuration.
          </para>
 
@@ -345,7 +345,7 @@
         <entry>
          <para>
           Find this setting in OpenAM console under
-          Configuration > Servers and Sites > <replaceable>server name</replaceable>
+          Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
           > CTS > External Store Configuration.
          </para>
 
@@ -376,7 +376,7 @@
           If you choose to vary this setting for performance testing,
           set the advanced property,
           <literal>org.forgerock.services.datalayer.connection.timeout.cts.async</literal>,
-          under Configuration > Servers and Sites > <replaceable>server name</replaceable>
+          under Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
           > Advanced.
          </para>
 
@@ -402,7 +402,7 @@
           set the advanced property,
           <literal>org.forgerock.services.datalayer.connection.timeout.cts.reaper</literal>,
           to the number of seconds desired
-          under Configuration > Servers and Sites > <replaceable>server name</replaceable>
+          under Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
           > Advanced.
          </para>
 
@@ -426,7 +426,7 @@
           If you choose to vary this setting for performance testing,
           set the advanced property,
           <literal>org.forgerock.services.datalayer.connection.timeout</literal>,
-          under Configuration > Servers and Sites > <replaceable>server name</replaceable>
+          under Configuration > Servers and Sites > <replaceable>Server Name</replaceable>
           > Advanced.
          </para>
 
@@ -881,7 +881,7 @@
     policy agent configuration:</para>
 
     <step>
-     <para>In OpenAM console, browse to Access Control &gt; <replaceable>Realm
+     <para>In OpenAM console, browse to Realms &gt; <replaceable>Realm
      Name</replaceable> &gt; Agents &gt; <replaceable>Agent Type</replaceable>
      &gt; <replaceable>Agent Name</replaceable> to view and edit the policy
      agent profile.</para>

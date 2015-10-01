@@ -87,7 +87,7 @@
   and also secure outgoing responses sent back to WSCs.</para>
 
   <para>After creating a WSP profile, you access WSP properties in the
-  OpenAM console under Access Control &gt; <replaceable>Realm Name</replaceable>
+  OpenAM console under Realms &gt; <replaceable>Realm Name</replaceable>
   &gt; Agents &gt; Web Service Provider &gt; <replaceable>Agent
   Name</replaceable>.</para>
   
@@ -379,7 +379,7 @@
   and also validate incoming from WSPs.</para>
 
   <para>After creating a WSC profile, you access WSC properties in the
-  OpenAM console under Access Control &gt; <replaceable>Realm Name</replaceable>
+  OpenAM console under Realms &gt; <replaceable>Realm Name</replaceable>
   &gt; Agents &gt; Web Service Client &gt; <replaceable>Agent
   Name</replaceable>.</para>
   
@@ -660,7 +660,7 @@
   Service.</para>
 
   <para>After creating an STS Client profile, you access STS Client properties
-  in the OpenAM console under Access Control &gt; <replaceable>Realm
+  in the OpenAM console under Realms &gt; <replaceable>Realm
   Name</replaceable> &gt; Agents &gt; STS Client &gt; <replaceable>Agent
   Name</replaceable>.</para>
   
@@ -938,7 +938,7 @@
   OAuth 2.0 authorization server, or register an OpenID Connect 1.0 client
   through OpenAM console, then create an OAuth 2.0 Client agent profile.
   After creating the agent profile, you can further configure the properties
-  in the OpenAM console under Access Control &gt; <replaceable>Realm
+  in the OpenAM console under Realms &gt; <replaceable>Realm
   Name</replaceable> &gt; Agents &gt; OAuth 2.0/OpenID Connect Client &gt; <replaceable>Client
   Name</replaceable>.</para>
 

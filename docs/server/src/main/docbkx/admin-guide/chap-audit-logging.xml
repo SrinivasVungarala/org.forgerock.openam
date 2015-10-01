@@ -189,7 +189,7 @@ iplanet-am-logging-syslog-facility=<replaceable>local5</replaceable></userinput>
    By default, OpenAM policy agents send log messages remotely to OpenAM
    when you log auditing information about URL access attempts. To configure
    audit logging for a centrally managed policy agent, login to the OpenAM
-   console as administrator, and browse to Access Control &gt;
+   console as administrator, and browse to Realms &gt;
    <replaceable>Realm Name</replaceable>
    &gt; Agents &gt;
    <replaceable>Agent Type</replaceable>

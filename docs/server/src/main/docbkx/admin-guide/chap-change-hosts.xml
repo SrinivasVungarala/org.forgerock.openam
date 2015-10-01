@@ -79,8 +79,9 @@
    <literal>amadmin</literal>.</para>
   </step>
   <step>
-   <para>Under Access Control &gt; / (Top-Level Realm), add the new host name
-   to the Realm/DNS Aliases list, and then save your work.</para>
+   <para>Under Realms &gt; <replaceable>Realm Name</replaceable>, click
+   Properties, add the new host name to the Realm/DNS Aliases list, and then
+   save your work.</para>
   </step>
  </procedure>
 
@@ -243,8 +244,9 @@ Service Configuration was imported.</computeroutput>
    <literal>amadmin</literal>.</para>
   </step>
   <step>
-   <para>Under Access Control &gt; / (Top-Level Realm), remove the old host
-   name from the Realm/DNS Aliases list, and then save your work.</para>
+   <para>Under Realms &gt; <replaceable>Realm Name</replaceable>, click
+   Properties, remove the old host name from the Realm/DNS Aliases list, and
+   then save your work.</para>
   </step>
  </procedure>
 </chapter>

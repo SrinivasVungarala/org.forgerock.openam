@@ -555,7 +555,7 @@ $ <userinput>curl https://openam.example.com:8443/.well-known/openid-configurati
    for the settings pertinent to OpenID Connect 1.0.</para>
 
    <step>
-    <para>In the OpenAM console under Access Control &gt; <replaceable>Realm
+    <para>In the OpenAM console under Realms &gt; <replaceable>Realm
     Name</replaceable> &gt; Agents &gt; OAuth 2.0/OpenID Connect Client &gt; Agent, click
     New..., then provide the client identifier and client password, and
     finally click Create to create the profile.</para>
@@ -1481,7 +1481,7 @@ $ <userinput>curl \
 
    <para>
     In OpenAM console, the OAuth2 Provider configuration is
-    under Access Control > <replaceable>Realm Name</replaceable>
+    under Realms > <replaceable>Realm Name</replaceable>
     > Services > OAuth2 Provider for the configuration in a specific realm,
     and under Configuration > Global > OAuth2 Provider
     for the inherited global settings:
@@ -1586,9 +1586,9 @@ $ <userinput>curl \
      of LDAP User Attributes for the data store.
      Otherwise, the attributes are not returned when OpenAM reads the user profile.
      To edit the list in OpenAM console, browse to
-     Access Control > <replaceable>Realm Name</replaceable>
-     > Data Stores > <replaceable>Data Store Name</replaceable>
-     > LDAP User Attributes.
+     Realms &gt; <replaceable>Realm Name</replaceable>
+     &gt; Data Stores &gt; <replaceable>Data Store Name</replaceable>
+     &gt; LDAP User Attributes.
     </para>
    </step>
   </procedure>

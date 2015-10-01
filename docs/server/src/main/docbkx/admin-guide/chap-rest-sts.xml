@@ -107,10 +107,9 @@
 
     <para>
      To access the REST-STS configuration menu for your realm, navigate to
-     Access Control &gt; <replaceable>Realm Name</replaceable> &gt; STS. When
-     you see the <replaceable>Realm Name</replaceable> - REST STS Instances
-     menu, click Add. You should see an excerpt of the REST Security Token
-     Service menu in the following screen shot:
+     Realms &gt; <replaceable>Realm Name</replaceable> &gt; STS. In the REST STS
+     Instances table, click Add. You should see an excerpt of the REST Security
+     Token Service menu in the following screen shot:
     </para>
 
     <figure xml:id="rest-sts-access-menu">

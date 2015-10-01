@@ -48,8 +48,8 @@
         <title>To Configure an Application Using the Policy Editor</title>
 
         <step>
-            <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
-            Name</replaceable> &gt; Policies.</para>
+            <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+            Name</replaceable> &gt; Authorization &gt; Policies.</para>
             <substeps>
              <step>
               <para>To create a new application, click Add New

@@ -372,8 +372,8 @@
    <step>
     <para>
      Now you can configure SSO Only mode. In the OpenAM console, click
-     Access Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
-     <replaceable>webagent1</replaceable>. Scroll down to SSO Only Mode and
+     Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+     <literal>webagent1</literal>. Scroll down to SSO Only Mode and
      activate the Enabled box.
     </para>
    </step>

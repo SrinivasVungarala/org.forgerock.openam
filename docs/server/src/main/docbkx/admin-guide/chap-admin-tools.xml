@@ -92,8 +92,8 @@
   <para>If you configure OpenAM to grant administrative capabilities to
   another user, then that user also sees the console after login. For
   instance, the OpenAM administrator granted Kirsten Vaughan privileges to
-  administer the OpenAM Top-Level Realm. (This can be done through the console
-  under Access Control &gt; / (Top Level Realm) &gt; Privileges. Kirsten
+  administer the OpenAM Top Level Realm. (This can be done through the console
+  under Realms &gt; Top Level Realm &gt; Privileges. Kirsten
   has authorization to read and write policy properties and configured
   policy agent properties.) When Kirsten logs in, she sees only part of the
   console capabilities.<footnote><para>For more on delegated administration,

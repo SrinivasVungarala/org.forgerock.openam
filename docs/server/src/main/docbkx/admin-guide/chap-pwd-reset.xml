@@ -68,7 +68,7 @@
      You can configure these globally
      in OpenAM console at Configuration &gt; Global &gt; Email Service.
      Alternatively, you can configure them for an individual realm under
-     Access Control > <replaceable>Realm Name</replaceable> > Services.</para>
+     Realms &gt; <replaceable>Realm Name</replaceable> &gt; Services.</para>
    </step>
 
    <step>
@@ -191,7 +191,7 @@
 
      <step>
       <para>To configure the service for a particular realm, log in to OpenAM
-      console as the realm administrator and browse to Access Control &gt;
+      console as the realm administrator and browse to Realms &gt;
       <replaceable>Realm Name</replaceable> &gt; Services, then click Add...
       to add a new Password Reset service configuration.</para>
      </step>

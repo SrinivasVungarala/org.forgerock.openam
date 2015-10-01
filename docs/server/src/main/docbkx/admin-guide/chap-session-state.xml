@@ -128,7 +128,7 @@
     There is, however, one exception to the per-realm session state
     configuration. When the top-level administrator (by default,
     the <literal>amadmin</literal> user) authenticates to OpenAM, the session is
-    always stateful, even if the top-level realm is configured for stateless
+    always stateful, even if the Top Level Realm is configured for stateless
     sessions.
    </para>
 
@@ -717,20 +717,14 @@
 
    <step>
     <para>
-     Navigate to Access Control &gt; <replaceable>Realm Name</replaceable>
-     &gt; Authentication.
+     Navigate to Realms &gt; <replaceable>Realm Name</replaceable>
+     &gt; Authentication &gt; Settings &gt; General.
     </para>
    </step>
 
    <step>
     <para>
-     Click All Core Settings.
-    </para>
-   </step>
-
-   <step>
-    <para>
-     Select the "Use Stateless Sessions?" check box.
+     Select the "Use Stateless Sessions" check box.
     </para>
    </step>
 

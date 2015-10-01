@@ -64,7 +64,7 @@
    </listitem>
 
    <listitem>
-    <para>Create an administrator in the top-level realm with a different ID
+    <para>Create an administrator in the Top Level Realm with a different ID
     than the default <literal>amadmin</literal>.</para>
    </listitem>
 
@@ -85,7 +85,7 @@
     <para>Remove the demo user account. For example, if you configure the embedded
      OpenDJ directory server as a configuration and CTS store, the default demo user
      account gets created during the installation process. You should
-     remove the user using the OpenAM console under Access Control &gt; / (Top Realm)
+     remove the user using the OpenAM console under Realms &gt; Top Level Realm
      &gt; Subjects &gt; User.
     </para>
    </listitem>
@@ -107,7 +107,7 @@
      <literal>gotoOnFail</literal> URL is valid.
     </para>
     <para>To set the Valid <literal>goto</literal> URL Resources, use the OpenAM
-     console, and navigate to Access Control &gt; <replaceable>Realm Name </replaceable>
+     console, and navigate to Realms &gt; <replaceable>Realm Name </replaceable>
      &gt; Services. Click Add, select Validation Service, and then add one or more
      valid <literal>goto</literal> URLs.
     </para>
@@ -361,7 +361,7 @@
    </step>
 
    <step>
-    <para>Under Access Control &gt; / (Top Level Realm) &gt; Subjects &gt; User,
+    <para>Under Realms &gt; Top Level Realm &gt; Subjects &gt; User,
      select the name of the current top-level administrative user.</para>
    </step>
 
@@ -435,7 +435,7 @@
    <step>
     <para>If the account does not already exist in OpenAM or on a connected
      directory server, you'll need to create it. To do so, select
-     Access Control &gt; / (Top-Level Realm) &gt; Subject &gt; User &gt; New.
+     Realms &gt; Top Level Realm &gt; Subjects &gt; User &gt; New.
      In the New User window that appears, create the new user. Make sure to enter
      an appropriate password and make that user Active. The ID for that new user
      is the user name.</para>

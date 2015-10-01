@@ -1148,12 +1148,12 @@
      </para>
 
      <para>
-      Default: / (top-level realm)
+      Default: Top Level Realm (/)
      </para>
 
      <para>
       Edit this property when OpenAM should start policy evaluation
-      in a realm other than the top-level realm, <literal>/</literal>,
+      in a realm other than the Top Level Realm, <literal>/</literal>,
       when handling policy decision requests from this policy agent.
      </para>
 

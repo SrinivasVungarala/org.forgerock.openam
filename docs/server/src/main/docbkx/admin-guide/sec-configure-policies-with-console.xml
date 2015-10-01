@@ -52,9 +52,9 @@
   </indexterm>
 
   <step>
-   <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
-    Name</replaceable> &gt; Policies, and then click the name of the
-    application to configure a policy in:</para>
+   <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+    Name</replaceable> &gt; Authorization &gt; Policies, and then click the name
+    of the application to configure a policy in:</para>
   <substeps>
    <step><para>To create a new policy, click Add New Policy.</para></step>
    <step><para>To modify an existing policy, click the name of the
@@ -421,7 +421,7 @@
            in the directory configured for the policy service, which by default
            is the identity repository. See Configuration &gt; Global &gt; Policy
            Configuration &gt; Realm Attributes &gt; Primary LDAP Server.</para>
-          <para>Alternatively you can set this for the realm under Access Control
+          <para>Alternatively you can set this for the realm under Realms
            &gt; <replaceable>Realm Name</replaceable> &gt; Services &gt; Policy
            Configuration.</para>
          </listitem>

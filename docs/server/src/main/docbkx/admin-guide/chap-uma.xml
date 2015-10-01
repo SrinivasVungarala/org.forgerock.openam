@@ -79,7 +79,7 @@
 
   <step>
    <para>
-    On the Access Control tab, click the realm in which to enable UMA,
+    On the Realms page, click the realm in which to enable UMA,
     and then click Services.
    </para>
   </step>
@@ -243,7 +243,7 @@
     A resource server or client can perform an HTTP GET on
     <literal>/uma/<replaceable>{realm}</replaceable>/.well-known/uma-configuration</literal>
     to retrieve a JSON object indicating the UMA Provider configuration for
-    <replaceable>realm</replaceable> if specified, or the top-level root realm
+    <replaceable>realm</replaceable> if specified, or the Top Level Realm
     if not.
    </para>
 
@@ -260,7 +260,7 @@
 
    <para>
     The following is an example of a GET request to the UMA
-    configuration discovery endpoint for the top-level root realm:
+    configuration discovery endpoint for the Top Level Realm:
    </para>
 
    <screen>$ <userinput>curl \
