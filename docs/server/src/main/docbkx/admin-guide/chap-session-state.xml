@@ -66,7 +66,7 @@
    </indexterm>
 
    <indexterm>
-    <primary>SSOToken</primary>
+    <primary>SSO token</primary>
    </indexterm>
 
    <para>
@@ -74,7 +74,7 @@
     and, if session failover is enabled, are also persisted in the Core Token
     Service's token store. OpenAM sends clients a reference to the session in
     OpenAM memory but it does not contain any of the session state information.
-    The session reference is also known as an <firstterm>SSOToken</firstterm>.
+    The session reference is also known as an <firstterm>SSO token</firstterm>.
     For browser clients, OpenAM sets a cookie in the browser that contains
     the session reference. For REST clients, OpenAM returns the session
     reference in response to calls to the <literal>authentication</literal>

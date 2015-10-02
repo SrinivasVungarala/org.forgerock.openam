@@ -70,7 +70,7 @@
    <para>After handling all authentication callbacks, your application
    calls the <literal>AuthContext</literal> <literal>getStatus()</literal>
    method.</para>
-   <para>On login success, OpenAM sets up an <literal>SSOToken</literal> that
+   <para>On login success, OpenAM sets up an SSO token that
    holds information about the authentication, and also about the user's
    environment and session.</para>
   </listitem>

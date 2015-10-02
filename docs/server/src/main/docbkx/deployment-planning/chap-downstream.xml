@@ -65,7 +65,7 @@
   <para>After the end user has been authenticated successfully (or unsuccessfully),
    OpenAM can process specific post-authentication plugins.
    If the authentication was successful, the plugin has access to the
-   client request and response objects as well as the user's session <literal>SSOToken</literal>.
+   client request and response objects as well as the user's session SSO token.
    The plugin can then update session cookies and variables.
    The post-authentication plugins are invoked after the authentication phase
    is completed and at user logout. </para>
@@ -105,7 +105,7 @@
   <itemizedlist>
    <listitem>
     <para><emphasis role="bold">Authenticated Users</emphasis>. Applies to any
-     user with a valid session token, <literal>SSOToken</literal>.</para>
+     user with a valid session SSO token.</para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">OpenAM Identity Subjects</emphasis>. Applies to
@@ -181,7 +181,7 @@
   For REST clients, this section should address the question of how they're registered and managed.
   -->
   <para>OpenAM provides extensive support for RESTful Web architectures.
-   All REST interfaces require a valid session token, <literal>SSOToken</literal>, to
+   All REST interfaces require a valid session SSO token to
    access a REST endpoint, except for the authentication endpoint, which requires a
    username and password.</para>
 
@@ -415,8 +415,8 @@
      of security tokens to broker trust relationships between Web service clients
      and providers. Because the STS does not specify a specific token format but
      supports various formats, it acts as a universal token translator that converts
-     locally issued tokens (e.g., SSOToken) into a token format shared
-     with Web services providers (e.g., an OAuth2 token).
+     locally issued tokens (for example an SSO token) into a token format shared
+     with Web services providers (for example an OAuth2 token).
     </para>
    </listitem>
    <listitem>
@@ -438,7 +438,7 @@
   <para>The main advantage to OpenAM's STS component is that it enables OpenAM to
    act as a token broker, for example, validating an OAuth2 access token and issuing a
    SAML token mapping assertion claims to the scopes defined in the OAuth2 access
-   token. STS issues session SSOToken, SAML tokens, and JWT-based tokens.</para>
+   token. STS issues session SSO tokens, SAML tokens, and JWT-based tokens.</para>
 
  </section>
 

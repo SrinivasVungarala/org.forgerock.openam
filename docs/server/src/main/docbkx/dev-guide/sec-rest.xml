@@ -687,13 +687,13 @@ $ <userinput>curl \
      <listitem>
       <para>
        If stateless sessions are not enabled, the <literal>tokenId</literal>
-       is an OpenAM SSOToken.
+       is an OpenAM SSO token.
       </para>
      </listitem>
      <listitem>
       <para>
        If stateless sessions are enabled, the <literal>tokenId</literal> is
-       an OpenAM SSOToken that includes an encoded OpenAM session.
+       an OpenAM SSO token that includes an encoded OpenAM session.
       </para>
      </listitem>
     </itemizedlist>
@@ -1090,7 +1090,7 @@ $ <userinput>curl \
 
     <para>
      The returned <literal>tokenID</literal> is known as a session token
-     (also referred to as an SSOToken). REST API calls made after successful
+     (also referred to as an SSO token). REST API calls made after successful
      authentication to OpenAM must present the session token in the HTTP header
      as proof of authentication.
     </para>

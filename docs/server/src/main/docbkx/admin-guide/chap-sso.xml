@@ -189,7 +189,7 @@
   <itemizedlist>
    <listitem>
     <para>
-     If the realm is configured for stateful sessions, an SSOToken is embedded
+     If the realm is configured for stateful sessions, an SSO token is embedded
      in the cookie.</para>
    </listitem>
 

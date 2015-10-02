@@ -2651,7 +2651,6 @@ to a runtime exception with messages that I think suggest that it needed to be c
             </citetitle></link>.</para>
 
         <variablelist>
-
             <varlistentry>
                 <term><literal>WSAuthNServices.jsp</literal></term>
                 <listitem>

@@ -201,7 +201,7 @@
     <term>SAML Attribute Mapping</term>
     <listitem>
      <para>Maps SAML attribute names from the incoming request to attribute
-     names as retrieved from the SSOToken or the identity repository, used to
+     names as retrieved from the SSO token or the identity repository, used to
      have the Security Token Service generate an appropriate SAML
      assertion.</para>
     </listitem>
@@ -486,7 +486,7 @@
     <term>SAML Attribute Mapping</term>
     <listitem>
      <para>Maps SAML attribute names from the outgoing request to attribute
-     names as retrieved from the SSOToken or the identity repository.</para>
+     names as retrieved from the SSO token or the identity repository.</para>
     </listitem>
    </varlistentry>
    <varlistentry>
@@ -758,7 +758,7 @@
     <term>SAML Attribute Mapping</term>
     <listitem>
      <para>Maps SAML attribute names from the incoming request to attribute
-     names as retrieved from the SSOToken or the identity repository, used to
+     names as retrieved from the SSO token or the identity repository, used to
      have the Security Token Service generate an appropriate SAML
      assertion.</para>
     </listitem>

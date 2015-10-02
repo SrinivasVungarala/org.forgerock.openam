@@ -1875,7 +1875,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <listitem>
          <para>Specifies that on successful authentication the Authentication
          Service creates a user profile if one does not already exist.
-         OpenAM then issues the SSOToken. OpenAM creates the user profile 
+         OpenAM then issues the SSO token. OpenAM creates the user profile
          in the user data store configured for the realm.</para>
         </listitem>
        </varlistentry>
@@ -1892,7 +1892,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <term>Ignored</term>
         <listitem>
          <para>Specifies that a user profile is not required for the
-         Authentication Service to issue an SSOToken after a successful
+         Authentication Service to issue an SSO token after a successful
          authentication.</para>
         </listitem>
        </varlistentry>
@@ -1901,7 +1901,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <listitem>
          <para>Specifies that on successful authentication the user must have
          a user profile in the user data store configured for the realm in
-         order for the Authentication Service to issue an SSOToken.</para>
+         order for the Authentication Service to issue an SSO token.</para>
         </listitem>
        </varlistentry>
       </variablelist>
@@ -2495,7 +2495,7 @@ $ ssoadm set-realm-svc-attrs \
      <listitem>
       <para>Enables the authenticating user's identity attributes (stored in
       the identity repository) to be set as session properties in the user's
-      SSOToken. The value takes the format
+      SSO token. The value takes the format
       <literal><replaceable>User-Profile-Attribute</replaceable>|<replaceable>Session-Attribute-Name</replaceable></literal>.
       If <replaceable>Session-Attribute-Name</replaceable> is not specified,
       the value of <replaceable>User-Profile-Attribute</replaceable> is used.

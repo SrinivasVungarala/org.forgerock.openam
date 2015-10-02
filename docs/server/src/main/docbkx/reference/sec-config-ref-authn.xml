@@ -102,7 +102,7 @@
     <varlistentry>
      <term>Remote Auth Security</term>
      <listitem>
-      <para>Require the authenticating application to send its SSOToken. This
+      <para>Require the authenticating application to send its SSO token. This
       allows the Authentication Service to obtain the username and password
       associated with the application.</para>
       <para><command>ssoadm</command> attribute:

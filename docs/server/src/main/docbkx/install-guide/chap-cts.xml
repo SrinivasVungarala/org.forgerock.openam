@@ -46,7 +46,7 @@
   For more information, see <olink targetptr="chap-session-state" targetdoc="admin-guide"/>.
   </para></footnote>.
   During SFO, OpenAM
-  sends a session token, <literal>SSOToken</literal>, to its clients,
+  sends an SSO token to its clients,
   either as a cookie in a browser or in a JSON response to the
   <literal>authentication</literal> endpoint. This allows OpenAM to retrieve the
   session object from memory to resume the session.

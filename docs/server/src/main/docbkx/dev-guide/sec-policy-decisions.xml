@@ -58,7 +58,7 @@
  method. For boolean decisions such as allow or deny, your application can also
  call the <literal>isAllowed()</literal> method.</para>
  
- <para>To make a policy decision, OpenAM needs an <literal>SSOToken</literal>,
+ <para>To make a policy decision, OpenAM needs an SSO token,
  the resource to access, the action the user wants to perform on the resource
  such as HTTP <literal>GET</literal> or <literal>POST</literal>, and a
  <literal>Map</literal> of environment settings you can use to specify
@@ -69,7 +69,7 @@
  <para>The <literal>PolicyEvaluationSample</literal> class takes as its
  configuration the user credentials, service name, resource, and action that
  you provide in a Java properties file. It then authenticates the user to get
- an <literal>SSOToken</literal> using the <filename>TokenUtils.java</filename>
+ an SSO token using the <filename>TokenUtils.java</filename>
  helper methods. At that point it has sufficient information to request a
  policy decision.</para>
 

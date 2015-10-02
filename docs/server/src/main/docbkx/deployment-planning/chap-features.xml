@@ -559,8 +559,8 @@
      the client to submit an attribute value that OpenAM uses to look up the DN
      (by default, <literal>uid</literal> or <literal>cn</literal> for Active Directory)
      for authentication against an LDAP data store. If the credentials match those
-     in the LDAP directory, the client is authenticated and a session token
-     called <literal>SSOToken</literal> is created.
+     in the LDAP directory, the client is authenticated and a session SSO
+     token is created.
      </para>
 
    <para>
@@ -1185,11 +1185,11 @@
    domains, and containers participating in the network.</para>
 
   <para>When a client's identity is validated, OpenAM creates a session in the form
-   of a token object called <literal>SSOToken</literal>. The token stores information about
+   of an SSO token. The token stores information about
    the user's identity, authentication information,
    maximum lifetime,  and idle timeout settings.
    OpenAM creates a unique token identifier, <literal>SSOTokenID</literal> to identify
-   the <literal>SSOToken</literal> object and is stored
+   the SSO token object and is stored
    in the Policy Agent as a cookie labelled <literal>iPlanetDirectoryPro</literal>
    by default. Cookies are configurable.
   </para>
@@ -1522,7 +1522,7 @@
 
   <itemizedlist>
    <listitem>
-    <para>SSOToken</para>
+    <para>SSO tokens</para>
    </listitem>
    <listitem>
     <para>SAML tokens</para>
