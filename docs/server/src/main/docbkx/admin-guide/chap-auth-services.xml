@@ -5934,14 +5934,14 @@ ssoadm \
       <listitem>
        <para>Set <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>
         to try authenticating with the username and password stored in
-        shared state.
-        If authentication fails, OpenAM displays the login screen of this module
-        for the user to re-enter their credentials.
-        again.
+        shared state. If authentication fails, OpenAM displays the login screen
+        of this module for the user to re-enter their credentials.
        </para>
        <para>
         Set <literal>iplanet-am-auth-shared-state-behavior-pattern=useFirstPass</literal>
-        to authenticate with the username and password stored in shared state.
+        to prevent the user from entering the username and password twice during
+        authentication. Typically, you set the property to <literal>useFirstPass</literal>
+        for all modules in the chain except the first module.
         If authentication fails, then the module fails.
        </para>
       </listitem>
@@ -5952,7 +5952,7 @@ ssoadm \
      For example, consider a chain with two modules sharing credentials
      according to the following settings:
      The first module in the chain has the
-     option <literal>iplanet-am-auth-shared-state-enabled=true</literal>, and
+     option <literal>iplanet-am-auth-store-shared-state-enabled=true</literal>, and
      criteria <literal>REQUIRED</literal>.
     </para>
 
@@ -5972,7 +5972,7 @@ ssoadm \
     <para>
      The second module in the chain has
      options <literal>iplanet-am-auth-shared-state-enabled=true</literal>,
-     <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>
+     <literal>iplanet-am-auth-shared-state-behavior-pattern=useFirstPass</literal>
      with criteria <literal>REQUIRED</literal>.
 
     </para>

@@ -68,7 +68,7 @@
  <xinclude:include href="../shared/sec-configuring-web-policy-agents.xml" />
 
  <!-- The following section is reused in the j2ee policy agent users guide  -->
- <xinclude:include href="../shared/sec-configuring-j2ee-policy-agents.xml" />
+ <!--xinclude:include href="../shared/sec-configuring-j2ee-policy-agents.xml" /-->
 
  <!-- TODO: Web Service Provider, Client, and STS Agent sections subject to
  change / deletion  -->
