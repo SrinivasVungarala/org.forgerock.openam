@@ -640,13 +640,12 @@ $ <userinput>mv ~/Downloads/${coreWarFile} /path/to/tomcat/webapps/openam.war</u
     <para>After login, OpenAM should direct you to the Realms page.</para>
 
     <mediaobject xml:id="figure-openam-common-tasks">
-     <alt>OpenAM Common Tasks</alt>
+     <alt>OpenAM Realms</alt>
      <imageobject>
-      <imagedata fileref="images/openam-common-tasks.png" format="PNG"/>
+      <imagedata fileref="images/openam-realms.png" format="PNG"/>
      </imageobject>
      <textobject>
-      <para>The home page for the OpenAM Console shows links to common
-      administrative tasks.</para>
+      <para>The OpenAM realms page.</para>
      </textobject>
     </mediaobject>
 

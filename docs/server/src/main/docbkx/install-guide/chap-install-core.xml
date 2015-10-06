@@ -332,13 +332,13 @@ $ cp <?eval ${coreWarFile}?> /path/to/tomcat/webapps/openam.war
    </mediaobject>
 
    <para>
-    After successful login, OpenAM redirects you to OpenAM Console.
+    After successful login, OpenAM redirects you to OpenAM Realms.
    </para>
 
    <mediaobject xml:id="figure-openam-console-first-time">
     <alt>OpenAM Console home page</alt>
     <imageobject>
-     <imagedata fileref="images/openam-console.png" format="PNG" />
+     <imagedata fileref="images/openam-realms.png" format="PNG" />
     </imageobject>
     <textobject>
      <para>
@@ -811,13 +811,13 @@ Using CLASSPATH:
    </mediaobject>
 
    <para>
-    After login, OpenAM redirects you to the OpenAM Console page.
+    After login, OpenAM redirects you to the OpenAM Realms page.
    </para>
 
    <mediaobject xml:id="figure-openam-console">
     <alt>OpenAM Console home page</alt>
     <imageobject>
-     <imagedata fileref="images/openam-console.png" format="PNG" />
+     <imagedata fileref="images/openam-realms.png" format="PNG" />
     </imageobject>
     <textobject>
      <para>
