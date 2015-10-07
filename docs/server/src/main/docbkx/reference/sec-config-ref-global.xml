@@ -1630,9 +1630,21 @@
       desired version. Values are <literal>Latest</literal>, <literal>Oldest</literal>,
       and <literal>None</literal>.</para>
      <para>
-      Default: <literal>Latest</literal> for new OpenAM installations,
-      <literal>Oldest</literal> for upgraded OpenAM installations.
+      Default:
      </para>
+     <itemizedlist>
+      <listitem>
+       <para><literal>Latest</literal> for new OpenAM installations.</para>
+      </listitem>
+      <listitem>
+       <para><literal>Oldest</literal> when upgrading OpenAM installations
+        which do not already have the property.</para>
+      </listitem>
+      <listitem>
+       <para>Imported when upgrading OpenAM installations which already have
+        the property.</para>
+      </listitem>
+     </itemizedlist>
 
      <para><command>ssoadm</command> attribute:
      <literal>openam-rest-apis-default-version</literal></para>
