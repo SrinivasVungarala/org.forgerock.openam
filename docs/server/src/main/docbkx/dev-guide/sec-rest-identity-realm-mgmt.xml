@@ -959,26 +959,35 @@ $ <userinput>curl \
    </indexterm>
 
    <para>
-    A user can change their own password
-    with an HTTP POST to <literal>/json/<replaceable>subrealm</replaceable
+    <emphasis>Users</emphasis> other than the top-level administrator
+    can change their own passwords with an HTTP POST to
+    <literal>/json/<replaceable>subrealm</replaceable
     >/users/<replaceable>username</replaceable>?_action=changePassword</literal>
-    including the new password as the value of <literal>userpassword</literal> in the request
-    data.
+    including the new password as the value of <literal>userpassword</literal>
+    in the request data.
    </para>
 
+   <note>
+    <para>
+     Changing the top-level administrator's password requires a more complex
+     procedure. See <olink targetdoc="admin-guide" targetptr="amadmin-changes" />
+     for more information.
+    </para>
+   </note>
+
    <para>
-    A user must provide the current password, which is set in the request
+    Users must provide the current password, which is set in the request
     as the value of the <literal>currentpassword</literal>.
    </para>
 
    <para>
-    For the case where the user has forgotten their password, see
+    For cases where users have forgotten their password, see
     <xref linkend="rest-api-password-reset" /> instead.
    </para>
 
    <para>
     The following example shows a successful request to change the
-    <emphasis>demo</emphasis> user's password to <emphasis>password</emphasis>:
+    <literal>demo</literal> user's password to <literal>password</literal>:
    </para>
 
    <screen>
@@ -991,8 +1000,7 @@ $ <userinput>curl \
      "userpassword":"password"
  }' \
  https://openam.example.com:8443/openam/json/users/demo?_action=changePassword</userinput>
-<computeroutput>{}</computeroutput>
-   </screen>
+<computeroutput>{}</computeroutput></screen>
 
    <para>
     On success, the response is an empty JSON object {} as shown in the
@@ -1001,6 +1009,91 @@ $ <userinput>curl \
 
    <para>
     On failure, OpenAM returns a JSON representation of the error including the
+    <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
+    xlink:show="new">HTTP status code</link>. See also <xref linkend="rest-api-status-codes" />
+    for more information.
+   </para>
+
+   <para>
+    <emphasis>Administrators</emphasis> can change non-administrative users'
+    passwords with an HTTP PUT to
+    <literal>/json/<replaceable>subrealm</replaceable>/users/<replaceable>username</replaceable></literal>
+    including the new password as the value of <literal>userpassword</literal>
+    in the request data.
+   </para>
+
+   <para>
+    Unlike users, administrators do not provide users' current passwords
+    when changing passwords.
+   </para>
+
+   <para>
+    The following example shows a successful request by an administrator to
+    change the <literal>demo</literal> user's password to <literal>cangetin</literal>:
+   </para>
+
+   <screen>
+$ <userinput>curl \
+ --request PUT \
+ --header "iPlanetDirectoryPro: AQIC5w...NTcy*" \
+ --header "Content-Type: application/json" \
+ --data '{
+     "userpassword":"cangetin"
+ }' \
+ https://openam.example.com:8443/openam/json/users/demo</userinput>
+<computeroutput>{
+    "username":"demo",
+    "realm":"/",
+    "uid":[
+        "demo"
+    ],
+    "userPassword":[
+     "{SSHA}vYn47sJ4Cti5TomddcPEyQbkcb+nQUpPROeBcQ=="
+    ],
+    "universalid":[
+        "id=demo,ou=user,dc=example,dc=com"
+    ],
+    "objectClass":[
+        "iplanet-am-managed-person",
+        "inetuser","sunFederationManagerDataStore",
+        "sunFMSAML2NameIdentifier",
+        "devicePrintProfilesContainer",
+        "inetorgperson",
+        "sunIdentityServerLibertyPPService",
+        "iPlanetPreferences",
+        "iplanet-am-user-service",
+        "forgerock-am-dashboard-service",
+        "organizationalperson",
+        "top",
+        "sunAMAuthAccountLockout",
+        "person",
+        "oathDeviceProfilesContainer",
+        "iplanet-am-auth-configuration-service"
+    ],
+    "inetUserStatus":[
+        "Active"
+    ],
+    "dn":[
+        "uid=demo,ou=people,dc=example,dc=com"
+    ],
+    "sn":[
+        "demo"
+    ],
+    "cn":[
+        "demo"
+    ],
+    "modifyTimestamp":[
+        "20151006213634Z"
+    ],
+    "createTimestamp":[
+        "20151005134244Z"
+    ]
+}</computeroutput></screen>
+
+   <para>
+    As shown in the example, OpenAM returns the JSON representation of the
+    profile on success. On failure, OpenAM returns a JSON representation of the
+    error including the
     <link xlink:href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
     xlink:show="new">HTTP status code</link>. See also <xref linkend="rest-api-status-codes" />
     for more information.
