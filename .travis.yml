@@ -1,0 +1,19 @@
+language: java
+os:
+ - linux
+ - osx
+before_install:
+ - date -u
+ - uname -a
+ - env | sort
+branches:
+ only:
+   - v10.0.0-SNAPSHOT
+jdk:
+  - oraclejdk7
+  - openjdk7
+notifications:
+ email:
+  - support@openam.org.ru
+script:
+  - mvn install
