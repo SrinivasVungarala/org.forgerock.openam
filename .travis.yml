@@ -1,7 +1,6 @@
 language: java
 os:
  - linux
- - osx
 before_install:
  - date -u
  - uname -a
@@ -18,6 +17,9 @@ jdk:
 notifications:
  email:
   - support@openam.org.ru
+cache:
+  directories:
+  - $HOME/.m2
 script:
   - mvn -f openam/ install
   - mvn -f openam-agents/jee-agents install
