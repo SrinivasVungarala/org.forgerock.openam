@@ -24,11 +24,9 @@
  *
  * $Id: ApplicationLogoutHandler.java,v 1.13 2009/10/28 18:50:15 leiming Exp $
  *
+ * Portions Copyrighted 2011-2015 ForgeRock AS.
  */
 
-/*
- * Portions Copyrighted 2011 ForgeRock AS
- */
 package com.sun.identity.agents.filter;
 
 import java.util.Map;
@@ -85,16 +83,12 @@ implements IApplicationLogoutHandler {
 
         if (detectNeedForLogout(ctx.getHttpServletRequest())) {
             if (isLogMessageEnabled()) {
-                logMessage(
-                        "ApplicationLogoutHandler: Detected need to logout.");
+                logMessage("ApplicationLogoutHandler: Detected need to logout.");
             }
 
             helper.doLogout(ctx);
-
             String logoutURL = getLogoutURL(ctx);
-            result = new AmFilterResult(
-                    AmFilterResultStatus.STATUS_REDIRECT,
-                    logoutURL);
+            result = new AmFilterResult(AmFilterResultStatus.STATUS_REDIRECT, logoutURL);
         }
 
         return result;
@@ -111,8 +105,8 @@ implements IApplicationLogoutHandler {
 
     private String getApplicationEntryURI(HttpServletRequest request) {
         String appName = getApplicationName(request);
-        String result = getApplicationConfigurationString(request,
-                    CONFIG_LOGOUT_ENTRY_URI_MAP, appName);
+        String result =
+                getApplicationConfigurationString(request.getRequestURI(), CONFIG_LOGOUT_ENTRY_URI_MAP, appName);
         if (result == null) {
             if (isLogMessageEnabled()) {
                 logMessage("ApplicationLogoutHandler: no entry URI "
@@ -127,8 +121,8 @@ implements IApplicationLogoutHandler {
     /**
      * Detect the need for logout event
      */
-    private boolean detectNeedForLogout(HttpServletRequest request)
-            throws AgentException {
+    private boolean detectNeedForLogout(HttpServletRequest request) throws AgentException {
+
         String appName = null;
         boolean result = false;
 
@@ -136,7 +130,7 @@ implements IApplicationLogoutHandler {
             appName = getApplicationName(request);
 
             // Check for logout URI match
-            result = matchLogoutURI(request, appName);
+            result = isLogoutURI(request.getRequestURI(), appName);
 
             // Check for logout param in the request body and query string
             if (!result) {
@@ -144,13 +138,11 @@ implements IApplicationLogoutHandler {
             }
         } catch (Exception ex) {
             throw new AgentException(
-                    "ApplicationLogoutHandler.process() failed "
-                        + " to process incoming request with exception", ex);
+                    "ApplicationLogoutHandler.process() failed to process incoming request with exception", ex);
         }
 
         if (isLogMessageEnabled()) {
-            logMessage("ApplicationLogoutHandler : Need to logout = "
-                    + result);
+            logMessage("ApplicationLogoutHandler : Need to logout = " + result);
         }
 
         return result;
@@ -231,88 +223,6 @@ implements IApplicationLogoutHandler {
         }
 
         return result;
-
-    }
-
-    /**
-     * Returns a boolean value indicating if a match for logout URI was found
-     */
-    private boolean matchLogoutURI(HttpServletRequest request, String appName) {
-        boolean result = false;
-
-        if ((appName != null) && (appName.length() > 0)) {
-            String logoutURI = getApplicationConfigurationString(request,
-                    CONFIG_LOGOUT_URI_MAP, appName);            
-            if ((logoutURI != null) && (logoutURI.length() > 0)) {
-                if (request.getRequestURI().equals(logoutURI)) {
-                    result = true;
-
-                    if (isLogMessageEnabled()) {
-                        logMessage("ApplicationLogoutHandler : App Name = "
-                                + appName + "has a match for logout URI ="
-                                + logoutURI + " with the request URI."
-                                + "Need to logout =" + result);
-                    }
-                } else {
-                    if (isLogMessageEnabled()) {
-                        logMessage("ApplicationLogoutHandler : Request URI = "
-                                + request.getRequestURI()
-                                + " did not match with logout URI = "
-                                + logoutURI + " specified in configuration.");
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * get the property id's value based on possible second context as the key.
-     * The key of second context is in the form of appName/path1 from requested 
-     * URI /appName/path1/path2/...
-     */
-    private String getApplicationConfigurationString(HttpServletRequest request,
-            String id, String appName) {
-
-        String requestURI = request.getRequestURI();
-        int index1 = requestURI.indexOf("/", 1);
-        int index2 = -1;
-        if (index1 > 0) {
-            index2 = requestURI.indexOf("/", index1 + 1);
-        }
-        String secondContextKey = null;
-        if (index2 > 0) {
-            secondContextKey = requestURI.substring(1, index2);
-        }
-
-        // return if the key is null.
-        if (secondContextKey == null || secondContextKey.length() == 0) {
-            return getManager().getApplicationConfigurationString(
-                    id, appName);
-        }
-
-        // return to use appName as the key if second context value is null.
-        String secondContextValue = 
-                getManager().getApplicationConfigurationString(
-                    id, secondContextKey);
-        if (secondContextValue == null || secondContextValue.length() == 0) {
-            return getManager().getApplicationConfigurationString(
-                    id, appName);
-        }
-
-        // get default or global value for this property.
-        String defaultValue = getManager().getConfigurationString(id);
-        if (defaultValue == null || defaultValue.length() == 0) {
-            return secondContextValue;
-        }
-
-        if (secondContextValue.equals(defaultValue)) {
-            return getManager().getApplicationConfigurationString(
-                    id, appName);
-        } else {
-            return secondContextValue;
-        }
     }
     
     /**
@@ -331,8 +241,7 @@ implements IApplicationLogoutHandler {
         if ((logoutUrlMap != null && logoutUrlMap.size() > 0) ||
             (globalLogoutURI != null && globalLogoutURI.trim().length() > 0) ||
             (requestParamMap != null && requestParamMap.size() > 0) ||
-            (globalRequestParam != null && globalRequestParam.trim().length() >
-0)) {
+            (globalRequestParam != null && globalRequestParam.trim().length() > 0)) {
             _isActiveFlag = true;
         }
     }
