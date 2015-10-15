@@ -24,13 +24,12 @@
  *
  * $Id: NotenforcedListTaskHandler.java,v 1.6 2009/10/15 23:22:29 leiming Exp $
  *
+ * Portions Copyrighted 2011-2015 ForgeRock AS.
  */
 
-/*
- * Portions Copyrighted 2011 ForgeRock AS
- */
 package com.sun.identity.agents.filter;
 
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.sun.identity.agents.arch.AgentException;
@@ -47,20 +46,17 @@ import com.sun.identity.agents.util.StringUtils;
  * requests against the Notenforced List as set in the Agent Configuration.
  * </p>
  */
-public class NotenforcedListTaskHandler extends AmFilterTaskHandler
-implements INotenforcedListTaskHandler {
+public class NotenforcedListTaskHandler extends AmFilterTaskHandler implements INotenforcedListTaskHandler {
 
     private LogoutHelper helper;
 
     /**
-     * The constructor that takes a <code>Manager</code> intance in order
+     * The constructor that takes a <code>Manager</code> instance in order
      * to gain access to the infrastructure services such as configuration
      * and log access.
      *
      * @param manager the <code>Manager</code> for the <code>filter</code>
      * subsystem.
-     * @param accessDeniedURI the access denied URI that is being used in the
-     * system. This entry is always not-enforced by the Agent.
      * @throws AgentException if this task handler could not be initialized.
      */
     public NotenforcedListTaskHandler(Manager manager)
@@ -68,8 +64,7 @@ implements INotenforcedListTaskHandler {
         super(manager);
     }
     
-    public void initialize(ISSOContext context, AmFilterMode mode) 
-    throws AgentException {
+    public void initialize(ISSOContext context, AmFilterMode mode) throws AgentException {
         super.initialize(context, mode);
         boolean cacheEnabled = getConfigurationBoolean(
                 CONFIG_NOTENFORCED_LIST_CACHE_FLAG, 
@@ -89,9 +84,16 @@ implements INotenforcedListTaskHandler {
         CommonFactory cf = new CommonFactory(getModule());
         setNotEnforcedListURIHelper(cf.newNotenforcedURIHelper(
                 isInverted, cacheEnabled, cacheSize, notenforcedURIs));
-        
+
+        // If we have entries in here then there is a logout URI configured which should be
+        // considered when checking for not enforced.
+        Map logoutUrlMap = getManager().getConfigurationMap(CONFIG_LOGOUT_URI_MAP);
+        String globalLogoutURI = getManager().getConfigurationString(CONFIG_LOGOUT_URI_MAP);
+        logoutURIs = (logoutUrlMap != null && !logoutUrlMap.isEmpty()) ||
+                org.forgerock.openam.utils.StringUtils.isNotBlank(globalLogoutURI);
         pathInfoIgnored = getConfigurationBoolean(
                 CONFIG_IGNORE_PATH_INFO, DEFAULT_IGNORE_PATH_INFO);
+
         helper = new LogoutHelper(this);
     }
 
@@ -108,9 +110,8 @@ implements INotenforcedListTaskHandler {
      * @throws AgentException if the processing of this request results in an
      * unexpected error condition
      */
-    public AmFilterResult process(AmFilterRequestContext ctx)
-        throws AgentException
-    {
+    public AmFilterResult process(AmFilterRequestContext ctx) throws AgentException {
+
         AmFilterResult result = null;
         HttpServletRequest request = ctx.getHttpServletRequest();
         String requestURL;
@@ -125,9 +126,8 @@ implements INotenforcedListTaskHandler {
                 + "; requestURL=" + requestURL
                 + "; pathinfo=" + request.getPathInfo());
         }       
-        String accessDeniedURI = ctx.getAccessDeniedURI();
-        if(isNotEnforcedURI(requestURL, accessDeniedURI)) {
-            if(isLogMessageEnabled()) {
+        if (isNotEnforcedURI(request, requestURL, ctx.getAccessDeniedURI())) {
+            if (isLogMessageEnabled()) {
                 logMessage("NotenforcedListTaskHandler: The request URI "
                            + requestURL + " was found in Not Enforced List");
             }
@@ -162,8 +162,7 @@ implements INotenforcedListTaskHandler {
      * @return true if the task handler is enabled, false otherwise
      */
     public boolean isActive() {
-        return isModeSSOOnlyActive() 
-                                && getNotEnforcedListURIHelper().isActive();
+        return isModeSSOOnlyActive() && (logoutURIs || getNotEnforcedListURIHelper().isActive());
     }
 
     /**
@@ -197,8 +196,21 @@ implements INotenforcedListTaskHandler {
         return pathInfoIgnored;
     }
     
-    private boolean isNotEnforcedURI(String uri, String accessDeniedURI) {
-        return getNotEnforcedListURIHelper().isNotEnforced(uri, accessDeniedURI);
+    private boolean isNotEnforcedURI(HttpServletRequest request, String uri, String accessDeniedURI) {
+
+        boolean result = false;
+
+        if (isLogoutURI(uri, getApplicationName(request))) {
+            result = true;
+        } else {
+            INotenforcedURIHelper helper = getNotEnforcedListURIHelper();
+            // The helper may not be active if it was just Logout URIs that caused this handler to be seen as active
+            if (helper.isActive()) {
+                result = helper.isNotEnforced(uri, accessDeniedURI);
+            }
+        }
+
+        return result;
     }
 
     private void setNotEnforcedListURIHelper(INotenforcedURIHelper helper) {
@@ -211,4 +223,5 @@ implements INotenforcedListTaskHandler {
 
     private INotenforcedURIHelper _notEnforcedListURIHelper;
     private boolean pathInfoIgnored = false;
+    private boolean logoutURIs = false;
 }

@@ -24,6 +24,7 @@
  *
  * $Id: AmFilterHandlerBase.java,v 1.2 2008/06/25 05:51:43 qcheng Exp $
  *
+ * Portions Copyrighted 2015 ForgeRock AS.
  */
 
 package com.sun.identity.agents.filter;
@@ -37,6 +38,7 @@ import com.sun.identity.agents.arch.AgentException;
 import com.sun.identity.agents.arch.Manager;
 import com.sun.identity.agents.common.ISSOTokenValidator;
 import com.sun.identity.agents.util.IUtilConstants;
+import org.forgerock.openam.utils.StringUtils;
 
 /**
  * The base class for agent filter handler
@@ -149,7 +151,76 @@ IUtilConstants, IFilterConfigurationConstants, IAmFilterHandler
     protected ISSOContext getSSOContext() {
         return _ssoContext;
     }
-    
+
+    /**
+     * Returns true if the request URI is the logout URI for the App under this request.
+     */
+    protected boolean isLogoutURI(String requestURI, String appName) {
+
+        boolean result = false;
+
+        String logoutURI = getApplicationConfigurationString(requestURI, CONFIG_LOGOUT_URI_MAP, appName);
+        if (StringUtils.isNotEmpty(logoutURI)) {
+            if (logoutURI.equals(requestURI)) {
+                result = true;
+                if (isLogMessageEnabled()) {
+                    logMessage("AmFilterHandlerBase : The request URI "
+                            + requestURI + " matched the logout URI "
+                            + logoutURI + " for the App:" + appName);
+                }
+            } else {
+                if (isLogMessageEnabled()) {
+                    logMessage("AmFilterHandlerBase : The request URI "
+                            + requestURI + " did not match the logout URI "
+                            + logoutURI + " for the App:" + appName);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * get the property id's value based on possible second context as the key.
+     * The key of second context is in the form of appName/path1 from requested
+     * URI /appName/path1/path2/...
+     */
+    protected String getApplicationConfigurationString(String requestURI, String id, String appName) {
+
+        int index1 = requestURI.indexOf("/", 1);
+        int index2 = -1;
+        if (index1 > 0) {
+            index2 = requestURI.indexOf("/", index1 + 1);
+        }
+        String secondContextKey = null;
+        if (index2 > 0) {
+            secondContextKey = requestURI.substring(1, index2);
+        }
+
+        // return if the key is null.
+        if (secondContextKey == null || secondContextKey.length() == 0) {
+            return getManager().getApplicationConfigurationString(id, appName);
+        }
+
+        // return to use appName as the key if second context value is null.
+        String secondContextValue = getManager().getApplicationConfigurationString(id, secondContextKey);
+        if (secondContextValue == null || secondContextValue.length() == 0) {
+            return getManager().getApplicationConfigurationString(id, appName);
+        }
+
+        // get default or global value for this property.
+        String defaultValue = getManager().getConfigurationString(id);
+        if (defaultValue == null || defaultValue.length() == 0) {
+            return secondContextValue;
+        }
+
+        if (secondContextValue.equals(defaultValue)) {
+            return getManager().getApplicationConfigurationString(id, appName);
+        } else {
+            return secondContextValue;
+        }
+    }
+
     private void setFilterMode(AmFilterMode mode) {
         _filterMode = mode;
     }
