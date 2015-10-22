@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013 ForgeRock, Inc. All Rights Reserved
+ * Copyright (c) 2013-2015 ForgeRock AS. All Rights Reserved
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -40,6 +40,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
 import org.forgerock.agents.tools.jboss.CommonConstants;
+import org.forgerock.openam.utils.IOUtils;
+
 import static org.forgerock.openam.agents.jboss.install.InstallerConstants.*;
 
 /**
@@ -110,7 +112,7 @@ public class JBossValidator extends ValidatorBase {
             Debug.log("Command output:");
             while ((line = br.readLine()) != null) {
                 Debug.log(line);
-                if (line.contains("AS 7") || line.contains("Application Server 7")) {
+                if (isValidVersion(line)) {
                     status = ValidationResultStatus.STATUS_SUCCESS;
                     message = LocalizedMessage.get(LOC_VERSION_VALID, BUNDLE_NAME);
                     break;
@@ -119,12 +121,7 @@ public class JBossValidator extends ValidatorBase {
         } catch (IOException ioe) {
             Debug.log("An IOException occurred while verifying JBoss version", ioe);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ioe) {
-                }
-            }
+            IOUtils.closeIfNotNull(is);
         }
 
         return new ValidationResult(status, null, message);
@@ -147,5 +144,20 @@ public class JBossValidator extends ValidatorBase {
             Debug.log("JBossValidator: Exception thrown while loading method :", ex);
             throw new InstallException(LocalizedMessage.get(LOC_VA_ERR_VAL_METHOD_NOT_FOUND), ex);
         }
+    }
+
+    private boolean isValidVersion(String line) {
+
+        if (line.contains("AS 7") || line.contains("Application Server 7")) {
+            return true;
+        }
+
+        if (line.contains("WildFly")) {
+            if (line.contains(" 8.") || line.contains(" 9.")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
