@@ -35,8 +35,10 @@
     <modules>
         <!-- SampleApp Modules -->
         <module>jee-agents-sampleapp-ejb</module>
+        <module>jee-agents-sampleapp-ejb3</module>
         <module>jee-agents-sampleapp-webservlet</module>
         <module>jee-agents-sampleapp-ejbservlet</module>
+        <module>jee-agents-sampleapp-ejb3servlet</module>
         <module>jee-agents-sampleapp-tomcat</module>
         <module>jee-agents-sampleapp-jetty</module>
         <module>jee-agents-sampleapp-appserver</module>

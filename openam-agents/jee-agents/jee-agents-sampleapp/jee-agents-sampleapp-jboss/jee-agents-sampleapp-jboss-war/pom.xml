@@ -89,12 +89,12 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.openam.agents</groupId>
-            <artifactId>jee-agents-sampleapp-ejbservlet</artifactId>
+            <artifactId>jee-agents-sampleapp-ejb3servlet</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.forgerock.openam.agents</groupId>
-            <artifactId>jee-agents-sampleapp-ejb</artifactId>
+            <artifactId>jee-agents-sampleapp-ejb3</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
