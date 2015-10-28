@@ -1,7 +1,7 @@
 /**
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 ForgeRock AS. All Rights Reserved
+ * Copyright (c) 2011 ForgeRock AS. All Rights Reserved
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -171,9 +171,7 @@ public class LogoutHelper {
     private void removeSSOToken(AmFilterRequestContext ctx) {
         HttpServletRequest request = ctx.getHttpServletRequest();
         String rawToken = parent.getSSOTokenValidator().getSSOTokenValue(request);
-        if (rawToken != null) {
-            Session.removeSID(new SessionID(rawToken));
-        }
+        Session.removeSID(new SessionID(rawToken));
     }
 
     private void doCookiesReset(AmFilterRequestContext ctx) {
