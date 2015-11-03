@@ -24,10 +24,7 @@
  *
  * $Id: ServiceResolver.java,v 1.7 2009/05/26 22:47:57 leiming Exp $
  *
- */
-
-/*
- * Portions Copyrighted 2010-2013 ForgeRock AS
+ * Portions Copyrighted 2010-2015 ForgeRock AS.
  */
 package com.sun.identity.agents.arch;
 
@@ -304,6 +301,7 @@ public abstract class ServiceResolver {
         result.add(getPortCheckTaskHandlerImpl());
         result.add(getFQDNTaskHandlerImpl());
         result.add(getInboundLegacyUserAgentTaskHandlerImpl());
+        result.add(getApplicationLogoutHandlerImpl());
         result.add(getNotenforcedIPTaskHandlerImpl());
         result.add(getNotenforcedListTaskHandlerImpl());
         result.add(getWebServiceTaskHandlerImpl());
@@ -360,7 +358,6 @@ public abstract class ServiceResolver {
             boolean cdssoEnabled) {
         ArrayList handlers = new ArrayList();
         handlers.add(getPostSSOPDPTaskHandlerImpl());
-        handlers.add(getApplicationLogoutHandlerImpl());
         handlers.add(getProfileAttributeTaskHandlerImpl());
         handlers.add(getSessionAttributeTaskHandlerImpl());
         handlers.add(getResponseHeadersTaskHandlerImpl());
