@@ -1373,6 +1373,7 @@ public class LoginState {
         } else if (createWithAlias) {
             userProfile = ISAuthConstants.CREATE_WITH_ALIAS;
         }
+        session.setIsISStored(false);
         session.putProperty(ISAuthConstants.USER_PROFILE, userProfile);
         
         String defaultLoginURL = null;
@@ -5491,7 +5492,7 @@ public class LoginState {
                     sb.append(postLoginClassName);
                 }
             }
-            session.putProperty(ISAuthConstants.POST_AUTH_PROCESS_INSTANCE,
+            session.sessionProperties.put(ISAuthConstants.POST_AUTH_PROCESS_INSTANCE,
                     sb.toString()); 
         }
     }
