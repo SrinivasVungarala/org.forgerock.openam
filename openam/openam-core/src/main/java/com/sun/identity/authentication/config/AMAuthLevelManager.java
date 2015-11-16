@@ -664,7 +664,7 @@ public class AMAuthLevelManager implements ServiceListener {
                 String attrName = 
                     AMAuthConfigUtils.getAuthLevelAttribute(attrs, module);
                 String authLevel = CollectionHelper.getMapAttr(attrs, attrName);
-                Integer level = null;
+                Integer level = 0;
                 if ((authLevel != null) && (authLevel.length() > 0)) {
                         level = Integer.valueOf(authLevel);
                 }
