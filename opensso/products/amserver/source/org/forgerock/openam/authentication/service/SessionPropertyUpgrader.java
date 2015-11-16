@@ -62,6 +62,7 @@ public abstract class SessionPropertyUpgrader {
                 }
             }
         }
+        (!forceAuth?newSession:oldSession).updateForFailover();
     }
 
     /**
@@ -78,7 +79,7 @@ public abstract class SessionPropertyUpgrader {
      */
     public void updateProperty(InternalSession session, String property, String value) {
         if (value != null) {
-            session.putProperty(property, value);
+            session.sessionProperties.put(property, value);
         }
     }
 
