@@ -33,6 +33,8 @@ package com.iplanet.dpro.session.service;
 
 import com.iplanet.am.util.ClassCache;
 import com.iplanet.am.util.SystemProperties;
+import com.iplanet.dpro.session.Session;
+import com.iplanet.dpro.session.SessionException;
 import com.sun.identity.shared.datastruct.CollectionHelper;
 import com.sun.identity.shared.debug.Debug;
 import com.sun.identity.idm.AMIdentity;
@@ -48,6 +50,8 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -126,68 +130,6 @@ public class SessionConstraint {
         }
     }
 
-    
-    final static Integer getMaxThread(){
-    	try{
-    		return Integer.parseInt(SystemProperties.get("ru.org.openam.quota.maxThreads","32"));
-    	}catch(Throwable e){
-    		return 32;
-    	}
-    }
-    
-    final static ThreadPoolExecutor tpQuota=new ThreadPoolExecutor(1,getMaxThread(),60, TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(32000),
-    		 new ThreadFactory() {
-		 		final AtomicInteger threadNumber = new AtomicInteger(1);
-				@Override
-				public Thread newThread(Runnable r) {
-					Thread t = new Thread(r, "quota-" + threadNumber.getAndIncrement());
-		            t.setDaemon(true);
-		            t.setPriority(Thread.MIN_PRIORITY);
-		            return t;
-				}
-			});
-    
-    static{
-		tpQuota.allowCoreThreadTimeOut(true);
-	}
-    
-	public static class AsyncQuota implements Runnable {
-		final InternalSession is;
-		public AsyncQuota(InternalSession is){
-			this.is=is;
-		}
-		public void run() {
-			try{
-				Thread.currentThread().setName(tpQuota.toString());
-				name2InternalSession.remove(is.getUUID());
-				checkQuotaAndPerformAction0(is);
-			}catch(Exception e){
-				debug.error("quota ",e);
-			}
-		}
-	}
-	final static Map<String,InternalSession> name2InternalSession=new HashMap<String, InternalSession>();
-	protected static boolean checkQuotaAndPerformAction0(InternalSession is) {
-		if (is!=null && is.getID()!=null && is.getUUID()!=null){
-			if (!name2InternalSession.containsKey(is.getUUID())){
-				try{
-					synchronized (tpQuota) {
-						if (tpQuota.getTaskCount()>256 && tpQuota.getCorePoolSize()<tpQuota.getMaximumPoolSize()){
-							tpQuota.setCorePoolSize(Math.min(tpQuota.getCorePoolSize()+1, tpQuota.getMaximumPoolSize()));
-						}else if (tpQuota.getTaskCount()==0 && tpQuota.getCorePoolSize()>1)
-							tpQuota.setCorePoolSize(Math.max(tpQuota.getCorePoolSize()-1,1));
-						else if (tpQuota.getCorePoolSize()==tpQuota.getMaximumPoolSize())
-							tpQuota.setMaximumPoolSize(getMaxThread());
-					}
-				}catch(Throwable e){
-					debug.warning("quota "+e.getMessage(), e);
-				}
-				tpQuota.execute(new AsyncQuota(is));
-			}else
-				name2InternalSession.put(is.getUUID(), is);//replace IS for uuid
-		}
-		return false;
-	}
     /**
      * Check if the session quota for a given user has been exhausted and
      * perform necessary actions in such as case.

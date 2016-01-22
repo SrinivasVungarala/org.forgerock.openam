@@ -966,13 +966,13 @@ public class Session extends GeneralTaskRunnable {
                 session
                         .getSessionResponse(session.getSessionServiceURL(),
                                 sreq);
+                removeSID(session.getID());
             }
 
         } catch (Exception e) {
             throw new SessionException(e);
         }
         finally {
-            removeSID(session.getID());
         }
     }
 

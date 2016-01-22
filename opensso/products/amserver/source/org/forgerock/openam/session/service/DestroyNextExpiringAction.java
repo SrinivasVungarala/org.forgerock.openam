@@ -29,6 +29,7 @@ import com.iplanet.dpro.session.SessionID;
 import com.iplanet.dpro.session.service.InternalSession;
 import com.iplanet.dpro.session.service.QuotaExhaustionAction;
 import com.iplanet.dpro.session.service.SessionService;
+import com.sun.identity.authentication.service.AuthD;
 import com.sun.identity.shared.debug.Debug;
 
 import java.util.Collections;
@@ -37,6 +38,18 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.plaf.SliderUI;
 
 public class DestroyNextExpiringAction implements QuotaExhaustionAction {
 
@@ -59,7 +72,7 @@ public class DestroyNextExpiringAction implements QuotaExhaustionAction {
 	    return result;
 	}
 	
-    @Override
+	@Override
     public boolean action(InternalSession is, Map<String, Long> sessions) {
     	final Integer quota=(Integer)is.getObject("quota");
     	
@@ -67,19 +80,16 @@ public class DestroyNextExpiringAction implements QuotaExhaustionAction {
     		return false;
     	
     	final Map<String, Long> ordered=sortByValue(sessions);
-    	while (ordered.size()>=quota){
-    		 SessionID sessID = new SessionID(ordered.keySet().iterator().next());
-             try {
-                 Session s = Session.getSession(sessID);
-                 debug.error("DestroyNextExpiringAction destroy "+s.getIdleTime()+" "+ordered.size()+"/"+quota +" "+ sessID+" "+s.getClientID());
-                 s.destroySession(s);
-             } catch (SessionException e) {
-                 if (debug.messageEnabled()) {
-                     debug.message("Failed to destroy the next expiring session.", e);
-                 }
-             }finally{
-            	 ordered.remove(sessID.toString());
-             }
+    	while (ordered.size()>1 && ordered.size()>=quota){
+    		final SessionID sessID = new SessionID(ordered.keySet().iterator().next());
+    		try {
+    			 Session s = Session.getSession(sessID);
+    			 debug.error("destroy "+quota+"/"+ordered.size()+" idle="+s.getIdleTime()+" "+ sessID+" "+s.getClientID());
+    			 s.destroySession(s);
+	         } catch (Throwable e) {
+	        	debug.error("not found "+sessID+" "+e.getMessage(),e);
+	         }
+    		 ordered.remove(sessID.toString());
     	}
         return false;
     }
