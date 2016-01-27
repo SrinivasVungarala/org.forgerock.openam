@@ -1553,8 +1553,8 @@ public class InternalSession implements TaskRunnable, Serializable {
         if (SessionService.getSessionService().isSessionFailoverEnabled()
                 && isISStored) {
             if (sessionState != Session.VALID) {
-                SessionService.getSessionService().deleteFromRepository(
-                        sessionID);
+            	if (getProperty("am.protected.sfo.disable")==null)
+	                SessionService.getSessionService().deleteFromRepository(sessionID);
                 isISStored = false;
             } else {
             	if (getProperty("am.protected.sfo.disable")==null)
