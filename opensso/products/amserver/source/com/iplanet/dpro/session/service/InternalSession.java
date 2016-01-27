@@ -1014,7 +1014,7 @@ public class InternalSession implements TaskRunnable, Serializable {
         // FIXME Is this initialization necessary?
         SessionService.getSessionService();
         
-        if (SessionService.getSessionService().
+        if (getProperty("am.protected.sfo.disable")!=null || SessionService.getSessionService().
                 isSuperUser(getUUID()) || (isAppSession())) {
             ignore = true;
         } else {
@@ -1557,7 +1557,8 @@ public class InternalSession implements TaskRunnable, Serializable {
                         sessionID);
                 isISStored = false;
             } else {
-                SessionService.getSessionService().saveForFailover(this);
+            	if (getProperty("am.protected.sfo.disable")==null)
+            		SessionService.getSessionService().saveForFailover(this);
             }
         }
 

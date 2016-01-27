@@ -159,7 +159,10 @@ public class SessionConstraint {
 
         // Step 1: get constraints for the given user via IDRepo
         int quota = getSessionQuota(is);
-
+        is.putProperty("am.protected.sfo.quota", ""+quota);
+        if (quota<1){
+        	return false;
+        }
 	// Step 2: get the information (session id and expiration
 	// time) of all sessions for the given user from all
 	// AM servers and/or session repository

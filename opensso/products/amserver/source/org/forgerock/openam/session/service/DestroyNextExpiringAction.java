@@ -80,7 +80,7 @@ public class DestroyNextExpiringAction implements QuotaExhaustionAction {
     		return false;
     	
     	final Map<String, Long> ordered=sortByValue(sessions);
-    	while (ordered.size()>1 && ordered.size()>=quota){
+    	while (ordered.size()>=quota){
     		final SessionID sessID = new SessionID(ordered.keySet().iterator().next());
     		try {
     			 Session s = Session.getSession(sessID);
