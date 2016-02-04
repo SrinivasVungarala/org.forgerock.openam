@@ -195,6 +195,9 @@
         <forgerock.license.groupId>org.forgerock</forgerock.license.groupId>
         <forgerock.license.artifactId>cddl-license</forgerock.license.artifactId>
         <forgerock.license.version>1.0.0</forgerock.license.version>
+        
+    	<main.basedir>${project.basedir}</main.basedir>
+		<maven.skip.install.libs>true</maven.skip.install.libs>
     </properties>
 
     <!-- Profiles -->
@@ -1667,6 +1670,8 @@
                 <groupId>org.forgerock.http</groupId>
                 <artifactId>chf-http-core</artifactId>
                 <version>${forgerock.http.version}</version>
+<!--                 <scope>system</scope> -->
+<!--                 <systemPath>${main.basedir}/libs/chf-http-core-0.0.1-SNAPSHOT.jar</systemPath> -->
             </dependency>
             <dependency>
                 <groupId>org.forgerock.http</groupId>
@@ -2344,7 +2349,33 @@
                     <artifactId>maven-plugin-plugin</artifactId>
                     <version>3.3</version>
                 </plugin>
+                <plugin>
+          			<groupId>org.apache.maven.plugins</groupId>
+          			<artifactId>maven-install-plugin</artifactId>
+          			<version>2.4</version>
+          			<inherited>false</inherited>
+          			
+          			<configuration>
+		                		<file>${project.basedir}/libs/chf-http-core-0.0.1-SNAPSHOT.jar</file>
+		                		<groupId>org.forgerock.http</groupId>
+		                		<artifactId>chf-http-core</artifactId>
+		                		<version>${forgerock.http.version}</version>
+		                		<packaging>jar</packaging>
+		                		<generatePom>true</generatePom>
+		                		<skip>${maven.skip.install.libs}</skip>
+	              			</configuration>
+          			<executions>
+            			<execution>
+	              			<id>install1</id>
+	              			<phase>validate</phase>
+	              			<goals>
+	                			<goal>install-file</goal>
+	              			</goals>
+            			</execution>
+             		</executions>
+                </plugin>
             </plugins>
+            
         </pluginManagement>
     </build>
 
