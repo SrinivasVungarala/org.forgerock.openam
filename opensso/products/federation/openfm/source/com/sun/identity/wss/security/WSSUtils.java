@@ -818,14 +818,16 @@ public class WSSUtils {
 
         Map<QName, List<String>> map = new HashMap();
         AMIdentity amId = null;
+        Boolean isExists=false;
         try {
             amId = new AMIdentity(getAdminToken(), subjectName);
-            if(!amId.isExists()) {
+            isExists=amId.isExists();
+            if(!isExists) {
                if(debug.messageEnabled()) {
                   debug.message("WSSUtils.getSAMLAttributes: " +
                   "Subject " + subjectName + " does not exist");
                }
-               return map;
+               //return map;
             }
         } catch (IdRepoException ex) {
             if(debug.warningEnabled()) {
@@ -868,7 +870,7 @@ public class WSSUtils {
                    }
                 }
                 
-                if(!attributeFoundInSSOToken) {
+                if(!attributeFoundInSSOToken && isExists) {
                    try {
                        values = amId.getAttribute(realAttribute);
                    } catch (IdRepoException ex) {
