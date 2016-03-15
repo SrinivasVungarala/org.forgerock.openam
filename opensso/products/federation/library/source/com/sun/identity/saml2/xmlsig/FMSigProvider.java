@@ -62,6 +62,8 @@ import com.sun.identity.saml2.common.SAML2SDKUtils;
 import com.sun.identity.saml2.common.SAML2Exception;
 import com.sun.identity.saml2.common.SAML2Constants;
 import com.sun.identity.saml2.common.SAML2Utils;
+import com.sun.org.apache.xml.internal.security.utils.ElementProxy;
+import com.sun.identity.saml.common.SAMLConstants;
 
 /**
  * <code>FMSigProvider</code> is an class for signing
@@ -153,11 +155,13 @@ public final class FMSigProvider implements SigProvider {
 	Element root = doc.getDocumentElement();
 	XMLSignature sig = null;
 	try {
-	    Constants.setSignatureSpecNSprefix("ds");
+	    //Constants.setSignatureSpecNSprefix("ds");
+	    ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, SAMLConstants.PREFIX_DS);
 	} catch (XMLSecurityException xse1) {
 	    throw new SAML2Exception(xse1);
 	}   
-	IdResolver.registerElementById(root, idValue);
+	//IdResolver.registerElementById(root, idValue);
+	root.setIdAttribute(SAML2Constants.ID, true);
 	try {
 	    if ((sigAlg == null) || (sigAlg.trim().length() == 0)) {
 	       if (privateKey.getAlgorithm().equalsIgnoreCase(
@@ -293,15 +297,17 @@ public final class FMSigProvider implements SigProvider {
 	    throw new SAML2Exception(te);
 	}
         String refUri = refElement.getAttribute("URI");
-        String signedId = ((Element) sigElement.getParentNode()).getAttribute("ID");
+//        String signedId = ((Element) sigElement.getParentNode()).getAttribute("ID");
+        String signedId = ((Element) sigElement.getParentNode()).getAttribute(SAML2Constants.ID);
         if (refUri == null || signedId== null || !refUri.substring(1).equals(signedId)) {
             SAML2SDKUtils.debug.error(classMethod + "Signature reference ID does "
                     + "not match with element ID");
             throw new SAML2Exception(SAML2SDKUtils.bundle.getString("uriNoMatchWithId"));
         }
 
-	IdResolver.registerElementById(
-	    doc.getDocumentElement(), idValue);
+//	IdResolver.registerElementById(
+//	    doc.getDocumentElement(), idValue);
+        doc.getDocumentElement().setIdAttribute(SAML2Constants.ID, true);
 	XMLSignature signature = null;
 	try {
 	    signature = new

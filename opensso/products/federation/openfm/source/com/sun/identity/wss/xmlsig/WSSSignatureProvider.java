@@ -38,6 +38,9 @@ import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+
+import javax.xml.transform.TransformerException;
+
 import com.sun.org.apache.xml.internal.security.keys.KeyInfo;
 import com.sun.org.apache.xml.internal.security.c14n.Canonicalizer;
 import com.sun.org.apache.xml.internal.security.signature.XMLSignature;
@@ -63,7 +66,7 @@ import com.sun.identity.common.SystemConfigurationUtil;
 import com.sun.identity.wss.security.handler.ThreadLocalService;
 import com.iplanet.security.x509.CertUtils;
 import java.lang.ClassNotFoundException;
-
+import com.sun.org.apache.xml.internal.security.utils.ElementProxy;
 /**
  * <code>WSSSignatureProvider</code> is a class for signing and 
  * signature verification of WSS XML Documents which implements 
@@ -181,7 +184,8 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                          WSSConstants.TIME_STAMP).item(0);
         XMLSignature signature = null;
         try {
-            Constants.setSignatureSpecNSprefix("ds");            
+        	ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, SAMLConstants.PREFIX_DS);
+            //Constants.setSignatureSpecNSprefix("ds");            
             if(symmetricKey) {
                algorithm = SAMLConstants.ALGO_ID_MAC_HMAC_SHA1;               
             } else {                                                    
@@ -207,7 +211,9 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                      Element elem = (Element) wsuNodes.item(i);
                      String id = elem.getAttributeNS(WSSConstants.WSU_NS, "Id");
                      if (id != null && id.length() != 0) {
-                         IdResolver.registerElementById(elem, id);
+                         //IdResolver.registerElementById(elem, id);
+                    	 //elem.setIdAttribute(id, true);
+                    	 elem.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
                      }
                 }
             }
@@ -269,8 +275,10 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                signature.addKeyInfo((X509Certificate)signingCert);                              
             }
             
-            IdResolver.registerElementById(securityTokenRef, secRefId);
-
+            //IdResolver.registerElementById(securityTokenRef, secRefId);
+            //securityTokenRef.setIdAttribute(secRefId, true);
+            securityTokenRef.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
+            
             int size = ids.size();
             for (int i = 0; i < size; ++i) {
                 Transforms transforms = new Transforms(doc);
@@ -441,7 +449,9 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                      Element elem = (Element) wsuNodes.item(i);
                      String id = elem.getAttributeNS(WSSConstants.WSU_NS, "Id");                     
                      if (id != null && id.length() != 0) {
-                         IdResolver.registerElementById(elem, id);
+                         //IdResolver.registerElementById(elem, id);
+                    	// elem.setIdAttribute(id, true);
+                    	 elem.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
                      }
                 }
             }
@@ -478,9 +488,10 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                 WSSConstants.WSU_ID, secRefId);
             KeyInfo keyInfo = signature.getKeyInfo();
             keyInfo.addUnknownElement(securityTokenRef);
-            IdResolver.registerElementById(securityTokenRef, secRefId);
+            //IdResolver.registerElementById(securityTokenRef, secRefId);
+            //securityTokenRef.setIdAttribute(secRefId, true);
+            securityTokenRef.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
             
-
             int size = ids.size();
             for (int i = 0; i < size; ++i) {
                 Transforms transforms = new Transforms(doc);
@@ -588,7 +599,9 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                    Element elem = (Element) wsuNodes.item(i);
                    String id = elem.getAttributeNS(WSSConstants.WSU_NS, "Id");
                    if (id != null && id.length() != 0) {
-                       IdResolver.registerElementById(elem, id);
+                       //IdResolver.registerElementById(elem, id);
+                	   //elem.setIdAttribute(id, true);
+                	   elem.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
                    }
                }
             }
@@ -600,7 +613,9 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                      Element elem = (Element) aList.item(i);
                      String id = elem.getAttribute("AssertionID");
                      if (id != null && id.length() != 0) {
-                         IdResolver.registerElementById(elem, id);
+                         //IdResolver.registerElementById(elem, id);
+                    	 //elem.setIdAttribute(id, true);
+                    	 elem.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
                      }
                 }
             }
@@ -628,6 +643,22 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                     WSSUtils.debug.message("Sig(" + i + ") = " +
                         XMLUtils.print(sigElement));
                 }
+                
+                                Element refElement;
+                                try {
+                                    refElement = (Element) XPathAPI.selectSingleNode(sigElement, "//ds:Reference[1]", nscontext);
+                                } catch (TransformerException te) {
+                                    throw new XMLSignatureException(te);
+                                }
+                                String refUri = refElement.getAttribute("URI");
+                                String signedId = ((Element) sigElement.getParentNode()).getAttribute("AssertionID");
+                                //NB: this validation only works with enveloped XML signatures, enveloping and detached signatures are
+                                //no longer supported.
+                                if (refUri == null || signedId == null || !refUri.substring(1).equals(signedId)) {
+                                    WSSUtils.debug.error("Signature reference ID does not match with element ID");
+                                    throw new XMLSignatureException(WSSUtils.bundle.getString("uriNoMatchWithId"));
+                                }
+                
                 XMLSignature signature = new XMLSignature (sigElement, "");
                 signature.addResourceResolver (
                     new com.sun.identity.saml.xmlsig.OfflineResolver ());
@@ -852,7 +883,9 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                      Element elem = (Element) wsuNodes.item(i);
                      String id = elem.getAttributeNS(WSSConstants.WSU_NS, "Id");                     
                      if (id != null && id.length() != 0) {
-                         IdResolver.registerElementById(elem, id);
+                         //IdResolver.registerElementById(elem, id);
+                    	 //elem.setIdAttribute(id, true);
+                    	 elem.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
                      }
                 }
             }
@@ -889,9 +922,10 @@ public class WSSSignatureProvider extends AMSignatureProvider {
                 WSSConstants.WSU_ID, secRefId);
             KeyInfo keyInfo = signature.getKeyInfo();
             keyInfo.addUnknownElement(securityTokenRef);
-            IdResolver.registerElementById(securityTokenRef, secRefId);
+            //IdResolver.registerElementById(securityTokenRef, secRefId);
+            //securityTokenRef.setIdAttribute(secRefId, true);
+            securityTokenRef.setIdAttributeNS(WSSConstants.WSU_NS, "Id", true);
             
-
             int size = ids.size();
             for (int i = 0; i < size; ++i) {
                 Transforms transforms = new Transforms(doc);
