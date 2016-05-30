@@ -610,27 +610,29 @@ public class SecureSOAPMessage {
 
      private void checkForAddressingHeaders() throws SecurityException {
          try {
-             SOAPHeader header = soapMessage.getSOAPPart().
-                     getEnvelope().getHeader();
+        	 SOAPHeader header = soapMessage.getSOAPHeader();
              java.util.Iterator childElements = header.getChildElements();
              while(childElements.hasNext()) {
-                Element childElement = (Element)childElements.next();
-                String localName = childElement.getLocalName();
-                String nameSpace = childElement.getNamespaceURI();
-                if(WSSConstants.wsaNS.equals(nameSpace)
-                        &&( localName.equals("To") ||
-                            localName.equals("From") ||
-                            localName.equals("MessageID") ||
-                            localName.equals("Action"))) {
-                   childElement.setAttributeNS(WSSConstants.NS_XML,
-                       WSSConstants.TAG_XML_WSU,
-                       WSSConstants.WSU_NS);
-                   String id = SAMLUtils.generateID();
-                   childElement.setAttribute(WSSConstants.WSU_ID, id);
-                   if(signedElements.contains(localName)) {
-                      signingIds.add(id);
-                   }
-                }
+            	Object cur=childElements.next();
+            	if (cur instanceof Element){
+	                Element childElement = (Element)cur;
+	                String localName = childElement.getLocalName();
+	                String nameSpace = childElement.getNamespaceURI();
+	                if(WSSConstants.wsaNS.equals(nameSpace)
+	                        &&( localName.equals("To") ||
+	                            localName.equals("From") ||
+	                            localName.equals("MessageID") ||
+	                            localName.equals("Action"))) {
+	                   childElement.setAttributeNS(WSSConstants.NS_XML,
+	                       WSSConstants.TAG_XML_WSU,
+	                       WSSConstants.WSU_NS);
+	                   String id = SAMLUtils.generateID();
+	                   childElement.setAttribute(WSSConstants.WSU_ID, id);
+	                   if(signedElements.contains(localName)) {
+	                      signingIds.add(id);
+	                   }
+	                }
+            	}
 
              }            
 
