@@ -335,7 +335,7 @@ public class LoginViewBean extends AuthViewBeanBase {
                     ssoToken=null;
                 } else {
                     loginDebug.message("Old Session is Active.");
-                    newOrgExist = checkNewOrg(ssoToken);
+                    newOrgExist = false;//checkNewOrg(ssoToken);
                     if (logIntoDiffOrg) {
                         String origURL = request.getParameter(AM_ORIG_URL);
                         if (origURL != null) {
@@ -1737,12 +1737,13 @@ public class LoginViewBean extends AuthViewBeanBase {
                     rb =  rbCache.getResBundle(bundleName, fallbackLocale);
                     
                     if (strButton.trim().equals(rb.getString("Yes").trim())) {
-                        logIntoDiffOrg = true;
+                        //logIntoDiffOrg = true;
                         loginDebug.message("Submit with YES. Destroy session.");
                         clearCookie(AuthUtils.getCookieName());
                         AuthUtils.clearHostUrlCookie(response);
                         AuthUtils.clearlbCookie(request, response);
                         SSOTokenManager.getInstance().destroyToken(ssot);
+                        return false;
                     } else if (strButton.trim().equals(rb.getString("No").trim())) {
                         loginDebug.message("Aborting different realm auth");
                         dontLogIntoDiffOrg = true;

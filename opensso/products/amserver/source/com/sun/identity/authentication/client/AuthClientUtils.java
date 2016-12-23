@@ -978,6 +978,11 @@ public class AuthClientUtils {
                     utilDebug.message("checksessionUpgrade: composite advice");
                 }
                 upgrade = true;
+            } else if ( reqDataHash.get("new_org") != null ) {
+            	 if (utilDebug.messageEnabled()) {
+                     utilDebug.message("checksessionUpgrade: new org");
+                 }
+            	upgrade = true;
             }
         } catch (Exception e) {
             utilDebug.message("Exception in checkSessionUpgrade : " , e);
