@@ -101,7 +101,7 @@
                 int idx = data.indexOf("filename=\"");
                 idx = data.indexOf("\n\n", idx);
                 data = data.substring(idx + 2);
-                idx = data.lastIndexOf("\n-----------------");
+                idx = data.lastIndexOf("\n-----");
                 data = data.substring(0, idx);
                 data = data.replace("<", "&lt;");
                 data = data.replace(">", "&gt;");               
