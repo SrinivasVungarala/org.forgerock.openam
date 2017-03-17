@@ -464,14 +464,18 @@ class PrivilegeEvaluator {
                 if (isThreaded) {
                     try {
                         parent.lock.lock();
-                        parent.eException = (ex instanceof EntitlementException) ?(EntitlementException)ex:new EntitlementException(-1, ex);
+                        if (! (ex instanceof EntitlementException)){
+                        	PrivilegeManager.debug.error(ex.toString(),ex);
+                        	ex.printStackTrace();
+                        }
+                        parent.eException = (ex instanceof EntitlementException) ?(EntitlementException)ex:new EntitlementException(1, ex);
                         parent.hasResults.signal();
                         signal=true;
                     } finally {
                         parent.lock.unlock();
                     }
                 } else {
-                    parent.eException =  (ex instanceof EntitlementException) ?(EntitlementException)ex:new EntitlementException(-1, ex);
+                    parent.eException =  (ex instanceof EntitlementException) ?(EntitlementException)ex:new EntitlementException(1, ex);
                 }
             }finally{
             	if (isThreaded && !signal) 
