@@ -1202,7 +1202,8 @@ public class InternalSession implements TaskRunnable, Serializable {
     private void changeStateAndNotify(int eventType) {
         SessionService.getSessionService().logEvent(this, eventType);
         timedOutAt = System.currentTimeMillis()/1000;
-        putProperty("SessionTimedOut", String.valueOf(timedOutAt));
+        if(purgeDelay > 0)
+        	putProperty("SessionTimedOut", String.valueOf(timedOutAt));
         SessionService.execSessionTimeoutHandlers(sessionID, eventType);
         if(purgeDelay == 0) {
             ss.destroyInternalSession(sessionID);
