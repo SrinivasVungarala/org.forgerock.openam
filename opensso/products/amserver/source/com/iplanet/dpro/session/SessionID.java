@@ -348,8 +348,6 @@ public class SessionID implements Serializable {
         }
         try {
             String sidString = encryptedString;
-            if (encryptedString!=null)
-            	encryptedString=encryptedString.replaceFirst("^\\d{2}(.*)$", "$1");
             // sidString would have * if it has been c66 encoded
             if (sidString.indexOf("*") != -1) {
                 sidString = c66DecodeCookieString(encryptedString);
@@ -511,11 +509,6 @@ public class SessionID implements Serializable {
             String returnValue = buf.toString();
             if (c66EncodeCookie()) {
                 returnValue = c66EncodeSidString(returnValue);
-            }
-            if (extensions!=null && (String) extensions.get(SITE_ID)!=null){
-            	final String amlbcookie=WebtopNaming.getLBCookieValue((String) extensions.get(SITE_ID));
-            	if (amlbcookie!=null)
-            		returnValue=amlbcookie.concat(returnValue);
             }
             return returnValue;
         } catch (Exception e) {
