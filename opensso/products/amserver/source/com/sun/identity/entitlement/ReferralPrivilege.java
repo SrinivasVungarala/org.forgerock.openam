@@ -36,6 +36,7 @@ import com.sun.identity.shared.JSONUtils;
 import com.sun.identity.shared.ldap.LDAPDN;
 import com.sun.identity.shared.ldap.util.DN;
 import java.security.Principal;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -405,6 +406,8 @@ public final class ReferralPrivilege implements IPrivilege, Cloneable {
         String applName) throws EntitlementException {
         Application appl = ApplicationManager.getApplication(
             PrivilegeManager.superAdminSubject, realm, applName);
+        if (appl==null)
+        	PrivilegeManager.debug.error(MessageFormat.format("ApplicationManager.getApplication is null realm=%1 applName=%2", realm,applName));
         return appl.getResourceComparator();
     }
 
