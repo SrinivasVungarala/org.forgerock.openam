@@ -19,13 +19,7 @@
 #include "utility.h"
 #include "list.h"
 
-void notification_worker(
-#ifdef _WIN32
-        PTP_CALLBACK_INSTANCE
-#else
-        void *
-#endif
-        inst, void *arg) {
+void notification_worker(void *arg) {
     static const char *thisfunc = "notification_worker():";
     struct notification_worker_data *r = (struct notification_worker_data *) arg;
     struct am_namevalue *e, *t, *session_list;
@@ -57,9 +51,12 @@ void notification_worker(
         /* PolicyChangeNotification - ResourceName */
         if (!policy_change_run && strcmp(e->n, "ResourceName") == 0) {
             am_request_t req;
+            int rv;
             memset(&req, 0, sizeof (am_request_t));
             req.instance_id = r->instance_id;
-            am_add_policy_cache_entry(&req, AM_POLICY_CHANGE_KEY, 0);
+            rv = am_add_policy_cache_entry(&req, AM_POLICY_CHANGE_KEY, 0);
+            AM_LOG_DEBUG(r->instance_id, "%s policy change cache update status: %s",
+                    thisfunc, am_strerror(rv));
             policy_change_run = AM_TRUE; /* one AM_POLICY_CHANGE_KEY update per PolicyChangeNotification is enough */
         }
     }
@@ -80,30 +77,19 @@ void notification_worker(
     free(r);
 }
 
-void session_logout_worker(
-#ifdef _WIN32
-        PTP_CALLBACK_INSTANCE
-#else
-        void *
-#endif
-        inst, void *arg) {
+void session_logout_worker(void *arg) {
     struct logout_worker_data *r = (struct logout_worker_data *) arg;
-    int status = am_agent_logout(r->instance_id, r->openam, r->token,
-            r->server_id, &r->info, NULL);
+    int status = am_agent_logout(r->instance_id, r->openam, r->token, r->options);
     if (status == AM_SUCCESS) {
         am_remove_cache_entry(r->instance_id, r->token);
     }
-    AM_FREE(r->openam, r->token, r->server_id, r);
+    am_net_options_delete(r->options);
+    AM_FREE(r->openam, r->token, r->options, r);
 }
 
-void remote_audit_worker(
-#ifdef _WIN32
-        PTP_CALLBACK_INSTANCE
-#else
-        void *
-#endif
-        inst, void *arg) {
+void remote_audit_worker(void *arg) {
     struct audit_worker_data *r = (struct audit_worker_data *) arg;
-    am_agent_audit_request(r->instance_id, r->openam, r->logdata, r->server_id, &r->info);
-    AM_FREE(r->openam, r->logdata, r->server_id, r);
+    am_agent_audit_request(r->instance_id, r->openam, r->logdata, r->options);
+    am_net_options_delete(r->options);
+    AM_FREE(r->openam, r->logdata, r->options, r);
 }

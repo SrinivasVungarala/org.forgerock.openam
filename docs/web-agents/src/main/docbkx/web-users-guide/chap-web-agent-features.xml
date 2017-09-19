@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !    
+-->
+<chapter xml:id='chap-agent-features'
+ xmlns='http://docbook.org/ns/docbook'
+ version='5.0' xml:lang='en'
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xsi:schemaLocation='http://docbook.org/ns/docbook
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'
+ xmlns:xlink='http://www.w3.org/1999/xlink'>
+
+ <title>Web Policy Agent Features</title>
+
+  <indexterm>
+   <primary>web policy agent</primary>
+   <secondary>features</secondary>
+  </indexterm>
+  <indexterm>
+   <primary>features</primary>
+  </indexterm>
+
+  <para>The Web policy agent provides a number of additional features
+   useful for your deployment, some of which are described below.
+  </para>
+
+ <section xml:id="multi-site-and-vhost-support">
+  <title>Multiple Sites and Virtual Host Support</title>
+
+  <indexterm>
+   <primary>IIS</primary>
+   <secondary>multiple site support</secondary>
+  </indexterm>
+
+  <indexterm>
+   <primary>Apache</primary>
+   <secondary>virtual host support</secondary>
+  </indexterm>
+
+  <para>Web policy agent instances can be configured to operate with multiple
+   websites in IIS, and with multiple virtual hosts in Apache.</para>
+
+    <para>Each configuration instance is independent and has its own
+     configuration file, debug logs, and audit logs. Each instance can connect
+     to a different OpenAM realm, or even different OpenAM servers.  </para>
+
+  <para>For more information, see <xref
+   linkend="install-apache-web-agent-vhost"/> and <xref
+   linkend="install-iis-web-agent"/>.</para>
+ </section>
+
+ <section xml:id="agent-sso-only">
+  <title>Web Agent SSO Only Mode</title>
+
+  <indexterm>
+   <primary>SSO only</primary>
+  </indexterm>
+
+  <para>The agent intercepts all inbound client requests
+   to access a protected resource and processes the request based on
+   a global configuration property,
+   <literal>com.sun.identity.agents.config.sso.only</literal>.
+   The configuration setting determines the mode of operation that should be
+   carried out on the intercepted inbound request.
+  </para>
+
+  <para>When <literal>com.sun.identity.agents.config.sso.only</literal> is
+  <literal>true</literal>, the web policy agent only manages user authentication.
+  The filter invokes the OpenAM Authentication service to verify the identity of
+  the user. If the user's identity is verified, the user is issued a session token
+  through OpenAM's Session service. </para>
+
+ <para>When <literal>com.sun.identity.agents.config.sso.only</literal> is
+ <literal>false</literal>, which is the default, the web policy agents will also
+ manage user authorization, by using the policy engine in OpenAM. </para>
+
+  <para>For more information, see <xref linkend="configure-web-pa-sso-props"/>.</para>
+
+ </section>
+
+ <section xml:id="web-agent-not-enforced-list">
+  <title>Not-Enforced URL and Client IP Lists</title>
+
+  <indexterm>
+   <primary>not-enforced URL list</primary>
+   <secondary>described</secondary>
+  </indexterm>
+  <indexterm>
+   <primary>not-enforced client IP list</primary>
+   <secondary>described</secondary>
+  </indexterm>
+
+  <para>The policy agent supports properties to bypass authentication
+   and grant immediate access to resources not requiring protection, such
+   as images, stylesheets, or static HTML pages.</para>
+
+  <para>
+   You can configure a Not-Enforced URL List using the
+   <literal>com.sun.identity.agents.config.notenforced.url</literal> property
+   that grants the user access to resources whose URLs match those in the list.
+  </para>
+  <para>
+   For example, you can set URL patterns with wildcards in the OpenAM console
+   using the following patterns:</para>
+<screen>/logout.html
+/images/*
+/css/-*-
+/*.jsp?locale=*</screen>
+
+  <para>For more information on wildcard usage, see
+   <link
+    xlink:show="new"
+    xlink:href="${serverDocBase}/admin-guide/#wildcard-syntax"
+   >Wildcard Usage</link>.
+  </para>
+
+  <para>The policy agent supports a Not-Enforced Client IP List, which
+   specifies the client IP addresses that can be excluded from authentication
+   and authorization. This property is useful to allow administrators access
+   to the web site from a certain IP address or allow a search engine access
+   to the web resources.
+  </para>
+
+  <para>For finer control, you can configure a not-enforced policy
+   that applies to requests to specified URLs, which also come from a
+   list of specified IP addresses. See
+   <xref linkend="web-agent-not-enforced-ipurl-properties"/>.</para>
+
+  <para>For more information on not-enforced lists, see <xref
+   linkend="configure-web-pa-application-props"/>.</para>
+ </section>
+
+  <section xml:id="web-agent-attribute-fetching">
+   <title>Attribute Fetch Modes</title>
+
+   <indexterm>
+    <primary>web policy agent</primary>
+    <secondary>attribute fetch modes</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>attribute fetch modes</primary>
+   </indexterm>
+
+   <!-- TODO: Add examples/user cases of each type of attribute fetch -->
+   <para>Web policy agents provide the capability
+    to fetch and inject user information into HTTP headers, request objects, and
+    cookies and pass them on to the protected client applications.
+    The client applications can then personalize content using these attributes
+    in their web pages or responses.
+   </para>
+   <para>Specifically, you can configure the type of
+    attributes to be fetched and the associated mappings for the attributes
+    names used on OpenAM to those values used in the containers. The web
+    policy agent securely fetches the user and session data from the
+    authenticated user as well as policy response attributes.
+   </para>
+   <para>For example, you can have a web page that addresses the user by name
+    retrieved from the user profile, for example "Welcome Your Name!"
+    OpenAM populates part of the request (header, form data) with the CN from
+    the user profile, and the web site consumes and displays it.</para>
+
+   <para>For more details, see <xref
+    linkend="web-agent-profile-attributes-processing-properties" />.</para>
+  </section>
+
+  <section xml:id="fqdn-checking">
+   <title>FQDN Checking</title>
+
+   <indexterm>
+    <primary>features</primary>
+    <secondary>FQDN checking</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>FQDN checking</primary>
+   </indexterm>
+
+   <para>The web policy agent requires that clients accessing
+    protected resources use valid URLs with fully qualified domain names (FQDNs).
+    If invalid URLs are referenced, policy evaluation can
+    fail as the FQDN will not match the requested
+    URL, leading to blocked access to the resource.
+    Misconfigured URLs can also result in incorrect policy evaluation for
+    subsequent access requests.
+   </para>
+   <para>There are cases where clients may specify resource URLs that differ from
+    the FQDNs stored in OpenAM policies, for example, in load
+    balanced and virtual host environments. To handle these cases,
+    the web policy agent supports FQDN Checking properties:
+    <literal>FQDN Default</literal>
+    and <literal>FQDN Virtual Host Map</literal> properties.
+   </para>
+   <para>The <literal>FQDN Default</literal> property specifies the default URL
+    with valid hostname.
+    The property ensures that the policy agent can redirect to
+    a URL with a valid hostname should it discover an invalid URL in the client request.</para>
+   <para>The <literal>FQDN Virtual Host Map</literal> property stores map keys
+    and their corresponding values, allowing invalid URLs, load balanced URLs,
+    and virtual host URLs to be correctly mapped to valid URLs.
+    Each entry in the Map has precedence over the <literal>FQDN Default</literal>
+    setting, so that if no valid URLs exist in the <literal>FQDN Virtual Host Map</literal>
+    property, the agent redirects to
+    the value specified in the <literal>FQDN Default</literal> property.
+   </para>
+   <para>If you want the agent to redirect to a URL other than the one specified
+    in the <literal>FQDN Default</literal> property, then it is good practice to
+    include any anticipated invalid URLs in the <literal>FQDN Virtual Host Map</literal> property
+    and map it to a valid URL.
+   </para>
+   <para>For more details, see <xref linkend="web-agent-fqdn-properties"/>.</para>
+  </section>
+
+  <section xml:id="cookie-reset">
+   <title>Cookie Reset Properties</title>
+
+   <indexterm>
+    <primary>features</primary>
+    <secondary>cookie reset</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>cookie reset</primary>
+   </indexterm>
+
+   <para>OpenAM provides cookie reset properties that the agent carries out
+    prior to redirecting the client to a login page for authentication.
+   </para>
+   <para>Cookie reset is typically used when multiple parallel authentication
+    mechanisms are in play with the policy agent and another authentication system.
+    The policy agent can reset the cookies set by the other mechanism before
+    redirecting the client to a login page.
+   </para>
+   <para>The cookie reset properties include a name list specifying all of the
+    cookies that will reset, a domain map specifying the domains set for each cookie,
+    and a path map specifying the path from which the cookie will be reset.
+   </para>
+   <para>If you have enabled attribute fetching using cookies to retrieve user
+    data, it is good practice to use cookie reset, which will reset once you want
+    to access an enforced URL without a valid session.
+   </para>
+   <para>For more details, see <xref linkend="web-agent-cookie-reset-properties"/>.</para>
+  </section>
+
+  <section xml:id="agent-cdsso">
+   <title>Cross Domain Single Sign-On</title>
+
+   <indexterm>
+    <primary>features</primary>
+    <secondary>cross domain single sign-on</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>cross domain single sign-on</primary>
+   </indexterm>
+
+   <para>Cross domain single sign-on (CDSSO) allows the web policy agent
+    to transfer a validated stateful session ID between an OpenAM domain and an
+    application domain using a proprietary OpenAM mechanism.
+    Normally, single sign-on cannot be implemented across domains as the session
+    cookie from one domain (for example, website.com) is not accessible from
+    another domain (for example, website.net).
+   </para>
+   <para>
+    OpenAM's CDSSO solves this cross-domain problem and is best implemented in
+    environments where all the domains are managed by the same
+    organization, and where the OpenAM server is configured to use stateful
+    sessions. OpenAM does not support CDSSO for deployments with stateless
+    sessions.   </para>
+   <para>
+    The web policy agent works with an OpenAM component called
+    a <literal>CDCServlet</literal> that generates a
+    self-submitting form containing
+    the valid session token from one domain.
+    The form gets auto-submitted to the policy agent endpoint via a POST
+    operation.
+    The policy agent processes the request and extracts the session ID, which is
+    again validated by OpenAM. If validation is successful,
+    the policy agent sets the cookie in alternate domain. The
+    client can then access a resource in that domain.
+   </para>
+
+   <para>For more details, see
+    <link
+     xlink:show="new"
+     xlink:href="${serverDocBase}/admin-guide/#chap-cdsso"
+    ><citetitle>Configuring Cross Domain Single Sign-On</citetitle></link>.</para>
+  </section>
+
+  <section xml:id="web-agent-load-balancer">
+   <title>Supporting Load Balancers</title>
+
+   <indexterm>
+    <primary>features</primary>
+    <secondary>load balancer properties</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>properties</primary>
+    <secondary>load balancer</secondary>
+   </indexterm>
+
+   <para>The web policy agent provides a number of advanced properties for
+    load balancer deployments fronting multiple policy agents.
+    Properties are available to get the client IP and host name from the load
+    balancer.
+   </para>
+
+   <para>If the policy agent is running behind a load balancer,
+    you can configure the policy agent to set a sticky cookie or a query parameter
+    in the URL to ensure
+    subsequent requests are routed to the same instance to preserve session
+    data.
+   </para>
+   <para>
+    These mechanisms ensure that unauthenticated POST data can be
+    preserved. Policy agents store POST data in the cache and do not share the data
+    among the agents behind the load balancer.
+   </para>
+
+   <para>For more details, see <xref linkend="chap-lb"/>.
+   </para>
+
+   <note>
+    <para>
+     Web policy agents support more than one agent instance running on the same
+     host by properly initializing the multi-process locks/semaphores
+     during the bootstrap process.
+    </para>
+   </note>
+
+  </section>
+</chapter>

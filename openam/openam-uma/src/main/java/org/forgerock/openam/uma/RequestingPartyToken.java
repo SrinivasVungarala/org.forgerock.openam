@@ -16,18 +16,15 @@
 
 package org.forgerock.openam.uma;
 
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
 
-import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.forgerock.json.fluent.JsonValue;
-import org.forgerock.oauth2.core.IntrospectableToken;
+import org.forgerock.json.JsonValue;
 import org.forgerock.openam.tokens.Converter;
 import org.forgerock.openam.tokens.CoreTokenField;
 import org.forgerock.openam.tokens.Field;
@@ -35,6 +32,8 @@ import org.forgerock.openam.tokens.JsonValueToJsonBytesConverter;
 import org.forgerock.openam.tokens.LongToCalendarConverter;
 import org.forgerock.openam.tokens.TokenType;
 import org.forgerock.openam.tokens.Type;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Type(TokenType.REQUESTING_PARTY)
 public class RequestingPartyToken implements UmaToken {
@@ -44,6 +43,10 @@ public class RequestingPartyToken implements UmaToken {
     private String realm;
     @Field(field = CoreTokenField.STRING_TWO)
     private String resourceServerClientId;
+    @Field(field = CoreTokenField.STRING_THREE)
+    private String permissionTicketId;
+    @Field(field = CoreTokenField.STRING_FOUR)
+    private String clientClientId;
     @Field(field = CoreTokenField.BLOB, converter = PermissionsSetConverter.class)
     private Set<Permission> permissions;
     @Field(field = CoreTokenField.EXPIRY_DATE, converter = LongToCalendarConverter.class)
@@ -52,11 +55,13 @@ public class RequestingPartyToken implements UmaToken {
     public RequestingPartyToken() {}
 
     public RequestingPartyToken(String id, String resourceServerClientId, Set<Permission> permissions,
-            long expiryTime) {
+            long expiryTime, String permissionTicketId, String clientClientId) {
         this.id = id;
         this.resourceServerClientId = resourceServerClientId;
         this.permissions = permissions;
         this.expiryTime = expiryTime;
+        this.permissionTicketId = permissionTicketId;
+        this.clientClientId = clientClientId;
     }
 
     public String getId() {
@@ -93,6 +98,22 @@ public class RequestingPartyToken implements UmaToken {
 
     public void setResourceServerClientId(String resourceServerClientId) {
         this.resourceServerClientId = resourceServerClientId;
+    }
+
+    public String getPermissionTicketId() {
+        return permissionTicketId;
+    }
+
+    public void setPermissionTicketId(String permissionTicketId) {
+        this.permissionTicketId = permissionTicketId;
+    }
+
+    public String getClientClientId() {
+        return clientClientId;
+    }
+
+    public void setClientClientId(String clientClientId) {
+        this.clientClientId = clientClientId;
     }
 
     public Set<Permission> getPermissions() {

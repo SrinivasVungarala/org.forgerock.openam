@@ -530,7 +530,13 @@ char *url_encode(const char *str) {
             return NULL;
         }
         while (*pstr) {
+#ifdef AM_URL_ENCODE_RFC3986
+            /* This is the correct URL encoding according to RFC 3986 */
             if (isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '~') {
+#else
+            /* This is the the encoding in prior versions of the agents */
+            if (isalnum(*pstr) || *pstr == '-' || *pstr == '_' || *pstr == '.' || *pstr == '*') {
+#endif
                 *pbuf++ = *pstr;
             } else if (*pstr == ' ') {
                 *pbuf++ = '%';
@@ -770,33 +776,34 @@ unsigned long am_instance_id(const char *instance_id) {
  * Trim the string pointed to by "a", removing either space characters (as defined by
  * the isspace macro) or the specified character.
  *
- * @param a The incoming string to be trimmed
+ * @param str The incoming string to be trimmed
  * @param w The character to trim, or if null then trim whitespace
  */
-void trim(char *a, char w) {
-    char *b = a;
-    if (w == '\0') {
-        while (isspace(*b)) {
-            ++b;
-        }
-    } else {
-        while (*b == w) {
-            ++b;
-        }
+void trim(char *str, char w) {
+    char *in = str, *out = str;
+    int i = 0;
+#define TRIM_TEST(x,y) ((x == 0 || isspace(x)) ? isspace(y) : (y == x))
+
+    if (ISINVALID(str)) return;
+
+    for (in = str; *in && TRIM_TEST(w, *in); ++in)
+        ;
+    if (*in == '\0') {
+        out[0] = 0;
+        return;
     }
-    while (*b) {
-        *a++ = *b++;
+    if (str != in) {
+        memmove(str, in, in - str);
     }
-    *a = '\0';
-    if (w == '\0') {
-        while (isspace(*--a)) {
-            *a = '\0';
-        }
-    } else {
-        while ((*--a) == w) {
-            *a = '\0';
-        }
+    while (*in) {
+        out[i++] = *in++;
     }
+    out[i] = 0;
+
+    while (--i >= 0) {
+        if (!TRIM_TEST(w, out[i])) break;
+    }
+    out[++i] = 0;
 }
 
 /**
@@ -952,7 +959,7 @@ am_status_t get_cookie_value(am_request_t *rq, const char *separator, const char
     for ((a = strtok_r(header_val, separator, &b)); a; (a = strtok_r(NULL, separator, &b))) {
         if (strcmp(separator, "=") == 0 || strcmp(separator, "~") == 0) {
             /* trim any leading/trailing whitespace */
-            trim(a, 0);
+            trim(a, ' ');
             if (found != AM_SUCCESS && strcmp(a, cookie_name) == 0) found = AM_SUCCESS;
             else if (found == AM_SUCCESS && a[0] != '\0') {
                 value_len = strlen(a);
@@ -1131,7 +1138,7 @@ char *load_file(const char *filepath, size_t *data_sz) {
 ssize_t write_file(const char *filepath, const void *data, size_t data_sz) {
     int fd;
     ssize_t wr = 0;
-    if (data == NULL || data_sz == 0) return AM_EINVAL;
+    if (data == NULL) return AM_EINVAL;
 #ifdef _WIN32
     fd = _open(filepath, _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY, _S_IWRITE);
 #else
@@ -1188,10 +1195,14 @@ char file_exists(const char *fn) {
  * The strnlen() function returns either the same result as strlen() or maxlen, whichever
  * is smaller.
  */
+#if defined(__sun) || (_MSC_VER < 1900)
+
 size_t strnlen(const char *string, size_t maxlen) {
     const char *end = memchr(string, '\0', maxlen);
     return end ? end - string : maxlen;
 }
+
+#endif
 
 /**
  * The strndup() function copies at most n characters from the string s1 always null 
@@ -1199,7 +1210,7 @@ size_t strnlen(const char *string, size_t maxlen) {
  */
 char *strndup(const char *s, size_t n) {
     size_t len = (s == NULL) ? 0 : strnlen(s, n);
-    char *new = (len == 0) ? NULL : malloc(len + 1);
+    char *new = malloc(len + 1);
     if (new == NULL) {
         return NULL;
     }
@@ -1355,8 +1366,7 @@ char* base64_decode(const char* src, size_t* sz) {
  * @return The encoded result, stored in dynamic memory and null terminated.
  */
 char *base64_encode(const void *in, size_t *sz) {
-
-    int i;
+    size_t i;
     char* p;
     char* out;
     const uint8_t *src = in;
@@ -1517,8 +1527,8 @@ void uuid(char *buf, size_t buflen) {
 }
 
 int am_session_decode(am_request_t *r) {
-    size_t tl;
-    int i, nv = 0;
+    size_t tl, i;
+    int nv = 0;
     char *begin, *end;
 
     enum {
@@ -1652,12 +1662,12 @@ const char *get_valid_openam_url(am_request_t *r) {
  * @param str_len The number of characters in the incoming string to convert.
  */
 void xml_entity_escape(char *temp_str, size_t str_len) {
-    int nshifts = 0;
+    int k, nshifts = 0;
     const char ec[6] = "&'\"><";
     const char * const est[] = {
         "&amp;", "&apos;", "&quot;", "&gt;", "&lt;"
     };
-    size_t i, j, k, nref = 0, ecl = strlen(ec);
+    size_t i, j, nref = 0, ecl = strlen(ec);
 
     for (i = 0; i < str_len; i++) {
         for (nref = 0; nref < ecl; nref++) {
@@ -1679,7 +1689,7 @@ void xml_entity_escape(char *temp_str, size_t str_len) {
  * Timer functions
  *********************************************************************************************/
 
-static void am_timer(uint64_t *t) {
+void am_timer(uint64_t *t) {
 #ifdef _WIN32
     QueryPerformanceCounter((LARGE_INTEGER *) t);
 #else
@@ -1762,7 +1772,7 @@ static char *rc4(const char *input, size_t input_sz, const char *key, size_t key
         box[i] = box[j];
         box[j] = x;
     }
-    for (i = 0; i < input_sz; i++) {
+    for (i = 0; i < (int) input_sz; i++) {
         y = (i + 1) % 256;
         j = (box[y] + j) % 256;
         x = box[y];
@@ -1881,10 +1891,10 @@ void decrypt_agent_passwords(am_config_t *r) {
             free(r->pass);
             r->pass = pass;
             r->pass_sz = pass_sz;
-            return;
+        } else {
+            AM_LOG_WARNING(r->instance_id, "failed to decrypt agent password");
+            am_free(pass);
         }
-        AM_LOG_WARNING(r->instance_id, "failed to decrypt agent password");
-        am_free(pass);
     }
 
     if (ISVALID(r->cert_key_pass)) {
@@ -1893,16 +1903,17 @@ void decrypt_agent_passwords(am_config_t *r) {
             free(r->cert_key_pass);
             r->cert_key_pass = pass;
             r->cert_key_pass_sz = pass_sz;
-            return;
+        } else {
+            AM_LOG_WARNING(r->instance_id, "failed to decrypt certificate key password");
+            am_free(pass);
         }
-        AM_LOG_WARNING(r->instance_id, "failed to decrypt certificate key password");
-        am_free(pass);
     }
 }
 
 void am_request_free(am_request_t *r) {
     if (r != NULL) {
-        AM_FREE(r->normalized_url, r->overridden_url, r->token,
+        AM_FREE(r->normalized_url, r->overridden_url, r->normalized_url_pathinfo,
+                r->overridden_url_pathinfo, r->token,
                 r->client_ip, r->client_host, r->post_data,
                 r->session_info.s1, r->session_info.si, r->session_info.sk);
         delete_am_policy_result_list(&r->pattr);
@@ -2448,6 +2459,7 @@ int string_replace(char **original, const char *pattern, const char *replace, si
 
 int copy_file(const char *from, const char *to) {
     int rv = AM_FILE_ERROR, source, dest;
+    am_bool_t local_alloc = AM_FALSE;
     char *to_tmp = NULL;
 
     if (!ISVALID(from)) {
@@ -2464,23 +2476,48 @@ int copy_file(const char *from, const char *to) {
         if (to_tmp == NULL) {
             return AM_ENOMEM;
         }
+        local_alloc = AM_TRUE;
     } else {
         to_tmp = (char *) to;
     }
 #ifdef _WIN32
-    if (CopyFileA(from, to_tmp, FALSE) != 0) {
+    if (CopyFileExA(from, to_tmp, NULL, NULL, FALSE, COPY_FILE_NO_BUFFERING) != 0) {
         rv = AM_SUCCESS;
     }
-#else
+#elif defined(LINUX) || defined(AIX)
+    {
+        size_t content_sz = 0;
+        char *content = load_file(from, &content_sz);
+        if (content == NULL) {
+            rv = AM_FILE_ERROR;
+        } else {
+            ssize_t wr_status = write_file(to_tmp, content, content_sz);
+            am_free(content);
+
+            if (wr_status == content_sz)
+                rv = AM_SUCCESS;
+            else if (wr_status < 0)
+                rv = wr_status;
+            else
+                rv = AM_FILE_ERROR;
+        }
+    }
+#else   /* not Windows or Linux or AIX */
     struct stat st;
     source = open(from, O_RDONLY);
     if (source == -1) {
+        if (local_alloc) {
+            free(to_tmp);
+        }
         return rv;
     }
 
     dest = open(to_tmp, O_CREAT | O_WRONLY | O_TRUNC, 0644);
     if (dest == -1) {
         close(source);
+        if (local_alloc) {
+            free(to_tmp);
+        }
         return rv;
     }
 
@@ -2489,28 +2526,10 @@ int copy_file(const char *from, const char *to) {
         if (fcopyfile(source, dest, NULL, COPYFILE_ALL) != -1) {
             rv = AM_SUCCESS;
         }
-#elif defined(AIX)
-        struct sf_parms handle;
-        handle.header_data = NULL;
-        handle.header_length = 0;
-        handle.trailer_data = NULL;
-        handle.trailer_length = 0;
-        handle.file_descriptor = source;
-        handle.file_offset = 0;
-        handle.file_bytes = st.st_size;
-        rv = AM_SUCCESS;
-        while (handle.file_bytes + handle.header_length) {
-            ssize_t ret;
-            do {
-                ret = send_file(&dest, &handle, 0);
-            } while (ret == 1 || (ret == -1 && errno == EINTR));
-
-            if (ret == -1) {
-                rv = AM_FILE_ERROR;
-                break;
-            }
-        }
 #else
+        /*
+         * The folowing only works on linux kernel after 2.6.33, so is disabled for linux in general
+         */
         off_t offset = 0;
         if (sendfile(dest, source, &offset, st.st_size) != -1) {
             rv = AM_SUCCESS;
@@ -2519,7 +2538,10 @@ int copy_file(const char *from, const char *to) {
     }
     close(source);
     close(dest);
-#endif
+#endif  /* not Windows or Linux */
+    if (local_alloc) {
+        free(to_tmp);
+    }
     return rv;
 }
 
@@ -2779,8 +2801,205 @@ void update_agent_configuration_audit(am_config_t *conf) {
     }
 }
 
+/*
+ * change the value in a configuration mapping.
+ * NOTE: the name and value are allocated in the same block, and only the name should be
+ * freed.
+ */
+am_status_t remap_config_value(am_config_map_t * mapping, char *newvalue) {
+    char *buffer = NULL;
+    size_t name_sz;
+    
+    if (!ISVALID(mapping->name)) {
+        return AM_EINVAL;
+    }
+    name_sz = strlen(mapping->name);
+    buffer = realloc(mapping->name, name_sz + 1 + strlen(newvalue) + 1);
+    if (!ISVALID(buffer)) {
+        return AM_ENOMEM;
+    }
+    strcpy(buffer + name_sz + 1, newvalue);
+    
+    mapping->name = buffer;
+    mapping->value = buffer + name_sz + 1;
+    return AM_SUCCESS;
+}
+
+void update_agent_configuration_normalise_map_urls(am_config_t *conf) {
+    static const char *thisfunc = "update_agent_configuration_normalise_map_urls()";
+    
+    int i;
+    char *value, *newvalue;
+    am_status_t remap_status;
+    
+    /* normalise not enforced map values if they are not regular expressions */
+    if (!conf->not_enforced_regex_enable) {
+        for (i = 0; i < conf->not_enforced_map_sz; i++) {
+            if ( (value = conf->not_enforced_map[i].value) ) {
+                if ( (newvalue = am_normalize_pattern(value)) ) {
+                    remap_status = remap_config_value(conf->not_enforced_map + i, newvalue);
+                    am_free(newvalue);
+                    if (remap_status != AM_SUCCESS)
+                        AM_LOG_WARNING(conf->instance_id, "%s error normalising not enforced URL %s (%s)", thisfunc, value, am_strerror(remap_status));
+                }
+            }
+        }
+    }
+    /* normalise not enforced extended map values if they are not regular expressions */
+    if (!conf->not_enforced_ext_regex_enable) {
+        for (i = 0; i < conf->not_enforced_ext_map_sz; i++) {
+            if ( (value = conf->not_enforced_ext_map[i].value) ) {
+                if ( (newvalue = am_normalize_pattern(value)) ) {
+                    remap_status = remap_config_value(conf->not_enforced_ext_map + i, newvalue);
+                    am_free(newvalue);
+                    if (remap_status != AM_SUCCESS)
+                        AM_LOG_WARNING(conf->instance_id, "%s error normalising extended not enforced URL %s (%s)", thisfunc, value, am_strerror(remap_status));
+                }
+            }
+        }
+    }
+    /* normalise logout map values if they are not regular expressions */
+    if (!conf->logout_regex_enable) {
+        for (i = 0; i < conf->logout_map_sz; i++) {
+            if ( (value = conf->logout_map[i].value) ) {
+                if ( (newvalue = am_normalize_pattern(value)) ) {
+                    remap_status = remap_config_value(conf->logout_map + i, newvalue);
+                    am_free(newvalue);
+                    if (remap_status != AM_SUCCESS)
+                        AM_LOG_WARNING(conf->instance_id, "%s error normalising logout URL %s (%s)", thisfunc, value, am_strerror(remap_status));
+                }
+            }
+        }
+    }
+    /* normalise json URL map values */
+    for (i = 0; i < conf->json_url_map_sz; i++) {
+        if ( (value = conf->json_url_map[i].value) ) {
+            if ( (newvalue = am_normalize_pattern(value)) ) {
+                remap_status = remap_config_value(conf->json_url_map + i, newvalue);
+                am_free(newvalue);
+                if (remap_status != AM_SUCCESS)
+                    AM_LOG_WARNING(conf->instance_id, "%s error normalising JSON URL %s (%s)", thisfunc, value, am_strerror(remap_status));
+            }
+        }
+    }
+}
+
+static int config_map_name_compare(const void *a, const void *b) {
+    int index_a = (int) strtol(((am_config_map_t *) a)->name, NULL, AM_BASE_TEN);
+    int index_b = (int) strtol(((am_config_map_t *) b)->name, NULL, AM_BASE_TEN);
+    return (index_a > index_b) - (index_a < index_b);
+}
+
+void update_agent_configuration_reorder_map_values(am_config_t *conf) {
+    if (conf->login_url_sz > 1 && conf->login_url != NULL) {
+        qsort(conf->login_url, conf->login_url_sz,
+                sizeof (am_config_map_t), config_map_name_compare);
+    }
+    if (conf->cdsso_login_map_sz > 1 && conf->cdsso_login_map != NULL) {
+        qsort(conf->cdsso_login_map, conf->cdsso_login_map_sz,
+                sizeof (am_config_map_t), config_map_name_compare);
+    }
+    if (conf->openam_logout_map_sz > 1 && conf->openam_logout_map != NULL) {
+        qsort(conf->openam_logout_map, conf->openam_logout_map_sz,
+                sizeof (am_config_map_t), config_map_name_compare);
+    }
+    if (conf->cond_login_url_sz > 1 && conf->cond_login_url != NULL) {
+        qsort(conf->cond_login_url, conf->cond_login_url_sz,
+                sizeof (am_config_map_t), config_map_name_compare);
+    }
+}
+
 char *get_global_name(const char *name, int id) {
     static AM_THREAD_LOCAL char out[AM_PATH_SIZE];
     snprintf(out, sizeof(out), "%s_%d", name, id);
     return out;
 }
+
+static uint32_t sdbm_hash(const void *s) {
+    uint64_t hash = 0;
+    int c;
+    const unsigned char *str = (const unsigned char *) s;
+    while ((c = *str++)) {
+        hash = c + (hash << 6) + (hash << 16) - hash;
+    }
+    return (uint32_t) hash;
+}
+
+uint32_t am_hash(const void *k) {
+    uint32_t i = sdbm_hash(k);
+    i += ~(i << 9);
+    i ^= ((i >> 14) | (i << 18));
+    i += (i << 4);
+    i ^= ((i >> 10) | (i << 22));
+    return i;
+}
+
+uint32_t am_hash_buffer(const void *k, size_t sz) {
+    void *tmp;
+    uint32_t hash;
+    if (k == NULL || sz == 0) {
+        return 0;
+    }
+    tmp = calloc(1, sz + 1);
+    if (tmp == NULL) {
+        return 0;
+    }
+    memcpy(tmp, k, sz);
+    hash = am_hash(tmp);
+    free(tmp);
+    return hash;
+}
+
+
+am_bool_t validate_directory_access(const char *path, int mask) {
+    am_bool_t ret = AM_FALSE;
+#ifdef _WIN32
+    PRIVILEGE_SET privileges = {0};
+    DWORD length = 0, granted_access = 0, privileges_length = sizeof (privileges);
+    PSECURITY_DESCRIPTOR security = NULL;
+    HANDLE token = NULL, imp_token = NULL;
+    GENERIC_MAPPING mapping = {0xFFFFFFFF};
+    BOOL result = FALSE;
+
+    if (!GetFileSecurityA(path, OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION
+            | DACL_SECURITY_INFORMATION, NULL, 0, &length) &&
+            GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+        security = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, length);
+    }
+
+    if (security == NULL) {
+        return AM_FALSE;
+    }
+
+    if (!GetFileSecurityA(path, OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION
+            | DACL_SECURITY_INFORMATION, security, length, &length) ||
+            !OpenProcessToken(GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY |
+            TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &token)) {
+        LocalFree(security);
+        return AM_FALSE;
+    }
+
+    if (!DuplicateToken(token, SecurityImpersonation, &imp_token)) {
+        CloseHandle(token);
+        LocalFree(security);
+        return AM_FALSE;
+    }
+
+    mapping.GenericRead = FILE_GENERIC_READ;
+    mapping.GenericWrite = FILE_GENERIC_WRITE;
+    mapping.GenericExecute = FILE_GENERIC_EXECUTE;
+    mapping.GenericAll = FILE_ALL_ACCESS;
+    MapGenericMask(&mask, &mapping);
+
+    if (AccessCheck(security, imp_token, mask,
+            &mapping, &privileges, &privileges_length, &granted_access, &result)) {
+        ret = (result == TRUE);
+    }
+
+    CloseHandle(imp_token);
+    CloseHandle(token);
+    LocalFree(security);
+#endif
+    return ret;
+}
+

@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-custom-ui'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -124,12 +124,9 @@
   </para>
 
   <para>
-   Interface Stability:
-   <link
-       xlink:show="new"
-       xlink:href="admin-guide#interface-stability"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      >Evolving</link>
+   Interface Stability: <olink
+   targetdoc="admin-guide" targetptr="interface-stability"
+   xrefstyle="select: nodocname">Evolving</olink>
   </para>
 
   <para>
@@ -138,11 +135,7 @@
    where you unpack OpenAM,
    is used to customize the look and feel of end user pages.
    For details, see the <citetitle>Reference</citetitle> chapter on
-   <link
-       xlink:show="new"
-       xlink:href="reference#chap-xui-parameters"
-       xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>XUI Configuration Parameters</citetitle></link>.
+   <olink targetdoc="reference" targetptr="chap-xui-parameters" />.
   </para>
 
   <para>
@@ -283,12 +276,9 @@
   </para>
 
   <para>
-   Interface Stability:
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#interface-stability"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      >Deprecated</link>
+   Interface Stability: <olink
+   targetdoc="admin-guide" targetptr="interface-stability"
+   xrefstyle="select: nodocname">Deprecated</olink>
   </para>
 
   <para>
@@ -717,8 +707,8 @@ $ <userinput>cp ${coreLibrary} /path/to/tomcat/webapps/openam/WEB-INF/lib/</user
      <para>
       You set the default locale in OpenAM when you install OpenAM core services.
       You can change the default locale either through OpenAM console under
-      Configuration > Servers and Sites > <replaceable>server-name</replaceable>
-      > General > System > Default Locale,
+      Configuration &gt; Servers and Sites &gt; <replaceable>Server Name</replaceable>
+      &gt; General &gt; System &gt; Default Locale,
       or by setting the server configuration property,
       <literal>com.iplanet.am.locale</literal>.
      </para>

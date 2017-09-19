@@ -80,38 +80,28 @@
             <artifactId>servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.jse</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.jse</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.json</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.jse</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.xml</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.slf4j</artifactId>
         </dependency>
         <dependency>
             <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-slf4j</artifactId>
-        </dependency>
-
-        <!-- OpenAM Audit -->
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-audit-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-audit-core</artifactId>
         </dependency>
 
         <!-- OpenAM Shared -->
@@ -125,17 +115,17 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-scripting</artifactId>
+            <artifactId>openam-http</artifactId>
+        </dependency>
+        <dependency><!-- TODO required until Restlet endpoints are moved to CHF -->
+            <groupId>org.forgerock.http</groupId>
+            <artifactId>chf-http-servlet</artifactId>
         </dependency>
 
         <!-- OpenAM core -->
         <dependency>
             <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-dashboard</artifactId>
         </dependency>
 
         <!-- Commons -->
@@ -145,7 +135,7 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons</groupId>
-            <artifactId>json-resource-servlet</artifactId>
+            <artifactId>json-resource-http</artifactId>
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons</groupId>
@@ -166,17 +156,6 @@
         <dependency>
             <groupId>org.forgerock.commons</groupId>
             <artifactId>forgerock-util</artifactId>
-        </dependency>
-
-        <!-- OAuth2 Dependencies -->
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-oauth2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-uma</artifactId>
         </dependency>
 
         <dependency>
@@ -224,11 +203,6 @@
 
         <dependency>
             <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-entitlements</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-coretoken</artifactId>
         </dependency>
 
@@ -241,14 +215,25 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.forgerock.commons</groupId>
-            <artifactId>json-test</artifactId>
-        </dependency>
 
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
+            <groupId>org.forgerock.commons</groupId>
+            <artifactId>forgerock-guice-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.commons</groupId>
+            <artifactId>forgerock-test-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>xerces-J</groupId>
+            <artifactId>xml-apis</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.commons</groupId>
+            <artifactId>json-resource</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-cdsso'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -113,18 +113,14 @@
   While using SAML v2.0 adds complexity, it supports attribute mapping,
   which may be useful when the two domains are associated
   with data stores that use different attribute names.
-  See the section,
-  <link xlink:href="admin-guide#using-saml2-with-policy-agents"
-        xlink:show="new"
-        xlink:role="http://docbook.org/xlink/role/olink"
-  ><citetitle>SAML v2.0 and Policy Agents</citetitle></link>, for details.
+  For details, see  <xref linkend="using-saml2-with-policy-agents" />.
  </para>
 
  <procedure xml:id="enable-cdsso-jee-agent">
   <title>To Enable CDSSO For a Java EE Policy Agent</title>
 
   <step>
-   <para>In the OpenAM console, browse to Access Control &gt;
+   <para>In the OpenAM console, browse to Realms &gt;
    <replaceable>Realm Name</replaceable> &gt; Agents &gt; J2EE &gt;
    <replaceable>Agent Name</replaceable> &gt; SSO.</para>
   </step>
@@ -183,7 +179,7 @@
   <title>To Enable CDSSO For a Web Policy Agent</title>
 
   <step>
-   <para>In the OpenAM console, browse to Access Control &gt;
+   <para>In the OpenAM console, browse to Realms &gt;
    <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
    <replaceable>Agent Name</replaceable> &gt; SSO.</para>
   </step>
@@ -317,12 +313,8 @@
 
    <para>
     For more information about this property,
-    see the <citetitle>Reference</citetitle> section on advanced properties,
-    <link
-     xlink:show="new"
-     xlink:href="reference#servers-advanced-configuration"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Servers &gt; Advanced</citetitle></link>.
+    see <olink targetdoc="reference"
+                targetptr="servers-advanced-configuration" />.
    </para>
   </step>
  </procedure>
@@ -396,8 +388,8 @@
    <para>Save your work.</para>
   </step>
   <step performance="optional">
-   <para>For each Java EE policy agent, browse in the OpenAM console to Access
-   Control &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt; J2EE &gt;
+   <para>For each Java EE policy agent, browse in the OpenAM console to
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt; J2EE &gt;
    <replaceable>Agent Name</replaceable> &gt; Advanced &gt; Custom Properties,
    and add <literal>com.sun.identity.enableUniqueSSOTokenCookie=true</literal>
    to the list.</para>

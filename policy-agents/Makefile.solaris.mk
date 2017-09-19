@@ -30,8 +30,10 @@ endif
 
 ifeq ($(OS_MARCH), i86pc)
  CFLAGS += -KPIC
+ OS_ARCH_EXT := _X86
 else
- CFLAGS += -xcode=pic32
+ CFLAGS += -xcode=pic32 -xmemalign=8i
+ OS_ARCH_EXT := _SPARC
 endif
 
 ifdef 64
@@ -43,7 +45,7 @@ endif
 
 $(TEST_OBJECTS): CFLAGS += -D_UINTPTR_T_DEFINED
 
-LDFLAGS += -i -z ignore -z lazyload -z nodefs -z combreloc -z origin -R'$$ORIGIN/../lib' -R'$$ORIGIN' \
+LDFLAGS += -i -z ignore -z lazyload -z nodefs -z combreloc -z nodelete -z origin -R'$$ORIGIN/../lib' -R'$$ORIGIN' \
 	-lc -lsocket -lnsl -ldl -lrt -lsendfile -lresolv
 
 libopenam: $(OUT_OBJS)
@@ -64,6 +66,9 @@ iis:
 	$(error IIS target is not supported on this platform)
 
 varnish: 
+	$(error Varnish target is not supported on this platform)
+
+varnish3: 
 	$(error Varnish target is not supported on this platform)
 	
 agentadmin: $(OUT_OBJS) $(ADMIN_OUT_OBJS)

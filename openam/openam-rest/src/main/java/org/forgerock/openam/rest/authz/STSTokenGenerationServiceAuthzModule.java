@@ -16,6 +16,8 @@
 
 package org.forgerock.openam.rest.authz;
 
+import static org.forgerock.json.resource.ResourceException.*;
+
 import com.iplanet.dpro.session.service.SessionService;
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
@@ -28,7 +30,7 @@ import org.forgerock.json.resource.PatchRequest;
 import org.forgerock.json.resource.QueryRequest;
 import org.forgerock.json.resource.ReadRequest;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.services.context.Context;
 import org.forgerock.json.resource.UpdateRequest;
 import org.forgerock.openam.forgerockrest.utils.AgentIdentity;
 import org.forgerock.openam.forgerockrest.utils.SpecialUserIdentity;
@@ -59,37 +61,42 @@ public class STSTokenGenerationServiceAuthzModule extends SpecialAndAdminUserOnl
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeCreate(ServerContext context, CreateRequest request) {
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public Promise<AuthorizationResult, ResourceException> authorizeCreate(Context context, CreateRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeRead(ServerContext context, ReadRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeRead(Context context, ReadRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeUpdate(ServerContext context, UpdateRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeUpdate(Context context, UpdateRequest request) {
         return rejectConsumption();
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeDelete(ServerContext context, DeleteRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeDelete(Context context, DeleteRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizePatch(ServerContext context, PatchRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizePatch(Context context, PatchRequest request) {
         return rejectConsumption();
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeAction(ServerContext context, ActionRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeAction(Context context, ActionRequest request) {
         return rejectConsumption();
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeQuery(ServerContext context, QueryRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeQuery(Context context, QueryRequest request) {
         return authorize(context);
     }
 
@@ -99,7 +106,7 @@ public class STSTokenGenerationServiceAuthzModule extends SpecialAndAdminUserOnl
     }
 
     @Override
-    protected Promise<AuthorizationResult, ResourceException> authorize(ServerContext context) {
+    protected Promise<AuthorizationResult, ResourceException> authorize(Context context) {
         SSOTokenContext tokenContext = context.asContext(SSOTokenContext.class);
         String userId;
         SSOToken token;
@@ -110,8 +117,7 @@ public class STSTokenGenerationServiceAuthzModule extends SpecialAndAdminUserOnl
             if (debug.messageEnabled()) {
                 debug.message("TokenGenerationServiceAuthzModule :: Unable to obtain SSOToken or principal", e);
             }
-            return Promises.newExceptionPromise(ResourceException
-                    .getException(HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage(), e));
+            return getException(HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage(), e).asPromise();
         }
 
         if (agentIdentity.isSoapSTSAgent(token)) {

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !
+-->
+<section xml:id='sec-rest-api-recording'
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0' xml:lang='en'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+ <title>RESTful Troubleshooting Information Recording</title>
+
+ <indexterm>
+  <primary>Recording</primary>
+  <secondary>Using the REST API</secondary></indexterm>
+
+  <para>
+   This section shows you how to start, stop, and get the
+   status of a troubleshooting recording event using the REST API.
+  </para>
+
+  <itemizedlist>
+   <para>
+    OpenAM provides the <literal>/json/records</literal> REST endpoint
+    for the following:
+   </para>
+   <listitem>
+    <para>
+     <emphasis role="bold">Starting a recording event.</emphasis>
+     See <xref linkend="rest-api-records-start" />.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <emphasis role="bold">Getting the status of a recording event.</emphasis>
+     See <xref linkend="rest-api-records-get-status" />.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <emphasis role="bold">Stopping a recording event.</emphasis>
+     See <xref linkend="rest-api-records-stop" />.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   You must authenticate to OpenAM as an administrative user to obtain an SSO
+   token prior to calling the <literal>/json/records</literal> REST endpoint.
+   You then pass the SSO token in the <literal>iPlanetDirectoryPro</literal>
+   header as proof of authentication.
+  </para>
+
+  <para>
+   You can also record troubleshooting information by using the
+   <command>ssoadm</command> command. For more information, see
+   <olink targetptr="recording" targetdoc="admin-guide" />.
+  </para>
+
+  <note>
+   <para>
+    The <command>curl</command> command output in the examples in this section
+    is indented for ease of reading. The actual output is
+    <emphasis>not</emphasis> indented, and the actions available from the
+    <literal>/json/records</literal> endpoint do not support the
+    <literal>_prettyPrint</literal> parameter.
+   </para>
+  </note>
+
+  <section xml:id="rest-api-records-start">
+   <title>Starting a Recording Event</title>
+
+   <para>
+    To start a recording event, perform an HTTP POST using the
+    <literal>/json/records</literal> endpoint, specifying the
+    <literal>_action=start</literal> parameter in the URL. Specify a JSON
+    payload identical in format to the input file for the
+    <command>ssoadm start-recording</command> command, as described in
+    <olink targetdoc="admin-guide" targetptr="recording-json" />:
+   </para>
+
+   <screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--header "Content-Type: application/json" \
+--request POST \
+--data ' {
+  "issueID": 103572,
+  "referenceID": "policyEvalFails",
+  "description": "Troubleshooting artifacts in support of case 103572",
+  "zipEnable": true,
+  "configExport": {
+   "enable": true,
+   "password": "5x2RR70",
+   "sharePassword": false
+  },
+  "debugLogs": {
+   "debugLevel": "MESSAGE",
+   "autoStop": {
+    "time":  {
+     "timeUnit": "SECONDS",
+     "value": 15
+    },
+    "fileSize": {
+     "sizeUnit": "GB",
+     "value": 1
+    }
+   }
+  },
+  "threadDump" : {
+   "enable": true,
+   "delay" :  {
+    "timeUnit": "SECONDS",
+    "value": 5
+   }
+  }
+ }' \
+https://openam.example.com:8443/openam/json/records?_action=start</userinput>
+<computeroutput>
+{
+ "recording":true,
+ "record":{
+  "issueID":103572,
+  "referenceID":"policyEvalFails",
+  "description":"Troubleshooting artifacts in support of case 103572",
+  "zipEnable":true,
+  "threadDump":{
+   "enable":true,
+   "delay":{
+    "timeUnit":"SECONDS",
+    "value":5
+   }
+  },
+  "configExport":{
+   "enable":true,
+   "password":"xxxxxx",
+   "sharePassword":false
+  },
+  "debugLogs":{
+   "debugLevel":"message",
+   "autoStop":{
+    "time":{
+     "timeUnit":"MILLISECONDS",
+     "value":15000
+    },
+    "fileSize":{
+     "sizeUnit":"KB",
+     "value":1048576
+    }
+   }
+  },
+  "status":"RUNNING",
+  "folder":"/opt/demo/openam/config/openam/debug/record/103572/policyEvalFails/"
+ }
+}</computeroutput></screen>
+  </section>
+
+
+  <section xml:id="rest-api-records-get-status">
+   <title>Getting the Status of a Recording Event</title>
+
+   <para>
+    To get the status of a recording event, perform an HTTP POST using the
+    <literal>/json/records</literal> endpoint, specifying the
+    <literal>_action=status</literal> parameter in the URL:
+   </para>
+
+   <screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--header "Content-Type: application/json" \
+--request POST \
+https://openam.example.com:8443/openam/json/records?_action=status</userinput></screen>
+
+   <para>
+    If there is no active recording event, the following output appears:
+   </para>
+
+   <screen><computeroutput>{
+  "recording":false
+}</computeroutput></screen>
+
+   <para>
+    If there is an active recording event, output similar to the following
+    appears:
+   </para>
+
+   <screen><computeroutput>{
+ "recording":true,
+ "record":{
+  "issueID":103572,
+  "referenceID":"policyEvalFails",
+  "description":"Troubleshooting artifacts in support of case 103572",
+  "zipEnable":true,
+  "threadDump":{
+   "enable":true,
+   "delay":{
+    "timeUnit":"SECONDS",
+    "value":5
+   }
+  },
+  "configExport":{
+   "enable":true,
+   "password":"xxxxxx",
+   "sharePassword":false
+  },
+  "debugLogs":{
+   "debugLevel":"message",
+   "autoStop":{
+    "time":{
+     "timeUnit":"MILLISECONDS",
+     "value":15000
+    },
+    "fileSize":{
+     "sizeUnit":"KB",
+     "value":1048576
+    }
+   }
+  },
+  "status":"RUNNING",
+  "folder":"/opt/demo/openam/config/openam/debug/record/103572/policyEvalFails/"
+ }
+}</computeroutput></screen>
+  </section>
+
+  <section xml:id="rest-api-records-stop">
+   <title>Stopping a Recording Event</title>
+
+   <para>
+    To stop a recording event, perform an HTTP POST using the
+    <literal>/json/records</literal> endpoint, specifying the
+    <literal>_action=stop</literal> parameter in the URL:
+   </para>
+
+   <screen>$ <userinput>curl \
+--header "iPlanetDirectoryPro: AQIC5..." \
+--header "Content-Type: application/json" \
+--request POST \
+https://openam.example.com:8443/openam/json/records?_action=stop</userinput></screen>
+
+   <para>
+    If there is no active recording event, OpenAM returns a 400 error code.
+   </para>
+
+   <para>
+    If there is an active recording event, output similar to the following
+    appears:
+   </para>
+
+   <screen><computeroutput>{
+ "recording":false,
+ "record":{
+  "issueID":103572,
+  "referenceID":"policyEvalFails",
+  "description":"Troubleshooting artifacts in support of case 103572",
+  "zipEnable":true,
+  "threadDump":{
+   "enable":true,
+   "delay":{
+    "timeUnit":"SECONDS",
+    "value":5
+   }
+  },
+  "configExport":{
+   "enable":true,
+   "password":"xxxxxx",
+   "sharePassword":false
+  },
+  "debugLogs":{
+   "debugLevel":"message",
+   "autoStop":{
+    "time":{
+     "timeUnit":"MILLISECONDS",
+     "value":15000
+    },
+    "fileSize":{
+     "sizeUnit":"KB",
+     "value":1048576
+    }
+   }
+  },
+  "status":"STOPPED",
+  "folder":"/opt/demo/openam/config/openam/debug/record/103572/policyEvalFails/"
+ }
+}</computeroutput></screen>
+
+  </section>
+ </section>

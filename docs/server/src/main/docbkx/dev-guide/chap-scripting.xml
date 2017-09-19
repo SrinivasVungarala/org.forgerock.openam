@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2015 ForgeRock AS.
+  !    
+-->
+<chapter xml:id='chap-scripting'
+         xmlns='http://docbook.org/ns/docbook'
+         version='5.0'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+ <title>Scripting OpenAM</title>
+
+ <indexterm>
+  <primary>Scripts</primary>
+ </indexterm>
+
+ <para>
+  This chapter explains how to use scripting to exact fine control
+  over various aspects of OpenAM.
+ </para>
+
+ <para>
+  You can use scripts for client-side and server-side authentication,
+  policy conditions, and handling OpenID Connect claims.
+ </para>
+
+ <para>
+  This chapter covers the following topics:
+ </para>
+
+ <itemizedlist>
+  <listitem>
+   <para><xref linkend="script-env" xrefstyle="select: title"/> </para>
+  </listitem>
+  <listitem>
+   <para><xref linkend="scripting-api" xrefstyle="select: title"/> </para>
+  </listitem>
+  <listitem>
+   <para><xref linkend="sec-scripting-default-scripts" xrefstyle="select: title"/> </para>
+  </listitem>
+ </itemizedlist>
+
+ <para>
+  For information on managing scripts, see <olink
+  targetdoc="admin-guide" targetptr="chap-manage-scripts-console"/> and <xref
+  linkend="sec-manage-scripts-rest"/>.
+ </para>
+
+ <section xml:id="script-env">
+  <title>The Scripting Environment</title>
+
+  <para>
+   This section introduces how OpenAM executes scripts, and covers
+   thread pools and security configuration.
+  </para>
+
+  <para>
+   You can use scripts to modify default OpenAM behavior in the
+   following situations, also known as <firstterm>contexts</firstterm>:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Client-side Authentication</term>
+    <listitem>
+     <para>
+      Scripts that are executed on the client during authentication.
+     </para>
+     <note>
+      <para>Client-side scripts must be in JavaScript.</para>
+     </note>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Server-side Authentication</term>
+    <listitem>
+     <para>
+      Scripts are included in an authentication module and are
+      executed on the server during authentication.
+     </para>
+
+     <para>
+      Scripted authentication modules are an alternative to developing
+      custom authentication modules by using Java as described in
+      <xref linkend="sec-auth-spi"/>. A
+      scripted authentication module allows you to customize default authentication
+      behavior by adding Groovy or JavaScript code to the module configuration.
+     </para>
+
+     <para>
+      To see an example server-side authentication script, see
+      <xref linkend="sec-scripted-auth-module"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Policy Condition</term>
+    <listitem>
+     <para>
+      Scripts used as conditions within policies.
+     </para>
+     <para>
+      To see an example policy condition script, see
+      <xref linkend="sec-scripted-policy-condition"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>OIDC Claims</term>
+    <listitem>
+     <para>
+      Scripts that gather and populate the claims in a request when
+      issuing an ID token or making a request to the
+      <literal>userinfo</literal> endpoint.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>
+   OpenAM implements a configurable scripting engine for each of the
+   context types that are executed on the server.
+  </para>
+
+  <para>
+   The scripting engines in OpenAM have two main components: security
+   settings, and the thread pool.
+  </para>
+
+  <mediaobject>
+   <alt>Diagram of the scripting environment within OpenAM.</alt>
+   <imageobject>
+    <imagedata fileref="images/scripting-engine-overview.png" format="PNG" />
+   </imageobject>
+   <textobject>
+    <para>The scripting engines contain configuration for
+     security settings and thread pool management.</para>
+   </textobject>
+  </mediaobject>
+
+  <section xml:id="script-engine-security">
+   <title>Security</title>
+
+   <para>
+    OpenAM scripting engines provide security features for ensuring that
+    malicious Java classes are not directly called. The engines validate
+    scripts by checking all directly-called Java
+    classes against a configurable blacklist and whitelist, and, optionally,
+    against the JVM SecurityManager, if it is configured.
+   </para>
+
+   <para>
+    Whitelists and blacklists contain class names that
+    are allowed or denied execution respectively. Specify classes in
+    whitelists and blacklists by name or by using regular expressions.
+   </para>
+
+   <para>
+    Classes called by the script are checked against the whitelist
+    first, and must match at least one pattern in the list. The
+    blacklist is applied after the whitelist, and classes matching any
+    pattern are disallowed.
+   </para>
+
+   <para>
+    You can also configure the scripting engine to make an additional
+    call to the JVM security manager for each class that is accessed. The
+    security manager throws an exception if a class being called is not
+    allowed to execute.
+   </para>
+
+   <para>
+    For more information on configuring script engine security,
+    see <olink targetdoc="reference" targetptr="scripting-configuration"/>.
+   </para>
+
+   <variablelist>
+    <title>Important Points About Script Engine Security</title>
+
+    <para>
+     The following points should be considered when configuring the
+     security settings within each script engine:
+    </para>
+
+    <varlistentry>
+     <term>The scripting engine only validates directly accessible classes.</term>
+
+     <listitem>
+      <para>
+       The security settings only apply to classes that the script
+       <emphasis>directly</emphasis> accesses. If the script calls
+       <literal>Foo.a()</literal> and then that method
+       calls <literal>Bar.b()</literal>, the scripting engine will be unable
+       to prevent it. You must consider the whole chain of accessible classes.
+      </para>
+
+      <note>
+       <para>
+        <firstterm>Access</firstterm> includes actions such as:
+         <itemizedlist>
+          <listitem>
+           <para>Importing or loading a class.</para>
+          </listitem>
+          <listitem>
+           <para>
+            Accessing any instance of that class. For example, passed as a
+            parameter to the script.
+           </para>
+          </listitem>
+          <listitem>
+           <para>Calling a static method on that class.</para>
+          </listitem>
+          <listitem>
+           <para>Calling a method on an instance of that class.</para>
+          </listitem>
+          <listitem>
+           <para>
+            Accessing a method or field that returns an instance of that
+            class.
+           </para>
+         </listitem>
+        </itemizedlist>
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>Potentially dangerous Java classes are blacklisted by default.</term>
+
+     <listitem>
+      <para>
+       All Java reflection classes (<literal>java.lang.Class</literal>,
+       <literal>java.lang.reflect.*</literal>)
+       are blacklisted by default to avoid bypassing the security settings.
+      </para>
+
+      <para>
+       The <literal>java.security.AccessController</literal> class is
+       also blacklisted by default to prevent access to the
+       <literal>doPrivileged()</literal> methods.
+      </para>
+
+      <caution>
+       <para>
+        You should not remove potentially dangerous Java classes from the blacklist.
+       </para>
+      </caution>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>The whitelists and blacklists match class or package names only.</term>
+     <listitem>
+      <para>
+       The whitelist and blacklist patterns apply only to the exact class
+       or package names involved. The script engine does not know anything
+       about inheritance, so it is best to whitelist known, specific classes.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
+
+  <section xml:id="script-engine-thread-pool">
+   <title>Thread Pools</title>
+
+   <para>
+    Each script is executed in an individual thread. Each scripting
+    engine starts with an initial number of threads available for executing
+    scripts. If no threads are available for execution, OpenAM creates
+    a new thread to execute the script, until the configured maximum number
+    of threads is reached.
+   </para>
+
+   <para>
+    If the maximum number of threads is reached, pending script
+    executions are queued in a number of buffer threads, until a thread
+    becomes available for execution. If a created thread has completed script
+    execution and has remained idle for a configured amount of time, OpenAM terminates
+    the thread, shrinking the pool.
+   </para>
+
+   <para>
+    For more information on configuring script engine thread pools, see
+    <olink targetdoc="reference" targetptr="scripting-configuration"/>.</para>
+  </section>
+ </section>
+
+ <xinclude:include href="sec-scripting-api.xml"/>
+
+ <section xml:id="sec-scripting-default-scripts">
+  <title>Using the Default Scripts</title>
+
+  <para>
+   This section covers the default scripts provided in OpenAM. These
+   scripts act as templates for creating your own scripts. They are global and
+   can be used in any realm, and cannot be deleted.
+  </para>
+
+  <warning>
+   <para>
+    Editing a default script will affect every authentication
+    module, policy condition, or OIDC claim configuration that uses the
+    script.
+   </para>
+  </warning>
+
+  <xinclude:include href="sec-scripted-auth-module.xml"/>
+  <xinclude:include href="sec-scripted-policy-condition.xml"/>
+
+ </section>
+</chapter>

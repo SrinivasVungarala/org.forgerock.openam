@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-custom-attr'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -155,7 +155,7 @@ MODIFY operation successful for DN cn=schema</computeroutput>
 
   </step>
   <step>
-   <para>In OpenAM console, browse to Access Control &gt; <replaceable>Realm
+   <para>In OpenAM console, browse to Realms &gt; <replaceable>Realm
    Name</replaceable> &gt; Data Stores &gt; <replaceable>Data Store
    Name</replaceable>.</para>
   </step>

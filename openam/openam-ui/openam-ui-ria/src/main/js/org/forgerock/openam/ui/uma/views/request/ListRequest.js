@@ -20,8 +20,8 @@ define("org/forgerock/openam/ui/uma/views/request/ListRequest", [
     "backbone",
     "backbone.paginator",
     "backgrid",
-    "backgrid.filter",
-    "backgrid.paginator",
+    "backgrid-filter",
+    "org/forgerock/commons/ui/common/backgrid/extension/ThemeablePaginator",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "org/forgerock/openam/ui/common/util/BackgridUtils",
     "org/forgerock/commons/ui/common/main/Configuration",
@@ -29,7 +29,7 @@ define("org/forgerock/openam/ui/uma/views/request/ListRequest", [
     "org/forgerock/openam/ui/common/util/RealmHelper",
     "org/forgerock/openam/ui/uma/views/backgrid/cells/PermissionsCell",
     "org/forgerock/openam/ui/uma/delegates/UMADelegate"
-], function ($, Backbone, BackbonePaginator, Backgrid, BackgridFilter, BackgridPaginator,
+], function ($, Backbone, BackbonePaginator, Backgrid, BackgridFilter, ThemeablePaginator,
              AbstractView, BackgridUtils, Configuration, Constants, RealmHelper, PermissionsCell, UMADelegate) {
     var ListRequest = AbstractView.extend({
         template: "templates/uma/views/request/ListRequestTemplate.html",
@@ -42,7 +42,8 @@ define("org/forgerock/openam/ui/uma/views/request/ListRequest", [
                 RequestsCollection;
 
             RequestsCollection = Backbone.PageableCollection.extend({
-                url: RealmHelper.decorateURIWithRealm("/" + Constants.context + "/json/__subrealm__/users/" + Configuration.loggedUser.username + "/uma/pendingrequests"),
+                url: RealmHelper.decorateURIWithRealm("/" + Constants.context + "/json/__subrealm__/users/" +
+                     Configuration.loggedUser.get("username") + "/uma/pendingrequests"),
                 state: {
                     pageSize: 10,
                     sortKey: "user"
@@ -103,12 +104,13 @@ define("org/forgerock/openam/ui/uma/views/request/ListRequest", [
                         "click button[data-permission=deny]": "deny"
                     },
                     allow: function () {
-                        UMADelegate.approveRequest(this.model.get("_id"), this.model.get("permissions")).done(function() {
+                        UMADelegate.approveRequest(this.model.get("_id"), this.model.get("permissions"))
+                        .done(function () {
                             self.data.requests.fetch({ reset: true, processData: false }); // TODO: DRY
                         });
                     },
                     deny: function () {
-                        UMADelegate.denyRequest(this.model.get("_id")).done(function() {
+                        UMADelegate.denyRequest(this.model.get("_id")).done(function () {
                             self.data.requests.fetch({ reset: true, processData: false }); // TODO: DRY
                         });
                     }
@@ -121,21 +123,21 @@ define("org/forgerock/openam/ui/uma/views/request/ListRequest", [
 
             grid = new Backgrid.Grid({
                 columns: columns,
-                className: "backgrid table table-striped",
+                className: "backgrid table",
                 collection: self.data.requests,
                 emptyText: $.t("console.common.noResults")
             });
 
-            paginator = new Backgrid.Extension.Paginator({
+            paginator = new Backgrid.Extension.ThemeablePaginator({
                 collection: self.data.requests,
                 windowSize: 3
             });
 
-            self.parentRender(function() {
-                self.$el.find("#backgridContainer").append( grid.render().el );
-                self.$el.find("#paginationContainer").append( paginator.render().el );
-                // TODO: DRY
-                self.data.requests.fetch({ reset: true, processData: false }).done(function(){
+            self.parentRender(function () {
+                self.$el.find(".backgrid-container").append(grid.render().el);
+                self.$el.find(".panel-body").append(paginator.render().el);
+
+                self.data.requests.fetch({ reset: true, processData: false }).done(function () {
                     if (callback) { callback(); }
                 });
             });

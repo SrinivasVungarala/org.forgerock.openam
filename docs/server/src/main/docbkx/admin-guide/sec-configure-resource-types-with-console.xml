@@ -26,7 +26,7 @@
 
 <section xml:id="configure-resource-types-with-console"
           xmlns='http://docbook.org/ns/docbook'
-          version='5.0' xml:lang='en'
+          version='5.0'
           xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
           xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -47,9 +47,8 @@
         <title>To Configure a Resource Type by Using the Policy Editor</title>
 
         <step>
-            <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
-            Name</replaceable> &gt; Policies, and then click the Resource
-             Types tab.</para>
+            <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+            Name</replaceable> &gt; Authorization &gt; Resource Types.</para>
             <substeps>
              <step>
               <para>To create a new resource type, click Add New

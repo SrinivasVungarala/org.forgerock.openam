@@ -19,21 +19,24 @@ package org.forgerock.openam.scripting.guice;
 import static org.forgerock.openam.scripting.ScriptConstants.*;
 import static org.forgerock.openam.scripting.ScriptConstants.ScriptContext.*;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import org.forgerock.guice.core.GuiceModule;
+import org.forgerock.http.Client;
+import org.forgerock.http.HttpApplicationException;
 import org.forgerock.http.client.RestletHttpClient;
+import org.forgerock.http.handler.HttpClientHandler;
 import org.forgerock.openam.scripting.ScriptConstants;
 import org.forgerock.openam.scripting.ScriptEngineConfiguration;
-import org.forgerock.openam.scripting.ScriptEngineConfigurator;
 import org.forgerock.openam.scripting.ScriptEvaluator;
 import org.forgerock.openam.scripting.ScriptValidator;
 import org.forgerock.openam.scripting.StandardScriptEngineManager;
@@ -41,6 +44,7 @@ import org.forgerock.openam.scripting.StandardScriptEvaluator;
 import org.forgerock.openam.scripting.StandardScriptValidator;
 import org.forgerock.openam.scripting.SupportedScriptingLanguage;
 import org.forgerock.openam.scripting.ThreadPoolScriptEvaluator;
+import org.forgerock.openam.scripting.api.http.GroovyHttpClient;
 import org.forgerock.openam.scripting.api.http.JavaScriptHttpClient;
 import org.forgerock.openam.scripting.datastore.ScriptConfigurationDataStore;
 import org.forgerock.openam.scripting.datastore.ScriptingDataStore;
@@ -60,12 +64,14 @@ import org.slf4j.LoggerFactory;
 @GuiceModule
 public class ScriptingGuiceModule extends AbstractModule {
 
+    private final Logger logger = LoggerFactory.getLogger(ScriptConstants.LOGGER_NAME);
+
     @Override
     protected void configure() {
         bind(ScriptValidator.class).to(StandardScriptValidator.class);
 
         bind(Logger.class).annotatedWith(Names.named("ScriptLogger"))
-                .toInstance(LoggerFactory.getLogger(ScriptConstants.LOGGER_NAME));
+                .toInstance(logger);
 
         install(new FactoryModuleBuilder()
                 .implement(new TypeLiteral<ScriptingService>() {},
@@ -99,7 +105,15 @@ public class ScriptingGuiceModule extends AbstractModule {
 
         bind(RestletHttpClient.class)
                 .annotatedWith(Names.named(SupportedScriptingLanguage.GROOVY.name()))
-                .to(JavaScriptHttpClient.class);
+                .to(GroovyHttpClient.class);
+
+        try {
+            bind(Client.class)
+                    .annotatedWith(Names.named("ScriptingHttpClient"))
+                    .toInstance(new Client(new HttpClientHandler()));
+        } catch (HttpApplicationException e) {
+            logger.error("Failed to create HttpClientHandler", e);
+        }
     }
 
     /**
@@ -108,7 +122,6 @@ public class ScriptingGuiceModule extends AbstractModule {
      *
      * @param scriptEngineManager the script engine manager to use.
      * @param executorServiceFactory the factory for creating managed thread pools for script execution.
-     * @param configurator the service configuration listener.
      * @return an appropriately configured script evaluator for use with scripted authentication.
      */
     @Provides
@@ -117,9 +130,9 @@ public class ScriptingGuiceModule extends AbstractModule {
     @Named(AUTHENTICATION_SERVER_SIDE_NAME)
     ScriptEvaluator getAuthenticationServerSideScriptEvaluator(
             @Named(AUTHENTICATION_SERVER_SIDE_NAME) StandardScriptEngineManager scriptEngineManager,
-            ExecutorServiceFactory executorServiceFactory, ScriptEngineConfigurator configurator) {
+            ExecutorServiceFactory executorServiceFactory) {
 
-        return createEvaluator(scriptEngineManager, executorServiceFactory, configurator);
+        return createEvaluator(scriptEngineManager, executorServiceFactory);
     }
 
     /**
@@ -128,7 +141,6 @@ public class ScriptingGuiceModule extends AbstractModule {
      *
      * @param scriptEngineManager the script engine manager to use.
      * @param executorServiceFactory the factory for creating managed thread pools for script execution.
-     * @param configurator the service configuration listener.
      * @return an appropriately configured script evaluator for use with scripted entitlement condition.
      */
     @Provides
@@ -137,9 +149,9 @@ public class ScriptingGuiceModule extends AbstractModule {
     @Named(POLICY_CONDITION_NAME)
     ScriptEvaluator getPoliyConditionScriptEvaluator(
             @Named(POLICY_CONDITION_NAME) StandardScriptEngineManager scriptEngineManager,
-            ExecutorServiceFactory executorServiceFactory, ScriptEngineConfigurator configurator) {
+            ExecutorServiceFactory executorServiceFactory) {
 
-        return createEvaluator(scriptEngineManager, executorServiceFactory, configurator);
+        return createEvaluator(scriptEngineManager, executorServiceFactory);
     }
 
     /**
@@ -148,7 +160,6 @@ public class ScriptingGuiceModule extends AbstractModule {
      *
      * @param scriptEngineManager the script engine manager to use.
      * @param executorServiceFactory the factory for creating managed thread pools for script execution.
-     * @param configurator the service configuration listener.
      * @return an appropriately configured script evaluator for use with OIDC Claims scripts.
      */
     @Provides
@@ -157,9 +168,9 @@ public class ScriptingGuiceModule extends AbstractModule {
     @Named(OIDC_CLAIMS_NAME)
     ScriptEvaluator getOidcClaimsScriptEvaluator(
             @Named(OIDC_CLAIMS_NAME) StandardScriptEngineManager scriptEngineManager,
-            ExecutorServiceFactory executorServiceFactory, ScriptEngineConfigurator configurator) {
+            ExecutorServiceFactory executorServiceFactory) {
 
-        return createEvaluator(scriptEngineManager, executorServiceFactory, configurator);
+        return createEvaluator(scriptEngineManager, executorServiceFactory);
     }
 
     /**
@@ -168,7 +179,6 @@ public class ScriptingGuiceModule extends AbstractModule {
      *
      * @param scriptEngineManager the script engine manager to use.
      * @param executorServiceFactory the factory for creating managed thread pools for script execution.
-     * @param configurator the service configuration listener.
      * @return an appropriately configured script evaluator for use with OIDC Claims scripts.
      */
     @Provides
@@ -177,17 +187,13 @@ public class ScriptingGuiceModule extends AbstractModule {
     @Named(SDK_NAME)
     ScriptEvaluator getSDKScriptEvaluator(
             @Named(SDK_NAME) StandardScriptEngineManager scriptEngineManager,
-            ExecutorServiceFactory executorServiceFactory, ScriptEngineConfigurator configurator) {
+            ExecutorServiceFactory executorServiceFactory) {
 
-        return createEvaluator(scriptEngineManager, executorServiceFactory, configurator);
+        return createEvaluator(scriptEngineManager, executorServiceFactory);
     }
 
     private ThreadPoolScriptEvaluator createEvaluator(StandardScriptEngineManager scriptEngineManager,
-                                                      ExecutorServiceFactory executorServiceFactory,
-                                                      ScriptEngineConfigurator configurator) {
-
-        // Ensure configuration is up to date with service settings
-        configurator.registerServiceListener();
+                                                      ExecutorServiceFactory executorServiceFactory) {
 
         ScriptEngineConfiguration configuration = scriptEngineManager.getConfiguration();
 

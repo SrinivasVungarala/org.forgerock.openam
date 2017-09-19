@@ -1,18 +1,19 @@
 /*
-* The contents of this file are subject to the terms of the Common Development and
-* Distribution License (the License). You may not use this file except in compliance with the
-* License.
-*
-* You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
-* specific language governing permission and limitations under the License.
-*
-* When distributing Covered Software, include this CDDL Header Notice in each file and include
-* the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
-* Header, with the fields enclosed by brackets [] replaced by your own identifying
-* information: "Portions copyright [year] [name of copyright owner]".
-*
-* Copyright 2014 ForgeRock AS.
-*/
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2014-2015 ForgeRock AS.
+ */
+
 package org.forgerock.openam.rest.authz;
 
 import com.iplanet.sso.SSOToken;
@@ -28,7 +29,7 @@ import org.forgerock.json.resource.PatchRequest;
 import org.forgerock.json.resource.QueryRequest;
 import org.forgerock.json.resource.ReadRequest;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.services.context.Context;
 import org.forgerock.json.resource.UpdateRequest;
 import org.forgerock.openam.forgerockrest.utils.RestLog;
 import org.forgerock.openam.forgerockrest.utils.ServerContextUtils;
@@ -53,7 +54,12 @@ public class LoggingAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeCreate(ServerContext serverContext,
+    public String getName() {
+        return moduleName;
+    }
+
+    @Override
+    public Promise<AuthorizationResult, ResourceException> authorizeCreate(Context serverContext,
                                                                            CreateRequest createRequest) {
         final String resource = ServerContextUtils.getMatchedUri(serverContext);
         final String action = ServerContextUtils.getCreateString(createRequest);
@@ -63,7 +69,7 @@ public class LoggingAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeRead(ServerContext serverContext,
+    public Promise<AuthorizationResult, ResourceException> authorizeRead(Context serverContext,
                                                                          ReadRequest readRequest) {
         final String resource = ServerContextUtils.getMatchedUri(serverContext);
         final String action = ServerContextUtils.getReadString(readRequest);
@@ -73,7 +79,7 @@ public class LoggingAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeUpdate(ServerContext serverContext,
+    public Promise<AuthorizationResult, ResourceException> authorizeUpdate(Context serverContext,
                                                                            UpdateRequest updateRequest) {
         final String resource = ServerContextUtils.getMatchedUri(serverContext);
         final String action = ServerContextUtils.getUpdateString(updateRequest);
@@ -83,7 +89,7 @@ public class LoggingAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeDelete(ServerContext serverContext,
+    public Promise<AuthorizationResult, ResourceException> authorizeDelete(Context serverContext,
                                                                            DeleteRequest deleteRequest) {
         final String resource = ServerContextUtils.getMatchedUri(serverContext);
         final String action = ServerContextUtils.getDeleteString(deleteRequest);
@@ -93,7 +99,7 @@ public class LoggingAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizePatch(ServerContext serverContext,
+    public Promise<AuthorizationResult, ResourceException> authorizePatch(Context serverContext,
                                                                           PatchRequest patchRequest) {
         final String resource = ServerContextUtils.getMatchedUri(serverContext);
         final String action = ServerContextUtils.getPatchString(patchRequest);
@@ -103,7 +109,7 @@ public class LoggingAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeAction(ServerContext serverContext,
+    public Promise<AuthorizationResult, ResourceException> authorizeAction(Context serverContext,
                                                                            ActionRequest actionRequest) {
         final String resource = ServerContextUtils.getMatchedUri(serverContext);
         final String action = ServerContextUtils.getActionString(actionRequest);
@@ -113,7 +119,7 @@ public class LoggingAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeQuery(ServerContext serverContext,
+    public Promise<AuthorizationResult, ResourceException> authorizeQuery(Context serverContext,
                                                                           QueryRequest queryRequest) {
         final String resource = ServerContextUtils.getMatchedUri(serverContext);
         final String action = ServerContextUtils.getQueryString(queryRequest);

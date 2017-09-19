@@ -11,21 +11,20 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.rest.service;
 
-import org.forgerock.json.fluent.JsonValue;
+import java.util.Map;
+
+import org.forgerock.json.JsonValue;
 import org.forgerock.json.resource.ResourceException;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Status;
-import org.restlet.ext.jackson.JacksonRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.service.StatusService;
-
-import java.util.Map;
 
 /**
  * Service to handle error statuses. If an exception is thrown then the status is pulled from the response and the
@@ -40,7 +39,7 @@ public abstract class RestStatusService extends StatusService {
      * {@inheritDoc}
      */
     @Override
-    public Representation getRepresentation(Status status, Request request, Response response) {
+    public Representation toRepresentation(Status status, Request request, Response response) {
         final JsonValue jsonResponse;
         Throwable throwable = status.getThrowable();
 

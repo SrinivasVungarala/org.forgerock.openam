@@ -18,18 +18,22 @@ package org.forgerock.openam.uma;
 
 import static org.forgerock.openam.utils.CollectionUtils.asSet;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.iplanet.services.comm.share.Request;
-import org.forgerock.oauth2.core.AccessToken;
+
 import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.openam.cts.CTSPersistentStore;
 import org.forgerock.openam.cts.adapters.JavaBeanAdapter;
+import org.forgerock.openam.cts.api.filter.TokenFilterBuilder;
 import org.forgerock.openam.cts.api.tokens.Token;
 import org.forgerock.openam.cts.exceptions.CoreTokenException;
+import org.forgerock.openam.tokens.CoreTokenField;
+import org.forgerock.util.query.QueryFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +61,9 @@ public class UmaTokenStore {
     RequestingPartyToken createRPT(PermissionTicket permissionTicket) throws ServerException {
         UmaProviderSettings settings = settingsFactory.get(realm);
         Permission permission = new Permission(permissionTicket.getResourceSetId(), permissionTicket.getScopes());
-        RequestingPartyToken rpt = new RequestingPartyToken(null, permissionTicket.getClientId(), asSet(permission),
-                System.currentTimeMillis() + (settings.getRPTLifetime() * 1000));
+        RequestingPartyToken rpt = new RequestingPartyToken(null, permissionTicket.getResourceServerClientId(),
+                asSet(permission), System.currentTimeMillis() + (settings.getRPTLifetime() * 1000),
+                permissionTicket.getId(), permissionTicket.getClientClientId());
         rpt.setRealm(realm);
         try {
             cts.create(rptAdapter.toToken(rpt));
@@ -84,6 +89,22 @@ public class UmaTokenStore {
 
     public RequestingPartyToken readRPT(String id) throws NotFoundException {
         return (RequestingPartyToken) readToken(id, rptAdapter);
+    }
+
+    Collection<RequestingPartyToken> queryRPT(QueryFilter<CoreTokenField> query) throws ServerException {
+        Collection<RequestingPartyToken> rpts = new HashSet<>();
+        try {
+            Collection<Token> tokens = cts.query(new TokenFilterBuilder().withQuery(query).build());
+            for (Token token : tokens)  {
+                RequestingPartyToken rpt = rptAdapter.fromToken(token);
+                if (realm.equals(rpt.getRealm())) {
+                    rpts.add(rpt);
+                }
+            }
+        } catch (CoreTokenException e) {
+            throw new ServerException("Could not query RPTs");
+        }
+        return rpts;
     }
 
     public PermissionTicket readPermissionTicket(String id) throws NotFoundException {
@@ -126,4 +147,12 @@ public class UmaTokenStore {
         }
     }
 
+    public void updatePermissionTicket(PermissionTicket permissionTicket) throws ServerException {
+        try {
+            cts.update(permissionTicketAdapter.toToken(permissionTicket));
+        } catch (CoreTokenException e) {
+            logger.warn("Could not update token: {}", permissionTicket, e);
+            throw new ServerException("Could not update token: " + permissionTicket.getId());
+        }
+    }
 }

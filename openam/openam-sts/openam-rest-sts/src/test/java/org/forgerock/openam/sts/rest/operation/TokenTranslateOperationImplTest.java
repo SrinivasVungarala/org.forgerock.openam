@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.openam.sts.AMSTSConstants;
 import org.forgerock.openam.sts.TokenType;
 import org.forgerock.openam.sts.TokenValidationException;
@@ -47,9 +47,9 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
-import static org.forgerock.json.fluent.JsonValue.field;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
+import static org.forgerock.json.JsonValue.field;
+import static org.forgerock.json.JsonValue.json;
+import static org.forgerock.json.JsonValue.object;
 
 /*
 Note that an injector is created in each test as the behavior of mocks need to be changed in each test.
@@ -139,7 +139,7 @@ public class TokenTranslateOperationImplTest {
         TokenTranslateOperation tokenTranslateOperation = injector.getInstance(TokenTranslateOperation.class);
         TokenTransform mockTokenTransform = injector.getInstance(TokenTransform.class);
         when(mockTokenTransform.isTransformSupported(any(TokenType.class), any(TokenType.class))).thenReturn(Boolean.FALSE);
-        tokenTranslateOperation.translateToken(buildInvocationState(TokenType.SAML2), null, null);
+        tokenTranslateOperation.translateToken(buildInvocationState(TokenType.SAML2), null);
     }
 
     @Test(expectedExceptions = TokenValidationException.class)
@@ -148,7 +148,7 @@ public class TokenTranslateOperationImplTest {
         JsonValue bunkTokenState = json(object(field("token_type", "nonsense")));
         RestSTSTokenTranslationInvocationState invocationState =
                 RestSTSTokenTranslationInvocationState.builder().inputTokenState(bunkTokenState).outputTokenState(bunkTokenState).build();
-        tokenTranslateOperation.translateToken(invocationState, null, null);
+        tokenTranslateOperation.translateToken(invocationState, null);
     }
 
     private RestSTSTokenTranslationInvocationState buildInvocationState(TokenType desiredTokenType) throws Exception {

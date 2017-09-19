@@ -25,7 +25,7 @@
 -->
  <section xml:id="console-configuration"
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -135,9 +135,7 @@
    <title>Globalization Settings</title>
 <variablelist>
    <para>Globalization settings affect character sets and common name
-   formats. See <link xlink:href="reference#chap-l10n"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-  >Localization</citetitle></link> for a list of supported locales.</para>
+   formats. See <xref linkend="chap-l10n" /> for a list of supported locales.</para>
 
    <para><command>ssoadm</command> service name:
    <literal>iPlanetG11NSettings</literal></para>

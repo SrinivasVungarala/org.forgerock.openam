@@ -29,6 +29,7 @@
  */
 package com.sun.identity.log.service;
 
+import static org.forgerock.audit.events.AccessAuditEventBuilder.TimeUnit.MILLISECONDS;
 import static org.forgerock.openam.audit.AuditConstants.*;
 
 import com.iplanet.dpro.parser.ParseOutput;
@@ -46,7 +47,7 @@ import com.sun.identity.monitoring.Agent;
 import com.sun.identity.monitoring.MonitoringUtil;
 import com.sun.identity.monitoring.SsoServerLoggingHdlrEntryImpl;
 import com.sun.identity.monitoring.SsoServerLoggingSvcImpl;
-import org.forgerock.openam.audit.AMAccessAuditEventBuilder;
+import org.forgerock.audit.events.AuditEvent;
 import org.forgerock.openam.audit.AuditConstants;
 import org.forgerock.openam.audit.AuditEventFactory;
 import org.forgerock.openam.audit.AuditEventPublisher;
@@ -189,7 +190,7 @@ public class LogRecWrite implements LogOperation, ParseOutput {
     }
 
     private void auditAccessMessage(AuditEventPublisher auditEventPublisher, AuditEventFactory auditEventFactory, LogRecord record) {
-        if (!auditEventPublisher.isAuditing(AuditConstants.ACCESS_TOPIC)) {
+        if (!auditEventPublisher.isAuditing(NO_REALM, AuditConstants.ACCESS_TOPIC)) {
             return;
         }
 
@@ -217,7 +218,7 @@ public class LogRecWrite implements LogOperation, ParseOutput {
         String queryString = queryStringIndex > -1 ? resourceUrl.substring(queryStringIndex) : "";
         String path = resourceUrl.replace(queryString, "");
 
-        AMAccessAuditEventBuilder builder = auditEventFactory.accessEvent()
+        AuditEvent auditEvent = auditEventFactory.accessEvent(NO_REALM)
                 .transactionId(AuditRequestContext.getTransactionIdValue())
                 .eventName(EventName.AM_ACCESS_ATTEMPT)
                 .component(Component.POLICY_AGENT)
@@ -225,10 +226,11 @@ public class LogRecWrite implements LogOperation, ParseOutput {
                 .http("UNKNOWN", path, queryString, Collections.<String, List<String>>emptyMap())
                 .resourceOperation(logExtracts.getResourceUrl(), "HTTP", "UNKNOWN")
                 .client(clientIp)
-                .contextId(contextId)
-                .response(logExtracts.getStatus(), -1);
+                .context(Context.SESSION, contextId)
+                .response(null, logExtracts.getStatus(), -1, MILLISECONDS)
+                .toEvent();
 
-        auditEventPublisher.tryPublish(AuditConstants.ACCESS_TOPIC, builder.toEvent());
+        auditEventPublisher.tryPublish(AuditConstants.ACCESS_TOPIC, auditEvent);
     }
     
     /**

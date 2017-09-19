@@ -15,15 +15,19 @@
  */
 package com.iplanet.services.comm.server;
 
+import static org.forgerock.audit.events.AccessAuditEventBuilder.ResponseStatus.FAILURE;
+import static org.forgerock.audit.events.AccessAuditEventBuilder.ResponseStatus.SUCCESS;
+import static org.forgerock.audit.events.AccessAuditEventBuilder.TimeUnit.MILLISECONDS;
 import static org.forgerock.openam.audit.AMAuditEventBuilderUtils.*;
 import static org.forgerock.openam.audit.AuditConstants.*;
+import static org.forgerock.openam.audit.AuditConstants.Context.SESSION;
 
 import com.iplanet.services.comm.share.Request;
 import com.iplanet.services.comm.share.RequestSet;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.shared.debug.Debug;
 import org.forgerock.audit.AuditException;
-import org.forgerock.openam.audit.AMAccessAuditEventBuilder;
+import org.forgerock.audit.events.AuditEvent;
 import org.forgerock.openam.audit.AuditEventFactory;
 import org.forgerock.openam.audit.AuditEventPublisher;
 import org.forgerock.openam.audit.context.AuditRequestContext;
@@ -73,9 +77,9 @@ public class PLLAuditor {
      * @throws AuditException If an exception occurred that prevented the audit event from being published.
      */
     public void auditAccessAttempt() {
-        if (auditEventPublisher.isAuditing(ACCESS_TOPIC)) {
+        if (auditEventPublisher.isAuditing(NO_REALM, ACCESS_TOPIC)) {
 
-            AMAccessAuditEventBuilder builder = auditEventFactory.accessEvent()
+            AuditEvent auditEvent = auditEventFactory.accessEvent(NO_REALM)
                     .forHttpServletRequest(httpServletRequest)
                     .timestamp(startTime)
                     .transactionId(AuditRequestContext.getTransactionIdValue())
@@ -83,8 +87,9 @@ public class PLLAuditor {
                     .component(Component.PLL)
                     .authentication(authenticationId)
                     .resourceOperation(service, PLL, method)
-                    .contextId(contextId);
-            auditEventPublisher.tryPublish(ACCESS_TOPIC, builder.toEvent());
+                    .context(SESSION, contextId)
+                    .toEvent();
+            auditEventPublisher.tryPublish(ACCESS_TOPIC, auditEvent);
         }
         accessAttemptAudited = true;
     }
@@ -99,22 +104,23 @@ public class PLLAuditor {
         if (!accessAttemptAudited) {
             auditAccessAttempt();
         }
-        if (auditEventPublisher.isAuditing(ACCESS_TOPIC)) {
+        if (auditEventPublisher.isAuditing(NO_REALM, ACCESS_TOPIC)) {
 
             final long endTime = System.currentTimeMillis();
             final long elapsedTime = endTime - startTime;
-            AMAccessAuditEventBuilder builder = auditEventFactory.accessEvent()
+            AuditEvent auditEvent = auditEventFactory.accessEvent(NO_REALM)
                     .forHttpServletRequest(httpServletRequest)
                     .timestamp(endTime)
                     .transactionId(AuditRequestContext.getTransactionIdValue())
                     .eventName(EventName.AM_ACCESS_OUTCOME)
                     .component(Component.PLL)
-                    .response("SUCCESS", elapsedTime)
+                    .response(SUCCESS, "", elapsedTime, MILLISECONDS)
                     .authentication(authenticationId)
                     .resourceOperation(service, PLL, method)
-                    .contextId(contextId);
+                    .context(SESSION, contextId)
+                    .toEvent();
 
-            auditEventPublisher.tryPublish(ACCESS_TOPIC, builder.toEvent());
+            auditEventPublisher.tryPublish(ACCESS_TOPIC, auditEvent);
             reset();
         }
     }
@@ -144,22 +150,23 @@ public class PLLAuditor {
         if (!accessAttemptAudited) {
             auditAccessAttempt();
         }
-        if (auditEventPublisher.isAuditing(ACCESS_TOPIC)) {
+        if (auditEventPublisher.isAuditing(NO_REALM, ACCESS_TOPIC)) {
 
             final long endTime = System.currentTimeMillis();
             final long elapsedTime = endTime - startTime;
-            AMAccessAuditEventBuilder builder = auditEventFactory.accessEvent()
+            AuditEvent auditEvent = auditEventFactory.accessEvent(NO_REALM)
                     .forHttpServletRequest(httpServletRequest)
                     .timestamp(endTime)
                     .transactionId(AuditRequestContext.getTransactionIdValue())
                     .eventName(EventName.AM_ACCESS_OUTCOME)
                     .component(Component.PLL)
-                    .responseWithMessage(errorCode == null ? "FAILED" : "FAILED - " + errorCode, elapsedTime, message)
+                    .responseWithDetail(FAILURE, errorCode == null ? "" : errorCode, elapsedTime, MILLISECONDS, message)
                     .authentication(authenticationId)
                     .resourceOperation(service, PLL, method)
-                    .contextId(contextId);
+                    .context(SESSION, contextId)
+                    .toEvent();
 
-            auditEventPublisher.tryPublish(ACCESS_TOPIC, builder.toEvent());
+            auditEventPublisher.tryPublish(ACCESS_TOPIC, auditEvent);
             reset();
         }
     }
@@ -209,7 +216,7 @@ public class PLLAuditor {
      * @param ssoToken SSOToken of the originating client from which the session contextId and realm are obtained.
      */
     public void setSsoToken(SSOToken ssoToken) {
-        this.contextId = getContextIdFromSSOToken(ssoToken);
+        this.contextId = getContextFromSSOToken(ssoToken);
         this.authenticationId = getUserId(ssoToken);
     }
 

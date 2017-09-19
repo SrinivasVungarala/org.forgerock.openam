@@ -437,7 +437,7 @@ am_config_t *am_get_config_file(unsigned long instance_id, const char *filename)
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_CERT_FILE, CONF_STRING, NULL, &conf->cert_file, NULL);
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_CA_FILE, CONF_STRING, NULL, &conf->cert_ca_file, NULL);
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_CIPHERS, CONF_STRING, NULL, &conf->ciphers, NULL);
-        parse_config_value(instance_id, line, AM_AGENTS_CONFIG_TRUST_CERT, CONF_STRING, NULL, &conf->cert_trust, NULL);
+        parse_config_value(instance_id, line, AM_AGENTS_CONFIG_TRUST_CERT, CONF_NUMBER, NULL, &conf->cert_trust, NULL);
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_TLS_OPT, CONF_STRING, NULL, &conf->tls_opts, NULL);
 
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_NET_TIMEOUT, CONF_NUMBER, NULL, &conf->net_timeout, NULL);
@@ -446,7 +446,7 @@ am_config_t *am_get_config_file(unsigned long instance_id, const char *filename)
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_URL_VALIDATE_PING_INTERVAL, CONF_NUMBER, NULL, &conf->valid_ping, NULL);
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_URL_VALIDATE_PING_MISS, CONF_NUMBER, NULL, &conf->valid_ping_miss, NULL);
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_URL_VALIDATE_PING_OK, CONF_NUMBER, NULL, &conf->valid_ping_ok, NULL);
-        parse_config_value(instance_id, line, AM_AGENTS_CONFIG_URL_VALIDATE_DEFAULT_SET, CONF_NUMBER_LIST, &conf->valid_default_url_sz, &conf->valid_default_url, AM_SPACE_CHAR);
+        parse_config_value(instance_id, line, AM_AGENTS_CONFIG_URL_VALIDATE_DEFAULT_SET, CONF_NUMBER_LIST, &conf->valid_default_url_sz, &conf->valid_default_url, AM_COMMA_CHAR);
 
         /*
          * com.forgerock.agents.config.hostmap format:
@@ -461,6 +461,7 @@ am_config_t *am_get_config_file(unsigned long instance_id, const char *filename)
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_NOTIF_URL, CONF_STRING, NULL, &conf->notif_url, NULL);
 
         parse_config_value(instance_id, line, AM_AGENTS_CONFIG_LB_ENABLE, CONF_NUMBER, NULL, &conf->lb_enable, NULL);
+        parse_config_value(instance_id, line, AM_AGENTS_CONFIG_KEEPALIVE_DISABLE, CONF_NUMBER, NULL, &conf->keepalive_disable, NULL);
 
         if (conf->local) { /* do read other options in case configuration is local */
 
@@ -571,6 +572,9 @@ am_config_t *am_get_config_file(unsigned long instance_id, const char *filename)
         
             parse_config_value(instance_id, line, AM_AGENTS_CONFIG_ANONYMOUS_USER_ENABLE, CONF_NUMBER, NULL, &conf->anon_remote_user_enable, NULL);
             parse_config_value(instance_id, line, AM_AGENTS_CONFIG_ANONYMOUS_USER_ID, CONF_STRING, NULL, &conf->unauthenticated_user, NULL);
+        
+            parse_config_value(instance_id, line, AM_AGENTS_CONFIG_IGNORE_PATHINFO, CONF_NUMBER, NULL, &conf->path_info_ignore, NULL);
+            parse_config_value(instance_id, line, AM_AGENTS_CONFIG_IGNORE_PATHINFO_NOT_ENFORCED, CONF_NUMBER, NULL, &conf->path_info_ignore_not_enforced, NULL);
         }
     }
 
@@ -582,6 +586,9 @@ am_config_t *am_get_config_file(unsigned long instance_id, const char *filename)
     decrypt_agent_passwords(conf);
     update_agent_configuration_ttl(conf);
     update_agent_configuration_audit(conf);
+    update_agent_configuration_normalise_map_urls(conf);
+    update_agent_configuration_reorder_map_values(conf);
+    
     return conf;
 }
 

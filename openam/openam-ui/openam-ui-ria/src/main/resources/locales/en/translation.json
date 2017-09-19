@@ -70,8 +70,6 @@
                     }
                 },
                 "policies": {
-                    "ruleErrorFullLogical": "The parent logical container can only accept one child.",
-                    "ruleHelperTryAndOr": "If more than one child is required, try changing<br>the type, or adding a child of type AND or OR.",
                     "unableToRetrievePolicy": "Unable to retrieve policy",
                     "invalidResource": "Invalid resource",
                     "duplicateResource": "Duplicate resource",
@@ -79,7 +77,7 @@
                     "unableToPersistPolicy": "Unable to persist policy in datastore",
                     "policiesUploaded": "Policies uploaded successfully",
                     "policiesUploadFailed": "Failed to upload policies",
-                    "importFailed": "Import Failed: __applicationName__ application not found in realm",
+                    "importFailed": "Import Failed: __applicationName__ policy set not found in realm",
                     "error": {
                         "cantStartWithHash": "LDAP entity can't start with #",
                         "noName": "Name is required",
@@ -137,8 +135,9 @@
                 "registerAccount" : "Register your account",
                 "problemLoggingQuestion" : "Having trouble logging in?",
                 "resetPassword" : "Reset your password",
-                "siteIdentification": "Site Identification",
-                "siteIdentificationExplanation": "Please enter your login name.<br />Your site image and pass phrase will be displayed here."
+                "siteIdentification" : "Site Identification",
+                "siteIdentificationExplanation" : "Please enter your login name.<br />Your site image and pass phrase will be displayed here.",
+                "socialAuthentication" : "Or login with:"
             },
             "404" : {
                 "pageNotFound" : "Page not found",
@@ -165,15 +164,6 @@
                 "passwordAndSecurityQuestionChange" : "Password and security question change",
                 "enterYourOldPassword" : "Please enter your old password"
             },
-            "ForgottenPasswordTemplate" : {
-                "forgottenPasswordQuestion" : "Forgotten password?",
-                "enterLogin" : "Please enter your username, we will send you an email containing instructions on how to reset your password.",
-                "changeForgottenPassword" : "Change forgotten password",
-                "emailSubject" : "OpenAM: You have requested a password reset",
-                "emailMessage" : "Hello from OpenAM, \n\nYou have requested to have your ForgeRock account's password reset.\n\nIf you want to reset your password then follow the link below.\n\n**Note: If you encounter an error message when you click on this link, please copy the url and paste it into your browser instead.\n\n",
-                "emailSent" : "We have sent you an e-mail, please follow the link in the e-mail to complete your password reset process.",
-                "proceedToLogin" : "proceed to login"
-            },
             "TermsOfUseTemplate" : {
                 "termsOfUse" : "Terms of use",
                 "termsOfUseContent" : "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris idvulputate urna. Quisque tristique dictum sodales. Nullam tempus eleifend erat,vel facilisis nibh euismod non. Phasellus vitae elit velit, in sollicitudindiam. Maecenas ornare nunc non ipsum ornare vehicula id sed dolor. Duispellentesque congue sapien, dictum adipiscing est posuere sit amet. Suspendissein lectus lorem. Suspendisse vitae metus sapien, sit amet luctus libero.Integer nec nunc sed massa pellentesque pulvinar. Integer vulputate nunc atnunc lacinia eu luctus neque elementum. Aenean ultricies arcu sed enimultricies blandit placerat ut massa. Donec at dolor sit amet magna vulputateelementum sit amet in sapien. Donec sit amet erat neque.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris idvulputate urna. Quisque tristique dictum sodales. Nullam tempus eleifend erat,vel facilisis nibh euismod non. Phasellus vitae elit velit, in sollicitudindiam. Maecenas ornare nunc non ipsum ornare vehicula id sed dolor. Duispellentesque congue sapien, dictum adipiscing est posuere sit amet. Suspendissein lectus lorem. Suspendisse vitae metus sapien, sit amet luctus libero.Integer nec nunc sed massa pellentesque pulvinar. Integer vulputate nunc atnunc lacinia eu luctus neque elementum. Aenean ultricies arcu sed enimultricies blandit placerat ut massa. Donec at dolor sit amet magna vulputateelementum sit amet in sapien. Donec sit amet erat neque.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris idvulputate urna. Quisque tristique dictum sodales. Nullam tempus eleifend erat,vel facilisis nibh euismod non. Phasellus vitae elit velit, in sollicitudindiam. Maecenas ornare nunc non ipsum ornare vehicula id sed dolor. Duispellentesque congue sapien, dictum adipiscing est posuere sit amet. Suspendissein lectus lorem. Suspendisse vitae metus sapien, sit amet luctus libero.Integer nec nunc sed massa pellentesque pulvinar. Integer vulputate nunc atnunc lacinia eu luctus neque elementum. Aenean ultricies arcu sed enimultricies blandit placerat ut massa. Donec at dolor sit amet magna vulputateelementum sit amet in sapien. Donec sit amet erat neque.</p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris idvulputate urna. Quisque tristique dictum sodales. Nullam tempus eleifend erat,vel facilisis nibh euismod non. Phasellus vitae elit velit, in sollicitudindiam. Maecenas ornare nunc non ipsum ornare vehicula id sed dolor. Duispellentesque congue sapien, dictum adipiscing est posuere sit amet. Suspendissein lectus lorem. Suspendisse vitae metus sapien, sit amet luctus libero.Integer nec nunc sed massa pellentesque pulvinar. Integer vulputate nunc atnunc lacinia eu luctus neque elementum. Aenean ultricies arcu sed enimultricies blandit placerat ut massa. Donec at dolor sit amet magna vulputateelementum sit amet in sapien. Donec sit amet erat neque.</p>"
@@ -196,6 +186,10 @@
             "RestLogoutTemplate" : {
                 "loggedOut" : "You have been logged out.",
                 "returnToLogin" : "Return to Login page"
+            },
+            "ChangesPendingTemplate": {
+                "undo": "Undo Changes",
+                "changesPending": "Changes Pending"
             }
         },
         "admin" : {
@@ -236,8 +230,8 @@
             "tokenInfo": "TokenInfo"
         },
         "login" : {
-            "notMember": "Not a member?",
-            "joinNow": "Join now"
+            "newHere": "New here?",
+            "createAccount": "Create an account"
         }
     },
     "common" : {
@@ -246,6 +240,7 @@
             "no" : "No",
             "true" : "True",
             "false" : "False",
+            "add": "Add",
             "update" : "Update",
             "save" : "Save",
             "create" : "Create",
@@ -309,6 +304,7 @@
             "enableCookies" : "Cookies must be enabled to login",
             "deleteSelected" : "Delete Selected",
             "startTypingToSearch": "Start typing to search",
+            "unchanged": "unchanged",
             "validation" : {
                 "VALID_PHONE_FORMAT": "Contains invalid characters",
                 "VALID_NAME_FORMAT": "Contains invalid characters",
@@ -342,19 +338,50 @@
                 "wrongDateFormat" : "Wrong format"
             }
         },
+        "grid": {
+            "pagination": {
+                "first": "First",
+                "previous": "Previous",
+                "next": "Next",
+                "last": "Last"
+            }
+        },
         "user" : {
+            "passwordReset" : {
+                "title": "Reset Your Password",
+                "completed": "Your password has been successfully reset.",
+                "failed": "Unable to reset your password",
+                "tryAgain": "Try Resetting Your Password Again",
+                "return": "Return to Login Page"
+            },
+            "selfRegistration" : {
+                "title": "Register Your Account",
+                "completed": "Your account has been successfully registered.",
+                "failed": "Unable to register your account",
+                "tryAgain": "Try Registering Again",
+                "return": "Return to Login Page"
+            },
+            "emailVerification" : {
+                "description" : "Enter the email address associated with your account to reset your password. We will send you an email that will allow you to reset your password.",
+                "send": "Send"
+            },
+            "userIdValidation" : "Enter the username or email address associated with your account. We will send you an email with a link that will allow you to reset your password.",
+            "emailValidation" : "Enter your email address to proceed. We will send you an email with a link that will allow you to continue registering.",
+            "send": "Send",
+            "validateCode" : "An email has been sent to the address you entered. Click the link in that email to proceed.",
             "user" : "User",
             "login" : "Log in",
             "loginConfirm" : "You have already logged in. Do you want to log out and then login to a different organization?",
             "profile" : "Profile",
+            "basicInfo" : "Basic Info",
             "myProfile" : "My Profile",
             "userProfile" : "User profile",
             "username" : "Username",
             "emailAddress" : "Email address",
             "givenName" : "First Name",
-            "familyName" : "Last Name",
+            "sn" : "Last Name",
             "changePassword" : "Change password",
-            "forgotPassword" : "Forgot password",
+            "forgotPassword" : "Forgot password?",
             "accountStatus" : "Account status",
             "active" : "Active",
             "inactive" : "Inactive",
@@ -591,13 +618,36 @@
     },
     "console": {
         "common": {
-            "topLevelRealm" : "Top Level Realm",
+            "topLevelRealm": "Top Level Realm",
             "realmStatus": "Status",
             "realmDnsAliases": "Aliases/DNS Aliases",
             "noResults": "No results to display",
             "name": "Name",
+            "nav": {
+                "dashboard": "Dashboard",
+                "authn": {
+                    "authn": "Authentication",
+                    "settings": "Settings",
+                    "chains": "Chains",
+                    "modules": "Modules"
+                },
+                "services": "Services",
+                "dataStores": "Data Stores",
+                "privileges": "Privileges",
+                "authz": {
+                    "authz": "Authorization",
+                    "policies": "Policies",
+                    "resourceTypes": "Resource Types"
+                },
+                "subjects": "Subjects",
+                "agents": "Agents",
+                "sts": "STS",
+                "scripts": "Scripts"
+            },
             "description": "Description",
-            "type": "Type"
+            "type": "Type",
+            "editFullScreen": "Edit Fullscreen",
+            "exitFullScreen": "Exit Fullscreen"
         },
         "authentication": {
             "settings": {
@@ -609,9 +659,14 @@
                 "addModuleDialogTitle" : "Create new Module",
                 "addModuleDialogError": "Authentication instance already exists.",
                 "selectModuleType" : "Select Module type   ",
-                "addModule": "Add Module",
-                "moduleName": "Module Name",
-                "moduleType": "Type"
+                "addModule" : "Add Module",
+                "moduleName" : "Module Name",
+                "moduleType" : "Type",
+                "chain" : "Chain",
+                "inUse": {
+                    "title": "Edit module",
+                    "message": "The <code>__moduleName__</code> module is being used by the following Authentication Chain(s) <code>__usedChains__</code>. Editing this module may change their behaviour. <br><br>Are you sure you want to continue?"
+                }
             },
             "chains": {
                 "title" : "Authentication Chains",
@@ -643,7 +698,7 @@
                 "failUrl" : "Failed Login URL",
                 "addUrl" : "Add URL",
                 "dropHere" : "Drop here",
-                "moduleHelp" : "Add modules to the authentication chain, and select the continuation and failure semantics with one of the following four flags: required, optional, requisite, or sufficient.",
+                "moduleHelp" : "Add authentication modules to build a process in which a user must pass credentials to all module instances.",
                 "processingClass": {
                     "title": "Post Authentication Processing Class",
                     "className": "Class Name",
@@ -654,12 +709,39 @@
                     "duplicateClass" : "A Class with the same name already exists",
                     "help" : "Specify the name of a Java class to execute at the end of the authentication process."
                 },
-                "criteria" : ["Required","Optional","Requisite","Sufficient"]
+                "criteria" : [
+                    {
+                        "title": "Required",
+                        "pass" : "Will advance to next module.",
+                        "fail" : "Will execute remaining modules but will ultimately fail."
+                    },
+                    {
+                        "title": "Optional",
+                        "pass" : "Will advance to next module",
+                        "fail" : "Will advance to next module"
+                    },
+                    {
+                        "title": "Requisite",
+                        "pass" : "Will advance to next module.",
+                        "fail" : "Will advance straight to failure URL"
+
+                    },
+                    {
+                        "title": "Sufficient",
+                        "pass" : "Will advance straight to success URL.",
+                        "fail" : "Will advance to next module"
+                    }
+                ],
+                "alerts" : {
+                    "atLeastOne" : "You must add at least one valid authentication module"
+                },
+                "lastCriteria" : "Will advance to success or failure URL",
+                "deletedChain": "Chain deleted successfully"
+
             }
         },
         "dashboard":{
             "realmProperties" : "Properties",
-            "dashboard" : "Dashboard",
             "title" : "Realm Overview",
             "quickStart" : "Common Tasks"
         },
@@ -724,23 +806,27 @@
                 "grid": ["Name", "Script Type", "Language", "Description"]
             }
         },
-        "policies": {
+        "authorization": {
             "common": {
                 "realm": "Realm",
                 "realms": "Realms",
-                "application": "Application",
-                "applications": "Applications",
+                "policy": "Policy",
+                "policySet": "Policy Set",
+                "policySets": "Policy Sets",
                 "pattern": "Pattern",
                 "patterns": "Patterns",
                 "responseAttributes": "Response attributes",
                 "subjectAttributes": "Subject attributes",
                 "availablePatterns": "Available patterns",
                 "staticAttributes": "Static attributes",
+                "action": "Action",
                 "actions": "Actions",
                 "resources": "Resources",
                 "subjects": "Subjects",
                 "environments": "Environments",
+                "resourceType": "Resource Type",
                 "resourceTypes": "Resource Types",
+                "defaultState": "Default State",
 
                 "noRealms": "There are no selected realms...",
                 "noActions": "There are no actions...",
@@ -749,10 +835,11 @@
                 "noResourceTypes": "There are no selected resources types...",
                 "noStaticAttributes": "There are no static attributes...",
                 "noSubjectAttributes": "There are no subject attributes...",
-                "noApplications": "There are no selected applications...",
+                "noApplications": "There are no selected policy sets...",
                 "noPatterns": "There are no patterns...",
                 "noResourceTypesAvailable": "There are no available resource types...",
-                "noApplicationsAvailable": "There are no available applications...",
+                "noApplicationsAvailable": "There are no available policy sets...",
+                "noItems": "There are no items ...",
 
                 "weekdays": {
                     "Monday": {
@@ -783,67 +870,56 @@
                         "short": "sun",
                         "full": "Sunday"
                     }
-                },
-                "stripedList": {
-                    "filterPlaceholder": "Select or search for available items",
-                    "noItems": "There are no items ..."
                 }
             },
 
-            "applications":{
+            "policySets":{
                 "edit": {
+                    "new": "New Policy Set",
                     "policies": "Policies",
+                    "addResourceTypes": "Add Resource Types...",
+                    "selectResourceTypes": "Select the resource types to be available within this policy set.",
                     "resourceTypes": {
                         "availableResourceTypes": "Available Resource Types",
                         "selectedResourceTypes": "Selected Resource Types"
-                    }
+                    },
+                    "cannotEditPolicySet": "To edit a policy set first delete all policies that it contains."
                 },
                 "list": {
-                    "addNew": "New Application",
+                    "addNew": "New Policy Set",
                     "importPolicies": "Import Policies",
                     "exportPolicies": "Export Policies",
-                    "title": "Applications",
-                    "grid": ["Name", "Description", "Resource Types"]
+                    "title": "Policies",
+                    "grid": ["Name"]
                 }
             },
 
             "policies": {
                 "edit": {
                     "createNew": "New Policy",
-                    "step1": "Name the Policy",
-                    "step2": "Specify Resources",
-                    "step3": "Select Actions",
-                    "step4": "Define Subject Conditions",
-                    "step5": "Define Environment Conditions",
-                    "step6": "Specify Response Attributes",
-                    "step7": "Review Configuration and Finish",
+                    "resourcesDescription": "Specify resources to be managed with this policy.",
+                    "actionsDescription": "Select the actions that the policy applies.",
+                    "subjectConditionsDescription": "Specify the subject conditions to which the policy applies.",
+                    "environmentConditionsDescription": "Specify the environment conditions to which the policy applies.",
                     "deleteLogical": "Deleting will also remove any child objects",
-                    "manageRulesDescription": "To define rules, click the Condition or Logical buttons above, enter the relevant options, and then drag the block into place in the rule set above. Each block can be configured both before and after is has been moved. Only rules inside the rule set section will be included in the created policy. To edit a Condition, click the pencil icon, or double-click the item.",
-                    "logical": "Logical",
-                    "selectResourceTypeHelper": "In order to define resources please select resource type first.",
-                    "selectResourceType": "Select Resource Type",
-                    "noResourceTypeNoActions": "In order to select actions please select resource type first.",
+                    "addLogical": "Add a Logical Operator",
+                    "selectResourceTypeHelper": "Select the type of resource for which this policy will manage access.",
+                    "selectResourceType": "Select a resource type...",
+                    "selectResourcePattern": "Select resource pattern...",
+                    "selectAction": "Select an action...",
+                    "addAction": "Add action",
                     "addNewAction": "Add new action",
                     "availableActions": "Available Resource Type Actions",
                     "selectedActions": "Selected Actions",
                     "subjectAttributesPlaceholder": "Select or search for subject attributes",
-
-                    "summaryReview": {
-                        "noName": "There is no name...",
-                        "invalidName": "Invalid name...",
-                        "noDescription": "There is no description...",
-                        "noSubjectConditions": "There are no subject conditions...",
-                        "noSubjectAttributes": "There are no subject attributes...",
-                        "noEnvironmentConditions": "There are no environment conditions...",
-                        "switchView": "Switch to <a href='#' id='toggleAdvanced'></a> view.",
-                        "maximized": "maximized",
-                        "minimized": "minimized"
-                    },
+                    "addEnvironmentCondition": "Add an Environment Condition",
+                    "addSubjectCondition": "Add a Subject Condition",
+                    "canAcceptOneChild": "The \"Not...\" logical operator can only accept one child",
 
                     "operators": {
-                        "NOT": "NOT",
-                        "OR": "OR",
-                        "AND": "AND"
+                        "NOT": "Not...",
+                        "OR": "Any of...",
+                        "AND": "All of..."
                     },
 
                     "subjectTypes": {
@@ -994,8 +1070,10 @@
                     }
                 },
                 "list": {
-                    "grid": ["Name", "Description", "Resources", "Actions"],
-                    "addNew": "New Policy"
+                    "grid": ["Name"],
+                    "addNew": "Add a New Policy",
+                    "description": "Create, edit or delete authorization policies that apply to this policy set.",
+                    "noPolicies": "You haven't added any policies to this set yet."
                 }
             },
 
@@ -1003,13 +1081,20 @@
                 "list": {
                     "add": "New Resource Type",
                     "title": "Resource Types",
-                    "grid": ["Name", "Description", "Patterns", "Actions"]
+                    "grid": ["Name"]
                 },
                 "edit": {
                     "resourceType": "Resource Type",
-                    "patternsAndActions": "Patterns and Actions",
-                    "newAction": "New action",
-                    "newPattern": "New pattern"
+                    "newResourceType" : "New Resource Type",
+                    "createResourceType" : "Create Resource Type",
+                    "actionsDescription" : "Define the actions that policies using this resource type can allow or deny.",
+                    "specifyActions" : "Specify Actions",
+                    "addAction": "Add Action",
+                    "addNewActionPlaceholder": "Add a new action...",
+                    "patternsDescription" : "Define resource patterns that policies using this resource type can expand upon.",
+                    "specifyPatterns" : "Specify Patterns",
+                    "addPattern": "Add Pattern",
+                    "addNewPatternPlaceholder": "Add a new pattern..."
                 }
             }
         }

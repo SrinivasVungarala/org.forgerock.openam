@@ -8,10 +8,10 @@
         "component": {
           "type": "string"
         },
-        "contextId": {
-          "type": "string"
+        "contexts": {
+          "type": "object"
         },
-        "domain": {
+        "realm": {
           "type": "string"
         },
         "extraInfo": {
@@ -32,10 +32,10 @@
         "component": {
           "type": "string"
         },
-        "contextId": {
-          "type": "string"
+        "contexts": {
+          "type": "object"
         },
-        "domain": {
+        "realm": {
           "type": "string"
         },
         "extraInfo": {
@@ -56,10 +56,10 @@
         "component": {
           "type": "string"
         },
-        "contextId": {
-          "type": "string"
+        "contexts": {
+          "type": "object"
         },
-        "domain": {
+        "realm": {
           "type": "string"
         },
         "extraInfo": {
@@ -80,10 +80,10 @@
         "component": {
           "type": "string"
         },
-        "contextId": {
-          "type": "string"
+        "contexts": {
+          "type": "object"
         },
-        "domain": {
+        "realm": {
           "type": "string"
         },
         "extraInfo": {

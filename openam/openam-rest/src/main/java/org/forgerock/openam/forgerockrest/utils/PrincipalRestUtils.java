@@ -11,14 +11,14 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock Inc.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.forgerockrest.utils;
 
 import java.security.Principal;
 import javax.security.auth.Subject;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.services.context.Context;
 import org.forgerock.openam.rest.resource.SubjectContext;
 
 /**
@@ -33,7 +33,7 @@ final public class PrincipalRestUtils {
      *
      * @return the authenticated principal associated with this context, or null if not authenticated.
      */
-    public static String getPrincipalNameFromServerContext(ServerContext context) {
+    public static String getPrincipalNameFromServerContext(Context context) {
 
         if (context == null || !context.containsContext(SubjectContext.class)) {
             return null;

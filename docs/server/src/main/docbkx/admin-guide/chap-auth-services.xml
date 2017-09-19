@@ -278,9 +278,10 @@
      the social authentication provider, follow the steps below to configure
      authentication with the provider:</para>
     <step>
-     <para>On the Common Tasks tab page of the OpenAM console, click the link
-      for the social authentication provider you want to configure,
-      <emphasis>Configure Facebook Authentication</emphasis>,
+     <para>Select Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+      Dashboard &gt; Configure Social Authentication, and then click the link
+      for the social authentication provider you want to
+      configure&#x2014;<emphasis>Configure Facebook Authentication</emphasis>,
       <emphasis>Configure Google Authentication</emphasis>, or
       <emphasis>Configure Microsoft Authentication</emphasis>.
      </para>
@@ -356,8 +357,9 @@
      credentials from the social authentication provider,
      follow the steps below to configure authentication with the provider:</para>
     <step>
-     <para>On the Common Tasks tab page of the OpenAM console, click the
-      <literal>Configure Other Authentication</literal> link.
+     <para>Select Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+      Dashboard &gt; Configure Social Authentication, and then click the
+      <emphasis>Configure Other Authentication</emphasis> link.
      </para>
     </step>
     <step>
@@ -451,7 +453,7 @@
      2.0/OpenID Connect authentication module, follow the steps below to add a
      logo for the authentication provider to the login screen:</para>
     <step>
-     <para>On the Access Control tab page of the OpenAM console, click the
+     <para>On the Realms page of the OpenAM console, click the
       realm containing the authentication module and authentication chain to
       be added to the login screen.
      </para>
@@ -543,8 +545,8 @@
     for use elsewhere.</para>
    </listitem>
    <listitem>
-    <para>Under Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
-    Authentication, you configure modules for your realm. What you set up
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Authentication &gt; Modules, you configure modules for your realm. What you set up
     at this level inherits from the global configuration, but you can override
     what is inherited. You can also add your own modules if necessary.</para>
    </listitem>
@@ -884,12 +886,8 @@
     configure the load balancer or proxy to send the address
     by using the <literal>X-Forwarded-For</literal> header,
     and configure OpenAM to consume and forward the header as necessary.
-    For details, see the <citetitle>Installation Guide</citetitle> section,
-    <link
-     xlink:show="new"
-     xlink:href="install-guide#handle-request-headers"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Handling HTTP Request Headers</citetitle></link>.
+    For details, see <olink targetdoc="install-guide"
+                            targetptr="handle-request-headers" />.
    </para>
 
    <para><command>ssoadm</command> service name:
@@ -1309,7 +1307,7 @@
       <para>Path to GeoIP data file used to convert IP addresses to
       country locations. The geolocation database is not packaged with OpenAM. 
       You can download the GeoIP Country database from  <link
-      xlink:href="http://www.maxmind.com/en/country">MaxMind</link>. Use the binary 
+      xlink:href="http://dev.maxmind.com/geoip/legacy/downloadable/">MaxMind</link>. Use the binary
       .dat file format, rather than .csv. You can use the GeoLite Country database
       for testing.</para>
       <para><command>ssoadm</command> attribute:
@@ -1513,9 +1511,9 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
     </varlistentry>
 
    </variablelist>
-      <note><para>You can configure the Anonymous Authentication module using the
-          OpenAM console by clicking <literal>Configuration</literal> &gt;
-          <literal>Authentication</literal> &gt; <literal>Anonymous</literal>.</para></note>
+      <note><para>You can configure the Anonymous Authentication module using
+       the OpenAM console by clicking Configuration &gt; Authentication &gt;
+       Anonymous.</para></note>
 
    <indexterm class="endofrange" startref="idx-auth-hints-anonymous">
     <primary>Authentication</primary>
@@ -1846,11 +1844,8 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <para>The Global Attributes includes the list of available modules, LDAP connection
             settings, authentication process options, and an option to disable the XUI
             and make the classic UI the default end user interface.
-            The Global Attributes are defined in the
-            <link xlink:href="reference#authentication-configuration" xlink:show="new"
-                  xlink:role="http://docbook.org/xlink/role/olink">
-                <citetitle>Authentication Configuration</citetitle></link> section of the
-            <citetitle>Reference</citetitle>.</para>
+            The Global Attributes are defined in
+            <olink targetdoc="reference" targetptr="authentication-configuration" />.</para>
     </section>
 
     <section xml:id="auth-core-realm-attributes">
@@ -1880,7 +1875,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <listitem>
          <para>Specifies that on successful authentication the Authentication
          Service creates a user profile if one does not already exist.
-         OpenAM then issues the SSOToken. OpenAM creates the user profile 
+         OpenAM then issues the SSO token. OpenAM creates the user profile
          in the user data store configured for the realm.</para>
         </listitem>
        </varlistentry>
@@ -1897,7 +1892,7 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <term>Ignored</term>
         <listitem>
          <para>Specifies that a user profile is not required for the
-         Authentication Service to issue an SSOToken after a successful
+         Authentication Service to issue an SSO token after a successful
          authentication.</para>
         </listitem>
        </varlistentry>
@@ -1906,12 +1901,28 @@ IDToken1=&lt;valid anonymous username&gt;</literallayout>
         <listitem>
          <para>Specifies that on successful authentication the user must have
          a user profile in the user data store configured for the realm in
-         order for the Authentication Service to issue an SSOToken.</para>
+         order for the Authentication Service to issue an SSO token.</para>
         </listitem>
        </varlistentry>
       </variablelist>
       <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-dynamic-profile-creation</literal></para>
+       <literal>iplanet-am-auth-dynamic-profile-creation</literal>. Set this
+       attribute's value to one of the following:
+       <itemizedlist>
+        <listitem>
+         <para><literal>true</literal> for Dynamic</para>
+        </listitem>
+        <listitem>
+         <para><literal>createAlias</literal> for Dynamic With User Alias</para>
+        </listitem>
+        <listitem>
+         <para><literal>ignore</literal> for Ignored</para>
+        </listitem>
+        <listitem>
+         <para><literal>false</literal> for Required</para>
+        </listitem>
+       </itemizedlist>
+      </para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -2226,10 +2237,8 @@ $ ssoadm set-realm-svc-attrs \
        realm are assigned stateless sessions. Otherwise, OpenAM users authenticating
        to this realm are assigned stateful sessions.</para>
       <para>For more information about session state,
-       see <link xlink:show="new"
-                 xlink:href="admin-guide#chap-session-state"
-                 xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-       Session State</citetitle></link>.</para>
+       see <xref linkend="chap-session-state" />.
+      </para>
       <para><command>ssoadm</command> attribute:
       <literal>openam-auth-stateless-sessions</literal></para>
      </listitem>
@@ -2239,8 +2248,8 @@ $ ssoadm set-realm-svc-attrs \
       <term>Two Factor Authentication Mandatory</term>
       <listitem>
        <para>When selected, specifies that users authenticating to a chain that
-        includes a Two Step Verification module will always be required to
-        perform authentication using a registered device before they
+        includes a ForgeRock Authenticator (OATH) module will always be required
+        to perform authentication using a registered device before they
         can access OpenAM. When not selected, users can opt to forego
         registering a device and providing a token and still successfully
         authenticate.</para>
@@ -2248,14 +2257,21 @@ $ ssoadm set-realm-svc-attrs \
         while authenticating carries implications beyond the
         <literal>required</literal>, <literal>optional</literal>,
         <literal>requisite</literal>, or <literal>sufficient</literal> flag
-        settings on the Two Step Verification module in the authentication
-        chain. For example, suppose you configured authentication as follows:
+        settings on the ForgeRock Authenticator (OATH) module in the
+        authentication chain. For example, suppose you configured authentication
+        as follows:
         <itemizedlist>
          <listitem>
-          <para>The Two Step Verification module is in an authentication chain.</para>
+          <para>
+           The ForgeRock Authenticator (OATH) module is in an authentication
+           chain.
+          </para>
          </listitem>
          <listitem>
-          <para>The Two Step Verification module has the <literal>required</literal> flag set.</para>
+          <para>
+           The ForgeRock Authenticator (OATH) module has the
+           <literal>required</literal> flag set.
+          </para>
          </listitem>
          <listitem>
           <para>Two Factor Authentication Mandatory is not selected.</para>
@@ -2263,13 +2279,14 @@ $ ssoadm set-realm-svc-attrs \
         </itemizedlist>
         </para>
         <para>
-        Users authenticating to the chain can authenticate successfully
-        <emphasis>without</emphasis> providing tokens from their devices. The
-        reason for successful authentication in this case is that the
-        <literal>required</literal> setting relates to the execution
-        of the Two Step Verification module itself. Internally, the Two Step
-        Verification module has the ability to forego processing a token while
-        still returning a passing status to the authentication chain.
+         Users authenticating to the chain can authenticate successfully
+         <emphasis>without</emphasis> providing tokens from their devices. The
+         reason for successful authentication in this case is that the
+         <literal>required</literal> setting relates to the execution
+         of the ForgeRock Authenticator (OATH) module itself. Internally, the
+         ForgeRock Authenticator (OATH) module has the ability to forego
+         processing a token while still returning a passing status to the
+         authentication chain.
        </para>
        <para><command>ssoadm</command> attribute:
         <literal>forgerockTwoFactorAuthMandatory</literal></para>
@@ -2478,7 +2495,7 @@ $ ssoadm set-realm-svc-attrs \
      <listitem>
       <para>Enables the authenticating user's identity attributes (stored in
       the identity repository) to be set as session properties in the user's
-      SSOToken. The value takes the format
+      SSO token. The value takes the format
       <literal><replaceable>User-Profile-Attribute</replaceable>|<replaceable>Session-Attribute-Name</replaceable></literal>.
       If <replaceable>Session-Attribute-Name</replaceable> is not specified,
       the value of <replaceable>User-Profile-Attribute</replaceable> is used.
@@ -2503,10 +2520,7 @@ $ ssoadm set-realm-svc-attrs \
        sessions, be careful not to add so many session attributes that the
        session cookie size exceeds the maximum allowable cookie size. For more
        information about stateless session cookies,
-      see <link xlink:href="admin-guide#session-state-cookies"
-                xlink:show="new"
-                xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Session Cookies</citetitle></link>.</para>
+      see <xref linkend="session-state-cookies" />.</para>
       <para><command>ssoadm</command> attribute:
       <literal>sunAMUserAttributesSessionMapping</literal></para>
      </listitem>
@@ -2747,13 +2761,16 @@ $ ssoadm set-realm-svc-attrs \
     </listitem>
    </orderedlist>
 
-   <para>You can create modules instances for a particular realm by clicking Access Control
-    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication, and then
-    click New under Module Instances to add Device Id (Match) and Device Id (Save).
+   <para>To create module instances for a particular realm, click Realms
+    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Modules, and then
+    click Add Module. Then select Device Id (Match) or Device Id (Save) as the module type.
    </para>
-   <para>Under Authentication Chaining, click New to create a new chain, and then enter
-    a name for the chain. On the <replaceable>Chain Name</replaceable> - Properties
-    page, click Add to set up the modules for your authentication chain.
+   <para>Under Realms
+    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Chains,
+    click Add Chain to create a new chain, and then enter
+    a name for the chain. Add the first module in the chain by using the
+    New Module dialog box. Then use the Edit Chain tab to
+    set up additional modules for your authentication chain.
    </para>
 
    <figure xml:id="figure-device-id-auth-chain">
@@ -2969,6 +2986,172 @@ $ ssoadm set-realm-svc-attrs \
     </varlistentry>
    </variablelist>
   </section>
+
+  <section xml:id="fr-authenticator-oath-conf-hints">
+   <title>Hints for the ForgeRock Authenticator (OATH) Authentication Module</title>
+
+   <indexterm>
+    <primary>Authentication</primary>
+    <secondary>ForgeRock Authenticator (OATH) module</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>ForgeRock Authenticator (OATH) authentication</primary>
+   </indexterm>
+
+   <para>The ForgeRock Authenticator (OATH) module provides a more secure method for
+    users to access their accounts with the help of a device such as a mobile
+    phone. For detailed information about two step verification with the
+    ForgeRock Authenticator (OATH) module in OpenAM, see
+    <xref linkend="authn-2sv" />.
+   </para>
+
+   <note>
+    <para>
+     OpenAM provides two authentication modules that support OATH:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       The ForgeRock Authenticator (OATH) authentication module, which is
+       optimized for use with the ForgeRock Authenticator app and provides
+       device profile encryption.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       The OATH authentication module, which is a raw OATH implementation
+       requiring more configuration for users and the OpenAM administrator.
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     We recommend using the ForgeRock Authenticator (OATH) authentication module
+     when possible.
+    </para>
+    <para>
+     Also, the ForgeRock Authenticator (OATH), HOTP, and OATH authentication
+     modules all support HOTP passwords, but the way that users obtain passwords
+     differs. See <xref linkend="authn-2sv-differences-HOTP" /> for more
+     information.
+    </para>
+   </note>
+
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMAuthAuthenticatorOATHService</literal></para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Authentication Level</term>
+     <listitem>
+      <para>Sets the authentication level used to indicate the level of security
+      associated with the module. The value can range from 0 to any positive integer.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-auth-level</literal></para></listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>One-Time Password Length</term>
+     <listitem>
+      <para>Sets the length of the OTP to six digits or longer. The default value is six.</para>
+
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-password-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Minimum Secret Key Length</term>
+     <listitem>
+      <para>The minimum number of hexadecimal characters allowed for the secret key.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-min-secret-key-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>OATH Algorithm to Use</term>
+     <listitem>
+      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
+      allow for a greater variety of devices. The default value is HOTP.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-algorithm</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>HOTP Window Size</term>
+     <listitem>
+      <para>The window that the OTP device and the server counter can be out of sync.
+      For example, if the window size is 100 and the server's last successful login was
+      at counter value 2, then the server will accept an OTP from device counter 3 to
+      102. The default value is 100.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-hotp-window-size</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Add Checksum Digit</term>
+     <listitem>
+      <para>Adds a checksum digit at the end of the HOTP password to verify the OTP was
+      generated correctly. This is in addition to the actual password length. Set this
+      only if your device supports it. The default value is No.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-add-checksum</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Truncation Offset</term>
+     <listitem>
+      <para>Advanced feature that is device-specific. Let this value default unless
+      you know your device uses a truncation offset. The default value is -1.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-truncation-offset</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Step Interval</term>
+     <listitem>
+      <para>The time interval for which an OTP is valid. For example, if the time
+      step interval is 30 seconds, a new OTP will be generated every 30 seconds,
+      and an OTP will be valid for 30 seconds. The default value is 30 seconds.
+      </para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-size-of-time-step</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Steps</term>
+     <listitem>
+      <para>The number of time step intervals that the system and the device can be off
+      before password resynchronization is required. For example, if the number
+      of TOTP time steps is 2 and the TOTP time step interval is 30 seconds, the server
+      will allow an 89 second clock skew between the client and the server&#x2014;two 30 second
+      steps plus 29 seconds for the interval in which the OTP arrived. The default value
+      is 2.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-fr-oath-steps-in-window</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Maximum Allowed Clock Drift</term>
+     <listitem>
+      <para>The maximum acceptable clock skew before authentication fails. When
+      this value is exceeded, the user must re-register the device.</para>
+
+      <para><command>ssoadm</command> attribute:
+      <literal>openam-auth-fr-oath-maximum-clock-drift</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Name of the Issuer</term>
+     <listitem>
+      <para>A value that appears as an identifier on the user's device.
+      Common choices are a company name, a web site, or an OpenAM realm.
+      The value must be alphanumeric with no spaces. The default value is
+      <literal>ForgeRock</literal>.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>openam-auth-fr-oath-issuer-name</literal></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+  </section>
   
   <section xml:id="hotp-module-conf-hints">
    <title>Hints for the HOTP Authentication Module</title>
@@ -3009,6 +3192,14 @@ $ ssoadm set-realm-svc-attrs \
     the messages are generated and what provider the messages go through to
     reach the user.
    </para>
+   <note>
+    <para>
+     The ForgeRock Authenticator (OATH), HOTP, and OATH authentication modules
+     all support HOTP passwords, but the way that users obtain passwords
+     differs. See <xref linkend="authn-2sv-differences-HOTP" /> for more
+     information.
+    </para>
+   </note>
    
    <para><command>ssoadm</command> service name:
    <literal>sunAMAuthHOTPService</literal></para>
@@ -3869,6 +4060,209 @@ the '%' character is not included in the properties.
 
   </section>
 
+  <section xml:id="OATH-module-conf-hints">
+ 	 <title>Hints for the OATH Authentication Module</title>
+
+ 	 <indexterm class="startofrange" xml:id="idx-auth-hints-oath">
+ 	  <primary>Authentication</primary>
+ 	  <secondary>Open Authentication (OATH) module</secondary>
+   </indexterm>
+   <indexterm>
+    <primary>Open Authentication (OATH) authentication</primary>
+   </indexterm>
+
+   <para>The Open Authentication (OATH) module provides a more secure method for users to
+      access their accounts with the help of a device, such as their mobile phone or
+      Yubikey. Users can log into OpenAM and update their information more securely from
+      a one-time password (OTP) displayed on their device. The OATH module includes the
+      <link xlink:show="new" xlink:href="http://www.openauthentication.org/about/"
+      >OATH standard protocols</link> (<link xlink:show="new"
+      xlink:href="http://tools.ietf.org/html/rfc4226">RFC 4226</link> and
+      <link xlink:show="new" xlink:href="http://tools.ietf.org/html/rfc6238">
+      RFC 6238</link>). The OATH module has several enhancements to the
+      HMAC One-Time Password (HOTP) Authentication Module, but does not replace the original
+      module for those already using HOTP prior to the 10.1.0 release. The OATH module includes
+      HOTP authentication and Time-Based One-Time Password (TOTP) authentication. Both types
+      of authentication require an OATH compliant device that can provide the OTP.</para>
+
+	   <para> HOTP authentication generates the OTP every time the user requests a new OTP
+      on their device. The device tracks the number of times the user requests a new OTP, called
+      the counter. The OTP displays for a period of time you designate in the setup, so the
+      user may be further in the counter on their device than on their account. OpenAM will resynchronize
+      the counter when the user finally logs in. To accommodate this, you set the number of
+      passwords a user can generate before their device cannot be resynchronized. For example, if
+      you set the number of HOTP Window Size to 50 and someone presses the button 30 on the
+      user's device to generate a new OTP, the counter in OpenAM will review the OTPs until
+      it reaches the OTP entered by the user. If someone presses the button 51 times,
+      you will need to reset the counter to match the number on the device's counter before the
+      user can login to OpenAM. HOTP authentication does not check earlier passwords, so if the
+      user attempts to reset the counter on their device, they will not be able to login until
+      you reset the counter in OpenAM to match their device.</para>
+
+   <para>TOTP authentication constantly generates a new OTP based on a time interval you specify.
+      The device tracks the last two passwords generated and the current password. The Last Login Time
+      monitors the time when a user logs in to make sure that user is not logged in several times
+      within the present time period. Once a user logs into OpenAM, they must wait for the time it
+      takes TOTP to generate the next two passwords and display them. This prevents others from
+      being able to access the users account using the OTP they entered. The user's account can be
+      accessed again after the generation of the third new OTP is generated and displayed on their
+      device. For this reason, the TOTP Time-Step Interval should not be so long as to
+      lock users out, with a recommended time of 30 seconds.</para>
+
+   <para>An authentication chain can be created to generate an OTP from
+      either HOTP or TOTP.</para>
+
+   <note>
+    <para>
+     OpenAM provides two authentication modules that support OATH:
+    </para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       The ForgeRock Authenticator (OATH) authentication module, which is
+       optimized for use with the ForgeRock Authenticator app and provides
+       device profile encryption.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       The OATH authentication module, which is a raw OATH implementation
+       requiring more configuration for users and the OpenAM administrator.
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     We recommend using the ForgeRock Authenticator (OATH) authentication module
+     when possible.
+    </para>
+    <para>
+     Also, the ForgeRock Authenticator (OATH), HOTP, and OATH authentication
+     modules all support HOTP passwords, but the way that users obtain passwords
+     differs. See <xref linkend="authn-2sv-differences-HOTP" /> for more
+     information.
+    </para>
+   </note>
+
+   <para><command>ssoadm</command> service name:
+   <literal>iPlanetAMAuthOATHService</literal></para>
+
+   <variablelist>
+    <varlistentry>
+     <term>Authentication Level</term>
+     <listitem>
+      <para>Sets the authentication level used to indicate the level of security
+      associated with the module. The value can range from 0 to any positive integer.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-auth-level</literal></para></listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>One Time Password Length (in digits)</term>
+     <listitem>
+      <para>Sets the length of the OTP to six digits or longer. The default value is six.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-password-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Minimum Secret Key Length</term>
+     <listitem>
+      <para>The minimum number of hexadecimal characters allowed for the secret key.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-min-secret-key-length</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Secret Key Attribute Name</term>
+     <listitem>
+      <para>The name of the attribute where the key will be stored in the user profile.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-secret-key-attribute</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>OATH Algorithm to Use</term>
+     <listitem>
+      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
+      allow for a greater variety of devices. The default value is HOTP.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-algorithm</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>HOTP Window Size</term>
+     <listitem>
+      <para>The window that the OTP device and the server counter can be
+       out of sync. For example, if the window size is 100 and the server's last
+       successful login was at counter value 2, then the server will accept
+       an OTP from device counter 3 to 102. The default value is 100.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-hotp-window-size</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Counter Attribute Name</term>
+     <listitem>
+      <para>The name of the HOTP attribute where the counter will be stored in the user profile.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-hotp-counter-attribute</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Add Checksum Digit</term>
+     <listitem>
+      <para>Adds a checksum digit at the end of the HOTP password to verify the
+       OTP was generated correctly. This is in addition to the actual password
+       length. Set this only if your device supports it. The default value is No.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-add-checksum</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Truncation Offset</term>
+     <listitem>
+      <para>Advanced feature that is device-specific. Let this value default
+       unless you know your device uses a truncation offset. The default value
+       is -1.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-truncation-offset</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Step Interval</term>
+     <listitem>
+      <para>The time interval for which an OTP is valid. For example, if the time
+      step interval is 30 seconds, a new OTP will be generated every 30 seconds,
+      and an OTP will be valid for 30 seconds. The default value is 30 seconds.
+      </para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-size-of-time-step</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>TOTP Time Steps</term>
+     <listitem>
+      <para>The number of time step intervals that the system and the device can be off
+      before password resynchronization is required. For example, if the number
+      of TOTP time steps is 2 and the TOTP time step interval is 30 seconds, the server
+      will allow an 89 second clock skew between the client and the server&#x2014;two 30 second
+      steps plus 29 seconds for the interval in which the OTP arrived. The default value
+      is 2.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-steps-in-window</literal></para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Last Login Time Attribute</term>
+     <listitem>
+      <para>The name of the attribute where both HOTP and TOTP authentication will store information
+      on when a person last logged in.</para>
+      <para><command>ssoadm</command> attribute:
+      <literal>iplanet-am-auth-oath-last-login-time-attribute-name</literal></para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
+
   <section xml:id="oauth2-module-conf-hints">
    <title>Hints for the OAuth 2.0/OpenID Connect Authentication Module</title>
 
@@ -4242,10 +4636,8 @@ the '%' character is not included in the properties.
     </para>
    </note>
 
-    <para>The following tables show endpoint URLs for OpenAM when <link
-    xlink:href="admin-guide#chap-oauth2"
-    xlink:role="http://docbook.org/xlink/role/olink">configured as an
-    OAuth 2.0 provider</link>.
+    <para>The following tables show endpoint URLs for OpenAM when configured as an
+    OAuth 2.0 provider. For details, see <xref linkend="chap-oauth2" />.
     The default endpoints are for Facebook as the OAuth 2.0 provider.</para>
 
     <para>In addition to the endpoint URLs you can set other fields, like scope
@@ -4268,8 +4660,8 @@ the '%' character is not included in the properties.
           URL.<footnote xml:id="oauth2-realms-footnote">
            <para>This OpenAM endpoint can take additional parameters. In
            particular, you must specify the realm if the OpenAM OAuth 2.0
-           provider is configured for a subrealm rather than / (Top-Level
-           Realm).</para>
+           provider is configured for a subrealm rather than the Top Level
+           Realm (/).</para>
 
            <para>For example, if the OAuth 2.0 provider is configured for the
            realm <literal>/customers</literal>, then the authentication endpoint
@@ -4278,10 +4670,7 @@ the '%' character is not included in the properties.
 
            <para>The <literal>/oauth2/authorize</literal> endpoint can also take
            <literal>module</literal> and <literal>service</literal> parameters.
-           Use either as described in <link
-           xlink:href="admin-guide#authn-from-browser"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-           >Authenticating To OpenAM</citetitle></link>, where
+           Use either as described in <xref linkend="authn-from-browser" />, where
            <literal>module</literal> specifies the authentication module
            instance to use or <literal>service</literal> specifies the
            authentication chain to use when authenticating the resource
@@ -4607,13 +4996,14 @@ the '%' character is not included in the properties.
     <literal>iPlanetAMAuthPersistentCookieService</literal></para>
 
    <para>Before you begin, make sure a public key alias is defined in OpenAM.
-    The Persistent Cookie module encrypts a JSON Web Token (JWT) using a public key
-    from the OpenAM keystore. The keystore must be configured under
-    Authentication &gt; All Core Settings &gt; Security. If the keystore changes
-    and the default <literal>test</literal> key is no longer present, the public
-    key alias must be updated to reflect the change, otherwise the module will
-    fail. Similarly, in multi-instance deployments, the keypair must be available
-    on all OpenAM instances.</para>
+    The Persistent Cookie module encrypts a JSON Web Token (JWT) using a public
+    key from the OpenAM keystore. The keystore must be configured under Realms
+    &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+    &gt; Security &gt; Organization Authentication Certificate Alias. If the
+    keystore changes and the default <literal>test</literal> key is no longer
+    present, the public key alias must be updated to reflect the change,
+    otherwise the module will fail. Similarly, in multi-instance deployments,
+    the keypair must be available on all OpenAM instances.</para>
 
    <para>To configure the Persistent Cookie module globally in the console,
     navigate to Configuration &gt; Authentication &gt; Persistent Cookie.
@@ -4687,18 +5077,14 @@ the '%' character is not included in the properties.
        configure the load balancer or proxy to send the address
        by using the <literal>X-Forwarded-For</literal> header,
        and configure OpenAM to consume and forward the header as necessary.
-       For details, see the <citetitle>Installation Guide</citetitle> section,
-       <link
-        xlink:show="new"
-        xlink:href="install-guide#handle-request-headers"
-        xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Handling HTTP Request Headers</citetitle></link>.
+       For details, see
+       <olink targetdoc="install-guide" targetptr="handle-request-headers" />.
       </para>
 
       <para>The Persistent Cookie module belongs with a second module in an
-       authentication chain. To see how this works, navigate to Access Control
-       &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; New.
-       Enter a name for the chain and add modules as shown in the figure.
+       authentication chain. To see how this works, navigate to Realms
+       &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Chains.
+       Create a new chain and add modules as shown in the figure.
        The following example shows how a Persistent Cookie module is sufficient;
        if that cookie does not yet exist, authentication in this case relies on
        a data store module, such as LDAP:</para>
@@ -4884,7 +5270,7 @@ the '%' character is not included in the properties.
   </section>
 
   <section xml:id="scripted-module-conf-hints">
-   <title>Hints for Scripted Authentication Modules</title>
+   <title>Hints for the Scripted Authentication Module</title>
 
    <indexterm>
     <primary>Authentication</primary>
@@ -4986,13 +5372,8 @@ ssoadm \
    </para>
 
    <para>
-    For details on writing authentication module scripts, see the
-    <citetitle>Developer Guide</citetitle> chapter,
-    <link
-     xlink:href="dev-guide#sec-scripted-auth-module"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>Scripting Authentication</citetitle></link>.
+    For details on writing authentication module scripts, see
+    <olink targetdoc="dev-guide" targetptr="sec-scripted-auth-module" />.
    </para>
 
    <para>
@@ -5004,8 +5385,8 @@ ssoadm \
     <para>
      Use the following settings at the realm level
      when configuring an individual scripted authentication module,
-     in OpenAM console under Access Control >
-     <replaceable>Realm Name</replaceable> > Authentication > Module Instances.
+     in OpenAM console under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Modules.
     </para>
 
     <varlistentry>
@@ -5104,85 +5485,117 @@ ssoadm \
     </varlistentry>
    </variablelist>
 
-   <variablelist>
-    <para>
+        <variablelist>
+             <para>
      Use the following global configuration settings
      for all scripted authentication modules
-     in OpenAM console under Configuration > Authentication > Scripted Module.
+     in OpenAM console under Configuration &gt; Global &gt; Scripting &gt;
+     <replaceable>Context Type</replaceable> &gt; Engine Configuration.
     </para>
+         <note><para>Only server-side script context types have
+           engine configurations.</para></note>
+      <varlistentry>
+       <term>Server-side Script Timeout</term>
+       <listitem>
+        <para>The maximum execution time any individual script should take on
+         the server (in seconds). OpenAM terminates scripts which take
+         longer to run than this value.</para>
 
-    <varlistentry>
-     <term>Server-Side Script Timeout</term>
-     <listitem>
-      <para>
-       Sets the maximum execution time to run a single server-side script,
-       in seconds.
-      </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>serverTimeout</literal></para>
 
-      <para>
-       Default: 0 (meaning no timeout)
-      </para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       If your server-side scripts send external HTTP requests,
-       consider setting an appropriate value for this timeout.
-      </para>
+      <varlistentry>
+       <term>Core thread pool size</term>
+       <listitem>
+        <para>The initial number of threads in the thread pool from
+         which scripts operate. OpenAM will ensure the pool contains at least
+         this many threads.
+         </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>coreThreads</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       <command>ssoadm</command> attribute:
-       <literal>iplanet-am-auth-scripted-server-timeout</literal>
-      </para>
-     </listitem>
-    </varlistentry>
+      <varlistentry>
+       <term>Maximum thread pool size</term>
+       <listitem>
+        <para>The maximum number of threads in the thread pool from which
+         scripts operate. If no free thread is available in the pool, OpenAM
+         creates new threads in the pool for script execution up to the
+         configured maximum.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>maxThreads</literal></para>
+       </listitem>
+      </varlistentry>
 
-    <varlistentry>
-     <term>Core thread pool size</term>
-     <listitem>
-      <para>
-       Core size for the pool of threads dedicated to running server-side scripts.
-      </para>
+      <varlistentry>
+       <term>Thread pool queue size</term>
+       <listitem>
+        <para>The number of threads to use for buffering script execution
+         requests when the maximum thread pool size is reached.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>queueSize</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       Default: 10
-      </para>
+      <varlistentry>
+       <term>Thread idle timeout (seconds)</term>
+       <listitem>
+        <para>Length of time (in seconds) for a thread to be idle before OpenAM
+         terminates created threads. If the current pool size contains the
+         number of threads set in <literal>Core thread pool size</literal>, then
+         idle threads will not be terminated, maintaining the initial pool size.
+        </para>
+        <para><command>ssoadm</command> attribute:
+        <literal>idleTimeout</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       This setting is not hot-swappable.
-       Instead, you must restart OpenAM or the container in which it runs
-       for the changes to take effect.
-      </para>
+      <varlistentry>
+       <term>Java class whitelist</term>
+       <listitem>
+        <para>Specifies the list of class name patterns allowed to be invoked
+         by the script. Every class accessed by the script must match at least
+         one of these patterns.</para>
+        <para>You can specify the class name as-is or use a
+         regular expression.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>whiteList</literal></para>
+       </listitem>
+      </varlistentry>
 
-      <para>
-       <command>ssoadm</command> attribute:
-       <literal>iplanet-am-auth-scripted-core-threads</literal>
-      </para>
-     </listitem>
-    </varlistentry>
+      <varlistentry>
+       <term>Java class blacklist</term>
+       <listitem>
+        <para>Specifies the list of class name patterns that are NOT allowed
+         to be invoked by the script. The blacklist is applied AFTER the
+         whitelist to exclude those classes. Access to a class
+         specified in both the whitelist and the blacklist will be denied.
+        </para>
+        <para>You can specify the class name to exclude as-is or use a
+         regular expression.</para>
+        <para><command>ssoadm</command> attribute:
+        <literal>blackList</literal></para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Use system SecurityManager</term>
+       <listitem>
+        <para>If enabled, OpenAM will make a call to
+         <literal>System.getSecurityManager().checkPackageAccess(...)</literal> for each
+         class that is accessed. The method throws <literal>SecurityException</literal> if
+         the calling thread is not allowed to access the package.</para>
+        <note><para>This feature only takes effect if the security manager is
+         enabled for the JVM. </para></note>
+        <para><command>ssoadm</command> attribute:
+        <literal>useSecurityManager</literal></para>
+       </listitem>
+      </varlistentry>
 
-    <varlistentry>
-     <term>Maximum thread pool size</term>
-     <listitem>
-      <para>
-       Maximum size for the pool of threads dedicated to running server-side scripts.
-      </para>
-
-      <para>
-       Default: 50
-      </para>
-
-      <para>
-       This setting is not hot-swappable.
-       Instead, you must restart OpenAM or the container in which it runs
-       for the changes to take effect.
-      </para>
-
-      <para>
-       <command>ssoadm</command> attribute:
-       <literal>iplanet-am-auth-scripted-core-threads</literal>
-      </para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
+     </variablelist>
   </section>
 
   <xinclude:include href="../shared/securid/section-auth-services.xml" condition="securid">
@@ -5191,180 +5604,6 @@ ssoadm \
    </xinclude:fallback>
   </xinclude:include>
 
-  <section xml:id="OATH-module-conf-hints">
-   <title>Hints for the Two Step Verification Authentication Module</title>
-
-   <indexterm class="startofrange" xml:id="idx-auth-hints-oath">
-    <primary>Authentication</primary>
-    <secondary>Two Step Verification module</secondary>
-   </indexterm>
-   <indexterm>
-    <primary>Two Step Verification authentication</primary>
-   </indexterm>
-
-   <para>The Two Step Verification module provides a more secure method for users
-    to access their accounts with the help of a device, such as their mobile phone or
-    Yubikey. Users can log into OpenAM and update their information more securely
-    by using a one-time password (OTP) displayed on their device.
-    The Two Step Verification module includes the
-    <link xlink:show="new" xlink:href="http://www.openauthentication.org/about/"
-     >OATH standard protocols</link> (<link xlink:show="new"
-      xlink:href="http://tools.ietf.org/html/rfc4226">RFC 4226</link> and
-     <link xlink:show="new" xlink:href="http://tools.ietf.org/html/rfc6238">
-     RFC 6238</link>). The Two Step Verification module has several enhancements to the
-    HOTP Authentication Module, but does not replace the original
-    module for those already using HOTP prior to the OpenAM 10.1.0 release.
-    The Two Step Verification module includes HOTP authentication and
-    Time-Based One-Time Password (TOTP) authentication. Both types
-    of authentication require an OATH-compliant device that can provide the OTP.</para>
-
-   <para>HOTP authentication generates the OTP every time the user requests a new OTP
-    on their device. The device tracks the number of times the user requests
-    a new OTP, called the counter. The OTP displays for a period of time you
-    designate in the setup, so the user may be further in the counter on their
-    device than on their account. OpenAM will resynchronize the counter when the
-    user finally logs in. To accommodate this, you set the number of
-    passwords a user can generate before their device cannot be resynchronized.
-    For example, if you set the number of HOTP Window Size to 50 and someone presses
-    the button 30 times on the user's device to generate a new OTP, the counter
-    in OpenAM will review the OTPs until it reaches the OTP entered by the user.
-    If someone presses the button 51 times, you will need to reset the counter
-    to match the number on the device's counter before the user can login to OpenAM.
-    HOTP authentication does not check earlier passwords, so if the user attempts
-    to reset the counter on their device, they will not be able to log in until
-    you reset the counter in OpenAM to match their device.</para>
-
-   <para>TOTP authentication constantly generates a new OTP based on a time
-    interval you specify. The device tracks the last several passwords generated
-    and the current password. (The TOTP Time Steps setting configures the number
-    of passwords tracked.) The Last Login Time monitors the time when a user logs
-    in to make sure that user is not logged in several times within the present
-    time period. Once a user logs into OpenAM, they must wait for the time it takes
-    TOTP to generate the next two passwords and display them. This prevents others from
-    being able to access the user's account using the OTP they entered.
-    The user's account can be accessed again after the third new OTP is generated
-    and displayed on their device. For this reason, the TOTP Time-Step Interval
-    should not be so long as to lock users out, with a recommended time of
-    30 seconds.</para>
-
-   <para>An authentication chain can be created to generate an OTP from
-      either HOTP or TOTP.</para>
-
-   <para><command>ssoadm</command> service name:
-   <literal>iPlanetAMAuthOATHService</literal></para>
-
-   <variablelist>
-    <varlistentry>
-     <term>Authentication Level</term>
-     <listitem>
-      <para>Sets the authentication level used to indicate the level of security
-      associated with the module. The value can range from 0 to any positive integer.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-auth-level</literal></para></listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>One-Time Password Length</term>
-     <listitem>
-      <para>Sets the length of the OTP to six digits or longer. The default value is six.</para>
-
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-password-length</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Minimum Secret Key Length</term>
-     <listitem>
-      <para>The minimum number of hexidecimal characters allowed for the secret key.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-min-secret-key-length</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>OATH Algorithm to Use</term>
-     <listitem>
-      <para>Select whether to use HOTP or TOTP. You can create an authentication chain to
-      allow for a greater variety of devices. The default value is HOTP.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-algorithm</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>HOTP Window Size</term>
-     <listitem>
-      <para>The window that the OTP device and the server counter can be out of sync.
-      For example, if the window size is 100 and the server's last successful login was
-      at counter value 2, then the server will accept an OTP from device counter 3 to
-      102. The default value is 100.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-hotp-window-size</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Add Checksum Digit</term>
-     <listitem>
-      <para>Adds a checksum digit at the end of the HOTP password to verify the OTP was
-      generated correctly. This is in addition to the actual password length. Set this
-      only if your device supports it. The default value is No.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-add-checksum</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Truncation Offset</term>
-     <listitem>
-      <para>Advanced feature that is device-specific. Let this value default unless
-      you know your device uses a truncation offset. The default value is -1.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-truncation-offset</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>TOTP Time Step Interval</term>
-     <listitem>
-      <para>The time interval for which an OTP is valid. For example, if the time
-      step interval is 30 seconds, a new OTP will be generated every 30 seconds,
-      and an OTP will be valid for 30 seconds. The default value is 30 seconds.
-      </para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-size-of-time-step</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>TOTP Time Steps</term>
-     <listitem>
-      <para>The number of time step intervals that the system and the device can be off
-      before password resynchronization is required. For example, if the number
-      of TOTP time steps is 2 and the TOTP time step interval is 30 seconds, the server
-      will allow an 89 second clock skew between the client and the server&#x2014;two 30 second
-      steps plus 29 seconds for the interval in which the OTP arrived. The default value
-      is 2.</para>
-      <para><command>ssoadm</command> attribute:
-      <literal>iplanet-am-auth-oath-steps-in-window</literal></para>
-     </listitem>
-    </varlistentry>
-    <varlistentry>
-     <term>Maximum Allowed Clock Drift</term>
-     <listitem>
-      <para>The maximum acceptable clock skew before authentication fails. When
-      this value is exceeded, the user must re-register the device.</para>
-
-      <para><command>ssoadm</command> attribute:
-      <literal>openam-auth-oath-maximum-clock-drift</literal></para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-
-    <para>If you plan to use Yubikey for your Two Step Verification module, you will need to take some
-    time to set it up. Go to the <link xlink:show="new"
-    xlink:href="http://www.yubico.com/products/services-software/personalization-tools/use/">
-    YubiKey web site</link> to configure your YubiKey device. If you do not have a
-    YubiKey device, you can purchase them from this site as well.
-    Select the appropriate instructions, keeping in mind that the cross-platform
-    personalization tool is recommended unless you have specific need for one of the
-    other types. You have the greatest selection of platforms for this choice. Each
-    device will need to be setup before use.</para>
-  </section>
-  
   <section xml:id="desktop-module-conf-hints">
    <title>Hints for the Windows Desktop SSO Authentication Module</title>
 
@@ -5469,11 +5708,7 @@ ssoadm \
       Kerberos token is not found, authentication will fail. If an authentication
       chain is set, the user is able to authenticate through another module.
       This search uses the <literal>Alias Search Attribute Name</literal> from
-      the core realm attributes. See
-      <link xlink:show="new"
-            xlink:href="admin-guide#auth-core-realm-attributes"
-            xlink:role="http://docbook.org/xlink/role/olink">
-       <citetitle>Core - Realm Attributes</citetitle></link> for more information.
+      the core realm attributes. See <xref linkend="auth-core-realm-attributes" />.
      </para>
      <para><command>ssoadm</command> attribute:
      <literal>iplanet-am-auth-windowsdesktopsso-lookupUserInRealm</literal></para>
@@ -5608,26 +5843,6 @@ ssoadm \
    </variablelist>
   </section>
 
-<!--   <section xml:id="yubikey-module-conf-hints">
-   <title>Hints for the YubiKey Authentication Module</title>
-   <para>Use the following hints to configure the module.</para>
-   <indexterm>
-    <primary>Authentication</primary>
-    <secondary>YubiKey</secondary>
-   </indexterm>
-
-   <para><command>ssoadm</command> service name:
-   <literal>TODO</literal></para>
-
-   <variablelist>
-    <varlistentry>
-     <term>TODO</term>
-     <listitem>
-      <para>TODO</para>
-     </listitem>
-    </varlistentry>
-   </variablelist>
-  </section> -->
  </section>
 
  <section xml:id="configure-authn-chains">
@@ -5636,93 +5851,157 @@ ssoadm \
     <primary>Authentication</primary>
     <secondary>chains</secondary>
    </indexterm>
-  <para>Once you have configured authentication modules, and added the modules
-  to the list of module instances, you can configure authentication chains.
-  Authentication chains let you handle situations where alternative modules
-  are needed, or where a single set of credentials is not sufficient.</para>
 
-  <tip><para>OpenAM provides a wizard for configuring authentication providers,
-   including Facebook, Google, and Microsoft. The wizard creates a
-   relevant authentication chain as part of the process. For more
-   information, see <xref linkend="configure-social-authn"  />.
-  </para></tip>
+  <para>
+   Once you have configured authentication modules and added the modules
+   to the list of module instances, you can configure authentication chains.
+   Authentication chains let you handle cases where alternate modules or credentials
+   are needed.
+   If you need modules in the chain to share user credentials, then set options for
+   the module.</para>
+
+  <tip>
+   <para>
+    OpenAM provides a wizard for configuring authentication providers,
+    including Facebook, Google, and Microsoft. The wizard creates a
+    relevant authentication chain as part of the process. For more
+    information, see <xref linkend="configure-social-authn"  />.
+   </para>
+  </tip>
 
   <procedure xml:id="create-authn-chain">
    <title>To Create an Authentication Chain</title>
    <step>
-    <para>On the Access Control tab page of the OpenAM console, click the
+    <para>On the Realms page of the OpenAM console, click the
     realm for which to create the authentication chain.</para>
    </step>
    <step>
-    <para>On the Authentication tab page for the realm, scroll to the bottom
-    of the page, and click the New button in the Authentication Chaining
-    table.</para>
+    <para>
+     On the Realm Overview page, click Authentication in the left-hand menu,
+     and then click Chains.
+    </para>
    </step>
    <step>
-    <para>Give the new authentication chain a name, and add instances of the
-    modules to use in the chain.</para>
+    <para>On the Authentication Chains page,
+     click Add Chain. Enter new chain name, and then
+     click Create.
+    </para>
    </step>
    <step>
-    <para>Assign appropriate criteria (optional, required, requisite, sufficient)
-    as described above in <xref linkend="what-is-authn" />. You can also
-    configure where OpenAM redirects the user upon successful and failed
-    authentication, and plug in your post authentication processing classes
-    as necessary.</para>
+    <para>
+     On the New Module dialog, select the authentication module in the
+     chain, and then assign appropriate criteria (Optional, Required, Requisite, Sufficient)
+     as described in <xref linkend="what-is-authn" />. You can also
+     configure where OpenAM redirects the user upon successful and failed
+     authentication, and plug in your post authentication processing classes
+     as necessary.
+    </para>
    </step>
    <!-- Fix for OPENAM-1063: Document module-credential sharing properties -->
    <step performance="optional">
-    <para>If you need modules in the chain to share user credentials, then set
-    options for the module.</para>
+    <para>If you need modules in the chain to share user credentials, consider the
+     following available options. Enter the key and its value, and then click
+     Plus (+). When you finish entering the options, click OK.
+    </para>
+
     <variablelist>
      <varlistentry>
-      <term><option>iplanet-am-auth-shared-state-enabled</option></term>
-      <listitem>
-       <para>Set <literal>iplanet-am-auth-shared-state-enabled=true</literal>
-       to allow subsequent modules in the authentication chain to use
-       the credentials, such as user name and password, captured by this
-       module. (Default: <literal>true</literal>)</para>
-      </listitem>
-     </varlistentry>
-     <varlistentry>
-      <term><option>iplanet-am-auth-store-shared-state-enabled</option></term>
+      <term><option>iplanet-am-auth-store-shared-state-enabled (Default: <literal>true</literal>)
+      </option></term>
       <listitem>
        <para>Set <literal>iplanet-am-auth-store-shared-state-enabled=true</literal>
-       to store the captured credentials. Shared state is cleared when the
-       user successfully authenticates, quits the chain, or logs out.
-       (Default: <literal>false</literal>)</para>
+        to store the credentials captured by this module in shared state.
+        This enables subsequent modules in the chain to access the credentials
+        captured by this module. The shared state is cleared when the
+        user successfully authenticates, quits the chain, or logs out.
+       </para>
       </listitem>
      </varlistentry>
+
      <varlistentry>
-      <term><option>iplanet-am-auth-shared-state-behavior-pattern</option></term>
+      <term><option>iplanet-am-auth-shared-state-enabled (Default: <literal>false</literal>)</option></term>
+      <listitem>
+       <para>Set <literal>iplanet-am-auth-shared-state-enabled=true</literal>
+        to allow this module to access the credentials, such as user name and
+        password, that have been stored in shared state by previous modules in
+        the authentication chain.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>iplanet-am-auth-shared-state-behavior-pattern (Default: <literal>tryFirstPass</literal>)</option></term>
       <listitem>
        <para>Set <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>
-       (the default) to try authenticating with the captured password. If
-       authentication fails, then OpenAM prompts the user for the credentials
-       again.</para>
-       <para>Set <literal>iplanet-am-auth-shared-state-behavior-pattern=useFirstPass</literal>
-       to authenticate with the captured password. If authentication fails,
-       then the module fails.</para>
+        to try authenticating with the username and password stored in
+        shared state. If authentication fails, OpenAM displays the login screen
+        of this module for the user to re-enter their credentials.
+       </para>
+       <para>
+        Set <literal>iplanet-am-auth-shared-state-behavior-pattern=useFirstPass</literal>
+        to prevent the user from entering the username and password twice during
+        authentication. Typically, you set the property to <literal>useFirstPass</literal>
+        for all modules in the chain except the first module.
+        If authentication fails, then the module fails.
+       </para>
       </listitem>
      </varlistentry>
     </variablelist>
-    <para>For example, consider a chain with two modules sharing credentials
-    according to the default settings. The first module in the chain has the
-    option <literal>iplanet-am-auth-shared-state-enabled=true</literal>, and
-    criteria <literal>REQUIRED</literal>. The second module in the chain has
-    options <literal>iplanet-am-auth-shared-state-enabled=true</literal>,
-    <literal>iplanet-am-auth-shared-state-behavior-pattern=tryFirstPass</literal>,
-    and criteria <literal>REQUIRED</literal>. A successful authentication
-    sequence happens as follows.
-     </para>
-     <para>The user enters her credentials for the first
-    module, successfully authenticating. The first module shares the
-    credentials with the second module, successfully authenticating the user
-    without prompting again for her credentials, unless the credentials for
-    the first module do not successfully authenticate here to the second
-    module. Just be sure to separate the options with a space and not a comma.</para>
+
+    <para>
+     For example, consider a chain with two modules sharing credentials
+     according to the following settings:
+     The first module in the chain has the
+     option <literal>iplanet-am-auth-store-shared-state-enabled=true</literal>, and
+     criteria <literal>REQUIRED</literal>.
+    </para>
+
+    <mediaobject>
+     <alt>Configuring the first module in an authentication chain</alt>
+     <imageobject>
+      <imagedata fileref="images/auth-chain-first-module.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       Configuring the first module in an authentication chain in a shared
+       credentials configuration.
+      </para>
+     </textobject>
+    </mediaobject>
+
+    <para>
+     The second module in the chain has
+     options <literal>iplanet-am-auth-shared-state-enabled=true</literal>,
+     <literal>iplanet-am-auth-shared-state-behavior-pattern=useFirstPass</literal>
+     with criteria <literal>REQUIRED</literal>.
+
+    </para>
+    <mediaobject>
+     <alt>Configuring the second module in an authentication chain</alt>
+     <imageobject>
+      <imagedata fileref="images/auth-chain-second-module.png" format="PNG" />
+     </imageobject>
+     <textobject>
+      <para>
+       Configuring the second module in an authentication chain in a shared
+       credentials configuration.
+      </para>
+     </textobject>
+    </mediaobject>
    </step>
+
    <step>
-    <para>Save your work.</para>
+    <para>Click Save Changes.</para>
+    <para>
+     The following authentication sequence
+     would occur:
+     The user enters their credentials for the first
+     module and successfully authenticates. The first module shares the
+     credentials with the second module, successfully authenticating the user
+     without prompting again for their credentials, unless the credentials for
+     the first module do not successfully authenticate the user to the second
+     module.
+    </para>
    </step>
   </procedure>
   
@@ -5735,7 +6014,7 @@ ssoadm \
    configuration before making it the default.</para>
    
    <step>
-    <para>On the Access Control tab page of the OpenAM console, click the
+    <para>On the Realms page of the OpenAM console, click the
     realm for which to set the default authentication chain.</para>
    </step>
    <step performance="optional">
@@ -5775,10 +6054,10 @@ ssoadm \
   request header to the protected application.</para>
 
   <para>In the OpenAM console, you add post authentication plugins to an
-  authentication chain. Navigate to Access Control &gt; <replaceable>Realm
-  Name</replaceable> &gt; Authentication &gt; Authentication Chaining &gt;
-  <replaceable>Auth Chain Name</replaceable>. Scroll down to the Post Authentication
-  Processing Class list.</para>
+  authentication chain. Navigate to Realms &gt; <replaceable>Realm
+  Name</replaceable> &gt; Authentication &gt; Chains &gt;
+  <replaceable>Auth Chain Name</replaceable> &gt; Settings &gt; Post
+  Authentication Processing Class &gt; Class Name.</para>
 
   <variablelist>
    <title>Standard Post Authentication Plugins</title>
@@ -5835,10 +6114,7 @@ ssoadm \
   </variablelist>
 
   <para>If necessary, you can also write your own custom post authentication
-  plugin as described in the <citetitle>Developer's Guide</citetitle> chapter
-  on <link xlink:href="dev-guide#sec-post-auth"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Creating a Post
-  Authentication Plugin</citetitle></link>.</para>
+  plugin as described in <olink targetdoc="dev-guide" targetptr="sec-post-auth" />.</para>
  </section>
 
  <section xml:id="authn-from-browser">
@@ -5986,6 +6262,1316 @@ ssoadm \
   </variablelist>
  </section>
 
+ <section xml:id="authn-2sv">
+  <title>Two Step Verification</title>
+
+  <indexterm>
+   <primary>Two Step Verification</primary>
+  </indexterm>
+
+  <para>
+   This section explains two step verification in OpenAM. Two step verification
+   is an authentication method in which users provide two forms of credentials
+   when logging in. A very common authentication scenario is for users to
+   be prompted to submit a user ID and password, and then to be prompted to
+   submit a one-time password generated by an authenticator app on their mobile
+   phone.
+  </para>
+  <para>
+   This section provides general information about two step verification,
+   describes how end users authenticate using two step verification, and
+   covers how administrators implement and support two step verification.
+  </para>
+
+  <section xml:id="authn-2sv-about">
+   <title>About Two Step Verification</title>
+
+   <para>
+    Two step verification is an authentication technique that requires users to
+    provide multiple forms of identification when logging in to OpenAM. Two step
+    verification provides a more secure method for users to access their
+    accounts with the help of a <firstterm>device</firstterm> supported by the
+    ForgeRock Authenticator (OATH) authentication module. Users can log in to
+    OpenAM more securely by using a generated one-time password.
+   </para>
+
+   <para>
+    Note that the word <emphasis>device</emphasis> is used in this section to
+    mean a piece of equipment that can display a one-time password using
+    protocols supported by OpenAM two step verification. Devices are most
+    commonly mobile phones with authenticator apps that support the OATH
+    protocol, but could also include hardware keys, such as the Yubikey device.
+   </para>
+
+   <para>
+    The following is an example scenario of two step verification in OpenAM:
+    <orderedlist>
+     <listitem>
+      <para>
+       An OpenAM administrator configures an authentication chain with the
+       Data Store and ForgeRock Authenticator (OATH) authentication modules.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       An end user authenticates to OpenAM using that authentication chain.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       OpenAM prompts the user to enter the user ID and password as
+       required by the Data Store authentication module&#x2014;the first step in
+       two step verification.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       If the user name and password were correct, OpenAM prompts the user to
+       obtain a one-time password.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       The user runs an authenticator app on a mobile phone that generates
+       and displays a one-time password.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       The user provides the one-time password to OpenAM to successfully
+       complete authentication&#x2014;the second step in two step verification.
+      </para>
+     </listitem>
+    </orderedlist>
+   </para>
+   <para>
+    Administrators set up two step verification by creating an authentication
+    chain with two authentication modules. The initial module in the chain
+    defines the first authentication module for two step verification. In the
+    preceding scenario, the first authentication module is the Data Store
+    authentication module. The second module in the chain is the ForgeRock
+    Authenticator (OATH) authentication module.
+   </para>
+   <para>
+    OpenAM supports the Open AuTHentication (OATH) protocols for
+    two step verification.
+   </para>
+
+   <section xml:id="authn-2sv-about-oath">
+    <title>About Open AuTHentication</title>
+
+    <para>
+     The ForgeRock Authenticator (OATH) module supports HMAC one-time password
+     (HOTP) and time-based one-time password (TOTP) authentication as defined in
+     the
+     <link xlink:show="new"
+           xlink:href="http://www.openauthentication.org/about/"
+     >OATH</link>  standard protocols for HOTP
+     (<link xlink:show="new"
+            xlink:href="http://tools.ietf.org/html/rfc4226"
+     >RFC 4226</link>) and TOTP
+     (<link xlink:show="new"
+           xlink:href="http://tools.ietf.org/html/rfc6238"
+     >RFC 6238</link>). Both HOTP and TOTP authentication require an
+     OATH-compliant device that can provide the password.
+    </para>
+
+    <para>
+     HOTP authentication generates the one-time password every time the user
+     requests a new password on their device. The device tracks the number of
+     times the user requests a new one-time password with a counter. The
+     one-time password displays for a period of time you designate in the setup,
+     so the user may be further in the counter on their device than on their
+     account. OpenAM will resynchronize the counter when the user finally logs
+     in. To accommodate this, you set the number of passwords a user can
+     generate before their device cannot be resynchronized. For example, if
+     you set the number of HOTP Window Size to 50 and someone presses the button
+     30 times on the user's device to generate a new password, the counter in
+     OpenAM will review the passwords until it reaches the one-time password
+     entered by the user. If someone presses the button 51 times, you will need
+     to reset the counter to match the number on the device's counter before the
+     user can login to OpenAM. HOTP authentication does not check earlier
+     passwords, so if the user attempts to reset the counter on their device,
+     they will not be able to login until you reset the counter in OpenAM to
+     match their device.
+    </para>
+
+    <para>
+     TOTP authentication constantly generates a new one-time password based on a
+     time interval you specify. The device tracks the last several passwords
+     generated and the current password. The TOTP Time Steps setting configures
+     the number of passwords tracked. The Last Login Time setting monitors the time
+     when a user logs in to make sure that user is not logged in several times
+     within the present time period. The TOTP Time-Step Interval
+     should not be so long as to lock users out, with a recommended time of 30
+     seconds.
+    </para>
+
+   </section>
+
+   <section xml:id="authn-2sv-differences-HOTP">
+    <title>Differences Among OpenAM Authentication Modules That Support HOTP</title>
+    <indexterm>
+     <primary>HOTP</primary>
+    </indexterm>
+
+    <para>
+     The ForgeRock Authenticator (OATH), OATH, and HOTP authentication modules
+     all let you configure authentication that prompts users to enter HMAC
+     one-time passwords. It is important that administrators understand the
+     differences among these authentication modules:
+     <itemizedlist>
+      <listitem>
+       <para>
+        The ForgeRock Authenticator (OATH) and OATH authentication modules
+        accept one-time passwords generated by the end user's device, while the
+        HOTP authentication module generates passwords and sends them to users
+        by e-mail or SMS.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        All three of the authentication modules support HOTP passwords. The
+        ForgeRock Authenticator (OATH) and OATH authentication modules also
+        support TOTP passwords.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The ForgeRock Authenticator (OATH) and OATH authentication modules
+        require users to register their devices, and store the device
+        registration details in the user profile. The HOTP authentication module
+        requires the presence of mobile phone numbers and/or e-mail addresses in
+        user profiles.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The ForgeRock Authenticator (OATH) authentication module can encrypt
+        stored device registration details.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </para>
+   </section>
+
+  </section>
+
+  <section xml:id="authn-2sv-using">
+   <title>Authenticating Using Two Step Verification</title>
+
+   <para>
+    This section provides an example of how end users might authenticate with
+    OpenAM configured for two step verification.
+   </para>
+
+   <para>
+    In this example, the OpenAM administrator has configured an authentication
+    chain with two modules: a Data Store module and a ForgeRock Authenticator
+    (OATH) module. Both modules have the <literal>requisite</literal> flag set.
+   </para>
+
+   <para>
+    You will authenticate using an Android mobile phone to generate one-time
+    passwords.
+   </para>
+
+   <para>
+    The sections that follow describe the steps to authenticate to OpenAM.
+   </para>
+
+   <section xml:id="authn-2sv-using-prereq">
+    <title>Prerequisite: Installing an Authenticator App</title>
+
+    <para>
+     If you have not already done so, install an authenticator app on
+     your mobile phone so that you can perform two step verification.
+    </para>
+
+    <para>
+     A variety of authenticator apps are available from the Google Play Store
+     for Android phones and from the App Store for iPhones. In this example,
+     you have an Android phone and you decide to download and install the Google
+     Authenticator app on your phone.
+    </para>
+
+   </section>
+
+   <section xml:id="authn-2sv-using-initiating-first-attempt">
+    <title>Authenticating for the First Time From a New Device</title>
+
+    <para>
+     Having installed the authenticator app on the phone, you are now ready
+     to attempt to authenticate to OpenAM using two step verification for the
+     first time from a new device. First-time authentication from a new device
+     differs from subsequent attempts. There are several first-time only
+     actions:
+     <itemizedlist>
+      <listitem>
+       <para>
+        Deciding whether to skip two step verification. Administrators can
+        configure OpenAM so that two step verification is optional, giving
+        users the ability to opt out of providing one-time passwords. Note that
+        a decision to skip two step verification applies to a user, not a
+        device.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Registering your device with OpenAM. Unless you opt out of two step
+        verification, you must register your device before you can use it to
+        provide one-time passwords to OpenAM.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Saving recovery codes. Recovery codes let users who have lost their
+        phones authenticate. Users who do not opt out of two step verification
+        should perform this step.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </para>
+
+    <para>
+     In this example, you navigate to a URL protected by an OpenAM policy agent.
+     The policy agent determines that you have not yet authenticated and
+     redirects you to OpenAM. Because the first module in the authentication
+     chain is a Data Store module, OpenAM presents you with a page for
+     entering your user ID and password. After you provide those credentials,
+     OpenAM verifies them. If your credentials are valid, OpenAM proceeds
+     to the ForgeRock Authenticator (OATH) authentication module.
+    </para>
+
+    <procedure xml:id="authn-2sv-first-procedure">
+     <title>To Authenticate With Two Step Verification for the First Time
+     </title>
+
+     <step>
+      <para>
+       Because you have not previously registered any devices for two step
+       verification, OpenAM gives you the choice of registering a device or
+       opting out of two step verification:
+      </para>
+      <mediaobject xml:id="authn-2sv-initial-screen">
+       <alt>
+        Initial screen in the two step verification process
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-initial-screen.png" format="PNG"/>
+       </imageobject>
+       <textobject>
+        <para>
+         This is the screen you see the first time you authenticate using the
+         Two Step Verification authentication module if you have not previously
+         registered a device. You must either register a device with OpenAM or
+         opt to skip two step verification.
+        </para>
+       </textobject>
+      </mediaobject>
+
+      <para>
+       You decide to register your mobile phone with OpenAM and not to opt
+       out of two step verification.
+      </para>
+
+      <para>
+       Click Register Device on the ForgeRock Authenticator (OATH) screen.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       A screen with a QR code appears:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-QR">
+       <alt>
+        The device registration screen with QR code in the two step verification
+        process
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-QR.png" format="PNG"/>
+       </imageobject>
+       <textobject>
+        <para>
+         This is the screen you see after requesting to register a device during
+         the two step verification if you have no devices registered yet.
+        </para>
+       </textobject>
+      </mediaobject>
+     </step>
+
+     <step>
+      <para>
+       Start the Google Authenticator app on your mobile phone and
+       select the Set Up Account option. The "Add an account" screen appears:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-setup">
+       <alt>
+        Google Authenticator Setup Screen
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-authenticator-setup.png"
+                   format="PNG"/>
+       </imageobject>
+       <textobject>
+        <para>
+         This is the screen you see when you bring up Google Authenticator for
+         the first time and then select the "Set up account" option.
+        </para>
+       </textobject>
+      </mediaobject>
+     </step>
+
+     <step>
+      <para>
+       Click "Scan a barcode." The screen on your mobile phone changes to
+       an interface similar to your camera app. Point your mobile phone
+       at the QR code on the OpenAM page as though you are taking a picture of
+       it and the authenticator app will acquire the QR code. After doing so,
+       the following screen appears on your phone:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-authenticator-tap-me">
+       <alt>
+        Google Authenticator Before One-Time Password Generation
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-authenticator-tap-me.png"
+                   format="PNG"/>
+       </imageobject>
+       <textobject>
+        <para>
+         This is the screen you see prior to the generation of a one-time
+         password.
+        </para>
+       </textobject>
+      </mediaobject>
+
+      <para>
+       Your device is now registered with OpenAM. You will able to use it
+       to generate one-time passwords.
+      </para>
+      <para>
+       Now you are ready to generate a one-time password and provide it
+       to OpenAM.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Tap your phone's screen. A one-time password appears:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-authenticator-with-otp">
+       <alt>
+        Google Authenticator After One-Time Password Generation
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-authenticator-with-otp.png"
+                   format="PNG"/>
+       </imageobject>
+       <textobject>
+        <para>
+         This is the screen you see after the generation of a one-time password.
+        </para>
+       </textobject>
+      </mediaobject>
+     </step>
+
+     <step>
+      <para>
+       On the OpenAM page containing the QR code, click Login
+       Using Verification Code. The ForgeRock Authenticator (OATH) page appears.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       On the ForgeRock Authenticator (OATH) page in OpenAM, enter the one-time
+       password that the authenticator app generated on your phone. Click
+       Submit:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-enter-code">
+       <alt>
+        Screen in which to Enter a One-Time Password
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-enter-code.png" format="PNG"/>
+       </imageobject>
+       <textobject>
+        <para>
+         This is the page that OpenAM uses to prompt you to enter a one-time
+         password.
+        </para>
+       </textobject>
+      </mediaobject>
+
+      <para>
+       OpenAM accepts the one-time password to complete successful
+       authentication. Depending on your access privileges, the policy agent
+       authorizes or denies access to the URL you originally requested.
+      </para>
+     </step>
+
+    </procedure>
+
+   </section>
+
+   <section xml:id="authn-2sv-accessing-recovery-codes">
+    <title>Accessing Your Recovery Codes</title>
+
+    <para>
+     After successful first-time authentication with two step verification,
+     you should safeguard your ability to use two step verification in case you
+     lose your phone. OpenAM provides users with a set of one-time recovery
+     codes that you can use in lieu of generated one-time passwords should you
+     lose your phone.
+    </para>
+
+    <para>
+     After registering a device with OpenAM, use the following procedure to
+     access your recovery codes:
+    </para>
+
+    <procedure xml:id="authn-2sv-accessing-recovery-codes-procedure">
+     <title>To Access Your Recovery Codes</title>
+
+     <step>
+      <para>
+       Log in to OpenAM.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Select Dashboard from the top-level menu.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Locate the entry for your phone in the Device Management section and
+       then activate the menu:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-device-management-recovery">
+       <alt>
+        Menu for Managing Phones Used for Two Step Verification
+       </alt>
+       <imageobject>
+        <imagedata
+         fileref="images/authn-2sv-device-management-recovery-codes-option.png"
+         format="PNG"/>
+       </imageobject>
+       <textobject>
+        <para>
+         This is the menu that appears in the OpenAM dashboard
+         for an entry for a registered phone. The Recovery
+         Codes option is selected.
+        </para>
+       </textobject>
+      </mediaobject>
+     </step>
+
+     <step>
+      <para>
+       Select the Recovery Codes option. A list of recovery codes appears:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-recovery-codes">
+       <alt>
+        Recovery Codes
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-recovery-codes.png" format="PNG" />
+       </imageobject>
+       <textobject>
+        <para>
+         This is the page on which recovery codes appear.
+        </para>
+       </textobject>
+      </mediaobject>
+     </step>
+
+     <step>
+      <para>
+       Click Download to download the list of recovery codes to a file.
+       Keep the file in a safe place. You will need to use one of your recovery
+       codes to authenticate to OpenAM if you lose your phone.
+      </para>
+     </step>
+
+    </procedure>
+
+    <para>
+     See <xref linkend="authn-2sv-using-lost" /> for the procedure to
+     authenticate to OpenAM using a recovery code instead of a generated
+     one-time password.
+    </para>
+
+   </section>
+
+   <section xml:id="authn-2sv-after-first">
+    <title>Using Two Step Verification After Device Registration</title>
+
+    <para>
+     After successfully authenticating to OpenAM using two step verification,
+     your phone is registered as a device in your OpenAM user profile. The
+     procedure to use the phone to perform two step verification is similar
+     to the procedure for the initial authentication, omitting the steps
+     to register your device:
+    </para>
+
+    <procedure xml:id="authn-2sv-after-first-procedure">
+     <title>To Authenticate With Two Step Verification After Device Registration</title>
+
+     <step>
+      <para>
+       You navigate to a URL protected by an OpenAM policy agent.
+       The policy agent determines that you have not yet authenticated and
+       redirects you to OpenAM. Because the first module in the authentication
+       chain is a Data Store module, OpenAM presents you with a page for
+       entering your user ID and password. After you provide those credentials,
+       OpenAM verifies them. If your credentials are valid, OpenAM proceeds
+       to the ForgeRock Authenticator (OATH) authentication module.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Start the authenticator app on your mobile phone and tap the phone to
+       generate a one-time password.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Enter the one-time password from your mobile phone on the ForgeRock
+       Authenticator (OATH) page in OpenAM to complete authentication. Depending
+       on your access privileges, the policy agent authorizes or denies access
+       to the URL you requested.
+      </para>
+     </step>
+
+    </procedure>
+
+   </section>
+
+   <section xml:id="authn-2sv-using-lost">
+    <title>Authenticating Using Two Step Verification After Losing a Registered Device</title>
+
+    <para>
+     If you register a device with OpenAM and then lose it, you must
+     authenticate to OpenAM using a recovery code, delete the lost device,
+     and then register the new device. Follow these steps:
+    </para>
+
+    <procedure xml:id="authn-2sv-using-lost-procedure">
+     <title>To Register a New Device After Losing a Registered Device</title>
+
+     <step>
+      <para>
+       Log in to OpenAM. When prompted for a one-time password, enter one
+       of your recovery codes. Because recovery codes are for a single use only,
+       make a note to yourself not to attempt to reuse this code.
+      </para>
+
+      <para>
+       If you did not save the recovery codes for the lost device, contact your
+       administrator to remove the registered device from your OpenAM user
+       profile.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Select Dashboard from the top-level menu.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Locate the entry for your phone in the Device Management section and
+       and select the Delete option:
+      </para>
+
+      <mediaobject xml:id="authn-2sv-device-management-delete">
+       <alt>
+        Context-Sensitive Menu for Managing Devices Used for Two Step
+        Verification
+       </alt>
+       <imageobject>
+        <imagedata fileref="images/authn-2sv-device-management-delete-option.png" format="PNG" />
+       </imageobject>
+       <textobject>
+        <para>
+         This is the menu that appears in the OpenAM dashboard
+         for an entry for a registered phone. The Delete option is selected.
+        </para>
+       </textobject>
+      </mediaobject>
+     </step>
+
+     <step>
+      <para>
+       If you have not already done so, install an authenticator app on your
+       new phone.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Register your new device by following the steps in
+       <xref linkend="authn-2sv-first-procedure" />.
+      </para>
+     </step>
+
+    </procedure>
+
+    <para>
+     Users who do not save recovery codes or who run out of recovery codes
+     and cannot authenticate to OpenAM without a verification code require
+     administrative support to reset their device profiles. See
+     <xref linkend="authn-2sv-issues" /> for more information.
+    </para>
+
+   </section>
+
+  </section>
+
+  <section xml:id="authn-2sv-configuring">
+   <title>Implementing Two Step Verification</title>
+
+   <para>
+    This section explains how to implement two step verification in OpenAM.
+   </para>
+
+   <section xml:id="authn-2sv-vs-hotp">
+    <title>Deciding Between the ForgeRock Authenticator (OATH) and the HOTP
+     Authentication Module
+    </title>
+
+    <para>
+     The ForgeRock Authenticator (OATH) and the HOTP authentication module both
+     have the ability to process HMAC one-time passwords as a step in OpenAM
+     authentication. When implementing one-time passwords,
+     choose the appropriate technique for your organization.
+    </para>
+
+    <para>
+     Before deciding on an implementation strategy, review
+     <xref linkend="authn-2sv-differences-HOTP"/> and assess your
+     requirements against the following capabilities in OpenAM:
+     <table xml:id="authn-2sv-differences-HOTP-table" pgwide="1">
+      <title>Comparing the ForgeRock Authenticator (OATH) to the HOTP Authentication Module</title>
+      <tgroup cols="3">
+       <colspec colnum="1" colwidth="3*"/>
+       <colspec colnum="2" colwidth="2*"/>
+       <colspec colnum="3" colwidth="2*"/>
+       <thead>
+        <row>
+         <entry>Requirement</entry>
+         <entry>Available With the ForgeRock Authenticator (OATH) Authentication Module?</entry>
+         <entry>Available With the HOTP Authentication Module?</entry>
+        </row>
+       </thead>
+       <tbody>
+        <row>
+         <entry>End users can authenticate using a HOTP password</entry>
+         <entry>Yes</entry>
+         <entry>Yes</entry>
+        </row>
+        <row>
+         <entry>OpenAM can generate a HOTP password and send it to
+          end users in a text message or an e-mail
+         </entry>
+         <entry>No</entry>
+         <entry>Yes</entry>
+        </row>
+        <row>
+         <entry>End users can register a mobile phone with OpenAM, and an
+          authenticator app on the phone can generate a HOTP or TOTP password
+          that OpenAM accepts as proof of authentication
+         </entry>
+         <entry>Yes</entry>
+         <entry>No</entry>
+        </row>
+        <row>
+         <entry>End users can authenticate with a TOTP password</entry>
+         <entry>Yes</entry>
+         <entry>No</entry>
+        </row>
+        <row>
+         <entry>End users can opt out of providing a one-time password</entry>
+         <entry>Yes</entry>
+         <entry>No</entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </table>
+    </para>
+
+   </section>
+
+   <section xml:id="authn-2sv-encryption">
+    <title>Configuring the ForgeRock Authenticator (OATH) Service Settings</title>
+
+    <para>
+     When implementing two step verification in OpenAM,
+     configure the following settings:
+     <variablelist>
+      <varlistentry>
+       <term>Encryption Settings</term>
+       <listitem>
+        <para>
+         Administrators must decide whether to configure OpenAM to encrypt
+         device profiles. Device profiles are stored in users' entries in the
+         OpenAM identity repository. When encryption is enabled, OpenAM
+         encrypts all device profiles in the OpenAM deployment.
+        </para>
+        <para>
+         By default, device profiles are not encrypted.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Device Profile Location</term>
+       <listitem>
+        <para>
+        The name of the attribute in which the device profile is stored is also
+        configurable. By default, OpenAM stores device profiles in the
+        <literal>oathDeviceProfiles</literal> attribute.
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </para>
+
+    <para>
+     You can configure the device profile encryption and attribute settings
+     globally for an OpenAM deployment under Configuration > Global > ForgeRock
+     Authenticator (OATH) Service. If you need to configure the settings for a
+     realm, add an instance of the the ForgeRock Authenticator (OATH) Service to
+     the realm.
+    </para>
+
+    <para>
+     For detailed information about the ForgeRock Authenticator (OATH) Service
+     configuration, see
+     <olink targetdoc="reference"
+            targetptr="fr-authenticator-oath-service-configuration" />.
+    </para>
+
+   </section>
+
+   <section xml:id="authn-2sv-chain">
+    <title>Creating a Two Step Verification Authentication Chain</title>
+
+    <para>
+     The following procedure provides steps to follow when creating
+     an authentication chain that implements two step verification. The
+     procedure assumes the following implementation details:
+     <itemizedlist>
+      <listitem>
+       <para>
+        Users will provide user IDs and passwords as the first step of
+        two step verification.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        An existing Data Store authentication module will collect and
+        verify user IDs and passwords.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        All authentication modules in the chain will use the
+        <literal>Requisite</literal> flag setting. See
+        <xref linkend="what-is-authn" /> for details about
+        authentication module flag settings.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Users can opt out of two step verification.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </para>
+
+    <procedure xml:id="authn-2sv-chain-procedure">
+     <title>To Create an Authentication Chain for Two Step Verification</title>
+
+     <step>
+      <para>
+       Log in to the console as an OpenAM administrator, for example
+       <literal>amadmin</literal>.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Select the realm that will contain the authentication chain.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Allow users to opt out of two step verification as follows:
+      </para>
+
+      <substeps>
+       <step>
+        <para>
+         Select Authentication &gt; Settings &gt; General.
+        </para>
+       </step>
+
+       <step>
+         <para>
+          Make sure that the Two Factor Authentication Mandatory is not checked.
+         </para>
+         <para>
+          See <xref linkend="auth-core-general" /> for details about this
+          configuration setting.
+         </para>
+       </step>
+      </substeps>
+
+      <para>
+       See <xref linkend="authn-2sv-skip" /> for more information about how
+       letting users skip two step verification impacts the behavior of
+       authentication chains.
+      </para>
+     </step>
+
+     <step>
+      <para>
+       Create a ForgeRock Authenticator (OATH) authentication module to be used
+       for the second step of two step verification as follows:
+      </para>
+
+      <substeps>
+       <step>
+        <para>
+         Select Authentication > Modules, and then click Add Module.
+        </para>
+        <para>
+         The Create New Module dialog box appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Fill in fields in the Create New Module dialog box as follows:
+          <itemizedlist>
+          <listitem>
+           <para>
+            Module Name: Specify a module name of your choosing.
+           </para>
+          </listitem>
+          <listitem>
+           <para>
+            Module Type: Select ForgeRock Authenticator (OATH).
+           </para>
+          </listitem>
+         </itemizedlist>
+         </para>
+       </step>
+
+       <step>
+        <para>
+         Click Create.
+        </para>
+        <para>
+         A page that lets you configure the ForgeRock Authenticator (OATH)
+         authentication module appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Configure the ForgeRock Authenticator (OATH) authentication module to
+         meet your organization's requirements.
+        </para>
+        <para>
+         For more information about the authentication module's configuration
+         settings, see <xref linkend="fr-authenticator-oath-conf-hints" />.
+        </para>
+       </step>
+      </substeps>
+
+     </step>
+
+     <step>
+      <para>
+       Create the authentication chain as follows:
+      </para>
+
+      <substeps>
+       <step>
+        <para>
+         Select Authentication > Chains, and then click Add Chain.
+        </para>
+        <para>
+         The Create New Chain dialog box appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Specify a chain name of your choosing and click Create.
+        </para>
+        <para>
+         The New Module dialog box appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Fill in fields in the New Module dialog box as follows:
+         <itemizedlist>
+          <listitem>
+           <para>
+            Select Module: Select the existing Data Store module to use in
+            this chain.
+           </para>
+          </listitem>
+
+          <listitem>
+           <para>
+            Select Criteria: Select a flag setting for the module in the
+            authentication chain. For this example, specify the
+            <literal>Requisite</literal> flag.
+           </para>
+           <para>
+            See <xref linkend="what-is-authn" /> for information about
+            authentication module flag settings.
+           </para>
+          </listitem>
+
+         </itemizedlist>
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Click OK.
+        </para>
+        <para>
+         A graphic showing an authentication chain with a single Data Store
+         module appears on the page.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Add the ForgeRock Authenticator (OATH) authentication module to the
+         authentication chain as follows:
+        </para>
+
+        <substeps>
+
+         <step>
+          <para>
+           Click Add Module.
+          </para>
+          <para>
+           The New Module dialog box appears.
+          </para>
+         </step>
+
+         <step>
+          <para>
+           Fill in the New Module dialog box, specifying the ForgeRock
+           Authenticator (OATH) authentication module that you just created. For
+           this example, specify the <literal>Requisite</literal> flag.
+          </para>
+         </step>
+
+         <step>
+          <para>
+           Click OK.
+          </para>
+          <para>
+           The graphic showing your authentication chain now includes the
+           Data Store and ForgeRock Authenticator (OATH) authentication modules.
+          </para>
+         </step>
+
+        </substeps>
+
+       </step>
+
+       <step>
+        <para>
+         Click Save Changes to save the authentication chain.
+        </para>
+       </step>
+
+      </substeps>
+
+     </step>
+
+     <step>
+      <para>
+       Test your authentication chain as follows:
+      </para>
+
+      <substeps>
+       <step>
+        <para>
+         Navigate to a URL similar to the following:
+         <itemizedlist>
+          <listitem>
+           <para>
+            If you are using the XUI:
+            <literal>http://openam.example.com:8080/openam/XUI/#login/&amp;service=<replaceable>myAuthChain</replaceable></literal>
+           </para>
+          </listitem>
+          <listitem>
+           <para>
+            If you are using the classic UI:
+            <literal>http://openam.example.com:8080/openam/UI/Login?service=<replaceable>myAuthChain</replaceable></literal>
+           </para>
+          </listitem>
+         </itemizedlist>
+        </para>
+        <para>
+         A login screen prompting you to enter your user ID and password appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Enter your authentication credentials and click Log In.
+        </para>
+        <para>
+         The Two Step Verification page appears.
+        </para>
+       </step>
+
+       <step>
+        <para>
+         Follow the procedure described in
+         <xref linkend="authn-2sv-using-initiating-first-attempt" />
+         to verify that you can use an authenticator app to obtain a one-time
+         password. If the chain is correctly configured, OpenAM accepts the
+         one-time password.
+        </para>
+       </step>
+
+      </substeps>
+     </step>
+
+    </procedure>
+
+   </section>
+
+   <section xml:id="authn-2sv-skip">
+    <title>Letting Users Skip Two Step Verification</title>
+
+    <para>
+     Letting users opt out of providing one-time passwords when they
+     perform two step verification is an important implementation decision.
+     The Two Factor Authentication Mandatory setting under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+     &gt; General configures whether users can opt out.
+    </para>
+
+    <para>
+     When the Two Factor Authentication Mandatory setting is enabled, users must
+     provide a one-time password every time they authenticate to a chain that
+     includes a ForgeRock Authenticator (OATH) authentication module. When the
+     setting is disabled, the user can optionally skip providing one-time
+     passwords.
+    </para>
+
+    <para>
+     By default, OpenAM lets users opt out of providing one-time passwords. The
+     example in <xref linkend="authn-2sv-using-initiating-first-attempt" />
+     illustrates the default behavior. Users authenticating with two step
+     verification for the first time are prompted with a screen that lets them
+     opt out of providing one-time passwords.
+    </para>
+
+    <para>
+     With the Two Factor Authentication Mandatory setting enabled, the user
+     experience differs from the default behavior. OpenAM does not provide
+     an option to skip two step verification during the initial attempt
+     at two step verification:
+    </para>
+
+    <mediaobject xml:id="authn-2sv-initial-screen-noskip">
+     <alt>
+      Initial screen in the two step verification process if two
+      step verification is mandatory
+     </alt>
+     <imageobject>
+      <imagedata fileref="images/authn-2sv-initial-screen-noskip.png" format="PNG"/>
+     </imageobject>
+     <textobject>
+      <para>
+       This is the screen you see the first time you authenticate using the
+       Two Step Verification authentication module if you have not previously
+       registered a device and if two step verification is mandatory. Notice
+       that there is no option to skip two step verification.
+      </para>
+     </textobject>
+    </mediaobject>
+
+    <para>
+     When configuring an authentication chain that implements two step
+     verification, you need to be aware that a user's decision to opt out of
+     providing one-time passwords affects the authentication process. When a
+     user who has opted out of providing one-time passwords authenticates to a
+     chain that includes a ForgeRock Authenticator (OATH) authentication module,
+     that module <emphasis>always</emphasis> passes authentication.
+    </para>
+
+    <para>
+     Consider the example authentication chain in <xref linkend="authn-2sv-chain" />.
+     The first authentication module is a Data Store module and the second
+     authentication module is a ForgeRock Authenticator (OATH) module. Both
+     authentication modules have the Requisite flag setting.
+    </para>
+
+    <para>
+     A user who has opted out of providing one-time passwords might experience
+     the following sequence of events when authenticating to the chain:
+     <orderedlist>
+      <listitem>
+       <para>
+        The Data Store authentication module prompts the user to provide a user
+        ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The user provides a valid user ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Data Store authentication passes, and authentication proceeds to the
+        next module in the chain&#x2014;the ForgeRock Authenticator (OATH) module.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The ForgeRock Authenticator (OATH) authentication module determines that
+        the user has opted out of providing one-time passwords.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        ForgeRock Authenticator (OATH) authentication passes. Because it is the
+        last authentication module in the chain, OpenAM considers authentication
+        to have completed successfully.
+       </para>
+      </listitem>
+     </orderedlist>
+     Contrast the preceding sequence of events to the experience of a user
+     who has not opted out of providing one-time passwords, or who is
+     required to provide one-time passwords, while authenticating to the same
+     chain:
+     <orderedlist>
+      <listitem>
+       <para>
+        The Data Store authentication module prompts the user to provide a user
+        ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The user provides a valid user ID and password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Data Store authentication passes, and authentication proceeds to the
+        next module in the chain&#x2014;the ForgeRock Authenticator (OATH)
+        module.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The ForgeRock Authenticator (OATH) authentication module determines that
+        the user has not opted out of providing one-time passwords, and prompts
+        the user for a one time password.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The user obtains a one-time password from the authenticator app on
+        their mobile phone.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        If the one-time password is valid, ForgeRock Authenticator (OATH)
+        authentication passes. Because it is the last authentication module in
+        the chain, OpenAM considers authentication to have completed
+        successfully. However, if the one-time password is not valid, ForgeRock
+        Authenticator (OATH) authentication fails, and OpenAM considers
+        authentication to have failed.
+       </para>
+      </listitem>
+     </orderedlist>
+    </para>
+
+   </section>
+
+  </section>
+
+  <section xml:id="authn-2sv-issues">
+   <title>Supporting Two Step Verification</title>
+
+   <para>
+    As described in <xref linkend="authn-2sv-using-lost" />,
+    a user who has lost a mobile phone registered with OpenAM can
+    register a replacement device by authenticating using a recovery code,
+    deleting their existing device, and then re-registering a new device.
+   </para>
+   <para>
+    Additional support is required for users who lose mobile phones but did
+    not save their recovery codes when they initially registered the phone, and
+    for users who have used up all their recovery codes.
+   </para>
+   <para>
+    OpenAM provides a REST API to reset a device profile by deleting
+    information about a user's registered device. Either the user or an
+    administrator can call the REST API to reset a device profile. Device
+    profile reset can be implemented as follows:
+    <itemizedlist>
+     <listitem>
+      <para>
+       Administrators provide authenticated users with a self-service page that
+       calls the REST API to let the users reset their own device profiles.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Administrators call the REST API themselves to reset users' device
+       profiles.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    For details about the REST API to reset users' device profiles, see
+    <olink targetdoc="dev-guide" targetptr="rest-api-device-profile-reset" />.
+   </para>
+
+  </section>
+
+ </section>
+
  <section xml:id="session-upgrade">
   <title>Authentication Levels and Session Upgrade</title>
 
@@ -6045,19 +7631,14 @@ ssoadm \
    as policy agents are built to handle OpenAM's advices.
    If you build your own policy enforcement point (PEP), however,
    take advices and session upgrade into consideration.
-   For RESTful PEPs, see the <citetitle>Developer's Guide</citetitle> sections,
-   <link
-    xlink:show="new"
-    xlink:href="dev-guide#rest-api-authz-policy-decisions"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Requesting Policy Decisions</citetitle></link>
-   and
-   <link
-    xlink:show="new"
-    xlink:href="dev-guide#rest-api-auth-json"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Authentication and Logout</citetitle></link>,
-   for indications on how to handle advices and session upgrade.
+   For RESTful PEPs, see
+   <olink
+    targetdoc="dev-guide"
+    targetptr="rest-api-authz-policy-decisions" />,
+   and for indications on how to handle advices and session upgrade see
+   <olink
+    targetdoc="dev-guide"
+    targetptr="rest-api-auth-json" />.
   </para>
 
   <para>
@@ -6100,13 +7681,13 @@ ssoadm \
   </itemizedlist>
 
   <itemizedlist>
-   <para>You configure account lockout by editing settings for the <link
-   xlink:href="admin-guide#core-module-conf-hints"
-   xlink:role="http://docbook.org/xlink/role/olink">core authentication
-   module</link>. Access the settings in OpenAM console under Access Control
-   &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; All
-   Core Settings..., and then scroll down to the Account Lockout section.
-   The inline help explains the settings in detail. To do this: </para>
+   <para>You configure account lockout by editing settings for the core
+   authentication module. For details, see <xref
+   linkend="core-module-conf-hints" />. Access the settings in OpenAM console
+   under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+   Authentication &gt; Settings &gt; Account Lockout.
+   The inline help explains the settings in detail. To do this:
+   </para>
 
    <listitem>
     <para>Enable lockout by checking Login Failure Lockout Mode, setting
@@ -6131,8 +7712,8 @@ ssoadm \
    </listitem>
   </itemizedlist>
 
-  <para>If you need to unlock a user's account, find the user under Access
-  Control &gt; <replaceable>Realm Name</replaceable> &gt; Subjects &gt; User,
+  <para>If you need to unlock a user's account, find the user under
+  Realms &gt; <replaceable>Realm Name</replaceable> &gt; Subjects &gt; User,
   set the user's User Status to Active, and click Save.</para>
  </section>
 
@@ -6160,10 +7741,8 @@ ssoadm \
 
   <important>
    <para>To enforce session quotas across multiple servers in a site, configure
-   session failover as described in the <citetitle>Installation Guide</citetitle>
-   chapter, <link xlink:href="install-guide#chap-session-failover"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Setting Up OpenAM
-   Session Failover</citetitle></link>.</para>
+   session failover as described in
+    <olink targetdoc="install-guide" targetptr="chap-session-failover" />.</para>
   </important>
 
   <procedure xml:id="session-quotas-and-exhaustion-actions">
@@ -6227,11 +7806,8 @@ ssoadm \
    </variablelist>
 
    <para>If none of these session quota exhaustion actions fit your deployment,
-   you can implement a custom session quota exhaustion action. See the
-   <citetitle>Developer's Guide</citetitle> chapter on <link
-   xlink:href="dev-guide#sec-custom-quota-exhaustion-action"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Customizing
-   Session Quota Exhaustion Actions</citetitle></link> for an example.</para>
+   you can implement a custom session quota exhaustion action. For an
+    example, see <olink targetdoc="dev-guide" targetptr="sec-custom-quota-exhaustion-action" />.</para>
   </step>
 
   <step>
@@ -6308,10 +7884,7 @@ ssoadm \
 
   <para>
    The URL whitelisting and pattern matching follow the wildcard rules as specified in
-   <link
-    xlink:href="admin-guide#define-rules"
-    xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>To Configure a Policy for a Web Site</citetitle></link>.
+   <xref linkend="policy-patterns-wildcards"/>.
    There is one main difference: when creating applications, the URL pattern
    matching for <literal>ApplicationTypes</literal> is different from the way
    Applications are matched when creating policies.

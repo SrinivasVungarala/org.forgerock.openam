@@ -7,7 +7,7 @@
 </div>
 <div class="panel panel-default">
     <div class="panel-body">
-        <table class="table table-striped">
+        <table class="table">
             <thead>
             <tr>
                 <th class="col-check"><input id="selectAll" type="checkbox" /></th>
@@ -22,9 +22,11 @@
                 <td>
                     <a class="edit-chain-btn" href="{{routeTo 'realmsAuthenticationChainEdit' ../realmPath _id}}">{{_id}}</a>
                     {{#if defaultConfig}}
-                    <div class="default-config">
-                        {{#if defaultConfig.adminAuthModule}}{{t 'console.authentication.chains.defaultAdminAuthConfiguration'}} {{#if defaultConfig.orgConfig}}/ {{/if}}{{/if}}
-                        {{#if defaultConfig.orgConfig}}{{t 'console.authentication.chains.defaultOrgAuthConfiguration'}} {{/if}}
+                    <div>
+                        <small class="text-muted">
+                            {{#if defaultConfig.adminAuthModule}}{{t 'console.authentication.chains.defaultAdminAuthConfiguration'}} {{#if defaultConfig.orgConfig}}/ {{/if}}{{/if}}
+                            {{#if defaultConfig.orgConfig}}{{t 'console.authentication.chains.defaultOrgAuthConfiguration'}} {{/if}}
+                        </small>
                     </div>
                     {{/if}}
                 </td>

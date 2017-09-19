@@ -28,13 +28,7 @@
 #include <accctrl.h>
 #include <aclapi.h>
 
-typedef enum {
-    MODE_UNKNOWN,
-    MODE_X86,
-    MODE_X64
-} app_mode_t;
-
-#define IIS_SCHEMA_CONF_FILE "\\System32\\inetsrv\\config\\schema\\mod_iis_openam_schema.xml"
+#define IIS_SCHEMA_CONF_FILE "\\inetsrv\\config\\schema\\mod_iis_openam_schema.xml"
 #define AM_IIS_APPHOST L"MACHINE/WEBROOT/APPHOST"
 #define AM_IIS_SITES L"system.applicationHost/sites"
 #define AM_IIS_GLOBAL L"system.webServer/globalModules"
@@ -50,6 +44,23 @@ static BSTR module_name = L"OpenAmModule";
 static BSTR system_webserver = L"system.webServer";
 
 static BOOL add_to_modules(IAppHostWritableAdminManager* manager, BSTR config_path, const char* siteid);
+
+typedef void (WINAPI * GET_SYS_INFO)(LPSYSTEM_INFO);
+
+BOOL is_win64() {
+    SYSTEM_INFO info;
+    ZeroMemory(&info, sizeof (SYSTEM_INFO));
+    GET_SYS_INFO native = (GET_SYS_INFO) GetProcAddress(GetModuleHandle("kernel32.dll"), "GetNativeSystemInfo");
+    if (native != NULL) {
+        native(&info);
+    } else {
+        GetSystemInfo(&info);
+    }
+    if (info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+        return TRUE;
+    }
+    return FALSE;
+}
 
 char *utf8_encode(const wchar_t *wstr, size_t *outlen) {
     char *tmp = NULL;
@@ -85,17 +96,6 @@ wchar_t *utf8_decode(const char *str, size_t *outlen) {
         return tmp;
     }
     return NULL;
-}
-
-static app_mode_t get_app_mode() {
-    SYSTEM_INFO sys_info;
-    GetNativeSystemInfo(&sys_info);
-    if (sys_info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
-        return MODE_X86;
-    } else if (sys_info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
-        return MODE_X64;
-    }
-    return MODE_UNKNOWN;
 }
 
 static char *get_property_value_byname(IAppHostElement* ahe, VARIANT* value, BSTR* name, VARTYPE type) {
@@ -490,15 +490,17 @@ static BOOL add_to_global_modules(IAppHostWritableAdminManager* manager, BSTR im
                 break;
             }
 
-            if (get_app_mode() == MODE_X64) {
-                if (!set_property(element, L"preCondition", L"bitness64")) {
-                    fprintf(stderr, "Failed to set name property.\n");
-                    break;
-                }
-            } else if (!set_property(element, L"preCondition", L"bitness32")) {
-                fprintf(stderr, "Failed to set name property.\n");
+#ifdef ADMIN64BIT
+            if (!set_property(element, L"preCondition", L"bitness64")) {
+                fprintf(stderr, "Failed to set preCondition property.\n");
                 break;
             }
+#else
+            if (!set_property(element, L"preCondition", L"bitness32")) {
+                fprintf(stderr, "Failed to set preCondition property.\n");
+                break;
+            }
+#endif
 
             hresult = IAppHostElementCollection_AddElement(collection, element, -1);
             if (FAILED(hresult)) {
@@ -532,20 +534,19 @@ static BOOL add_to_global_modules(IAppHostWritableAdminManager* manager, BSTR im
  * The text is copied into a static buffer which will be overwritten with each
  * call - caveat programmer.
  */
-static char* ErrorDescription(HRESULT hr)
-{
+static char *ErrorDescription(HRESULT hr) {
     static char buff[255];
-    char* msg;
+    char *msg;
 
     if (FACILITY_WINDOWS == HRESULT_FACILITY(hr)) {
         hr = HRESULT_CODE(hr);
     }
 
     if (FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                       NULL, hr,
-                       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                       (LPSTR)&msg, 
-                       0, NULL)) {
+            NULL, hr,
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+            (LPSTR) & msg,
+            0, NULL)) {
 
         sprintf(buff, "%s", msg);
         LocalFree(msg);
@@ -554,7 +555,6 @@ static char* ErrorDescription(HRESULT hr)
     }
     return buff;
 }
-
 
 static BOOL update_module_site_config(IAppHostWritableAdminManager* manager, BSTR config_path, BSTR mod_config_path, BOOL enabled) {
     IAppHostElement *element = NULL;
@@ -711,8 +711,20 @@ int install_module(const char *modpath, const char *schema) {
     wchar_t *location = NULL;
     char schema_sys_file[MAX_PATH];
 
-    memset(&schema_sys_file[0], 0, sizeof (schema_sys_file));
-    GetEnvironmentVariableA("SYSTEMROOT", schema_sys_file, sizeof (schema_sys_file));
+    if (GetWindowsDirectoryA(schema_sys_file, MAX_PATH) == 0) {
+        fprintf(stderr, "Failed to locate Windows directory.\n");
+        return rv;
+    }
+
+    if (is_win64()) {
+#ifdef ADMIN64BIT
+        strcat(schema_sys_file, "\\System32");
+#else
+        strcat(schema_sys_file, "\\Sysnative");
+#endif
+    } else {
+        strcat(schema_sys_file, "\\System32");
+    }
     strcat(schema_sys_file, IIS_SCHEMA_CONF_FILE);
 
     location = utf8_decode(modpath, NULL);
@@ -742,22 +754,24 @@ int install_module(const char *modpath, const char *schema) {
         if (!add_to_global_modules(admin_manager, module_wpath)) {
             fprintf(stderr, "Failed to add entry to globalModules.\n");
             break;
-        } else {
-            if (CopyFileA(schema, schema_sys_file, FALSE) != 0) {
-                if (update_config_sections(admin_manager, FALSE)) {
-                    rv = 1;
-                } else {
-                    fprintf(stderr, "Failed to update configuration schema.\n");
-                }
+        }
+
+        if (file_exists(schema_sys_file) ||
+                CopyFileExA(schema, schema_sys_file, NULL, NULL, FALSE, COPY_FILE_NO_BUFFERING) != 0) {
+            if (update_config_sections(admin_manager, FALSE)) {
+                rv = 1;
             } else {
-                fprintf(stderr, "Failed to copy module schema file (%d).\n", GetLastError());
+                fprintf(stderr, "Failed to update configuration schema.\n");
             }
+        } else {
+            fprintf(stderr, "Failed to copy module schema file (%d).\n", GetLastError());
         }
 
         hresult = IAppHostWritableAdminManager_CommitChanges(admin_manager);
         if (FAILED(hresult)) {
-            break;
+            fprintf(stderr, "Failed to save module configuration changes.\n");
         }
+
     } while (FALSE);
 
     free(location);
@@ -797,14 +811,13 @@ int remove_module() {
         if (!remove_from_modules(admin_manager, AM_IIS_APPHOST, AM_IIS_GLOBAL, FALSE)) {
             fprintf(stderr, "Failed to remove entry from globalModules.\n");
             break;
-        } else {
-            rv = 1;
         }
+
+        rv = 1;
 
         hresult = IAppHostWritableAdminManager_CommitChanges(admin_manager);
         if (FAILED(hresult)) {
             fprintf(stderr, "Failed to save changes to remove module.\n");
-            break;
         }
 
     } while (FALSE);
@@ -949,18 +962,19 @@ int enable_module(const char *siteid, const char *modconf) {
         if (!add_to_modules(admin_manager, config_path_w, siteid)) {
             fprintf(stderr, "Failed to add entry to modules.\n");
             break;
+        }
+
+        if (!update_module_site_config(admin_manager, config_path_w, modconf_w, TRUE)) {
+            fprintf(stderr, "Failed to add module configuration entry.\n");
         } else {
-            if (!update_module_site_config(admin_manager, config_path_w, modconf_w, TRUE)) {
-                fprintf(stderr, "Failed to add module configuration entry.\n");
-            } else {
-                rv = 1;
-            }
+            rv = 1;
         }
 
         hresult = IAppHostWritableAdminManager_CommitChanges(admin_manager);
         if (FAILED(hresult)) {
             fprintf(stderr, "Failed to save module configuration changes.\n");
         }
+
     } while (FALSE);
 
     AM_FREE(modconf_w, config_path_w);
@@ -1019,18 +1033,19 @@ int disable_module(const char *siteid, const char *modconf) {
         if (!remove_from_modules(admin_manager, config_path_w, AM_IIS_MODULES, FALSE)) {
             fprintf(stderr, "Failed to remove entry from modules.\n");
             break;
+        }
+
+        if (!update_module_site_config(admin_manager, config_path_w, modconf_w, FALSE)) {
+            fprintf(stderr, "Failed to add module configuration entry.\n");
         } else {
-            if (!update_module_site_config(admin_manager, config_path_w, modconf_w, FALSE)) {
-                fprintf(stderr, "Failed to add module configuration entry.\n");
-            } else {
-                rv = 1;
-            }
+            rv = 1;
         }
 
         hresult = IAppHostWritableAdminManager_CommitChanges(admin_manager);
         if (FAILED(hresult)) {
-            break;
+            fprintf(stderr, "Failed to save module configuration changes.\n");
         }
+
     } while (FALSE);
 
     AM_FREE(modconf_w, config_path_w);
@@ -1068,7 +1083,7 @@ static BOOL add_to_modules(IAppHostWritableAdminManager* manager, BSTR config_pa
             fprintf(stderr, "Failed to try detect old modules.\n");
             break;
         }
-        
+
         if (element != NULL) {
             /* module is already registered */
             result = TRUE;
@@ -1086,15 +1101,17 @@ static BOOL add_to_modules(IAppHostWritableAdminManager* manager, BSTR config_pa
             break;
         }
 
-        if (get_app_mode() == MODE_X64) {
-            if (!set_property(element, L"preCondition", L"bitness64")) {
-                fprintf(stderr, "Failed to set preCondition property.\n");
-                break;
-            }
-        } else if (!set_property(element, L"preCondition", L"bitness32")) {
+#ifdef ADMIN64BIT
+        if (!set_property(element, L"preCondition", L"bitness64")) {
             fprintf(stderr, "Failed to set preCondition property.\n");
             break;
         }
+#else
+        if (!set_property(element, L"preCondition", L"bitness32")) {
+            fprintf(stderr, "Failed to set preCondition property.\n");
+            break;
+        }
+#endif
 
         hresult = IAppHostElementCollection_AddElement(collection, element, -1);
         switch (hresult) {
@@ -1196,8 +1213,9 @@ int test_module(const char *siteid) {
 
         hresult = IAppHostWritableAdminManager_CommitChanges(admin_manager);
         if (FAILED(hresult)) {
-            break;
+            fprintf(stderr, "Failed to save changes to remove module.\n");
         }
+
     } while (FALSE);
 
     am_free(config_path_w);
@@ -1229,7 +1247,7 @@ static char *get_site_application_pool(const char *site_id) {
             break;
         }
         env_init = TRUE;
-        
+
         hresult = CoCreateInstance(&CLSID_AppHostWritableAdminManager, NULL,
                 CLSCTX_INPROC_SERVER, &IID_IAppHostWritableAdminManager, (LPVOID *) & admin_manager);
         if (FAILED(hresult)) {
@@ -1320,7 +1338,7 @@ static char *get_site_application_pool(const char *site_id) {
     return app_pool;
 }
 
-int add_directory_acl(char *site_id, char *directory) {
+int add_directory_acl(char *site_id, char *directory, char *user) {
     PACL acl = NULL;
     DWORD rv;
     PACL directory_acl = NULL;
@@ -1329,11 +1347,11 @@ int add_directory_acl(char *site_id, char *directory) {
     char *app_pool_name;
     int status = AM_ERROR;
 
-    if (ISINVALID(site_id) || ISINVALID(directory)) {
+    if (ISINVALID(directory)) {
         return AM_EINVAL;
     }
 
-    app_pool_name = get_site_application_pool(site_id);
+    app_pool_name = ISVALID(site_id) ? get_site_application_pool(site_id) : user;
     if (ISINVALID(app_pool_name)) {
         return AM_ERROR;
     }
@@ -1348,7 +1366,7 @@ int add_directory_acl(char *site_id, char *directory) {
     }
 
     ZeroMemory(&ea, sizeof (EXPLICIT_ACCESS));
-    ea[0].grfAccessPermissions = FILE_GENERIC_READ | FILE_GENERIC_WRITE;
+    ea[0].grfAccessPermissions = GENERIC_ALL;
     ea[0].grfAccessMode = GRANT_ACCESS;
     ea[0].grfInheritance = CONTAINER_INHERIT_ACE | OBJECT_INHERIT_ACE;
     ea[0].Trustee.TrusteeForm = TRUSTEE_IS_NAME;
@@ -1400,7 +1418,7 @@ int remove_module() {
     return 0;
 }
 
-int add_directory_acl(char *site_id, char *directory) {
+int add_directory_acl(char *site_id, char *directory, char *user) {
     return 0;
 }
 

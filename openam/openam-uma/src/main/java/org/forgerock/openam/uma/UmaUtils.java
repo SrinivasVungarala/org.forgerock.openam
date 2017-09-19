@@ -16,9 +16,7 @@
 
 package org.forgerock.openam.uma;
 
-import static org.forgerock.json.fluent.JsonValue.field;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
+import static org.forgerock.json.JsonValue.*;
 
 import javax.security.auth.Subject;
 import java.security.Principal;

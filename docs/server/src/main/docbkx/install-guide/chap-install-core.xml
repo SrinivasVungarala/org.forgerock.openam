@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-install-core'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -95,10 +95,8 @@
       <para><xref linkend="deploy-openam" /> and <xref
       linkend="configure-openam-defaults" /></para>
 
-      <para>Alternatively, follow the full example in the <link xlink:show="new"
-      xlink:href="getting-started#getting-started"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Getting
-      Started</citetitle></link> guide.</para>
+      <para>Alternatively, follow the full example in <olink
+       targetdoc="getting-started" targetptr="getting-started"/>.</para>
      </entry>
     </row>
     <row>
@@ -123,36 +121,20 @@
     </row>
     <row>
      <entry>Install <command>ssoadm</command> for CLI configuration</entry>
-     <entry><link xlink:href="install-guide#chap-install-tools"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Installing
-     OpenAM Tools</citetitle></link>, or <link
-     xlink:href="admin-guide#openam-ssoadm-jsp-overview"
-     xlink:role="http://docbook.org/xlink/role/olink">OpenAM ssoadm.jsp</link>
-     in the <citetitle>Administration Guide</citetitle></entry>
+     <entry><xref linkend="chap-install-tools" />, or <olink
+      targetdoc="admin-guide" targetptr="openam-ssoadm-jsp-overview" />.</entry>
     </row>
     <row>
      <entry>Perform a command-line install</entry>
-     <entry><link xlink:href="install-guide#install-openam-config-tools"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up
-     Configuration Tools</citetitle></link></entry>
-    </row>
-    <row>
-     <entry>Install OpenAM in your DMZ</entry>
-     <entry><link xlink:href="install-guide#chap-install-das"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Installing
-     OpenAM Distributed Authentication</citetitle></link></entry>
+     <entry><xref linkend="install-openam-config-tools" /></entry>
     </row>
     <row>
      <entry>Skin OpenAM for your organization</entry>
-     <entry><link xlink:href="install-guide#chap-custom-ui"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Customizing
-     the OpenAM End User Pages</citetitle></link></entry>
+     <entry><xref linkend="chap-custom-ui" /></entry>
     </row>
     <row>
      <entry>Uninstall OpenAM</entry>
-     <entry><link xlink:href="install-guide#chap-uninstall"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Removing
-     OpenAM Software</citetitle></link></entry>
+     <entry><xref linkend="chap-uninstall" /></entry>
     </row>
    </tbody>
   </tgroup>
@@ -350,13 +332,13 @@ $ cp <?eval ${coreWarFile}?> /path/to/tomcat/webapps/openam.war
    </mediaobject>
 
    <para>
-    After successful login, OpenAM redirects you to OpenAM Console.
+    After successful login, OpenAM redirects you to OpenAM Realms.
    </para>
 
    <mediaobject xml:id="figure-openam-console-first-time">
     <alt>OpenAM Console home page</alt>
     <imageobject>
-     <imagedata fileref="images/openam-console.png" format="PNG" />
+     <imagedata fileref="images/openam-realms.png" format="PNG" />
     </imageobject>
     <textobject>
      <para>
@@ -707,20 +689,13 @@ Using CLASSPATH:
        You can configure OpenAM to store sessions <firstterm>statefully</firstterm>
        or <firstterm>statelessly</firstterm>. Stateful sessions are stored in
        memory on the OpenAM server. They are also written to disk by the
-       <link xlink:show="new"
-             xlink:href="install-guide#chap-cts"
-             xlink:role="http://docbook.org/xlink/role/olink">
-       <citetitle>Core Token Service</citetitle></link>
+       <xref linkend="chap-cts" />
        if you select the Enable Session HA and Persistence and Failover option
        in the Site Configuration screen. Stateless sessions are stored in HTTP
        cookies. The Enable Session HA and Persistence and Failover setting does
        not apply to stateless sessions. For more information about stateful and
        stateless sessions, see
-       <link xlink:show="new"
-             xlink:href="admin-guide#chap-session-state"
-             xlink:role="http://docbook.org/xlink/role/olink">
-       <citetitle>Configuring Session State</citetitle></link>
-       in the <citetitle>Administration Guide</citetitle>.
+       <olink targetdoc="admin-guide" targetptr="chap-session-state" />.
       </para>
     </footnote>
     OpenAM then stores sessions across server restarts, so that users do not
@@ -734,10 +709,7 @@ Using CLASSPATH:
     that if an OpenAM server fails, other OpenAM servers in the site have access
     to the user's session data and can serve requests about that user. As a
     result, the user does not have to log in again. If session failover is
-    important for your deployment, also follow the instructions in <link
-    xlink:show="new" xlink:href="install-guide#chap-session-failover"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Setting Up
-    OpenAM Session Failover</citetitle></link>.
+    important for your deployment, also follow the instructions in <xref linkend="chap-session-failover" />.
    </para>
 
    <mediaobject xml:id="figure-openam-conf-site">
@@ -755,10 +727,7 @@ Using CLASSPATH:
 
    <para>
     It is possible to set up a site after initial installation and
-    configuration, as is described in the chapter on
-    <link xlink:show="new" xlink:href="install-guide#chap-session-failover"
-          xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Setting Up OpenAM Session Failover</citetitle></link>.
+    configuration, as is described in <xref linkend="chap-session-failover" />.
    </para>
   </step>
 
@@ -842,13 +811,13 @@ Using CLASSPATH:
    </mediaobject>
 
    <para>
-    After login, OpenAM redirects you to the OpenAM Console page.
+    After login, OpenAM redirects you to the OpenAM Realms page.
    </para>
 
    <mediaobject xml:id="figure-openam-console">
     <alt>OpenAM Console home page</alt>
     <imageobject>
-     <imagedata fileref="images/openam-console.png" format="PNG" />
+     <imagedata fileref="images/openam-realms.png" format="PNG" />
     </imageobject>
     <textobject>
      <para>
@@ -883,10 +852,7 @@ Using CLASSPATH:
     If you specified the Other User Data Store option in the
     User Data Store Settings screen, you must index several
     attributes in your external identity repository.
-    See <link xlink:show="new"
-              xlink:href="install-guide#install-index-opendj-external-idrepo"
-              xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To
-    Index External Identity Repository Attributes</citetitle></link>
+    See <xref linkend="install-index-opendj-external-idrepo" />
     for more information.
    </para>
   </step>

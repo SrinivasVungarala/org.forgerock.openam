@@ -16,6 +16,13 @@
 
 package org.forgerock.openam.rest.authz;
 
+import static org.forgerock.openam.utils.CollectionUtils.transformSet;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 import com.iplanet.sso.SSOException;
 import com.sun.identity.delegation.DelegationEvaluator;
 import com.sun.identity.delegation.DelegationException;
@@ -23,29 +30,23 @@ import com.sun.identity.delegation.DelegationPermission;
 import com.sun.identity.delegation.DelegationPermissionFactory;
 import org.forgerock.authz.filter.api.AuthorizationResult;
 import org.forgerock.authz.filter.crest.api.CrestAuthorizationModule;
+import org.forgerock.services.context.Context;
+import org.forgerock.http.routing.UriRouterContext;
 import org.forgerock.json.resource.ActionRequest;
 import org.forgerock.json.resource.CreateRequest;
 import org.forgerock.json.resource.DeleteRequest;
+import org.forgerock.json.resource.InternalServerErrorException;
 import org.forgerock.json.resource.PatchRequest;
 import org.forgerock.json.resource.QueryRequest;
 import org.forgerock.json.resource.ReadRequest;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.RouterContext;
-import org.forgerock.json.resource.ServerContext;
 import org.forgerock.json.resource.UpdateRequest;
-import org.forgerock.openam.rest.resource.RealmContext;
+import org.forgerock.openam.rest.RealmContext;
 import org.forgerock.openam.rest.resource.SubjectContext;
 import org.forgerock.util.Function;
 import org.forgerock.util.promise.NeverThrowsException;
 import org.forgerock.util.promise.Promise;
 import org.forgerock.util.promise.Promises;
-
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
-import static org.forgerock.openam.utils.CollectionUtils.transformSet;
 
 /**
  * This authorisation module ties the calling subject back into the delegation privilege framework to
@@ -81,44 +82,49 @@ public class PrivilegeAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
     public Promise<AuthorizationResult, ResourceException> authorizeRead(
-            ServerContext serverContext, ReadRequest readRequest) {
+            Context serverContext, ReadRequest readRequest) {
         return evaluate(serverContext, READ);
     }
 
     @Override
     public Promise<AuthorizationResult, ResourceException> authorizeQuery(
-            ServerContext serverContext, QueryRequest queryRequest) {
+            Context serverContext, QueryRequest queryRequest) {
         return evaluate(serverContext, READ);
     }
 
     @Override
     public Promise<AuthorizationResult, ResourceException> authorizeCreate(
-            ServerContext serverContext, CreateRequest createRequest) {
+            Context serverContext, CreateRequest createRequest) {
         return evaluate(serverContext, MODIFY);
     }
 
     @Override
     public Promise<AuthorizationResult, ResourceException> authorizeUpdate(
-            ServerContext serverContext, UpdateRequest updateRequest) {
+            Context serverContext, UpdateRequest updateRequest) {
         return evaluate(serverContext, MODIFY);
     }
 
     @Override
     public Promise<AuthorizationResult, ResourceException> authorizeDelete(
-            ServerContext serverContext, DeleteRequest deleteRequest) {
+            Context serverContext, DeleteRequest deleteRequest) {
         return evaluate(serverContext, MODIFY);
     }
 
     @Override
     public Promise<AuthorizationResult, ResourceException> authorizePatch(
-            ServerContext serverContext, PatchRequest patchRequest) {
+            Context serverContext, PatchRequest patchRequest) {
         return evaluate(serverContext, MODIFY);
     }
 
     @Override
     public Promise<AuthorizationResult, ResourceException> authorizeAction(
-            ServerContext serverContext, ActionRequest actionRequest) {
+            Context serverContext, ActionRequest actionRequest) {
 
         // Get the privilege definition for the CREST action.
         final String crestAction = actionRequest.getAction();
@@ -126,7 +132,7 @@ public class PrivilegeAuthzModule implements CrestAuthorizationModule {
 
         if (definition == null) {
             return Promises.newResultPromise(
-                    AuthorizationResult.failure("No privilege mapping for requested action " + crestAction));
+                    AuthorizationResult.accessDenied("No privilege mapping for requested action " + crestAction));
         }
 
         return evaluate(serverContext, definition);
@@ -142,14 +148,14 @@ public class PrivilegeAuthzModule implements CrestAuthorizationModule {
      *
      * @return the authorisation result
      */
-    private Promise<AuthorizationResult, ResourceException> evaluate(final ServerContext context,
+    private Promise<AuthorizationResult, ResourceException> evaluate(final Context context,
                                                                      final PrivilegeDefinition definition) {
 
         // If no realm is specified default to the root realm.
         final String realm = (context.containsContext(RealmContext.class)) ?
                 context.asContext(RealmContext.class).getResolvedRealm() : "/";
         final SubjectContext subjectContext = context.asContext(SubjectContext.class);
-        final RouterContext routerContext = context.asContext(RouterContext.class);
+        final UriRouterContext routerContext = context.asContext(UriRouterContext.class);
 
         // Map the set of actions to a set of action strings.
         final Set<String> actions = transformSet(definition.getActions(), ACTION_TO_STRING_MAPPER);
@@ -163,17 +169,15 @@ public class PrivilegeAuthzModule implements CrestAuthorizationModule {
                     Collections.<String, Set<String>>emptyMap())) {
 
                 // Authorisation has been approved.
-                return Promises.newResultPromise(AuthorizationResult.success());
+                return Promises.newResultPromise(AuthorizationResult.accessPermitted());
             }
         } catch (DelegationException dE) {
-            return Promises.newExceptionPromise(
-                    ResourceException.getException(500, "Attempt to authorise the user has failed", dE));
+            return new InternalServerErrorException("Attempt to authorise the user has failed", dE).asPromise();
         } catch (SSOException ssoE) {
-            return Promises.newExceptionPromise(
-                    ResourceException.getException(500, "Attempt to authorise the user has failed", ssoE));
+            return new InternalServerErrorException("Attempt to authorise the user has failed", ssoE).asPromise();
         }
 
-        return Promises.newResultPromise(AuthorizationResult.failure("The user has insufficient privileges"));
+        return Promises.newResultPromise(AuthorizationResult.accessDenied("The user has insufficient privileges"));
     }
 
 

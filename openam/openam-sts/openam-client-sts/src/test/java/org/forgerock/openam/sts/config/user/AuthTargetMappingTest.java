@@ -18,7 +18,7 @@ package org.forgerock.openam.sts.config.user;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.openam.sts.AMSTSConstants;
 import org.forgerock.openam.sts.TokenType;
 import org.forgerock.openam.sts.TokenTypeId;
@@ -152,32 +152,9 @@ public class AuthTargetMappingTest {
         /*
         This is how the Crest HttpServletAdapter ultimately constitutes a JsonValue from a json string. See the
         org.forgerock.json.resource.servlet.HttpUtils.parseJsonBody (called from HttpServletAdapter.getJsonContent)
-        for details. This is using the older version of jackson
-        (org.codehaus.jackson.map.ObjectMapper), and I will do the same (albeit with the newer version), to reproduce
-        the same behavior.
+        for details. This is using the newer version of jackson, and I will do the same, to reproduce the same behavior.
          */
-        JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(mapping.toJson().toString());
-        final Object content = parser.readValueAs(Object.class);
-
-        assertEquals(mapping, AuthTargetMapping.fromJson(new JsonValue(content)));
-    }
-
-    @Test
-    public void testOlderJacksonJsonStringRoundTrip() throws IOException {
-        AuthTargetMapping mapping = AuthTargetMapping
-                .builder()
-                .addMapping(TokenType.X509, AMSTSConstants.AUTH_INDEX_TYPE_MODULE, X509)
-                .addMapping(TokenType.USERNAME, AMSTSConstants.AUTH_INDEX_TYPE_MODULE, USERNAME, buildContext())
-                .build();
-        /*
-        This is how the Crest HttpServletAdapter ultimately constitutes a JsonValue from a json string. See the
-        org.forgerock.json.resource.servlet.HttpUtils.parseJsonBody (called from HttpServletAdapter.getJsonContent)
-        for details. This is using the older version of jackson
-        (org.codehaus.jackson.map.ObjectMapper), and I will do the same, to reproduce
-        the same behavior.
-         */
-        org.codehaus.jackson.JsonParser parser =
-                new org.codehaus.jackson.map.ObjectMapper().getJsonFactory().createJsonParser(mapping.toJson().toString());
+        JsonParser parser = new ObjectMapper().getFactory().createParser(mapping.toJson().toString());
         final Object content = parser.readValueAs(Object.class);
 
         assertEquals(mapping, AuthTargetMapping.fromJson(new JsonValue(content)));

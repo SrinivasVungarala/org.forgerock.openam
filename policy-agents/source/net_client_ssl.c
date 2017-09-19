@@ -28,6 +28,12 @@
 #endif
 
 #ifdef _WIN32
+#ifndef LOAD_LIBRARY_SEARCH_USER_DIRS
+#define LOAD_LIBRARY_SEARCH_USER_DIRS 0x00000400
+#endif
+typedef DLL_DIRECTORY_COOKIE(WINAPI *ADD_DLL_PROC)(PCWSTR);
+typedef BOOL(WINAPI *REMOVE_DLL_PROC)(DLL_DIRECTORY_COOKIE);
+static DLL_DIRECTORY_COOKIE dll_directory_cookie = 0;
 static INIT_ONCE ssl_lib_initialized = INIT_ONCE_STATIC_INIT;
 static CRITICAL_SECTION *ssl_mutexes = NULL;
 #else
@@ -76,11 +82,14 @@ static struct ssl_func ssl_sw[] = {
     {"SSL_state_string", NULL},
     {"SSL_state_string_long", NULL},
     {"SSL_state", NULL},
+    {"SSL_load_error_strings", NULL},
+    {"SSL_CTX_set_verify_depth", NULL},
 #ifndef _WIN32
     {"BIO_s_mem", NULL},
     {"BIO_new", NULL},
     {"BIO_write", NULL},
     {"BIO_read", NULL},
+    {"BIO_ctrl", NULL},
 #endif
     {NULL, NULL}
 };
@@ -102,6 +111,7 @@ static struct ssl_func crypto_sw[] = {
     {"BIO_new", NULL},
     {"BIO_write", NULL},
     {"BIO_read", NULL},
+    {"BIO_ctrl", NULL},
 #endif
     {NULL, NULL}
 };
@@ -126,6 +136,14 @@ static struct ssl_func crypto_sw[] = {
 #define SSL_CTRL_OPTIONS 32
 #define SSL_CTRL_SET_MSG_CALLBACK_ARG 16
 #define SSL_ST_OK 0x03
+#define SSL_MODE_AUTO_RETRY 0x4
+#define SSL_CTRL_MODE 33
+#define SSL_MODE_ENABLE_PARTIAL_WRITE 0x1
+#define SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER 0x2
+#define BIO_C_SET_BUF_MEM_EOF_RETURN 130
+#define BIO_CTRL_PENDING 10
+#define SSL_SESS_CACHE_OFF 0x0000
+#define SSL_CTRL_SET_SESS_CACHE_MODE 44
 
 typedef struct ssl_st SSL;
 typedef struct ssl_ctx_st SSL_CTX;
@@ -160,7 +178,7 @@ typedef struct bio_method_st BIO_METHOD;
 #define SSL_read (* (int (*)(SSL *, void *, int)) ssl_sw[18].ptr)
 #define SSL_write (* (int (*)(SSL *, const void *,int)) ssl_sw[19].ptr)
 #define SSL_connect (* (int (*)(SSL *)) ssl_sw[20].ptr)
-#define SSL_shutdown (* (void (*)(SSL *)) ssl_sw[21].ptr)
+#define SSL_shutdown (* (int (*)(SSL *)) ssl_sw[21].ptr)
 #define SSL_CTX_free (* (void (*)(SSL_CTX *)) ssl_sw[22].ptr)
 #define SSL_free (* (void (*)(SSL *)) ssl_sw[23].ptr)
 #define SSL_get_peer_certificate (* (X509 * (*)(const SSL *)) ssl_sw[24].ptr)
@@ -172,11 +190,14 @@ typedef struct bio_method_st BIO_METHOD;
 #define SSL_state_string (* (const char * (*)(const SSL *)) ssl_sw[30].ptr)
 #define SSL_state_string_long (* (const char * (*)(const SSL *)) ssl_sw[31].ptr)
 #define SSL_state (* (int (*)(const SSL *)) ssl_sw[32].ptr)
+#define SSL_load_error_strings (* (void (*)(void)) ssl_sw[33].ptr)
+#define SSL_CTX_set_verify_depth (* (void (*)(SSL_CTX *, int)) ssl_sw[34].ptr)
 #ifndef _WIN32
-#define BIO_s_mem (* (BIO_METHOD * (*)(void)) ssl_sw[33].ptr)
-#define BIO_new (* (BIO * (*)(BIO_METHOD *)) ssl_sw[34].ptr)
-#define BIO_write (* (int (*)(BIO *, const void *, int)) ssl_sw[35].ptr)
-#define BIO_read (* (int (*)(BIO *, void *, int)) ssl_sw[36].ptr)
+#define BIO_s_mem (* (BIO_METHOD * (*)(void)) ssl_sw[35].ptr)
+#define BIO_new (* (BIO * (*)(BIO_METHOD *)) ssl_sw[36].ptr)
+#define BIO_write (* (int (*)(BIO *, const void *, int)) ssl_sw[37].ptr)
+#define BIO_read (* (int (*)(BIO *, void *, int)) ssl_sw[38].ptr)
+#define BIO_ctrl (* (long (*)(BIO *, int, long, void *)) ssl_sw[39].ptr)
 #endif
 
 #define CRYPTO_num_locks (* (int (*)(void)) crypto_sw[0].ptr)
@@ -195,6 +216,7 @@ typedef struct bio_method_st BIO_METHOD;
 #define BIO_new (* (BIO * (*)(BIO_METHOD *)) crypto_sw[12].ptr)
 #define BIO_write (* (int (*)(BIO *, const void *, int)) crypto_sw[13].ptr)
 #define BIO_read (* (int (*)(BIO *, void *, int)) crypto_sw[14].ptr)
+#define BIO_ctrl (* (long (*)(BIO *, int, long, void *)) crypto_sw[15].ptr)
 #endif
 
 static void *get_function(void *lib, const char *name) {
@@ -216,7 +238,9 @@ static void close_library(void *lib) {
 static void *load_library(const char *lib, struct ssl_func *sw) {
     char name[AM_PATH_SIZE];
 #if !defined(_WIN32) && !defined(__APPLE__)
-    char name1[AM_PATH_SIZE], name2[AM_PATH_SIZE];
+    int i;
+    const char *name_variants[] = {"%s.so.10", "%s.so.1.0.1", "%s.so.1.0.0", "%s.so.0.9.8", NULL};
+    char temp[AM_PATH_SIZE];
 #endif
     void *lib_handle = NULL;
     struct ssl_func *fp, *fpd;
@@ -231,30 +255,51 @@ static void *load_library(const char *lib, struct ssl_func *sw) {
             "%s.dll"
 #elif defined(__APPLE__)
             "%s.dylib"
+#elif defined(AIX)
+#ifdef __64BIT__
+            "%s.a(%s64.so.1.0.0)"
+#else
+            "%s.a(%s.so.1.0.0)"
+#endif
 #else
             "%s.so"
 #endif   
-            , NOTNULL(lib));
+            , NOTNULL(lib)
+#if defined(AIX)      
+            , NOTNULL(lib)
+#endif  
+            );
 
 #ifdef _WIN32
-    if ((lib_handle = (void *) LoadLibrary(name)) == NULL) {
+    if ((lib_handle = (void *) LoadLibraryExA(name, NULL, LOAD_LIBRARY_SEARCH_DEFAULT_DIRS)) == NULL) {
+        fprintf(stderr, "init_ssl(): %s is not available (error: %d)\n", name, GetLastError());
         return NULL;
     }
 #else
-#ifdef __APPLE__
-    lib_handle = dlopen(name, RTLD_LAZY | RTLD_GLOBAL);
+#if defined(__APPLE__)
+    lib_handle = dlopen(name, RTLD_LAZY | RTLD_GLOBAL | RTLD_NODELETE);
 #else
-    snprintf(name1, sizeof (name1), "%s.so.1.0.0", NOTNULL(lib));
-    snprintf(name2, sizeof (name2), "%s.so.0.9.8", NOTNULL(lib));
-    lib_handle = dlopen(name1, RTLD_LAZY | RTLD_GLOBAL);
-    if (lib_handle == NULL) {
-        lib_handle = dlopen(name2, RTLD_LAZY | RTLD_GLOBAL);
-        if (lib_handle == NULL) {
-            lib_handle = dlopen(name, RTLD_LAZY | RTLD_GLOBAL);
+    name_variants[ARRAY_SIZE(name_variants) - 1] = name;
+    for (i = 0; i < ARRAY_SIZE(name_variants); i++) {
+        if (strchr(name_variants[i], '%') != NULL) {
+            snprintf(temp, sizeof (temp), name_variants[i], NOTNULL(lib));
+        } else {
+            strncpy(temp, name_variants[i], sizeof (temp) - 1);
+        }
+        lib_handle = dlopen(temp, RTLD_LAZY | RTLD_GLOBAL
+#if defined(AIX)      
+                | RTLD_MEMBER
+#else 
+                | RTLD_NODELETE
+#endif 
+                );
+        if (lib_handle != NULL) {
+            break;
         }
     }
 #endif
     if (lib_handle == NULL) {
+        fprintf(stderr, "init_ssl(): %s is not available\n", name);
         return NULL;
     }
 #endif
@@ -263,30 +308,37 @@ static void *load_library(const char *lib, struct ssl_func *sw) {
     for (fp = sw; fp->name != NULL; fp++) {
         u.p = get_function(lib_handle, fp->name);
         if (u.fp == NULL) {
+            fprintf(stderr, "init_ssl(): failed to load %s\n", fp->name);
             for (; fpd->name != NULL; fpd++) {
                 fpd->ptr = NULL;
             }
             close_library(lib_handle);
             return NULL;
-        } else {
-            fp->ptr = u.fp;
         }
+        fp->ptr = u.fp;
     }
     return lib_handle;
 }
 
-static void show_server_cert(am_net_t *n) {
+static void show_server_cert(am_net_t *net) {
+    static const char *thisfunc = "show_server_cert():";
     X509 *cert;
     char *line;
-    cert = SSL_get_peer_certificate(n->ssl.ssl_handle);
+    cert = SSL_get_peer_certificate(net->ssl.ssl_handle);
     if (cert != NULL) {
         line = X509_NAME_oneline(X509_get_subject_name(cert), 0, 0);
-        AM_LOG_DEBUG(n->instance_id,
-                "show_server_cert(): server certificate subject: %s", LOGEMPTY(line));
+        AM_LOG_DEBUG(net->instance_id,
+                "%s server certificate subject: %s", thisfunc, LOGEMPTY(line));
+        if (net->options != NULL && net->options->log != NULL) {
+            net->options->log("%s server certificate subject: %s", thisfunc, LOGEMPTY(line));
+        }
         am_free(line);
         line = X509_NAME_oneline(X509_get_issuer_name(cert), 0, 0);
-        AM_LOG_DEBUG(n->instance_id,
-                "show_server_cert(): server certificate issuer: %s", LOGEMPTY(line));
+        AM_LOG_DEBUG(net->instance_id,
+                "%s server certificate issuer: %s", thisfunc, LOGEMPTY(line));
+        if (net->options != NULL && net->options->log != NULL) {
+            net->options->log("%s server certificate issuer: %s", thisfunc, LOGEMPTY(line));
+        }
         am_free(line);
         X509_free(cert);
     }
@@ -299,16 +351,26 @@ static int password_callback(char *buf, int size, int rwflag, void *passwd) {
 }
 
 static const char *read_ssl_error() {
+    static AM_THREAD_LOCAL char err_buff[121];
     unsigned long err = ERR_get_error();
-    return err == 0 ? "" : LOGEMPTY(ERR_error_string(err, NULL));
+    return err == 0 ? am_strerror(AM_SUCCESS) : LOGEMPTY(ERR_error_string(err, err_buff));
 }
 
-static char ssl_is_fatal_error(int ssl_error) {
+static char ssl_is_fatal_error(am_net_t *net, int ssl_error) {
+    static const char *thisfunc = "net_ssl_error():";
+    char *error_string;
     switch (ssl_error) {
         case SSL_ERROR_NONE:
         case SSL_ERROR_WANT_READ:
         case SSL_ERROR_WANT_WRITE:
             return 0;
+    }
+    error_string = (char *) read_ssl_error();
+    if (net->options != NULL && net->options->log != NULL) {
+        net->options->log("%s %s", thisfunc, error_string);
+    }
+    if (strcmp(error_string, am_strerror(AM_SUCCESS)) != 0) {
+        AM_LOG_ERROR(net->instance_id, "%s %s", thisfunc, error_string);
     }
     return 1;
 }
@@ -349,12 +411,28 @@ init_ssl(
 #endif
         ) {
     int i, size;
+
+#ifdef _WIN32
+    ADD_DLL_PROC add_directory =
+            (ADD_DLL_PROC) GetProcAddress(GetModuleHandleA("kernel32.dll"), "AddDllDirectory");
+    if (add_directory != NULL) {
+        wchar_t dll_path[AM_URI_SIZE];
+        if (GetModuleFileNameW(NULL, dll_path, sizeof (dll_path) - 1) > 0) {
+            PathRemoveFileSpecW(dll_path); /* remove exe part */
+            PathRemoveFileSpecW(dll_path); /* remove bin part */
+            wcscat(dll_path, L"\\lib");
+            dll_directory_cookie = ((ADD_DLL_PROC) add_directory)(dll_path);
+        }
+    }
+#endif
+
     ssl_lib = load_library(AM_SSL_LIB, ssl_sw);
     crypto_lib = load_library(AM_CRYPTO_LIB, crypto_sw);
     if (ssl_lib != NULL && crypto_lib != NULL &&
-            CRYPTO_set_mem_functions && SSL_library_init && CRYPTO_num_locks &&
+            CRYPTO_set_mem_functions && SSL_library_init && SSL_load_error_strings && CRYPTO_num_locks &&
             CRYPTO_set_id_callback && CRYPTO_set_locking_callback && OPENSSL_add_all_algorithms_noconf) {
         CRYPTO_set_mem_functions(malloc, realloc, free);
+        SSL_load_error_strings();
         SSL_library_init();
 #ifdef _WIN32
         size = sizeof (CRITICAL_SECTION) * CRYPTO_num_locks();
@@ -425,28 +503,63 @@ void net_shutdown_ssl() {
     if (crypto_lib != NULL) close_library(crypto_lib);
     ssl_lib = NULL;
     crypto_lib = NULL;
+
+#ifdef _WIN32
+    if (dll_directory_cookie) {
+        REMOVE_DLL_PROC remove_directory =
+                (REMOVE_DLL_PROC) GetProcAddress(GetModuleHandleA("kernel32.dll"), "RemoveDllDirectory");
+        if (remove_directory != NULL) {
+            ((REMOVE_DLL_PROC) remove_directory)(dll_directory_cookie);
+        }
+        dll_directory_cookie = 0;
+    }
+#endif
 }
 
 static void write_bio_to_socket(am_net_t *n) {
-    char buf[1024], *p;
-    int len, remaining,
-            hasread = BIO_read ? BIO_read(n->ssl.write_bio, buf, sizeof (buf)) : -1;
-    if (hasread > 0) {
-        p = buf;
-        remaining = hasread;
-        while (remaining) {
-            len = send(n->sock, p, remaining, 0);
-            if (len <= 0) {
-#ifdef _WIN32
-                n->ssl.sys_error = WSAGetLastError();
-#else
-                n->ssl.sys_error = errno;
-#endif
-                return;
-            }
-            remaining -= len;
-            p += len;
+    static const char *thisfunc = "write_bio_to_socket():";
+    char *buf, *p;
+    int len, remaining, hasread, pending;
+
+    pending = BIO_ctrl ? BIO_ctrl(n->ssl.write_bio, BIO_CTRL_PENDING, 0, NULL) : -1;
+    if (pending > 0) {
+        buf = malloc(pending);
+        if (buf == NULL) {
+            return;
         }
+
+        hasread = BIO_read ? BIO_read(n->ssl.write_bio, buf, pending) : -1;
+        if (hasread > 0) {
+            p = buf;
+            remaining = hasread;
+            while (remaining) {
+                len = send(n->sock, p, remaining, 0);
+                if (len <= 0) {
+#ifdef _WIN32
+                    n->ssl.sys_error = WSAGetLastError();
+#else
+                    n->ssl.sys_error = errno;
+#endif
+                    if (n->ssl.sys_error != 0) {
+                        if (n->options != NULL && n->options->log != NULL) {
+                            n->options->log("%s error %d", thisfunc, n->ssl.sys_error);
+                        }
+                        AM_LOG_ERROR(n->instance_id, "%s error %d", thisfunc, n->ssl.sys_error);
+                    }
+                    free(buf);
+                    return;
+                }
+                remaining -= len;
+                p += len;
+            }
+        }
+        free(buf);
+    }
+}
+
+void net_close_ssl_notify(am_net_t *n) {
+    if (n->ssl.ssl_handle != NULL) {
+        SSL_shutdown(n->ssl.ssl_handle);
     }
 }
 
@@ -465,26 +578,59 @@ void net_close_ssl(am_net_t *n) {
     n->ssl.on = AM_FALSE;
 }
 
+static void net_ssl_msg_callback(int writep, int version, int content_type,
+        const void *buf, size_t len, SSL *ssl, void *arg) {
+    static const char *thisfunc = "net_ssl_msg_callback():";
+    am_net_t *net = (am_net_t *) arg;
+    if (net->options != NULL && net->options->log != NULL) {
+        net->options->log("%s %s (%s)", thisfunc,
+                SSL_state_string_long(ssl), SSL_state_string(ssl));
+    }
+    AM_LOG_DEBUG(net->instance_id, "%s %s (%s)",
+            thisfunc, SSL_state_string_long(ssl), SSL_state_string(ssl));
+    if (strstr(SSL_state_string_long(ssl), "read server key exchange") != NULL) {
+        show_server_cert(net);
+    }
+}
+
 void net_connect_ssl(am_net_t *n) {
     static const char *thisfunc = "net_connect_ssl():";
     int status = -1, err = 0;
+    am_bool_t cert_ca_file_loaded = AM_FALSE;
     if (n != NULL) {
         n->ssl.on = AM_FALSE;
+        n->ssl.error = AM_SUCCESS;
 
         /*check whether we have ssl library loaded and symbols are available*/
-        if (SSL_CTX_new == NULL || SSLv23_client_method == NULL ||
+        if (SSL_CTX_new == NULL || SSLv23_client_method == NULL || SSL_CTX_set_msg_callback == NULL ||
                 SSL_CTX_ctrl == NULL || BIO_new == NULL || BIO_s_mem == NULL ||
                 SSL_set_bio == NULL || SSL_set_connect_state == NULL ||
                 SSL_do_handshake == NULL || SSL_new == NULL || SSL_get_error == NULL) {
+            AM_LOG_WARNING(n->instance_id, "%s no SSL support is available", thisfunc);
             n->ssl.error = AM_ENOSSL;
             return;
         }
 
         n->ssl.ssl_context = SSL_CTX_new(SSLv23_client_method());
+        if (n->ssl.ssl_context == NULL) {
+            AM_LOG_ERROR(n->instance_id, "%s failed to create a new SSL context, error: %s",
+                    thisfunc, read_ssl_error());
+            n->ssl.error = AM_ENOMEM;
+            return;
+        }
 
         SSL_CTX_ctrl(n->ssl.ssl_context, SSL_CTRL_OPTIONS, SSL_OP_NO_SSLv2, NULL);
-        if (ISVALID(n->ssl.info.tls_opts)) {
-            char *v, *t, *c = strdup(n->ssl.info.tls_opts);
+        SSL_CTX_ctrl(n->ssl.ssl_context, SSL_CTRL_MODE,
+                SSL_MODE_ENABLE_PARTIAL_WRITE | SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER, NULL);
+        SSL_CTX_ctrl(n->ssl.ssl_context, SSL_CTRL_SET_SESS_CACHE_MODE, SSL_SESS_CACHE_OFF, NULL);
+
+        /* TODO: SSL_OP_NO_TICKET */
+
+        SSL_CTX_ctrl(n->ssl.ssl_context, SSL_CTRL_SET_MSG_CALLBACK_ARG, 0, n);
+        SSL_CTX_set_msg_callback(n->ssl.ssl_context, net_ssl_msg_callback);
+
+        if (n->options != NULL && ISVALID(n->options->tls_opts)) {
+            char *v, *t, *c = strdup(n->options->tls_opts);
             if (c != NULL) {
                 for ((v = strtok_r(c, AM_SPACE_CHAR, &t)); v; (v = strtok_r(NULL, AM_SPACE_CHAR, &t))) {
                     if (strcasecmp(v, "-SSLv3") == 0) {
@@ -507,37 +653,40 @@ void net_connect_ssl(am_net_t *n) {
             }
         }
 
-        if (ISVALID(n->ssl.info.ciphers)) {
-            if (!SSL_CTX_set_cipher_list(n->ssl.ssl_context, n->ssl.info.ciphers)) {
+        if (n->options != NULL && ISVALID(n->options->ciphers)) {
+            if (!SSL_CTX_set_cipher_list(n->ssl.ssl_context, n->options->ciphers)) {
                 AM_LOG_WARNING(n->instance_id,
                         "%s failed to set cipher list \"%s\"",
-                        thisfunc, n->ssl.info.ciphers);
+                        thisfunc, n->options->ciphers);
             }
         }
-        if (ISVALID(n->ssl.info.cert_ca_file)) {
-            if (!SSL_CTX_load_verify_locations(n->ssl.ssl_context, n->ssl.info.cert_ca_file, NULL)) {
+        if (n->options != NULL && ISVALID(n->options->cert_ca_file)) {
+            if (!SSL_CTX_load_verify_locations(n->ssl.ssl_context, n->options->cert_ca_file, NULL)) {
                 AM_LOG_WARNING(n->instance_id,
                         "%s failed to load trusted CA certificates file \"%s\"",
-                        thisfunc, n->ssl.info.cert_ca_file);
+                        thisfunc, n->options->cert_ca_file);
+            } else {
+                cert_ca_file_loaded = AM_TRUE;
             }
         }
-        if (ISVALID(n->ssl.info.cert_file)) {
-            if (!SSL_CTX_use_certificate_file(n->ssl.ssl_context, n->ssl.info.cert_file, SSL_FILETYPE_PEM)) {
+        if (n->options != NULL && ISVALID(n->options->cert_file)) {
+            if (!SSL_CTX_use_certificate_file(n->ssl.ssl_context, n->options->cert_file, SSL_FILETYPE_PEM)) {
                 AM_LOG_WARNING(n->instance_id,
                         "%s failed to load client certificate file \"%s\"",
-                        thisfunc, n->ssl.info.cert_file);
+                        thisfunc, n->options->cert_file);
             }
         }
 
-        if (ISVALID(n->ssl.info.cert_key_file)) {
-            if (ISVALID(n->ssl.info.cert_key_pass)) {
-                SSL_CTX_set_default_passwd_cb_userdata(n->ssl.ssl_context, (void *) n->ssl.info.cert_key_pass);
+        if (n->options != NULL && ISVALID(n->options->cert_key_file)) {
+            if (ISVALID(n->options->cert_key_pass)) {
+                SSL_CTX_set_default_passwd_cb_userdata(n->ssl.ssl_context, (void *) n->options->cert_key_pass);
                 SSL_CTX_set_default_passwd_cb(n->ssl.ssl_context, password_callback);
             }
-            if (!SSL_CTX_use_PrivateKey_file(n->ssl.ssl_context, n->ssl.info.cert_key_file, SSL_FILETYPE_PEM)) {
+            if (!SSL_CTX_use_PrivateKey_file(n->ssl.ssl_context, n->options->cert_key_file, SSL_FILETYPE_PEM)) {
                 AM_LOG_WARNING(n->instance_id,
-                        "%s failed to load private key file \"%s\"",
-                        thisfunc, n->ssl.info.cert_key_file);
+                        "%s failed to load private key file \"%s\", %s",
+                        thisfunc, n->options->cert_key_file,
+                        file_exists(n->options->cert_key_file) ? read_ssl_error() : "file is not accessible");
             }
             if (!SSL_CTX_check_private_key(n->ssl.ssl_context)) {
                 AM_LOG_WARNING(n->instance_id,
@@ -546,10 +695,19 @@ void net_connect_ssl(am_net_t *n) {
             }
         }
 
-        if (n->ssl.info.verifypeer == 0) {
+        if (n->options == NULL || n->options->cert_trust) {
             SSL_CTX_set_verify(n->ssl.ssl_context, SSL_VERIFY_NONE, NULL);
-        } else {
+        } else if (cert_ca_file_loaded) {
             SSL_CTX_set_verify(n->ssl.ssl_context, SSL_VERIFY_PEER, NULL);
+            SSL_CTX_set_verify_depth(n->ssl.ssl_context, 100);
+        } else {
+            /* if we are going to verify the server cert, trusted ca certs file must be present */
+            AM_LOG_ERROR(n->instance_id,
+                    "%s unable to verify peer: trusted CA certificates file \"%s\" not loaded",
+                    thisfunc, LOGEMPTY(n->options->cert_ca_file));
+
+            n->ssl.error = AM_EINVAL;
+            return;
         }
 
         n->ssl.ssl_handle = SSL_new(n->ssl.ssl_context);
@@ -557,98 +715,106 @@ void net_connect_ssl(am_net_t *n) {
             n->ssl.read_bio = BIO_new(BIO_s_mem());
             n->ssl.write_bio = BIO_new(BIO_s_mem());
             if (n->ssl.read_bio != NULL && n->ssl.write_bio != NULL) {
+                BIO_ctrl(n->ssl.read_bio, BIO_C_SET_BUF_MEM_EOF_RETURN, -1, NULL);
+                BIO_ctrl(n->ssl.write_bio, BIO_C_SET_BUF_MEM_EOF_RETURN, -1, NULL);
                 SSL_set_bio(n->ssl.ssl_handle, n->ssl.read_bio, n->ssl.write_bio);
                 SSL_set_connect_state(n->ssl.ssl_handle);
-                /*begin the handshake*/
+                /* do the handshake */
                 status = SSL_do_handshake(n->ssl.ssl_handle);
                 write_bio_to_socket(n);
                 if (status != 1) {
                     err = SSL_get_error(n->ssl.ssl_handle, status);
-                    if (!ssl_is_fatal_error(err)) {
+                    if (!ssl_is_fatal_error(n, err)) {
                         write_bio_to_socket(n);
                     }
                 }
                 n->ssl.on = AM_TRUE;
             }
+        } else {
+            AM_LOG_ERROR(n->instance_id, "%s failed to create a SSL handle for a connection, error: %s",
+                    thisfunc, read_ssl_error());
         }
     }
 }
 
-static void read_data_after_handshake(am_net_t *n) {
-    char buf[1024];
-    int ret = 0;
+static int read_data_after_handshake(am_net_t *n) {
+    char *buf;
+    int err, ret = 0, status = AM_SUCCESS;
+
+#define AM_SSL_BUFFER_SZ 1024
+
+    buf = malloc(AM_SSL_BUFFER_SZ);
+    if (buf == NULL) {
+        return AM_ENOMEM;
+    }
+
     do {
-        memset(&buf[0], 0, sizeof (buf));
-        ret = SSL_read(n->ssl.ssl_handle, buf, sizeof (buf) - 1);
+        ret = SSL_read(n->ssl.ssl_handle, buf, AM_SSL_BUFFER_SZ);
+        if (ret == 0) {
+            /* connection closed */
+            break;
+        }
         if (ret < 0) {
-            int err = SSL_get_error(n->ssl.ssl_handle, ret);
-            if (!ssl_is_fatal_error(err)) {
+            err = SSL_get_error(n->ssl.ssl_handle, ret);
+            if (!ssl_is_fatal_error(n, err)) {
+                write_bio_to_socket(n);
+                free(buf);
+                return AM_EAGAIN;
+            }
+            break;
+        }
+
+        http_parser_execute(n->hp, n->hs, buf, ret);
+    } while (ret > 0);
+
+    free(buf);
+    return status;
+}
+
+void net_write_ssl(am_net_t *n) {
+    int err, ret = 0, written = 0;
+    do {
+        ret = SSL_write(n->ssl.ssl_handle, n->ssl.request_data + written,
+                (int) n->ssl.request_data_sz - written);
+        if (ret == 0) {
+            /* connection closed */
+            break;
+        }
+        if (ret < 0) {
+            err = SSL_get_error(n->ssl.ssl_handle, ret);
+            if (!ssl_is_fatal_error(n, err)) {
                 write_bio_to_socket(n);
             }
-        } else {
-            http_parser_execute(n->hp, n->hs, buf, ret);
+            break;
         }
+
+        written += ret;
+        write_bio_to_socket(n);
     } while (ret > 0);
 }
 
-static void send_data_after_handshake(am_net_t *n) {
-    int ret = SSL_write(n->ssl.ssl_handle, n->ssl.request_data, (int) n->ssl.request_data_sz);
-    if (ret > 0) {
-        write_bio_to_socket(n);
-    } else if (ret == 0) {
-        /* connection closed */
-    } else {
-        int err = SSL_get_error(n->ssl.ssl_handle, ret);
-        if (!ssl_is_fatal_error(err)) {
-            write_bio_to_socket(n);
-        }
-    }
-}
-
 int net_read_ssl(am_net_t *n, const char *buf, int sz) {
+    int ret, err, status = AM_SUCCESS;
     if (sz == 0) {
         read_data_after_handshake(n);
         return AM_EOF;
-    } else {
-        BIO_write(n->ssl.read_bio, buf, sz);
-        if (SSL_state(n->ssl.ssl_handle) != SSL_ST_OK) {
-            int ret = SSL_connect(n->ssl.ssl_handle);
-            write_bio_to_socket(n);
-            if (ret != 1) {
-                int err = SSL_get_error(n->ssl.ssl_handle, ret);
-                if (!ssl_is_fatal_error(err)) {
-                    write_bio_to_socket(n);
-                }
-            } else {
-                send_data_after_handshake(n);
+    }
+
+    BIO_write(n->ssl.read_bio, buf, sz);
+    if (SSL_state(n->ssl.ssl_handle) != SSL_ST_OK) {
+        ret = SSL_connect(n->ssl.ssl_handle);
+        write_bio_to_socket(n);
+        if (ret != 1) {
+            err = SSL_get_error(n->ssl.ssl_handle, ret);
+            if (!ssl_is_fatal_error(n, err)) {
+                write_bio_to_socket(n);
             }
         } else {
-            read_data_after_handshake(n);
+            net_write_ssl(n);
         }
+    } else {
+        status = read_data_after_handshake(n);
     }
-    return AM_SUCCESS;
-}
 
-void am_net_set_ssl_options(am_config_t *ac, struct am_ssl_options *info) {
-    if (ac == NULL || info == NULL) return;
-    memset(info, 0, sizeof (struct am_ssl_options));
-    if (ISVALID(ac->ciphers)) {
-        snprintf(info->ciphers, sizeof (info->ciphers), "%s", ac->ciphers);
-    }
-    if (ISVALID(ac->cert_ca_file)) {
-        snprintf(info->cert_ca_file, sizeof (info->cert_ca_file), "%s", ac->cert_ca_file);
-    }
-    if (ISVALID(ac->cert_file)) {
-        snprintf(info->cert_file, sizeof (info->cert_file), "%s", ac->cert_file);
-    }
-    if (ISVALID(ac->cert_key_file)) {
-        snprintf(info->cert_key_file, sizeof (info->cert_key_file), "%s", ac->cert_key_file);
-    }
-    if (ISVALID(ac->cert_key_pass)) {
-        snprintf(info->cert_key_pass, sizeof (info->cert_key_pass), "%s", ac->cert_key_pass);
-    }
-    if (ISVALID(ac->tls_opts)) {
-        snprintf(info->tls_opts, sizeof (info->tls_opts), "%s", ac->tls_opts);
-    }
-    info->verifypeer = !ac->cert_trust;
+    return status;
 }

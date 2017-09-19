@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-auth-spi'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -692,6 +692,10 @@ public class SampleAuthPrincipal implements Principal, Serializable
     &lt;/AttributeSchema&gt;
 
     &lt;SubSchema name="serverconfig" inheritance="multiple"&gt;
+   &lt;--
+     For OpenAM 13 and later, remove the preceding line and replace it with the following:
+     &lt;SubSchema name="serverconfig" inheritance="multiple" resourceName="USE-PARENT"&gt;
+   --&gt;
      &lt;AttributeSchema name="iplanet-am-auth-sampleauth-auth-level"
       type="single" syntax="number_range" rangeStart="0" rangeEnd="2147483647"
       i18nKey="a500"&gt;
@@ -771,6 +775,18 @@ $ <userinput>cp target/openam-auth-sample*.jar /path/to/tomcat/webapps/openam/WE
     </listitem>
 
     <listitem>
+     <para>
+      Open the <filename>amAuthSampleAuth.xml</filename> file and locate the
+      following line:
+      <programlisting language="xml">&lt;SubSchema name="serverconfig" inheritance="multiple"&gt;</programlisting>
+     </para>
+     <para>
+      Modify the line as follows:
+      <programlisting language="xml">&lt;SubSchema name="serverconfig" inheritance="multiple" resourceName="USE-PARENT"&gt;</programlisting>
+     </para>
+    </listitem>
+
+    <listitem>
      <para>Register the module with OpenAM using the <command>ssoadm</command>
      command.</para>
 
@@ -791,9 +807,7 @@ $ <userinput>ssoadm \
 <computeroutput>Authentication module was registered.</computeroutput>
      </screen>
 
-     <para>See the <link xlink:href="reference#ssoadm-1" xlink:show="new"
-     xlink:role="http://docbook.org/xlink/role/olink"><command>ssoadm</command>
-     reference</link> a full list of Authentication Service Management
+     <para>See the <olink targetdoc="reference" targetptr="ssoadm-1" /> a full list of Authentication Service Management
      subcommands.</para>
     </listitem>
 
@@ -821,10 +835,10 @@ $ <userinput>tail -1 /path/to/tomcat/logs/catalina.out</userinput>
   and then set up for use in a particular realm. In this example, you set up
   the sample authentication module for use in the realm / (Top Level Realm).</para>
 
-  <para>Login to OpenAM Console as OpenAM administrator,
-  <literal>amadmin</literal>, and browse to Access Control
-  &gt; / (Top Level Realm) &gt; Authentication &gt; Module Instances.
-  Then click New, and create an instance of the Sample Authentication Module.
+  <para>Log in to the OpenAM console as an administrator,
+  such as <literal>amadmin</literal>, and browse to Realms
+  &gt; Top Level Realm &gt; Authentication &gt; Modules.
+  Click Add Module to create an instance of the Sample Authentication Module.
   Name the module <literal>Sample</literal>.</para>
 
   <mediaobject xml:id="figure-register-sample-auth">
@@ -837,8 +851,8 @@ $ <userinput>tail -1 /path/to/tomcat/logs/catalina.out</userinput>
    </textobject>
   </mediaobject>
 
-  <para>After creating the module, click the name in the Module Instances
-  list, and configure as appropriate.</para>
+  <para>Click Create, and then configure the authentication module as
+   appropriate.</para>
 
   <mediaobject xml:id="figure-sampleauth-conf">
    <alt>Sample authentication module configuration</alt>
@@ -851,7 +865,7 @@ $ <userinput>tail -1 /path/to/tomcat/logs/catalina.out</userinput>
    </textobject>
   </mediaobject>
 
-  <para>Now that the module is configured, logout of OpenAM console.</para>
+  <para>Now that the module is configured, log out of the OpenAM console.</para>
 
   <para>Finally, try the module by specifying the <literal>Sample</literal>
   module using a query string parameter. Browse to the login URL such as

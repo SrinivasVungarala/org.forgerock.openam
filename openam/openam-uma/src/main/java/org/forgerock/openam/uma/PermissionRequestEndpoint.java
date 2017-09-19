@@ -16,7 +16,7 @@
 
 package org.forgerock.openam.uma;
 
-import static org.forgerock.json.fluent.JsonValue.json;
+import static org.forgerock.json.JsonValue.json;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.forgerock.json.fluent.JsonValue;
-import org.forgerock.json.fluent.JsonValueException;
+import org.forgerock.json.JsonValue;
+import org.forgerock.json.JsonValueException;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.OAuth2ProviderSettings;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
@@ -35,6 +35,8 @@ import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.oauth2.resources.ResourceSetDescription;
 import org.forgerock.oauth2.resources.ResourceSetStore;
+import org.forgerock.openam.oauth2.extensions.ExtensionFilterManager;
+import org.forgerock.openam.uma.extensions.PermissionRequestFilter;
 import org.forgerock.openam.utils.JsonValueBuilder;
 import org.json.JSONException;
 import org.restlet.Request;
@@ -55,19 +57,25 @@ public class PermissionRequestEndpoint extends ServerResource {
     private final OAuth2ProviderSettingsFactory providerSettingsFactory;
     private final OAuth2RequestFactory<Request> requestFactory;
     private final UmaProviderSettingsFactory umaProviderSettingsFactory;
+    private final ExtensionFilterManager extensionFilterManager;
+    private final UmaExceptionHandler exceptionHandler;
 
     /**
      * Constructs a new PermissionRequestEndpoint instance
-     *
-     * @param providerSettingsFactory An instance of the OAuth2ProviderSettingsFactory.
+     *  @param providerSettingsFactory An instance of the OAuth2ProviderSettingsFactory.
      * @param requestFactory An instance of the OAuth2RequestFactory.
+     * @param extensionFilterManager An instance of the ExtensionFilterManager.
+     * @param exceptionHandler
      */
     @Inject
     public PermissionRequestEndpoint(OAuth2ProviderSettingsFactory providerSettingsFactory,
-            OAuth2RequestFactory<Request> requestFactory, UmaProviderSettingsFactory umaProviderSettingsFactory) {
+            OAuth2RequestFactory<Request> requestFactory, UmaProviderSettingsFactory umaProviderSettingsFactory,
+            ExtensionFilterManager extensionFilterManager, UmaExceptionHandler exceptionHandler) {
         this.providerSettingsFactory = providerSettingsFactory;
         this.requestFactory = requestFactory;
         this.umaProviderSettingsFactory = umaProviderSettingsFactory;
+        this.extensionFilterManager = extensionFilterManager;
+        this.exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -89,9 +97,17 @@ public class PermissionRequestEndpoint extends ServerResource {
         ResourceSetDescription resourceSetDescription = getResourceSet(resourceSetId, resourceOwnerId,
                 providerSettings);
         Set<String> scopes = validateScopes(permissionRequest, resourceSetDescription);
+        for (PermissionRequestFilter filter : extensionFilterManager.getFilters(PermissionRequestFilter.class)) {
+            filter.onPermissionRequest(resourceSetDescription, scopes, clientId);
+        }
         String ticket = umaProviderSettingsFactory.get(getRequest()).getUmaTokenStore()
                 .createPermissionTicket(resourceSetId, scopes, clientId).getId();
         return setResponse(201, Collections.<String, Object>singletonMap("ticket", ticket));
+    }
+
+    @Override
+    protected void doCatch(Throwable throwable) {
+        exceptionHandler.handleException(getResponse(), throwable);
     }
 
     private String getResourceSetId(JsonValue permissionRequest) throws UmaException {

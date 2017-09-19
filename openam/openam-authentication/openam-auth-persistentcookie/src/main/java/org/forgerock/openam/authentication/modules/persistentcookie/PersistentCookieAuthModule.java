@@ -33,7 +33,6 @@ import java.util.Map;
 
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
-import com.sun.identity.authentication.service.AuthUtils;
 import com.sun.identity.authentication.spi.AuthLoginException;
 import com.sun.identity.authentication.spi.AuthenticationException;
 import com.sun.identity.authentication.util.ISAuthConstants;
@@ -44,8 +43,9 @@ import com.sun.identity.sm.SMSException;
 import com.sun.identity.sm.ServiceConfig;
 import com.sun.identity.sm.ServiceConfigManager;
 import org.apache.commons.lang.StringUtils;
+import org.forgerock.caf.authentication.framework.AuthenticationFramework;
 import org.forgerock.jaspi.modules.session.jwt.JwtSessionModule;
-import org.forgerock.jaspi.runtime.JaspiRuntime;
+import org.forgerock.jaspi.modules.session.jwt.ServletJwtSessionModule;
 import org.forgerock.json.jose.jwt.Jwt;
 import org.forgerock.openam.authentication.modules.common.JaspiAuthModuleWrapper;
 import org.forgerock.openam.core.CoreWrapper;
@@ -56,7 +56,7 @@ import org.forgerock.openam.utils.ClientUtils;
  * Authentication logic for persistent cookie authentication in OpenAM. Making use of the JASPI JwtSessionModule
  * to create and verify the persistent cookie.
  */
-public class PersistentCookieAuthModule extends JaspiAuthModuleWrapper<JwtSessionModule> {
+public class PersistentCookieAuthModule extends JaspiAuthModuleWrapper<ServletJwtSessionModule> {
 
     private static final String AUTH_RESOURCE_BUNDLE_NAME = "amAuthPersistentCookie";
     private static final Debug DEBUG = Debug.getInstance(AUTH_RESOURCE_BUNDLE_NAME);
@@ -98,7 +98,7 @@ public class PersistentCookieAuthModule extends JaspiAuthModuleWrapper<JwtSessio
      * Used by the PersistentCookie in a server deployment environment.
      */
     public PersistentCookieAuthModule() {
-        this(new JwtSessionModule(), new AMKeyProvider(), new CoreWrapper());
+        this(new ServletJwtSessionModule(), new AMKeyProvider(), new CoreWrapper());
     }
 
     /**
@@ -110,7 +110,7 @@ public class PersistentCookieAuthModule extends JaspiAuthModuleWrapper<JwtSessio
      * @param amKeyProvider An instance of the AMKeyProvider.
      * @param coreWrapper An instance of the CoreWrapper.
      */
-    public PersistentCookieAuthModule(JwtSessionModule jwtSessionModule, AMKeyProvider amKeyProvider,
+    public PersistentCookieAuthModule(ServletJwtSessionModule jwtSessionModule, AMKeyProvider amKeyProvider,
             CoreWrapper coreWrapper) {
         super(jwtSessionModule, AUTH_RESOURCE_BUNDLE_NAME);
         this.amKeyProvider = amKeyProvider;
@@ -254,7 +254,7 @@ public class PersistentCookieAuthModule extends JaspiAuthModuleWrapper<JwtSessio
             //GOOD
 
             final Map<String, Object> claimsSetContext =
-                    jwt.getClaimsSet().getClaim(JaspiRuntime.ATTRIBUTE_AUTH_CONTEXT, Map.class);
+                    jwt.getClaimsSet().getClaim(AuthenticationFramework.ATTRIBUTE_AUTH_CONTEXT, Map.class);
             if (claimsSetContext == null) {
                 throw new AuthLoginException(AUTH_RESOURCE_BUNDLE_NAME, "jaspiContextNotFound", null);
             }
@@ -415,7 +415,7 @@ public class PersistentCookieAuthModule extends JaspiAuthModuleWrapper<JwtSessio
         try {
             Map<String, Object> config = initialize(null, request, response, ssoToken);
             getServerAuthModule().initialize(createRequestMessagePolicy(), null, null, config);
-            getServerAuthModule().deleteSessionJwtCookie(response);
+            getServerAuthModule().deleteSessionJwtCookie(prepareMessageInfo(null, response));
         } catch (AuthenticationException e) {
             DEBUG.error("Failed to initialise the underlying JASPI Server Auth Module.", e);
         } catch (AuthException e) {

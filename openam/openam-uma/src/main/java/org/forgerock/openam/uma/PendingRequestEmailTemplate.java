@@ -16,7 +16,7 @@
 
 package org.forgerock.openam.uma;
 
-import static org.forgerock.json.fluent.JsonValue.json;
+import static org.forgerock.json.JsonValue.json;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,7 +39,7 @@ import org.forgerock.http.Client;
 import org.forgerock.http.protocol.Request;
 import org.forgerock.http.protocol.Response;
 import org.forgerock.http.protocol.Status;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.openam.utils.CollectionUtils;
 import org.forgerock.openam.utils.OpenAMSettings;
@@ -151,7 +151,7 @@ public class PendingRequestEmailTemplate {
     private String resolveScope(String scope, Locale locale) {
         if (URI.create(scope).getScheme() != null) {
             Request request = new Request().setMethod("GET").setUri(URI.create(scope));
-            request.getHeaders().putSingle("Accept-Language", locale.toLanguageTag());
+            request.getHeaders().put("Accept-Language", locale.toLanguageTag());
             Response response = client.send(request).getOrThrowUninterruptibly();
             if (Status.OK.equals(response.getStatus())) {
                 try {

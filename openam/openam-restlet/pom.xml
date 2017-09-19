@@ -2,7 +2,7 @@
 <!--
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2013 ForgeRock AS. All Rights Reserved
+ * Copyright 2011-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms
  * of the Common Development and Distribution License
@@ -34,7 +34,7 @@
     </parent>
 
     <!-- Component Definition -->
-    <name>OpenAM Rest</name>
+    <name>OpenAM Restlet</name>
     <description>OpenAM Restlet customisation</description>
     <artifactId>openam-restlet</artifactId>
     <packaging>jar</packaging>
@@ -80,20 +80,25 @@
             <artifactId>servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.jse</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.jse</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.json</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.jse</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.xml</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.servlet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>org.restlet.ext.jackson</artifactId>
         </dependency>
 
         <!-- OpenAM Shared -->
@@ -106,10 +111,6 @@
             <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-dashboard</artifactId>
-        </dependency>
 
         <!-- Commons -->
         <dependency>
@@ -118,7 +119,7 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons</groupId>
-            <artifactId>json-resource-servlet</artifactId>
+            <artifactId>json-resource-http</artifactId>
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons</groupId>
@@ -131,16 +132,6 @@
         <dependency>
             <groupId>org.forgerock.commons</groupId>
             <artifactId>forgerock-jaspi-runtime</artifactId>
-        </dependency>
-
-        <!-- OpenAM Audit -->
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-audit-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-audit-core</artifactId>
         </dependency>
 
         <!-- Test Dependencies -->
@@ -179,11 +170,6 @@
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-servlet-tester</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.forgerock.openam</groupId>
-            <artifactId>openam-entitlements</artifactId>
         </dependency>
 
         <dependency>

@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-identity-repo-spi'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'>
@@ -387,16 +387,16 @@ $ <userinput>ssoadm \
  --filename customIdRepo.xml</userinput>
   </screen>
   
-  <para>Login to OpenAM console as administrator, then then Browse to Access
-  Control &gt; <replaceable>Realm Name</replaceable> &gt; Data Stores. In the
+  <para>Log in to the OpenAM console as administrator, then browse to Realms
+  &gt; <replaceable>Realm Name</replaceable> &gt; Data Stores. In the
   Data Stores table, click New... to create a Data Store corresponding to your
   custom IdRepo plugin. In the first screen of the wizard, name the Data Store
   and select the type corresponding to your plugin. In the second screen of the
   wizard, add the configuration for your plugin.</para>
   
   <para>After creating the Data Store, create a new subject in the realm to
-  check that your plugin works as expected. You can do this under Access
-  Control &gt; <replaceable>Realm Name</replaceable> &gt; Subjects.</para>
+  check that your plugin works as expected. You can do this under Realms
+  &gt; <replaceable>Realm Name</replaceable> &gt; Subjects.</para>
   
   <para>If your plugin supports authentication, then users should now be able
   to authenticate using the <literal>DataStore</literal> module for the

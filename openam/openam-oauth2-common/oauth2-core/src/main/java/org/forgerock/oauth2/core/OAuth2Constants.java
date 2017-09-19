@@ -229,6 +229,7 @@ public class OAuth2Constants {
         public static final String CLIENT_ID = "clientID";
         public static final String TOKEN_NAME = "tokenName";
         public static final String AUTH_MODULES = "authModules";
+        public static final String AUDIT_ID = "auditId";
 
         public static final String OAUTH_TOKEN_ADAPTER = "oauthTokenAdapter";
         public static final String RESOURCE_SET_TOKEN_ADAPTER = "resourceSetTokenAdapter";
@@ -762,6 +763,14 @@ public class OAuth2Constants {
         public static final String NONCE = "nonce";
         public static final String SAVE_CONSENT= "save_consent";
         public static final String SSO_TOKEN_ID = "ssoTokenId";
+        public static final String CODE_CHALLENGE = "code_challenge";
+        public static final String CODE_CHALLENGE_METHOD = "code_challenge_method";
+        public static final String CODE_VERIFIER = "code_verifier";
+        public static final String CODE_CHALLENGE_METHOD_S_256 = "S256";
+        public static final String CODE_CHALLENGE_METHOD_PLAIN = "plain";
+        public static final String RESPONSE_MODE = "response_mode";
+        public static final String FORM_POST = "form_post";
+
         /**
          * The display mode in which to render the dialog. The default is
          * {@code page} on the www subdomain and {@code wap} on the m subdomain.
@@ -785,6 +794,7 @@ public class OAuth2Constants {
         public static final String MODULE = "module";
         public static final String SERVICE = "service";
         public static final String LOCALE = "locale";
+        public static final String UI_LOCALES = "ui_locales";
         public static final String GOTO = "goto";
 
         public static final String AUDIENCE = "audience";
@@ -799,6 +809,16 @@ public class OAuth2Constants {
 
         public static final String RSR_ENDPOINT = "resource-set-reg-endpoint";
         public static final String JWK_RESOLVER = "jwk-resolver";
+    }
+
+    /**
+     * Constants relating to the device code flow.
+     */
+    public class DeviceCode {
+        public static final String DEVICE_CODE = "device_code";
+        public static final String USER_CODE = "user_code";
+        public static final String VERIFICATION_URL = "verification_url";
+        public static final String INTERVAL = "interval";
     }
 
     public enum DisplayType {
@@ -855,8 +875,15 @@ public class OAuth2Constants {
         public static final String SUPPORTED_SCOPES = "forgerock-oauth2-provider-supported-scopes";
         public static final String CLAIMS_PARAMETER_SUPPORTED = "forgerock-oauth2-provider-claims-parameter-supported";
         public static final String HASH_SALT = "forgerock-oauth2-provider-hash-salt";
+        public static final String CODE_VERIFIER = "forgerock-oauth2-provider-code-verifier-enforced";
 
         public static final String ALWAYS_ADD_CLAIMS_TO_TOKEN = "alwaysAddClaimsToToken";
+        public static final String USER_DISPLAY_NAME_ATTRIBUTE = "displayNameAttribute";
+        public static final String RESOURCE_OWNER_CUSTOM_LOGIN_URL_TEMPLATE = "customLoginUrlTemplate";
+        public static final String DEVICE_VERIFICATION_URL = "verificationUrl";
+        public static final String DEVICE_COMPLETION_URL = "completionUrl";
+        public static final String DEVICE_CODE_LIFETIME = "deviceCodeLifetime";
+        public static final String DEVICE_CODE_POLL_INTERVAL = "devicePollInterval";
     }
 
     /**
@@ -869,6 +896,7 @@ public class OAuth2Constants {
     public class OAuth2Client {
         public static final String REDIRECT_URI = "com.forgerock.openam.oauth2provider.redirectionURIs";
         public static final String SCOPES = "com.forgerock.openam.oauth2provider.scopes";
+        public static final String CLAIMS = "com.forgerock.openam.oauth2provider.claims";
         public static final String DEFAULT_SCOPES = "com.forgerock.openam.oauth2provider.defaultScopes";
         public static final String NAME = "com.forgerock.openam.oauth2provider.name";
         public static final String DESCRIPTION = "com.forgerock.openam.oauth2provider.description";

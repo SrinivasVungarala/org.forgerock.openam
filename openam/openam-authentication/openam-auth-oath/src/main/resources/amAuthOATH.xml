@@ -4,7 +4,7 @@
 
   DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  
-  Copyright 2012-2015 ForgeRock AS.
+  Copyright © 2012 ForgeRock Inc. All rights reserved.
  
   The contents of this file are subject to the terms
   of the Common Development and Distribution License
@@ -41,20 +41,6 @@
                 resourceName="oath">
 
             <Organization>
-                <AttributeSchema name="AlphaNumericValidator"
-                                 type="validator"
-                                 syntax="string">
-                    <DefaultValues>
-                        <Value>org.forgerock.openam.authentication.modules.oath.AlphaNumericValidator</Value>
-                    </DefaultValues>
-                </AttributeSchema>
-                <AttributeSchema name="CodeLengthValidator"
-                                 type="validator"
-                                 syntax="string">
-                    <DefaultValues>
-                        <Value>org.forgerock.openam.authentication.modules.oath.CodeLengthValidator</Value>
-                    </DefaultValues>
-                </AttributeSchema>
                 <AttributeSchema name="iplanet-am-auth-oath-auth-level"
                                  type="single"
                                  syntax="number_range" rangeStart="0" rangeEnd="2147483647"
@@ -65,18 +51,16 @@
                         <Value>0</Value>
                     </DefaultValues>
                 </AttributeSchema>
-
                 <AttributeSchema name="iplanet-am-auth-oath-password-length"
                                  type="single"
                                  syntax="string"
-                                 validator="CodeLengthValidator"
+                                 validator="RequiredValueValidator"
                                  i18nKey="a501"
                                  resourceName="passwordLength">
                     <DefaultValues>
                         <Value>6</Value>
                     </DefaultValues>
                 </AttributeSchema>
-
                 <AttributeSchema name="iplanet-am-auth-oath-min-secret-key-length"
                                  type="single"
                                  syntax="string"
@@ -84,6 +68,42 @@
                                  resourceName="minimumSecretKeyLength">
                     <DefaultValues>
                         <Value>32</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+                <AttributeSchema name="iplanet-am-auth-oath-secret-key-attribute"
+                                 type="single"
+                                 syntax="string"
+                                 validator="RequiredValueValidator"
+                                 i18nKey="a503"
+                                 resourceName="secretKeyAttribute">
+                <DefaultValues>
+                        <Value></Value>
+                    </DefaultValues>
+                </AttributeSchema>
+                <AttributeSchema name="forgerock-oath-sharedsecret-implementation-class"
+                                 type="single"
+                                 syntax="string"
+                                 validator="RequiredValueValidator"
+                                 i18nKey="a512">
+                    <DefaultValues>
+                        <Value>org.forgerock.openam.authentication.modules.oath.plugins.DefaultSharedSecretProvider</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+                <AttributeSchema name="forgerock-oath-observed-clock-drift-attribute-name"
+                                 type="single"
+                                 syntax="string"
+                                 i18nKey="a513">
+                    <DefaultValues>
+                        <Value></Value>
+                    </DefaultValues>
+                </AttributeSchema>
+                <AttributeSchema name="forgerock-oath-maximum-clock-drift"
+                                 type="single"
+                                 syntax="number"
+                                 i18nKey="a514"
+                                 rangeStart="0" rangeEnd="2147483648">
+                    <DefaultValues>
+                        <Value>0</Value>
                     </DefaultValues>
                 </AttributeSchema>
                 <AttributeSchema name="iplanet-am-auth-oath-algorithm"
@@ -105,17 +125,25 @@
                                  syntax="number"
                                  i18nKey="a505"
                                  resourceName="hotpWindowSize">
-                    <DefaultValues>
+                <DefaultValues>
                         <Value>100</Value>
                     </DefaultValues>
                 </AttributeSchema>
-
+                <AttributeSchema name="iplanet-am-auth-oath-hotp-counter-attribute"
+                                 type="single"
+                                 syntax="string"
+                                 i18nKey="a506"
+                                 resourceName="hotpCounterAttribute">
+                    <DefaultValues>
+                        <Value></Value>
+                    </DefaultValues>
+                </AttributeSchema>
                 <AttributeSchema name="iplanet-am-auth-oath-add-checksum"
                                  type="single_choice"
                                  syntax="string"
                                  i18nKey="a507"
-                                 resourceName="addChecksumToOtpEnabled">
-                    <ChoiceValues>
+                                 resourceName="addChecksum">
+                <ChoiceValues>
                         <ChoiceValue i18nKey="true">True</ChoiceValue>
                         <ChoiceValue i18nKey="false">False</ChoiceValue>
                     </ChoiceValues>
@@ -128,7 +156,7 @@
                                  syntax="number"
                                  i18nKey="a508"
                                  resourceName="truncationOffset">
-                    <DefaultValues>
+                <DefaultValues>
                         <Value>-1</Value>
                     </DefaultValues>
                 </AttributeSchema>
@@ -136,8 +164,8 @@
                                  type="single"
                                  syntax="number"
                                  i18nKey="a509"
-                                 resourceName="totpTimeStepInterval">
-                    <DefaultValues>
+                                 resourceName="timeStepSize">
+                <DefaultValues>
                         <Value>30</Value>
                     </DefaultValues>
                 </AttributeSchema>
@@ -145,62 +173,36 @@
                                  type="single"
                                  syntax="number"
                                  i18nKey="a510"
-                                 resourceName="totpTimeStepsInWindow">
-                    <DefaultValues>
+                                 resourceName="stepsInWindow">
+                <DefaultValues>
                         <Value>2</Value>
                     </DefaultValues>
                 </AttributeSchema>
-                <AttributeSchema name="openam-auth-oath-maximum-clock-drift"
-                                 type="single"
-                                 syntax="number"
-                                 i18nKey="a514"
-                                 resourceName="totpMaximumClockDrift"
-                                 rangeStart="0" rangeEnd="2147483648">
-                    <DefaultValues>
-                        <Value>0</Value>
-                    </DefaultValues>
-                </AttributeSchema>
-                <AttributeSchema name="openam-auth-oath-issuer-name"
+                <AttributeSchema name="iplanet-am-auth-oath-last-login-time-attribute-name"
                                  type="single"
                                  syntax="string"
-                                 i18nKey="a515"
-                                 validator="AlphaNumericValidator"
-                                 resourceName="oathIssuerName">
-                    <DefaultValues>
-                        <Value>ForgeRock</Value>
+                                 i18nKey="a511"
+                                 resourceName="lastLoginTimeAttribute">
+                <DefaultValues>
+                        <Value></Value>
                     </DefaultValues>
                 </AttributeSchema>
                 <SubSchema name="serverconfig" inheritance="multiple" resourceName="USE-PARENT">
-                    <AttributeSchema name="AlphaNumericValidator"
-                                     type="validator"
-                                     syntax="string">
-                        <DefaultValues>
-                            <Value>org.forgerock.openam.authentication.modules.oath.AlphaNumericValidator</Value>
-                        </DefaultValues>
-                    </AttributeSchema>
-                    <AttributeSchema name="CodeLengthValidator"
-                                     type="validator"
-                                     syntax="string">
-                        <DefaultValues>
-                            <Value>org.forgerock.openam.authentication.modules.oath.CodeLengthValidator</Value>
-                        </DefaultValues>
-                    </AttributeSchema>
                     <AttributeSchema name="iplanet-am-auth-oath-auth-level"
                                      type="single"
                                      syntax="number_range" rangeStart="0" rangeEnd="2147483647"
                                      i18nKey="a500"
                                      resourceName="authenticationLevel">
-                        <DefaultValues>
+                    <DefaultValues>
                             <Value>0</Value>
                         </DefaultValues>
                     </AttributeSchema>
                     <AttributeSchema name="iplanet-am-auth-oath-password-length"
                                      type="single"
                                      syntax="string"
-                                     validator="CodeLengthValidator"
                                      i18nKey="a501"
                                      resourceName="passwordLength">
-                        <DefaultValues>
+                    <DefaultValues>
                             <Value>6</Value>
                         </DefaultValues>
                     </AttributeSchema>
@@ -209,8 +211,42 @@
                                      syntax="string"
                                      i18nKey="a502"
                                      resourceName="minimumSecretKeyLength">
-                        <DefaultValues>
+                    <DefaultValues>
                             <Value>32</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+                    <AttributeSchema name="iplanet-am-auth-oath-secret-key-attribute"
+                                     type="single"
+                                     syntax="string"
+                                     i18nKey="a503"
+                                     resourceName="secretKeyAttribute">
+                        <DefaultValues>
+                            <Value></Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+                    <AttributeSchema name="forgerock-oath-sharedsecret-implementation-class"
+                                     type="single"
+                                     syntax="string"
+                                     i18nKey="a512">
+                        <DefaultValues>
+                            <Value>org.forgerock.openam.authentication.modules.oath.plugins.DefaultSharedSecretProvider</Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+                    <AttributeSchema name="forgerock-oath-observed-clock-drift-attribute-name"
+                                     type="single"
+                                     syntax="string"
+                                     i18nKey="a513">
+                        <DefaultValues>
+                            <Value></Value>
+                        </DefaultValues>
+                    </AttributeSchema>
+                    <AttributeSchema name="forgerock-oath-maximum-clock-drift"
+                                     type="single"
+                                     syntax="number"
+                                     i18nKey="a514"
+                                     rangeStart="0" rangeEnd="2147483648">
+                        <DefaultValues>
+                            <Value>0</Value>
                         </DefaultValues>
                     </AttributeSchema>
                     <AttributeSchema name="iplanet-am-auth-oath-algorithm"
@@ -235,13 +271,21 @@
                             <Value>100</Value>
                         </DefaultValues>
                     </AttributeSchema>
-
+                    <AttributeSchema name="iplanet-am-auth-oath-hotp-counter-attribute"
+                                     type="single"
+                                     syntax="string"
+                                     i18nKey="a506"
+                                     resourceName="hotpCounterAttribute">
+                        <DefaultValues>
+                            <Value></Value>
+                        </DefaultValues>
+                    </AttributeSchema>
                     <AttributeSchema name="iplanet-am-auth-oath-add-checksum"
                                      type="single_choice"
                                      syntax="string"
                                      i18nKey="a507"
-                                     resourceName="addChecksumToOtpEnabled">
-                        <ChoiceValues>
+                                     resourceName="addChecksum">
+                    <ChoiceValues>
                             <ChoiceValue i18nKey="true">True</ChoiceValue>
                             <ChoiceValue i18nKey="false">False</ChoiceValue>
                         </ChoiceValues>
@@ -254,7 +298,7 @@
                                      syntax="number"
                                      i18nKey="a508"
                                      resourceName="truncationOffset">
-                        <DefaultValues>
+                    <DefaultValues>
                             <Value>-1</Value>
                         </DefaultValues>
                     </AttributeSchema>
@@ -262,8 +306,8 @@
                                      type="single"
                                      syntax="number"
                                      i18nKey="a509"
-                                     resourceName="totpTimeStepInterval">
-                        <DefaultValues>
+                                     resourceName="timeStepSize">
+                    <DefaultValues>
                             <Value>30</Value>
                         </DefaultValues>
                     </AttributeSchema>
@@ -271,29 +315,18 @@
                                      type="single"
                                      syntax="number"
                                      i18nKey="a510"
-                                     resourceName="totpTimeStepsInWindow">
-                        <DefaultValues>
+                                     resourceName="stepsInWindow">
+                    <DefaultValues>
                             <Value>2</Value>
                         </DefaultValues>
                     </AttributeSchema>
-                    <AttributeSchema name="openam-auth-oath-maximum-clock-drift"
-                        type="single"
-                        syntax="number"
-                        i18nKey="a514"
-                        resourceName="totpMaximumClockDrift"
-                        rangeStart="0" rangeEnd="2147483648">
-                        <DefaultValues>
-                            <Value>0</Value>
-                        </DefaultValues>
-                    </AttributeSchema>
-                    <AttributeSchema name="openam-auth-oath-issuer-name"
+                    <AttributeSchema name="iplanet-am-auth-oath-last-login-time-attribute-name"
                                      type="single"
                                      syntax="string"
-                                     i18nKey="a515"
-                                     validator="AlphaNumericValidator"
-                                     resourceName="oathIssuerName">
-                        <DefaultValues>
-                            <Value>ForgeRock</Value>
+                                     i18nKey="a511"
+                                     resourceName="lastLoginTimeAttribute">
+                    <DefaultValues>
+                            <Value></Value>
                         </DefaultValues>
                     </AttributeSchema>
                 </SubSchema>

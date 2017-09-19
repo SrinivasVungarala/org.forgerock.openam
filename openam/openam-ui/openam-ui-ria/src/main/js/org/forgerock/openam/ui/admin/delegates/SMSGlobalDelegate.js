@@ -27,29 +27,42 @@ define("org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate", [
      * @exports org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate
      */
     var obj = new AbstractDelegate(Constants.host + "/" + Constants.context + "/json/global-config/"),
-        schemaWithValues = function(url) {
+        schemaWithValues = function (url) {
+            // prevent session timeouts from triggering LoginDialogs
+            var sessionTimeoutHandlers = {
+                "auth" : {
+                    status: "401"
+                }
+            };
             return $.when(
-                obj.serviceCall({ url: url + "?_action=schema", type: "POST" }),
-                obj.serviceCall({ url: url })
-            ).then(function(schemaData, valuesData) {
+                obj.serviceCall({
+                    url: url + "?_action=schema",
+                    type: "POST",
+                    errorsHandlers: sessionTimeoutHandlers
+                }),
+                obj.serviceCall({
+                    url: url,
+                    errorsHandlers: sessionTimeoutHandlers
+                })
+            ).then(function (schemaData, valuesData) {
                 return {
                     schema: SMSDelegateUtils.sanitizeSchema(schemaData[0]),
                     values: valuesData[0]
                 };
             });
         },
-        schemaWithDefaults = function(url) {
+        schemaWithDefaults = function (url) {
             return $.when(
-                obj.serviceCall({url: url + "?_action=schema", type: "POST"}),
-                obj.serviceCall({url: url + "?_action=template", type: "POST"})
+                obj.serviceCall({ url: url + "?_action=schema", type: "POST" }),
+                obj.serviceCall({ url: url + "?_action=template", type: "POST" })
             ).then(function (schemaData, templateData) {
-                    return {
-                        schema: SMSDelegateUtils.sanitizeSchema(schemaData[0]),
-                        values: templateData[0]
-                    };
-                });
+                return {
+                    schema: SMSDelegateUtils.sanitizeSchema(schemaData[0]),
+                    values: templateData[0]
+                };
+            });
         },
-        getRealmPath = function(realm) {
+        getRealmPath = function (realm) {
             if (realm.parentPath === "/") {
                 return realm.parentPath + realm.name;
             } else if (realm.parentPath) {
@@ -70,7 +83,7 @@ define("org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate", [
             return obj.serviceCall({
                 url: "realms?_queryFilter=true"
             }).done(function (data) {
-                data.result = _.each(data.result, function(realm) {
+                data.result = _.each(data.result, function (realm) {
                     realm.path = getRealmPath(realm);
                 }).sort(function (a, b) {
                     if (a.active === b.active) {
@@ -141,14 +154,14 @@ define("org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate", [
         modules: {
             /**
              * Gets the schema for a authentication module type.
-             * @param type Authentication module type
+             * @param {string} type Authentication module type
              * @returns {Promise} Service promise
              */
-            schema: function(type) {
+            schema: function (type) {
                 return obj.serviceCall({
                     url: "authentication/modules/" + type + "?_action=schema", type: "POST"
-                }).done(function(data) {
-                    data = SMSDelegateUtils.sanitizeSchema(data);
+                }).then(function (data) {
+                    return SMSDelegateUtils.sanitizeSchema(data);
                 });
             }
         }
@@ -179,7 +192,7 @@ define("org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate", [
          * Gets a script's schema.
          * @returns {Promise.<Object>} Service promise
          */
-        getSchema: function() {
+        getSchema: function () {
             return obj.serviceCall({
                 url: RealmHelper.decorateURLWithOverrideRealm("services/scripting?_action=schema"),
                 type: "POST"
@@ -190,7 +203,7 @@ define("org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate", [
          * Gets a script context's schema.
          * @returns {Promise.<Object>} Service promise
          */
-        getContextSchema: function() {
+        getContextSchema: function () {
             return obj.serviceCall({
                 url: RealmHelper.decorateURLWithOverrideRealm("services/scripting/contexts?_action=schema"),
                 type: "POST"

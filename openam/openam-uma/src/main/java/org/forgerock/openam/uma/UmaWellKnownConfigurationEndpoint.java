@@ -16,14 +16,13 @@
 
 package org.forgerock.openam.uma;
 
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
 
 import javax.inject.Inject;
 import java.net.URI;
-import java.util.Map;
 import java.util.Set;
 
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.restlet.ext.jackson.JacksonRepresentation;
@@ -39,15 +38,19 @@ import org.restlet.resource.ServerResource;
 public class UmaWellKnownConfigurationEndpoint extends ServerResource {
 
     private final UmaProviderSettingsFactory providerSettingsFactory;
+    private final UmaExceptionHandler exceptionHandler;
 
     /**
      * Constructs a new instance of a UmaWellKnownConfigurationEndpoint.
      *
      * @param providerSettingsFactory An instance of the UmaProviderSettingFactory.
+     * @param exceptionHandler An instance of the UmaExceptionHandler.
      */
     @Inject
-    public UmaWellKnownConfigurationEndpoint(UmaProviderSettingsFactory providerSettingsFactory) {
+    public UmaWellKnownConfigurationEndpoint(UmaProviderSettingsFactory providerSettingsFactory,
+            UmaExceptionHandler exceptionHandler) {
         this.providerSettingsFactory = providerSettingsFactory;
+        this.exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -94,6 +97,11 @@ public class UmaWellKnownConfigurationEndpoint extends ServerResource {
             configuration.add("requesting_party_claims_endpoint", requestingPartyClaimsEndpoint.toString());
         }
 
-        return new JacksonRepresentation<Map<String, Object>>(configuration.asMap());
+        return new JacksonRepresentation<>(configuration.asMap());
+    }
+
+    @Override
+    protected void doCatch(Throwable throwable) {
+        exceptionHandler.handleException(getResponse(), throwable);
     }
 }

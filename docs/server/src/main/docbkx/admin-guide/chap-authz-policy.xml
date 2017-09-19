@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-authz-policy'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -411,21 +411,12 @@
   <para>This section explains how to use the OpenAM console to configure
    resource types, applications, and policies to protect resources.</para>
   <para>For information on managing resource types, applications, and policies
-   by using the REST API, see the <citetitle>Developer's Guide</citetitle> chapters
-      <link xlink:href="dev-guide#rest-api-authz-resource-types"
-         xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Managing Resource Types</citetitle></link>,
-   <link xlink:href="dev-guide#rest-api-authz-applications"
-         xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Managing Applications</citetitle></link>, and
-   <link xlink:href="dev-guide#rest-api-authz-policies"
-         xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>Managing Policies</citetitle></link>. For more
+   by using the REST API, see
+      <olink targetdoc="dev-guide" targetptr="rest-api-authz-resource-types" />,
+   <olink targetdoc="dev-guide" targetptr="rest-api-authz-applications" />, and
+   <olink targetdoc="dev-guide" targetptr="rest-api-authz-policies" />. For more
    information on using the <command>ssoadm</command> command,
-   see the <citetitle>OpenAM Reference Guide</citetitle> chapter
-   <link xlink:href="reference#ssoadm-1"
-         xlink:role="http://docbook.org/xlink/role/olink">
-    <citetitle>ssoadm</citetitle></link>.</para>
+   see <olink targetdoc="reference" targetptr="ssoadm-1" />.</para>
 
   <xinclude:include href="sec-configure-resource-types-with-console.xml">
    <xinclude:fallback>
@@ -490,10 +481,6 @@
   </para>
 
   <para>
-   For details see the procedure,
-   <link
-    xlink:href="admin-guide#chap-realms"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>To Delegate Administration</citetitle></link>.</para>
+   For more information, see <xref linkend="chap-realms" />.</para>
  </section>
 </chapter>

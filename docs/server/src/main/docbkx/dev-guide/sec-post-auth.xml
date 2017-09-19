@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-post-auth'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -63,10 +63,7 @@
      </para>
      <para>
       For more information about stateless session cookies,
-      see <link xlink:show="new"
-                xlink:href="admin-guide#session-state-cookies"
-                xlink:role="http://docbook.org/xlink/role/olink">Session Cookies</link>
-      in the <citetitle>Administration Guide</citetitle>.
+      see <olink targetdoc="admin-guide" targetptr="session-state-cookies" />.
      </para>
     </listitem>
    </varlistentry>
@@ -89,11 +86,7 @@
      </para>
      <para>
       For more information about stateless session cookie security,
-      see <link xlink:show="new"
-                xlink:href="admin-guide#session-state-stateless-cookie-security"
-                xlink:role="http://docbook.org/xlink/role/olink">Stateless
-      Session Cookie Security</link>
-      in the <citetitle>Administration Guide</citetitle>.
+      see <olink targetdoc="admin-guide" targetptr="session-state-stateless-cookie-security" />.
      </para>
     </listitem>
    </varlistentry>
@@ -298,9 +291,9 @@ $ <userinput>cp target/*.jar /path/to/tomcat/webapps/openam/WEB-INF/lib/</userin
   </para>
 
   <para>
-   In OpenAM Console, browse to Access Control &gt; <replaceable>Realm
-   Name</replaceable> &gt; Authentication &gt; All Core Settings.
-   In the Authentication Post Processing Classes list,
+   In OpenAM Console, browse to Realms &gt; <replaceable>Realm
+   Name</replaceable> &gt; Authentication &gt; Settings &gt; Post Authentication
+   Processing. In the Authentication Post Processing Classes list,
    add the sample plugin class,
    <literal>com.forgerock.openam.examples.SamplePAP</literal>,
    and then click Save.

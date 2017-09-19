@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-audit-logging'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -56,11 +56,7 @@
  <para>
   OpenAM services can capture a variety of information in debug logs, which you
   can use when troubleshooting OpenAM. For more information about the OpenAM
-  debug logs, see
-  <link xlink:href="admin-guide#debug-logging"
-        xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Debug Logging</citetitle>.
-  </link>
+  debug logs, see <xref linkend="debug-logging" />.
  </para>
 
  <para>
@@ -82,9 +78,7 @@
   Logging.
  </para>
 
-  <para>For more information on the available settings, see the <link
-   xlink:href="reference#system-logging"
-   xlink:role="http://docbook.org/xlink/role/olink">Audit Logging</link>
+  <para>For more information on the available settings, see <olink targetdoc="reference" targetptr="system-logging" />
    reference.</para>
 
 </section>
@@ -110,9 +104,9 @@
   </para>
 
   <para>
-   See the
-   <link xlink:href="reference#chap-log-messages"
-         xlink:role="http://docbook.org/xlink/role/olink">Log Messages</link> reference for details.
+   For details, see
+   <olink targetdoc="reference"
+          targetptr="chap-log-messages"/>.
   </para>
  </section>
  <section xml:id="log-mgmt-syslog">
@@ -145,10 +139,8 @@
       <listitem><para><literal>Syslog facility</literal></para></listitem>
       <listitem><para><literal>Syslog connection timeout</literal></para></listitem>
     </itemizedlist>
-    <para>For information on these settings, see the <link
-     xlink:href="reference#system-logging"
-     xlink:role="http://docbook.org/xlink/role/olink">Audit Logging</link>
-     reference.</para>
+    <para>For information on these settings, see
+     <olink targetdoc="reference" targetptr="system-logging" />.</para>
    </step>
    <step>
     <para>Save your work.</para>
@@ -197,7 +189,7 @@ iplanet-am-logging-syslog-facility=<replaceable>local5</replaceable></userinput>
    By default, OpenAM policy agents send log messages remotely to OpenAM
    when you log auditing information about URL access attempts. To configure
    audit logging for a centrally managed policy agent, login to the OpenAM
-   console as administrator, and browse to Access Control &gt;
+   console as administrator, and browse to Realms &gt;
    <replaceable>Realm Name</replaceable>
    &gt; Agents &gt;
    <replaceable>Agent Type</replaceable>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 ForgeRock, AS.
+ * Copyright 2014-2015 ForgeRock AS.
  *
  * The contents of this file are subject to the terms of the Common Development and
  * Distribution License (the License). You may not use this file except in compliance with the
@@ -16,17 +16,17 @@
 
 package org.forgerock.openam.rest.resource;
 
+import javax.security.auth.Subject;
+
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenManager;
 import com.sun.identity.entitlement.opensso.SubjectUtils;
-import org.forgerock.json.resource.Context;
-import org.forgerock.json.resource.SecurityContext;
-import org.forgerock.json.resource.ServerContext;
-import org.forgerock.openam.forgerockrest.RestUtils;
+import org.forgerock.services.context.Context;
+import org.forgerock.services.context.AbstractContext;
+import org.forgerock.services.context.SecurityContext;
+import org.forgerock.openam.rest.RestUtils;
 import org.forgerock.util.Reject;
-
-import javax.security.auth.Subject;
 
 /**
  * CREST context that provides a convenience method for getting hold of the caller as an authenticated subject based
@@ -34,10 +34,10 @@ import javax.security.auth.Subject;
  *
  * @since 12.0.0
  */
-public class SSOTokenContext extends ServerContext implements SubjectContext {
+public class SSOTokenContext extends AbstractContext implements SubjectContext {
 
     public SSOTokenContext(Context parent) {
-        super(parent);
+        super(parent, "ssoToken");
         Reject.ifFalse(parent.containsContext(SecurityContext.class), "Parent context must contain a SecurityContext");
     }
 

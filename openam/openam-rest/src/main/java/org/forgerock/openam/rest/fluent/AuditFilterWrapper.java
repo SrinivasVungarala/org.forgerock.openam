@@ -15,22 +15,24 @@
  */
 package org.forgerock.openam.rest.fluent;
 
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.services.context.Context;
 import org.forgerock.json.resource.ActionRequest;
+import org.forgerock.json.resource.ActionResponse;
 import org.forgerock.json.resource.CreateRequest;
 import org.forgerock.json.resource.DeleteRequest;
 import org.forgerock.json.resource.Filter;
 import org.forgerock.json.resource.PatchRequest;
 import org.forgerock.json.resource.QueryRequest;
-import org.forgerock.json.resource.QueryResultHandler;
+import org.forgerock.json.resource.QueryResourceHandler;
+import org.forgerock.json.resource.QueryResponse;
 import org.forgerock.json.resource.ReadRequest;
 import org.forgerock.json.resource.RequestHandler;
-import org.forgerock.json.resource.Resource;
-import org.forgerock.json.resource.ResultHandler;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.json.resource.ResourceException;
+import org.forgerock.json.resource.ResourceResponse;
 import org.forgerock.json.resource.UpdateRequest;
 import org.forgerock.openam.audit.AuditConstants.Component;
 import org.forgerock.openam.rest.resource.AuditInfoContext;
+import org.forgerock.util.promise.Promise;
 
 /**
  * This filter wrapper adds the audit context to the passed server context and delegates on the request.
@@ -53,38 +55,45 @@ public final class AuditFilterWrapper implements Filter {
     }
 
     @Override
-    public void filterAction(ServerContext context, ActionRequest request, ResultHandler<JsonValue> handler, RequestHandler next) {
-        delegate.filterAction(new AuditInfoContext(context, component), request, handler, next);
+    public Promise<ActionResponse, ResourceException> filterAction(Context context, ActionRequest request,
+            RequestHandler next) {
+        return delegate.filterAction(new AuditInfoContext(context, component), request, next);
     }
 
     @Override
-    public void filterCreate(ServerContext context, CreateRequest request, ResultHandler<Resource> handler, RequestHandler next) {
-        delegate.filterCreate(new AuditInfoContext(context, component), request, handler, next);
+    public Promise<ResourceResponse, ResourceException> filterCreate(Context context, CreateRequest request,
+            RequestHandler next) {
+        return delegate.filterCreate(new AuditInfoContext(context, component), request, next);
     }
 
     @Override
-    public void filterDelete(ServerContext context, DeleteRequest request, ResultHandler<Resource> handler, RequestHandler next) {
-        delegate.filterDelete(new AuditInfoContext(context, component), request, handler, next);
+    public Promise<ResourceResponse, ResourceException> filterDelete(Context context, DeleteRequest request,
+            RequestHandler next) {
+        return delegate.filterDelete(new AuditInfoContext(context, component), request, next);
     }
 
     @Override
-    public void filterPatch(ServerContext context, PatchRequest request, ResultHandler<Resource> handler, RequestHandler next) {
-        delegate.filterPatch(new AuditInfoContext(context, component), request, handler, next);
+    public Promise<ResourceResponse, ResourceException> filterPatch(Context context, PatchRequest request,
+            RequestHandler next) {
+        return delegate.filterPatch(new AuditInfoContext(context, component), request, next);
     }
 
     @Override
-    public void filterQuery(ServerContext context, QueryRequest request, QueryResultHandler handler, RequestHandler next) {
-        delegate.filterQuery(new AuditInfoContext(context, component), request, handler, next);
+    public Promise<QueryResponse, ResourceException> filterQuery(Context context, QueryRequest request,
+            QueryResourceHandler handler, RequestHandler next) {
+        return delegate.filterQuery(new AuditInfoContext(context, component), request, handler, next);
     }
 
     @Override
-    public void filterRead(ServerContext context, ReadRequest request, ResultHandler<Resource> handler, RequestHandler next) {
-        delegate.filterRead(new AuditInfoContext(context, component), request, handler, next);
+    public Promise<ResourceResponse, ResourceException> filterRead(Context context, ReadRequest request,
+            RequestHandler next) {
+        return delegate.filterRead(new AuditInfoContext(context, component), request, next);
     }
 
     @Override
-    public void filterUpdate(ServerContext context, UpdateRequest request, ResultHandler<Resource> handler, RequestHandler next) {
-        delegate.filterUpdate(new AuditInfoContext(context, component), request, handler, next);
+    public Promise<ResourceResponse, ResourceException> filterUpdate(Context context, UpdateRequest request,
+            RequestHandler next) {
+        return delegate.filterUpdate(new AuditInfoContext(context, component), request, next);
     }
 
 }

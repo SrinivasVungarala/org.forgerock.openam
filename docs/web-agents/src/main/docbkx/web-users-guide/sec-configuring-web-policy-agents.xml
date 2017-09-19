@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<section xml:id="configure-web-policy-agent"
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+
+ <title>Configuring Web Policy Agent Properties</title>
+
+ <indexterm>
+  <primary>policy agent properties</primary>
+  <secondary>web policy agents</secondary>
+  <tertiary>creating</tertiary>
+ </indexterm>
+
+ <para>When you create a web policy agent profile and install the agent,
+  you can choose to store the agent configuration centrally and configure
+  the agent through OpenAM console. Alternatively, you can choose to store
+  the agent configuration locally and configure the agent by changing
+  values in the properties file. This section covers centralized configuration,
+  indicating the corresponding properties for use in a local configuration
+  file where applicable.
+
+  <footnote><para>The configuration file syntax is that
+   of a standard Java properties file. See <link
+    xlink:href="http://download.oracle.com/javase/6/docs/api/java/util/Properties.html#load%28java.io.Reader%29"
+    >java.util.Properties.load</link> for a description of the format. The value
+   of a property specified multiple times is not defined.</para></footnote>
+ </para>
+
+ <para>Some properties do not yet appear in the OpenAM Console, so they need
+  to be configured as custom properties, see <xref
+ linkend="configure-web-pa-custom-props"/>, or locally in the agent properties
+ configuration file, <filename>${agentsConfigurationFile}</filename>.</para>
+
+ <tip>
+  <para>To show the agent properties in configuration file format that
+   correspond to what you see in the console, click Export Configuration
+   after editing agent properties.</para>
+
+  <para>This corresponds to the local Java properties configuration file
+   that is set up when you install an agent, for example in
+   <filename>Agent_001/config/<?eval ${agentsConfigurationFile}?></filename>.</para>
+ </tip>
+
+ <para>After changing properties specified as "Hot swap: no", you must
+  restart the agent's container for the changes to take effect.</para>
+
+ <xinclude:include href="sec-configuring-web-policy-agents-global.xml" />
+
+ <xinclude:include href="sec-configuring-web-policy-agents-application.xml" />
+
+ <xinclude:include href="sec-configuring-web-policy-agents-sso.xml" />
+
+ <xinclude:include href="sec-configuring-web-policy-agents-openam-services.xml" />
+
+ <xinclude:include href="sec-configuring-web-policy-agents-miscellaneous.xml" />
+
+ <xinclude:include href="sec-configuring-web-policy-agents-advanced.xml" />
+
+ <xinclude:include href="sec-configuring-web-policy-agents-custom.xml" />
+</section>

@@ -11,23 +11,26 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
-
 package org.forgerock.openam.forgerockrest.utils;
 
-import com.sun.identity.shared.xml.XMLUtils;
-import org.forgerock.json.fluent.JsonValue;
-import org.forgerock.json.resource.ResourceException;
-import org.testng.annotations.Test;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.AbstractMap;
 
-import static org.fest.assertions.Assertions.*;
-import static org.mockito.Mockito.*;
+import com.sun.identity.shared.xml.XMLUtils;
+import org.forgerock.caf.authentication.api.AuthenticationException;
+import org.forgerock.caf.authentication.api.MessageContext;
+import org.forgerock.caf.authentication.framework.AuditTrail;
+import org.forgerock.http.protocol.Response;
+import org.forgerock.http.protocol.Status;
+import org.forgerock.json.JsonValue;
+import org.forgerock.json.resource.NotFoundException;
+import org.forgerock.json.resource.ResourceException;
+import org.testng.annotations.Test;
 
 public class XMLResourceExceptionHandlerTest {
 
@@ -36,19 +39,23 @@ public class XMLResourceExceptionHandlerTest {
     @Test
     public void testWrite() throws Exception {
         //given
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        StringWriter writer = new StringWriter();
-        doReturn(new PrintWriter(writer)).when(response).getWriter();
+        MessageContext context = mock(MessageContext.class);
+        AuditTrail mockAudit = mock(AuditTrail.class);
+        Response response = new Response();
+        doReturn(mockAudit).when(context).getAuditTrail();
+        doReturn(response).when(context).getResponse();
 
         String message = "I don't know where it is";
-        ResourceException ex = ResourceException.getException(404, message);
+        ResourceException ex = new NotFoundException(message);
+        AuthenticationException ex2 = new AuthenticationException(ex);
 
         //when
-        handler.write(ex, response);
+        handler.write(context, ex2);
 
         //then
-        verify(response).setContentType("application/xml");
-        String text = writer.getBuffer().toString();
+        assertThat(response.getStatus()).isEqualTo(Status.NOT_FOUND);
+        
+        String text = response.getEntity().getString();
         assertThat(text).contains("<message>" + message + "</message>");
         assertThat(text).contains("<code>404</code>");
     }
@@ -56,7 +63,7 @@ public class XMLResourceExceptionHandlerTest {
     @Test
     public void testAsXMLDOM() throws Exception {
         //given
-        ResourceException ex = ResourceException.getException(404, "I don't know where it is");
+        ResourceException ex = new NotFoundException("I don't know where it is");
         AbstractMap.SimpleEntry<String, Integer> entry = new AbstractMap.SimpleEntry<String, Integer>("a", 1);
         ex.setDetail(new JsonValue(JsonValue.array(new JsonValue(JsonValue.object(entry)))));
 

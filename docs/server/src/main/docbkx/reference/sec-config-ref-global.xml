@@ -25,7 +25,7 @@
 -->
  <section xml:id="global-configuration"
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -60,6 +60,12 @@
    <listitem>
     <para>
      <xref linkend="email-service-configuration" />
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <xref linkend="fr-authenticator-oath-service-configuration" />
     </para>
    </listitem>
 
@@ -120,12 +126,6 @@
    <listitem>
     <para>
      <xref linkend="session-configuration-attributes" />
-    </para>
-   </listitem>
-
-   <listitem>
-    <para>
-     <xref linkend="two-step-verification-service-configuration" />
     </para>
    </listitem>
 
@@ -592,6 +592,126 @@
    </variablelist>
   </section>
 
+  <section xml:id="fr-authenticator-oath-service-configuration">
+   <title>ForgeRock Authenticator (OATH) Service</title>
+<variablelist>
+   <para><command>ssoadm</command> service name:
+   <literal>AuthenticatorOATH</literal></para>
+
+   <varlistentry>
+    <term>Profile Storage Attribute</term>
+    <listitem>
+     <para>Attribute for storing ForgeRock Authenticator OATH profiles. The default
+     attribute, <literal>oathDeviceProfiles</literal>, is added to the user
+     store during OpenAM installation. If you want to use a different attribute,
+     you must make sure to add it to your user store schema prior to
+     deploying two step verification with a ForgeRock OATH authenticator app in
+     OpenAM. OpenAM must be able to write to the
+     attribute. Default: <literal>oathDeviceProfiles</literal></para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-authenticator-oath-attr-name</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Device Profile Encryption Scheme</term>
+    <listitem>
+     <para>Encryption scheme for securing device profiles stored on the server.
+     You can choose not to encrypt the device profiles, or to use one of the
+     following encryption schemes:
+      <itemizedlist>
+       <listitem>
+        <para>AES-128/HMAC-SHA-256 with RSA key wrapping</para>
+       </listitem>
+       <listitem>
+        <para>AES-256/HMAC-SHA-512 with RSA key wrapping</para>
+       </listitem>
+      </itemizedlist>
+     Default:  no encryption.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-authenticator-oath-device-settings-encryption-scheme</literal></para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Encryption Key Store</term>
+    <listitem>
+     <para>Path to the key store from which to load encryption keys.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-authenticator-oath-device-settings-encryption-keystore</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Key Store Type</term>
+    <listitem>
+     <para>Type of encryption key store. Options include JCEKS, JKS,
+     PKCS#11, and PKCS#12. Default: <literal>JKS</literal></para>
+     <note>
+      <para>
+       Before using a PKCS#11 key store, make sure your Java runtime
+       environment supports it. For more information, see the
+       <link xlink:href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/p11guide.html"
+             xlink:show="new">
+       <citetitle>JDK 8 PKCS#11 Reference Guide</citetitle>.</link>
+      </para>
+     </note>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-authenticator-oath-device-settings-encryption-keystore-type</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Key Store Password</term>
+    <listitem>
+     <para>Password to unlock the keystore. This password is encrypted when it is
+     saved in the OpenAM configuration. You should modify the default value,
+     <literal>changeit</literal>.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-authenticator-oath-device-settings-encryption-keystore-password</literal></para>
+    </listitem>
+   </varlistentry>
+    <varlistentry>
+    <term>Key-Pair Alias</term>
+    <listitem>
+     <para>Alias of the certificate and private key in the keystore. The private
+     key is used to encrypt and decrypt device profiles.
+     </para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-authenticator-oath-device-settings-encryption-keypair-alias</literal></para>
+    </listitem>
+   </varlistentry>
+    <varlistentry>
+    <term>Private Key Password</term>
+    <listitem>
+     <para>Password to unlock the private key.</para>
+
+     <para><command>ssoadm</command> attribute:
+     <literal>openam-authenticator-oath-device-settings-encryption-privatekey-password</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>ForgeRock Authenticator (OATH) Device Skippable Attribute Name</term>
+    <listitem>
+     <para>
+      The data store attribute that holds the user's decision to enable 
+      or disable obtaining a providing a password obtained from a ForgeRock OATH
+      authenticator app. This attribute must be writeable. The default attribute
+      is  <literal>oath2faEnabled</literal>.
+     </para>
+     <para><command>ssoadm</command> attribute:
+     <literal>iplanet-am-authenticator-oath-skippable-name</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  </section>
+
   <section xml:id="liberty-id-ff-service-configuration">
    <title>Liberty ID-FF Service Configuration</title>
 <variablelist>
@@ -880,9 +1000,7 @@
      </para>
 
      <para>
-      See <link xlink:show="new" xlink:href="admin-guide#change-signing-key"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-      >To Change the Signing Key for Federation</citetitle></link> for
+      See <olink targetdoc="admin-guide" targetptr="change-signing-key" /> for
       instructions on changing the key pair.
      </para>
 
@@ -950,13 +1068,7 @@
      </para>
 
      <para>
-      For more information, see the <citetitle>Administration Guide</citetitle>
-      section,
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#mobile-connect-configure"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+      For more information, see <olink targetdoc="admin-guide" targetptr="mobile-connect-configure" />.
      </para>
 
      <para>
@@ -990,12 +1102,7 @@
      </para>
 
      <para>
-      For more information, see the <citetitle>Administration Guide</citetitle> section,
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#mobile-connect-configure"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+      For more information, see <olink targetdoc="admin-guide" targetptr="mobile-connect-configure" />.
      </para>
 
      <para>
@@ -1015,13 +1122,7 @@
      </para>
 
      <para>
-      For more information, see the <citetitle>Administration
-      Guide</citetitle> section,
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#mobile-connect-configure"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Configuring OpenAM as an OP for Mobile Connect</citetitle></link>.
+      For more information, see <olink targetdoc="admin-guide" targetptr="mobile-connect-configure" />.
      </para>
 
      <para>
@@ -1040,10 +1141,7 @@
    <varlistentry>
     <term>Realm Attributes</term>
     <listitem>
-     <para>See the <citetitle>Administration Guide</citetitle> chapter on
-     <link xlink:href="admin-guide#chap-pwd-reset"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-     Password Reset</citetitle></link> for details.</para>
+     <para>For details, see <olink targetdoc="admin-guide" targetptr="chap-pwd-reset" />.</para>
     </listitem>
    </varlistentry>
    </variablelist>
@@ -1532,9 +1630,21 @@
       desired version. Values are <literal>Latest</literal>, <literal>Oldest</literal>,
       and <literal>None</literal>.</para>
      <para>
-      Default: <literal>Latest</literal> for new OpenAM installations,
-      <literal>Oldest</literal> for upgraded OpenAM installations.
+      Default:
      </para>
+     <itemizedlist>
+      <listitem>
+       <para><literal>Latest</literal> for new OpenAM installations.</para>
+      </listitem>
+      <listitem>
+       <para><literal>Oldest</literal> when upgrading OpenAM installations
+        which do not already have the property.</para>
+      </listitem>
+      <listitem>
+       <para>Imported when upgrading OpenAM installations which already have
+        the property.</para>
+      </listitem>
+     </itemizedlist>
 
      <para><command>ssoadm</command> attribute:
      <literal>openam-rest-apis-default-version</literal></para>
@@ -2596,123 +2706,6 @@
    </variablelist>
   </section>
 
-  <section xml:id="two-step-verification-service-configuration">
-   <title>Two Step Verification Service</title>
-<variablelist>
-   <para><command>ssoadm</command> service name:
-   <literal>OATH</literal></para>
-
-   <varlistentry>
-    <term>Profile Storage Attribute</term>
-    <listitem>
-     <para>Attribute for storing two step verification profiles. The default
-     attribute, <literal>oathDeviceProfiles</literal>, is added to the user
-     store during OpenAM installation. If you want to use a different attribute,
-     you must make sure to add it to your user store schema prior to
-     using two step verification in OpenAM. OpenAM must be able to write to the
-     attribute. Default: <literal>oathDeviceProfiles</literal></para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>iplanet-am-auth-oath-attr-name</literal></para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term>Device Profile Encryption Scheme</term>
-    <listitem>
-     <para>Encryption scheme for securing device profiles stored on the server.
-     You can choose not to encrypt the device profiles, or to use one of the
-     following encryption schemes:
-      <itemizedlist>
-       <listitem>
-        <para>AES-128/HMAC-SHA-256 with RSA key wrapping</para>
-       </listitem>
-       <listitem>
-        <para>AES-256/HMAC-SHA-512 with RSA key wrapping</para>
-       </listitem>
-      </itemizedlist>
-     Default:  no encryption.
-     </para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>openam-auth-oath-device-settings-encryption-scheme</literal></para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term>Encryption Key Store</term>
-    <listitem>
-     <para>Path to the key store from which to load encryption keys.</para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>openam-auth-oath-device-settings-encryption-keystore</literal></para>
-    </listitem>
-   </varlistentry>
-   <varlistentry>
-    <term>Key Store Type</term>
-    <listitem>
-     <para>Type of encryption key store. Options include JCEKS, JKS,
-     PKCS#11, and PKCS#12. Default: <literal>JKS</literal></para>
-     <note>
-      <para>
-       Before using a PKCS#11 key store, make sure your Java runtime
-       environment supports it. For more information, see the
-       <link xlink:href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/p11guide.html"
-             xlink:show="new"
-             xlink:role="http://docbook.org/xlink/role/olink">
-       <citetitle>JDK 8 PKCS#11 Reference Guide</citetitle>.</link>
-      </para>
-     </note>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>openam-auth-oath-device-settings-encryption-keystore-type</literal></para>
-    </listitem>
-   </varlistentry>
-   <varlistentry>
-    <term>Key Store Password</term>
-    <listitem>
-     <para>Password to unlock the keystore. This password is encrypted when it is
-     saved in the OpenAM configuration. You should modify the default value,
-     <literal>changeit</literal>.
-     </para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>openam-auth-oath-device-settings-encryption-keystore-password</literal></para>
-    </listitem>
-   </varlistentry>
-    <varlistentry>
-    <term>Key-Pair Alias</term>
-    <listitem>
-     <para>Alias of the certificate and private key in the keystore. The private
-     key is used to encrypt and decrypt device profiles.
-     </para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>openam-auth-oath-device-settings-encryption-keypair-alias</literal></para>
-    </listitem>
-   </varlistentry>
-    <varlistentry>
-    <term>Private Key Password</term>
-    <listitem>
-     <para>Password to unlock the private key.</para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>openam-auth-oath-device-settings-encryption-privatekey-password</literal></para>
-    </listitem>
-   </varlistentry>
-   <varlistentry>
-    <term>OATH Device Skippable Attribute Name</term>
-    <listitem>
-     <para>The data store attribute that holds the user's decision to enable 
-     or disable two step verification. This attribute must be writeable. The
-     default attribute is  <literal>oath2faEnabled</literal>.</para>
-     <para><command>ssoadm</command> attribute:
-     <literal>iplanet-am-auth-oath-skippable-attr-name</literal></para>
-    </listitem>
-   </varlistentry>
-  </variablelist>
-  </section>
-
   <section xml:id="uma-provider-configuration">
    <title>UMA Provider</title>
 <variablelist>
@@ -2899,28 +2892,6 @@
    <!-- May be affected by OPENAM-3027, where, in an upgrade situation,
    the  Forgot Password Token LifeTime (seconds) label has
    been incorrectly replaced with another instance of Forgot Password for Users -->
-
-   <varlistentry>
-    <term>Two Factor Authentication Enabled</term>
-    <listitem>
-     <para>This option is reserved for future use.</para>
-     <para>Default: False</para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>forgerockRESTSecurityTwoFactorAuthEnabled</literal></para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry>
-    <term>Two Factor Authentication Required</term>
-    <listitem>
-     <para>This option is reserved for future use.</para>
-     <para>Default: False</para>
-
-     <para><command>ssoadm</command> attribute:
-     <literal>forgerockRESTSecurityTwoFactorAuthMandatory</literal></para>
-    </listitem>
-   </varlistentry>
 
    <varlistentry>
     <term>Self-Registration for Users</term>

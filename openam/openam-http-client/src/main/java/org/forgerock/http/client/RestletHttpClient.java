@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 package org.forgerock.http.client;
 
@@ -25,7 +25,6 @@ import org.restlet.Client;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.*;
-import org.restlet.engine.util.CookieSettingSeries;
 import org.restlet.util.Series;
 
 import java.io.UnsupportedEncodingException;
@@ -37,8 +36,10 @@ import java.util.*;
  * {@link org.forgerock.http.client.request.HttpClientRequest} objects and receive {@link org.forgerock.http.client.response.HttpClientResponse} objects.
  *
  * @since 12.0.0
+ * @deprecated Will be replaced in a later release by {@link org.forgerock.http.Client}.
  */
-public class RestletHttpClient {
+@Deprecated
+public abstract class RestletHttpClient {
     final HttpClientRequestFactory httpClientRequestFactory = InjectorHolder.getInstance(HttpClientRequestFactory.class);
 
     protected HttpClientResponse getHttpClientResponse(String uri, String body, Map<String, List<Map<String,String>>> requestData, String method) throws UnsupportedEncodingException {
@@ -149,7 +150,7 @@ public class RestletHttpClient {
     }
 
     private void addCookiesToRequest(HttpClientRequest httpClientRequest, Request request) {
-        Series cookieSettingSeries = new CookieSettingSeries();
+        Series<Cookie> cookieSettingSeries = new Series<>(Cookie.class);
         for (HttpClientRequestCookie cookie : httpClientRequest.getCookies()) {
             CookieSetting cookieSetting = new CookieSetting();
             cookieSetting.setDomain(cookie.getDomain());

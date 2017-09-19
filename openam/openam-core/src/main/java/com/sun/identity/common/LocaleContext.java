@@ -18,8 +18,8 @@ package com.sun.identity.common;
 
 import java.util.Locale;
 
-import org.forgerock.json.resource.ServerContext;
-import org.forgerock.json.resource.servlet.HttpContext;
+import org.forgerock.services.context.Context;
+import org.forgerock.json.resource.http.HttpContext;
 
 /**
  * Context for storing request Locale.
@@ -32,7 +32,7 @@ public class LocaleContext {
         return locale;
     }
 
-    public void setLocale(ServerContext serverContext) {
+    public void setLocale(Context serverContext) {
         ISLocaleContext localeContext = new ISLocaleContext();
         HttpContext httpContext = serverContext.asContext(HttpContext.class);
         localeContext.setLocale(httpContext);

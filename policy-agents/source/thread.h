@@ -20,6 +20,7 @@
 #ifdef _WIN32
 typedef CRITICAL_SECTION am_mutex_t;
 typedef HANDLE am_thread_t;
+#define AM_MUTEX_INIT(m)        InitializeCriticalSection(m)
 #define AM_MUTEX_LOCK           EnterCriticalSection
 #define AM_MUTEX_UNLOCK         LeaveCriticalSection
 #define AM_MUTEX_DESTROY        DeleteCriticalSection
@@ -29,6 +30,7 @@ typedef HANDLE am_thread_t;
 #else
 typedef pthread_mutex_t am_mutex_t;
 typedef pthread_t am_thread_t;
+#define AM_MUTEX_INIT(m)        pthread_mutex_init((m), NULL)
 #define AM_MUTEX_LOCK           pthread_mutex_lock
 #define AM_MUTEX_UNLOCK         pthread_mutex_unlock
 #define AM_MUTEX_DESTROY        pthread_mutex_destroy
@@ -47,14 +49,6 @@ typedef struct {
 #endif
 } am_event_t;
 
-typedef struct {
-#ifdef _WIN32
-    HANDLE e;
-#else
-    pthread_mutex_t m;
-#endif
-} am_exit_event_t;
-
 enum {
     AM_TIMER_EVENT_ONCE = 0,
     AM_TIMER_EVENT_RECURRING
@@ -65,6 +59,7 @@ typedef struct {
     unsigned int interval;
     void *args;
     int error;
+    int init_status;
 #ifdef _WIN32
     HANDLE tick;
     HANDLE tick_q;
@@ -77,52 +72,25 @@ typedef struct {
     timer_t tick;
 #endif
     am_thread_t tick_thr;
-    am_exit_event_t *exit_ev;
+    am_event_t *exit_ev;
 } am_timer_event_t;
 
 am_event_t *create_event();
-am_exit_event_t *create_exit_event();
-
 int wait_for_event(am_event_t *e, int timeout);
-int wait_for_exit_event(am_exit_event_t *e);
-
 void set_event(am_event_t *e);
-void set_exit_event(am_exit_event_t *e);
-
-void close_event(am_event_t *e);
-void close_exit_event(am_exit_event_t *e);
+void close_event(am_event_t **e);
 
 am_timer_event_t *am_create_timer_event(int type, unsigned int interval, void *args, void (*callback)(void *));
 void am_start_timer_event(am_timer_event_t *e);
 void am_close_timer_event(am_timer_event_t *e);
 
 void am_worker_pool_shutdown();
-void am_worker_pool_init();
+void am_worker_pool_init(int (*init_status_cb)(int));
 
-int am_worker_dispatch(void (*worker_f)(void *, void *), void *arg);
+int am_worker_dispatch(void (*worker_f)(void *), void *arg);
 
-void notification_worker(
-#ifdef _WIN32
-        PTP_CALLBACK_INSTANCE
-#else
-        void *
-#endif
-        inst, void *arg);
-
-void session_logout_worker(
-#ifdef _WIN32
-        PTP_CALLBACK_INSTANCE
-#else
-        void *
-#endif
-        inst, void *arg);
-
-void remote_audit_worker(
-#ifdef _WIN32
-        PTP_CALLBACK_INSTANCE
-#else
-        void *
-#endif
-        inst, void *arg);
+void notification_worker(void *arg);
+void session_logout_worker(void *arg);
+void remote_audit_worker(void *arg);
 
 #endif

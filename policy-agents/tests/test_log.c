@@ -98,7 +98,9 @@ void logging_setup(int logging_level) {
     // destroy the cache, if it exists
     am_cache_destroy();
     
-    assert_int_equal(am_init(AM_DEFAULT_AGENT_ID), AM_SUCCESS);
+    assert_int_equal(am_init(AM_DEFAULT_AGENT_ID, NULL), AM_SUCCESS);
+
+    am_init_worker(AM_DEFAULT_AGENT_ID);
     
     sprintf(log_file_name, "log%d", rand() % 1000000);
     
@@ -107,7 +109,7 @@ void logging_setup(int logging_level) {
     
     am_log_register_instance(getpid(),
                              log_file_name, logging_level, TEN_MB,
-                             audit_file_name, AM_LOG_LEVEL_AUDIT, ONE_MB);
+                             audit_file_name, AM_LOG_LEVEL_AUDIT, ONE_MB, NULL);
     am_init_worker(AM_DEFAULT_AGENT_ID);
 }
 

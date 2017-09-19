@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-sizing'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -97,12 +97,8 @@
      at minimum between OpenAM and OpenAM client applications.
      The load balancer itself must be redundant, too,
      so that it does not become a single point of failure.
-     Illustrations in the chapter,
-     <link
-      xlink:href="deployment-planning#chap-topologies"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Example Deployment Topology</citetitle></link>,
+     Illustrations in
+     <olink targetdoc="deployment-planning" targetptr="chap-topologies" />,
      show multiple levels of load balancing for availability
      and firewalls for security.
     </para>
@@ -129,12 +125,8 @@
      OpenAM synchronizes configuration and policy data across sites,
      and by default also synchronizes session data as well.
      OpenAM also expects profiles in identity data stores to remain in sync.
-     As shown in the chapter,
-     <link
-      xlink:href="deployment-planning#chap-topologies"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Example Deployment Topology</citetitle></link>,
+     As shown in
+     <olink targetdoc="deployment-planning" targetptr="chap-topologies" />,
      the deployment involves directory service replication between sites.
     </para>
    </listitem>
@@ -183,11 +175,7 @@
 
   <para>
    Also, you must consider the requirements for non-functional testing, covered in
-   <link
-    xlink:href="deployment-planning#plan-tests"
-    xlink:show="new"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Planning Tests</citetitle></link>.
+   <olink targetdoc="deployment-planning" targetptr="plan-tests" />.
    While you might be able to perform functional testing by using
    a single OpenAM server with the embedded OpenDJ server for user data store,
    other tests require a more complete environment
@@ -227,12 +215,8 @@
 
   <para>
    When you have established your service level goals,
-   you can create load tests for each key service as described in the section on
-   <link
-    xlink:href="deployment-planning#plan-service-performance-tests"
-    xlink:show="new"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Planning Service Performance Testing</citetitle></link>.
+   you can create load tests for each key service as described in <olink
+   targetdoc="deployment-planning" targetptr="plan-service-performance-tests" />.
    Use the load tests to check your sizing assumptions.
   </para>
 
@@ -261,11 +245,8 @@
     <para>
      To measure rates of policy evaluations,
      you can monitor policy evaluation counts over SNMP.
-     For details, see the <citetitle>Administration Guide</citetitle> section,
-     <link
-      xlink:show="new"
-      xlink:href="${docSetBaseURL}admin-guide/#snmp-policy-evaluation"
-     ><citetitle>SNMP Monitoring For Policy Evaluation</citetitle></link>.
+     For details, see <olink targetdoc="admin-guide"
+                             targetptr="snmp-policy-evaluation"/>.
     </para>
    </listitem>
 
@@ -321,11 +302,7 @@
 
     <para>
      You can also gather statistics about CTS operations over SNMP.
-     For details, see the <citetitle>Administration Guide</citetitle> section,
-     <link
-      xlink:show="new"
-      xlink:href="${docSetBaseURL}admin-guide/#cts-monitoring"
-     ><citetitle>Monitoring CTS Tokens</citetitle></link>.
+     For details, see <olink targetdoc="admin-guide" targetptr="cts-monitoring"/>.
     </para>
    </listitem>
 
@@ -378,12 +355,8 @@
 
     <para>
      OpenAM stores data in user profile attributes.
-     As described in the <citetitle>Administration Guide</citetitle> procedure,
-     <link
-      xlink:show="new"
-      xlink:href="${docSetBaseURL}admin-guide/#realm-data-store"
-     ><citetitle>To Configure a Data Store for a Realm</citetitle></link>,
-     OpenAM can use or provision many profile attributes.
+     OpenAM can use or provision many profile attributes, as described in
+     <olink targetdoc="admin-guide" targetptr="realm-data-store" />.
     </para>
 
     <para>
@@ -486,11 +459,7 @@
 
    <para>
     The number of connections and data caching depending on server tuning,
-    as described in the <citetitle>Administration Guide</citetitle> chapter,
-    <link
-     xlink:show="new"
-     xlink:href="${docSetBaseURL}admin-guide/#chap-tuning"
-    ><citetitle>Tuning OpenAM</citetitle></link>.
+    as described in <olink targetdoc="admin-guide" targetptr="chap-tuning" />.
    </para>
 
    <para>
@@ -506,7 +475,7 @@
     in the OpenDJ <citetitle>Administration Guide</citetitle> section,
     <link
      xlink:show="new"
-     xlink:href="${opendjDocBaseURL}admin-guide/#perf-db-cache"
+     xlink:href="${backstageDJBaseURL}/admin-guide/chap-tuning/perf-db-cache"
     ><citetitle>Database Cache Settings</citetitle></link>.
    </para>
   </section>
@@ -546,15 +515,11 @@
    <title>Sizing Disk I/O and Storage</title>
 
    <para>
-    As described in the section on
-    <link
-     xlink:href="deployment-planning#storage-requirements"
-     xlink:show="new"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Storage Requirements</citetitle></link>,
-    the largest disk I/O loads for OpenAM servers arise
-    from logging and from the embedded OpenDJ directory server writing to disk.
-    You can estimate your storage requirements as described in that section.
+    As described in <olink targetdoc="deployment-planning"
+                           targetptr="storage-requirements" />, the largest disk
+    I/O loads for OpenAM servers arise from logging and from the embedded
+    OpenDJ directory server writing to disk. You can estimate your storage
+    requirements as described in that section.
    </para>
 
    <para>

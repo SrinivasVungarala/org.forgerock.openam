@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-session-state'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'
@@ -66,7 +66,7 @@
    </indexterm>
 
    <indexterm>
-    <primary>SSOToken</primary>
+    <primary>SSO token</primary>
    </indexterm>
 
    <para>
@@ -74,7 +74,7 @@
     and, if session failover is enabled, are also persisted in the Core Token
     Service's token store. OpenAM sends clients a reference to the session in
     OpenAM memory but it does not contain any of the session state information.
-    The session reference is also known as an <firstterm>SSOToken</firstterm>.
+    The session reference is also known as an <firstterm>SSO token</firstterm>.
     For browser clients, OpenAM sets a cookie in the browser that contains
     the session reference. For REST clients, OpenAM returns the session
     reference in response to calls to the <literal>authentication</literal>
@@ -128,7 +128,7 @@
     There is, however, one exception to the per-realm session state
     configuration. When the top-level administrator (by default,
     the <literal>amadmin</literal> user) authenticates to OpenAM, the session is
-    always stateful, even if the top-level realm is configured for stateless
+    always stateful, even if the Top Level Realm is configured for stateless
     sessions.
    </para>
 
@@ -165,12 +165,7 @@
    <para>
     You can store custom information in both stateful and stateless sessions
     with post authentication plugins. For more information about
-    post authentication plugins,
-    see <link xlink:show="new"
-              xlink:href="dev-guide#chap-post-auth"
-              xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Creating
-     a Post Authentication Plugin</citetitle></link> in the
-     <citetitle>Developer's Guide</citetitle>.
+    post authentication plugins, see <olink targetdoc="dev-guide" targetptr="sec-post-auth" />.
    </para>
   </section>
 
@@ -672,11 +667,7 @@
   <para>
    Session blacklisting uses the Core Token Service's token store during the
    logout process. For more information about deploying the Core Token Service,
-   see <link xlink:show="new"
-             xlink:href="install-guide#chap-cts"
-             xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-   the Core Token Service</citetitle></link> in the
-   <citetitle>Installation Guide</citetitle>.
+   see <olink targetdoc="install-guide" targetptr="chap-cts" />.
   </para>
 
   <para>
@@ -726,20 +717,14 @@
 
    <step>
     <para>
-     Navigate to Access Control &gt; <replaceable>Realm Name</replaceable>
-     &gt; Authentication.
+     Navigate to Realms &gt; <replaceable>Realm Name</replaceable>
+     &gt; Authentication &gt; Settings &gt; General.
     </para>
    </step>
 
    <step>
     <para>
-     Click All Core Settings.
-    </para>
-   </step>
-
-   <step>
-    <para>
-     Select the "Use Stateless Sessions?" check box.
+     Select the "Use Stateless Sessions" check box.
     </para>
    </step>
 
@@ -880,11 +865,7 @@
    Prior to configuring stateless session cookie security, ensure that you have
    deployed certificates as needed. For more information
    about managing certificates for OpenAM,
-   see <link xlink:show="new"
-             xlink:href="admin-guide#chap-certs-keystores"
-             xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing
-   Certificates</citetitle></link> in the
-   <citetitle>Administration Guide</citetitle>.
+   see <xref linkend="chap-certs-keystores" />.
   </para>
 
   <para>
@@ -962,11 +943,7 @@
    <para>
     For detailed information about Session Service configuration attributes,
     see the entries for
-    <link xlink:show="new"
-          xlink:href="reference#session-configuration-attributes"
-          xlink:role="http://docbook.org/xlink/role/olink"
-    >Session Service attributes</link> in the
-    <citetitle>Reference</citetitle>.
+    <olink targetdoc="reference" targetptr="session-configuration-attributes" />.
    </para>
 
   </section>
@@ -1025,11 +1002,7 @@
    <para>
     For detailed information about Session Service configuration attributes,
     see the entries for
-    <link xlink:show="new"
-          xlink:href="reference#session-configuration-attributes"
-          xlink:role="http://docbook.org/xlink/role/olink"
-    >Session Service attributes</link> in the
-    <citetitle>Reference</citetitle>.
+    <olink targetdoc="reference" targetptr="session-configuration-attributes" />.
    </para>
   </section>
 
@@ -1137,11 +1110,7 @@
   <para>
    For detailed information about Session Service configuration attributes,
    see the entries for
-   <link xlink:show="new"
-         xlink:href="reference#session-configuration-attributes"
-         xlink:role="http://docbook.org/xlink/role/olink"
-    >Session Service attributes</link> in the
-   <citetitle>Reference</citetitle>.
+   <olink targetdoc="reference" targetptr="session-configuration-attributes" />.
   </para>
 
  </section>
@@ -1163,82 +1132,55 @@
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#session-upgrade"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
-      upgrade</citetitle></link>
+     <xref linkend="session-upgrade" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#configure-session-quotas"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
-      quotas</citetitle></link>
+     <xref linkend="configure-session-quotas" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#configure-policies-with-console"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Authorization
-      policies with conditions that reference current session properties</citetitle></link>
+     <xref linkend="configure-policies-with-console" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#chap-cdsso"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Cross-domain
-      single sign-on</citetitle></link>
+     <xref linkend="chap-cdsso" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#saml2-and-session-state"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>SAML v2.0
-      single sign-on and single logout</citetitle></link>
+     <xref linkend="saml2-and-session-state" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#chap-saml-1"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>SAML 1.x
-      single sign-on</citetitle></link>
+     <xref linkend="chap-saml-1" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#snmp-sessions"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>SNMP
-      session monitoring</citetitle></link>
+     <xref linkend="snmp-sessions" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="admin-guide#session-mgmt"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
-      management by using the OpenAM console</citetitle></link>
+     <xref linkend="session-mgmt" />
     </para>
    </listitem>
 
    <listitem>
     <para>
-     <link xlink:show="new"
-           xlink:href="dev-guide#session-receiving-notifications"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Session
-      notification</citetitle></link>
+     <olink targetdoc="dev-guide" targetptr="session-receiving-notifications" />
     </para>
    </listitem>
 

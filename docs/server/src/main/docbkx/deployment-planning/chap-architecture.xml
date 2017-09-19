@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-deployments'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -383,9 +383,8 @@
      <listitem>
       <para>
        Install and configure the OpenAM server, datastores, and components.
-       For information on installing OpenAM, see
-       <link xlink:href="${docSetBaseURL}/install-guide#install-guide"
-             xlink:show="new"><citetitle>OpenAM Installation Guide</citetitle></link>.
+       For information on installing OpenAM, see the <olink
+       targetdoc="install-guide" targetptr="install-guide"/>.
        <indexterm>
         <primary>deployment implementation</primary>
         <secondary>installing</secondary>
@@ -405,8 +404,7 @@
       <para>Tune OpenAM's JVM, caches, LDAP connection pools, container thread pools,
        and other items.
        For information on tuning OpenAM, see
-       <link xlink:href="${docSetBaseURL}/admin-guide#chap-tuning"
-             xlink:show="new"><citetitle>Tuning OpenAM</citetitle></link>.
+       <olink targetdoc="admin-guide" targetptr="chap-tuning"/>.
        <indexterm>
         <primary>deployment implementation</primary>
         <secondary>tuning</secondary>
@@ -419,7 +417,7 @@
        considerations.
        For more information, see
        <link xlink:show="new"
-             xlink:href="http://docs.forgerock.org/en/opendj/2.6.0/admin-guide#chap-tuning"
+             xlink:href="${backstageDJBaseURL}/admin-guide/chap-tuning"
         ><citetitle>Tuning Servers for Performance</citetitle></link> in the
        <citetitle>OpenDJ Administration Guide</citetitle>.
        <indexterm>
@@ -616,7 +614,7 @@
     ForgeRock University regularly offers training courses for OpenAM topics,
     including OpenAM development and deployment.
     For a current list of available courses, see
-    <link xlink:show="new" xlink:href="http://forgerock.com/services/university/" />.
+    <link xlink:show="new" xlink:href="http://forgerock.com/services/university/"/>.
    </para>
 
    <para>
@@ -665,7 +663,7 @@
     or custom extensions (authentication modules, policy conditions, and so forth),
     then have a team member involved in the development
     help you plan the work.
-    The <citetitle>OpenAM Developer's Guide</citetitle> can be useful
+    The <olink targetdoc="dev-guide" targetptr="dev-guide" /> can be useful
     when scoping a development project.
    </para>
 
@@ -695,7 +693,6 @@
    </para>
   </section>
 
-  <?hard-pagebreak?>
   <section xml:id="plan-pilot">
    <title>Planning a Pilot Implementation</title>
 
@@ -878,11 +875,7 @@
 
    <para>
     You must therefore plan to secure the deployment
-    as described in the <citetitle>Administration Guide</citetitle> chapter on
-    <link
-     xlink:href="${docSetBaseURL}/admin-guide#chap-securing"
-     xlink:show="new"
-    ><citetitle>Securing OpenAM</citetitle></link>.
+    as described in <olink targetdoc="admin-guide" targetptr="chap-securing" />.
    </para>
 
    <itemizedlist>
@@ -1229,14 +1222,17 @@
     Log volumes depend on usage and on logging levels.
     By default, OpenAM generates both access and error messages for each service,
     providing the raw material for auditing the deployment.
-    The OpenAM <citetitle>Reference</citetitle> covers
+    The <olink targetdoc="reference" targetptr="reference" /> covers
     what you can expect to find in log messages.
    </para>
 
    <para>
     In order to analyze the raw material, however, you must use other software,
     such as
-    <link xlink:href="http://www.splunk.com" xlink:show="new">Splunk</link>,
+    <link xlink:href="http://www.splunk.com"
+          xlink:show="new"
+          xlink:role="http://docbook.org/xlink/role/olink"
+     >Splunk</link>,
     which indexes machine-generated data for analysis.
    </para>
 
@@ -1297,9 +1293,15 @@
 
     <para>
      Tools for running functional testing include
-     <link xlink:href="http://jmeter.apache.org/" xlink:show="new">Apache JMeter</link>
+     <link xlink:href="http://jmeter.apache.org/"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Apache JMeter</link>
      and
-     <link xlink:href="http://seleniumhq.org/" xlink:show="new">Selenium</link>.
+     <link xlink:href="http://seleniumhq.org/"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Selenium</link>.
      Apache JMeter is a load testing tool for Web applications.
      Selenium is a test framework for Web applications, particularly for UIs.
     </para>
@@ -1356,9 +1358,15 @@
 
     <para>
      Tools for running performance testing include
-     <link xlink:href="http://jmeter.apache.org/" xlink:show="new">Apache JMeter</link>,
+     <link xlink:href="http://jmeter.apache.org/"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Apache JMeter</link>,
      for which your loads should mimic what you expect in production, and
-     <link xlink:href="http://gatling.io" xlink:show="new">Gatling</link>,
+     <link xlink:href="http://gatling.io"
+           xlink:show="new"
+           xlink:role="http://docbook.org/xlink/role/olink"
+      >Gatling</link>,
      which records load using a domain specific language for load testing.
      To mimic the production load, examine both the access patterns
      and also the data that OpenAM stores.
@@ -1749,10 +1757,8 @@
    <para>
     In this section, "upgrade" means moving to a more recent release,
     whether it is a patch, maintenance release, minor release, or major release.
-    (See the OpenAM
-    <link xlink:href="${docSetBaseURL}/admin-guide#chap-tuning"
-          xlink:show="new"><citetitle>Administration Guide</citetitle></link>
-    for definitions of the types of release.)
+    For definitions of the types of release, see <olink
+    targetdoc="admin-guide" targetptr="appendix-interface-stability" />.
    </para>
 
    <para>

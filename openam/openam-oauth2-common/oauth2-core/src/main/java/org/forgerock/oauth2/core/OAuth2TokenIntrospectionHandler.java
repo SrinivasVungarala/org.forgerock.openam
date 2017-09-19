@@ -16,13 +16,13 @@
 
 package org.forgerock.oauth2.core;
 
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
 import static org.forgerock.oauth2.core.OAuth2Constants.IntrospectionEndpoint.*;
 
 import javax.inject.Inject;
 
 import org.forgerock.guava.common.base.Joiner;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.exceptions.InvalidGrantException;
 import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
@@ -74,7 +74,8 @@ public class OAuth2TokenIntrospectionHandler implements TokenIntrospectionHandle
                 field(OAuth2Constants.Params.CLIENT_ID, token.getClientId()),
                 field(USER_ID, token.getResourceOwnerId()),
                 field(TOKEN_TYPE, token instanceof AccessToken ? ACCESS_TOKEN_TYPE : REFRESH_TOKEN_TYPE),
-                field(OAuth2Constants.JWTTokenParams.EXP, token.getExpiryTime() / 1000),
+                field(OAuth2Constants.JWTTokenParams.EXP, token.getExpiryTime() == -1 ? null : (token.getExpiryTime
+                        () - System.currentTimeMillis()) / 1000),
                 field(OAuth2Constants.JWTTokenParams.SUB, token.getResourceOwnerId()),
                 field(OAuth2Constants.JWTTokenParams.ISS, providerSettings.getIssuer())
         ));

@@ -17,41 +17,43 @@ package org.forgerock.openam.audit;
 
 import static org.forgerock.audit.events.AuditEventBuilder.EVENT_NAME;
 import static org.forgerock.json.resource.Requests.newCreateRequest;
+import static org.forgerock.json.resource.Resources.newInternalConnection;
+import static org.forgerock.openam.audit.AuditConstants.EVENT_REALM;
+import static org.forgerock.openam.utils.StringUtils.isBlank;
 
-import com.google.inject.Inject;
 import com.sun.identity.shared.debug.Debug;
 import org.forgerock.audit.AuditException;
-import org.forgerock.audit.AuditService;
 import org.forgerock.audit.events.AuditEvent;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.json.resource.Connection;
-import org.forgerock.json.resource.ConnectionFactory;
+import org.forgerock.json.resource.CreateRequest;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.Resources;
-import org.forgerock.json.resource.RootContext;
-import org.forgerock.openam.audit.configuration.AuditServiceConfigurator;
+import org.forgerock.json.resource.ServiceUnavailableException;
+import org.forgerock.services.context.RootContext;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Responsible for publishing locally created audit events to the AuditService.
  *
  * @since 13.0.0
  */
+@Singleton
 public class AuditEventPublisher {
 
     private static Debug debug = Debug.getInstance("amAudit");
 
-    private final AuditService auditService;
-    private final ConnectionFactory auditServiceConnectionFactory;
-    private final AuditServiceConfigurator configurator;
+    private final AuditServiceProvider auditServiceProvider;
 
     /**
-     * @param auditService AuditService to which events should be published.
+     * Constructs a new {@code AuditEventPublisher}.
+     *
+     * @param auditServiceProvider A {@code AuditServiceProvider} instance.
      */
     @Inject
-    public AuditEventPublisher(AuditService auditService, AuditServiceConfigurator configurator) {
-        this.auditService = auditService;
-        this.auditServiceConnectionFactory = Resources.newInternalConnectionFactory(auditService);
-        this.configurator = configurator;
+    public AuditEventPublisher(AuditServiceProvider auditServiceProvider) {
+        this.auditServiceProvider = auditServiceProvider;
     }
 
     /**
@@ -72,21 +74,50 @@ public class AuditEventPublisher {
      * @throws AuditException if an exception occurs while trying to publish the audit event.
      */
     public void publish(String topic, AuditEvent auditEvent) throws AuditException {
+        String realm = getValue(auditEvent.getValue(), EVENT_REALM, null);
+        if (isBlank(realm)) {
+            publishToDefault(topic, auditEvent);
+        } else {
+            publishForRealm(realm, topic, auditEvent);
+        }
+    }
+
+    private void publishToDefault(String topic, AuditEvent auditEvent) throws AuditException {
+        AMAuditService auditService = auditServiceProvider.getDefaultAuditService();
+        Connection connection = newInternalConnection(auditService);
+        CreateRequest request = newCreateRequest(topic, auditEvent.getValue());
 
         try {
-
-            Connection connection = auditServiceConnectionFactory.getConnection();
-            connection.create(new RootContext(), newCreateRequest(topic, auditEvent.getValue()));
-
+            connection.create(new RootContext(), request);
         } catch (ResourceException e) {
+            handleResourceException(e, auditService, topic, auditEvent);
+        }
+    }
 
-            final String eventName = getValue(auditEvent.getValue(), EVENT_NAME, "-unknown-");
-            debug.error("Unable to publish {} audit event '{}' due to error: {} [{}]",
-                    topic, eventName, e.getMessage(), e.getReason(), e);
+    private void publishForRealm(String realm, String topic, AuditEvent auditEvent) throws AuditException {
+        AMAuditService auditService = auditServiceProvider.getAuditService(realm);
+        Connection connection = newInternalConnection(auditService);
+        CreateRequest request = newCreateRequest(topic, auditEvent.getValue());
 
-            if (!isSuppressExceptions()) {
-                throw new AuditException("Unable to publish " + topic + " audit event '" + eventName + "'", e);
-            }
+        try {
+            connection.create(new RootContext(), request);
+        } catch (ServiceUnavailableException e) {
+            debug.message("Audit Service for realm {} is unavailable. Trying the default Audit Service.", realm, e);
+            publishToDefault(topic, auditEvent);
+        } catch (ResourceException e) {
+            handleResourceException(e, auditService, topic, auditEvent);
+        }
+    }
+
+    private void handleResourceException(ResourceException e, AMAuditService auditService, String topic,
+            AuditEvent auditEvent) throws AuditException {
+
+        final String eventName = getValue(auditEvent.getValue(), EVENT_NAME, "-unknown-");
+        debug.error("Unable to publish {} audit event '{}' due to error: {} [{}]",
+                topic, eventName, e.getMessage(), e.getReason(), e);
+
+        if (!auditService.isAuditFailureSuppressed()) {
+            throw new AuditException("Unable to publish " + topic + " audit event '" + eventName + "'", e);
         }
     }
 
@@ -102,7 +133,7 @@ public class AuditEventPublisher {
         try {
             publish(topic, auditEvent);
         } catch (AuditException e) {
-            // suppress
+            // suppress - error logged in publish method
         }
     }
 
@@ -110,14 +141,22 @@ public class AuditEventPublisher {
         return jsonValue.isDefined(key) ? jsonValue.get(key).asString() : defaultValue;
     }
 
-    public boolean isAuditing(String topic) {
-        return configurator.getAuditServiceConfiguration().isAuditEnabled() && auditService.isAuditing(topic);
-    }
-
     /**
-     * @return True if the operation being audited can proceed if an exception occurs while publishing an audit event.
+     * Determines if the audit service is auditing the specified {@literal topic} in the specified {@literal realm}. If
+     * the {@literal realm} is either {@code null} or empty, the check will be done against the default audit service.
+     *
+     * Note that We deliberately do not provide a convenience method with no realm to force implementers to consider
+     * providing the realm. We must publish per realm wherever applicable.
+     *
+     * @param realm The realm in which the audit event occurred, or null if realm is not applicable.
+     * @param topic The auditing topic.
+     * @return {@code true} if the topic should be audited.
      */
-    public boolean isSuppressExceptions() {
-        return configurator.getAuditServiceConfiguration().isAuditFailureSuppressed();
+    public boolean isAuditing(String realm, String topic) {
+        if (isBlank(realm)) {
+            return auditServiceProvider.getDefaultAuditService().isAuditEnabled(topic);
+        } else {
+            return auditServiceProvider.getAuditService(realm).isAuditEnabled(topic);
+        }
     }
 }

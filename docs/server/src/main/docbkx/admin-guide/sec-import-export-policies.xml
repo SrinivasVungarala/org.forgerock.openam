@@ -26,7 +26,7 @@
 
 <section xml:id="script-policy"
           xmlns='http://docbook.org/ns/docbook'
-          version='5.0' xml:lang='en'
+          version='5.0'
           xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
           xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -76,17 +76,17 @@
  <procedure xml:id="export-policy-to-xacml-xui">
   <title>To Export Policies in XACML Format (OpenAM Console)</title>
    <step>
-    <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
-     Name</replaceable> &gt; Policies, and then click Export
-    All Policies.</para>
+    <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+    Name</replaceable> &gt; Authorization &gt; Policies, and then click Export
+    Policies.</para>
    </step>
  </procedure>
 
  <procedure xml:id="import-policy-in-xacml-xui">
   <title>To Import Policies in XACML Format (OpenAM Console)</title>
   <step>
-   <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
-    Name</replaceable> &gt; Policies, and then click Import
+   <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+    Name</replaceable> &gt; Authorization &gt; Policies, and then click Import
     Policies.</para>
   </step>
   <step>

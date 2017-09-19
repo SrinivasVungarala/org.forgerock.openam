@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-jboss-4and5'
@@ -46,10 +46,10 @@
 
    <indexterm>
     <primary>Java EE policy agents</primary>
-    <secondary>JBoss 4 &amp; 5</secondary>
+    <secondary>JBoss 4 and 5</secondary>
    </indexterm>
    <indexterm>
-    <primary>JBoss 4 &amp; 5</primary>
+    <primary>JBoss 4 and 5</primary>
     <secondary>before your install</secondary>
    </indexterm>
   
@@ -58,7 +58,8 @@
   policy agent as described in the <citetitle>Administration Guide</citetitle>
   section on <link xlink:href="${serverDocBase}/admin-guide/#create-agent-profiles"
   xlink:show="new"><citetitle>Creating Agent
-  Profiles</citetitle></link>. To protect resources with the agent also create
+  Profiles</citetitle></link>.
+   To protect resources with the agent, create
   at least one policy as described in the section on <link
   xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
   xlink:show="new"><citetitle>Configuring
@@ -99,7 +100,7 @@ $ <userinput>echo $JAVA_HOME</userinput>
   <title>Installing the JBoss Policy Agent</title>
 
   <indexterm>
-   <primary>JBoss 4 &amp; 5 agent</primary>
+   <primary>JBoss 4 and 5 agent</primary>
    <secondary>installing </secondary>
   </indexterm>
 
@@ -178,17 +179,18 @@ Install log file location:
 ...</computeroutput>
     </screen>
 
-    <para>Upon successful completion, the installer has updated the JBoss
-    configuration, created a
+    <para>Upon successful completion, the installer updates the JBoss
+    configuration, creates a
     <filename>JBOSS_HOME/bin/setAgentClasspathdefault.sh</filename> script,
-    added the agent web application under
-    <filename>JBOSS_HOME/server/default/deploy/</filename>, and also set up
+    adds the agent web application under
+    <filename>JBOSS_HOME/server/default/deploy/</filename>, and also sets up
     configuration and log directories for the agent. The name of the
     script may vary; for example, if you installed the agent using the
     <filename>/path/to/jboss/server/web/conf</filename> configuration directory,
     the script would be named <filename>setAgentClasspathweb.sh</filename>.</para>
     <note>
-     <para>If the agent is in a different domain than the server, refer to <citetitle>Administration Guide</citetitle> procedure, <link
+     <para>If the agent is in a different domain than the server, refer to
+      <citetitle>Administration Guide</citetitle> procedure, <link
    xlink:href="${serverDocBase}/admin-guide/#chap-cdsso"
    xlink:show="new"><citetitle>Configuring Cross-Domain
    Single Sign On</citetitle></link>.</para>
@@ -196,30 +198,32 @@ Install log file location:
    </step>
    <step>
     <para>Take note of the configuration files and log locations.</para>
+
     <para>Each agent instance that you install on the system has its own
     numbered configuration and logs directory. The first agent's configuration
     and logs are thus located under the directory
-    <filename>j2ee_agents/jboss_v42_agent/Agent_001/</filename>.</para>
+    <filename>j2ee_agents/jboss_v42_agent/Agent_001/</filename>:</para>
+
     <variablelist>
      <varlistentry>
       <term><filename>config/<?eval ${agentsBootstrapFile}?></filename></term>
       <listitem>
        <para>Used to bootstrap the Java EE policy agent, allowing the agent to
-       connect to OpenAM and download its configuration</para>
+       connect to OpenAM and download its configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>config/<?eval ${agentsConfigurationFile}?></filename></term>
       <listitem>
        <para>Only used if you configured the Java EE policy agent to use local
-       configuration</para>
+       configuration.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
       <term><filename>logs/audit/</filename></term>
       <listitem>
        <para>Operational audit log directory, only used if remote logging
-       to OpenAM is disabled</para>
+       to OpenAM is disabled.</para>
       </listitem>
      </varlistentry>
      <varlistentry>
@@ -240,9 +244,12 @@ Install log file location:
        to properly identify itself to the OpenAM server. </para>
    </step>
    <step>
-    <para>To protect a web application, you must add the following filter
-    to the application's <filename>WEB-INF/web.xml</filename> deployment descriptor,
-    following the opening &lt;web-app&gt; tag.</para>
+    <para>
+     To protect a web application, you must add the following filter
+     to the application's <filename>WEB-INF/web.xml</filename> deployment descriptor,
+     following the opening &lt;web-app&gt; element:
+    </para>
+
     <programlisting language="xml"> &lt;filter&gt;
   &lt;filter-name&gt;Agent&lt;/filter-name&gt;
   &lt;display-name&gt;Agent&lt;/display-name&gt;
@@ -257,10 +264,15 @@ Install log file location:
   &lt;dispatcher&gt;FORWARD&lt;/dispatcher&gt;
   &lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;
  &lt;/filter-mapping&gt;</programlisting>
-    <para>If you are using the J2EE-POLICY or ALL mode, you must also add the following 
-    security domain specification to the application's <filename>jboss.xml</filename> and
-    <filename>jboss-web.xml</filename> configuration files. You do not need to
-    make this change if you are using the URL_POLICY, NONE, or SSO_ONLY mode.</para>
+
+    <para>
+     If you are using the J2EE-POLICY or ALL mode, you must also add the following
+     security domain specification to the application's <filename>jboss.xml</filename> and
+     <filename>jboss-web.xml</filename> configuration files. You do not need to
+     make this change if you are using the <literal>URL_POLICY</literal>,
+     <literal>NONE</literal>, or <literal>SSO_ONLY</literal> mode.
+    </para>
+
     <programlisting language="xml">&lt;security-domain&gt;java:/jaas/AMRealm&lt;/security-domain&gt;</programlisting>
    </step>
   </procedure>

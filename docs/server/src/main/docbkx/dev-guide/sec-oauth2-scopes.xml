@@ -24,7 +24,7 @@
   !
 -->
 <section xml:id='sec-oauth2-scopes'
- xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+ xmlns='http://docbook.org/ns/docbook' version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -347,7 +347,7 @@ $ <userinput>mvn install</userinput>
    <listitem>
     <para>
      To configure a specific OAuth 2.0 provider to use your plugin,
-     add the class name of your scopes plugin under Access Control &gt;
+     add the class name of your scopes plugin under Realms &gt;
      <replaceable>Realm Name</replaceable> &gt; Services &gt; <replaceable
      >OAuth2 Provider Name</replaceable> &gt; Scope Implementation Class.
     </para>

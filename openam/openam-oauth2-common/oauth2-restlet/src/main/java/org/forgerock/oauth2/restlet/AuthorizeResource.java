@@ -11,49 +11,39 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.oauth2.restlet;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.Set;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.forgerock.oauth2.core.AuthorizationService;
 import org.forgerock.oauth2.core.AuthorizationToken;
 import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.OAuth2RequestFactory;
 import org.forgerock.oauth2.core.exceptions.InvalidClientException;
-import org.forgerock.oauth2.core.exceptions.InvalidScopeException;
 import org.forgerock.oauth2.core.exceptions.OAuth2Exception;
 import org.forgerock.oauth2.core.exceptions.RedirectUriMismatchException;
 import org.forgerock.oauth2.core.exceptions.ResourceOwnerAuthenticationRequired;
 import org.forgerock.oauth2.core.exceptions.ResourceOwnerConsentRequired;
-import org.forgerock.openam.rest.service.RestletRealmRouter;
-import org.forgerock.openam.rest.service.RouterContextResource;
+import org.forgerock.openam.services.baseurl.BaseURLProviderFactory;
 import org.forgerock.openam.xui.XUIState;
-import org.owasp.esapi.ESAPI;
 import org.restlet.Request;
-import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
 import org.restlet.routing.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Handles requests to the OAuth2 authorize endpoint.
  *
  * @since 12.0.0
  */
-public class AuthorizeResource extends RouterContextResource {
+public class AuthorizeResource extends ConsentRequiredResource {
 
     private final Logger logger = LoggerFactory.getLogger("OAuth2Provider");
 
@@ -62,7 +52,6 @@ public class AuthorizeResource extends RouterContextResource {
     private final ExceptionHandler exceptionHandler;
     private final OAuth2Representation representation;
     private final Set<AuthorizeRequestHook> hooks;
-    private final XUIState xuiState;
 
     /**
      * Constructs a new AuthorizeResource.
@@ -75,14 +64,13 @@ public class AuthorizeResource extends RouterContextResource {
     @Inject
     public AuthorizeResource(OAuth2RequestFactory<Request> requestFactory, AuthorizationService authorizationService,
             ExceptionHandler exceptionHandler, OAuth2Representation representation, Set<AuthorizeRequestHook> hooks,
-            XUIState xuiState, @Named("OAuth2Router") Router router) {
-        super(router);
+            XUIState xuiState, @Named("OAuth2Router") Router router, BaseURLProviderFactory baseURLProviderFactory) {
+        super(router, baseURLProviderFactory, xuiState);
         this.requestFactory = requestFactory;
         this.authorizationService = authorizationService;
         this.exceptionHandler = exceptionHandler;
         this.representation = representation;
         this.hooks = hooks;
-        this.xuiState = xuiState;
     }
 
     /**
@@ -129,7 +117,7 @@ public class AuthorizeResource extends RouterContextResource {
                     e.getRedirectUri().toString(), null);
         } catch (ResourceOwnerConsentRequired e) {
             return representation.getRepresentation(getContext(), request, "authorize.ftl",
-                    getDataModel(e.getClientName(), e.getClientDescription(), e.getScopeDescriptions(), getRequest()));
+                    getDataModel(e, request));
         } catch (InvalidClientException e) {
             throw new OAuth2RestletException(e.getStatusCode(), e.getError(), e.getMessage(),
                     request.<String>getParameter("state"));
@@ -141,49 +129,6 @@ public class AuthorizeResource extends RouterContextResource {
                     request.<String>getParameter("redirect_uri"), request.<String>getParameter("state"),
                     e.getParameterLocation());
         }
-    }
-
-    /**
-     * Gets the data model to use when rendering the error page.
-     *
-     * @param displayName The OAuth2 client's display name.
-     * @param displayDescription The OAuth2 client's display description.
-     * @param displayScope The description of the requested scope.
-     * @param request
-     * @return The data model.
-     */
-    private Map<String, Object> getDataModel(String displayName, String displayDescription, Set<String> displayScope, Request request) {
-        Map<String, Object> data = new HashMap<String, Object>(getRequest().getAttributes());
-        data.putAll(getQuery().getValuesMap());
-        Reference resRef = getRequest().getResourceRef();
-        String target = resRef.getPath();
-        String query = resRef.getQuery();
-        if (!StringUtils.isBlank(query)) {
-            target = target + "?" + query;
-        }
-        data.put("target", target);
-        data.put("display_name", ESAPI.encoder().encodeForHTML(displayName));
-        data.put("display_description", ESAPI.encoder().encodeForHTML(displayDescription));
-        data.put("display_scope", encodeSetForHTML(displayScope));
-        data.put("xui", xuiState.isXUIEnabled());
-        data.put("baseUrl", request.getRootRef() + "/..");
-        return data;
-    }
-
-    /**
-     * Encodes a {@code Set} so it can be displayed in a HTML page.
-     *
-     * @param set The {@code Set} to encode.
-     * @return The encoded {@code Set}.
-     */
-    private Set<String> encodeSetForHTML(Set<String> set) {
-        final Set<String> encodedList = new LinkedHashSet<String>();
-
-        for (String entry : set) {
-            encodedList.add(ESAPI.encoder().encodeForHTML(entry));
-        }
-
-        return encodedList;
     }
 
     /**

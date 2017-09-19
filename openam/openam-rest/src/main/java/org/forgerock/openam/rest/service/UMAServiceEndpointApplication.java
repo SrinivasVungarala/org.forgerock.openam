@@ -11,12 +11,14 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.rest.service;
 
-import org.forgerock.openam.rest.RestEndpoints;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import org.forgerock.guice.core.InjectorHolder;
 import org.restlet.data.MediaType;
 import org.restlet.routing.Router;
 
@@ -30,17 +32,16 @@ public class UMAServiceEndpointApplication extends ServiceEndpointApplication {
      * Sets the default media type as "application/json".
      */
     public UMAServiceEndpointApplication() {
-        super(new XMLRestStatusService());
+        super(new JSONRestStatusService());
         getMetadataService().setDefaultMediaType(MediaType.APPLICATION_JSON);
     }
 
     /**
      * Returns the UMA router.
      *
-     * @param restEndpoints Registry of routers.
      * @return The UMA router.
      */
-    protected Router getRouter(RestEndpoints restEndpoints) {
-        return restEndpoints.getUMAServiceRouter();
+    protected Router getRouter() {
+        return InjectorHolder.getInstance(Key.get(Router.class, Names.named("UMARouter")));
     }
 }

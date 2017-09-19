@@ -16,39 +16,53 @@
 
 package org.forgerock.openam.rest.authz;
 
+import static org.fest.assertions.Assertions.assertThat;
+import static org.forgerock.json.JsonValue.field;
+import static org.forgerock.json.JsonValue.json;
+import static org.forgerock.json.JsonValue.object;
+import static org.forgerock.json.resource.test.assertj.AssertJActionResponseAssert.assertThat;
+import static org.forgerock.json.resource.test.assertj.AssertJResourceResponseAssert.assertThat;
+import static org.mockito.BDDMockito.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.delegation.DelegationEvaluator;
 import com.sun.identity.delegation.DelegationException;
 import com.sun.identity.delegation.DelegationPermission;
 import com.sun.identity.delegation.DelegationPermissionFactory;
-import org.fest.assertions.Assertions;
 import org.forgerock.authz.filter.crest.AuthorizationFilters;
 import org.forgerock.authz.filter.crest.api.CrestAuthorizationModule;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.services.context.Context;
+import org.forgerock.http.routing.RoutingMode;
+import org.forgerock.json.JsonValue;
 import org.forgerock.json.resource.ActionRequest;
+import org.forgerock.json.resource.ActionResponse;
 import org.forgerock.json.resource.CollectionResourceProvider;
 import org.forgerock.json.resource.CreateRequest;
 import org.forgerock.json.resource.DeleteRequest;
 import org.forgerock.json.resource.FilterChain;
+import org.forgerock.json.resource.ForbiddenException;
 import org.forgerock.json.resource.PatchOperation;
 import org.forgerock.json.resource.PatchRequest;
 import org.forgerock.json.resource.QueryRequest;
-import org.forgerock.json.resource.QueryResultHandler;
+import org.forgerock.json.resource.QueryResourceHandler;
+import org.forgerock.json.resource.QueryResponse;
 import org.forgerock.json.resource.ReadRequest;
 import org.forgerock.json.resource.Requests;
-import org.forgerock.json.resource.Resource;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.ResultHandler;
+import org.forgerock.json.resource.ResourceResponse;
+import org.forgerock.json.resource.Responses;
 import org.forgerock.json.resource.Router;
-import org.forgerock.json.resource.RoutingMode;
-import org.forgerock.json.resource.ServerContext;
 import org.forgerock.json.resource.UpdateRequest;
-import org.forgerock.openam.rest.resource.RealmContext;
+import org.forgerock.openam.rest.RealmContext;
 import org.forgerock.openam.rest.resource.SubjectContext;
 import org.forgerock.util.Function;
 import org.forgerock.util.promise.NeverThrowsException;
-import org.mockito.ArgumentCaptor;
+import org.forgerock.util.promise.Promise;
+import org.forgerock.util.promise.Promises;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -60,14 +74,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static org.mockito.BDDMockito.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Unit test for {@link org.forgerock.openam.rest.authz.PrivilegeAuthzModule}.
@@ -99,17 +105,13 @@ public class PrivilegeAuthzModuleTest {
     private SSOToken token;
     @Mock
     private CollectionResourceProvider provider;
-    @Mock
-    private ResultHandler<Resource> handler;
-    @Mock
-    private ResultHandler<JsonValue> jsonHandler;
 
     private CrestAuthorizationModule module;
 
     @BeforeMethod
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        final Map<String, PrivilegeDefinition> definitions = new HashMap<String, PrivilegeDefinition>();
+        final Map<String, PrivilegeDefinition> definitions = new HashMap<>();
         definitions.put("evaluate", PrivilegeDefinition.getInstance("evaluate", PrivilegeDefinition.Action.READ));
         definitions.put("blowup", PrivilegeDefinition.getInstance("destroy", PrivilegeDefinition.Action.MODIFY));
         module = new PrivilegeAuthzModule(evaluator, definitions, factory);
@@ -118,39 +120,37 @@ public class PrivilegeAuthzModuleTest {
     @Test
     public void crestReadIsAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("READ"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("READ"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "read", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "read", actions, EXTENSIONS))
                 .willReturn(permission);
 
         given(subjectContext.getCallerSSOToken()).willReturn(token);
-        given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
+        given(evaluator.isAllowed(token, permission, ENVIRONMENT)).willReturn(true);
+
+        JsonValue jsonValue = json(object(field("someKey", "someValue")));
+        Promise<ResourceResponse, ResourceException> promise = Promises
+                .newResultPromise(Responses.newResourceResponse("1", "1.0", jsonValue));
+        given(provider.readInstance(isA(Context.class), eq("123"), isA(ReadRequest.class))).willReturn(promise);
 
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
-
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
         final ReadRequest request = Requests.newReadRequest("/policies/123");
-        router.handleRead(context, request, handler);
+        context.setSubRealm("abc", "abc");
+        Promise<ResourceResponse, ResourceException> result = router.handleRead(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "read", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).readInstance(isA(ServerContext.class), eq("123"), isA(ReadRequest.class), same(handler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, handler, token, provider);
+        assertThat(result).succeeded().withContent().stringAt("someKey").isEqualTo("someValue");
     }
 
     @Test
-    public void crestQueryIsAllowed() throws SSOException, DelegationException {
+    public void crestQueryIsAllowed() throws SSOException, DelegationException, ResourceException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("READ"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("READ"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "read", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "read", actions, EXTENSIONS))
@@ -159,31 +159,30 @@ public class PrivilegeAuthzModuleTest {
         given(subjectContext.getCallerSSOToken()).willReturn(token);
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
 
+        QueryResourceHandler handler = mock(QueryResourceHandler.class);
+        Promise<QueryResponse, ResourceException> promise = Promises.newResultPromise(Responses.newQueryResponse("abc-def"));
+        given(provider.queryCollection(isA(Context.class), isA(QueryRequest.class), isA(QueryResourceHandler.class)))
+                .willReturn(promise);
+
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final QueryRequest request = Requests.newQueryRequest("/policies");
-        final QueryResultHandler handler = mock(QueryResultHandler.class);
-        router.handleQuery(context, request, handler);
+        Promise<QueryResponse, ResourceException> result = router.handleQuery(context, request, handler);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "read", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).queryCollection(isA(ServerContext.class), isA(QueryRequest.class), same(handler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, handler, token, provider);
+        QueryResponse response = result.getOrThrowUninterruptibly();
+        assertThat(response.getPagedResultsCookie()).isEqualTo("abc-def");
     }
 
     @Test
     public void crestCreateIsAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("MODIFY"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("MODIFY"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS))
@@ -192,30 +191,29 @@ public class PrivilegeAuthzModuleTest {
         given(subjectContext.getCallerSSOToken()).willReturn(token);
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
 
+        JsonValue jsonValue = json(object(field("someKey", "someValue")));
+        Promise<ResourceResponse, ResourceException> promise = Promises
+                .newResultPromise(Responses.newResourceResponse("1", "1.0", jsonValue));
+        given(provider.createInstance(isA(Context.class), isA(CreateRequest.class))).willReturn(promise);
+
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final CreateRequest request = Requests.newCreateRequest("/policies", JsonValue.json(new Object()));
-        router.handleCreate(context, request, handler);
+        Promise<ResourceResponse, ResourceException> result = router.handleCreate(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).createInstance(isA(ServerContext.class), isA(CreateRequest.class), same(handler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, handler, token, provider);
+        assertThat(result).succeeded().withContent().stringAt("someKey").isEqualTo("someValue");
     }
 
     @Test
     public void crestUpdateIsAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("MODIFY"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("MODIFY"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS))
@@ -224,30 +222,29 @@ public class PrivilegeAuthzModuleTest {
         given(subjectContext.getCallerSSOToken()).willReturn(token);
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
 
+        JsonValue jsonValue = json(object(field("someKey", "someValue")));
+        Promise<ResourceResponse, ResourceException> promise = Promises
+                .newResultPromise(Responses.newResourceResponse("1", "1.0", jsonValue));
+        given(provider.updateInstance(isA(Context.class), eq("123"), isA(UpdateRequest.class))).willReturn(promise);
+
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final UpdateRequest request = Requests.newUpdateRequest("/policies/123", JsonValue.json(new Object()));
-        router.handleUpdate(context, request, handler);
+        Promise<ResourceResponse, ResourceException> result = router.handleUpdate(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).updateInstance(isA(ServerContext.class), eq("123"), isA(UpdateRequest.class), same(handler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, handler, token, provider);
+        assertThat(result).succeeded().withContent().stringAt("someKey").isEqualTo("someValue");
     }
 
     @Test
     public void crestDeleteIsAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("MODIFY"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("MODIFY"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS))
@@ -256,30 +253,29 @@ public class PrivilegeAuthzModuleTest {
         given(subjectContext.getCallerSSOToken()).willReturn(token);
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
 
+        JsonValue jsonValue = json(object(field("someKey", "someValue")));
+        Promise<ResourceResponse, ResourceException> promise = Promises
+                .newResultPromise(Responses.newResourceResponse("1", "1.0", jsonValue));
+        given(provider.deleteInstance(isA(Context.class), eq("123"), isA(DeleteRequest.class))).willReturn(promise);
+
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final DeleteRequest request = Requests.newDeleteRequest("/policies/123");
-        router.handleDelete(context, request, handler);
+        Promise<ResourceResponse, ResourceException> result = router.handleDelete(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).deleteInstance(isA(ServerContext.class), eq("123"), isA(DeleteRequest.class), same(handler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, handler, token, provider);
+        assertThat(result).succeeded().withContent().stringAt("someKey").isEqualTo("someValue");
     }
 
     @Test
     public void crestPatchIsAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("MODIFY"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("MODIFY"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS))
@@ -288,30 +284,29 @@ public class PrivilegeAuthzModuleTest {
         given(subjectContext.getCallerSSOToken()).willReturn(token);
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
 
+        JsonValue jsonValue = json(object(field("someKey", "someValue")));
+        Promise<ResourceResponse, ResourceException> promise = Promises
+                .newResultPromise(Responses.newResourceResponse("1", "1.0", jsonValue));
+        given(provider.patchInstance(isA(Context.class), eq("123"), isA(PatchRequest.class))).willReturn(promise);
+
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final PatchRequest request = Requests.newPatchRequest("/policies/123", PatchOperation.add("abc", "123"));
-        router.handlePatch(context, request, handler);
+        Promise<ResourceResponse, ResourceException> result = router.handlePatch(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).patchInstance(isA(ServerContext.class), eq("123"), isA(PatchRequest.class), same(handler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, handler, token, provider);
+        assertThat(result).succeeded().withContent().stringAt("someKey").isEqualTo("someValue");
     }
 
     @Test
     public void crestActionEvaluateIsAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("READ"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("READ"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "evaluate", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "evaluate", actions, EXTENSIONS))
@@ -320,30 +315,29 @@ public class PrivilegeAuthzModuleTest {
         given(subjectContext.getCallerSSOToken()).willReturn(token);
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
 
+        JsonValue jsonValue = json(object(field("someKey", "someValue")));
+        Promise<ActionResponse, ResourceException> promise = Promises
+                .newResultPromise(Responses.newActionResponse(jsonValue));
+        given(provider.actionCollection(isA(Context.class), isA(ActionRequest.class))).willReturn(promise);
+
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final ActionRequest request = Requests.newActionRequest("/policies", "evaluate");
-        router.handleAction(context, request, jsonHandler);
+        Promise<ActionResponse, ResourceException> result = router.handleAction(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "evaluate", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).actionCollection(isA(ServerContext.class), isA(ActionRequest.class), same(jsonHandler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, jsonHandler, token, provider);
+        assertThat(result).succeeded().withContent().stringAt("someKey").isEqualTo("someValue");
     }
 
     @Test
     public void crestActionBlowupIsAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("MODIFY"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("MODIFY"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "destroy", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "destroy", actions, EXTENSIONS))
@@ -352,50 +346,44 @@ public class PrivilegeAuthzModuleTest {
         given(subjectContext.getCallerSSOToken()).willReturn(token);
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(true);
 
+        JsonValue jsonValue = json(object(field("someKey", "someValue")));
+        Promise<ActionResponse, ResourceException> promise = Promises
+                .newResultPromise(Responses.newActionResponse(jsonValue));
+        given(provider.actionCollection(isA(Context.class), isA(ActionRequest.class))).willReturn(promise);
+
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final ActionRequest request = Requests.newActionRequest("/policies", "blowup");
-        router.handleAction(context, request, jsonHandler);
+        Promise<ActionResponse, ResourceException> result = router.handleAction(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "destroy", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-        // Required by the following verify.
-        given(subjectContext.toJsonValue()).willReturn(JsonValue.json(new Object()));
-        verify(provider).actionCollection(isA(ServerContext.class), isA(ActionRequest.class), same(jsonHandler));
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, jsonHandler, token, provider);
+        assertThat(result).succeeded().withContent().stringAt("someKey").isEqualTo("someValue");
     }
 
     @Test
     public void crestActionNoMappingFails() throws SSOException, DelegationException {
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
-        final ServerContext context = new RealmContext(subjectContext);
+        final Context context = new RealmContext(subjectContext);
         final ActionRequest request = Requests.newActionRequest("/policies", "unknownAction");
-        router.handleAction(context, request, jsonHandler);
+        Promise<ActionResponse, ResourceException> promise = router.handleAction(context, request);
 
         // Then...
-        final ArgumentCaptor<ResourceException> exceptionCapture = ArgumentCaptor.forClass(ResourceException.class);
-        verify(jsonHandler).handleError(exceptionCapture.capture());
-        final ResourceException exception = exceptionCapture.getValue();
-        Assertions.assertThat(exception.getCode()).isEqualTo(ResourceException.FORBIDDEN);
-
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, jsonHandler, token, provider);
+        assertThat(promise).failedWithException().isInstanceOf(ForbiddenException.class);
     }
 
     @Test
     public void crestRequestNotAllowed() throws SSOException, DelegationException {
         // Given...
-        final Set<String> actions = new HashSet<String>(Arrays.asList("MODIFY"));
+        final Set<String> actions = new HashSet<>(Arrays.asList("MODIFY"));
         final DelegationPermission permission = new DelegationPermission(
                 "/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS, DUMB_FUNC);
         given(factory.newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS))
@@ -405,26 +393,17 @@ public class PrivilegeAuthzModuleTest {
         given(evaluator.isAllowed(eq(token), eq(permission), eq(ENVIRONMENT))).willReturn(false);
 
         // When...
-        final FilterChain chain = AuthorizationFilters.createFilter(provider, module);
+        final FilterChain chain = AuthorizationFilters.createAuthorizationFilter(provider, module);
         final Router router = new Router();
-        router.addRoute(RoutingMode.STARTS_WITH, "/policies", chain);
+        router.addRoute(RoutingMode.STARTS_WITH, Router.uriTemplate("/policies"), chain);
 
         final RealmContext context = new RealmContext(subjectContext);
-        context.addSubRealm("abc", "abc");
+        context.setSubRealm("abc", "abc");
         final CreateRequest request = Requests.newCreateRequest("/policies", JsonValue.json(new Object()));
-        router.handleCreate(context, request, handler);
+        Promise<ResourceResponse, ResourceException> promise = router.handleCreate(context, request);
 
         // Then...
-        verify(factory).newInstance("/abc", "rest", "1.0", "policies", "modify", actions, EXTENSIONS);
-        verify(subjectContext).getCallerSSOToken();
-        verify(evaluator).isAllowed(token, permission, ENVIRONMENT);
-
-        final ArgumentCaptor<ResourceException> exceptionCapture = ArgumentCaptor.forClass(ResourceException.class);
-        verify(handler).handleError(exceptionCapture.capture());
-        final ResourceException exception = exceptionCapture.getValue();
-        Assertions.assertThat(exception.getCode()).isEqualTo(ResourceException.FORBIDDEN);
-
-        verifyNoMoreInteractions(factory, subjectContext, evaluator, handler, token, provider);
+        assertThat(promise).failedWithException().isInstanceOf(ForbiddenException.class);
     }
 
 }

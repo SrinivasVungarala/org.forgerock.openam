@@ -118,18 +118,36 @@ static apr_status_t amagent_cleanup(void *arg) {
     return APR_SUCCESS;
 }
 
+static void recovery_callback(void *cb_arg, char * name, int error) {
+    server_rec *s = cb_arg;
+    if (error) {
+        LOG_S(APLOG_ERR, s, "unable to clear shared resource: %s, error %d", name, error);
+    } else {
+        LOG_S(APLOG_WARNING, s, "agent cleared shared resource: %s", name);
+    }
+}
+
+static int main_init_status(int set) {
+    if (set) {
+        *(char **) apr_array_push(ap_server_config_defines) = "AM_PTHREAD_ATFORK_DONE";
+        return AM_SUCCESS;
+    }
+    return ap_exists_config_define("AM_PTHREAD_ATFORK_DONE");
+}
+
 static int amagent_init(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp,
         server_rec *s) {
     /* main process init */
     int status;
     apr_status_t rv = APR_SUCCESS;
-    void *data;
-    amagent_config_t *config = ap_get_module_config(s->module_config, &amagent_module);
+    void *data = NULL;
+    apr_dso_handle_t *mod_handle = NULL;
+    amagent_config_t *config;
 
 #define AMAGENT_INIT_ONCE "AMAGENT_INIT_ONCE"
     apr_pool_userdata_get(&data, AMAGENT_INIT_ONCE, s->process->pool);
-    if (!data) {
-        /* module has already been initialized */
+    if (data == NULL) {
+        /* this is a configuration check phase - do nothing */
         apr_pool_userdata_set((const void *) 1, AMAGENT_INIT_ONCE,
                 apr_pool_cleanup_null, s->process->pool);
         return rv;
@@ -139,7 +157,24 @@ static int amagent_init(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp,
     LOG_S(APLOG_DEBUG, s, "amagent_init() %d", getpid());
 
 #ifndef _WIN32
-    status = am_init(config->agent_id);
+    config = ap_get_module_config(s->module_config, &amagent_module);
+
+#ifdef __APPLE__
+    /* prevent agent module from being unloaded (support for restart/graceful options) */
+    rv = apr_dso_load(&mod_handle, "mod_openam.so", s->process->pool);
+    if (rv) {
+        LOG_S(APLOG_ERR, s, "amagent_init() failed to load agent module, error: %d", rv);
+        return APR_EINIT;
+    }
+#endif
+
+    /* find and clear down shared memory resources after abnormal termination */
+    if (am_remove_shm_and_locks(config->agent_id, recovery_callback, s) != AM_SUCCESS) {
+        LOG_S(APLOG_ERR, s, "amagent_init() failed to recover after abnormal termination");
+        return APR_EINIT;
+    }
+
+    status = am_init(config->agent_id, main_init_status);
     if (status != AM_SUCCESS) {
         rv = APR_EINIT;
         LOG_S(APLOG_ERR, s, "amagent_init() status: %s", am_strerror(status));
@@ -212,11 +247,24 @@ static int am_status_value(am_status_t v) {
     }
 }
 
-static am_status_t get_request_url(am_request_t *rq) {
-    request_rec *r = (request_rec *) (rq != NULL ? rq->ctx : NULL);
-    if (r == NULL) return AM_EINVAL;
-    rq->orig_url = ap_construct_url(r->pool, r->unparsed_uri, r);
-    if (rq->orig_url == NULL) return AM_EINVAL;
+static am_status_t get_request_url(am_request_t *req) {
+    request_rec *rec;
+
+    if (req == NULL) {
+        return AM_EINVAL;
+    }
+
+    rec = (request_rec *) req->ctx;
+    if (rec == NULL) {
+        return AM_EINVAL;
+    }
+
+    req->orig_url = ap_construct_url(rec->pool, rec->unparsed_uri, rec);
+    if (req->orig_url == NULL) {
+        return AM_EINVAL;
+    }
+
+    req->path_info = rec->path_info;
     return AM_SUCCESS;
 }
 
@@ -412,7 +460,7 @@ static am_status_t set_custom_response(am_request_t *rq, const char *text, const
             break;
         }
     }
-    AM_LOG_INFO(rq->instance_id, "set_custom_response(): status: %s (exit: %s)",
+    AM_LOG_DEBUG(rq->instance_id, "set_custom_response(): status: %s (exit: %s)",
             am_strerror(status), am_strerror(rq->status));
 
     return AM_SUCCESS;
@@ -605,7 +653,7 @@ static int amagent_auth_handler(request_rec *req) {
      * instances - update logging level only 
      */
     am_log_register_instance(config->config_id, config->debug_file, config->debug_level, config->debug_size,
-            config->audit_file, config->audit_level, config->audit_size);
+            config->audit_file, config->audit_level, config->audit_size, config->config);
 
     AM_LOG_DEBUG(config->config_id, "%s begin", thisfunc);
 

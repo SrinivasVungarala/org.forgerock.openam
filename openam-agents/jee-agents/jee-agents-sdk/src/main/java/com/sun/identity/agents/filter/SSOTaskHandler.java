@@ -24,9 +24,7 @@
  *
  * $Id: SSOTaskHandler.java,v 1.4 2008/06/25 05:51:48 qcheng Exp $
  *
- */
- /*
- * Portions Copyrighted 2010-2014 ForgeRock AS
+ * Portions Copyrighted 2010-2015 ForgeRock AS.
  */
 
 package com.sun.identity.agents.filter;
@@ -37,8 +35,6 @@ import javax.servlet.http.HttpSession;
 
 import com.sun.identity.agents.arch.AgentException;
 import com.sun.identity.agents.arch.Manager;
-import com.sun.identity.agents.arch.AgentConfiguration;
-import com.sun.identity.agents.arch.ServiceFactory;
 import com.sun.identity.agents.common.ISSOTokenValidator;
 import com.sun.identity.agents.common.SSOValidationResult;
 import com.sun.identity.agents.common.ICookieResetHelper;
@@ -51,8 +47,7 @@ import org.forgerock.openam.agents.filter.PDPInitHelper;
  * requests for Single Sign-On.
  * </p>
  */
-public class SSOTaskHandler extends AmFilterTaskHandler 
-implements ISSOTaskHandler {
+public class SSOTaskHandler extends AmFilterTaskHandler implements ISSOTaskHandler {
 
     public SSOTaskHandler(Manager manager) {
         super(manager);
@@ -81,44 +76,22 @@ implements ISSOTaskHandler {
             tokenValidator.validate(ctx.getHttpServletRequest());
 
         if (!ssoValidationResult.isValid()) {
-            //Check if it is a logout request
-            try {
-                String applicationLogoutHandlerImplClass =
-                          AgentConfiguration.getServiceResolver().
-                          getApplicationLogoutHandlerImpl();
-                ApplicationLogoutHandler handler = (ApplicationLogoutHandler) 
-                                ServiceFactory.getServiceInstance(getManager(),
-                                applicationLogoutHandlerImplClass);
-                if (ctx.getHttpServletRequest().getAttribute(AmFilterResult.class.getName())==null){
-	                handler.initialize(ssoContext, ctx.getFilterMode());
-	                result = handler.process(ctx);
-                }else
-                	result = (AmFilterResult)ctx.getHttpServletRequest().getAttribute(AmFilterResult.class.getName());
-            } catch (Exception ex) {
-                logError("SSOTaskHandler: Error while " + 
-                         " delegating to ApplicationLogoutHandler.", ex);
-                result = null;
-            }
-            
+            //implementation of CR openam-307
+            result = PDPInitHelper.initializePDP(this, ctx, ssoContext);
+            //end of implementation of CR openam-307
             if (result == null) {
-                //implementation of CR openam-307
-                result = PDPInitHelper.initializePDP(this, ctx, ssoContext);
-                //end of implementation of CR openam-307
-                if (result == null) {
-                    if(isLogMessageEnabled()) {
-                        logMessage("SSOTaskHandler: SSO Validation failed for "
-                                   + tokenValidator.getSSOTokenValue(
-                                           ctx.getHttpServletRequest()));
-                    }
-                    doCookiesReset(ctx);
-                    result = doSSOLogin(ctx);
+                if (isLogMessageEnabled()) {
+                    logMessage("SSOTaskHandler: SSO Validation failed for "
+                               + tokenValidator.getSSOTokenValue(ctx.getHttpServletRequest()));
                 }
+                doCookiesReset(ctx);
+                result = doSSOLogin(ctx);
             }
         } else {
             if (ssoContext.isSSOCacheEnabled()) {
                 cacheSSOToken(ssoValidationResult);
             }
-            if(ssoContext.getLoginAttemptLimit() > 0) {
+            if (ssoContext.getLoginAttemptLimit() > 0) {
                 int loginAttempt = ssoContext.getLoginAttemptValue(ctx);
                 if (loginAttempt >= 0) {
                     ctx.expireCookie(ssoContext.getLoginCounterCookieName());

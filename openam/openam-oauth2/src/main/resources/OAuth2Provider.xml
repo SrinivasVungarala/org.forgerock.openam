@@ -42,7 +42,7 @@
 
                 <AttributeSchema name="forgerock-oauth2-provider-refresh-token-lifetime"
                                  type="single"
-                                 syntax="number_range" rangeStart="0" rangeEnd="2147483647"
+                                 syntax="number_range" rangeStart="-1" rangeEnd="2147483647"
                                  validator="RequiredValueValidator"
                                  i18nKey="a101" resourceName="refreshTokenLifetime">
                     <DefaultValues>
@@ -86,6 +86,12 @@
                     </DefaultValues>
                 </AttributeSchema>
 
+                <AttributeSchema name="customLoginUrlTemplate"
+                                 type="single"
+                                 syntax="string"
+                                 i18nKey="a103b">
+                </AttributeSchema>
+
                 <AttributeSchema name="forgerock-oauth2-provider-scope-implementation-class"
                                  type="single"
                                  syntax="string"
@@ -112,7 +118,7 @@
                         </ChoiceValuesClassName>
                     </ChoiceValues>
                     <DefaultValues>
-                        <Value>&GlobalOidcClaimsScriptId;</Value>
+                        <Value>@GlobalOidcClaimsScriptId@</Value>
                     </DefaultValues>
                 </AttributeSchema>
 
@@ -124,7 +130,6 @@
                     <DefaultValues>
                         <Value>token|org.forgerock.restlet.ext.oauth2.flow.responseTypes.TokenResponseType</Value>
                         <Value>code|org.forgerock.restlet.ext.oauth2.flow.responseTypes.CodeResponseType</Value>
-                        <Value>id_token|org.forgerock.restlet.ext.oauth2.flow.responseTypes.IDTokenResponseType</Value>
                     </DefaultValues>
                 </AttributeSchema>
 
@@ -149,19 +154,21 @@
                     </DefaultValues>
                 </AttributeSchema>
 
+                <AttributeSchema name="displayNameAttribute"
+                                 type="single"
+                                 syntax="string"
+                                 i18nKey="a1075">
+                    <DefaultValues>
+                        <Value>cn</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+
                 <AttributeSchema
                         name="forgerock-oauth2-provider-supported-scopes"
                         type="list"
                         syntax="string"
                         resourceName="supportedScopes"
                         i18nKey="a108">
-                    <DefaultValues>
-                        <Value>openid</Value>
-                        <Value>profile</Value>
-                        <Value>email</Value>
-                        <Value>address</Value>
-                        <Value>phone</Value>
-                    </DefaultValues>
                 </AttributeSchema>
 
                 <AttributeSchema
@@ -170,9 +177,6 @@
                         syntax="string"
                         resourceName="jkwsURI"
                         i18nKey="a109">
-                    <DefaultValues>
-                        <Value></Value>
-                    </DefaultValues>
                 </AttributeSchema>
 
                 <AttributeSchema
@@ -192,12 +196,6 @@
                         syntax="string"
                         resourceName="supportedIDTokenSigningAlgorithms"
                         i18nKey="a111">
-                    <DefaultValues>
-                        <Value>HS256</Value>
-                        <Value>HS384</Value>
-                        <Value>HS512</Value>
-                        <Value>RS256</Value>
-                    </DefaultValues>
                 </AttributeSchema>
 
                 <AttributeSchema
@@ -206,16 +204,6 @@
                         syntax="string"
                         resourceName="supportedClaims"
                         i18nKey="a112">
-                    <DefaultValues>
-                        <Value>email</Value>
-                        <Value>address</Value>
-                        <Value>phone_number</Value>
-                        <Value>given_name</Value>
-                        <Value>zoneinfo</Value>
-                        <Value>family_name</Value>
-                        <Value>locale</Value>
-                        <Value>name</Value>
-                    </DefaultValues>
                 </AttributeSchema>
 
                 <AttributeSchema
@@ -224,13 +212,6 @@
                         syntax="string"
                         resourceName="defaultScopes"
                         i18nKey="a122">
-                    <DefaultValues>
-                        <Value>openid</Value>
-                        <Value>profile</Value>
-                        <Value>email</Value>
-                        <Value>address</Value>
-                        <Value>phone</Value>
-                    </DefaultValues>
                 </AttributeSchema>
 
                 <AttributeSchema name="forgerock-oauth2-provider-jwt-token-lifetime"
@@ -276,6 +257,20 @@
                                  i18nKey="a124">
                     <DefaultValues>
                         <Value>changeme</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+
+                <AttributeSchema name="forgerock-oauth2-provider-code-verifier-enforced"
+                                 type="single"
+                                 syntax="boolean"
+                                 resourceName="codeVerifierEnforced"
+                                 i18nKey="a126">
+                    <BooleanValues>
+                        <BooleanTrueValue i18nKey="i18nTrue">true</BooleanTrueValue>
+                        <BooleanFalseValue i18nKey="i18nFalse">false</BooleanFalseValue>
+                    </BooleanValues>
+                    <DefaultValues>
+                        <Value>false</Value>
                     </DefaultValues>
                 </AttributeSchema>
 
@@ -355,9 +350,6 @@
                         syntax="string"
                         resourceName="modifiedTimestampAttribute"
                         i18nKey="a120">
-                    <DefaultValues>
-                        <Value>modifyTimestamp</Value>
-                    </DefaultValues>
                 </AttributeSchema>
 
                 <AttributeSchema
@@ -366,9 +358,6 @@
                         syntax="string"
                         resourceName="createdTimestampAttribute"
                         i18nKey="a121">
-                    <DefaultValues>
-                        <Value>createTimestamp</Value>
-                    </DefaultValues>
                 </AttributeSchema>
 
                 <AttributeSchema name="alwaysAddClaimsToToken"
@@ -381,6 +370,26 @@
                     </BooleanValues>
                     <DefaultValues>
                         <Value>false</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+
+                <AttributeSchema name="verificationUrl" type="single" syntax="string" i18nKey="a127">
+                </AttributeSchema>
+
+                <AttributeSchema name="completionUrl" type="single" syntax="string" i18nKey="a128">
+                </AttributeSchema>
+
+                <AttributeSchema name="deviceCodeLifetime" type="single" i18nKey="a129"
+                        syntax="number_range" rangeStart="0" rangeEnd="2147483647">
+                    <DefaultValues>
+                        <Value>300</Value>
+                    </DefaultValues>
+                </AttributeSchema>
+
+                <AttributeSchema name="devicePollInterval" type="single" i18nKey="a130"
+                        syntax="number_range" rangeStart="0" rangeEnd="2147483647">
+                    <DefaultValues>
+                        <Value>5</Value>
                     </DefaultValues>
                 </AttributeSchema>
 

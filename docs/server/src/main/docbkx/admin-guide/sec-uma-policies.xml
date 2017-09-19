@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-uma-policies'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -50,10 +50,7 @@
 
   <para>Managing UMA policies requires that a resource set is
    registered to the user in the URL. For information on registering resource
-   sets, see the <citetitle>Administration Guide</citetitle> chapter <link xlink:show="new"
-         xlink:href="admin-guide#managing-uma-resource-sets"
-         xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-    >Managing UMA Resource Sets</citetitle></link>.
+   sets, see <xref linkend="managing-uma-resource-sets" />.
   </para>
 
   <para>Once a resource set is registered to the user, use the
@@ -84,9 +81,7 @@
    <para>To create a policy, the resource owner must be logged in to the
     authorization server and have an SSO token issued to them, and must also
     know the
-    <link xlink:show="new"
-          xlink:href="admin-guide#to-register-an-uma-resource-set"
-          xlink:role="http://docbook.org/xlink/role/olink">ID of the resource set</link>
+    <xref linkend="to-register-an-uma-resource-set" />
     to be protected. This information is used when creating policies.</para>
    <note><para>Only the resource owner can create a policy to protect
     a resource set. Administrator users such as <literal>amadmin</literal> cannot
@@ -144,10 +139,7 @@ $ <userinput>curl \
    <para>To read a policy, the resource owner or an administrator user must be
     logged in to the authorization server and have an SSO token issued to
     them. The
-    <link xlink:show="new"
-          xlink:href="admin-guide#to-create-an-uma-policy"
-          xlink:role="http://docbook.org/xlink/role/olink">ID of the
-     policy</link> to read must also be known.</para>
+    <xref linkend="to-create-an-uma-policy" /> to read must also be known.</para>
    <tip><para>The ID used for a policy is always identical to the ID of the
     resource set it protects.</para></tip>
    <step>
@@ -205,10 +197,7 @@ https://openam.example.com:8443/openam/json/users/demo\
    <para>To update a policy, the resource owner or an administrator user must be
     logged in to the authorization server and have an SSO token issued to
     them. The
-    <link xlink:show="new"
-          xlink:href="admin-guide#to-create-an-uma-policy"
-          xlink:role="http://docbook.org/xlink/role/olink">ID of the
-     policy</link> to read must also be known.</para>
+    <xref linkend="to-create-an-uma-policy" /> to read must also be known.</para>
    <tip><para>The ID used for a policy is always identical to the ID of the
     resource set it protects.</para></tip>
    <step>
@@ -283,10 +272,7 @@ https://openam.example.com:8443/openam/json/users/demo\
    <para>To delete a policy, the resource owner or an administrator user must be
     logged in to the authorization server and have an SSO token issued to
     them. The
-    <link xlink:show="new"
-          xlink:href="admin-guide#to-create-an-uma-policy"
-          xlink:role="http://docbook.org/xlink/role/olink">ID of the
-     policy</link> to read must also be known.</para>
+    <xref linkend="to-create-an-uma-policy" /> to read must also be known.</para>
    <tip><para>The ID used for a policy is always identical to the ID of the
     resource set it protects.</para></tip>
    <step>
@@ -326,10 +312,7 @@ https://openam.example.com:8443/openam/json/users/demo\
   <para>To query policies, the resource owner or an administrator user
    must be logged in to the authorization server and have an SSO token issued to
    them. The
-   <link xlink:show="new"
-         xlink:href="admin-guide#to-create-an-uma-policy"
-         xlink:role="http://docbook.org/xlink/role/olink">ID of the
-    policy</link> to read must also be known.</para>
+   <xref linkend="to-create-an-uma-policy" /> to read must also be known.</para>
 
   <step>
    <para>Create a GET request to the policies endpoint, including the

@@ -17,8 +17,8 @@
 package org.forgerock.openam.authentication.modules.persistentcookie;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 import javax.security.auth.Subject;
@@ -41,14 +41,19 @@ import com.sun.identity.authentication.spi.AuthLoginException;
 import com.sun.identity.authentication.spi.AuthenticationException;
 import com.sun.identity.authentication.util.ISAuthConstants;
 import com.sun.identity.sm.SMSException;
+import org.forgerock.caf.authentication.framework.AuthenticationFramework;
+import org.forgerock.caf.http.Cookie;
 import org.forgerock.jaspi.modules.session.jwt.JwtSessionModule;
-import org.forgerock.jaspi.runtime.JaspiRuntime;
+import org.forgerock.jaspi.modules.session.jwt.ServletJwtSessionModule;
+import org.forgerock.json.jose.builders.JwtBuilderFactory;
 import org.forgerock.json.jose.jwt.Jwt;
 import org.forgerock.json.jose.jwt.JwtClaimsSet;
+import org.forgerock.json.jose.utils.KeystoreManager;
 import org.forgerock.openam.authentication.modules.common.AMLoginModuleBinder;
 import org.forgerock.openam.core.CoreWrapper;
 import org.forgerock.openam.utils.AMKeyProvider;
 import org.mockito.Matchers;
+import org.mockito.MockSettings;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -56,7 +61,7 @@ public class PersistentCookieAuthModuleTest {
 
     private PersistentCookieAuthModule persistentCookieAuthModule;
 
-    private JwtSessionModule jwtSessionModule;
+    private ServletJwtSessionModule jwtSessionModule;
     private AMKeyProvider amKeyProvider;
     private AMLoginModuleBinder amLoginModuleBinder;
     private CoreWrapper coreWrapper;
@@ -64,7 +69,7 @@ public class PersistentCookieAuthModuleTest {
     @BeforeMethod
     public void setUp() {
 
-        jwtSessionModule = mock(JwtSessionModule.class);
+        jwtSessionModule = mock(ServletJwtSessionModule.class);
         amKeyProvider = mock(AMKeyProvider.class);
         amLoginModuleBinder = mock(AMLoginModuleBinder.class);
         coreWrapper = mock(CoreWrapper.class);
@@ -351,7 +356,7 @@ public class PersistentCookieAuthModuleTest {
     public void shouldCallOnLoginSuccessWhenJwtNotValidated() throws AuthenticationException, SSOException {
 
         //Given
-        persistentCookieAuthModule = new PersistentCookieAuthModule(new JwtSessionModule(), amKeyProvider, coreWrapper) {
+        persistentCookieAuthModule = new PersistentCookieAuthModule(new ServletJwtSessionModule(), amKeyProvider, coreWrapper) {
             @Override
             protected String getKeyAlias(String orgName) throws SSOException, SMSException {
                 return "KEY_ALIAS";
@@ -395,7 +400,7 @@ public class PersistentCookieAuthModuleTest {
     public void shouldCallOnLoginSuccess() throws AuthenticationException, SSOException {
 
         //Given
-        persistentCookieAuthModule = new PersistentCookieAuthModule(new JwtSessionModule(), amKeyProvider, coreWrapper) {
+        persistentCookieAuthModule = new PersistentCookieAuthModule(new ServletJwtSessionModule(), amKeyProvider, coreWrapper) {
             @Override
             protected String getKeyAlias(String orgName) throws SSOException, SMSException {
                 return "KEY_ALIAS";
@@ -472,7 +477,7 @@ public class PersistentCookieAuthModuleTest {
 
         given(jwtSessionModule.validateJwtSessionCookie(messageInfo)).willReturn(jwt);
         given(jwt.getClaimsSet()).willReturn(claimsSet);
-        given(claimsSet.getClaim(JaspiRuntime.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
+        given(claimsSet.getClaim(AuthenticationFramework.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
         claimsSetContext.put("openam.rlm", "REALM");
         given(amLoginModuleBinder.getRequestOrg()).willReturn("REALM");
         claimsSetContext.put("openam.clientip", "CLIENT_IP");
@@ -504,7 +509,7 @@ public class PersistentCookieAuthModuleTest {
 
         given(jwtSessionModule.validateJwtSessionCookie(messageInfo)).willReturn(jwt);
         given(jwt.getClaimsSet()).willReturn(claimsSet);
-        given(claimsSet.getClaim(JaspiRuntime.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
+        given(claimsSet.getClaim(AuthenticationFramework.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
         claimsSetContext.put("openam.rlm", "REALM");
         given(amLoginModuleBinder.getRequestOrg()).willReturn("REALM");
         claimsSetContext.put("openam-auth-persistent-cookie-enforce-ip", "CLIENT_IP");
@@ -536,7 +541,7 @@ public class PersistentCookieAuthModuleTest {
 
         given(jwtSessionModule.validateJwtSessionCookie(messageInfo)).willReturn(jwt);
         given(jwt.getClaimsSet()).willReturn(claimsSet);
-        given(claimsSet.getClaim(JaspiRuntime.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
+        given(claimsSet.getClaim(AuthenticationFramework.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
         claimsSetContext.put("openam.rlm", "REALM");
         given(amLoginModuleBinder.getRequestOrg()).willReturn("REALM");
         given(amLoginModuleBinder.getHttpServletRequest()).willReturn(request);
@@ -567,7 +572,7 @@ public class PersistentCookieAuthModuleTest {
 
         given(jwtSessionModule.validateJwtSessionCookie(messageInfo)).willReturn(jwt);
         given(jwt.getClaimsSet()).willReturn(claimsSet);
-        given(claimsSet.getClaim(JaspiRuntime.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
+        given(claimsSet.getClaim(AuthenticationFramework.ATTRIBUTE_AUTH_CONTEXT, Map.class)).willReturn(claimsSetContext);
         claimsSetContext.put("openam.rlm", "REALM");
         given(amLoginModuleBinder.getRequestOrg()).willReturn("REALM");
         claimsSetContext.put("openam-auth-persistent-cookie-enforce-ip", "CLIENT_IP");
@@ -607,11 +612,13 @@ public class PersistentCookieAuthModuleTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         SSOToken ssoToken = mock(SSOToken.class);
+        Map<String, Object> messageInfoMap = new HashMap<String, Object>();
         Map<String, Object> contextMap = new HashMap<String, Object>();
         Principal principal = mock(Principal.class);
         SSOTokenID ssoTokenID = mock(SSOTokenID.class);
 
-        given(jwtSessionModule.getContextMap(messageInfo)).willReturn(contextMap);
+        given(messageInfo.getMap()).willReturn(messageInfoMap);
+        messageInfoMap.put(AuthenticationFramework.ATTRIBUTE_AUTH_CONTEXT, contextMap);
         given(ssoToken.getPrincipal()).willReturn(principal);
         given(ssoToken.getTokenID()).willReturn(ssoTokenID);
         given(request.getRemoteAddr()).willReturn("CLIENT_IP");

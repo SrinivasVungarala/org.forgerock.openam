@@ -18,14 +18,15 @@ package org.forgerock.openam.rest.resource;
 
 import com.sun.identity.idm.AMIdentity;
 import com.sun.identity.idm.IdUtils;
-import org.forgerock.json.resource.RouterContext;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.services.context.Context;
+import org.forgerock.http.routing.UriRouterContext;
+import org.forgerock.openam.rest.RealmContext;
 
 import javax.security.auth.Subject;
 
 /**
  * Helper class to get around the fact that some CREST Contexts are final and have package private
- * constructors, i.e. RouterContext.
+ * constructors, i.e. UriRouterContext.
  *
  * @since 13.0.0
  */
@@ -37,7 +38,7 @@ public class ContextHelper {
      * @param context The context.
      * @return The resource users UID.
      */
-    public String getUserUid(ServerContext context) {
+    public String getUserUid(Context context) {
         return getUserUid(context, getUserId(context));
     }
 
@@ -48,7 +49,7 @@ public class ContextHelper {
      * @param username The username.
      * @return The users UID.
      */
-    public String getUserUid(ServerContext context, String username) {
+    public String getUserUid(Context context, String username) {
         final AMIdentity identity = IdUtils.getIdentity(username, getRealm(context));
 
         if (identity == null) {
@@ -64,8 +65,8 @@ public class ContextHelper {
      * @param context The context.
      * @return The resource users username.
      */
-    public String getUserId(ServerContext context) {
-        return context.asContext(RouterContext.class).getUriTemplateVariables().get("user");
+    public String getUserId(Context context) {
+        return context.asContext(UriRouterContext.class).getUriTemplateVariables().get("user");
     }
 
     /**
@@ -74,7 +75,7 @@ public class ContextHelper {
      * @param context The context.
      * @return The resource realm.
      */
-    public String getRealm(ServerContext context) {
+    public String getRealm(Context context) {
         return context.asContext(RealmContext.class).getResolvedRealm();
     }
 
@@ -86,7 +87,7 @@ public class ContextHelper {
      *
      * @return the subject attempting to access the resource
      */
-    public Subject getSubject(ServerContext context) {
+    public Subject getSubject(Context context) {
         if (!context.containsContext(SubjectContext.class)) {
             return null;
         }

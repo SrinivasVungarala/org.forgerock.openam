@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.rest.service;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
@@ -48,7 +48,7 @@ public class XMLRestStatusServiceTest {
         Response response = mock(Response.class);
 
         //When
-        Representation representation = restStatusService.getRepresentation(status, request, response);
+        Representation representation = restStatusService.toRepresentation(status, request, response);
 
         //Then
         assertTrue(representation.getText().contains("<code>400</code>"));
@@ -65,7 +65,7 @@ public class XMLRestStatusServiceTest {
         Status status = new Status(exception.getCode(), exception);
 
         //When
-        Representation representation = restStatusService.getRepresentation(status, request, response);
+        Representation representation = restStatusService.toRepresentation(status, request, response);
 
         //Then
         assertTrue(representation.getText().contains("<bing>bong</bing>"));

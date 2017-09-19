@@ -24,7 +24,7 @@
   !    
 -->
 <chapter xml:id='chap-compatibility'
- xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+ xmlns='http://docbook.org/ns/docbook' version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -43,6 +43,138 @@
    <para>
     These changes are new in OpenAM ${serverDocTargetVersion}:
    </para>
+
+   <!-- OPENAM-6021/OPENAM-3470 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Changes to SAML 2.0 NameID Persistence</emphasis>.
+     OpenAM's SAML 2.0 account management and NameID persistence logic has been
+     updated to work better with non-persistent NameID formats.
+    </para>
+
+    <para>
+     The NameID persistence logic is summarized as follows:
+    </para>
+    <literallayout>
+     Persistent NameID         -> NameID MUST be stored
+     Transient NameID          -> NameID MUST NOT be stored
+     Ignored User Profile Mode -> NameID CANNOT be stored (fails if used in combination with persistent NameID-Format)
+     For Any Other Case        -> NameID MAY be stored based on customizable logic
+    </literallayout>
+
+    <itemizedlist>
+     <para>
+      The following changes have been made on the Identity Provider-side:
+     </para>
+     <listitem>
+      <para><emphasis role="bold">New Setting: idpDisableNameIDPersistence</emphasis>.
+       OpenAM now provides a new setting, <literal>idpDisableNameIDPersistence</literal>,
+       which disables the storage of the NameID values for all NameIDs issued
+       by that IdP instance, as long as the NameID-Format is anything but
+       <literal>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</literal>.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">SP's spDoNotWriteFederationInfo Repurposed</emphasis>.
+       The SP's <literal>spDoNotWriteFederationInfo</literal> setting has been
+       repurposed. It no longer is specific to unspecified NameID-Formats. Now,
+       it affects all non-persistent NameID-Formats, similar to the
+       <literal>idpDisableNameIDPersistence</literal> setting in the IdP
+       configuration.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">NameID Lookup Changes</emphasis>.
+       The NameID lookup mechanism has been modified, so that it only tries to
+       look up existing NameID values for the user if the NameID is actually
+       persisted for the corresponding NameID-Format.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">New Method in the IDPAccountMapper Interface</emphasis>.
+       The <literal>IDPAccountMapper</literal> interface has been extended with
+       the following new method:
+      </para>
+      <programlisting language="java">
+       /**
+       * Tells whether the provided NameID-Format should be persisted in the user data store or not.
+       *
+       * @param realm The hosted IdP's realm.
+       * @param hostEntityID The hosted IdP's entityID.
+       * @param remoteEntityID The remote SP's entityID.
+       * @param nameIDFormat The non-transient, non-persistent NameID-Format in question.
+       * @return <code>true</code> if the provided NameID-Format should be persisted in the user data store,
+       * <code>false</code> otherwise.
+       */
+       public boolean shouldPersistNameIDFormat(String realm, String hostEntityID, String remoteEntityID,String nameIDFormat);
+      </programlisting>
+      <para>
+       The default implementation of <literal>shouldPersistNameIDFormat</literal>
+       in <literal>DefaultIDPAccountMapper</literal> first checks whether
+       <literal>idpDisableNameIDPersistence</literal> is enabled in the hosted
+       SP configuration. If <literal>idpDisableNameIDPersistence</literal> is disabled,
+       the logic advances and accesses the remote SP's
+       <literal>spDoNotWriteFederationInfo</literal> flag.
+      </para>
+     </listitem>
+    </itemizedlist>
+
+    <itemizedlist>
+     <para>
+      The following changes have been made on the Service Provider-side:
+     </para>
+     <listitem>
+      <para><emphasis role="bold">Changes to SPAccountMapper</emphasis>.
+       The <literal>SPAccountMapper</literal> implementations now no longer
+       need to perform reverse lookups using the received NameID value.
+       The <literal>SPACSUtils</literal> now performs the reverse lookup if the
+       NameID-Format should be persisted. This change was made to ensure that
+       NameID values are only persisted in the data store if they have not been
+       stored there previously.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">SP's spDoNotWriteFederationInfo Repurposed</emphasis>.
+       The SP's <literal>spDoNotWriteFederationInfo</literal> setting has been
+       repurposed. It no longer is specific to unspecified NameID-Formats.
+       It affects all non-persistent NameID-Formats.
+      </para>
+     </listitem>
+     <listitem>
+      <para><emphasis role="bold">New Method in the SPAccountMapper Interface</emphasis>.
+       The <literal>SPAccountMapper</literal> interface has been extended with
+       the following new method:
+      </para>
+      <programlisting language="java">
+       /**
+       * Tells whether the provided NameID-Format should be persisted in the user data store or not.
+       *
+       * @param realm The hosted SP's realm.
+       * @param hostEntityID The hosted SP's entityID.
+       * @param remoteEntityID The remote IdP's entityID.
+       * @param nameIDFormat The non-transient, non-persistent NameID-Format in question.
+       * @return <code>true</code> if the provided NameID-Format should be persisted in the user data store,
+       * <code>false</code> otherwise.
+       */
+       public boolean shouldPersistNameIDFormat(String realm, String hostEntityID, String remoteEntityID, String nameIDFormat);
+      </programlisting>
+      <para>
+       The default implementation of <literal>shouldPersistNameIDFormat</literal>
+       in <literal>DefaultIDPAccountMapper</literal> first checks whether
+       <literal>idpDisableNameIDPersistence</literal> is enabled in the hosted
+       IdP configuration. If <literal>idpDisableNameIDPersistence</literal> is disabled,
+       the logic advances and accesses the remote SP's
+       <literal>spDoNotWriteFederationInfo</literal> flag.
+      </para>
+     </listitem>
+    </itemizedlist>
+
+    <para>
+     For more information, see
+     <link xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-3470"
+           xlink:show="new">OPENAM-3470</link>.
+    </para>
+   </listitem>
 
    <!-- OPENAM-3575/6212 -->
    <listitem>
@@ -112,6 +244,65 @@
       >OPENAM-3575</link>.
     </para>
    </listitem>
+
+   <!-- OPENAM-6109 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Addional JVM Properties for WebSphere Installs</emphasis>.
+     OpenAM 12.0.1 requires an updated step when running OpenAM on WebSphere. The JVM
+     settings require additional properties to be set.
+    </para>
+    <screen>
+     -DamCryptoDescriptor.provider=IBMJCE
+     -DamKeyGenDescriptor.provider=IBMJCE
+     -Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl
+     -Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl
+    </screen>
+    <para>
+     Run the following procedures to set up the JVM properties on WebSphere. Note
+     that these steps were run on WebSphere 8.5 on a Windows platform:
+    </para>
+    <procedure>
+     <step>
+      <para>Log in to the WebSphere console.</para>
+     </step>
+     <step>
+      <para>In the left pane, expand Servers.</para>
+     </step>
+     <step>
+      <para>Expand Server Types.</para>
+     </step>
+     <step>
+      <para>Click WebSphere application servers.</para>
+     </step>
+     <step>
+      <para>In the right pane, click on the server name.</para>
+     </step>
+     <step>
+      <para>In the Server infrastructure section, expand Java and Process Management.</para>
+     </step>
+     <step>
+      <para>Click Process definition.</para>
+     </step>
+     <step>
+      <para>In the Advanced properties section, click Java Virtual Machine.</para>
+     </step>
+     <step>
+      <para>In the Generic JVM arguments text field, add the JVM properties.</para>
+     </step>
+     <step>
+      <para>Save the configuration.</para>
+     </step>
+    </procedure>
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-6109"
+      xlink:show="new"
+      >OPENAM-6109</link>.
+    </para>
+   </listitem>
+
   </itemizedlist>
 
 
@@ -362,27 +553,19 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
     <para>
      If you are upgrading from a previous release of OpenAM,
      see the step to add the ACI to the external configuration store
-     in  <link xlink:show="new"
-               xlink:href="upgrade-guide#upgrade-server"
-               xlink:role="http://docbook.org/xlink/role/olink"
-     >To Upgrade From OpenAM 9.5 or Later</link> in the
-     <citetitle>Upgrade Guide</citetitle> for more information.
+     in  <olink targetdoc="upgrade-guide" targetptr="upgrade-server" /> for more information.
     </para>
     <para>
      If you are a new OpenAM user,
      see the step to add the ACI to the external configuration store
-     in  <link xlink:show="new"
-               xlink:href="install-guide#install-prepare-opendj-external-config-store"
-               xlink:role="http://docbook.org/xlink/role/olink"
-     >To Install an External OpenDJ Directory Server</link> in the
-     <citetitle>Installation Guide</citetitle> for more information.
+     in  <olink targetdoc="install-guide" targetptr="install-prepare-opendj-external-config-store" /> for more information.
     </para>
    </listitem>
 
   </itemizedlist>
 
   <!-- Changes for OpenAM 12.0.0 -->
-  <itemizedlist>>
+  <itemizedlist>
    <para>
     The following changes were listed for OpenAM 12.0.0:
    </para>
@@ -400,7 +583,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
   </itemizedlist>
  </section>
 
- <section>
+ <section xml:id="deprecated">
   <title>Functionality Deprecated in OpenAM ${serverDocTargetVersion}</title>
 
     <itemizedlist>
@@ -466,12 +649,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
       <para>
        To see how to implement a custom policy plugin,
-       see the <citetitle>Developer's Guide</citetitle> chapter,
-       <link
-        xlink:href="dev-guide#chap-policy-spi"
-        xlink:show="new"
-        xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Customizing Policy Evaluation</citetitle></link>.
+       see <olink targetdoc="dev-guide" targetptr="sec-policy-spi" />.
       </para>
      </listitem>
 
@@ -582,10 +760,11 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
       <thead>
        <row>
-        <entry><link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                     xlink:role="http://docbook.org/xlink/role/olink">Deprecated</link> URIs</entry>
-        <entry>Newer <link xlink:show="new" xlink:href="admin-guide#interface-stability"
-                           xlink:role="http://docbook.org/xlink/role/olink">Evolving</link> URIs</entry>
+        <entry> <olink targetdoc="admin-guide"
+                       targetptr="interface-stability" xrefstyle="select: nodocname">Deprecated URIs</olink></entry>
+        <entry>Newer <olink targetdoc="admin-guide"
+                       targetptr="interface-stability"
+                            xrefstyle="select: nodocname">Evolving URIs</olink></entry>
        </row>
       </thead>
 
@@ -671,12 +850,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
       xlink:href="${javadocBase}?org/forgerock/oauth2/core/ScopeValidator.html"
       xlink:show="new"
       ><literal>ScopeValidator</literal></link> interface instead.
-     For an example, see the <citetitle>Developer's Guide</citetitle> chapter,
-     <link
-      xlink:href="dev-guide#chap-oauth2-scopes"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"
-      ><citetitle>Customizing OAuth 2.0 Scope Handling</citetitle></link>.
+     For an example, see <olink targetdoc="dev-guide" targetptr="sec-oauth2-scopes" />.
     </para>
    </listitem>
 
@@ -774,10 +948,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
     <para>
      The Persistent Cookie (Legacy) settings in the Core Authentication
      module have been removed. Configure persistent cookies with the
-     <link
-      xlink:href="admin-guide#persistent-cookie"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"><citetitle>Persistent Cookie module</citetitle></link>.
+     <olink targetdoc="admin-guide" targetptr="persistent-cookie" />.
     </para>
    </listitem>
 

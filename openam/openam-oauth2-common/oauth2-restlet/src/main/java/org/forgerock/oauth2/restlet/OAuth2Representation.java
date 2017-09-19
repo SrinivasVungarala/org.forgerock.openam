@@ -16,9 +16,12 @@
 
 package org.forgerock.oauth2.restlet;
 
+import java.util.HashMap;
+import javax.inject.Inject;
 import org.forgerock.oauth2.core.AuthorizationToken;
 import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.OAuth2Constants;
+import org.forgerock.oauth2.core.OAuth2RequestFactory;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -46,7 +49,13 @@ import static org.forgerock.oauth2.core.Utils.isEmpty;
  */
 public class OAuth2Representation {
 
+    private final OAuth2RequestFactory<Request> requestFactory;
     private final Logger logger = LoggerFactory.getLogger("OAuth2Provider");
+
+    @Inject
+    public OAuth2Representation(OAuth2RequestFactory<Request> requestFactory) {
+        this.requestFactory = requestFactory;
+    }
 
     /**
      * Gets the appropriate representation to send to the user agent based from the specified parameters.
@@ -151,11 +160,33 @@ public class OAuth2Representation {
             }
         }
 
+        if (isFormPostRequest(requestFactory.create(request))) {
+            return getFormPostRepresentation(context, authorizationToken, redirectReference.toString());
+        }
+
         final Redirector dispatcher = new Redirector(context, redirectReference.toString(),
                 Redirector.MODE_CLIENT_FOUND);
         dispatcher.handle(request, response);
 
         return response == null ? null : response.getEntity();
+    }
+
+    private Representation getFormPostRepresentation(Context context, AuthorizationToken authorizationToken,
+                                                     String redirectUri) {
+        Map<String, Object> dataModel = new HashMap<>();
+        dataModel.put("redirectUri", redirectUri);
+        dataModel.put("formValues", authorizationToken.getToken());
+
+        final String reference = "templates/FormPostResponse.ftl";
+        final TemplateRepresentation result = getTemplateFactory(context).getTemplateRepresentation(reference);
+        if (result != null) {
+            result.setDataModel(dataModel);
+        }
+        return result;
+    }
+
+    private boolean isFormPostRequest(OAuth2Request request) {
+        return OAuth2Constants.Custom.FORM_POST.equals(request.getParameter(OAuth2Constants.Custom.RESPONSE_MODE));
     }
 
     /**

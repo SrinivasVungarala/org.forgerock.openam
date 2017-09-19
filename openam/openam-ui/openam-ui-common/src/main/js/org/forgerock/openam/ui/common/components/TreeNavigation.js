@@ -20,8 +20,8 @@ define("org/forgerock/openam/ui/common/components/TreeNavigation", [
     "underscore",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "org/forgerock/commons/ui/common/util/ModuleLoader",
-    "org/forgerock/commons/ui/common/main/Router"
-], function ($, _, AbstractView, ModuleLoader, Router) {
+    "org/forgerock/commons/ui/common/util/URIUtils"
+], function ($, _, AbstractView, ModuleLoader, URIUtils) {
     var TreeNavigation = AbstractView.extend({
         events: {
             "click .sidenav a[href]:not([data-toggle])": "navigateToPage"
@@ -33,7 +33,7 @@ define("org/forgerock/openam/ui/common/components/TreeNavigation", [
                 parent = element.parent();
 
                 this.$el.find(".sidenav ol > li").removeClass("active");
-                element.parentsUntil( this.$el.find(".sidenav"), "li" ).addClass("active");
+                element.parentsUntil(this.$el.find(".sidenav"), "li").addClass("active");
 
                 // Expand any collapsed element direct above. Only works one level up
                 if (parent.parent().hasClass("collapse")) {
@@ -46,7 +46,7 @@ define("org/forgerock/openam/ui/common/components/TreeNavigation", [
         },
         navigateToPage: function (event) {
             this.$el.find(".sidenav ol > li").removeClass("active");
-            $(event.currentTarget).parentsUntil( this.$el.find(".sidenav"), "li" ).addClass("active");
+            $(event.currentTarget).parentsUntil(this.$el.find(".sidenav"), "li").addClass("active");
 
             this.nextRenderPage = true;
         },
@@ -56,7 +56,6 @@ define("org/forgerock/openam/ui/common/components/TreeNavigation", [
             if (this.route && this.nextRenderPage) {
                 ModuleLoader.load(this.route.page).then(
                     _.bind(function (module) {
-                        this.nextRenderPage = false;
                         this.renderPage(module, this.args);
                     }, this),
                     _.bind(function () {
@@ -65,6 +64,7 @@ define("org/forgerock/openam/ui/common/components/TreeNavigation", [
                 );
             }
         },
+
         render: function (args, callback) {
             var self = this;
 
@@ -72,15 +72,17 @@ define("org/forgerock/openam/ui/common/components/TreeNavigation", [
 
             self.parentRender(function () {
                 self.$el.find(".sidenav li").removeClass("active");
-                self.findActiveNavItem(Router.getURIFragment());
-                ModuleLoader.load(self.route.page).then(function (page) {
-                    self.renderPage(page, args, callback);
-                });
+                self.findActiveNavItem(URIUtils.getCurrentFragment());
+                if (!self.nextRenderPage) {
+                    ModuleLoader.load(self.route.page).then(function (page) {
+                        self.renderPage(page, args, callback);
+                    });
+                }
             });
         },
         renderPage: function (Module, args, callback) {
             var page = new Module();
-
+            this.nextRenderPage = false;
             page.element = "#sidePageContent";
             page.render(args, callback);
             this.delegateEvents();

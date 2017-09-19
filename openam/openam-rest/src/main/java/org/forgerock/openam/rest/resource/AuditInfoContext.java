@@ -15,8 +15,8 @@
  */
 package org.forgerock.openam.rest.resource;
 
-import org.forgerock.json.resource.Context;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.services.context.Context;
+import org.forgerock.services.context.AbstractContext;
 import org.forgerock.openam.audit.AuditConstants.Component;
 
 /**
@@ -24,24 +24,18 @@ import org.forgerock.openam.audit.AuditConstants.Component;
  *
  * @since 13.0.0
  */
-public final class AuditInfoContext extends ServerContext {
+public final class AuditInfoContext extends AbstractContext {
 
     private static final String CONTEXT_NAME = "AuditContext";
 
     private final Component component;
 
     public AuditInfoContext(Context parent, Component component) {
-        super(parent);
+        super(parent, CONTEXT_NAME);
         this.component = component;
     }
 
     public Component getComponent() {
         return component;
     }
-
-    @Override
-    public String getContextName() {
-        return CONTEXT_NAME;
-    }
-
 }

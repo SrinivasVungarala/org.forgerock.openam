@@ -42,37 +42,37 @@ public class AuditEndpointAuditFilterTest extends AbstractAuditFilterTest {
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditEndpointAuditFilter.filterRead(serverContext, readRequest, resultHandler, filterChain);
+                        auditEndpointAuditFilter.filterRead(context, readRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditEndpointAuditFilter.filterUpdate(serverContext, updateRequest, resultHandler, filterChain);
+                        auditEndpointAuditFilter.filterUpdate(context, updateRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditEndpointAuditFilter.filterDelete(serverContext, deleteRequest, resultHandler, filterChain);
+                        auditEndpointAuditFilter.filterDelete(context, deleteRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditEndpointAuditFilter.filterPatch(serverContext, patchRequest, resultHandler, filterChain);
+                        auditEndpointAuditFilter.filterPatch(context, patchRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditEndpointAuditFilter.filterAction(serverContext, actionRequest, resultHandler, filterChain);
+                        auditEndpointAuditFilter.filterAction(context, actionRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditEndpointAuditFilter.filterQuery(serverContext, queryRequest, queryResultHandler, filterChain);
+                        auditEndpointAuditFilter.filterQuery(context, queryRequest, queryResourceHandler, filterChain);
                     }
                 }}
         };
@@ -85,7 +85,7 @@ public class AuditEndpointAuditFilterTest extends AbstractAuditFilterTest {
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditEndpointAuditFilter.filterCreate(serverContext, createRequest, resultHandler, filterChain);
+                        auditEndpointAuditFilter.filterCreate(context, createRequest, filterChain);
                     }
                 }}
         };

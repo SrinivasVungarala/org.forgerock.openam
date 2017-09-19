@@ -30,28 +30,31 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
     "backbone",
     "backbone.paginator",
     "backgrid",
-    "backgrid.filter",
-    "backgrid.paginator",
+    "backgrid-filter",
     "org/forgerock/commons/ui/common/main/AbstractView",
     "org/forgerock/openam/ui/common/util/BackgridUtils",
     "org/forgerock/commons/ui/common/main/Configuration",
     "org/forgerock/commons/ui/common/util/Constants",
-    "org/forgerock/openam/ui/common/util/RealmHelper"
-], function($, _, Backbone, BackbonePaginator, Backgrid, BackgridFilter, BackgridPaginator,
-            AbstractView, BackgridUtils, Configuration, Constants, RealmHelper) {
+    "org/forgerock/openam/ui/common/util/RealmHelper",
+    "org/forgerock/commons/ui/common/backgrid/extension/ThemeablePaginator"
+], function ($, _, Backbone, BackbonePaginator, Backgrid, BackgridFilter, AbstractView, BackgridUtils, Configuration,
+             Constants, RealmHelper, ThemeablePaginator) {
     var HistoryView = AbstractView.extend({
         template: "templates/uma/views/history/ListHistory.html",
         baseTemplate: "templates/common/DefaultBaseTemplate.html",
         events: {},
 
-        render: function(args, callback) {
+        render: function (args, callback) {
             var self = this,
                 collection,
                 grid,
                 paginator;
 
             collection = new (Backbone.PageableCollection.extend({
-                url: RealmHelper.decorateURIWithRealm("/" + Constants.context + "/json/__subrealm__/users/" + Configuration.loggedUser.username + '/uma/auditHistory'),
+                url: RealmHelper.decorateURIWithRealm("/" + Constants.context +
+                                                      "/json/__subrealm__/users/" +
+                                                      Configuration.loggedUser.get("username") +
+                                                      "/uma/auditHistory"),
                 state: {
                     pageSize: 10,
                     sortKey: "eventTime",
@@ -72,21 +75,17 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
                 columns: [{
                     name: "requestingPartyId",
                     label: $.t("uma.history.grid.header.0"),
-                    headerCell: BackgridUtils.FilterHeaderCell.extend({
-                        addClassName: "col-md-4"
-                    }),
-                    cell: 'string',
+                    headerCell: BackgridUtils.FilterHeaderCell,
+                    cell: "string",
                     editable: false,
                     sortType: "toggle"
                 }, {
                     name: "resourceSetName",
                     label: $.t("uma.history.grid.header.1"),
-                    headerCell: BackgridUtils.FilterHeaderCell.extend({
-                        addClassName: "col-md-4"
-                    }),
+                    headerCell: BackgridUtils.FilterHeaderCell,
                     cell: BackgridUtils.UriExtCell,
-                    href: function(rawValue, formattedValue, model){
-                        return "#uma/resources/" + encodeURIComponent(model.get('resourceSetId'));
+                    href: function (rawValue, formattedValue, model) {
+                        return "#uma/resources/myresources/all/" + encodeURIComponent(model.get("resourceSetId"));
                     },
                     editable: false,
                     sortType: "toggle"
@@ -95,41 +94,34 @@ define("org/forgerock/openam/ui/uma/views/history/ListHistory", [
                     label: $.t("uma.history.grid.header.2"),
                     cell: "string",
                     formatter: _.extend({}, Backgrid.CellFormatter.prototype, {
-                        fromRaw: function(rawValue, model) {
+                        fromRaw: function (rawValue, model) {
                             return $.t("uma.history.grid.types." + rawValue.toLowerCase());
                         }
                     }),
                     editable: false,
-                    sortType: "toggle",
-                    headerCell : BackgridUtils.ClassHeaderCell.extend({
-                        className: "col-md-2"
-                    })
+                    sortType: "toggle"
                 }, {
                     name: "eventTime",
                     label: $.t("uma.history.grid.header.3"),
                     cell: BackgridUtils.DatetimeAgoCell,
                     editable: false,
-                    sortType: "toggle",
-                    headerCell : BackgridUtils.ClassHeaderCell.extend({
-                        className: "col-md-2"
-                    })
+                    sortType: "toggle"
                 }],
                 emptyText: $.t("console.common.noResults"),
-                className:"backgrid table table-striped",
+                className:"backgrid table",
                 collection: collection
             });
 
             collection.on("backgrid:sort", BackgridUtils.doubleSortFix);
 
-            paginator = new Backgrid.Extension.Paginator({
+            paginator = new Backgrid.Extension.ThemeablePaginator({
                 collection: collection,
                 windowSize: 3
             });
 
-            self.parentRender(function() {
-                self.$el.find('[data-toggle="tooltip"]').tooltip();
-                self.$el.find("#backgridContainer").append( grid.render().el );
-                self.$el.find("#paginationContainer").append( paginator.render().el );
+            self.parentRender(function () {
+                self.$el.find("#backgridContainer").append(grid.render().el);
+                self.$el.find(".panel-body").append(paginator.render().el);
                 collection.fetch({ processData: false, reset: true });
             });
         }

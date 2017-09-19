@@ -54,10 +54,6 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons</groupId>
-            <artifactId>json-fluent</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.forgerock.commons</groupId>
             <artifactId>json-web-token</artifactId>
         </dependency>
         <dependency>
@@ -71,6 +67,10 @@
         <dependency>
             <groupId>org.forgerock.openam</groupId>
             <artifactId>openam-tokens</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
 
         <dependency>

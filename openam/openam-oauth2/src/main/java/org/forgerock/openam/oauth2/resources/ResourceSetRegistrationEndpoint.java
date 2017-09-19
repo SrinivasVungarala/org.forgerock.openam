@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.OAuth2Constants;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
@@ -35,9 +35,12 @@ import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.oauth2.resources.ResourceSetDescription;
 import org.forgerock.oauth2.resources.ResourceSetStore;
+import org.forgerock.oauth2.restlet.ExceptionHandler;
 import org.forgerock.oauth2.restlet.resources.ResourceSetDescriptionValidator;
 import org.forgerock.oauth2.restlet.resources.ResourceSetRegistrationListener;
 import org.forgerock.openam.cts.api.fields.ResourceSetTokenField;
+import org.forgerock.openam.oauth2.extensions.ExtensionFilterManager;
+import org.forgerock.openam.oauth2.extensions.ResourceRegistrationFilter;
 import org.forgerock.openam.utils.JsonValueBuilder;
 import org.forgerock.util.query.QueryFilter;
 import org.json.JSONException;
@@ -72,6 +75,8 @@ public class ResourceSetRegistrationEndpoint extends ServerResource {
     private final OAuth2RequestFactory<Request> requestFactory;
     private final Set<ResourceSetRegistrationListener> listeners;
     private final ResourceSetLabelRegistration labelRegistration;
+    private final ExtensionFilterManager extensionFilterManager;
+    private final ExceptionHandler exceptionHandler;
 
     /**
      * Construct a new ResourceSetRegistrationEndpoint instance.
@@ -81,16 +86,21 @@ public class ResourceSetRegistrationEndpoint extends ServerResource {
      * @param requestFactory An instance of the OAuth2RequestFactory.
      * @param listeners A {@code Set} of {@code ResourceSetRegistrationListener}s.
      * @param labelRegistration An instance of the {@code ResourceSetLabelRegistration}.
+     * @param extensionFilterManager An instance of the {@code ExtensionFilterManager}.
+     * @param exceptionHandler An instance of the {@code ExceptionHandler}.
      */
     @Inject
     public ResourceSetRegistrationEndpoint(OAuth2ProviderSettingsFactory providerSettingsFactory,
             ResourceSetDescriptionValidator validator, OAuth2RequestFactory<Request> requestFactory,
-            Set<ResourceSetRegistrationListener> listeners, ResourceSetLabelRegistration labelRegistration) {
+            Set<ResourceSetRegistrationListener> listeners, ResourceSetLabelRegistration labelRegistration,
+            ExtensionFilterManager extensionFilterManager, ExceptionHandler exceptionHandler) {
         this.providerSettingsFactory = providerSettingsFactory;
         this.validator = validator;
         this.requestFactory = requestFactory;
         this.listeners = listeners;
         this.labelRegistration = labelRegistration;
+        this.extensionFilterManager = extensionFilterManager;
+        this.exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -132,9 +142,15 @@ public class ResourceSetRegistrationEndpoint extends ServerResource {
 
         JsonValue labels = resourceSetDescription.getDescription().get(OAuth2Constants.ResourceSets.LABELS);
         resourceSetDescription.getDescription().remove(OAuth2Constants.ResourceSets.LABELS);
+        for (ResourceRegistrationFilter filter : extensionFilterManager.getFilters(ResourceRegistrationFilter.class)) {
+            filter.beforeResourceRegistration(resourceSetDescription);
+        }
         store.create(oAuth2Request, resourceSetDescription);
         resourceSetDescription.getDescription().add(OAuth2Constants.ResourceSets.LABELS, labels);
         labelRegistration.updateLabelsForNewResourceSet(resourceSetDescription);
+        for (ResourceRegistrationFilter filter : extensionFilterManager.getFilters(ResourceRegistrationFilter.class)) {
+            filter.afterResourceRegistration(resourceSetDescription);
+        }
 
         for (ResourceSetRegistrationListener listener : listeners) {
             listener.resourceSetCreated(oAuth2Request.<String>getParameter("realm"), resourceSetDescription);
@@ -229,6 +245,11 @@ public class ResourceSetRegistrationEndpoint extends ServerResource {
         labelRegistration.updateLabelsForDeletedResourceSet(store.read(getResourceSetId()));
         store.delete(getResourceSetId(), getResourceOwnerId());
         return createEmptyResponse();
+    }
+
+    @Override
+    protected void doCatch(Throwable throwable) {
+        exceptionHandler.handle(throwable, getResponse());
     }
 
     private boolean isConditionalRequest() {

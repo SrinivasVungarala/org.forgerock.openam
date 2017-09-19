@@ -39,7 +39,7 @@ define("org/forgerock/openam/ui/admin/delegates/SMSRealmDelegate", [
             return $.when(
                 obj.serviceCall({ url: url + "?_action=schema", type: "POST" }),
                 obj.serviceCall({ url: url })
-            ).then(function(schemaData, valuesData) {
+            ).then(function (schemaData, valuesData) {
                 return {
                     schema: SMSDelegateUtils.sanitizeSchema(schemaData[0]),
                     values: valuesData[0]
@@ -60,7 +60,7 @@ define("org/forgerock/openam/ui/admin/delegates/SMSRealmDelegate", [
                 return $.when(
                     obj.serviceCall({ url: url + "/chains?_queryFilter=true" }),
                     obj.serviceCall({ url: url })
-                ).then(function(chainsData, authenticationData) {
+                ).then(function (chainsData, authenticationData) {
                     _.each(chainsData[0].result, function (chainData) {
                         if (chainData._id === authenticationData[0].adminAuthModule) {
                             chainData.defaultConfig = chainData.defaultConfig || {};
@@ -86,13 +86,21 @@ define("org/forgerock/openam/ui/admin/delegates/SMSRealmDelegate", [
                 });
             },
             get: function (realm, name) {
+                var moduleName;
+
                 return $.when(
                     obj.serviceCall({ url: scopedByRealm(realm, "authentication/chains/" + name) }),
                     obj.serviceCall({ url: scopedByRealm(realm, "authentication/modules?_queryFilter=true") })
                 ).then(function (chainData, modulesData) {
 
                     _.each(chainData[0].authChainConfiguration, function (chainLink, index) {
-                        chainData[0].authChainConfiguration[index].type = _.findWhere(modulesData[0].result, { _id: chainLink.module }).type;
+                        moduleName = _.find(modulesData[0].result, { _id: chainLink.module });
+                        // The server allows for deletion of modules that are in use within a chain. The chain itself
+                        // will still have a reference to the deleetd module.
+                        // Below we are checking if the module is present. If it isn't the type is left undefined
+                        if (moduleName) {
+                            chainLink.type = moduleName.type;
+                        }
                     });
 
                     return {
@@ -129,7 +137,11 @@ define("org/forgerock/openam/ui/admin/delegates/SMSRealmDelegate", [
                 });
             },
             get: function (realm, name, type) {
-                return obj.serviceCall({ url: scopedByRealm(realm, "authentication/modules/" + type + "/" + name) });
+                return obj.serviceCall({
+                    url: scopedByRealm(realm, "authentication/modules/" + type + "/" + name)
+                }).then(function (data) {
+                    return data;
+                });
             },
             exists: function (realm, name) {
                 var promise = $.Deferred(),

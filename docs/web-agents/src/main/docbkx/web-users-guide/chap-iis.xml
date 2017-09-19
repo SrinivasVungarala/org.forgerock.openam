@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !    
+-->
+<chapter xml:id='chap-msiis-7'
+ xmlns='http://docbook.org/ns/docbook'
+ version='5.0' xml:lang='en'
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xsi:schemaLocation='http://docbook.org/ns/docbook
+                     http://docbook.org/xml/5.0/xsd/docbook.xsd'
+ xmlns:xlink='http://www.w3.org/1999/xlink'
+ xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+
+ <title>Installing Web Policy Agents in Microsoft IIS</title>
+
+ <indexterm>
+  <primary>Microsoft IIS</primary>
+ </indexterm>
+
+ <para> This chapter covers prerequisites and installation procedures for Web
+ Policy Agents ${agentsDocTargetVersion} into Microsoft Internet Information
+ Services (<firstterm>IIS</firstterm>) 7 and 8. </para>
+ 
+ <section xml:id="before-iis-agent-install">
+  <title>Before You Install</title>
+
+  <indexterm>
+   <primary>Microsoft IIS</primary>
+   <secondary>before you install</secondary>
+  </indexterm>
+
+ <para>This section describes the prerequisite steps you should take
+  before installing the web policy agents into IIS servers.</para>
+
+ <itemizedlist>
+  <listitem>
+
+  <para>
+  Ensure OpenAM is installed and running, so that you can contact OpenAM from
+   the system running the policy agent.
+  </para>
+
+  </listitem>
+
+  <listitem>
+ <para>Create a profile for your policy agent as described in
+  <link
+   xlink:show="new"
+   xlink:href="web-users-guide#chap-web-agents"
+   xlink:role="http://docbook.org/xlink/role/olink"
+   ><citetitle>Configuring Web Policy Agent Profiles</citetitle></link>.
+ </para>
+  </listitem>
+  <listitem>
+ <para>Create at least one policy in OpenAM to protect resources with the
+  agent, as described in the section on <link
+  xlink:href="${serverDocBase}/admin-guide/#configure-authz-policy"
+  xlink:show="new"><citetitle>Configuring Policies</citetitle></link>.
+  Consider creating a simple policy, such as a
+  policy that allows only authenticated users to access your resources.
+  This allows you to test your policy agent after installation.</para>
+  </listitem>
+    <listitem>
+   <para>If the OpenAM server you will be connecting to uses SSL, you must
+    install OpenSSL on the agent machine.</para>
+     <para>Ensure the OpenSSL libraries <filename>libeay32.dll</filename> and
+      <filename>ssleay32.dll</filename> are available in the <literal>lib</literal>
+      folder of your agent installation, for example
+      <literal>c:\path\to\web_agents\iis_agent\lib\</literal>.
+     </para>
+     <note><para>On Windows 2012 Systems, you need to place a copy of the
+      OpenSSL library DLLs into <filename>%SystemRoot%/System32/</filename>.</para></note>
+  </listitem>
+  <listitem>
+  <para>
+   Web policy agents require that the <emphasis>Application
+   Development</emphasis> component is installed alongside the core IIS
+   services. Application Development is an optional component of the IIS web server.
+   The component provides required infrastructure for hosting web applications.
+  </para>
+
+     <figure xml:id="figure-adding-app-dev-component">
+   <title>Adding the Application Development Component to IIS</title>
+   <mediaobject>
+    <alt>Adding the Application Development Component to IIS</alt>
+    <imageobject>
+     <imagedata fileref="images/iis-application-development-role.png"
+                format="PNG" />
+    </imageobject>
+    <textobject>
+     <para>Web policy agents require that the <emphasis>Application
+   Development</emphasis> component is installed alongside the core IIS
+   services.</para>
+    </textobject>
+   </mediaobject>
+  </figure>
+  </listitem>
+  <listitem>
+  <xinclude:include href="../shared/para-download-agent.xml" />
+<para>Unzip the file in the directory where you plan to install the web
+  policy agent. The agent you install stores its configuration and logs
+  under this directory.</para>
+
+ <para>When you unzip the policy agent <literal>.zip</literal> download, you find the
+  following directories:</para>
+
+ <xinclude:include href="../shared/variablelist-agentadmin-folders.xml">
+  <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+ </xinclude:include>
+
+  </listitem>
+  </itemizedlist>
+ </section>
+ 
+ <section xml:id="install-iis-web-agent">
+  <title>Installing IIS Web Policy Agents</title>
+
+  <indexterm>
+   <primary>Microsoft IIS</primary>
+   <secondary>installing</secondary>
+  </indexterm>
+
+  <para>Complete the following procedures to install Web Policy Agents
+   ${agentsDocTargetVersion} into Apache HTTP Servers.</para>
+
+    <tip><para>Check that you have completed the prerequisite steps before
+   proceeding. See <xref linkend="before-iis-agent-install" />.</para></tip>
+
+  <xinclude:include href="procedure-create-web-agent-profile.xml">
+   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+  </xinclude:include>
+
+  <xinclude:include href="procedure-create-password-file.xml">
+   <xinclude:fallback><!-- Error: failed to include file --></xinclude:fallback>
+  </xinclude:include>
+  
+  <procedure xml:id="install-agent-into-iis">
+   <title>To Install the Policy Agent into IIS</title>
+
+   <indexterm>
+    <primary>Microsoft IIS</primary>
+    <secondary>installing</secondary>
+    <tertiary>into IIS</tertiary>
+   </indexterm>
+
+   <step>
+    <para>Log on to Windows as a user with administrator privileges.</para>
+   </step>
+
+   <step>
+    <para>Make sure OpenAM is running.</para>
+   </step>
+   <step>
+    <para>Run <command>agentadmin.exe</command> with the <literal>--i</literal>
+     switch to install the agent.</para>
+    <xinclude:include href="../shared/para-licensing-agreement-procedure.xml">
+     <xinclude:fallback>
+      <para>
+       Error: failed to include file
+      </para>
+     </xinclude:fallback>
+    </xinclude:include>
+
+      <screen>c:\> <userinput>cd web_agents\iis_agent\bin</userinput>
+c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --i --acceptLicence</userinput></screen>
+
+</step>
+   <step><para>When prompted for information, enter the inputs appropriate
+    for your deployment.</para>
+   <tip><para>You can cancel web policy agent installation at anytime by pressing <keycap>CTRL</keycap>+<keycap>C</keycap></para></tip>
+   <substeps>
+    <step>
+     <para>Enter the ID number of the IIS site in which to install the web
+      policy agent.</para>
+     <screen>IIS Server Site configuration:
+
+Number of Sites: 2
+id: 1   name: "DEFAULT WEB SITE"
+id: 2   name: "CUSTOMERPORTAL"
+
+Enter IIS Server Site identification number.
+[ q or 'ctrl+c' to exit ]
+Site id: <userinput>2</userinput></screen>
+    </step>
+    <step>
+     <para>The installer can import settings from an existing web policy agent
+      into the new installation and skips prompts for any values present in the
+      existing configuration file.  You will be required to
+     re-enter the agent profile password.</para>
+     <para>Enter the full
+     path to an existing agent configuration file to import the settings, or
+     press <keycap>Enter</keycap> to skip the import.</para>
+     <screen>To set properties from an existing configuration enter path to file
+[ q or 'ctrl+c' to exit, return to ignore ]
+Existing agent.conf file:</screen>
+    </step>
+    <step>
+     <para>Enter the full URL of the OpenAM instance the web
+      policy agents will be using. Ensure the deployment URI is specified.</para>
+     <screen>Enter the URL where the OpenAM server is running. Please include the
+deployment URI also as shown below:
+(http://openam.sample.com:58080/openam)
+[ q or 'ctrl+c' to exit ]
+OpenAM server URL: <userinput>http://openam.example.com:8080/openam</userinput></screen>
+    </step>
+    <step>
+     <para>Enter the full URL of the site the agent will be running in.</para>
+     <screen>Enter the Agent URL as shown below:
+(http://agent.sample.com:1234)
+[ q or 'ctrl+c' to exit ]
+Agent URL: <userinput>http://customers.example.com:80</userinput></screen>
+    </step>
+        <step>
+     <para>Enter the name given to the agent profile created
+      in OpenAM.</para>
+     <screen>Enter the Agent profile name
+[ q or 'ctrl+c' to exit ]
+Agent Profile name: <userinput>iisagent</userinput></screen>
+    </step>
+        <step>
+     <para>Enter the OpenAM realm containing the agent profile.</para>
+     <screen>Enter the Agent realm/organization
+[ q or 'ctrl+c' to exit ]
+Agent realm/organization name: [/]: <userinput>/</userinput></screen>
+    </step>
+    <step>
+     <para>Enter the full path to the file containing the
+      agent profile password created earlier.</para>
+     <screen>Enter the path to a file that contains the password to be used
+for identifying the Agent
+[ q or 'ctrl+c' to exit ]
+The path to the password file: <userinput>c:\pwd.txt</userinput></screen>
+    </step>
+    <step>
+     <para>The installer displays a summary of the configuration settings you
+      specified.</para>
+      <stepalternatives>
+       <step>
+       <para>If a setting is incorrect, type
+      <literal>no</literal>, or press <keycap>Enter</keycap>. The installer
+      loops through the configuration prompts using your provided
+      settings as the default. Press <keycap>Enter</keycap> to accept each
+      one, or enter a replacement setting.</para></step>
+       <step><para>If the settings are correct, type <literal>yes</literal> to
+      proceed with installation.</para>
+       <screen>Installation parameters:
+
+   OpenAM URL: http://openam.example.com:8080/openam
+   Agent URL: http://customers.example.com:80
+   Agent Profile name: iisagent
+   Agent realm/organization name: /
+   Agent Profile password source: c:\pwd.txt
+
+Confirm configuration (yes/no): [no]: <userinput>yes</userinput>
+Validating...
+Validating... Success.
+Cleaning up validation data...
+Creating configuration...
+Installation complete.</screen>
+       </step>
+      </stepalternatives>
+    </step>
+   </substeps>
+
+    <para>
+     Upon successful completion, the installer adds the agent as
+     a module to the IIS site configuration.</para>
+    <para>The installer also sets up configuration and log directories for
+     the agent instance. Each agent instance that you install on the system has
+     its own numbered configuration and logs directory. The first agent's configuration
+     and logs are located under the directory
+     <filename>web_agents\iis_agent\Agent_001\</filename>.</para>
+    <note><para>The installer grants full access permissions on the created
+     instance folder to the user that the selected IIS site is running under,
+     so that log files can be written correctly.
+    </para></note>
+
+    <para>The configuration files and log locations are as follows:</para>
+
+    <variablelist>
+     <varlistentry>
+      <term><filename>config/<?eval ${agentsConfigurationFile}?></filename></term>
+      <listitem>
+       <para>Contains the bootstrap properties the web policy agent
+        requires to connect to OpenAM and download its configuration. Also
+        contains properties that are only used if you configure the web policy agent to
+        use local configuration.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><filename>logs/audit/</filename></term>
+      <listitem>
+       <para>Operational audit log directory, only used if remote logging
+       to OpenAM is disabled.</para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><filename>logs/debug/</filename></term>
+      <listitem>
+       <para>Debug directory where the <filename>amAgent</filename> debug file
+       resides. Useful in troubleshooting policy agent issues.</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </step>
+  </procedure>
+ </section>
+
+ <section xml:id="silent-iis-agent-installation">
+  <title>Installing IIS Web Policy Agents Silently</title>
+
+  <indexterm>
+   <primary>IIS policy agent</primary>
+   <secondary>installing</secondary>
+   <tertiary>silent</tertiary>
+  </indexterm>
+   <para>
+   You can run a silent, non-interactive installation by running
+  <command>agentadmin.exe --s</command>, along
+  with arguments used to configure the instance.</para>
+  <tip><para>Check that you have completed the prerequisite steps before
+   proceeding. See <xref linkend="before-iis-agent-install" />.</para></tip>
+
+
+  <para>The required arguments, and the order in which to specify them are:</para>
+  <variablelist>
+   <varlistentry>
+    <term>Web server configuration file</term>
+    <listitem>
+     <para>Enter the ID number of the IIS site in which to install the web
+      policy agent.</para>
+     <tip><para>To list the sites in an IIS server, run <command>agentadmin.exe --n</command>:</para>
+     <screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --n</userinput>
+
+IIS Server Site configuration:
+
+Number of Sites: 2
+
+id: 1   name: "DEFAULT WEB SITE"
+id: 2   name: "CUSTOMERPORTAL"</screen></tip>
+    </listitem>
+   </varlistentry>
+
+      <varlistentry>
+    <term>OpenAM URL</term>
+    <listitem>
+     <para>Enter the full URL of the OpenAM instance the web policy agents will be using. Ensure the deployment URI is specified.</para>
+    </listitem>
+   </varlistentry>
+
+      <varlistentry>
+    <term>Agent URL</term>
+    <listitem>
+     <para>Enter the full URL of the IIS site the agent will be running on.</para>
+    </listitem>
+   </varlistentry>
+
+      <varlistentry>
+    <term>Realm</term>
+    <listitem>
+     <para>Enter the OpenAM realm containing the agent profile.</para>
+    </listitem>
+   </varlistentry>
+
+      <varlistentry>
+    <term>Agent profile name</term>
+    <listitem>
+     <para>Enter the name given to the agent profile created in OpenAM.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Agent profile password</term>
+    <listitem>
+     <para>Enter the full path to the file containing the agent profile password.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>--changeOwner</literal></term>
+    <listitem>
+     <para>Optionally have the installer change the ownership
+      of created directories to be the same user that is running the selected IIS site.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>--acceptLicence</literal></term>
+    <listitem>
+    <xinclude:include href="../shared/para-licensing-agreement-procedure.xml">
+     <xinclude:fallback>
+      <para>
+       Error: failed to include file
+      </para>
+     </xinclude:fallback>
+    </xinclude:include>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>--forceInstall</literal></term>
+    <listitem>
+     <para>Add this optional switch to have the installer proceed with a silent
+      installation even if it cannot connect to the specified OpenAM
+      server during installation, rather than exiting.</para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>For example:</para>
+<screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --s ^
+  "1" ^
+  "http://openam.example.com:8080/openam" ^
+  "http://iis.example.com:80" ^
+  "/" ^
+  "iisagent" ^
+  "c:\pwd.txt" ^
+  --changeOwner ^
+  --acceptLicence</userinput>
+
+OpenAM Web Agent for IIS Server installation.
+
+Validating...
+Validating... Success.
+Cleaning up validation data...
+Creating configuration...
+Installation complete.</screen>
+ </section>
+
+ <section xml:id="manage-iis-agents">
+  <title>Managing IIS Web Policy Agents</title>
+
+  <indexterm>
+   <primary>IIS policy agent</primary>
+   <secondary>removing</secondary>
+  </indexterm>
+
+  <para>This section explains how to disable, enable, and remove web policy
+   agents that are in an IIS site, and how to completely uninstall web
+   policy agents from IIS.</para>
+
+  <procedure xml:id="proc-enable-disable-iis-web-policy-agent">
+   <title>To disable and enable a web policy agent in an IIS site</title>
+   <step><para>Log on to Windows as a user with administrator privileges.</para></step>
+   <step>
+    <para>Run <command>agentadmin.exe --l</command> to output a list of the
+     installed web policy agent configuration instances.</para>
+    <screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --l</userinput>
+OpenAM Web Agent configuration instances:
+
+   id:            agent_1
+   configuration: c:\web_agents\iis_agent\bin\..\instances\agent_1
+   server/site:   2</screen>
+    <para>Make a note of the ID value of the configuration instance you want to
+     disable or enable.</para>
+   </step>
+   <step><para>Perform one of the following steps:</para>
+   <stepalternatives>
+    <step>
+     <para>To disable the web policy agent in a site, run
+      <command>agentadmin.exe --d</command>, and specify the ID of the web
+      policy agent configuration instance to disable.</para>
+<screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --d agent_1</userinput>
+
+Disabling agent_1 configuration...
+Disabling agent_1 configuration... Done.</screen>
+    </step>
+    <step>
+     <para>To enable the web policy agent in a site, run
+      <command >agentadmin.exe --e</command>, and specify the ID of the web
+      policy agent configuration instance to enable.</para>
+<screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --e agent_1</userinput>
+
+Enabling agent_1 configuration...
+Enabling agent_1 configuration... Done.</screen>
+    </step>
+   </stepalternatives>
+
+   </step>
+  </procedure>
+
+  <procedure xml:id="proc-removing-iis-web-policy-agent">
+   <title>To remove a web policy agent from an IIS site</title>
+   <step><para>Log on to Windows as a user with administrator privileges.</para></step>
+   <step>
+    <para>Run <command>agentadmin.exe --l</command> to output a list of the
+     installed web policy agent configuration instances.</para>
+    <screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --l</userinput>
+OpenAM Web Agent configuration instances:
+
+   id:            agent_1
+   configuration: c:\web_agents\iis_agent\bin\..\instances\agent_1
+   server/site:   2</screen>
+    <para>Make a note of the ID value of the configuration instance you want to
+     remove.</para>
+   </step>
+   <step>
+    <para>Run <command>agentadmin.exe --r</command>, and specify the ID of the
+     web policy agent configuration instance to remove.</para>
+<screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --r agent_1</userinput>
+
+Removing agent_1 configuration...
+Removing agent_1 configuration... Done.</screen>
+   </step>
+  </procedure>
+
+  <procedure xml:id="proc-uninstall-iis-web-policy-agent">
+   <title>To remove web policy agents from IIS</title>
+   <step><para>Log on to Windows as a user with administrator privileges.</para></step>
+   <step>
+    <para>Run <command>agentadmin --g</command>. A warning is displayed. Type
+     <literal>yes</literal> to proceed with removing the configuration instance.</para>
+<screen>c:\web_agents\iis_agent\bin> <userinput>agentadmin.exe --g</userinput>
+
+Warning! This procedure will remove all OpenAM Web Agent references from
+IIS Server configuration.
+
+Continue (yes/no): [no]: <userinput>yes</userinput>
+
+Removing agent module from IIS Server configuration...
+Removing agent module from IIS Server configuration... Done.</screen>
+   </step>
+  </procedure>
+
+ </section>
+ <section xml:id="iis-enable-basic-auth">
+  <title>Enable IIS Basic Authentication and Password Replay Support</title>
+
+  <indexterm>
+   <primary>Microsoft IIS</primary>
+   <secondary>basic authentication and password relay support</secondary>
+   <tertiary>enabling</tertiary>
+  </indexterm>
+
+  <itemizedlist>
+   <para>
+    The IIS web policy agent now supports IIS basic authentication and
+    password replay. You must use the appropriate software versions.
+   </para>
+
+   <para>
+    Given the proper configuration
+    and with Active Directory as a user data store for OpenAM,
+    the IIS web policy agent can provide access to the IIS server variables.
+    The instructions for configuring the capability follow in this section,
+    though you should read the section in full,
+    also paying attention to the required workarounds for Microsoft issues.
+   </para>
+
+   <para>
+    When configured as described,
+    the policy agent requests IIS server variable values from OpenAM,
+    which gets them from Active Directory.
+    The policy agent then sets the values in HTTP headers
+    so that they can be accessed by your application.
+   </para>
+
+   <para>
+    The following IIS server variables all take the same value when set:
+    <literal>REMOTE_USER</literal>,
+    <literal>AUTH_USER</literal>,
+    and <literal>LOGON_USER</literal>.
+    The policy agent either sets all three, or does not set any of them.
+   </para>
+
+   <para>
+    When you enable Logon and Impersonation in the console
+    (<literal>com.sun.identity.agents.config.iis.logonuser=true</literal>
+    in the policy agent configuration),
+    the policy agent performs Windows logon
+    and sets the user impersonation token in the IIS session context.
+   </para>
+
+   <para>
+    When you enable Show Password in HTTP Header in the console
+    (<literal>com.sun.identity.agents.config.iis.password.header=true</literal>
+    in the policy agent configuration),
+    the policy agent adds it in the <literal>USER_PASSWORD</literal> header.
+   </para>
+
+   <para>
+    The policy agent does not modify any other IIS server variables
+    related to the authenticated user's session.
+   </para>
+
+   <para>
+    The policy agent works best with IIS running in Integrated, not Classic mode.
+    In Classic mode, you cannot share sessions
+    between the policy agent and another .NET application,
+    so Logon and Impersonation are not operative.
+    Furthermore IIS in Classic mode treats all modules as ISAPI extensions,
+    and request processing is affected.
+    It is therefore strongly recommended that you run IIS in Integrated mode:
+   </para>
+
+   <listitem>
+    <para>For Microsoft Office integration, you must use Microsoft Office 2007
+    SP2 or later.</para>
+   </listitem>
+   <listitem>
+    <para>For Microsoft SharePoint integration, you must use Microsoft
+    SharePoint Server 2007 SP2 or later.</para>
+   </listitem>
+  </itemizedlist>
+
+  <variablelist>
+   <para>
+    You must also apply workarounds as described for the following
+    Microsoft issues.
+   </para>
+
+   <varlistentry>
+    <term>Microsoft Support Issue: 841215</term>
+    <listitem>
+     <para>Link: <link xlink:show="new"
+     xlink:href="http://support.microsoft.com/kb/841215" /></para>
+
+     <para>
+      Description: Error message when you try to connect to a Windows
+      SharePoint document library: "System error 5 has occurred".
+     </para>
+
+     <para>Summary: Enable Basic Authentication on the client computer.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Microsoft Support Issue: 870853</term>
+    <listitem>
+     <para>Link: <link xlink:show="new"
+     xlink:href="http://support.microsoft.com/kb/870853" /></para>
+
+     <para>
+      Description: Office 2003 and 2007 Office documents open read-only
+      in Internet Explorer.
+     </para>
+
+     <para>Summary: Add registry keys as described in Microsoft's support
+     document.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Microsoft Support Issue: 928692</term>
+    <listitem>
+     <para>Link: <link xlink:show="new"
+      xlink:href="http://support.microsoft.com/kb/928692" />
+     </para>
+
+     <para>
+      Description: Error message when you open a Web site by using Basic
+      authentication in Expression Web on a computer that is running Windows
+      Vista: "The folder name is not valid".
+     </para>
+
+     <para>Summary: Edit the registry as described in Microsoft's support
+     document.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Microsoft Support Issue: 932118</term>
+    <listitem>
+     <para>Link: <link xlink:show="new"
+      xlink:href="http://support.microsoft.com/kb/932118" /></para>
+
+     <para>
+      Description: Persistent cookies are not shared between Internet
+      Explorer and Office applications.
+     </para>
+
+     <para>Summary: Add the web site the list of trusted sites.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Microsoft Support Issue: 943280</term>
+    <listitem>
+     <para>Link: <link xlink:show="new"
+      xlink:href="http://support.microsoft.com/kb/943280" /></para>
+
+     <para>
+      Description: Prompt for Credentials When Accessing FQDN Sites From a
+      Windows Vista or Windows 7 Computer.
+     </para>
+
+     <para>Summary: Edit the registry as described in Microsoft's support
+     document.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Microsoft Support Issue: 968851</term>
+    <listitem>
+     <para>Link: <link xlink:show="new"
+      xlink:href="http://support.microsoft.com/kb/968851" /></para>
+
+     <para>
+      Description: SharePoint Server 2007 Cumulative Update Server
+      Hotfix Package (MOSS server-package): April 30, 2009.
+     </para>
+
+     <para>Summary: Apply the fix from Microsoft if you use SharePoint.</para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Microsoft Support Issue: 2123563</term>
+    <listitem>
+     <para>Link: <link xlink:show="new"
+      xlink:href="http://support.microsoft.com/kb/2123563" /></para>
+
+     <para>
+      Description: You cannot open Office file types directly from a
+      server that supports only Basic authentication over a non-SSL
+      connection.</para>
+
+     <para>Summary: Enable SSL encryption on the web server.</para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <procedure xml:id="configure-iis-basic-auth">
+   <title>To Configure IIS Basic Authentication and Password Replay Support</title>
+
+   <para>Follow these steps:</para>
+
+   <step>
+    <para>Generate and store an encryption key:</para>
+
+    <substeps>
+     <step>
+      <para>
+       Generate the key using
+       <literal>com.sun.identity.common.DESGenKey</literal> using the .jars
+       where you deployed OpenAM, as in the following example. The Java command below is
+       broken out into multiple lines for display purposes only:
+      </para>
+
+      <screen>
+$ <userinput>cd /tomcat/webapps/openam/WEB-INF/lib</userinput>
+$ <userinput>java -cp ${forgerockUtilLibrary}:${coreLibrary}:\
+   ${sharedLibrary} com.sun.identity.common.DESGenKey</userinput>
+Key ==> sxVoaDRAN0o=
+      </screen>
+
+      <para>
+       Windows users should use semi-colons (";"), instead of colons (":") in the commands.
+       The Java command below is broken out into multiple lines for display purposes only:
+      </para>
+
+      <screen>c:\> <userinput>cd \tomcat\webapps\openam\WEB-INF\lib</userinput>
+c:\> <userinput>java -cp ${forgerockUtilLibrary};${coreLibrary}; ^
+    ${sharedLibrary} com.sun.identity.common.DESGenKey</userinput>
+Key ==> sxVoaDRAN0o=</screen>
+     </step>
+
+     <step>
+      <para>
+       In the OpenAM console navigate to Realms &gt;
+       <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
+       <replaceable>Agent Name</replaceable> &gt; Advanced &gt; Microsoft IIS
+       Server &gt; Replay Password Key (property name:
+       <literal>com.sun.identity.agents.config.replaypasswd.key</literal>),
+       enter the generated key, and then click Save.
+      </para>
+     </step>
+
+     <step>
+      <para>In the OpenAM console, navigate to Configuration &gt; Servers and Sites &gt;
+      <replaceable>Server Name</replaceable> &gt; Advanced &gt; Add..., then add
+       a property <literal>com.sun.am.replaypasswd.key</literal> with the
+      key you generated as the value, and then click Save.</para>
+     </step>
+    </substeps>
+   </step>
+
+   <step>
+    <para>In the OpenAM console, navigate to Realms &gt;
+      <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings &gt;
+     Post Authentication Processing &gt; Authentication Post Processing
+     Classes, then add the class
+     <literal>com.sun.identity.authentication.spi.ReplayPasswd</literal>,
+      and then click Save.</para>
+   </step>
+
+   <step>
+    <para>
+     If you require Windows logon, or you need to use basic authentication
+     with SharePoint or OWA, then you must configure Active Directory as a
+     user data store, and you must configure the IIS policy agent profile
+     User ID Parameter and User ID Parameter Type so that the policy agent
+     requests OpenAM to provide the appropriate account information from
+     Active Directory in its policy response.
+    </para>
+
+    <para>
+     Skip this step if you do not use SharePoint or OWA and no Windows
+     logon is required.
+    </para>
+
+    <para>
+     Make sure OpenAM data store is configured to use Active Directory as
+     the user data store.
+    </para>
+
+    <para>
+     In the OpenAM console under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
+     <replaceable>Agent Name</replaceable> &gt; OpenAM Services &gt; Policy
+     Client Service, set User ID Parameter and User ID Parameter Type, and then
+     save your work. For example if the real username for Windows domain logon
+     in Active Directory is stored on the <literal>sAMAccountName</literal>
+     attribute, then set the User ID Parameter to
+     <literal>sAMAccountName</literal>, and the User ID Parameter Type to
+     <literal>LDAP</literal>.
+    </para>
+
+    <para>
+     Setting the User ID Parameter Type to <literal>LDAP</literal> causes
+     the policy agent to request that OpenAM get the value of the User ID
+     Parameter attribute from the data store, in this case, Active Directory.
+     Given that information, the policy agent can set the HTTP headers
+     <literal>REMOTE_USER</literal>, <literal>AUTH_USER</literal>, or
+     <literal>LOGON_USER</literal> and <literal>USER_PASSWORD</literal> with
+     Active Directory attribute values suitable for Windows logon, setting the
+     remote user, and so forth.
+    </para>
+   </step>
+
+   <step>
+    <para>
+     To set the encrypted password in the <literal>AUTH_PASSWORD</literal> header,
+     browse in the OpenAM console to Realms >
+     <replaceable>Realm Name</replaceable> > Agents > Web >
+     <replaceable>Agent Name</replaceable> > Advanced > Microsoft IIS Server, then
+     select Show Password in HTTP Header, and then click Save.
+    </para>
+   </step>
+
+   <step>
+    <para>
+     To have the agent perform Windows logon (for user token impersonation),
+     browse in the OpenAM console to Realms >
+     <replaceable>Realm Name</replaceable> > Agents > Web >
+     <replaceable>Agent Name</replaceable> > Advanced > Microsoft IIS Server, then
+     select Logon and Impersonation, and then click Save.
+    </para>
+   </step>
+
+   <step>
+    <para>
+     In the OpenAM console, navigate to Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Agents &gt; Web &gt;
+     <replaceable>Agent Name</replaceable> &gt; Advanced &gt; Microsoft IIS
+     Server, then set Authentication Type to <literal>basic</literal>, and
+     then click Save.
+    </para>
+   </step>
+
+   <step>
+    <para>
+     To use the agent with SharePoint or Microsoft Office, configure
+     OpenAM to support the <literal>iPlanetDirectoryPro</literal> as a persistent
+     cookie.
+    </para>
+
+    <para>
+     In the OpenAM console under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; All Core
+     Settings... &gt; Persistent Cookie Mode, select Enabled, and then Save
+     your work.
+    </para>
+   </step>
+  </procedure>
+ </section>
+
+
+</chapter>

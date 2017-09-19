@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 20142-2015 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.oauth2;
@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.OAuth2Constants;
 import org.forgerock.oauth2.core.exceptions.InvalidGrantException;
@@ -77,13 +77,16 @@ public class OpenAMAccessToken extends AccessToken {
      * @param nonce             The nonce.
      * @param realm             The realm.
      * @param claims            The requested claims.
+     * @param auditId The audit id, used for tracking tokens throughout the audit logs.
      */
     public OpenAMAccessToken(String id, String authorizationCode, String resourceOwnerId, String clientId,
                              String redirectUri, Set<String> scope, long expiryTime, String refreshTokenId,
-                             String tokenName, String grantType, String nonce, String realm, String claims) {
+                             String tokenName, String grantType, String nonce, String realm, String claims,
+                             String auditId) {
         super(id, authorizationCode, resourceOwnerId, clientId, redirectUri, scope, expiryTime, refreshTokenId,
                 tokenName, grantType, nonce);
         setRealm(realm);
+        setAuditId(auditId);
 
         if (!StringUtils.isBlank(claims)) {
             setClaims(claims);
@@ -358,4 +361,30 @@ public class OpenAMAccessToken extends AccessToken {
         return tokenInfo;
     }
 
+    /**
+     * Sets the audit id.
+     *
+     * @param auditId The audit id.
+     */
+    protected void setAuditId(String auditId) {
+        setStringProperty(AUDIT_ID, auditId);
+    }
+
+    /**
+     * Gets the audit id.
+     *
+     * @return The audit id.
+     */
+    public String getAuditId() {
+        return getStringProperty(AUDIT_ID);
+    }
+
+    /**
+     * Set a string property in the store.
+     * @param key The property key.
+     * @param value The value.
+     */
+    protected void setStringProperty(String key, String value) {
+        put(key, stringToSet(value));
+    }
 }

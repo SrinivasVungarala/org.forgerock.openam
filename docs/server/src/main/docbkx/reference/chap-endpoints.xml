@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-endpoints'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
          xmlns:xlink='http://www.w3.org/1999/xlink'
@@ -97,7 +97,7 @@
   directly to a URL such as
   <literal>http://sp.example.com:8080/openam/console/agentconfig/AgentAdd.jsp</literal>.
   For that particular endpoint, you will have click through the options required
-  to add an agent. (Access Control &gt; <replaceable>realm name</replaceable> &gt;
+  to add an agent. (Realms &gt; <replaceable>Realm Name</replaceable> &gt;
   Agents &gt; Agent &gt; New)</para>
 
  <para>In general, this chapter does not include dynamic endpoints, such as those
@@ -139,23 +139,9 @@
  </itemizedlist>
 
  <para>Of course, you can take additional steps to help secure your OpenAM
-  deployment. For more information, see the the chapter on
-  <link xlink:href="admin-guide#chap-securing"
-        xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Securing OpenAM in the Administration Guide</citetitle></link>.
+  deployment. For more information, see <olink targetdoc="admin-guide"
+                                               targetptr="chap-securing" />.
  </para>
-
-    <!--
-       Use olinks for interdocument links. Here:
-
-       For more information, see the <citetitle>Administration Guide</citetitle> chapter on
-       <link xlink:href="admin-guide#chap-securing xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Securing OpenAM</citetitle></link>.
-
-       More at https://wikis.forgerock.org/confluence/display/devcom/Core+Documentation+Cookbook#CoreDocumentationCookbook-Links
-
-       mj - thank you, correction made.
-    -->
 
  <section xml:id="jsp-endpoints">
   <title>JSP Endpoints</title>
@@ -198,11 +184,7 @@
    <varlistentry>
     <term><literal>Debug.jsp</literal></term>
     <listitem>
-     <para>Supports debug logging by service. For more information, see the
-      <citetitle>Administration Guide</citetitle>
-       chapter on <link xlink:href="admin-guide#log-debug-selective-capture"
-                        xlink:role="http://docbook.org/xlink/role/olink">
-      <citetitle>Debug Logging by Service.</citetitle></link>
+     <para>Supports debug logging by service. For more information, see <olink targetdoc="admin-guide" targetptr="log-debug-selective-capture" />
      </para>
     </listitem>
    </varlistentry>
@@ -283,12 +265,8 @@
      <para>Supports GUI-based access to the options associated with the
       <command>ssoadm</command> command.
       The <literal>ssoadm.jsp</literal> file is disabled by default.
-      Instructions for enabling this feature are available from
-      the <citetitle>Administration Guide</citetitle> entry on
-      <link xlink:show="new"
-           xlink:href="admin-guide#openam-ssoadm-jsp-overview"
-           xlink:role="http://docbook.org/xlink/role/olink">
-      <citetitle>OpenAM ssoadm.jsp.</citetitle></link></para>
+      Instructions for enabling this feature are available in
+      <olink targetdoc="admin-guide" targetptr="openam-ssoadm-jsp-overview" /></para>
      </listitem>
    </varlistentry>
 
@@ -555,8 +533,8 @@
      <term><literal>disclaimer.jsp</literal></term>
      <listitem>
       <para>Associated with the self-registration module, which can be configured
-       in the OpenAM Console, under Access Control &gt; Realm Name &gt; Authentication
-       &gt; Module Instances.
+       in the OpenAM Console, under Realms &gt; <replaceable>Realm Name</replaceable> &gt; Authentication
+       &gt; Modules.
        The default disclaimer is associated with the <literal>disclaimer.notice</literal>
        parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
      </listitem>
@@ -566,7 +544,7 @@
             <term><literal>disclaimerDeclined.jsp</literal></term>
             <listitem>
                 <para>Associated with the self-registration module, which can be configured in the OpenAM Console, under
-                    Access Control > Realm Name > Authentication > Module Instances. The default disclaimer_denied message is
+                    Realm &gt; <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Modules. The default disclaimer_denied message is
                     associated with the <literal>disclaimer.declined</literal> parameter, defined in the <filename>amAuthUI.properties</filename> file.</para>
             </listitem>
         </varlistentry>
@@ -624,11 +602,7 @@
         <varlistentry>
             <term><literal>Login.jsp</literal></term>
             <listitem>
-                <para>Specifies a regular authentication template. As noted in the
-                    <citetitle>Administration Guide</citetitle> entry on <link xlink:show="new"
-                            xlink:href="admin-guide#secure-openam-administration"
-                            xlink:role="http://docbook.org/xlink/role/olink">
-                        <citetitle>Securing OpenAM Administration</citetitle></link>,
+                <para>Specifies a regular authentication template. As noted in <olink targetdoc="admin-guide" targetptr="secure-openam-administration" />,
                     the <filename>Login.jsp</filename> file may be customized for different deployments.</para>
             </listitem>
         </varlistentry>
@@ -921,8 +895,8 @@
         </indexterm>
 
         <para>The JSP files in the <filename>console/agentconfig</filename> subdirectory relate to the configuration of Web Agents. To see
-        what is done by each JSP file, log into the console as the administrator. Select Access Control >
-            <replaceable>[Some Realm]</replaceable> >
+        what is done by each JSP file, log into the console as the administrator. Select Realms &gt;
+            <replaceable>Realm Name</replaceable> &gt;
         Agents. Several of the options that appear corresponds to the JSP files in the target subdirectory.</para>
 
         <para>Some of the endpoints include messages from relevant sections of the <filename>amConsole.properties</filename> file. The agents
@@ -930,9 +904,7 @@
 
         <para>Several endpoints relate to Web Service Client (WSC) policy agents, which secure outgoing requests and
             validate incoming requests from Web Service Providers (WSP). For more information, see the chapter on
-            <link xlink:href="admin-guide#chap-agents"
-                  xlink:role="http://docbook.org/xlink/role/olink">
-            <citetitle>Configuring Policy Agent Profiles</citetitle> in the Administrative Guide</link>.
+            <olink targetdoc="admin-guide" targetptr="chap-agents" />.
             If you are not using agent functionality such as that related to the Security Token Service (STS), the
             related endpoints listed in this section may not be essential in a production deployment.</para>
   <variablelist>
@@ -950,10 +922,7 @@
           <listitem>
               <para>Allows an administrator to review default settings for the agent, as configured in the Inheritance
                   Settings page. Inheritance assumes that agent is part of a previously configured group.
-                  To access Inheritance Settings, refer to the <link
-                  xlink:href="admin-guide#create-agent-profiles"
-                  xlink:role="http://docbook.org/xlink/role/olink">
-                  <citetitle>Creating Agent Profiles" section of the Administration Guide</citetitle></link>.</para>
+                  To access Inheritance Settings, refer to the <olink targetdoc="admin-guide" targetptr="create-agent-profiles" />.</para>
           </listitem>
       </varlistentry>
 
@@ -992,7 +961,7 @@
           <term><literal>Agents.jsp</literal></term>
           <listitem>
               <para>Enables access to a form to specify a new agent to add. The same form is used for every category of
-              new agents configured from the OpenAM console, when you navigate to Access Control > <replaceable>[Realm name]</replaceable> >
+              new agents configured from the OpenAM console, when you navigate to Realms &gt; <replaceable>Realm Name</replaceable> &gt;
               Agents.</para>
           </listitem>
       </varlistentry>
@@ -1095,8 +1064,8 @@
         </indexterm>
 
     <para>You can find console authentication endpoints in the console/authentication subdirectory. The associated
-    endpoints relate to authentication settings in a realm. To access these endpoints, navigate to Access Control &gt;
-        <replaceable>[some realm]</replaceable> &gt; Authentication.</para>
+    endpoints relate to authentication settings in a realm. To access these endpoints, navigate to Realms &gt;
+        <replaceable>Realm Name</replaceable> &gt; Authentication.</para>
 
         <variablelist>
 
@@ -1268,7 +1237,7 @@
                 <term><literal>Delegation.jsp</literal></term>
                 <listitem>
                     <para>Associated with the privileges for a realm. The privileges can be assigned for different
-                        groups of users, as configured via Access Control &gt; <replaceable>[realm]</replaceable> &gt;
+                        groups of users, as configured via Realms &gt; <replaceable>Realm Name</replaceable> &gt;
                     Subjects &gt; Group.</para>
                 </listitem>
             </varlistentry>
@@ -1277,8 +1246,8 @@
                 <term><literal>DelegationProperties.jsp</literal></term>
                 <listitem>
                     <para>Supports changes in properties for group privileges, described in the <filename>Delegation.jsp</filename> endpoint.
-                        To get to these properties, select Access Control &gt; <replaceable>[some realm]</replaceable>
-                        &gt; Privileges &gt; <replaceable>[name of group]</replaceable>.</para>
+                        To get to these properties, select Realms &gt; <replaceable>Realm Name</replaceable>
+                        &gt; Privileges &gt; <replaceable>Group Name</replaceable>.</para>
                 </listitem>
             </varlistentry>
 
@@ -1628,8 +1597,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>Entities.jsp</literal></term>
                 <listitem>
-                    <para>Opens the list of currently configured users, available via Access Control &gt;
-                        <replaceable>[selected realm]</replaceable> &gt; Subjects.</para>
+                    <para>Opens the list of currently configured users, available via Realms &gt;
+                        <replaceable>Realm Name</replaceable> &gt; Subjects.</para>
                 </listitem>
             </varlistentry>
 
@@ -1774,7 +1743,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>HomePage.jsp</literal></term>
                 <listitem>
-                    <para>Associated with the main Access Control page in the OpenAM GUI console, which lists configured
+                    <para>Associated with the main Access Control page in the legacy OpenAM console, which lists configured
                         realms. If you call <filename>realm/HomePage.jsp</filename> directly, it cites messages associated with changes for
                         a specific user, and functions more closely associated with JSP endpoints in the <filename>console/idm</filename>
                         subdirectory.</para>
@@ -1784,8 +1753,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>IDRepo.jsp</literal></term>
                 <listitem>
-                    <para>Enables links with directory server data stores within a realm. To access, select Access
-                    Control &gt; <replaceable>[some realm]</replaceable> &gt; Data Stores &gt; New. You should see
+                    <para>Enables links with directory server data stores within a realm. To access, select Realms
+                    &gt; <replaceable>Realm Name</replaceable> &gt; Data Stores &gt; New. You should see
                     a variety of supported directory server data stores, such as Active Directory, OpenDJ, and
                     Tivoli Directory Server.</para>
                 </listitem>
@@ -1951,16 +1920,16 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>G11NCharsetAliasAdd.jsp</literal></term>
                 <listitem>
-                    <para>Supports the configuration of a new character set alias. Accessible from the Globalization
-                        Settings &gt; Charset Aliases submenu.</para>
+                    <para>Supports the configuration of a new character set alias. Accessible from the
+                        Configuration &gt; Console &gt; Globalization Settings &gt; Charset Aliases submenu.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>G11NCharsetAliasEdit.jsp</literal></term>
                 <listitem>
-                    <para>Supports the editing of an existing character set alias. Accessible from the Globalization
-                        Settings &gt; Charset Aliases submenu.</para>
+                    <para>Supports the editing of an existing character set alias. Accessible from the
+                     Configuration &gt; Console &gt; Globalization Settings &gt; Charset Aliases submenu.</para>
                 </listitem>
             </varlistentry>
 
@@ -1968,7 +1937,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>G11NSupportedCharsetAdd.jsp</literal></term>
                 <listitem>
                     <para>Supports the configuration of a new character set supported by a locale. Accessible from the
-                        Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
+                     Configuration &gt; Console &gt; Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
                 </listitem>
             </varlistentry>
 
@@ -1976,7 +1945,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>G11NSupportedCharsetEdit.jsp</literal></term>
                 <listitem>
                     <para>Supports the editing of an existing character set supported by a locale. Accessible from the
-                        Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
+                     Configuration &gt; Console &gt; Globalization Settings &gt; Charsets Supported by Each Locale submenu.</para>
                 </listitem>
             </varlistentry>
 
@@ -2479,9 +2448,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>ConfigureOAuth2.jsp</literal></term>
                 <listitem>
                     <para>Supports the configuration of OAuth2 Authorization. For more information, see the
-                        the chapter on <link xlink:href="admin-guide#chap-oauth2"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing OAuth2 Authorization in the Administration Guide</citetitle></link>.
+                        the chapter on <olink targetdoc="admin-guide" targetptr="chap-oauth2" />.
                     </para>
                 </listitem>
             </varlistentry>
@@ -2531,11 +2498,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>CreateFedlet.jsp</literal></term>
                 <listitem>
                     <para>A fedlet supports federation for a SP that does not already have its own federation solution.
-                    For more information, see the
-                        the chapter on <link xlink:href="dev-guide#chap-fedlet-java"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Using Fedlets in Java Web Applications in the Development Guide
-                                </citetitle></link>.</para>
+                    For more information, see <olink targetdoc="dev-guide" targetptr="chap-fedlets" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -2600,8 +2563,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
         </indexterm>
 
         <para>Endpoints in the console/user subdirectory support account configuration tasks. Many of these
-        endpoints are accessible by realm. From the home page screen, select Access Control &gt;
-            <replaceable>[realm]</replaceable> &gt; Subjects &gt; <replaceable>[name of user]</replaceable>. This
+        endpoints are accessible by realm. From the home page screen, select Realms &gt;
+            <replaceable>Realm Name</replaceable> &gt; Subjects &gt; <replaceable>User Name</replaceable>. This
         should open up an Edit User screen</para>
 
         <variablelist>
@@ -2688,7 +2651,6 @@ to a runtime exception with messages that I think suggest that it needed to be c
             </citetitle></link>.</para>
 
         <variablelist>
-
             <varlistentry>
                 <term><literal>WSAuthNServices.jsp</literal></term>
                 <listitem>
@@ -2761,7 +2723,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
         <para>
          The OpenAM console uses the JSP files in this section to configure REST STS instances.
          The endpoints in this section are accessible from the OpenAM console and can be
-         reached by using the path Access Control &gt; <replaceable>Realm Name</replaceable> &gt; STS.
+         reached by using the path Realms &gt; <replaceable>Realm Name</replaceable> &gt; STS.
         </para>
         <para>
          You can find the JSP files in the <filename>console/reststs</filename> subdirectory.
@@ -2868,10 +2830,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>registerClient.jsp</literal></term>
                 <listitem>
                     <para>Enables registration of an OAuth 2.0 client with the OpenAM OAuth 2.0 authorization service.
-                    For details, see the Administration Guide chapter on
-                        <link xlink:href="admin-guide#register-oauth2-client"
-                                              xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing OAuth 2.0 Authorization</citetitle></link>.
+                    For details, see <olink targetdoc="admin-guide" targetptr="register-oauth2-client" />.
                     </para>
                 </listitem>
             </varlistentry>
@@ -2880,10 +2839,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>OAuthLogout.jsp</literal></term>
                 <listitem>
                     <para>Used to log out the resource owner with the OAuth 2.0 provider. For more information, see
-                        the Administration Guide chapter on
-                        <link xlink:href="admin-guide#register-oauth2-client"
-                              xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Defining Authentication Services</citetitle></link>.
+                        <olink targetdoc="admin-guide" targetptr="register-oauth2-client" />.
                         </para>
                 </listitem>
             </varlistentry>
@@ -2891,10 +2847,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>OAuthProxy.jsp</literal></term>
                 <listitem>
-                    <para>Endpoint used for redirection. For more information, see the Administration Guide chapter on
-                        <link xlink:href="admin-guide#register-oauth2-client"
-                        xlink:role="http://docbook.org/xlink/role/olink">
-                        <citetitle>Managing OAuth 2.0 Authorization</citetitle></link>.</para>
+                    <para>Endpoint used for redirection. For more information, see <olink targetdoc="admin-guide" targetptr="register-oauth2-client" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -2916,9 +2869,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
         endpoint on an OpenAM system using an URL of openam.example.org in a standard Tomcat container, navigate to
         <literal>http://openam.example.org/openam/ui/PWResetUserValidation.jsp</literal>. You can set associated options from
         the main console by selecting Configuration &gt; Global &gt; Password Reset. For more information on the
-            process, see the chapter on <link xlink:href="admin-guide#chap-pwd-reset"
-                                                  xlink:role="http://docbook.org/xlink/role/olink">
-                <citetitle>Configuring Password Reset in the Administration Guide</citetitle></link>.</para>
+            process, see the chapter on <olink targetdoc="admin-guide" targetptr="chap-pwd-reset" />.</para>
 
         <variablelist>
 
@@ -2986,9 +2937,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
         <para>You can find the endpoints described in this section in the <filename>saml2/jsp</filename> subdirectory. As of this writing,
         some of these endpoints are not used in the current implementation of OpenAM. Active endpoints in this category
-            are discussed in the chapter on <link xlink:href="admin-guide#chap-federation"
-                                                 xlink:role="http://docbook.org/xlink/role/olink">
-                <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
+            are discussed in <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
 
         <variablelist>
 
@@ -3034,9 +2983,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Supports the export of XML-based metadata with other providers within a circle of trust (CoT).
                         Currently used. For more information, see
-                        the chapter on <link xlink:href="admin-guide#chap-federation"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
+                        the chapter on <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -3107,11 +3054,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>idpMNIRequestInit.jsp</literal></term>
                 <listitem>
                     <para>The MNI in several JSP files relate to ManageNameID, which sets up corresponding accounts
-                        on IDPs and SPs. As described in the
-                        <link xlink:href="admin-guide#change-federation"
-                              xlink:role="http://docbook.org/xlink/role/olink">
-                        <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link> chapter of
-                        the Administration Guide, it allows you to change federation of persistently linked accounts.
+                        on IDPs and SPs. As described in
+                        <olink targetdoc="admin-guide" targetptr="change-federation" />, it allows you to change federation of persistently linked accounts.
                     The chapter also includes an example of this endpoint at work.</para>
                 </listitem>
             </varlistentry>
@@ -3130,9 +3074,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Specifies an endpoint that starts SSO, either from cache, or by
                         verifying <literal>metaAlias</literal> and SP identifier data. For more information, see
-                        the chapter on <link xlink:href="admin-guide#chap-federation"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
+                        the chapter on <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -3140,9 +3082,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>idpSingleLogoutInit.jsp</literal></term>
                 <listitem>
                     <para>Starts a <literal>LogoutRequest</literal> from the identity provider. For more information, see
-                        the chapter on <link xlink:href="admin-guide#chap-federation"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
+                        the chapter on <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -3223,9 +3163,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>This particular endpoint supports changes to federation of persistently linked
                         accounts, in a fashion similar to <filename>idpMNIRequestInit.jsp</filename>. For an example of this endpoint in
-                        work, see the chapter on <link xlink:href="admin-guide#chap-federation"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
+                        work, see the chapter on <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -3233,9 +3171,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>spSSOInit.jsp</literal></term>
                 <listitem>
                     <para>Supports SSO messages from the SP. For more information and an example of how this endpoint is
-                        used, see the chapter on <link xlink:href="admin-guide#chap-federation"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
+                        used, see the chapter on <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -3243,9 +3179,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>spSingleLogoutInit.jsp</literal></term>
                 <listitem>
                     <para>Supports SSO messages from the SP. For more information, see
-                        the chapter on <link xlink:href="admin-guide#chap-federation"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing SAML2 Federation in the Administration Guide</citetitle></link>.</para>
+                        the chapter on <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -3603,8 +3537,8 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Associated with the servlet named <literal>AgentConfigurationServlet</literal>. The associated
                         <literal>AgentConfigurationServlet</literal> class is called by the <filename>amAccessControl.xml</filename> file, which
-                        suggests that it can be configured from the console from the Agents section of the
-                        Access Control menu. It is rarely used otherwise. any URL entered prior to login defaults to the standard login page.</para>
+                        suggests that it can be configured from the console from Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents.
+                        It is rarely used otherwise. any URL entered prior to login defaults to the standard login page.</para>
                 </listitem>
             </varlistentry>
 
@@ -3983,10 +3917,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Used by a servlet named <literal>CDCServlet</literal>. It is associated with a Cross Domain Controller Servlet,
                         as described in the
-                        the chapter on <link xlink:href="admin-guide#chap-cdsso"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Configuring Cross-Domain Single Sign On in the Administration Guide
-                            </citetitle></link>.
+                        the chapter on <olink targetdoc="admin-guide" targetptr="chap-cdsso" />.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4150,8 +4081,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Used by a servlet named <literal>AssertionConsumerService</literal>. Associated with the
                         <literal>FSAssertionConsumerService</literal> class. For more information, see the chapter on
-                       <link xlink:href="admin-guide#chap-federation"  xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing SAML v2.0 Federation in the Administration Guide</citetitle></link>.
+                       <olink targetdoc="admin-guide" targetptr="chap-federation" />.
                     </para>
                 </listitem>
             </varlistentry>
@@ -4285,7 +4215,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
             <varlistentry>
                 <term><literal>/RealmSelection/*</literal></term>
                 <listitem>
-                    <para>Used by an endpoint named <filename>realmSelection.jsp</filename>filename>, which was defined in the WS-Federation
+                    <para>Used by an endpoint named <filename>realmSelection.jsp</filename>, which was defined in the WS-Federation
                         JSP Endpoints section.
                     </para>
                 </listitem>
@@ -4324,19 +4254,14 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Used by a servlet named <literal>OAuth2Rest</literal>. Associated with the <literal>RestTokenDispatcher</literal> class.
                         class.  For more information, see the
-                        the chapter on <link xlink:href="dev-guide#sec-rest-oauth2-oidc"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>RESTful OAuth2 2.0 and OpenID Connect 1.0 Services</citetitle></link>.</para>
+                        the chapter on <olink targetdoc="dev-guide" targetptr="sec-rest-oauth2-oidc" />.</para>
                 </listitem>
             </varlistentry>
 
             <varlistentry>
                 <term><literal>/oauth2/registerClient.jsp</literal></term>
                 <listitem>
-                    <para>Used by a servlet named <literal>OAuth2RegisterClient</literal>. For more information, see the
-                        the Administration Guide chapter on <link xlink:href="admin-guide#chap-oauth2"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Managing OAuth 2.0 Authorization</citetitle></link>.</para>
+                    <para>Used by a servlet named <literal>OAuth2RegisterClient</literal>. For more information, see <olink targetdoc="admin-guide" targetptr="chap-oauth2" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -4345,9 +4270,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <listitem>
                     <para>Used by a servlet named <literal>OAuth2RestletAdapter</literal>. Associated with the <literal>RestTokenDispatcher</literal> class.
                         For more information, see the chapter on
-                        the chapter on <link xlink:href="dev-guide#sec-rest-oauth2-oidc"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>RESTful OAuth2 2.0 and OpenID Connect 1.0 Services</citetitle></link>.</para>
+                        the chapter on <olink targetdoc="dev-guide" targetptr="sec-rest-oauth2-oidc" />.</para>
                 </listitem>
             </varlistentry>
 
@@ -4355,13 +4278,13 @@ to a runtime exception with messages that I think suggest that it needed to be c
                 <term><literal>/json/*</literal></term>
                 <listitem>
                     <para>Used by a servlet named <literal>ForgeRockRest</literal>. Associated with the <literal>HttpServlet</literal> class.
-                        For more information, see the chapter on
-                        <link xlink:href="dev-guide#sec-rest"
-                                             xlink:role="http://docbook.org/xlink/role/olink">
-                            <citetitle>Using RESTful Web Services</citetitle></link>. In addition, you
-                    can read more about associated REST endpoints in <link xlink:href="reference#json-rest-endpoints"
-                    xlink:role="http://docbook.org/xlink/role/olink" />
-                    <citetitle>JSON REST Endpoints</citetitle></para>
+                        For more information, see <olink targetdoc="dev-guide"
+                           targetptr="sec-rest"/>. In addition, you
+                    can read more about associated REST endpoints in
+                    <olink targetdoc="reference"
+                           targetptr="json-rest-endpoints"/>.
+
+                    </para>
                 </listitem>
             </varlistentry>
 
@@ -4378,16 +4301,15 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
   <para>
    The <citetitle>OpenAM Developer's Guide</citetitle> describes the OpenAM REST API endpoints in detail.
-   Please see the following sections in the <citetitle>Developer's Guide</citetitle> for more information:
+   For more information, see the following:
   </para>
-        
+
   <variablelist>
 
    <varlistentry>
     <term>
-     <link xlink:href="dev-guide#sec-rest"
-                xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>RESTful Web Services</citetitle></link>
+     <olink targetdoc="dev-guide"
+                           targetptr="sec-rest"/>
     </term>
     <listitem>
      <para>
@@ -4399,9 +4321,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
    <varlistentry>
     <term>
-     <link xlink:href="dev-guide#sec-rest-authz-policy"
-           xlink:role="http://docbook.org/xlink/role/olink">
-      <citetitle>RESTful Authorization and Policy Management Services</citetitle></link>
+     <olink targetdoc="dev-guide" targetptr="sec-rest-authz-policy" />
     </term>
     <listitem>
      <para>
@@ -4412,9 +4332,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
    <varlistentry>
     <term>
-     <link xlink:href="dev-guide#sec-rest-oauth2-oidc"
-           xlink:role="http://docbook.org/xlink/role/olink">
-      <citetitle>RESTful OAuth 2.0 and OpenID Connect 1.0 Services</citetitle></link>
+     <olink targetdoc="dev-guide" targetptr="sec-rest-oauth2-oidc" />
     </term>
     <listitem>
      <para>
@@ -4425,9 +4343,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
   <varlistentry>
    <term>
-    <link xlink:href="dev-guide#sec-rest-user-services"
-          xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>RESTful User Self-Service</citetitle></link>
+    <olink targetdoc="dev-guide" targetptr="sec-rest-user-services" />
    </term>
    <listitem>
     <para>
@@ -4438,9 +4354,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
   <varlistentry>
    <term>
-    <link xlink:href="dev-guide#sec-rest-identity-realm-mgmt"
-          xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>RESTful Identity and Realm Management Services</citetitle></link>
+    <olink targetdoc="dev-guide" targetptr="sec-rest-identity-realm-mgmt" />
    </term>
    <listitem>
     <para>
@@ -4451,9 +4365,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
 
   <varlistentry>
    <term>
-    <link xlink:href="dev-guide#sec-rest-sts"
-          xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>RESTful Secure Token Service</citetitle></link>
+    <olink targetdoc="dev-guide" targetptr="sec-rest-sts" />
    </term>
    <listitem>
     <para>
@@ -4510,10 +4422,7 @@ to a runtime exception with messages that I think suggest that it needed to be c
         <para>Allows a client to retrieve the provider URL for an end user by
         HTTP GET as specified by OpenID Connect Discovery 1.0.</para>
 
-        <para>For an example, see <link xlink:show="new"
-        xlink:href="admin-guide#configure-openid-connect-discovery"
-        xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-        OpenAM For OpenID Connect Discovery</citetitle></link>.</para>
+        <para>For an example, see <olink targetdoc="admin-guide" targetptr="configure-openid-connect-discovery" />.</para>
        </listitem>
       </varlistentry>
      </variablelist>

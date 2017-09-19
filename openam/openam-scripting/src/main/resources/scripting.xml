@@ -130,6 +130,14 @@
                                 <Value>java.util.TreeSet</Value>
                                 <Value>com.sun.identity.shared.debug.Debug</Value>
                                 <Value>org.forgerock.http.client.*</Value>
+                                <Value>org.forgerock.http.Client</Value>
+                                <Value>org.forgerock.http.Handler</Value>
+                                <Value>org.forgerock.http.Context</Value>
+                                <Value>org.forgerock.http.context.RootContext</Value>
+                                <Value>org.forgerock.http.protocol.Request</Value>
+                                <Value>org.forgerock.http.protocol.Response</Value>
+                                <Value>org.forgerock.util.promise.NeverThrowsException</Value>
+                                <Value>org.forgerock.util.promise.Promise</Value>
                                 <Value>org.forgerock.openam.scripting.api.http.GroovyHttpClient</Value>
                                 <Value>org.forgerock.openam.scripting.api.http.JavaScriptHttpClient</Value>
                                 <Value>org.forgerock.openam.scripting.api.ScriptedIdentity</Value>
@@ -217,7 +225,7 @@
                     </AttributeValuePair>
                     <AttributeValuePair>
                         <Attribute name="defaultScript"/>
-                        <Value>&GlobalEntitlementConditionScriptId;</Value>
+                        <Value>@GlobalEntitlementConditionScriptId@</Value>
                     </AttributeValuePair>
                     <SubConfiguration name="engineConfiguration" id="engineConfiguration"/>
                 </SubConfiguration>
@@ -228,7 +236,7 @@
                     </AttributeValuePair>
                     <AttributeValuePair>
                         <Attribute name="defaultScript"/>
-                        <Value>&GlobalServerSideAuthModuleScriptId;</Value>
+                        <Value>@GlobalServerSideAuthModuleScriptId@</Value>
                     </AttributeValuePair>
                     <SubConfiguration name="engineConfiguration" id="engineConfiguration">
                         <AttributeValuePair>
@@ -280,7 +288,7 @@
                     </AttributeValuePair>
                     <AttributeValuePair>
                         <Attribute name="defaultScript"/>
-                        <Value>&NoScriptDefined;</Value>
+                        <Value>@NoScriptDefined@</Value>
                     </AttributeValuePair>
                 </SubConfiguration>
                 <SubConfiguration name="OIDC_CLAIMS" id="scriptContext">
@@ -290,7 +298,7 @@
                     </AttributeValuePair>
                     <AttributeValuePair>
                         <Attribute name="defaultScript"/>
-                        <Value>&GlobalEntitlementConditionScriptId;</Value>
+                        <Value>@GlobalEntitlementConditionScriptId@</Value>
                     </AttributeValuePair>
                     <SubConfiguration name="engineConfiguration" id="engineConfiguration">
                         <AttributeValuePair>
@@ -330,6 +338,8 @@
                             <Value>java.util.LinkedHashMap$LinkedEntrySet</Value>
                             <Value>org.forgerock.openam.oauth2.OpenAMAccessToken</Value>
                             <Value>java.util.HashMap$Node</Value>
+                            <Value>org.forgerock.oauth2.core.UserInfoClaims</Value>
+                            <Value>org.codehaus.groovy.runtime.GStringImpl</Value>
                         </AttributeValuePair>
                     </SubConfiguration>
                 </SubConfiguration>
@@ -340,7 +350,7 @@
                     </AttributeValuePair>
                     <AttributeValuePair>
                         <Attribute name="defaultScript"/>
-                        <Value>&GlobalSdkClaimsScriptId;</Value>
+                        <Value>@GlobalSdkClaimsScriptId@</Value>
                     </AttributeValuePair>
                     <AttributeValuePair>
                         <Attribute name="languages" />
@@ -379,15 +389,15 @@
                             <Value>java.util.LinkedHashMap$Entry</Value>
                             <Value>java.util.LinkedHashMap$LinkedEntrySet</Value>
                             <Value>java.util.HashMap$Node</Value>
-                            <Value>org.forgerock.json.fluent.JsonValue</Value>
-                            <Value>org.forgerock.openam.rest.batch.helpers.Requester</Value>
-                            <Value>org.forgerock.json.resource.RouterContext</Value>
-                            <Value>org.forgerock.openam.rest.batch.helpers.ScriptResponse</Value>
+                            <Value>org.forgerock.json.JsonValue</Value>
+                            <Value>org.forgerock.openam.scripting.rest.batch.helpers.Requester</Value>
+                            <Value>org.forgerock.json.resource.UriRouterContext</Value>
+                            <Value>org.forgerock.openam.scripting.rest.batch.helpers.ScriptResponse</Value>
                         </AttributeValuePair>
                     </SubConfiguration>
                 </SubConfiguration>
                 <SubConfiguration name="globalScripts" id="globalScripts">
-                    <SubConfiguration name="&GlobalEntitlementConditionScriptId;" id="globalScript">
+                    <SubConfiguration name="@GlobalEntitlementConditionScriptId@" id="globalScript">
                         <AttributeValuePair>
                             <Attribute name="name"/>
                             <Value>Scripted Policy Condition</Value>
@@ -407,7 +417,7 @@
                             </Value>
                         </AttributeValuePair>
                     </SubConfiguration>
-                    <SubConfiguration name="&GlobalServerSideAuthModuleScriptId;" id="globalScript">
+                    <SubConfiguration name="@GlobalServerSideAuthModuleScriptId@" id="globalScript">
                         <AttributeValuePair>
                             <Attribute name="name"/>
                             <Value>Scripted Module - Server Side</Value>
@@ -427,7 +437,7 @@
                             </Value>
                         </AttributeValuePair>
                     </SubConfiguration>
-                    <SubConfiguration name="&GlobalServerSideDeviceIdMatchScriptId;" id="globalScript">
+                    <SubConfiguration name="@GlobalServerSideDeviceIdMatchScriptId@" id="globalScript">
                         <AttributeValuePair>
                             <Attribute name="name"/>
                             <Value>Device Id (Match) - Server Side</Value>
@@ -447,7 +457,7 @@
                             </Value>
                         </AttributeValuePair>
                     </SubConfiguration>
-                    <SubConfiguration name="&GlobalClientSideDeviceIdMatchScriptId;" id="globalScript">
+                    <SubConfiguration name="@GlobalClientSideDeviceIdMatchScriptId@" id="globalScript">
                         <AttributeValuePair>
                             <Attribute name="name"/>
                             <Value>Device Id (Match) - Client Side</Value>
@@ -468,7 +478,7 @@
                             </Value>
                         </AttributeValuePair>
                     </SubConfiguration>
-                    <SubConfiguration name="&GlobalOidcClaimsScriptId;" id="globalScript">
+                    <SubConfiguration name="@GlobalOidcClaimsScriptId@" id="globalScript">
                         <AttributeValuePair>
                             <Attribute name="name"/>
                             <Value>OIDC Claims Script</Value>
@@ -492,7 +502,7 @@
                             </Value>
                         </AttributeValuePair>
                     </SubConfiguration>
-                    <SubConfiguration name="&GlobalSdkClaimsScriptId;" id="globalScript">
+                    <SubConfiguration name="@GlobalSdkClaimsScriptId@" id="globalScript">
                         <AttributeValuePair>
                             <Attribute name="name"/>
                             <Value>SDK Script</Value>

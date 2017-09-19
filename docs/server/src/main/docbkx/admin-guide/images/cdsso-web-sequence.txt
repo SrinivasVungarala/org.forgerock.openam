@@ -38,15 +38,15 @@ box "OpenAM" #FAFAFA
 	participant "AuthN Service" as AuthN
 end box
 
-UA->App: Browse to protected resource.\nNo SSOToken for resource domain, yet.
+UA->App: Browse to protected resource.\nNo SSO token for resource domain, yet.
 
 App->UA: Redirect...
 
 UA->CDC: ...to CDCServlet.
 
-CDC->NPS: If browser presents SSOToken,\nrequest SSOToken validation.
+CDC->NPS: If browser presents SSO token,\nrequest SSO token validation.
 
-NPS->CDC: If SSOToken is valid,\nskip to 14. Otherwise...
+NPS->CDC: If SSO token is valid,\nskip to 14. Otherwise...
 
 CDC->UA: Redirect...
 
@@ -56,13 +56,13 @@ AuthN->UA: Authentication page
 
 UA->AuthN: Submit credentials.
 
-AuthN->UA: Set valid SSOToken with OpenAM domain name,\nand redirect...
+AuthN->UA: Set valid SSO token with OpenAM domain name,\nand redirect...
 
 UA->CDC: ...to CDCServlet.
 
-CDC->NPS: Request SSOToken validation.
+CDC->NPS: Request SSO token validation.
 
-NPS->CDC: SSOToken is valid.
+NPS->CDC: SSO token is valid.
 
 CDC->UA: Send self-submitting form with\nLiberty AuthN Response (LARES).
 
@@ -70,12 +70,12 @@ UA->App: Form POSTs automatically\nto protected resource.
 
 note right of UA
 	Policy agent intercepts,
-	Extracts SSOToken from LARES.
+	Extracts SSO token from LARES.
 end note 
 
-App->NPS: Request SSOToken validation
+App->NPS: Request SSO token validation
 
-NPS->App: Response for SSOToken validation
+NPS->App: Response for SSO token validation
 
 App->NPS: Request policy decision.
 

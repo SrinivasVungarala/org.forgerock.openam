@@ -50,8 +50,8 @@
             <artifactId>openam-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
-            <artifactId>org.restlet.ext.jackson</artifactId>
+            <groupId>org.forgerock.openam</groupId>
+            <artifactId>openam-oauth2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.forgerock.openam</groupId>
@@ -60,6 +60,10 @@
         <dependency>
             <groupId>org.forgerock.http</groupId>
             <artifactId>chf-http-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.forgerock.openam</groupId>
+            <artifactId>openam-entitlements</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -83,7 +87,8 @@
         </dependency>
         <dependency>
             <groupId>org.forgerock.commons</groupId>
-            <artifactId>json-test</artifactId>
+            <artifactId>json-resource</artifactId>
+            <type>test-jar</type>
         </dependency>
     </dependencies>
 </project>

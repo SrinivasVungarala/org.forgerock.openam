@@ -15,8 +15,7 @@
  */
 package org.forgerock.openam.cts.adapters;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.openam.tokens.TokenType;
 import org.forgerock.openam.cts.api.fields.OAuthTokenField;
 import org.forgerock.openam.cts.api.tokens.Token;
@@ -42,6 +41,8 @@ import static org.mockito.BDDMockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.AssertJUnit.assertTrue;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OAuthAdapterTest {
     @Test

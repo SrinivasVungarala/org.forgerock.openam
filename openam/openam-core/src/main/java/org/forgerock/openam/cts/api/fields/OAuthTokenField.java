@@ -21,11 +21,12 @@ import org.forgerock.openam.tokens.CoreTokenField;
 /**
  * The OAuthTokenField provides a mapping between known OAuth fields and the LDAP Attributes
  * that they map to.
- *
+ * <p>
  * This class, like all other Token Field classes references the CoreTokenField fields. It goes
  * one stage further by mapping OAuth attribute names to the corresponding CoreTokenField attributes.
- *
- * @author robert.wapshott@forgerock.com
+ * <p>
+ * This class should <b>only</b> list mappings for token fields that should be queryable in the CTS.
+ * Other token fields will be stored automatically in the CTS blob.
  */
 public enum OAuthTokenField {
     /**
@@ -45,7 +46,8 @@ public enum OAuthTokenField {
     TOKEN_NAME(OAuth2Constants.CoreTokenParams.TOKEN_NAME, CoreTokenField.STRING_TEN),
     NONCE(OAuth2Constants.Custom.NONCE, CoreTokenField.STRING_ELEVEN),
     GRANT_TYPE(OAuth2Constants.Params.GRANT_TYPE, CoreTokenField.STRING_TWELVE),
-    SESSION_ID(OAuth2Constants.Custom.SSO_TOKEN_ID, CoreTokenField.STRING_THIRTEEN);
+    SESSION_ID(OAuth2Constants.Custom.SSO_TOKEN_ID, CoreTokenField.STRING_THIRTEEN),
+    DEVICE_USER_CODE(OAuth2Constants.DeviceCode.USER_CODE, CoreTokenField.STRING_FOURTEEN);
 
     private final String oAuthField;
     private final CoreTokenField coreTokenField;

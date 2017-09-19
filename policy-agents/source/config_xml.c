@@ -377,6 +377,9 @@ static void parse_other_options(am_xml_parser_ctx_t *ctx, const char *val, int l
     
     parse_config_value(ctx, AM_AGENTS_CONFIG_ANONYMOUS_USER_ENABLE, CONF_NUMBER, NULL, &ctx->conf->anon_remote_user_enable, val, len);
     parse_config_value(ctx, AM_AGENTS_CONFIG_ANONYMOUS_USER_ID, CONF_STRING, NULL, &ctx->conf->unauthenticated_user, val, len);
+
+    parse_config_value(ctx, AM_AGENTS_CONFIG_IGNORE_PATHINFO, CONF_NUMBER, NULL, &ctx->conf->path_info_ignore, val, len);
+    parse_config_value(ctx, AM_AGENTS_CONFIG_IGNORE_PATHINFO_NOT_ENFORCED, CONF_NUMBER, NULL, &ctx->conf->path_info_ignore_not_enforced, val, len);
 }
 
 static void end_element(void * userData, const char * name) {
@@ -425,6 +428,7 @@ static void end_element(void * userData, const char * name) {
     parse_config_value(ctx, AM_AGENTS_CONFIG_RETRY_WAIT, CONF_NUMBER, NULL, &ctx->conf->retry_wait, val, len);
     
     parse_config_value(ctx, AM_AGENTS_CONFIG_LB_ENABLE, CONF_NUMBER, NULL, &ctx->conf->lb_enable, val, len);
+    parse_config_value(ctx, AM_AGENTS_CONFIG_KEEPALIVE_DISABLE, CONF_NUMBER, NULL, &ctx->conf->keepalive_disable, val, len);
 
     /* other options */
 
@@ -579,5 +583,8 @@ am_config_t *am_parse_config_xml(unsigned long instance_id, const char *xml, siz
     decrypt_agent_passwords(r);
     update_agent_configuration_ttl(r);
     update_agent_configuration_audit(r);
+    update_agent_configuration_normalise_map_urls(r);
+    update_agent_configuration_reorder_map_values(r);
+    
     return r;
 }

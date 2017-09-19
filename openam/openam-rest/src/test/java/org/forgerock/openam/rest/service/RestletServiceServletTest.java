@@ -11,11 +11,13 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.rest.service;
 
+import org.restlet.Restlet;
+import org.restlet.service.StatusService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -39,7 +41,7 @@ public class RestletServiceServletTest {
 
         servlet = mock(HttpServlet.class);
 
-        restletServiceServlet = new RestletServiceServlet(servlet, JSONServiceEndpointApplication.class, "json");
+        restletServiceServlet = new RestletServiceServlet(servlet, TestServiceEndpointApplication.class, "test");
     }
 
     @Test
@@ -51,7 +53,7 @@ public class RestletServiceServletTest {
         String initParameter = restletServiceServlet.getInitParameter("org.restlet.application", "ANY");
 
         //Then
-        assertEquals(initParameter, JSONServiceEndpointApplication.class.getName());
+        assertEquals(initParameter, TestServiceEndpointApplication.class.getName());
     }
 
     @Test
@@ -86,7 +88,7 @@ public class RestletServiceServletTest {
         //Given
 
         //When
-        assertEquals(restletServiceServlet.getServletName(), "json");
+        assertEquals(restletServiceServlet.getServletName(), "test");
 
         //Then
         verifyZeroInteractions(servlet);
@@ -183,5 +185,16 @@ public class RestletServiceServletTest {
 
         //Then
         verify(servlet).log("MSG", t);
+    }
+
+    private static class TestServiceEndpointApplication extends ServiceEndpointApplication {
+        public TestServiceEndpointApplication() {
+            super(new StatusService());
+        }
+
+        @Override
+        protected Restlet getRouter() {
+            return null;
+        }
     }
 }

@@ -26,7 +26,7 @@
 
 <section xml:id="configure-apps-with-console"
           xmlns='http://docbook.org/ns/docbook'
-          version='5.0' xml:lang='en'
+          version='5.0'
           xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
           xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -48,8 +48,8 @@
         <title>To Configure an Application Using the Policy Editor</title>
 
         <step>
-            <para>In the OpenAM console, select Access Control &gt; <replaceable>Realm
-            Name</replaceable> &gt; Policies.</para>
+            <para>In the OpenAM console, select Realms &gt; <replaceable>Realm
+            Name</replaceable> &gt; Authorization &gt; Policies.</para>
             <substeps>
              <step>
               <para>To create a new application, click Add New
@@ -135,10 +135,6 @@
 
     <para>
      For details see the procedure
-     <link
-      xlink:href="admin-guide#agent-realm-application-for-policy-decisions"
-      xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>To Specify the Realm and Application for Policy Decisions</citetitle></link>.
+     <xref linkend="agent-realm-application-for-policy-decisions" />.
     </para>
 </section>

@@ -16,11 +16,11 @@
 package org.forgerock.openam.rest.query;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.forgerock.json.resource.QueryFilter.*;
+import static org.forgerock.util.query.QueryFilter.*;
 import static org.mockito.Mockito.*;
 
-import org.forgerock.json.fluent.JsonPointer;
-import org.forgerock.json.resource.QueryFilter;
+import org.forgerock.json.JsonPointer;
+import org.forgerock.util.query.QueryFilter;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.Test;
 
@@ -31,7 +31,7 @@ public class QueryByStringFilterConverterTest {
     @Test
     public void shouldThrowQueryException() {
         // given
-        QueryFilter filter = QueryFilter.comparisonFilter("param1/param2", "eq", "*");
+        QueryFilter<JsonPointer> filter = comparisonFilter(new JsonPointer("param1/param2"), "eq", "*");
 
         // when
         QueryException exception = null;
@@ -49,7 +49,8 @@ public class QueryByStringFilterConverterTest {
     @Test
     public void shouldCreateAndFilter() {
         // given
-        QueryFilter filter = and(equalTo("param1", "value1"), contains("param2", "value2"));
+        QueryFilter<JsonPointer> filter =
+                and(equalTo(new JsonPointer("param1"), "value1"), contains(new JsonPointer("param2"), "value2"));
         QueryByStringFilterConverter mockConverter = mock(QueryByStringFilterConverter.class);
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         when(mockConverter.visitAndFilter(any(Void.class), anyList())).thenCallRealMethod();
@@ -68,7 +69,8 @@ public class QueryByStringFilterConverterTest {
     @Test
     public void shouldCreateOrFilter() {
         // given
-        QueryFilter filter = or(equalTo("param1", "value1"), contains("param2", "value2"));
+        QueryFilter<JsonPointer> filter =
+                or(equalTo(new JsonPointer("param1"), "value1"), contains(new JsonPointer("param2"), "value2"));
         QueryByStringFilterConverter mockConverter = mock(QueryByStringFilterConverter.class);
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         when(mockConverter.visitOrFilter(any(Void.class), anyList())).thenCallRealMethod();
@@ -87,9 +89,9 @@ public class QueryByStringFilterConverterTest {
     @Test
     public void shouldCreateCompoundFilter() {
         // given
-        QueryFilter filter = and(
-                or(equalTo("param1", "value1"), contains("param2", "value2")),
-                or(equalTo("param3", "value3"), contains("param4", "value4")));
+        QueryFilter<JsonPointer> filter = and(
+                or(equalTo(new JsonPointer("param1"), "value1"), contains(new JsonPointer("param2"), "value2")),
+                or(equalTo(new JsonPointer("param3"), "value3"), contains(new JsonPointer("param4"), "value4")));
         QueryByStringFilterConverter mockConverter = mock(QueryByStringFilterConverter.class);
         ArgumentCaptor<List> andCaptor = ArgumentCaptor.forClass(List.class);
         ArgumentCaptor<List> orCaptor = ArgumentCaptor.forClass(List.class);

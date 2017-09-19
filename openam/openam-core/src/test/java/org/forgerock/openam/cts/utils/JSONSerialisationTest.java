@@ -15,6 +15,9 @@
  */
 package org.forgerock.openam.cts.utils;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.testng.Assert.*;
+import com.google.inject.AbstractModule;
 import com.iplanet.dpro.session.DNOrIPAddressListTokenRestriction;
 import com.iplanet.dpro.session.SessionID;
 import com.iplanet.dpro.session.TokenRestriction;
@@ -22,6 +25,12 @@ import com.iplanet.dpro.session.service.InternalSession;
 import org.forgerock.guice.core.GuiceModules;
 import org.forgerock.guice.core.GuiceTestCase;
 import org.forgerock.guice.core.InjectorHolder;
+import org.forgerock.openam.audit.AMAuditService;
+import org.forgerock.openam.audit.AuditServiceProvider;
+import org.forgerock.openam.audit.configuration.AMAuditServiceConfiguration;
+import org.forgerock.openam.audit.configuration.AuditEventHandlerConfigurationWrapper;
+import org.forgerock.openam.audit.configuration.AuditServiceConfigurationListener;
+import org.forgerock.openam.audit.configuration.AuditServiceConfigurationProvider;
 import org.forgerock.openam.core.guice.CoreGuiceModule;
 import org.forgerock.openam.core.guice.DataLayerGuiceModule;
 import org.forgerock.openam.cts.TokenTestUtils;
@@ -37,13 +46,10 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotEquals;
-
-@GuiceModules({CoreGuiceModule.class, SharedGuiceModule.class, DataLayerGuiceModule.class})
+@GuiceModules({CoreGuiceModule.class, SharedGuiceModule.class, DataLayerGuiceModule.class, JSONSerialisationTest.DummyAuditConfigModule.class})
 public class JSONSerialisationTest extends GuiceTestCase {
 
     private JSONSerialisation serialization;
@@ -164,7 +170,7 @@ public class JSONSerialisationTest extends GuiceTestCase {
     }
 
     private static String getJSON(String path) throws Exception {
-        return IOUtils.getFileContentFromClassPath(path).replaceAll("\\s", "");
+        return IOUtils.getFileContentFromClassPath(JSONSerialisationTest.class, path).replaceAll("\\s", "");
     }
 
     private static void checkMapType(InternalSession is, String fieldName) throws Exception {
@@ -173,4 +179,64 @@ public class JSONSerialisationTest extends GuiceTestCase {
         Object obj = field.get(is);
         assertThat(obj).isInstanceOf(ConcurrentHashMap.class);
     }
+
+    public static class DummyAuditConfigModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(AuditServiceConfigurationProvider.class).to(DummyAuditServiceConfigurationProvider.class);
+            bind(AuditServiceProvider.class).to(DummyAuditServiceProvider.class);
+        }
+    }
+
+    public static final class DummyAuditServiceConfigurationProvider implements AuditServiceConfigurationProvider {
+
+        @Override
+        public void setupComplete() {
+
+        }
+
+        @Override
+        public void addConfigurationListener(AuditServiceConfigurationListener listener) {
+
+        }
+
+        @Override
+        public void removeConfigurationListener(AuditServiceConfigurationListener listener) {
+
+        }
+
+        @Override
+        public AMAuditServiceConfiguration getDefaultConfiguration() {
+            return new AMAuditServiceConfiguration(false, true, false);
+        }
+
+        @Override
+        public AMAuditServiceConfiguration getRealmConfiguration(String realm) {
+            return new AMAuditServiceConfiguration(false, true, false);
+        }
+
+        @Override
+        public Set<AuditEventHandlerConfigurationWrapper> getDefaultEventHandlerConfigurations() {
+            return null;
+        }
+
+        @Override
+        public Set<AuditEventHandlerConfigurationWrapper> getRealmEventHandlerConfigurations(String realm) {
+            return null;
+        }
+    }
+
+    public static final class DummyAuditServiceProvider implements AuditServiceProvider {
+
+        @Override
+        public AMAuditService getAuditService(String realm) {
+            return null;
+        }
+
+        @Override
+        public AMAuditService getDefaultAuditService() {
+            return null;
+        }
+    }
+
 }

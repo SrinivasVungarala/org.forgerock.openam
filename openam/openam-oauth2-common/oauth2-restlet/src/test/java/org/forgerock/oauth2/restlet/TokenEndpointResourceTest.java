@@ -11,15 +11,13 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.oauth2.restlet;
 
-import org.forgerock.json.fluent.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.AccessTokenService;
-import org.forgerock.oauth2.core.OAuth2Constants;
 import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.OAuth2RequestFactory;
 import org.forgerock.openam.utils.CollectionUtils;
@@ -34,7 +32,6 @@ import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
-import static org.forgerock.oauth2.core.OAuth2Constants.CoreTokenParams.TOKEN_NAME;
 import static org.forgerock.oauth2.core.OAuth2Constants.Token.OAUTH_ACCESS_TOKEN;
 
 public class TokenEndpointResourceTest {
@@ -51,8 +48,8 @@ public class TokenEndpointResourceTest {
     public void setUp() {
         requestFactory = mock(OAuth2RequestFactory.class);
         accessTokenService = mock(AccessTokenService.class);
-        OAuth2Representation representation = new OAuth2Representation();
-        exceptionHandler = new ExceptionHandler(representation);
+        OAuth2Representation representation = new OAuth2Representation(null);
+        exceptionHandler = new ExceptionHandler(representation, null, null);
         hook = mock(TokenRequestHook.class);
 
         tokenEndpointResource = new TokenEndpointResource(requestFactory, accessTokenService, exceptionHandler,

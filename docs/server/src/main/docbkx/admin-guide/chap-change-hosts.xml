@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-change-hosts'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -52,13 +52,9 @@
   </listitem>
   <listitem>
    <para>Exporting, editing, then importing the configuration.</para>
-   <para>
-    This step relies on the <command>ssoadm</command> command,
-    which you install separately from OpenAM as described in the procedure,
-    <link xlink:show="new" xlink:href="install-guide#install-openam-admin-tools"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up
-    Administration Tools</citetitle></link>.
-   </para>
+   <para>This step relies on the <command>ssoadm</command> command, which you
+   install separately from OpenAM as described in <olink
+   targetdoc="install-guide" targetptr="install-openam-admin-tools" />. </para>
   </listitem>
   <listitem>
    <para>Stopping OpenAM and editing configuration files.</para>
@@ -71,9 +67,7 @@
  <para>
   Before you start,
   make sure you have a current backup of your current installation.
-  See <link xlink:show="new" xlink:href="admin-guide#chap-backup-restore"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-  >Backing Up and Restoring OpenAM Configurations</citetitle></link>
+  See <xref linkend="chap-backup-restore" />
   for instructions.
  </para>
 
@@ -85,8 +79,9 @@
    <literal>amadmin</literal>.</para>
   </step>
   <step>
-   <para>Under Access Control &gt; / (Top-Level Realm), add the new host name
-   to the Realm/DNS Aliases list, and then save your work.</para>
+   <para>Under Realms &gt; <replaceable>Realm Name</replaceable>, click
+   Properties, add the new host name to the Realm/DNS Aliases list, and then
+   save your work.</para>
   </step>
  </procedure>
 
@@ -249,8 +244,9 @@ Service Configuration was imported.</computeroutput>
    <literal>amadmin</literal>.</para>
   </step>
   <step>
-   <para>Under Access Control &gt; / (Top-Level Realm), remove the old host
-   name from the Realm/DNS Aliases list, and then save your work.</para>
+   <para>Under Realms &gt; <replaceable>Realm Name</replaceable>, click
+   Properties, remove the old host name from the Realm/DNS Aliases list, and
+   then save your work.</para>
   </step>
  </procedure>
 </chapter>

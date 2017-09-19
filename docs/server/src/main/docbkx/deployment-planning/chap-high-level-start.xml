@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-high-level-start'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -139,7 +139,7 @@
    <para>
     <emphasis role="bold">Attend a Training Class</emphasis>. ForgeRock presents
     effective training classes to deploy OpenAM in your environment.
-    See <link xlink:href="http://forgerock.com/services/university"
+    See <link xlink:href="https://www.forgerock.com/services/university-training"
               xlink:show="new">ForgeRock University</link> for more information.
    </para>
   </listitem>
@@ -623,8 +623,7 @@
      Prepare the configuration directory server, OpenDJ for the core token service
      (CTS), and the LDAP identity repository.
      For information on installing data repositories, see
-     <link xlink:href="${docSetBaseURL}/install-guide#chap-prepare-install"
-           xlink:show="new"><citetitle>Prepare for Installation</citetitle></link>.
+     <olink targetdoc="install-guide" targetptr="chap-prepare-install" />.
     </para>
    </listitem>
    <listitem>
@@ -632,7 +631,7 @@
      You should obtain a supported ForgeRock release of OpenAM, a nightly build,
      or an archive build.
      For the latest stable version of OpenAM, click
-     <link xlink:show="new" xlink:href="http://forgerock.com/download-stack/"
+     <link xlink:show="new" xlink:href="https://backstage.forgerock.com/#!/downloads/"
       ><citetitle>Enterprise Downloads</citetitle></link>.
     </para>
    </listitem>
@@ -642,34 +641,30 @@
      configuration tools (<literal>ssoadm</literal>, <literal>ampassword</literal>,
      <literal>amverifyarchive</literal>), or set up your
      scripted install and configuration of OpenAM.
-     For information on installing OpenAM, see
-     <link xlink:href="${docSetBaseURL}/install-guide#install-guide"
-           xlink:show="new"><citetitle>OpenAM Installation Guide</citetitle></link>.
+     For information on installing OpenAM, see the
+     <olink targetdoc="install-guide" targetptr="install-guide" />.
     </para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">Set up your Realms</emphasis>. Within OpenAM,
      set up your realms and realm administrators if any.
      For more information on realms, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#chap-realms"
-           xlink:show="new"><citetitle>Configuring Realms</citetitle></link>.
+     <olink targetdoc="admin-guide" targetptr="chap-realms" />.
     </para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">Configure Session State</emphasis>. Configure
      sessions as stateful or stateless.
      For more information on session state, see
-     <link xlink:href="admin-guide#chap-session-state"
-           xlink:show="new"
-           xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Configuring Session State</citetitle></link>.
+     <!-- Check this link for OpenAM 13. Not in OpenAM 12 -->
+     <olink targetdoc="admin-guide" targetptr="chap-session-state" />.
     </para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">Install Another OpenAM Instance</emphasis>.
      Set up an identical instance of your first OpenAM instance.
      For information on installing multiple OpenAM servers, see
-     <link xlink:href="${docSetBaseURL}/install-guide#configure-sites"
+     <link xlink:href="${backstageAMBaseURL}/install-guide/chap-install-multiple/configure-sites"
            xlink:show="new"><citetitle>Installing Multiple Servers</citetitle></link>.
     </para>
    </listitem>
@@ -678,8 +673,7 @@
      access external resources over HTTPS and LDAPS. Set up secure cookies and
      certificates.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#chap-securing"
-           xlink:show="new"><citetitle>Securing OpenAM</citetitle></link>.
+     <olink targetdoc="admin-guide" targetptr="chap-securing" />.
     </para>
    </listitem>
 
@@ -695,8 +689,7 @@
            xlink:show="new"><citetitle>Simple Apache Reverse Proxy for OpenAM with
      Certificate-Based Authentication</citetitle></link>.
      For information on configuring sites, see
-     <link xlink:href="${docSetBaseURL}/install-guide#configure-sites"
-           xlink:show="new"><citetitle>Installing Multiple Servers</citetitle></link>.
+     <olink targetdoc="install-guide" targetptr="chap-install-multiple" />.
     </para>
    </listitem>
    <listitem>
@@ -704,8 +697,7 @@
      the policy agent profile, agent authenticator, policy agent configuration,
      bootstrap configuration for a Java EE or Web policy agent.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#chap-agents"
-           xlink:show="new"><citetitle>Configuring Policy Agent Profiles</citetitle></link>.
+     <olink targetdoc="admin-guide" targetptr="chap-agents" />.
     </para>
    </listitem>
    <listitem>
@@ -713,21 +705,20 @@
      policy agents depending on the app server or Web server type. For app servers,
      Apache Tomcat, JBoss, Jetty, Oracle WebLogic, IBM WebSphere.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/jee-users-guide#jee-users-guide"
+     <link xlink:href="${backstageJPABaseURL}/jee-users-guide/toc"
            xlink:show="new"><citetitle>OpenAM Java EE Policy Agent User's Guide</citetitle></link>.
      For Web servers, Apache , Microsoft IIS. Set up any script installations of
      the policy agents.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/web-users-guide#web-users-guide"
-           xlink:show="new"><citetitle>OpenAM Web Policy Agent User's Guide</citetitle></link>.
+     <link xlink:href="${backstageWPABaseURL}/web-install-guide/toc"
+           xlink:show="new"><citetitle>OpenAM Web Policy Agent Installation Guide</citetitle></link>.
     </para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">Customizing OpenAM</emphasis>. Customize
      OpenAM for your organization.
      For information on customizing the OpenAM end-user pages, see
-     <link xlink:href="${docSetBaseURL}/install-guide#chap-custom-ui"
-           xlink:show="new"><citetitle>Customizing the OpenAM End User Pages</citetitle></link>.
+     <olink targetdoc="install-guide" targetptr="chap-custom-ui" />.
     </para>
    </listitem>
    <listitem>
@@ -736,18 +727,16 @@
      Tomcat, JBoss, Jetty, Oracle WebLogic app servers for installation. Install
      OpenIG.
      For more information on OpenIG, see
-     <link xlink:show="new" xlink:href="http://openig.forgerock.org"
+     <link xlink:show="new" xlink:href="${backstageIGBaseURL}/gateway-guide/chap-start-here"
       >OpenIG Project</link>.
     </para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">Plan Application and Host Backup</emphasis>.
-     Determine your backup strategy include LDIF exports, file system backups,
+     Determine your backup strategy including LDIF exports, file system backups,
      tar files, and so forth. Also, consider log rotation and retention policies.
-     For more information on upgrades, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#chap-backup-restore"
-           xlink:show="new">
-      <citetitle>Backing Up and Restoring OpenAM Configurations</citetitle></link>.
+     For more information on backups, see
+     <olink targetdoc="admin-guide" targetptr="chap-backup-restore"/>.
     </para>
    </listitem>
    <listitem>
@@ -757,10 +746,8 @@
      version. Plan a live upgrade without service interruption. Plan an offline
      upgrade with service interruption. Plan the test of the upgrade and revert
      a failed upgrade.
-     For more information on upgrades, see
-     <link xlink:href="${docSetBaseURL}/upgrade-guide/#upgrade-guide"
-           xlink:show="new">
-      <citetitle>OpenAM Upgrade Guide</citetitle></link>.
+     For more information on upgrades, see the
+     <olink targetdoc="upgrade-guide" targetptr="upgrade-guide" />.
     </para>
    </listitem>
    <listitem>
@@ -769,10 +756,8 @@
      configuration tools (<literal>ssoadm</literal>,
      <literal>ampassword</literal>, <literal>amverifyarchive</literal>),
      and the Java EE and/or Web policy agents. Upgrade OpenIG.
-     For more information on upgrades, see
-     <link xlink:href="${docSetBaseURL}/upgrade-guide/#upgrade-guide"
-           xlink:show="new">
-      <citetitle>OpenAM Upgrade Guide</citetitle></link>.
+     For more information on upgrades, see the
+     <olink targetdoc="upgrade-guide" targetptr="upgrade-guide" />.
     </para>
    </listitem>
    <listitem>
@@ -780,9 +765,7 @@
      OpenAM with or without the console. Remove setup and configuration tools.
      Remove the Java EE and/or Web policy agents. Remove OpenIG.
      For more information on removing OpenAM, see
-     <link xlink:href="${docSetBaseURL}/install-guide/#chap-uninstall"
-           xlink:show="new">
-      <citetitle>Removing OpenAM Software</citetitle></link>.
+     <olink targetdoc="install-guide" targetptr="chap-uninstall" />.
     </para>
    </listitem>
   </itemizedlist>

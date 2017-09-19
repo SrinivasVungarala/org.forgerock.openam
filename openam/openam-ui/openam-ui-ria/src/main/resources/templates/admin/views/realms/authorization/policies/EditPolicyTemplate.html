@@ -1,0 +1,116 @@
+{{> headers/_TitleWithSubAndIcon title=entity.name type="console.authorization.common.policy" icon="gavel"
+    backLink=backLink buttons="templates/admin/views/realms/partials/_HeaderDeleteButton" }}
+
+<p class="panel-description">{{entity.description}}</p>
+
+<div class="tab-menu">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#resourcesTab" role="tab" data-toggle="tab" aria-expanded="false">
+                {{t "console.authorization.common.resources"}}
+            </a>
+        </li>
+        <li>
+            <a href="#actionsTab" role="tab" data-toggle="tab" aria-expanded="false">
+                {{t "console.authorization.common.actions"}}
+            </a>
+        </li>
+        <li>
+            <a href="#subjectsTab" role="tab" data-toggle="tab" aria-expanded="false">
+                {{t "console.authorization.common.subjects"}}
+            </a>
+        </li>
+        <li>
+            <a href="#environmentsTab" role="tab" data-toggle="tab" aria-expanded="false">
+                {{t "console.authorization.common.environments"}}
+            </a>
+        </li>
+        <li>
+            <a href="#responseAttributesTab" role="tab" data-toggle="tab" aria-expanded="false">
+                {{t "console.authorization.common.responseAttributes"}}
+            </a>
+        </li>
+        <li>
+            <a href="#settingsTab" role="tab" data-toggle="tab" aria-expanded="false">{{t "common.form.settings"}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="panel panel-default fr-panel-tab">
+
+    <div class="panel-body tab-content">
+
+        <div role="tabpanel" class="tab-pane active" id="resourcesTab">
+            <p class="panel-description">{{t "console.authorization.policies.edit.resourcesDescription"}}</p>
+
+            <div class="form-group clearfix">
+                <label class="col-sm-2 control-label" for="resTypesSelection">
+                    {{t "console.authorization.common.resourceType"}}
+                </label>
+
+                <div class="col-sm-9">
+                    <select class="selectize" id="resTypesSelection">
+                        {{#each options.availableResourceTypes}}
+                            <option {{#equals uuid ../entity.resourceTypeUuid}}selected{{/equals}} value="{{uuid}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+
+                    <span class="input-helper-text">
+                        {{t "console.authorization.policies.edit.selectResourceTypeHelper"}}
+                    </span>
+                </div>
+            </div>
+
+            <div id="editResources" class="clearfix"></div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="actionsTab">
+            <div class="form-inline">
+                <p class="panel-description">{{t "console.authorization.policies.edit.actionsDescription"}}</p>
+                <div id="actions" class="clearfix"></div>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="subjectsTab">
+            <p class="panel-description">{{t "console.authorization.policies.edit.subjectConditionsDescription"}}</p>
+            <div id="subjectContainer" class="clearfix"></div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="environmentsTab">
+            <p class="panel-description">{{t "console.authorization.policies.edit.environmentConditionsDescription"}}</p>
+            <div id="environmentContainer" class="clearfix"></div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="responseAttributesTab">
+            <div class="row clearfix">
+                <div class="col-sm-6" id="userAttrs"></div>
+                <div class="col-sm-6" id="staticAttrs"></div>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="settingsTab">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="policyName">{{t "console.common.name"}}</label>
+                    <div class="col-sm-9">
+                        <input class="form-control" id="policyName" name="entityName" type="text"
+                            value="{{entity.name}}" data-field="name" required
+                            placeholder="{{t 'common.form.validation.required'}}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="policyDescription">{{t "console.common.description"}}</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" id="policyDescription" data-field="description">{{entity.description}}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="panel-footer clearfix">
+        <input type="button" name="submitForm" value="{{t 'common.form.saveChanges'}}" class="btn btn-primary pull-right">
+    </div>
+
+</div>

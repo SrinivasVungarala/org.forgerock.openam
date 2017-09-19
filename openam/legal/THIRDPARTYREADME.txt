@@ -170,43 +170,31 @@ Copyright: Copyright (c) University Corporation for Advanced Internet Developmen
 Version: openws-1.4.2-1.jar
 Copyright: Copyright 2007 University Corporation for Advanced Internet Development, Inc.
 
-Version: org.osgi.core-4.0.0.jar
-Copyright: Copyright (c) OSGi Alliance (2010, 2012). All Rights Reserved.
-
-Version: org.restlet.ext.freemarker-2.1.7.jar
+Version: org.restlet.ext.freemarker-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.ext.jackson-2.1.7.jar
+Version: org.restlet.ext.jackson-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.ext.net-2.1.7.jar
+Version: org.restlet.ext.net-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.ext.servlet-2.1.7.jar
+Version: org.restlet.ext.servlet-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.ext.ssl-2.1.7.jar
+Version: org.restlet.ext.ssl-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.ext.xml-2.1.7.jar
+Version: org.restlet.ext.xml-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.jse-org.restlet-2.1.7.jar
+Version: org.restlet.jee-org.restlet-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.jse-org.restlet.ext.json-2.1.7.jar
+Version: org.restlet.jee-org.restlet.ext.json-2.3.4.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
-Version: org.restlet.jse-org.restlet.lib.org.json-2.0.jar
-Copyright: Copyright 2005-2012 Restlet S.A.S.
-
-Version: org.restlet.osgi-org.restlet-2.1.7.jar
-Copyright: Copyright 2005-2012 Restlet S.A.S.
-
-Version: org.restlet.osgi-org.restlet.ext.json-2.1.7.jar
-Copyright: Copyright 2005-2012 Restlet S.A.S.
-
-Version: org.restlet.osgi-org.restlet.lib.org.json-2.0.jar
+Version: org.restlet.jee-org.restlet.lib.org.json-2.0.jar
 Copyright: Copyright 2005-2012 Restlet S.A.S.
 
 Version: serializer-2.7.1.jar
@@ -660,6 +648,9 @@ Copyright: Copyright (c) 2010-2014, The Dojo Foundation
 Version: spin-2.0.1-min.js
 Copyright:
 
+Version: squire-0.2.0.js
+Copyright: Copyright (c) 2013 Merrick Christensen
+
 Version: ui.multiselect-0.3.js
 Copyright: Copyright Michael Aufreiter, Yanick Rochon
 
@@ -998,17 +989,29 @@ Copyright: Copyright (c) 2001-2011 Oracle and/or its affiliates. All rights rese
 Version: jersey-client-1.1.5.2.jar
 Copyright: Copyright 1997-2007 Sun Microsystems
 
-Version: json-fluent-2.4.2.jar
-Copyright: Copyright 2014 ForgeRock AS.
+Version: chf-http-core-1.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
 
-Version: json-resource-2.4.2.jar
-Copyright: Copyright 2014 ForgeRock AS.
+Version: chf-http-servlet-1.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
 
-Version: json-resource-servlet-2.4.2.jar
-Copyright: Copyright 2014 ForgeRock AS.
+Version: chf-client-apache-common-1.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
 
-Version: json-web-token-2.4.2.jar
-Copyright: Copyright 2014 ForgeRock AS.
+Version: chf-client-apache-sync-1.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
+
+Version: json-fluent-3.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
+
+Version: json-resource-3.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
+
+Version: json-resource-http-3.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
+
+Version: json-web-token-3.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.
 
 Version: jsr311-api-1.1.1.jar
 Copyright: Copyright (c) 2009 Sun Microsystems Inc. All Rights Reserved
@@ -1239,8 +1242,8 @@ Version: openid-connect-restlet-12.0.0.jar
 Copyright: Copyright 2014 ForgeRock AS.,
            Portions Copyrighted 2014 Nomura Research Institute, Ltd
 
-Version: forgerock-util-1.3.5.jar
-Copyright: Copyright 2014 ForgeRock AS.,
+Version: forgerock-util-2.0.0.jar
+Copyright: Copyright 2015 ForgeRock AS.,
            Copyright © 2010 ApexIdentity Inc. All rights reserved.,
            Copyright (c) 2004, Mikael Grev, MiG InfoCom AB.,
            Copyright (c) 2006-2008 Sun Microsystems Inc. All Rights Reserved

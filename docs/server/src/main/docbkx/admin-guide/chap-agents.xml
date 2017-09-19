@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-agents'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -68,7 +68,7 @@
  <xinclude:include href="../shared/sec-configuring-web-policy-agents.xml" />
 
  <!-- The following section is reused in the j2ee policy agent users guide  -->
- <xinclude:include href="../shared/sec-configuring-j2ee-policy-agents.xml" />
+ <!--xinclude:include href="../shared/sec-configuring-j2ee-policy-agents.xml" /-->
 
  <!-- TODO: Web Service Provider, Client, and STS Agent sections subject to
  change / deletion  -->
@@ -87,7 +87,7 @@
   and also secure outgoing responses sent back to WSCs.</para>
 
   <para>After creating a WSP profile, you access WSP properties in the
-  OpenAM console under Access Control &gt; <replaceable>Realm Name</replaceable>
+  OpenAM console under Realms &gt; <replaceable>Realm Name</replaceable>
   &gt; Agents &gt; Web Service Provider &gt; <replaceable>Agent
   Name</replaceable>.</para>
   
@@ -201,7 +201,7 @@
     <term>SAML Attribute Mapping</term>
     <listitem>
      <para>Maps SAML attribute names from the incoming request to attribute
-     names as retrieved from the SSOToken or the identity repository, used to
+     names as retrieved from the SSO token or the identity repository, used to
      have the Security Token Service generate an appropriate SAML
      assertion.</para>
     </listitem>
@@ -379,7 +379,7 @@
   and also validate incoming from WSPs.</para>
 
   <para>After creating a WSC profile, you access WSC properties in the
-  OpenAM console under Access Control &gt; <replaceable>Realm Name</replaceable>
+  OpenAM console under Realms &gt; <replaceable>Realm Name</replaceable>
   &gt; Agents &gt; Web Service Client &gt; <replaceable>Agent
   Name</replaceable>.</para>
   
@@ -486,7 +486,7 @@
     <term>SAML Attribute Mapping</term>
     <listitem>
      <para>Maps SAML attribute names from the outgoing request to attribute
-     names as retrieved from the SSOToken or the identity repository.</para>
+     names as retrieved from the SSO token or the identity repository.</para>
     </listitem>
    </varlistentry>
    <varlistentry>
@@ -660,7 +660,7 @@
   Service.</para>
 
   <para>After creating an STS Client profile, you access STS Client properties
-  in the OpenAM console under Access Control &gt; <replaceable>Realm
+  in the OpenAM console under Realms &gt; <replaceable>Realm
   Name</replaceable> &gt; Agents &gt; STS Client &gt; <replaceable>Agent
   Name</replaceable>.</para>
   
@@ -758,7 +758,7 @@
     <term>SAML Attribute Mapping</term>
     <listitem>
      <para>Maps SAML attribute names from the incoming request to attribute
-     names as retrieved from the SSOToken or the identity repository, used to
+     names as retrieved from the SSO token or the identity repository, used to
      have the Security Token Service generate an appropriate SAML
      assertion.</para>
     </listitem>
@@ -938,7 +938,7 @@
   OAuth 2.0 authorization server, or register an OpenID Connect 1.0 client
   through OpenAM console, then create an OAuth 2.0 Client agent profile.
   After creating the agent profile, you can further configure the properties
-  in the OpenAM console under Access Control &gt; <replaceable>Realm
+  in the OpenAM console under Realms &gt; <replaceable>Realm
   Name</replaceable> &gt; Agents &gt; OAuth 2.0/OpenID Connect Client &gt; <replaceable>Client
   Name</replaceable>.</para>
 

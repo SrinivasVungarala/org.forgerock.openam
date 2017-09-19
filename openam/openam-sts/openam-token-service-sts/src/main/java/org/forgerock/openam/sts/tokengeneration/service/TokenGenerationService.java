@@ -16,32 +16,43 @@
 
 package org.forgerock.openam.sts.tokengeneration.service;
 
+import static org.forgerock.json.JsonValue.*;
+import static org.forgerock.json.resource.Responses.newQueryResponse;
+import static org.forgerock.json.resource.Responses.newResourceResponse;
+import static org.forgerock.util.promise.Promises.newResultPromise;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.iplanet.sso.SSOTokenManager;
+import com.sun.identity.idm.AMIdentity;
+import com.sun.identity.idm.IdRepoException;
+import com.sun.identity.idm.IdUtils;
 import com.sun.identity.shared.encode.Hash;
-import org.forgerock.json.fluent.JsonPointer;
+import com.sun.identity.sm.DNMapper;
+import org.forgerock.services.context.Context;
+import org.forgerock.json.JsonPointer;
 import org.forgerock.json.resource.ActionRequest;
+import org.forgerock.json.resource.ActionResponse;
+import org.forgerock.json.resource.BadRequestException;
 import org.forgerock.json.resource.CollectionResourceProvider;
 import org.forgerock.json.resource.CreateRequest;
 import org.forgerock.json.resource.DeleteRequest;
 import org.forgerock.json.resource.ForbiddenException;
 import org.forgerock.json.resource.InternalServerErrorException;
-import org.forgerock.json.resource.BadRequestException;
 import org.forgerock.json.resource.NotFoundException;
 import org.forgerock.json.resource.PatchRequest;
-import org.forgerock.json.resource.QueryFilterVisitor;
 import org.forgerock.json.resource.QueryRequest;
-import org.forgerock.json.resource.QueryResult;
-import org.forgerock.json.resource.QueryResultHandler;
+import org.forgerock.json.resource.QueryResourceHandler;
+import org.forgerock.json.resource.QueryResponse;
 import org.forgerock.json.resource.ReadRequest;
-import org.forgerock.json.resource.Resource;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.ResultHandler;
-import org.forgerock.json.resource.ServerContext;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.resource.ResourceResponse;
 import org.forgerock.json.resource.UpdateRequest;
-import org.forgerock.openam.forgerockrest.RestUtils;
+import org.forgerock.openam.rest.RestUtils;
 import org.forgerock.openam.sts.AMSTSConstants;
 import org.forgerock.openam.sts.CTSTokenPersistenceException;
 import org.forgerock.openam.sts.STSPublishException;
@@ -50,22 +61,17 @@ import org.forgerock.openam.sts.TokenType;
 import org.forgerock.openam.sts.service.invocation.TokenGenerationServiceInvocationState;
 import org.forgerock.openam.sts.tokengeneration.CTSTokenPersistence;
 import org.forgerock.openam.sts.tokengeneration.oidc.OpenIdConnectTokenGeneration;
-import org.forgerock.openam.sts.tokengeneration.state.RestSTSInstanceState;
 import org.forgerock.openam.sts.tokengeneration.saml2.SAML2TokenGeneration;
+import org.forgerock.openam.sts.tokengeneration.state.RestSTSInstanceState;
 import org.forgerock.openam.sts.tokengeneration.state.STSInstanceState;
 import org.forgerock.openam.sts.tokengeneration.state.STSInstanceStateProvider;
 import org.forgerock.openam.sts.tokengeneration.state.SoapSTSInstanceState;
 import org.forgerock.openam.sts.user.invocation.STSIssuedTokenState;
 import org.forgerock.openam.tokens.CoreTokenField;
+import org.forgerock.util.promise.Promise;
+import org.forgerock.util.query.QueryFilter;
+import org.forgerock.util.query.QueryFilterVisitor;
 import org.slf4j.Logger;
-
-import static org.forgerock.json.fluent.JsonValue.field;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * This service will be consumed by the REST/SOAP STS to issue tokens.
@@ -99,29 +105,26 @@ class TokenGenerationService implements CollectionResourceProvider {
     }
 
     @Override
-    public void createInstance(ServerContext context, CreateRequest request, ResultHandler<Resource> handler) {
+    public Promise<ResourceResponse, ResourceException> createInstance(Context context, CreateRequest request) {
         TokenGenerationServiceInvocationState invocationState;
         try {
             invocationState = TokenGenerationServiceInvocationState.fromJson(request.getContent());
         } catch (Exception e) {
             logger.error("Exception caught marshalling json into TokenGenerationServiceInvocationState instance: " + e);
-            handler.handleError(new BadRequestException(e));
-            return;
+            return new BadRequestException(e.getMessage(), e).asPromise();
         }
         SSOToken subjectToken;
         try {
-            subjectToken = validateAssertionSubjectSession(invocationState.getSsoTokenString());
+            subjectToken = validateAssertionSubjectSession(invocationState);
         } catch (ForbiddenException e) {
-            handler.handleError(e);
-            return;
+            return e.asPromise();
         }
 
         STSInstanceState stsInstanceState;
         try {
             stsInstanceState = getSTSInstanceState(invocationState);
         } catch (ResourceException e) {
-            handler.handleError(e);
-            return;
+            return e.asPromise();
         }
 
         if (TokenType.SAML2.equals(invocationState.getTokenType())) {
@@ -130,16 +133,13 @@ class TokenGenerationService implements CollectionResourceProvider {
                         subjectToken,
                         stsInstanceState,
                         invocationState);
-                handler.handleResult(issuedTokenResource(assertion));
-                return;
+                return newResultPromise(issuedTokenResource(assertion));
             } catch (TokenCreationException e) {
                 logger.error("Exception caught generating saml2 token: " + e, e);
-                handler.handleError(e);
-                return;
+                return e.asPromise();
             } catch (Exception e) {
                 logger.error("Exception caught generating saml2 token: " + e, e);
-                handler.handleError(new InternalServerErrorException(e.toString(), e));
-                return;
+                return new InternalServerErrorException(e.toString(), e).asPromise();
             }
         } else if (TokenType.OPENIDCONNECT.equals(invocationState.getTokenType())) {
             try {
@@ -147,22 +147,18 @@ class TokenGenerationService implements CollectionResourceProvider {
                         subjectToken,
                         stsInstanceState,
                         invocationState);
-                handler.handleResult(issuedTokenResource(assertion));
-                return;
+                return newResultPromise(issuedTokenResource(assertion));
             } catch (TokenCreationException e) {
                 logger.error("Exception caught generating OpenIdConnect token: " + e, e);
-                handler.handleError(e);
-                return;
+                return e.asPromise();
             } catch (Exception e) {
                 logger.error("Exception caught generating OpenIdConnect token: " + e, e);
-                handler.handleError(new InternalServerErrorException(e.toString(), e));
-                return;
+                return new InternalServerErrorException(e.toString(), e).asPromise();
             }
         } else {
             String message = "Bad request: unexpected token type:" + invocationState.getTokenType();
             logger.error(message);
-            handler.handleError(new BadRequestException(message));
-            return;
+            return new BadRequestException(message).asPromise();
         }
     }
 
@@ -174,24 +170,40 @@ class TokenGenerationService implements CollectionResourceProvider {
      * @param assertion the assertion to return.
      * @return the assertion as a resource.
      */
-    private Resource issuedTokenResource(String assertion) {
-        return new Resource(UUID.randomUUID().toString(), Hash.hash(assertion),
+    private ResourceResponse issuedTokenResource(String assertion) {
+        return newResourceResponse(UUID.randomUUID().toString(), Hash.hash(assertion),
                 json(object(field(AMSTSConstants.ISSUED_TOKEN, assertion))));
     }
 
-    private SSOToken validateAssertionSubjectSession(String sessionId) throws ForbiddenException {
+    private SSOToken validateAssertionSubjectSession(TokenGenerationServiceInvocationState invocationState)
+            throws ForbiddenException {
         SSOToken subjectToken;
         SSOTokenManager tokenManager;
         try {
             tokenManager = SSOTokenManager.getInstance();
-            subjectToken = tokenManager.createSSOToken(sessionId);
+            subjectToken = tokenManager.createSSOToken(invocationState.getSsoTokenString());
         } catch (SSOException e) {
-            logger.debug("Exception caught creating the SSO token from the token string, almost certainly " +
-                    "because token string does not correspond to a valid session: " + e);
+            logger.debug("Exception caught creating the SSO token from the token string, almost certainly "
+                    + "because token string does not correspond to a valid session: " + e);
             throw new ForbiddenException(e.toString(), e);
         }
         if (!tokenManager.isValidToken(subjectToken)) {
             throw new ForbiddenException("SSO token string does not correspond to a valid SSOToken");
+        }
+        try {
+            AMIdentity subjectIdentity = IdUtils.getIdentity(subjectToken);
+            String invocationRealm = invocationState.getRealm();
+            String subjectSessionRealm = DNMapper.orgNameToRealmName(subjectIdentity.getRealm());
+            logger.debug("TokenGenerationService:validateAssertionSubjectSession subjectRealm " + subjectSessionRealm
+                    + " invocation realm: " + invocationRealm);
+            if (!invocationRealm.equalsIgnoreCase(subjectSessionRealm)) {
+                logger.error("TokenGenerationService:validateAssertionSubjectSession realms do not match: Subject realm : "
+                        + subjectSessionRealm + " invocation realm: " + invocationRealm);
+                throw new ForbiddenException("SSO token subject realm does not match invocation realm");
+            }
+        } catch (SSOException | IdRepoException e) {
+            logger.error("TokenGenerationService:validateAssertionSubjectSession error while validating identity : " + e);
+            throw new ForbiddenException(e.toString(), e);
         }
         return subjectToken;
     }
@@ -219,60 +231,57 @@ class TokenGenerationService implements CollectionResourceProvider {
     }
 
     @Override
-    public void readInstance(final ServerContext serverContext, final String resourceId, final ReadRequest readRequest,
-                             final ResultHandler<Resource> resultHandler) {
+    public Promise<ResourceResponse, ResourceException> readInstance(final Context serverContext,
+            final String resourceId, final ReadRequest readRequest) {
         try {
             String token = ctsTokenPersistence.getToken(resourceId);
             if (token != null) {
-                resultHandler.handleResult(issuedTokenResource(token));
-                return;
+                return newResultPromise(issuedTokenResource(token));
             } else {
-                resultHandler.handleError(new NotFoundException("STS-issued token with id " + resourceId + " not found."));
-                return;
+                return new NotFoundException("STS-issued token with id " + resourceId + " not found.").asPromise();
             }
         } catch (CTSTokenPersistenceException e) {
             logger.error("Exception caught reading token with id " + resourceId + ": " + e, e);
-            resultHandler.handleError(new InternalServerErrorException(e.toString(), e));
+            return new InternalServerErrorException(e.toString(), e).asPromise();
         }
     }
 
     @Override
-    public void deleteInstance(final ServerContext serverContext, final String resourceId, final DeleteRequest deleteRequest,
-                               final ResultHandler<Resource> resultHandler) {
+    public Promise<ResourceResponse, ResourceException> deleteInstance(final Context serverContext,
+            final String resourceId, final DeleteRequest deleteRequest) {
         try {
             ctsTokenPersistence.deleteToken(resourceId);
-            resultHandler.handleResult(new Resource(resourceId, resourceId, json(object(field
-                    (RESULT, "token with id " + resourceId + " successfully removed.")))));
             logger.debug("Deleted token with id: " + resourceId);
+            return newResultPromise(newResourceResponse(resourceId, resourceId, json(object(field
+                    (RESULT, "token with id " + resourceId + " successfully removed.")))));
         } catch (CTSTokenPersistenceException e) {
             logger.error("Exception caught deleting token with id " + resourceId + ": " + e, e);
-            resultHandler.handleError(new InternalServerErrorException(e.toString(), e));
+            return new InternalServerErrorException(e.toString(), e).asPromise();
         }
     }
 
     @Override
-    public void queryCollection(final ServerContext serverContext, final QueryRequest queryRequest,
-                                final QueryResultHandler queryResultHandler) {
-        org.forgerock.json.resource.QueryFilter queryFilter = queryRequest.getQueryFilter();
+    public Promise<QueryResponse, ResourceException> queryCollection(final Context serverContext,
+            final QueryRequest queryRequest, final QueryResourceHandler queryResultHandler) {
+        QueryFilter<JsonPointer> queryFilter = queryRequest.getQueryFilter();
         if (queryFilter == null) {
-            queryResultHandler.handleError(new BadRequestException(getUsageString()));
-            return;
+            return new BadRequestException(getUsageString()).asPromise();
         }
         try {
-            final org.forgerock.util.query.QueryFilter<CoreTokenField> coreTokenFieldQueryFilter =
+            final QueryFilter<CoreTokenField> coreTokenFieldQueryFilter =
                     convertToCoreTokenFieldQueryFilter(queryFilter);
             final List<STSIssuedTokenState> issuedTokens = ctsTokenPersistence.listTokens(coreTokenFieldQueryFilter);
             for (STSIssuedTokenState tokenState : issuedTokens) {
-                queryResultHandler.handleResource(new Resource(tokenState.getTokenId(), EMPTY_STRING, tokenState.toJson()));
+                queryResultHandler.handleResource(newResourceResponse(tokenState.getTokenId(), EMPTY_STRING, tokenState.toJson()));
             }
-            queryResultHandler.handleResult(new QueryResult());
+            return newResultPromise(newQueryResponse());
         } catch (CTSTokenPersistenceException e) {
             logger.error("Exception caught obtaining list of sts-issued tokens: " + e, e);
-            queryResultHandler.handleError(e);
+            return e.asPromise();
         }
     }
 
-    private org.forgerock.util.query.QueryFilter<CoreTokenField> convertToCoreTokenFieldQueryFilter(org.forgerock.json.resource.QueryFilter queryFilter)
+    private QueryFilter<CoreTokenField> convertToCoreTokenFieldQueryFilter(QueryFilter<JsonPointer> queryFilter)
                                                                 throws CTSTokenPersistenceException {
         try {
             return queryFilter.accept(CORE_TOKEN_FIELD_QUERY_FILTER_VISITOR, null);
@@ -281,24 +290,24 @@ class TokenGenerationService implements CollectionResourceProvider {
         }
     }
 
-    private static final QueryFilterVisitor<org.forgerock.util.query.QueryFilter<CoreTokenField>, Void> CORE_TOKEN_FIELD_QUERY_FILTER_VISITOR =
-        new QueryFilterVisitor<org.forgerock.util.query.QueryFilter<CoreTokenField>, Void>() {
+    private static final QueryFilterVisitor<QueryFilter<CoreTokenField>, Void, JsonPointer> CORE_TOKEN_FIELD_QUERY_FILTER_VISITOR =
+        new QueryFilterVisitor<QueryFilter<CoreTokenField>, Void, JsonPointer>() {
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitAndFilter(Void aVoid, List<org.forgerock.json.resource.QueryFilter> subFilters) {
-                List<org.forgerock.util.query.QueryFilter<CoreTokenField>> subCoreTokenFieldFilters = new ArrayList<>(subFilters.size());
-                for (org.forgerock.json.resource.QueryFilter filter : subFilters) {
+            public QueryFilter<CoreTokenField> visitAndFilter(Void aVoid, List<QueryFilter<JsonPointer>> subFilters) {
+                List<QueryFilter<CoreTokenField>> subCoreTokenFieldFilters = new ArrayList<>(subFilters.size());
+                for (QueryFilter<JsonPointer> filter : subFilters) {
                     subCoreTokenFieldFilters.add(filter.accept(this, aVoid));
                 }
-                return org.forgerock.util.query.QueryFilter.and(subCoreTokenFieldFilters);
+                return QueryFilter.and(subCoreTokenFieldFilters);
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitEqualsFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitEqualsFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
                 final String fieldString = field.toString().substring(1);
                 if (STSIssuedTokenState.STS_ID_QUERY_ATTRIBUTE.equals(fieldString)) {
-                    return org.forgerock.util.query.QueryFilter.equalTo(CTSTokenPersistence.CTS_TOKEN_FIELD_STS_ID, valueAssertion);
+                    return QueryFilter.equalTo(CTSTokenPersistence.CTS_TOKEN_FIELD_STS_ID, valueAssertion);
                 } else if (STSIssuedTokenState.STS_TOKEN_PRINCIPAL_QUERY_ATTRIBUTE.equals(fieldString)) {
-                    return org.forgerock.util.query.QueryFilter.equalTo(CoreTokenField.USER_ID, valueAssertion);
+                    return QueryFilter.equalTo(CoreTokenField.USER_ID, valueAssertion);
                 } else {
                     throw new IllegalArgumentException("Querying TokenService on field " + fieldString +
                             " not supported. Query format: " + getUsageString());
@@ -306,72 +315,72 @@ class TokenGenerationService implements CollectionResourceProvider {
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitBooleanLiteralFilter(Void aVoid, boolean value) {
+            public QueryFilter<CoreTokenField> visitBooleanLiteralFilter(Void aVoid, boolean value) {
                 throw new IllegalArgumentException("Querying STS issued tokens via boolean literal unsupported. Query format: "
                         + getUsageString());
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitContainsFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitContainsFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
                 throw new IllegalArgumentException("Querying STS issued token via contains relationship unsupported. Query format: "
                         + getUsageString());
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitExtendedMatchFilter(Void aVoid, JsonPointer field, String operator, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitExtendedMatchFilter(Void aVoid, JsonPointer field, String operator, Object valueAssertion) {
                 throw new IllegalArgumentException("Querying STS issued token via extended match filter unsupported. Query format: "
                         + getUsageString());
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitGreaterThanFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitGreaterThanFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
                 throw new IllegalArgumentException("Querying STS issued token via greater-than filter unsupported. Query format: "
                         + getUsageString());
 
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitGreaterThanOrEqualToFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitGreaterThanOrEqualToFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
                 throw new IllegalArgumentException("Querying STS issued token via greater-than-or-equal-to filter unsupported. Query format:"
                         + getUsageString());
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitLessThanFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitLessThanFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
                 throw new IllegalArgumentException("Querying STS issued token via less-than filter unsupported. Query format: "
                         + getUsageString());
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitLessThanOrEqualToFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitLessThanOrEqualToFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
                 throw new IllegalArgumentException("Querying STS issued token via less-than-or-equal-to filter unsupported. Query format: "
                     + getUsageString());
 
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitNotFilter(Void aVoid, org.forgerock.json.resource.QueryFilter subFilter) {
+            public QueryFilter<CoreTokenField> visitNotFilter(Void aVoid, QueryFilter<JsonPointer> subFilter) {
                 throw new IllegalArgumentException("Querying STS issued token via not filter unsupported. Query format: "
                     + getUsageString());
 
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitOrFilter(Void aVoid, List<org.forgerock.json.resource.QueryFilter> subFilters) {
+            public QueryFilter<CoreTokenField> visitOrFilter(Void aVoid, List<QueryFilter<JsonPointer>> subFilters) {
                 throw new IllegalArgumentException("Querying STS issued token via or filter unsupported. Query format: "
                     + getUsageString());
 
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitPresentFilter(Void aVoid, JsonPointer field) {
+            public QueryFilter<CoreTokenField> visitPresentFilter(Void aVoid, JsonPointer field) {
                 throw new IllegalArgumentException("Querying STS issued token via present filter unsupported. Query format: "
                     + getUsageString());
 
             }
 
             @Override
-            public org.forgerock.util.query.QueryFilter<CoreTokenField> visitStartsWithFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
+            public QueryFilter<CoreTokenField> visitStartsWithFilter(Void aVoid, JsonPointer field, Object valueAssertion) {
                 throw new IllegalArgumentException("Querying STS issued token via starts-with filter unsupported. Query format: "
                     + getUsageString());
 
@@ -379,34 +388,33 @@ class TokenGenerationService implements CollectionResourceProvider {
        };
 
     private static String getUsageString() {
-        return "Url must have a query param of format: _queryFilter=/" + STSIssuedTokenState.STS_ID_QUERY_ATTRIBUTE +
-                "+eq+\"sts_instance_id\" or _queryFilter=/" + STSIssuedTokenState.STS_ID_QUERY_ATTRIBUTE +
-                "+eq+\"sts_instance_id\"+and+/" + STSIssuedTokenState.STS_TOKEN_PRINCIPAL_QUERY_ATTRIBUTE + "+eq+\"token_principal_id\"";
+        return "Url must have a url-encoded query param of format: _queryFilter=/" + STSIssuedTokenState.STS_ID_QUERY_ATTRIBUTE +
+                " eq \"sts_instance_id\" or _queryFilter=/" + STSIssuedTokenState.STS_ID_QUERY_ATTRIBUTE +
+                " eq \"sts_instance_id\" and /" + STSIssuedTokenState.STS_TOKEN_PRINCIPAL_QUERY_ATTRIBUTE + " eq \"token_principal_id\"";
     }
 
     @Override
-    public void actionCollection(final ServerContext serverContext, final ActionRequest actionRequest,
-                                 final ResultHandler<JsonValue> resultHandler) {
-        RestUtils.generateUnsupportedOperation(resultHandler);
+    public Promise<ActionResponse, ResourceException> actionCollection(final Context serverContext,
+            final ActionRequest actionRequest) {
+        return RestUtils.generateUnsupportedOperation();
     }
 
     @Override
-    public void actionInstance(final ServerContext serverContext, final String s, final ActionRequest actionRequest,
-                               final ResultHandler<JsonValue> resultHandler) {
-        RestUtils.generateUnsupportedOperation(resultHandler);
+    public Promise<ActionResponse, ResourceException> actionInstance(final Context serverContext, final String s,
+            final ActionRequest actionRequest) {
+        return RestUtils.generateUnsupportedOperation();
     }
 
 
     @Override
-    public void patchInstance(final ServerContext serverContext, final String s, final PatchRequest patchRequest,
-                              final ResultHandler<Resource> resultHandler) {
-        RestUtils.generateUnsupportedOperation(resultHandler);
+    public Promise<ResourceResponse, ResourceException> patchInstance(final Context serverContext, final String s,
+            final PatchRequest patchRequest) {
+        return RestUtils.generateUnsupportedOperation();
     }
 
     @Override
-    public void updateInstance(final ServerContext serverContext, final String s, final UpdateRequest updateRequest,
-                               final ResultHandler<Resource> resultHandler) {
-        RestUtils.generateUnsupportedOperation(resultHandler);
+    public Promise<ResourceResponse, ResourceException> updateInstance(final Context serverContext, final String s,
+            final UpdateRequest updateRequest) {
+        return RestUtils.generateUnsupportedOperation();
     }
-
 }

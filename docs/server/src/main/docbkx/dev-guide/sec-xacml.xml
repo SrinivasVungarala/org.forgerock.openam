@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-xacml'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -39,8 +39,7 @@
  and another OpenAM server acting as a policy enforcement point.</para>
 
  <para>Before you continue, make sure that the packages described in the
-   <link xlink:show="new" xlink:href="dev-guide#chap-jdk"
-   xlink:role="http://docbook.org/xlink/role/olink">Using the OpenAM Java SDK</link>
+   <xref linkend="install-sdk-samples" />
    chapter are installed.</para>
 
 
@@ -338,9 +337,7 @@ action.name=GET</programlisting>
       set up the trust relationship between the two entities either by using
       the <command>ssoadm</command> command as shown below, or by using the
       <literal>ssoadm.jsp</literal> page, which you can activate as described in
-      <link xlink:href="admin-guide#openam-ssoadm-jsp-overview" xlink:show="new"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle>OpenAM
-      ssoadm.jsp</citetitle></link>.</para>
+      <olink targetdoc="admin-guide" targetptr="openam-ssoadm-jsp-overview" />.</para>
 
       <screen>
 $ <userinput>ssoadm \
@@ -403,9 +400,7 @@ Import file, xacmlPdp-extended.xml.</computeroutput>
    <literal>resource.id</literal> URL you configured, such as
    <literal>http://www.example.com:80/banner.html</literal>.</para>
 
-   <para>See <link xlink:href="admin-guide#configure-authz-policy"
-   xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Configuring Policies</citetitle></link> for details.</para>
+   <para>See <olink targetdoc="admin-guide" targetptr="chap-authz-policy" /> for details.</para>
   </listitem>
  </itemizedlist>
 

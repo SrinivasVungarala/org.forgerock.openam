@@ -24,7 +24,7 @@
   !    
 -->
 <chapter xml:id='chap-whats-new'
- xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+ xmlns='http://docbook.org/ns/docbook' version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -48,11 +48,8 @@
 
   <listitem>
    <para>
-    If you have already installed OpenAM, see <link
-    xlink:show="new"
-    xlink:href="release-notes#update-from-earlier-release"
-    xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>To Update OpenAM From 12.0</citetitle></link>.
+    If you have already installed OpenAM, see the <olink
+    targetdoc="upgrade-guide" targetptr="upgrade-guide"/>.
    </para>
 
    <para>
@@ -66,11 +63,8 @@
 
   <listitem>
    <para>
-    If you are installing OpenAM for the first time, see <link
-    xlink:show="new"
-    xlink:href="release-notes#install-fresh"
-    xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>To Install OpenAM</citetitle></link>.
+    If you are installing OpenAM for the first time, see the <olink
+    targetdoc="install-guide" targetptr="install-guide"/>.
    </para>
   </listitem>
  </itemizedlist>
@@ -133,7 +127,10 @@
      cross-site scripting attacks:
     </para>
     <itemizedlist>
-     <listitem>/openam/oauth/registerconsumer.jsp (Core Server, Server Only)
+     <listitem>
+      <para>
+       /openam/oauth/registerconsumer.jsp (Core Server, Server Only)
+      </para>
      </listitem>
     </itemizedlist>
     <para>
@@ -279,11 +276,147 @@
 
   <para>
    In addition to fixes,
-   this release includes the following limited product enhancements:
+   this release includes the following product enhancements:
   </para>
 
   <!-- Product Enhancements -->
   <itemizedlist>
+
+   <!-- Epic: AME-3549 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Stateless Sessions</emphasis>.
+     OpenAM ${serverDocTargetVersion} supports two types of sessions:
+     <firstterm>stateful</firstterm> and <firstterm>stateless</firstterm>.
+    </para>
+    <para>
+     Stateful sessions are sessions that reside in the OpenAM server's memory
+     and, if session failover is enabled, are also persisted in the Core Token
+     Service's token store. Stateful sessions have been the only session type
+     supported in previous OpenAM releases.
+    </para>
+    <para>
+     OpenAM ${serverDocTargetVersion} also supports a new type of
+     session: the stateless session. Stateless sessions are sessions in which
+     state information is encoded in OpenAM and sent to clients, but the
+     information from the sessions is not retained in OpenAM's memory.
+     For browser-based clients, OpenAM sets a cookie in the browser that
+     contains the session state. When the browser transmits the cookie back to
+     OpenAM, OpenAM decodes the session state from the cookie.
+    </para>
+    <para>
+     Stateless sessions can be used for deployments when elasticity is required,
+     for example, cloud deployments in which the server load varies. You can add
+     and remove OpenAM servers to and from a site and the stateless session load
+     should balance horizontally.
+    </para>
+    <para>
+     For more information, see the <link
+      xlink:show="new"
+      xlink:href="admin-guide#chap-session-state"
+      xlink:role="http://docbook.org/xlink/role/olink"
+     ><citetitle>Configuring Session State</citetitle></link>
+     chapter in the <citetitle>Administration Guide</citetitle>.
+    </para>
+   </listitem>
+
+   <!-- XUI changes - multiple epics -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Improvements to the OpenAM Administration Console</emphasis>.
+     Revisions to the console provide the following usability improvements and
+     new capabilities:
+     <itemizedlist>
+      <listitem>
+       <para>
+        In OpenAM ${serverDocTargetVersion}, the console takes on a
+        realm-centric approach. The revised Realms page now serves as the
+        console's initial page.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Configuration of authentication chains has been greatly simplified.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The revised policy editor provides easier configuration and management
+        of policies and resource types.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        New pages in the console let you create and manage scripts for
+        customizing OpenAM.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <emphasis role="bold">Improvements to OpenAM End User Pages</emphasis>.
+     New extended user interface (XUI) theming capabilities let administrators
+     customize the look and feel of the XUI by specifying custom themes for
+     realms, authentication chains, and login templates.
+    </para>
+    <para>
+     In addition, the XUI provides two new end user pages:
+    </para>
+     <itemizedlist>
+      <listitem>
+       <para>
+        The Dashboard page lets users manage their assigned applications and
+        registered OATH devices.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The Shares page lets users control resource sharing in a User-Managed
+        Access (UMA) deployment.
+       </para>
+      </listitem>
+     </itemizedlist>
+
+   </listitem>
+
+   <!-- Epic: OPENAM-5334 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Two Step Verification With a Mobile Phone</emphasis>.
+     OpenAM ${serverDocTargetVersion} provides two step verification to
+     users who have an authenticator app that supports the Open AuTHentication
+     (OATH) protocol installed on their mobile phone.
+    </para>
+    <para>
+     For more information, see
+     <olink targetdoc="admin-guide" targetptr="authn-2sv"/>.
+    </para>
+   </listitem>
+
+   <!-- AME-7894, AME-7896 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">Recording troubleshooting information</emphasis>.
+     The new <command>ssoadm start-recording</command> command lets you
+     initiate events that monitor OpenAM, while saving output that is useful
+     when performing troubleshooting. You can also start a recording event
+     from the <literal>/json/records</literal> endpoint.
+    </para>
+    <para>
+     After starting a recording event, you can use the new
+     <command>ssoadm get-recording-status</command> command to get the status
+     of the recording event and the new
+     <command>ssoadm stop-recording</command> command to terminate the
+     recording event.
+    </para>
+
+    <para>For more information, see
+     <olink targetdoc="admin-guide" targetptr="recording"/> and
+     <olink targetdoc="dev-guide" targetptr="sec-rest-api-recording"/>.
+    </para>
+   </listitem>
 
    <!-- OPENAM-816/6211 -->
    <listitem>
@@ -513,6 +646,48 @@
       xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-5534"
       xlink:show="new"
       >OPENAM-5534</link>.
+    </para>
+   </listitem>
+
+   <!-- OPENAM-6542/OPENAM-5925 -->
+   <listitem>
+    <para>
+     <emphasis role="bold">New <literal>openam.deserialisation.classes.whitelist</literal> Property</emphasis>.
+     OpenAM uses the JATO framework for some console pages and for legacy login pages.
+     The JATO framework uses serialized Java objects to maintain state during
+     the console session.
+    </para>
+    <para>
+     To ensure that the serialized objects have not been
+     exploited by a malicious user, OpenAM now provides a new
+     <literal>openam.deserialisation.classes.whitelist</literal> property that
+     lists valid classes when OpenAM performs object deserialization.
+     The default should work for most deployments.
+    </para>
+    <para>
+     You can access and update the property in the OpenAM console by navigating to
+     Configuration &gt; Servers and Sites &gt; Default Server Settings &gt;
+     Security &gt; Object Deserialisation Class Whitelist.
+    </para>
+
+    <!-- not sure if I need this graphic -->
+    <figure xml:id="object-deserialisation-class-whitelist">
+     <title>Object Deserialisation Class Whitelist</title>
+     <mediaobject>
+      <alt>The Object Deserialisation Class Whitelist</alt>
+      <imageobject>
+       <imagedata fileref="images/object-deserialisation-class-whitelist.png" format="PNG" />
+      </imageobject>
+      <textobject><para>The OpenAM administrator sees all capabilities of the console.</para></textobject>
+     </mediaobject>
+    </figure>
+
+    <para>
+     For more information, see
+     <link
+      xlink:href="https://bugster.forgerock.org/jira/browse/OPENAM-5925"
+      xlink:show="new"
+      >OPENAM-5925</link>.
     </para>
    </listitem>
 

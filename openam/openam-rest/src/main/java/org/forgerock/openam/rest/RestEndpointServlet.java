@@ -16,25 +16,42 @@
 
 package org.forgerock.openam.rest;
 
-import com.google.inject.Key;
-import com.google.inject.name.Names;
-import org.forgerock.json.resource.ConnectionFactory;
-import org.forgerock.guice.core.InjectorHolder;
-import org.forgerock.openam.forgerockrest.utils.RequestHolder;
-import org.forgerock.openam.rest.resource.CrestHttpServlet;
-import org.forgerock.openam.rest.router.RestEndpointManager;
-import org.forgerock.openam.rest.service.JSONServiceEndpointApplication;
-import org.forgerock.openam.rest.service.OAuth2ServiceEndpointApplication;
-import org.forgerock.openam.rest.service.RestletServiceServlet;
-import org.forgerock.openam.rest.service.UMAServiceEndpointApplication;
-import org.forgerock.openam.rest.service.XACMLServiceEndpointApplication;
+import static org.forgerock.util.promise.Promises.newResultPromise;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import org.forgerock.guice.core.InjectorHolder;
+import org.forgerock.services.context.Context;
+import org.forgerock.http.Filter;
+import org.forgerock.http.Handler;
+import org.forgerock.http.HttpApplication;
+import org.forgerock.http.HttpApplicationException;
+import org.forgerock.services.context.AttributesContext;
+import org.forgerock.http.handler.Handlers;
+import org.forgerock.http.io.Buffer;
+import org.forgerock.http.protocol.Request;
+import org.forgerock.http.protocol.Response;
+import org.forgerock.http.protocol.ResponseException;
+import org.forgerock.http.servlet.HttpFrameworkServlet;
+import org.forgerock.openam.rest.service.OAuth2ServiceEndpointApplication;
+import org.forgerock.openam.rest.service.RestletServiceServlet;
+import org.forgerock.openam.rest.service.UMAServiceEndpointApplication;
+import org.forgerock.openam.rest.service.XACMLServiceEndpointApplication;
+import org.forgerock.util.Factory;
+import org.forgerock.util.promise.NeverThrowsException;
+import org.forgerock.util.promise.Promise;
 
 /**
  * Root Servlet for all REST endpoint requests, which are then passed onto the correct underlying servlet, either
@@ -44,53 +61,45 @@ import java.io.IOException;
  */
 public class RestEndpointServlet extends HttpServlet {
 
-    public static final String CREST_CONNECTION_FACTORY_NAME = "CrestConnectionFactory";
-
-    private final org.forgerock.json.resource.servlet.HttpServlet crestServlet;
-    private final RestletServiceServlet restletJSONServiceServlet;
     private final RestletServiceServlet restletXACMLServiceServlet;
     private final RestletServiceServlet restletOAuth2ServiceServlet;
     private final RestletServiceServlet restletUMAServiceServlet;
-    private final RestEndpointManager endpointManager;
+    private final HttpServlet restletXACMLHttpServlet;
+    private final Filter authenticationFilter;
 
     /**
      * Constructs a new RestEndpointServlet.
      */
     public RestEndpointServlet() {
-        this.crestServlet = new CrestHttpServlet(this, InjectorHolder.getInstance(Key.get(ConnectionFactory.class,
-                Names.named(CREST_CONNECTION_FACTORY_NAME))));
-        this.restletJSONServiceServlet = new RestletServiceServlet(this, JSONServiceEndpointApplication.class,
-                "jsonRestletServiceServlet");
         this.restletXACMLServiceServlet = new RestletServiceServlet(this, XACMLServiceEndpointApplication.class,
                 "xacmlRestletServiceServlet");
         this.restletOAuth2ServiceServlet = new RestletServiceServlet(this, OAuth2ServiceEndpointApplication.class,
                 "oauth2RestletServiceServlet");
         this.restletUMAServiceServlet = new RestletServiceServlet(this, UMAServiceEndpointApplication.class,
                 "umaRestletServiceServlet");
-        this.endpointManager = InjectorHolder.getInstance(RestEndpointManager.class);
+        this.authenticationFilter =
+                InjectorHolder.getInstance(Key.get(Filter.class, Names.named("AuthenticationFilter")));
+        this.restletXACMLHttpServlet = new HttpServletWrapper(this,
+                new HttpFrameworkServlet(new RestletAuthnHttpApplication()));
     }
 
     /**
      * Constructor for test use.
      *
-     * @param crestServlet An instance of a CrestHttpServlet.
-     * @param restletJSONServiceServlet An instance of a RestletServiceServlet.
      * @param restletXACMLServiceServlet An instance of a RestletServiceServlet.
      * @param restletUMAServiceServlet An instance of a RestletServiceServlet.
-     * @param endpointManager An instance of the RestEndpointManager.
      */
-    RestEndpointServlet(final CrestHttpServlet crestServlet,
-            final RestletServiceServlet restletJSONServiceServlet,
-            final RestletServiceServlet restletXACMLServiceServlet,
-            final RestletServiceServlet restletOAuth2ServiceServlet,
-            final RestletServiceServlet restletUMAServiceServlet,
-            final RestEndpointManager endpointManager) {
-        this.crestServlet = crestServlet;
-        this.restletJSONServiceServlet = restletJSONServiceServlet;
+    RestEndpointServlet(
+            RestletServiceServlet restletXACMLServiceServlet,
+            RestletServiceServlet restletOAuth2ServiceServlet,
+            RestletServiceServlet restletUMAServiceServlet,
+            HttpServlet restletXACMLHttpServlet,
+            Filter authenticationFilter) {
         this.restletXACMLServiceServlet = restletXACMLServiceServlet;
         this.restletOAuth2ServiceServlet = restletOAuth2ServiceServlet;
         this.restletUMAServiceServlet = restletUMAServiceServlet;
-        this.endpointManager = endpointManager;
+        this.restletXACMLHttpServlet = restletXACMLHttpServlet;
+        this.authenticationFilter = authenticationFilter;
     }
 
     /**
@@ -100,9 +109,7 @@ public class RestEndpointServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
-        crestServlet.init();
-        // Don't need to call restServiceServlet.init() as starts Restlet which is not needed as is not created by
-        // Servlet Container.
+        restletXACMLHttpServlet.init();
     }
 
     /**
@@ -117,34 +124,8 @@ public class RestEndpointServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        if ("/json".equals(request.getServletPath())) {
-            final String restRequest = getResourceName(request);
-
-            final String endpoint = endpointManager.findEndpoint(restRequest);
-
-            final RestEndpointManager.EndpointType endpointType = endpointManager.getEndpointType(endpoint);
-
-            if (endpointType == null) {
-                throw new ServletException("Endpoint Type could not be determined");
-            }
-
-            switch (endpointType) {
-                case RESOURCE: {
-                    RequestHolder.set(request);
-                    try {
-                        crestServlet.service(request, response);
-                    } finally {
-                        RequestHolder.remove();
-                    }
-                    break;
-                }
-                case SERVICE: {
-                    restletJSONServiceServlet.service(new HttpServletRequestWrapper(request), response);
-                    break;
-                }
-            }
-        } else if ("/xacml".equals(request.getServletPath())) {
-            restletXACMLServiceServlet.service(new HttpServletRequestWrapper(request), response);
+        if ("/xacml".equals(request.getServletPath())) {
+            restletXACMLHttpServlet.service(request, response);
         } else if ("/oauth2".equals(request.getServletPath())) {
             restletOAuth2ServiceServlet.service(new HttpServletRequestWrapper(request), response);
         } else if ("/uma".equals(request.getServletPath())) {
@@ -153,21 +134,50 @@ public class RestEndpointServlet extends HttpServlet {
     }
 
     /**
-     * Gets the resource name (resource path) from the HttpServletRequest.
-     *
-     * @param req The HttpServletRequest.
-     * @return The resource name (resource path).
+     * To add CAF authentication protection to the /xacml endpoint we need to
+     * enter into the CHF world but before entering the Restlet world....
      */
-    private String getResourceName(final HttpServletRequest req) {
-        // Treat null path info as root resource.
-        String resourceName = req.getPathInfo();
-        if (resourceName == null) {
-            return "";
+    private final class RestletAuthnHttpApplication implements HttpApplication {
+
+        @Override
+        public Handler start() throws HttpApplicationException {
+            return Handlers.chainOf(new RestletHandler(), authenticationFilter);
         }
-        if (resourceName.endsWith("/")) {
-            resourceName = resourceName.substring(0, resourceName.length() - 1);
+
+        @Override
+        public Factory<Buffer> getBufferFactory() {
+            return null;
         }
-        return resourceName;
+
+        @Override
+        public void stop() {
+        }
+    }
+
+    /**
+     * This CHF handler will be routed through CAF authentication filter and
+     * then will invoke the Restlet servlet for the /xacml endpoint.
+     */
+    private final class RestletHandler implements Handler {
+
+        @Override
+        public Promise<Response, NeverThrowsException> handle(Context context, Request request) {
+            Map<String, Object> attributes = new HashMap<>(context.asContext(AttributesContext.class).getAttributes());
+            HttpServletRequest httpRequest = (HttpServletRequest) attributes.remove(HttpServletRequest.class.getName());
+            HttpServletResponse httpResponse =
+                    (HttpServletResponse) attributes.remove(HttpServletResponse.class.getName());
+            for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
+                if (httpRequest.getAttribute(attribute.getKey()) == null) {
+                    httpRequest.setAttribute(attribute.getKey(), attribute.getValue());
+                }
+            }
+            try {
+                restletXACMLServiceServlet.service(new HttpServletRequestWrapper(httpRequest), httpResponse);
+            } catch (ServletException | IOException e) {
+                return newResultPromise(new ResponseException(e.getMessage(), e).getResponse());
+            }
+            return null;
+        }
     }
 
     /**
@@ -175,10 +185,80 @@ public class RestEndpointServlet extends HttpServlet {
      */
     @Override
     public void destroy() {
-        crestServlet.destroy();
+        restletXACMLHttpServlet.destroy();
         restletXACMLServiceServlet.destroy();
         restletOAuth2ServiceServlet.destroy();
         restletUMAServiceServlet.destroy();
-        restletJSONServiceServlet.destroy();
+    }
+
+    private static final class HttpServletWrapper extends HttpServlet {
+
+        private final javax.servlet.http.HttpServlet realServlet;
+        private final HttpFrameworkServlet frameworkServlet;
+
+        private HttpServletWrapper(javax.servlet.http.HttpServlet realServlet, HttpFrameworkServlet frameworkServlet) {
+            this.realServlet = realServlet;
+            this.frameworkServlet = frameworkServlet;
+        }
+
+        @Override
+        public void init(ServletConfig config) throws ServletException {
+            frameworkServlet.init(config);
+        }
+
+        @Override
+        public void init() throws ServletException {
+            init(getServletConfig());
+        }
+
+        @Override
+        public void destroy() {
+            frameworkServlet.destroy();
+        }
+
+        @Override
+        protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            frameworkServlet.service(req, resp);
+        }
+
+        @Override
+        public String getInitParameter(String name) {
+            return realServlet.getInitParameter(name);
+        }
+
+        @Override
+        public Enumeration getInitParameterNames() {
+            return realServlet.getInitParameterNames();
+        }
+
+        @Override
+        public ServletConfig getServletConfig() {
+            return realServlet.getServletConfig();
+        }
+
+        @Override
+        public ServletContext getServletContext() {
+            return realServlet.getServletContext();
+        }
+
+        @Override
+        public String getServletInfo() {
+            return realServlet.getServletInfo();
+        }
+
+        @Override
+        public String getServletName() {
+            return realServlet.getServletName();
+        }
+
+        @Override
+        public void log(String msg) {
+            realServlet.log(msg);
+        }
+
+        @Override
+        public void log(String message, Throwable t) {
+            realServlet.log(message, t);
+        }
     }
 }

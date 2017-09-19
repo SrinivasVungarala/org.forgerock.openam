@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2014 ForgeRock AS
+  !      Copyright 2014-2015 ForgeRock AS.
   !
 -->
 <chapter xml:id='chap-lb'
@@ -35,7 +35,7 @@
  </indexterm>
 
  <para>
-  This chapter addresses the question of configuring policy agents
+  This chapter provides information about configuring policy agents
   on protected application servers that operate behind network load balancers.
  </para>
 
@@ -130,15 +130,10 @@
    </indexterm>
 
    <para>
-    Follow these steps to map the agent host name to
-    the fully qualified domain name (FQDN) of the load balancer.
-   </para>
-
-   <para>
     This procedure explains how to do so
     for a centralized Java EE policy agent profile configured in OpenAM Console.
     The steps also mention the properties for
-    Java EE agent profiles that rely on local, file-based configurations.
+    Java EE agent profiles that rely on local, file-based configurations:
    </para>
 
    <step>
@@ -150,7 +145,7 @@
 
    <step>
     <para>
-     Browse to Access Control > <replaceable>Realm Name</replaceable>
+     Browse to Realms > <replaceable>Realm Name</replaceable>
      > Agents > J2EE > <replaceable>Agent Name</replaceable>
      to open the Java EE agent profile for editing.
     </para>
@@ -184,7 +179,7 @@
    <step>
     <para>
      Set FQDN Virtual Host Map to map the protected server FQDN
-     to the load balancer FQDN, for example where
+     to the load balancer FQDN, for example, where
      the key <literal>agent.example.com</literal> (protected server)
      has value <literal>lb.example.com</literal> (load balancer).
     </para>
@@ -231,7 +226,7 @@
 
    <step>
     <para>
-     Browse to Access Control > <replaceable>Realm Name</replaceable>
+     Browse to Realms > <replaceable>Realm Name</replaceable>
      > Agents > J2EE > <replaceable>Agent Name</replaceable>
      to open the Java EE agent profile for editing.
     </para>
@@ -240,7 +235,7 @@
    <step>
     <para>
      In the Advanced tab page section Alternate Agent URL,
-     set the Alternative Agent Host Name to that of the load balancer
+     set the Alternative Agent Host Name to that of the load balancer.
      such as <literal>lb</literal>.
     </para>
 
@@ -254,7 +249,7 @@
     <para>
      If the host name is different on the load balancer,
      in the Advanced tab page section Alternate Agent URL,
-     set the Alternative Agent Port number to that of the load balancer
+     set the Alternative Agent Port number to that of the load balancer,
      such as <literal>80</literal>.
     </para>
 

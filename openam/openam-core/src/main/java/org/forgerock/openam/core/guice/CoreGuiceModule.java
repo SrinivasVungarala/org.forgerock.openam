@@ -17,6 +17,17 @@
 
 package org.forgerock.openam.core.guice;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.KeyDeserializer;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -55,20 +66,9 @@ import com.sun.identity.sm.SMSException;
 import com.sun.identity.sm.ServiceConfigManager;
 import com.sun.identity.sm.ServiceManagementDAO;
 import com.sun.identity.sm.ServiceManagementDAOWrapper;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.DeserializationProblemHandler;
-import org.codehaus.jackson.map.JsonDeserializer;
-import org.codehaus.jackson.map.KeyDeserializer;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.module.SimpleModule;
 import org.forgerock.guice.core.GuiceModule;
 import org.forgerock.guice.core.InjectorHolder;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.OAuth2Constants;
 import org.forgerock.openam.cts.CTSPersistentStore;
 import org.forgerock.openam.cts.CTSPersistentStoreImpl;
@@ -122,6 +122,9 @@ import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -399,8 +402,8 @@ public class CoreGuiceModule extends AbstractModule {
     @Provides @Named(CoreTokenConstants.OBJECT_MAPPER) @Singleton
     ObjectMapper getCTSObjectMapper() {
         ObjectMapper mapper = new ObjectMapper()
-                .configure(SerializationConfig.Feature.SORT_PROPERTIES_ALPHABETICALLY, true)
-                .configure(DeserializationConfig.Feature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
+                .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
+                .configure(MapperFeature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
 
         /**
          * @see http://stackoverflow.com/questions/7105745/how-to-specify-jackson-to-only-use-fields-preferably-globally
@@ -414,13 +417,12 @@ public class CoreGuiceModule extends AbstractModule {
         SimpleModule customModule = new SimpleModule("openam", Version.unknownVersion());
         customModule.addKeyDeserializer(SessionID.class, new SessionIDKeyDeserialiser());
         mapper.registerModule(customModule);
-        mapper.getDeserializationConfig().addHandler(new CompatibilityProblemHandler());
-
+        mapper.addHandler(new CompatibilityProblemHandler());
         return mapper;
     }
 
     /**
-     * This simple {@link org.codehaus.jackson.map.KeyDeserializer} implementation allows us to use the {@link SessionID#toString()} value as a
+     * This simple {@link KeyDeserializer} implementation allows us to use the {@link SessionID#toString()} value as a
      * map key instead of a whole {@link SessionID} object. During deserialization this class will reconstruct the
      * original SessionID object from the session ID string.
      */
@@ -434,18 +436,48 @@ public class CoreGuiceModule extends AbstractModule {
     }
 
     /**
-     * This extension allows us to ignore the now unmapped restrictedTokensByRestriction field in InternalSession. This
-     * is especially helpful when dealing with legacy tokens that still contain this field. As the field is now
-     * recalculated based on the restrictedTokensBySid map, we just ignore this JSON property.
+     * This extension allows us to ignore now unmapped fields within InternalSession and its sub-objects.
+     *
+     * Each field ignored is now calculated dynamically. See field JavaDoc for detail on why the field
+     * is ignored and how it is generated.
      */
     private static class CompatibilityProblemHandler extends DeserializationProblemHandler {
 
+        /**
+         * InternalSession#restrictedTokensByRestriction, this legacy field is now calculated based on the
+         * restrictedTokensBySid map.
+         */
         private static final String RESTRICTED_TOKENS_BY_RESTRICTION = "restrictedTokensByRestriction";
 
+        /**
+         * SessionID#isParsed, is no longer persisted because of the dynamic nature of server/site configuration
+         * it is now not safe to assume that a persisted SessionID has valid S1/SI values.
+         */
+        private static final String IS_PARSED = "isParsed";
+        /**
+         * SessionID#extensionPart, is not stored because it is extracted from the encryptedString.
+         */
+        private static final String EXTENSION_PART = "extensionPart";
+
+        /**
+         * SessionID#extensions, is not stored because it is calculated as part of parsing a SessionID.
+         */
+        private static final String EXTENSIONS = "extensions";
+
+        /**
+         * SessionID#tail, is not stored because it is calculated as part of parsing a SessionID.
+         */
+        private static final String TAIL = "tail";
+
+        private static final Set<String> skipList = new HashSet<>(
+                Arrays.asList(RESTRICTED_TOKENS_BY_RESTRICTION, IS_PARSED,
+                        EXTENSION_PART, EXTENSIONS, TAIL));
+
         @Override
-        public boolean handleUnknownProperty(DeserializationContext ctxt, JsonDeserializer<?> deserializer,
-                Object beanOrClass, String propertyName) throws IOException, JsonProcessingException {
-            if (propertyName.equals(RESTRICTED_TOKENS_BY_RESTRICTION)) {
+        public boolean handleUnknownProperty(DeserializationContext ctxt, JsonParser jp,
+                JsonDeserializer<?> deserializer, Object beanOrClass, String propertyName)
+                throws IOException, JsonProcessingException {
+            if (skipList.contains(propertyName)) {
                 ctxt.getParser().skipChildren();
                 return true;
             }

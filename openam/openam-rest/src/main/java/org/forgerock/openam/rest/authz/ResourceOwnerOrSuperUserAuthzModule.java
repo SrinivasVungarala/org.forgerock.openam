@@ -25,9 +25,9 @@ import com.sun.identity.shared.debug.Debug;
 import org.forgerock.authz.filter.api.AuthorizationResult;
 import org.forgerock.json.resource.InternalServerErrorException;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.RouterContext;
-import org.forgerock.json.resource.ServerContext;
-import org.forgerock.openam.rest.resource.RealmContext;
+import org.forgerock.http.routing.UriRouterContext;
+import org.forgerock.services.context.Context;
+import org.forgerock.openam.rest.RealmContext;
 import org.forgerock.openam.utils.Config;
 import org.forgerock.util.promise.Promise;
 import org.forgerock.util.promise.Promises;
@@ -53,6 +53,11 @@ public class ResourceOwnerOrSuperUserAuthzModule extends AdminOnlyAuthzModule {
         super(sessionService, debug);
     }
 
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
     /**
      * Authorizes caller if they are either a super user or they are making a request to a resource they "own",
      * i.e. demo making a call to /json/users/demo/uma/resourceset.
@@ -61,7 +66,7 @@ public class ResourceOwnerOrSuperUserAuthzModule extends AdminOnlyAuthzModule {
      * @return The authorization result.
      */
     @Override
-    protected Promise<AuthorizationResult, ResourceException> authorize(ServerContext context) {
+    protected Promise<AuthorizationResult, ResourceException> authorize(Context context) {
 
         try {
             String loggedInUserId = getUserId(context);
@@ -85,12 +90,12 @@ public class ResourceOwnerOrSuperUserAuthzModule extends AdminOnlyAuthzModule {
                         + ", not authorized."));
             }
         } catch (ResourceException e) {
-            return Promises.newExceptionPromise(e);
+            return e.asPromise();
         }
     }
 
-    protected String getUserIdFromUri(ServerContext context) throws InternalServerErrorException {
-        String username = context.asContext(RouterContext.class).getUriTemplateVariables().get("user");
+    protected String getUserIdFromUri(Context context) throws InternalServerErrorException {
+        String username = context.asContext(UriRouterContext.class).getUriTemplateVariables().get("user");
         String realm = context.asContext(RealmContext.class).getResolvedRealm();
         return IdUtils.getIdentity(username, realm).getUniversalId();
     }

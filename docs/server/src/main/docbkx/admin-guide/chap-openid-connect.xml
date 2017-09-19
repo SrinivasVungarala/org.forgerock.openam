@@ -26,7 +26,7 @@
 -->
 <chapter xml:id='chap-openid-connect'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -261,12 +261,8 @@
     without having to provide an access token.
     For details, see the documentation on the advanced server property,
     <literal>org.forgerock.openam.openidconnect.allow.open.dynamic.registration</literal>,
-    in the <citetitle>OpenAM Reference</citetitle> section,
-    <link
-     xlink:show="new"
-     xlink:href="reference#servers-advanced-configuration"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>Servers > Advanced</citetitle></link>.
+    in  <olink targetdoc="reference"
+               targetptr="servers-advanced-configuration" />.
     Take care to limit or throttle dynamic registration
     if you enable this capability on production systems.
    </para>
@@ -294,11 +290,7 @@
 
   <para>
    First, follow the instructions for
-   <link
-    xlink:href="admin-guide#configure-oauth2-authz"
-    xlink:show="new"
-    xlink:role="http://docbook.org/xlink/role/olink"
-   ><citetitle>Configuring the OAuth 2.0 Authorization Service</citetitle></link>,
+   <xref linkend="configure-oauth2-authz" />,
    making sure that the Response Type Plugins list includes
    at least the default plugin classes.
   </para>
@@ -358,11 +350,7 @@
 
     <para>
      For instructions on changing the key pair, see
-     <link
-      xlink:show="new"
-      xlink:href="admin-guide#change-signing-key"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>To Change the Signing Key for Federation</citetitle></link>.
+     <xref linkend="change-signing-key" />.
     </para>
    </listitem>
 
@@ -567,18 +555,15 @@ $ <userinput>curl https://openam.example.com:8443/.well-known/openid-configurati
    for the settings pertinent to OpenID Connect 1.0.</para>
 
    <step>
-    <para>In the OpenAM console under Access Control &gt; <replaceable>Realm
+    <para>In the OpenAM console under Realms &gt; <replaceable>Realm
     Name</replaceable> &gt; Agents &gt; OAuth 2.0/OpenID Connect Client &gt; Agent, click
     New..., then provide the client identifier and client password, and
     finally click Create to create the profile.</para>
    </step>
 
    <step>
-    <para>Follow the hints in the section, <link xlink:show="new"
-    xlink:href="admin-guide#configure-oauth2-client"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-    OAuth 2.0 and OpenID Connect 1.0 Clients</citetitle></link> to edit
-    the profile to match the relying party configuration.</para>
+    <para>To edit the profile to match the relying party configuration, follow
+     the hints in <xref linkend="configure-oauth2-client" /> .</para>
 
     <para>In order to read and edit the relying party profile dynamically later
     without using OpenAM console, be sure to set an access token in the Access
@@ -690,11 +675,8 @@ $ <userinput>curl \
 
   <para>When registering your relying party that uses session management, you set the
   OAuth 2.0 client agent profile properties Post Logout Redirect URI and
-  Client Session URI, described in <link xlink:show="new"
-  xlink:href="admin-guide#configure-oauth2-client"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-  OAuth 2.0 and OpenID Connect 1.0 Clients</citetitle></link>. The Post
-  Logout Redirect URI is used to redirect the end user user-agent after logout.
+  Client Session URI, described in <xref linkend="configure-oauth2-client" />.
+   The Post Logout Redirect URI is used to redirect the end user user-agent after logout.
   The Client Session URI is the relying party URI where OpenAM sends notifications
   when the end user's session state changes.</para>
  </section>
@@ -933,12 +915,9 @@ $ <userinput>curl \
 
   <para>As for other OAuth 2.0 applications, you must protect messages going
   across the network. OpenID Connect 1.0 requires Transport Layer Security
-  (TLS). The chapter on <link xlink:show="new"
-  xlink:href="admin-guide#chap-certs-keystores"
-  xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Managing
-  Certificates</citetitle></link> includes some discussion of protecting
-  traffic in the container where OpenAM runs. Also, see the documentation for
-  your web application container.</para>
+  (TLS). For some discussion of protecting traffic in the container where
+   OpenAM runs, see <xref linkend="chap-certs-keystores" />. Also, see the
+   documentation for your web application container.</para>
 
   <para>Also take into account the points developed in the section on <link
   xlink:href="http://openid.net/specs/openid-connect-messages-1_0.html#security-considerations"
@@ -951,7 +930,7 @@ $ <userinput>curl \
 
   <para>
    <link
-    xlink:href="http://gsmamobileeconomy.com/gsmamc/"
+    xlink:href="http://www.gsma.com/personaldata/mobile-connect"
     xlink:show="new"
    >GSMA Mobile Connect</link> is an application of OpenID Connect (OIDC).
    Mobile Connect builds on OIDC
@@ -1502,7 +1481,7 @@ $ <userinput>curl \
 
    <para>
     In OpenAM console, the OAuth2 Provider configuration is
-    under Access Control > <replaceable>Realm Name</replaceable>
+    under Realms > <replaceable>Realm Name</replaceable>
     > Services > OAuth2 Provider for the configuration in a specific realm,
     and under Configuration > Global > OAuth2 Provider
     for the inherited global settings:
@@ -1607,9 +1586,9 @@ $ <userinput>curl \
      of LDAP User Attributes for the data store.
      Otherwise, the attributes are not returned when OpenAM reads the user profile.
      To edit the list in OpenAM console, browse to
-     Access Control > <replaceable>Realm Name</replaceable>
-     > Data Stores > <replaceable>Data Store Name</replaceable>
-     > LDAP User Attributes.
+     Realms &gt; <replaceable>Realm Name</replaceable>
+     &gt; Data Stores &gt; <replaceable>Data Store Name</replaceable>
+     &gt; LDAP User Attributes.
     </para>
    </step>
   </procedure>

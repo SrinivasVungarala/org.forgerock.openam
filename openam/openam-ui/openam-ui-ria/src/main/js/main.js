@@ -18,26 +18,28 @@
 require.config({
     map: {
         "*" : {
-            "ThemeManager"              : "org/forgerock/openam/ui/common/util/ThemeManager",
-            "UserDelegate"              : "org/forgerock/openam/ui/user/delegates/UserDelegate",
-            "LoginView"                 : "org/forgerock/openam/ui/user/login/RESTLoginView",
-            "UserProfileView"           : "org/forgerock/commons/ui/user/profile/UserProfileView",
-            "LoginDialog"               : "org/forgerock/openam/ui/user/login/RESTLoginDialog",
-            "RegisterView"              : "org/forgerock/openam/ui/user/profile/RegisterView",
-            "ChangeSecurityDataDialog"  : "org/forgerock/openam/ui/user/profile/ChangeSecurityDataDialog"
+            "Footer"           : "org/forgerock/openam/ui/common/components/Footer",
+            "ThemeManager"     : "org/forgerock/openam/ui/common/util/ThemeManager",
+            "LoginView"        : "org/forgerock/openam/ui/user/login/RESTLoginView",
+            "PasswordResetView": "org/forgerock/openam/ui/user/anonymousProcess/PasswordResetView",
+            "UserProfileView"  : "org/forgerock/commons/ui/user/profile/UserProfileView",
+            "LoginDialog"      : "org/forgerock/openam/ui/user/login/RESTLoginDialog",
+            "RegisterView"     : "org/forgerock/openam/ui/user/anonymousProcess/SelfRegistrationView",
+            // TODO: Remove this when there are no longer any references to the "underscore" dependency
+            "underscore"       : "lodash"
         }
     },
     paths: {
         "autosizeInput": "libs/jquery.autosize.input.min",
 
         "backbone"           : "libs/backbone-1.1.2-min",
-        "backbone.paginator" : "libs/backbone-paginator.min",
-        "backbone-relational": "libs/backbone-relational",
+        "backbone.paginator" : "libs/backbone.paginator.min-2.0.2-min",
+        "backbone-relational": "libs/backbone-relational-0.9.0-min",
 
-        "backgrid"          : "libs/backgrid.min",
-        "backgrid.filter"   : "libs/backgrid-filter.min",
-        "backgrid.paginator": "libs/backgrid-paginator.min",
-        "backgrid.selectall": "libs/backgrid-select-all.min",
+        "backgrid"          : "libs/backgrid.min-0.3.5-min",
+        "backgrid-filter"   : "libs/backgrid-filter.min-0.3.5-min",
+        "backgrid.paginator": "libs/backgrid-paginator-0.3.5-custom.min",
+        "backgrid.selectall": "libs/backgrid-select-all-0.3.5-min",
 
         "bootstrap"               : "libs/bootstrap-3.3.5-custom",
         "bootstrap-datetimepicker": "libs/bootstrap-datetimepicker-4.14.30-min",
@@ -52,12 +54,12 @@ require.config({
         "i18next"     : "libs/i18next-1.7.3-min",
         "jquery"      : "libs/jquery-2.1.1-min",
         "js2form"     : "libs/js2form-2.0",
-        "jsonEditor"  : "libs/jsoneditor-custom.min",
+        "jsonEditor"  : "libs/jsoneditor-0.7.22-custom",
+        "lodash"      : "libs/lodash-3.10.1-min",
         "moment"      : "libs/moment-2.8.1-min",
         "qrcode"      : "libs/qrcode-1.0.0-min",
         "sortable"    : "libs/jquery-nestingSortable-0.9.12",
         "spin"        : "libs/spin-2.0.1-min",
-        "underscore"  : "libs/lodash-2.4.1-min",
         "xdate"       : "libs/xdate-0.8-min",
         "selectize"   : "libs/selectize-non-standalone-0.12.1-min",
         "sifter"      : "libs/sifter-0.4.1-min",
@@ -76,14 +78,14 @@ require.config({
             deps: ["backbone"]
         },
         "backbone-relational": {
-            deps: ['backbone']
+            deps: ["backbone"]
         },
 
         "backgrid": {
             deps: ["jquery", "underscore", "backbone"],
             exports: "Backgrid"
         },
-        "backgrid.filter": {
+        "backgrid-filter": {
             deps: ["backgrid"]
         },
         "backgrid.paginator": {
@@ -134,7 +136,10 @@ require.config({
             exports: "qrcode"
         },
         "selectize": {
-            // sifter, microplugin is additional dependencies for fix release build. It related with this issue https://github.com/brianreavis/selectize.js/issues/417
+            /**
+             * sifter, microplugin is additional dependencies for fix release build.
+             * @see https://github.com/brianreavis/selectize.js/issues/417
+             */
             deps: ["jquery", "sifter", "microplugin"]
         },
         "spin": {

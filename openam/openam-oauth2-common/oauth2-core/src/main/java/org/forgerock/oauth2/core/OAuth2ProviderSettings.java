@@ -20,7 +20,9 @@ package org.forgerock.oauth2.core;
 import java.security.KeyPair;
 import java.util.Map;
 import java.util.Set;
-import org.forgerock.json.fluent.JsonValue;
+
+import freemarker.template.Template;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.exceptions.InvalidClientException;
 import org.forgerock.oauth2.core.exceptions.InvalidRequestException;
 import org.forgerock.oauth2.core.exceptions.InvalidScopeException;
@@ -108,12 +110,12 @@ public interface OAuth2ProviderSettings {
      *
      * @param token The access token.
      * @param request The OAuth2 request.
-     * @return A {@code Map<String, Object>} of the resource owner's information.
+     * @return The claims for the resource owner's information.
      * @throws ServerException If any internal server error occurs.
      * @throws UnauthorizedClientException If the client's authorization fails.
      * @throws NotFoundException If the realm does not have an OAuth 2.0 provider service.
      */
-    Map<String, Object> getUserInfo(AccessToken token, OAuth2Request request) throws ServerException,
+    UserInfoClaims getUserInfo(AccessToken token, OAuth2Request request) throws ServerException,
             UnauthorizedClientException, NotFoundException;
 
     /**
@@ -237,12 +239,28 @@ public interface OAuth2ProviderSettings {
     Set<String> getSupportedClaims() throws ServerException;
 
     /**
-     * Gets the supported scopes for this provider.
+     * Gets the supported claims for this provider as strings with pipe-separated translations.
+     *
+     * @return A {@code Set} of the supported claims.
+     * @throws ServerException If any internal server error occurs.
+     */
+    Set<String> getSupportedClaimsWithTranslations() throws ServerException;
+
+    /**
+     * Gets the supported scopes for this provider without translations.
      *
      * @return A {@code Set} of the supported scopes.
      * @throws ServerException If any internal server error occurs.
      */
     Set<String> getSupportedScopes() throws ServerException;
+
+    /**
+     * Gets the supported scopes for this provider.
+     *
+     * @return A {@code Set} of the supported scopes.
+     * @throws ServerException If any internal server error occurs.
+     */
+    Set<String> getSupportedScopesWithTranslations() throws ServerException;
 
     /**
      * Gets the default set of scopes to give a client registering with this provider.
@@ -439,6 +457,13 @@ public interface OAuth2ProviderSettings {
     Set<String> getEndpointAuthMethodsSupported();
 
     /**
+     * Whether or not to enforce the Code Verifier Parameter
+     * @return Whether the Code Verifier option has been configured
+     * @see <a href="https://tools.ietf.org/html/draft-ietf-oauth-spop-12"</a>
+     */
+    boolean isCodeVerifierRequired() throws ServerException;
+
+    /**
      * Returns the salt to use for hashing sub values upon pairwise requests.
      */
     String getHashSalt() throws ServerException;
@@ -448,4 +473,47 @@ public interface OAuth2ProviderSettings {
      * @see <a href="http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims">OpenID Connect Specification</a>
      */
     boolean isAlwaysAddClaimsToToken() throws ServerException;
+
+    /**
+     * The attribute that can be used to obtain a UI-displayable name for a user's AMIdentity.
+     */
+    String getUserDisplayNameAttribute() throws ServerException;
+
+    /**
+     * Gets the custom login url template which will create the url to redirect resource owners to for authentication.
+     *
+     * @return The custom login url template.
+     * @throws ServerException If the custom login url template setting could not be retrieved.
+     */
+    Template getCustomLoginUrlTemplate() throws ServerException;
+
+    /**
+     * The URL that the user will be instructed to visit to complete their OAuth 2 login and consent when using the
+     * device code flow.
+     * @return The verification URL.
+     * @throws ServerException If the setting could not be retrieved.
+     */
+    String getVerificationUrl() throws ServerException;
+
+    /**
+     * The URL that the user will be sent to on completion of their OAuth 2 login and consent when using the device code flow.
+     * @return The completion URL.
+     * @throws ServerException If the setting could not be retrieved.
+     */
+    String getCompletionUrl() throws ServerException;
+
+    /**
+     * The lifetime of the device code.
+     * @return The lifetime in seconds.
+     * @throws ServerException If the setting could not be retrieved.
+     */
+    int getDeviceCodeLifetime() throws ServerException;
+
+    /**
+     * The polling interval for devices waiting for tokens when using the device code flow.
+     * @return The interval in seconds.
+     * @throws ServerException If the setting could not be retrieved.
+     */
+    int getDeviceCodePollInterval() throws ServerException;
+
 }

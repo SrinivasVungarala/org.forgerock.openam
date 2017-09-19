@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ! CCPL HEADER START
+  !
+  ! This work is licensed under the Creative Commons
+  ! Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  ! To view a copy of this license, visit
+  ! http://creativecommons.org/licenses/by-nc-nd/3.0/
+  ! or send a letter to Creative Commons, 444 Castro Street,
+  ! Suite 900, Mountain View, California, 94041, USA.
+  !
+  ! You can also obtain a copy of the license at
+  ! trunk/opendj3/legal-notices/CC-BY-NC-ND.txt.
+  ! See the License for the specific language governing permissions
+  ! and limitations under the License.
+  !
+  ! If applicable, add the following below this CCPL HEADER, with the fields
+  ! enclosed by brackets "[]" replaced with your own identifying information:
+  !      Portions Copyright [yyyy] [name of copyright owner]
+  !
+  ! CCPL HEADER END
+  !
+  !      Copyright 2011-2015 ForgeRock AS.
+  !
+-->
+<section xml:id="configure-web-pa-sso-props"
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
+         xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
+         xmlns:xlink='http://www.w3.org/1999/xlink'
+         xmlns:xinclude='http://www.w3.org/2001/XInclude'>
+  <title>Configuring Web Policy Agent SSO Properties</title>
+
+  <indexterm>
+   <primary>web policy agents</primary>
+   <secondary>SSO properties</secondary>
+   <tertiary>configuring</tertiary>
+  </indexterm>
+
+  <para>This section covers SSO web agent properties. After creating the
+   agent profile, you access these properties in the OpenAM console under
+   Realms &gt; <replaceable>Realm Name</replaceable> &gt; Agents &gt;
+   Web &gt; <replaceable>Agent Name</replaceable> &gt; SSO.</para>
+
+      <para>This section describes the following property groups:</para>
+ <itemizedlist>
+  <listitem>
+   <para><xref linkend="web-agent-cookie-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-cdsso-properties" /></para>
+  </listitem>
+    <listitem>
+   <para><xref linkend="web-agent-cookie-reset-properties"/></para>
+  </listitem>
+ </itemizedlist>
+
+  <variablelist xml:id="web-agent-cookie-properties">
+   <title>Cookie Properties</title>
+   <varlistentry>
+    <term>Cookie Name</term>
+    <listitem>
+     <para>Name of the SSO Token cookie used between the OpenAM server and
+      the agent. Default: <literal>iPlanetDirectoryPro</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.cookie.name</literal></para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Cookie Security</term>
+    <listitem>
+     <para>When enabled, the agent marks cookies secure, sending them only
+      if the communication channel is secure.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.cookie.secure</literal></para>
+     <para>Hot swap: no</para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <!-- OPENAM-804: Add ability to set HttpOnly flag for cookies -->
+    <term>HTTPOnly Cookies (Not yet in OpenAM console)</term>
+    <listitem>
+     <para>As of version 3.0.5, web policy agents with this property set to
+      <literal>true</literal> mark cookies as HTTPOnly, to prevent scripts
+      and third-party programs from accessing the cookies.</para>
+     <para>Property: <literal>com.sun.identity.cookie.httponly</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-cdsso-properties">
+   <title>Cross Domain SSO Properties</title>
+   <varlistentry>
+    <term>Cross Domain SSO</term>
+    <listitem>
+     <para>Enables Cross Domain Single Sign On (CDSSO) for OpenAM deployments that
+     use stateful sessions. CDSSO is not supported for OpenAM deployments that use
+     stateless sessions.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.cdsso.enable</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>CDSSO Servlet URL</term>
+    <listitem>
+     <para>List of URLs of the available CDSSO controllers that the agent can
+      use for CDSSO processing. For example,
+      <literal>http://openam.example.com:8080/openam/cdcservlet</literal>.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.cdsso.cdcservlet.url</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Cookies Domain List</term>
+    <listitem>
+     <para>List of domains, such as <literal>.example.com</literal>, in which
+      cookies have to be set in CDSSO. If this property is left blank, then
+      the fully qualified domain name of the cookie for the agent server
+      is used to set the cookie domain, meaning that a host cookie rather than
+      a domain cookie is set.</para>
+     <para>To set the list to <literal>.example.com</literal>, and
+      <literal>.example.net</literal> using the configuration file property,
+      include the following.</para>
+     <literallayout class="monospaced">com.sun.identity.agents.config.cdsso.cookie.domain[0]=.example.com
+      com.sun.identity.agents.config.cdsso.cookie.domain[1]=.example.net</literallayout>
+     <para>Property: <literal>com.sun.identity.agents.config.cdsso.cookie.domain</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist xml:id="web-agent-cookie-reset-properties">
+   <title>Cookie Reset Properties</title>
+   <varlistentry>
+    <term>Cookie Reset</term>
+    <listitem>
+     <para>When enabled, agent resets cookies in the response before
+      redirecting to authentication.</para>
+     <para>Property: <literal>com.sun.identity.agents.config.cookie.reset.enable</literal></para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Cookie Reset Name List</term>
+    <listitem>
+     <para>List of cookies in the format
+      <literal><replaceable>name</replaceable>[=<replaceable>value</replaceable>][;Domain=<replaceable>value</replaceable>]</literal>.</para>
+     <para>Concrete examples include the following with two list items
+      configured.</para>
+     <itemizedlist>
+      <listitem>
+       <para><literal>LtpaToken</literal>, corresponding to
+        <literal>com.sun.identity.agents.config.cookie.reset[0]=LtpaToken</literal>.
+        The default domain is taken from FQDN Default.</para>
+      </listitem>
+      <listitem>
+       <para><literal>token=value;Domain=subdomain.domain.com</literal>,
+        corresponding to
+        <literal>com.sun.identity.agents.config.cookie.reset[1]= token=value;Domain=subdomain.domain.com</literal></para>
+      </listitem>
+     </itemizedlist>
+     <para>Property: <literal>com.sun.identity.agents.config.cookie.reset</literal></para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </section>

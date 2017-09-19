@@ -21,9 +21,16 @@ import static org.forgerock.openam.audit.AuditConstants.*;
 
 import com.iplanet.sso.SSOToken;
 import org.forgerock.audit.events.AccessAuditEventBuilder;
+import org.forgerock.http.protocol.Header;
+import org.forgerock.services.context.Context;
+import org.forgerock.http.MutableUri;
+import org.forgerock.services.context.ClientContext;
+import org.forgerock.http.protocol.Headers;
+import org.forgerock.http.protocol.Request;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -48,13 +55,25 @@ public final class AMAccessAuditEventBuilder extends AccessAuditEventBuilder<AMA
     }
 
     /**
-     * Provide value for "contextId" audit log field.
+     * Provide value for "contexts" audit log field.
      *
-     * @param value String "contextId" value.
+     * @param contexts Map "contexts" value.
      * @return this builder for method chaining.
      */
-    public AMAccessAuditEventBuilder contextId(String value) {
-        putContextId(jsonValue, value);
+    public AMAccessAuditEventBuilder contexts(Map<String, String> contexts) {
+        putContexts(jsonValue, contexts);
+        return this;
+    }
+
+    /**
+     * Provide single value which will be used in "contexts" audit log field.
+     *
+     * @param context Context key which will be used in the "contexts" audit log field.
+     * @param contextId Context key which will be used in the "contexts" audit log field.
+     * @return this builder for method chaining.
+     */
+    public AMAccessAuditEventBuilder context(AuditConstants.Context context, String contextId) {
+        putContexts(jsonValue, Collections.singletonMap(context.toString(), contextId));
         return this;
     }
 
@@ -105,6 +124,28 @@ public final class AMAccessAuditEventBuilder extends AccessAuditEventBuilder<AMA
     }
 
     /**
+     * Sets client, server and http details from CHF Request and Context.
+     *
+     * @param request Request from which client, server and http details will be retrieved.
+     * @param context Context from which client, server and http details will be retrieved.
+     * @return this builder
+     */
+    public final AMAccessAuditEventBuilder forRequest(Request request, Context context) {
+        ClientContext clientInfo = context.asContext(ClientContext.class);
+        client(
+                getClientIPAddress(context, request),
+                clientInfo.getRemotePort(),
+                isReverseDnsLookupEnabled() ? clientInfo.getRemoteHost() : "");
+        MutableUri uri = request.getUri();
+        http(
+                request.getMethod(),
+                uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + uri.getPath(),
+                uri.getQuery() == null ? "" : uri.getQuery(),
+                getHeadersAsMap(request.getHeaders()));
+        return this;
+    }
+
+    /**
      * Sets the provided name for the event. This method is preferred over
      * {@link org.forgerock.audit.events.AuditEventBuilder#eventName(String)} as it allows OpenAM to manage event
      * names better and documentation to be automatically generated for new events.
@@ -114,6 +155,17 @@ public final class AMAccessAuditEventBuilder extends AccessAuditEventBuilder<AMA
      */
     public AMAccessAuditEventBuilder eventName(EventName name) {
         return eventName(name.toString());
+    }
+
+    /**
+     * Provide value for "realm" audit log field.
+     *
+     * @param realm The "realm" value.
+     * @return this builder for method chaining.
+     */
+    public final AMAccessAuditEventBuilder realm(String realm) {
+        putRealm(jsonValue, realm);
+        return this;
     }
 
     private Map<String, List<String>> getHeadersAsMap(HttpServletRequest request) {
@@ -131,4 +183,11 @@ public final class AMAccessAuditEventBuilder extends AccessAuditEventBuilder<AMA
         return headers;
     }
 
+    private Map<String, List<String>> getHeadersAsMap(Headers requestHeaders) {
+        Map<String, List<String>> headers = new HashMap<>();
+        for (Map.Entry<String, Header> header : requestHeaders.asMapOfHeaders().entrySet()) {
+            headers.put(header.getKey(), new ArrayList<>(header.getValue().getValues()));
+        }
+        return headers;
+    }
 }

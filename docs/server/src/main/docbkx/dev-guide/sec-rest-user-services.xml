@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-rest-user-services'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -36,7 +36,8 @@
   <indexterm><primary>REST API</primary></indexterm>
 
   <para>This section shows how to use the OpenAM RESTful interfaces for user
-   self-service functionality: user self-registration and forgotten password reset.
+   self-service functionality: user self-registration, forgotten password reset,
+   dashboard configuration, and device profile reset.
   </para>
 
   <para>In this section, long URLs are wrapped to fit the printed page, as some
@@ -70,7 +71,7 @@
     </para>
 
     <para>Alternatively, you can configure them for an individual realm under
-    Access Control > <replaceable>Realm Name</replaceable> > Services.</para>
+    Realms &gt; <replaceable>Realm Name</replaceable> &gt; Services.</para>
    </step>
 
    <step>
@@ -79,7 +80,7 @@
     <para>
      You must enable self-registration in the User Self Service
      service. You can configure these globally in OpenAM console at
-     Configure &gt; Global &gt; User Self Service. On the User Self Service page, click
+     Configuration &gt; Global &gt; User Self Service. On the User Self Service page, click
      the <literal>Enabled</literal> checkbox next to Self-Registration for Users,
      and then click Save.
     </para>
@@ -255,23 +256,18 @@ $ <userinput>curl \
    for handling forgotten passwords
    as long as the user has a valid email address in their profile.
    This is an alternative to the password reset capability described in
-   the <citetitle>Administration Guide</citetitle> chapter,
-   <link xlink:show="new" xlink:href="admin-guide#chap-pwd-reset"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   >Configuring Password Reset</citetitle></link>.
+    <olink targetdoc="admin-guide" targetptr="chap-pwd-reset" />.
   </para>
 
   <tip><para>If the current password is known, use the
-   <link xlink:show="new"
-         xlink:href="dev-guide#rest-api-change-password"
-         xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Change Password</citetitle></link>
+   <xref linkend="rest-api-change-password" />
    feature to change a password.</para></tip>
 
   <para>The option is disabled by default. You can enable it in the OpenAM Console
-  globally by using Configuration > Global > User Self Service.</para>
+  globally by using Configuration &gt; Global &gt; User Self Service.</para>
 
   <para>Alternatively, you can enable it for an individual realm under
-  Access Control > <replaceable>Realm Name</replaceable> > Services > Add >
+  Realms &gt; <replaceable>Realm Name</replaceable> &gt; Services &gt; Add &gt;
   User Self Service.</para>
 
   <orderedlist>
@@ -284,10 +280,10 @@ $ <userinput>curl \
     allowing the user to reset the forgotten password.</para>
 
     <para>You can configure the service globally in the OpenAM Console via
-    Configuration > Global > Email Service.</para>
+    Configuration &gt; Global &gt; Email Service.</para>
 
     <para>Alternatively, you can configure it for an individual realm under
-    Access Control > <replaceable>Realm Name</replaceable> > Services.</para>
+    Realms &gt; <replaceable>Realm Name</replaceable> &gt; Services.</para>
 
     <para>
      At this point users with mail addresses can reset their forgotten passwords.
@@ -621,5 +617,62 @@ $ <userinput>curl \
     rely on OpenAM to handle authentication.</para>
    
   </section>
+
+ <section xml:id="rest-api-device-profile-reset">
+  <title>Resetting Device Profiles</title>
+  <indexterm>
+   <primary>Two Step Verification</primary>
+   <secondary>resetting device profile</secondary>
+  </indexterm>
+
+  <para>
+   The OpenAM REST API provides an action that lets a user reset their own
+   profile for a registered device running an authenticator app used for two
+   step verification. Administrators can also use this REST API to reset a
+   user's registered device profile.
+  </para>
+  <para>
+   Resetting a device profile deletes information about a user's registered
+   device from OpenAM.
+  </para>
+  <para>
+   Resetting a device profile is useful when:
+   <itemizedlist>
+    <listitem>
+     <para>
+      A user loses a registered device&#x2014;for example, a mobile
+      phone&#x2014;but had not saved the device recovery codes available in the
+      OpenAM dashboard.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      A user loses a registered device and has no device recovery codes
+      remaining.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <para>
+   An administrator or a user can perform an HTTP POST on
+   <literal>/json/<replaceable>subrealm</replaceable>/users/<replaceable>user</replaceable>/devices/2fa/oath?_action=reset</literal>
+   to reset the user's device profile:
+  </para>
+    <screen>
+$ <userinput>curl \
+ --request POST \
+ --header "Content-Type: application/json" \
+ --header "iplanetDirectoryPro: AQIC5w...2NzEz*" \
+ --data '{}' \
+ https://openam.example.com:8443/openam/json/<replaceable>mySubrealm</replaceable>/users/<replaceable>myUser</replaceable>/devices/2fa/oath?_action=reset</userinput>
+<computeroutput>{"result":true}</computeroutput></screen>
+
+  <para>
+   For more information about device registration, see
+   <olink targetdoc="admin-guide" targetptr="authn-2sv-using-initiating-first-attempt" />.
+  </para>
+
+ </section>
 
 </section>

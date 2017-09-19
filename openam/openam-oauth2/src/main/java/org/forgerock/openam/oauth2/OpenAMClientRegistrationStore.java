@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2014-2015 ForgeRock AS.
+ * Portions Copyrighted 2015 Nomura Research Institute, Ltd
  */
 
 package org.forgerock.openam.oauth2;
@@ -32,8 +33,10 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.forgerock.services.context.Context;
 import org.forgerock.jaspi.modules.openid.resolvers.service.OpenIdResolverService;
 import org.forgerock.oauth2.core.OAuth2Constants;
+import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
 import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.PEMDecoder;
 import org.forgerock.oauth2.core.exceptions.InvalidClientException;
@@ -54,6 +57,7 @@ public class OpenAMClientRegistrationStore implements OpenIdConnectClientRegistr
     private final RealmNormaliser realmNormaliser;
     private final PEMDecoder pemDecoder;
     private final OpenIdResolverService resolverService;
+    private final OAuth2ProviderSettingsFactory providerSettingsFactory;
 
     /**
      * Constructs a new OpenAMClientRegistrationStore.
@@ -63,20 +67,34 @@ public class OpenAMClientRegistrationStore implements OpenIdConnectClientRegistr
      */
     @Inject
     public OpenAMClientRegistrationStore(RealmNormaliser realmNormaliser, PEMDecoder pemDecoder,
-                            @Named(OAuth2Constants.Custom.JWK_RESOLVER) OpenIdResolverService resolverService) {
+            @Named(OAuth2Constants.Custom.JWK_RESOLVER) OpenIdResolverService resolverService,
+            OAuth2ProviderSettingsFactory providerSettingsFactory) {
         this.realmNormaliser = realmNormaliser;
         this.pemDecoder = pemDecoder;
         this.resolverService = resolverService;
+        this.providerSettingsFactory = providerSettingsFactory;
     }
 
     /**
      * {@inheritDoc}
      */
-    public OpenIdConnectClientRegistration get(String clientId, OAuth2Request request) 
+    public OpenIdConnectClientRegistration get(String clientId, OAuth2Request request)
             throws InvalidClientException, NotFoundException {
 
         final String realm = realmNormaliser.normalise(request.<String>getParameter(OAuth2Constants.Custom.REALM));
-        return new OpenAMClientRegistration(getIdentity(clientId, realm), pemDecoder, resolverService);
+        return new OpenAMClientRegistration(getIdentity(clientId, realm), pemDecoder, resolverService,
+                providerSettingsFactory.get(request));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public OpenIdConnectClientRegistration get(String clientId, String realm, Context context)
+            throws InvalidClientException, NotFoundException {
+
+        final String normalisedRealm = realmNormaliser.normalise(realm);
+        return new OpenAMClientRegistration(getIdentity(clientId, normalisedRealm), pemDecoder, resolverService,
+                providerSettingsFactory.get(normalisedRealm, context));
     }
 
     @SuppressWarnings("unchecked")
@@ -106,11 +124,11 @@ public class OpenAMClientRegistrationStore implements OpenIdConnectClientRegistr
 
             theID = results.iterator().next();
 
-            //if the client is deactivated return null
+            //if the client is deactivated throw InvalidClientException
             if (theID.isActive()){
                 return theID;
             } else {
-                return null;
+                throw new InvalidClientException("Client authentication failed");
             }
         } catch (SSOException e) {
             logger.error("ClientVerifierImpl::Unable to get client AMIdentity: ", e);

@@ -11,15 +11,15 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.rest.service;
 
 import java.io.IOException;
-import static org.forgerock.json.fluent.JsonValue.field;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
+import static org.forgerock.json.JsonValue.field;
+import static org.forgerock.json.JsonValue.json;
+import static org.forgerock.json.JsonValue.object;
 import org.forgerock.json.resource.ResourceException;
 import static org.mockito.Mockito.mock;
 import org.restlet.Request;
@@ -48,7 +48,7 @@ public class JSONRestStatusServiceTest {
         Response response = mock(Response.class);
 
         //When
-        Representation representation = restStatusService.getRepresentation(status, request, response);
+        Representation representation = restStatusService.toRepresentation(status, request, response);
 
         //Then
         assertTrue(representation.getText().contains("\"code\":400"));
@@ -60,12 +60,12 @@ public class JSONRestStatusServiceTest {
         //Given
         Request request = mock(Request.class);
         Response response = mock(Response.class);
-        ResourceException exception = ResourceException.getException(401);
+        ResourceException exception = ResourceException.newResourceException(401);
         exception.setDetail(json(object(field("bing", "bong"))));
         Status status = new Status(exception.getCode(), exception);
 
         //When
-        Representation representation = restStatusService.getRepresentation(status, request, response);
+        Representation representation = restStatusService.toRepresentation(status, request, response);
 
         //Then
         assertTrue(representation.getText().contains("\"bing\":\"bong\""));

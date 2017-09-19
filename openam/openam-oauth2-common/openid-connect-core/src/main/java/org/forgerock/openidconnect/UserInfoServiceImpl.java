@@ -21,7 +21,7 @@ import static org.forgerock.oauth2.core.AccessTokenVerifier.*;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.AccessTokenVerifier;
 import org.forgerock.oauth2.core.OAuth2ProviderSettings;
@@ -88,6 +88,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         final OAuth2ProviderSettings providerSettings = providerSettingsFactory.get(request);
 
-        return new JsonValue(providerSettings.getUserInfo(token, request));
+        return new JsonValue(providerSettings.getUserInfo(token, request).getValues());
     }
 }

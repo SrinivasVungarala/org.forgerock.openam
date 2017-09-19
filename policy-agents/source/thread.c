@@ -30,6 +30,12 @@
 #define AM_MIN_THREADS_POOL 2
 #define AM_THREADS_POOL_LINGER 30 /* sec */
 
+/* helper structure to wrap various callbacks, args and platforms */
+struct am_callback_args {
+    void *args;
+    void (*callback)(void *);
+};
+
 #ifdef _WIN32
 static INIT_ONCE worker_pool_initialized = INIT_ONCE_STATIC_INIT;
 static TP_CALLBACK_ENVIRON worker_env;
@@ -45,7 +51,7 @@ enum {
 };
 
 struct am_threadpool_work {
-    void (*func) (void *, void *);
+    void (*func) (void *);
     void *arg;
     struct am_threadpool_work *next;
 };
@@ -172,7 +178,7 @@ static void *do_work(void *arg) {
     struct am_threadpool_active active;
     int timed_out;
     struct timespec ts;
-    void (*func) (void *arg_not_used, void *arg);
+    void (*func) (void *arg);
     void *func_arg;
 
     /* worker thread main loop */
@@ -230,7 +236,7 @@ static void *do_work(void *arg) {
             /* do the actual work */
             pthread_cleanup_push(work_cleanup, pool);
             free(cur);
-            func(NULL, func_arg);
+            func(func_arg);
             pthread_cleanup_pop(1);
         }
         if (timed_out && pool->num_threads > pool->min_threads) {
@@ -254,6 +260,8 @@ void
 create_threadpool(
 #ifdef _WIN32
         PINIT_ONCE io, PVOID p, PVOID *c
+#else
+        int (*init_status_cb)(int)
 #endif
         ) {
 #ifdef _WIN32
@@ -284,9 +292,14 @@ create_threadpool(
 
     sigfillset(&fillset);
 
-    if (!worker_pool_atfork && pthread_atfork(worker_pool_lock_all,
-            worker_pool_unlock_all, worker_pool_fork_handler) != 0) {
-        return; /* ENOMEM */
+    if (!worker_pool_atfork) {
+        if (!init_status_cb || !init_status_cb(AM_FALSE)) {
+            if (pthread_atfork(worker_pool_lock_all,
+                    worker_pool_unlock_all, worker_pool_fork_handler) != 0) {
+                return; /* ENOMEM */
+            }
+            if (init_status_cb) init_status_cb(AM_TRUE);
+        }
     }
     worker_pool_atfork = 1;
 
@@ -314,11 +327,11 @@ create_threadpool(
 #endif
 }
 
-void am_worker_pool_init() {
+void am_worker_pool_init(int (*init_status_cb)(int)) {
 #ifdef _WIN32
     InitOnceExecuteOnce(&worker_pool_initialized, create_threadpool, NULL, NULL);
 #else
-    create_threadpool();
+    create_threadpool(init_status_cb);
 #endif
 }
 
@@ -332,9 +345,28 @@ void am_worker_pool_init_reset() {
 #endif
 }
 
-int am_worker_dispatch(void (*worker_f)(void *, void *), void *arg) {
 #ifdef _WIN32
-    BOOL status = TrySubmitThreadpoolCallback(worker_f, arg, &worker_env);
+
+static void CALLBACK worker_dispatch_callback(PTP_CALLBACK_INSTANCE instance, void *arg) {
+    struct am_callback_args *cba = (struct am_callback_args *) arg;
+    if (cba != NULL && cba->callback != NULL) {
+        cba->callback(cba->args);
+    }
+    am_free(cba);
+}
+
+#endif
+
+int am_worker_dispatch(void (*worker_f)(void *), void *arg) {
+#ifdef _WIN32
+    BOOL status = FALSE;
+    struct am_callback_args *cb_arg =
+            (struct am_callback_args *) malloc(sizeof (struct am_callback_args));
+    if (cb_arg != NULL) {
+        cb_arg->args = arg;
+        cb_arg->callback = worker_f;
+        status = TrySubmitThreadpoolCallback(worker_dispatch_callback, cb_arg, &worker_env);
+    }
     return status == FALSE ? AM_ENOMEM : AM_SUCCESS;
 #else
     struct am_threadpool_work *cur;
@@ -441,23 +473,6 @@ am_event_t *create_event() {
     return e;
 }
 
-am_exit_event_t *create_exit_event() {
-    am_exit_event_t *e = malloc(sizeof (am_exit_event_t));
-    if (e != NULL) {
-#ifdef _WIN32
-        e->e = CreateEventA(NULL, FALSE, FALSE, NULL);
-#else
-        pthread_mutexattr_t a;
-        pthread_mutexattr_init(&a);
-        pthread_mutexattr_settype(&a, PTHREAD_MUTEX_RECURSIVE);
-        pthread_mutex_init(&e->m, &a);
-        pthread_mutexattr_destroy(&a);
-        pthread_mutex_lock(&e->m);
-#endif
-    }
-    return e;
-}
-
 void set_event(am_event_t *e) {
     if (e != NULL) {
 #ifdef _WIN32
@@ -471,34 +486,11 @@ void set_event(am_event_t *e) {
     }
 }
 
-void reset_event(am_event_t *e) {/*optional*/
-    if (e != NULL) {
-#ifdef _WIN32
-        ResetEvent(e->e);
-#else
-        pthread_mutex_lock(&e->m);
-        e->e = 0;
-        pthread_cond_broadcast(&e->c);
-        pthread_mutex_unlock(&e->m);
-#endif
-    }
-}
-
-void set_exit_event(am_exit_event_t *e) {
-    if (e != NULL) {
-#ifdef _WIN32
-        SetEvent(e->e);
-#else
-        pthread_mutex_unlock(&e->m);
-#endif
-    }
-}
-
 int wait_for_event(am_event_t *e, int timeout) {
     int r = 0;
     if (e != NULL) {
 #ifdef _WIN32
-        DWORD rv = WaitForSingleObject(e->e, timeout > 0 ? timeout * 1000 : INFINITE);
+        DWORD rv = WaitForSingleObject(e->e, timeout > 0 ? timeout : INFINITE);
         if (rv != WAIT_OBJECT_0) {
             r = AM_ETIMEDOUT;
         }
@@ -510,9 +502,14 @@ int wait_for_event(am_event_t *e, int timeout) {
             } else {
                 struct timeval now = {0, 0};
                 struct timespec ts = {0, 0};
+                long tv_sec_from_nsec;
                 gettimeofday(&now, NULL);
-                ts.tv_sec = now.tv_sec + timeout;
+                ts.tv_sec = now.tv_sec;
                 ts.tv_nsec = now.tv_usec * 1000;
+                ts.tv_nsec += timeout * 1000000;
+                tv_sec_from_nsec = ts.tv_nsec / 1000000000L;
+                ts.tv_sec += tv_sec_from_nsec;
+                ts.tv_nsec -= (tv_sec_from_nsec * 1000000000L);
                 if (pthread_cond_timedwait(&e->c, &e->m, &ts) == ETIMEDOUT) {
                     r = AM_ETIMEDOUT;
                     break;
@@ -520,7 +517,7 @@ int wait_for_event(am_event_t *e, int timeout) {
             }
         }
         if (r == 0) {
-            /*resets the event state to nonsignaled after a single waiting thread has been released*/
+            /* resets the event state to nonsignaled after a single waiting thread has been released */
             e->e = 0;
         }
         pthread_mutex_unlock(&e->m);
@@ -529,57 +526,25 @@ int wait_for_event(am_event_t *e, int timeout) {
     return r;
 }
 
-int wait_for_exit_event(am_exit_event_t *e) {
-    if (e == NULL) return 1;
+void close_event(am_event_t **e) {
+    am_event_t *event = e != NULL ? *e : NULL;
+    if (event != NULL) {
+        set_event(event);
 #ifdef _WIN32
-    return WaitForSingleObject(e->e, 0) == WAIT_TIMEOUT ? 0 : 1;
+        CloseHandle(event->e);
 #else
-    switch (pthread_mutex_trylock(&e->m)) {
-        case 0:
-            pthread_mutex_unlock(&e->m);
-            return 1;
-        case EBUSY:
-            return 0;
-    }
-    return 1;
+        pthread_mutex_destroy(&event->m);
+        pthread_cond_destroy(&event->c);
 #endif
-}
-
-void close_event(am_event_t *e) {
-    if (e != NULL) {
-        set_event(e);
-#ifdef _WIN32
-        CloseHandle(e->e);
-#else
-        pthread_mutex_destroy(&e->m);
-        pthread_cond_destroy(&e->c);
-#endif
-        free(e);
-        e = NULL;
+        free(event);
+        *e = NULL;
     }
 }
 
-void close_exit_event(am_exit_event_t *e) {
-    if (e != NULL) {
-#ifdef _WIN32
-        CloseHandle(e->e);
-#else
-        pthread_mutex_destroy(&e->m);
-#endif
-        free(e);
-        e = NULL;
-    }
-}
-
-struct timer_callback_args {
-    void *args;
-    void (*callback)(void *);
-};
-
 #ifdef _WIN32
 
-static void timer_callback(void *args, BOOLEAN tw_fired) {
-    struct timer_callback_args *cba = (struct timer_callback_args *) args;
+static void CALLBACK timer_callback(void *args, BOOLEAN tw_fired) {
+    struct am_callback_args *cba = (struct am_callback_args *) args;
     if (cba != NULL && cba->callback != NULL) {
         cba->callback(cba->args);
     }
@@ -588,7 +553,7 @@ static void timer_callback(void *args, BOOLEAN tw_fired) {
 #elif defined (LINUX) || defined(AIX)
 
 static void timer_callback(union sigval si) {
-    struct timer_callback_args *cba = (struct timer_callback_args *) si.sival_ptr;
+    struct am_callback_args *cba = (struct am_callback_args *) si.sival_ptr;
     if (cba != NULL && cba->callback != NULL) {
         cba->callback(cba->args);
     }
@@ -609,16 +574,18 @@ am_timer_event_t *am_create_timer_event(int type, unsigned int interval, void *a
             e->error = AM_EINVAL;
             return e;
         }
+        e->init_status = AM_ENOTSTARTED;
         e->type = type;
         e->interval = interval;
-        e->args = malloc(sizeof (struct timer_callback_args));
+        e->args = malloc(sizeof (struct am_callback_args));
         if (e->args == NULL) {
             e->error = AM_ENOMEM;
             return e;
         }
-        ((struct timer_callback_args *) e->args)->args = args;
-        ((struct timer_callback_args *) e->args)->callback = callback;
-        e->exit_ev = create_exit_event();
+        ((struct am_callback_args *) e->args)->args = args;
+        ((struct am_callback_args *) e->args)->callback = callback;
+
+        e->exit_ev = create_event();
         if (e->exit_ev == NULL) {
             e->error = AM_ENOMEM;
             return e;
@@ -671,19 +638,25 @@ am_timer_event_t *am_create_timer_event(int type, unsigned int interval, void *a
 
 static void *timer_event_loop(void *args) {
     am_timer_event_t *e = (am_timer_event_t *) args;
+
 #if defined(__sun)
+
     port_event_t ev;
-    struct timer_callback_args *cba;
+    struct am_callback_args *cba;
     struct itimerspec ts;
-    if (e->error == 0) {
+    if (e->error == 0 && e->tick > 0) {
         ts.it_value.tv_sec = e->interval;
         ts.it_value.tv_nsec = 0;
         ts.it_interval.tv_sec = e->type == AM_TIMER_EVENT_ONCE ? 0 : e->interval;
         ts.it_interval.tv_nsec = 0;
         e->error = timer_settime(e->tick, 0, &ts, 0);
     } else {
+        if (e->error == 0) {
+            e->error = AM_EINVAL;
+        }
         return NULL;
     }
+
     while (1) {
         if (port_get(e->port, &ev, NULL) < 0) {
             break;
@@ -691,83 +664,123 @@ static void *timer_event_loop(void *args) {
         if (ev.portev_source != PORT_SOURCE_TIMER) {
             break;
         }
-        cba = (struct timer_callback_args *) ev.portev_user;
+        cba = (struct am_callback_args *) ev.portev_user;
         if (cba == NULL || cba->callback == NULL) {
             break;
         }
         cba->callback(cba->args);
     }
+
 #elif defined(__APPLE__)
+
     int n;
     u_short flags = EV_ADD | EV_ENABLE;
     struct kevent ch, ev;
-    struct timer_callback_args *cba = (struct timer_callback_args *) e->args;
+    struct am_callback_args *cba = (struct am_callback_args *) e->args;
     if (cba == NULL || cba->callback == NULL) {
         return NULL;
     }
     if (e->type == AM_TIMER_EVENT_ONCE) {
         flags |= EV_ONESHOT;
     }
+
+    /* set event */
     EV_SET(&ch, 1, EVFILT_TIMER, flags, NOTE_SECONDS, e->interval, NULL);
+    kevent(e->tick, &ch, 1, NULL, 0, NULL);
+
     while (1) {
-        n = kevent(e->tick, &ch, 1, &ev, 1, NULL);
+        n = kevent(e->tick, NULL, 0, &ev, 1, NULL); /* retrieve event */
         if (n <= 0 || (ev.flags & EV_ERROR)) {
             break;
         }
         cba->callback(cba->args);
     }
+
 #else
+
 #ifndef _WIN32
+
     struct itimerspec ts;
-    if (e->error == 0) {
+    if (e->error == 0 && e->tick > 0) {
         ts.it_value.tv_sec = e->interval;
         ts.it_value.tv_nsec = 0;
         ts.it_interval.tv_sec = e->type == AM_TIMER_EVENT_ONCE ? 0 : e->interval;
         ts.it_interval.tv_nsec = 0;
         e->error = timer_settime(e->tick, 0, &ts, 0);
     } else {
+        if (e->error == 0) {
+            e->error = AM_EINVAL;
+        }
         return NULL;
     }
+
 #endif
+
     while (1) {
-        if (wait_for_exit_event(e->exit_ev) != 0) {
+        if (wait_for_event(e->exit_ev, 1000) != AM_ETIMEDOUT) {
             break;
         }
-        sleep(1);
     }
+
 #endif
     return NULL;
 }
 
 void am_start_timer_event(am_timer_event_t *e) {
     if (e == NULL || e->error != 0) return;
-    AM_THREAD_CREATE(e->tick_thr, timer_event_loop, e);
-#ifndef _WIN32
-    pthread_detach(e->tick_thr);
+#ifdef _WIN32
+    if ((e->tick_thr = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) timer_event_loop, e, 0, NULL)) != NULL) {
+        e->init_status = AM_SUCCESS;
+    }
+#else
+    if (pthread_create(&e->tick_thr, NULL, timer_event_loop, e) == 0) {
+        e->init_status = AM_SUCCESS;
+    }
 #endif
 }
 
 void am_close_timer_event(am_timer_event_t *e) {
     if (e == NULL) return;
-    set_exit_event(e->exit_ev);
+
+    set_event(e->exit_ev);
+
 #if defined(__sun)
+
     close(e->port);
     timer_delete(e->tick);
+
 #elif defined(__APPLE__)
+
     close(e->tick);
+
 #elif defined(_WIN32)
-    WaitForSingleObject(e->tick_thr, INFINITE);
+
+    if (e->init_status == AM_SUCCESS) {
+        WaitForSingleObject(e->tick_thr, INFINITE);
+    }
     if (e->tick_q != NULL) {
         if (e->tick != NULL) {
             DeleteTimerQueueTimer(e->tick_q, e->tick, NULL);
         }
         DeleteTimerQueue(e->tick_q);
     }
-    CloseHandle(e->tick_thr);
+    if (e->init_status == AM_SUCCESS) {
+        CloseHandle(e->tick_thr);
+    }
+
 #else
+
     timer_delete(e->tick);
+
 #endif
-    close_exit_event(e->exit_ev);
+
+#ifndef _WIN32
+    if (e->init_status == AM_SUCCESS) {
+        pthread_join(e->tick_thr, NULL);
+    }
+#endif
+
+    close_event(&e->exit_ev);
     am_free(e->args);
     free(e);
 }

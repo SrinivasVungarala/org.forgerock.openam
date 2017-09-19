@@ -25,7 +25,7 @@
 -->
  <section xml:id="servers-and-sites-configuration"
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -108,11 +108,8 @@
      <para>
       To set the locale when OpenAM cannot find UI files for the requested locale,
       set the JVM platform locale instead.
-      For details see the <citetitle>Installation Guide</citetitle> section,
-      <link
-       xlink:href="install-guide#lookup-for-ui-files"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>How OpenAM Looks Up UI Files</citetitle></link>
+      For details, see <olink targetdoc="install-guide"
+                              targetptr="lookup-for-ui-files" />.
      </para>
 
      <para>property:
@@ -1010,12 +1007,7 @@
 
       <para>
        For suggested settings,
-       see the <citetitle>Administration Guide</citetitle> section on
-       <link
-        xlink:show="new"
-        xlink:href="admin-guide#tuning-ldap-settings-cts"
-        xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Tuning LDAP CTS and Configuration Store Settings</citetitle></link>.
+       see <olink targetdoc="admin-guide" targetptr="tuning-ldap-settings-cts" />.
       </para>
       <para>
        You can configure this field for external token stores only.
@@ -2046,11 +2038,7 @@
 
      <para>
       While you are customizing the UI as described in
-      <link
-       xlink:href="install-guide#update-classic-ui"
-       xlink:role="http://docbook.org/xlink/role/olink"
-       xlink:show="new"
-      ><citetitle>Updating the Classic UI</citetitle></link>,
+      <olink targetdoc="install-guide" targetptr="update-classic-ui" />,
       set this property to <literal>false</literal>
       to allow OpenAM immediately to pick up changes
       to the files as you customize them.
@@ -2099,13 +2087,7 @@
 
      <para>
       For suggested settings,
-      see the <citetitle>Administration Guide</citetitle> section on
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#tuning-ldap-settings-cts"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Tuning LDAP CTS and Configuration Store
-       Settings</citetitle></link>.
+      see <olink targetdoc="admin-guide" targetptr="tuning-ldap-settings-cts" />.
      </para>
     </listitem>
    </varlistentry>
@@ -2123,12 +2105,7 @@
 
      <para>
       For suggested settings,
-      see the <citetitle>Administration Guide</citetitle> section on
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#tuning-ldap-settings-cts"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Tuning LDAP CTS and Configuration Store Settings</citetitle></link>.
+      see <olink targetdoc="admin-guide" targetptr="tuning-ldap-settings-cts" />.
      </para>
     </listitem>
    </varlistentry>
@@ -2146,12 +2123,7 @@
 
      <para>
       For suggested settings,
-      see the <citetitle>Administration Guide</citetitle> section on
-      <link
-       xlink:show="new"
-       xlink:href="admin-guide#tuning-ldap-settings-cts"
-       xlink:role="http://docbook.org/xlink/role/olink"
-      ><citetitle>Tuning LDAP CTS and Configuration Store Settings</citetitle></link>.
+      see <olink targetdoc="admin-guide" targetptr="tuning-ldap-settings-cts" />.
      </para>
     </listitem>
    </varlistentry>

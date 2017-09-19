@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-securing'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -64,7 +64,7 @@
    </listitem>
 
    <listitem>
-    <para>Create an administrator in the top-level realm with a different ID
+    <para>Create an administrator in the Top Level Realm with a different ID
     than the default <literal>amadmin</literal>.</para>
    </listitem>
 
@@ -85,7 +85,7 @@
     <para>Remove the demo user account. For example, if you configure the embedded
      OpenDJ directory server as a configuration and CTS store, the default demo user
      account gets created during the installation process. You should
-     remove the user using the OpenAM console under Access Control &gt; / (Top Realm)
+     remove the user using the OpenAM console under Realms &gt; Top Level Realm
      &gt; Subjects &gt; User.
     </para>
    </listitem>
@@ -107,7 +107,7 @@
      <literal>gotoOnFail</literal> URL is valid.
     </para>
     <para>To set the Valid <literal>goto</literal> URL Resources, use the OpenAM
-     console, and navigate to Access Control &gt; <replaceable>Realm Name </replaceable>
+     console, and navigate to Realms &gt; <replaceable>Realm Name </replaceable>
      &gt; Services. Click Add, select Validation Service, and then add one or more
      valid <literal>goto</literal> URLs.
     </para>
@@ -118,11 +118,7 @@
       where "*" matches all characters except "?".
       For more specific patterns,
       use resource names with wildcards as described in the procedure,
-       <link
-        xlink:href="admin-guide#configure-valid-goto-url-resources"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-        ><citetitle>Configuring Valid goto URL Resources</citetitle></link>.
+       <xref linkend="configure-valid-goto-url-resources" />.
      </para>
    </listitem>
    <listitem>
@@ -148,10 +144,7 @@
   <para>To minimize risks, deploy only the core OpenAM server on systems directly
    connected through a firewall. As a start, deploy only the core server (and the
    protected web application) on Internet-facing servers. For instructions, see
-   the following section from the
-   OpenAM Installation Guide, <link xlink:href="install-guide#which-war-to-deploy"
-                                    xlink:show="new" xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Determine Which
-    War File to Deploy</citetitle></link>.</para>
+   <olink targetdoc="install-guide" targetptr="which-war-to-deploy" />.</para>
 
   <para>You can further limit what is exposed through the firewall using the
      following strategy:</para>
@@ -210,10 +203,7 @@
      endpoints, such as <literal>/sessionservice</literal> from being reachable
      over the Internet.</para>
 
-    <para>For a full list of endpoints, see the <citetitle>Reference</citetitle>
-     chapter on <link xlink:show="new" xlink:href="reference#chap-endpoints"
-                      xlink:role="http://docbook.org/xlink/role/olink">
-            <citetitle>Service Endpoints</citetitle></link>.</para>
+    <para>For a full list of endpoints, see <olink targetdoc="reference" targetptr="chap-endpoints" />.</para>
    </listitem>
   </itemizedlist>
  </section>
@@ -227,10 +217,7 @@
 
    <listitem>
     <para>Create realms for your organization(s) and separate administrative
-    users from end users. For instructions, see <link
-    xlink:href="admin-guide#chap-realms" xlink:show="new"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-    Realms</citetitle></link>. You must then either:</para>
+    users from end users. For instructions, see <xref linkend="chap-realms" />. You must then either:</para>
     <itemizedlist>
      <listitem>
       <para>Use the <literal>realm=<replaceable>realm-name</replaceable></literal>
@@ -251,10 +238,7 @@
    </listitem>
 
    <listitem>
-    <para>Create a policy agent profile for each policy agent. See <link
-    xlink:href="admin-guide#chap-agents" xlink:show="new"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Configuring
-    Policy Agent Profiles</citetitle></link> for instructions.</para>
+    <para>Create a policy agent profile for each policy agent. See <xref linkend="chap-agents" /> for instructions.</para>
    </listitem>
 
   </itemizedlist>
@@ -313,29 +297,41 @@
    </listitem>
    <listitem>
     <para>Use cookie hijacking protection with restricted tokens, where each
-    policy agent uses different SSO tokens for the same user. See <link
-    xlink:show="new" xlink:href="admin-guide#enable-cdsso-cookie-hijacking-protection"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Protect
-    Against CDSSO Cookie Hijacking</citetitle></link> for instructions.</para>
+    policy agent uses different SSO tokens for the same user. See <xref
+    linkend="enable-cdsso-cookie-hijacking-protection" /> for
+    instructions.</para>
    </listitem>
 
    <listitem>
-    <para>When using SAML v2.0:</para>
-    <itemizedlist>
-     <listitem>
-      <para>Sign authentication requests, authentication responses, and single
-      logout requests.</para>
-     </listitem>
-     <listitem>
-      <para>If the other entities in your circle of trust can handle encryption,
-      then use encryption as well.</para>
-     </listitem>
-     <listitem>
-      <para>Use your own key, not the <literal>test</literal> key provided with
-      OpenAM.</para>
-     </listitem>
-    </itemizedlist>
+    <para>
+     Use your own key, not the <literal>test</literal> key provided with
+     OpenAM, to sign:
+    </para>
+     <itemizedlist>
+      <listitem>
+       <para>
+        SAML 2.0 authentication requests, authentication responses, and single
+        logout requests
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        XUI authentication IDs
+       </para>
+      </listitem>
+     </itemizedlist>
+     <para>
+      See <xref linkend="change-signing-key" /> for instructions.
+     </para>
    </listitem>
+
+   <listitem>
+    <para>When using SAML v2.0, if the other entities in your circle of trust
+     can handle encryption, then use encryption in addition to signing requests
+     and responses.
+    </para>
+   </listitem>
+
   </itemizedlist>
  </section>
 
@@ -365,7 +361,7 @@
    </step>
 
    <step>
-    <para>Under Access Control &gt; / (Top Level Realm) &gt; Subjects &gt; User,
+    <para>Under Realms &gt; Top Level Realm &gt; Subjects &gt; User,
      select the name of the current top-level administrative user.</para>
    </step>
 
@@ -439,7 +435,7 @@
    <step>
     <para>If the account does not already exist in OpenAM or on a connected
      directory server, you'll need to create it. To do so, select
-     Access Control &gt; / (Top-Level Realm) &gt; Subject &gt; User &gt; New.
+     Realms &gt; Top Level Realm &gt; Subjects &gt; User &gt; New.
      In the New User window that appears, create the new user. Make sure to enter
      an appropriate password and make that user Active. The ID for that new user
      is the user name.</para>

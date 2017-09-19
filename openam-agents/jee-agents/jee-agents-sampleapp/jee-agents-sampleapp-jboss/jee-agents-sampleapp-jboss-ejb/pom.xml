@@ -67,7 +67,7 @@
     <dependencies>
         <dependency>
             <groupId>org.forgerock.openam.agents</groupId>
-            <artifactId>jee-agents-sampleapp-ejb</artifactId>
+            <artifactId>jee-agents-sampleapp-ejb3</artifactId>
             <scope>runtime</scope>
         </dependency>
     </dependencies>

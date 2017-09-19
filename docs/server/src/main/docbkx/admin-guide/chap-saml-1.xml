@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-saml-1'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -63,15 +63,9 @@
 
   <para>
    See the following chapters for more information:
-   <link xlink:href="admin-guide#chap-federation" xlink:show="new"
-         xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   >Managing SAML v2.0 Federation</citetitle></link>,
-   <link xlink:href="admin-guide#chap-oauth2" xlink:show="new"
-         xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   >Managing OAuth 2.0 Authorization</citetitle></link>, and
-   <link xlink:href="admin-guide#chap-openid-connect" xlink:show="new"
-         xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   >Managing OpenID Connect 1.0 Authorization</citetitle></link>.
+   <xref linkend="chap-federation" />,
+   <xref linkend="chap-oauth2" />, and
+   <xref linkend="chap-openid-connect" />.
   </para>
  </important>
  
@@ -556,17 +550,13 @@ $ <userinput>java \
    <step>
     <para>
      See the chapter
-     <link xlink:href="admin-guide#chap-certs-keystores" xlink:show="new"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-     >Managing Certificates</citetitle></link>
+     <xref linkend="chap-certs-keystores" />
      for instructions on handling your own key pairs.
     </para>
 
     <para>
      For specific instructions on changing signing keys, see the procedure
-     <link xlink:href="admin-guide#change-signing-key" xlink:show="new"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-     >To Change the Signing Key for Federation</citetitle></link>.
+     <xref linkend="change-signing-key" />.
     </para>
    </step>
 
@@ -1116,9 +1106,7 @@ $ <userinput>java \
 
     <para>
      See the
-     <link xlink:href="install-guide#install-guide" xlink:show="new"
-           xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-     >Installation Guide</citetitle></link> for instructions.
+     <olink targetdoc="install-guide" targetptr="install-guide" /> for instructions.
     </para>
 
     <para>

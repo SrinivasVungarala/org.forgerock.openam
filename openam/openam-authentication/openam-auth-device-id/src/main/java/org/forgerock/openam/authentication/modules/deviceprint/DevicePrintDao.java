@@ -11,15 +11,15 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.authentication.modules.deviceprint;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iplanet.sso.SSOException;
 import com.sun.identity.idm.IdRepoException;
 import com.sun.identity.shared.debug.Debug;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -57,8 +57,10 @@ public class DevicePrintDao {
 
         Set<String> set = (Set<String>) amIdentity.getAttribute(LDAP_DEVICE_PRINT_ATTRIBUTE_NAME);
         List<Map<String, Object>> profiles = new ArrayList<Map<String, Object>>();
-        for (String profile : set) {
-            profiles.add(MAPPER.readValue(profile, Map.class));
+        if (null != set) {
+            for (String profile : set) {
+                profiles.add(MAPPER.readValue(profile, Map.class));
+            }
         }
         return profiles;
     }

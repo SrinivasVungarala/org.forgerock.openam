@@ -24,7 +24,7 @@
   !    
 -->
 <chapter xml:id='chap-federation'
- xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+ xmlns='http://docbook.org/ns/docbook' version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -163,8 +163,8 @@
     <secondary>Configuring</secondary>
    </indexterm>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Create Hosted Identity
-    Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Create Hosted Identity Provider.</para>
    </step>
    <step>
     <para>Unless you already have metadata for the provider, accept the
@@ -206,9 +206,9 @@ $ <userinput>curl \
 http://www.idp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceable>"</userinput>
     </screen>
 
-    <para>When you have configured only the top-level realm,
+    <para>When you have configured only the Top Level Realm,
     <literal>/</literal>, you can omit the query string.</para>
-    <para>Alternatively, provide the URL, to other providers so they can load
+    <para>Alternatively, provide the URL to other providers so they can load
     the metadata.</para>
    </step>
   </procedure>
@@ -220,8 +220,8 @@ http://www.idp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceab
     <secondary>Configuring</secondary>
    </indexterm>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Create Hosted Service
-    Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Create Hosted Service Provider.</para>
    </step>
    <step>
     <para>Unless you already have metadata for the provider, accept the
@@ -253,9 +253,9 @@ $ <userinput>curl \
 http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceable>"</userinput>
     </screen>
 
-    <para>When you have configured only the top-level realm,
+    <para>When you have configured only the Top Level Realm,
     <literal>/</literal>, you can omit the query string.</para>
-    <para>Alternatively, provide the URL, to other providers so they can load
+    <para>Alternatively, provide the URL to other providers so they can load
     the metadata.</para>
    </step>
   </procedure>
@@ -271,8 +271,8 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
     obtain it.</para>
    </step>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Register Remote
-    Identity Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Register Remote Identity Provider.</para>
    </step>
    <step>
     <para>Provide the identity provider metadata or link to obtain
@@ -298,8 +298,8 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
     obtain it.</para>
    </step>
    <step>
-    <para>On the OpenAM console Common Tasks page, click Register Remote Service
-    Provider.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Register Remote Service Provider.</para>
    </step>
    <step>
     <para>Provide the identity provider metadata or link to obtain
@@ -419,14 +419,9 @@ http://www.sp.example:8080/openam&amp;realm=/<replaceable>realm-name</replaceabl
     </tgroup>
    </table>
 
-   <para>For more information on using fedlets, see <link xlink:show="new"
-   xlink:href="dev-guide#chap-fedlet-java"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Using Fedlets in
-   Java Web Applications</citetitle></link> and <link xlink:show="new"
-   xlink:href="dev-guide#chap-fedlet-dotnet"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Using Fedlets in
-   .NET Applications</citetitle></link> in the <citetitle>Developer's
-   Guide</citetitle>.</para>
+   <para>For more information on using fedlets, see <olink
+    targetdoc="dev-guide" targetptr="chap-fedlets" />.
+   </para>
 
    <para>The following procedure describes how to create a Java Fedlet:</para>
 
@@ -644,12 +639,11 @@ $ <userinput>cp ~/Downloads/openam/${ipdiscoWarFile} \
    <procedure xml:id="share-idpdisco-sp-metadata">
     <title>To Share Identity and Service Provider Metadata</title>
 
-    <para>Before performing these steps, install the administration tools
-    for each provider as described in <link
-    xlink:href="install-guide#install-openam-admin-tools"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up
-    Administration Tools</citetitle></link>. The administration tools include
-    the <command>ssoadm</command> command that you need to export metadata:</para>
+    <para>Before performing these steps, install the administration tools for
+    each provider as described in <olink targetdoc="install-guide"
+    targetptr="install-openam-admin-tools" />. The administration tools include
+    the <command>ssoadm</command> command that you need to export
+    metadata:</para>
 
     <step>
      <para>On each identity provider console, register the service provider as
@@ -729,7 +723,8 @@ Import file, /Users/mark/Downloads/that-extended.xml.</computeroutput>
 
     <step>
      <para>Test your work by using the Federation Connectivity Test that
-     you start from the service provider console under Common Tasks &gt;
+     you start from the service provider console under Under Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Dashboard &gt;
      Test Federation Connectivity.</para>
 
      <para>When the test is done, you can see messages from the
@@ -825,10 +820,7 @@ CookieWriterServlet.doGetPost: Redirect to
       <para>Specify a Key Pass if the private key password is different from
       the key store password, which is stored encrypted in the
       <filename>.keypass</filename> file for the server. For instructions
-      on working with key pairs, also see <link xlink:show="new"
-      xlink:href="admin-guide#change-signing-key"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Change the
-      Signing Key for Federation</citetitle></link>.</para>
+      on working with key pairs, also see <xref linkend="change-signing-key" />.</para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -949,16 +941,13 @@ CookieWriterServlet.doGetPost: Redirect to
       <para>Maps SAML attributes to user profile attributes.</para>
 
       <para>The user profile attributes used here must both be allowed in user
-      profiles, and also be specified for the identity repository. See the
-      <citetitle>Developer's Guide</citetitle> chapter, <link xlink:show="new"
-      xlink:href="dev-guide#sec-custom-attr"
-      xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Customizing
-      Profile Attributes</citetitle></link>, for instructions on allowing
-      additional attributes in user profiles.</para>
+      profiles, and also be specified for the identity repository. See <olink
+      targetdoc="dev-guide" targetptr="sec-custom-attr" />, for instructions on
+      allowing additional attributes in user profiles.</para>
 
       <para>To specify the list of profile attributes for an LDAP identity
       repository, login to OpenAM console as administrator and browse to
-      Access Control > <replaceable>Realm Name</replaceable> > Data Stores, and
+      Realms &gt; <replaceable>Realm Name</replaceable> &gt; Data Stores, and
       click the data store name to open the configuration page. Scroll down to
       User Configuration, and edit the LDAP User Attributes list, and then
       click Save to keep your work.</para>
@@ -1677,10 +1666,7 @@ CookieWriterServlet.doGetPost: Redirect to
 
   <para>
    OpenAM servers can function in a site configuration behind a load balancer,
-   as described in the <citetitle>Installation Guide</citetitle> chapter,
-   <link xlink:href="install-guide#chap-session-failover" xlink:show="new"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle
-   >Setting Up OpenAM Session Failover</citetitle></link>.
+   as described in <olink targetdoc="install-guide" targetptr="chap-session-failover" />.
   </para>
 
   <para>
@@ -1796,15 +1782,13 @@ $ <userinput>ssoadm \
     <xref linkend="create-hosted-idp" />, using a signing certificate
     that is needed by Google Apps.</para>
 
-    <para>See the procedure <link xlink:href="admin-guide#change-signing-key"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Change the
-    Signing Key for Federation</citetitle></link> for details regarding the
-    signing certificate.</para>
+    <para>For details about changing the signing certificate, see <xref
+     linkend="change-signing-key" />.</para>
    </step>
 
    <step>
-    <para>On the OpenAM console Common Tasks page, click Configure Google
-    Apps.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Configure Google Apps.</para>
    </step>
 
    <step>
@@ -1892,15 +1876,13 @@ $ <userinput>ssoadm \
     <xref linkend="create-hosted-idp" />, using a signing certificate
     that is needed by Salesforce CRM.</para>
 
-    <para>See the procedure <link xlink:href="admin-guide#change-signing-key"
-    xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Change the
-    Signing Key for Federation</citetitle></link> for details regarding the
-    signing certificate.</para>
+    <para>For details about changing the signing certificate, see <xref
+     linkend="change-signing-key" />.</para>
    </step>
 
    <step>
-    <para>On the OpenAM console Common Tasks page, click Configure Salesforce
-    CRM.</para>
+    <para>Under Realms &gt; <replaceable>Realm Name</replaceable> &gt;
+    Dashboard, click Configure Salesforce CRM.</para>
    </step>
 
    <step>
@@ -2214,7 +2196,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      <literal>/<replaceable>realm-name</replaceable>/<replaceable
      >provider-name</replaceable></literal> as described in <xref
      linkend="idp-meta-alias"/>. You do not repeat the slash for
-     the top-level realm, for example <literal>metaAlias=/idp</literal>.</para>
+     the Top Level Realm, for example <literal>metaAlias=/idp</literal>.</para>
     </listitem>
    </varlistentry>
 
@@ -2300,7 +2282,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      takes the format <literal>/<replaceable>realm-name</replaceable>/<replaceable
      >provider-name</replaceable></literal> as described in <xref
      linkend="sp-meta-alias"/>. You do not repeat the slash for the
-     top-level realm, <literal>metaAlias=/sp</literal>.</para>
+     Top Level Realm, <literal>metaAlias=/sp</literal>.</para>
     </listitem>
    </varlistentry>
 
@@ -2765,13 +2747,13 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
   default session mapper uses OpenAM cookies as it would for any other client
   application. If for some reason you must change the mapping after writing
   and installing your own session mapper, you can change the class under
-  Federation &gt; Entity Providers &gt; <replaceable>idp-name</replaceable>
+  Federation &gt; Entity Providers &gt; <replaceable>IdP Name</replaceable>
   &gt; IDP &gt; Advanced &gt; ECP Configuration.</para>
 
   <para>By default, an OpenAM service provider uses the
   <literal>com.sun.identity.saml2.plugins.ECPIDPFinder</literal> class to
   return identity providers from the list under Federation &gt; Entity
-  Providers &gt; <replaceable>sp-name</replaceable> &gt; SP &gt; Advanced
+  Providers &gt; <replaceable>SP Name</replaceable> &gt; SP &gt; Advanced
   &gt; ECP Configuration &gt; Request IDP List. You must populate the list
   with identity provider entity IDs.</para>
 
@@ -2999,7 +2981,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       <literal>/<replaceable>realm-name</replaceable>/<replaceable
       >provider-name</replaceable></literal> as described in <xref
       linkend="idp-meta-alias"/>. You do not repeat the slash for
-      the top-level realm, for example <literal>metaAlias=/idp</literal>.</para>
+      the Top Level Realm, for example <literal>metaAlias=/idp</literal>.</para>
      </listitem>
     </varlistentry>
 
@@ -3086,7 +3068,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
       takes the format <literal>/<replaceable>realm-name</replaceable>/<replaceable
       >provider-name</replaceable></literal> as described in <xref
       linkend="sp-meta-alias"/>. You do not repeat the slash for the
-      top-level realm, <literal>metaAlias=/sp</literal>.</para>
+      Top Level Realm, <literal>metaAlias=/sp</literal>.</para>
      </listitem>
     </varlistentry>
 
@@ -3227,7 +3209,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     </step>
     <step>
      <para>Browse to Federation &gt; <replaceable
-     >hosted-provider-name</replaceable> &gt; Assertion Processing.</para>
+     >Hosted Provider Name</replaceable> &gt; Assertion Processing.</para>
     </step>
     <step>
      <para>
@@ -3256,7 +3238,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
     </step>
     <step>
      <para>Browse to Federation &gt; <replaceable
-     >hosted-provider-name</replaceable> &gt; Assertion Processing.</para>
+     >Hosted Provider Name</replaceable> &gt; Assertion Processing.</para>
     </step>
     <step>
      <para>If you want to get attributes from the identity provider and the
@@ -3290,13 +3272,11 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
      the dynamically created accounts.</para>
     </step>
     <step>
-     <para>On the service provider console, browse to Access Control &gt;
-     <replaceable>realm-name</replaceable> &gt; Authentication &gt; All Core
-     Settings..., and Dynamic or Dynamic with User Alias, which are described
-     in <link xlink:href="admin-guide#core-module-conf-hints"
-     xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Hints For the
-     Core Authentication Module</citetitle></link>, and then Save your
-     work.</para>
+     <para>On the service provider console, browse to Realms &gt;
+     <replaceable>Realm Name</replaceable> &gt; Authentication &gt; Settings
+     &gt; User Profile. For the User Profile field, select Dynamic or Dynamic
+     with User Alias, which are described in
+     <xref linkend="core-module-conf-hints" />, and then save your work.</para>
     </step>
     <step>
      <para>To test your work, create a user on the identity provider, log
@@ -3329,10 +3309,7 @@ urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified=<replaceable>attribute</re
    <para>Before you can run the bulk federation commands, first establish the
    relationship between accounts, set up the providers as described in
    <xref linkend="set-up-federation" />, and install the
-   <command>ssoadm</command> command as described in <link
-   xlink:href="install-guide#install-openam-admin-tools"
-   xlink:role="http://docbook.org/xlink/role/olink"><citetitle>To Set Up
-   Administration Tools</citetitle></link>.</para>
+   <command>ssoadm</command> command as described in <olink targetdoc="install-guide" targetptr="install-openam-admin-tools" />.</para>
 
    <para>To understand the relationships between accounts, consider an example
    where the identity provider is at <literal>idp.example.org</literal> and the
@@ -3532,7 +3509,7 @@ $ <userinput>ssoadm \
       <para>
        If you have configured the Web policy agents to store their properties
        centralized on an OpenAM server, navigate to the URL for the OpenAM console.
-       Select Access Control &gt; <replaceable>Realm Name</replaceable> &gt;
+       Select Realms &gt; <replaceable>Realm Name</replaceable> &gt;
        Agents &gt; Web &gt; <replaceable>Agent Name</replaceable> &gt; OpenAM Services.
       </para>
 
@@ -3597,10 +3574,7 @@ $ <userinput>ssoadm \
 
   <para>
    For more information about stateful and stateless sessions,
-   see <link
-      xlink:href="admin-guide#chap-session-state"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"><citetitle>Configuring Session State</citetitle></link>.
+   see <xref linkend="chap-session-state" />.
   </para>
 
  </section>

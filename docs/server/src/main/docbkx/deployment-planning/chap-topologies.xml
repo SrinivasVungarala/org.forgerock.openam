@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-topologies'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -316,8 +316,8 @@
     on HTTP requests and responses.
     You can also write your own custom filters for legacy or custom applications.
     For more information, see
-    <link xlink:href="${openigDocBaseURL}/gateway-guide#chap-overview"
-          xlink:show="new"><citetitle>OpenIG Solutions Overview</citetitle></link>.
+    <link xlink:href="${backstageIGBaseURL}/gateway-guide/chap-start-here"
+          xlink:show="new"><citetitle>Understanding OpenIG</citetitle></link>.
    </para>
 
    <para>
@@ -405,9 +405,8 @@
    The policy agents intercept all
    access requests to the protected resources on the Web or app server and
    grants access to the user based on policy decisions made on the OpenAM servers.
-   For a list of supported Web application containers, see
-   <link xlink:href="${docSetBaseURL}/release-notes/#web-container-requirements"
-         xlink:show="new">
+   For a list of supported Web application containers, see <link
+   xlink:href="${backstageAMRNBaseURL}/release-notes/chap-before-you-install/web-container-requirements">
    <citetitle>Web Application Container Requirements</citetitle></link>.
   </para>
 
@@ -415,9 +414,8 @@
    Because OpenAM is Java-based, you can install the server on a variety of
    platforms, such as Linux, Solaris, and Windows.
    For a list of platforms that OpenAM has been tested on, see
-   <link xlink:href="${docSetBaseURL}/release-notes/#platform-requirements"
-         xlink:show="new">
-    <citetitle>Platform Requirements</citetitle></link>.
+   <link xlink:href="${backstageAMRNBaseURL}/release-notes/chap-before-you-install/os-requirements"
+         xlink:show="new"><citetitle>OpenAM Operating System Requirements</citetitle></link>.
   </para>
 
   <figure xml:id="figure-app-svr-deployment">
@@ -638,9 +636,9 @@
     <para>Web Policy Agents are supported on different architectures, although
      not all Web server types and architecture combinations are supported.
      You can view the list of supported Web policy agents in the
-     <link xlink:href="${docSetBaseURL}/release-notes/#data-store-requirements"
+     <link xlink:href="${backstageWPABaseURL}/web-release-notes/chap-web-agents/platform-requirements-web-agents"
            xlink:show="new">
-      <citetitle>OpenAM Release Notes</citetitle></link>. </para>
+      <citetitle>OpenAM Web Policy Release Notes</citetitle></link>. </para>
    </section>
 
    <?hard-pagebreak?>
@@ -684,9 +682,9 @@
      OpenAM provides a variety of J2EE policy
      agents for application servers. You can view the list of
      supported Java EE policy agents in the
-     <link xlink:href="${docSetBaseURL}/release-notes/#data-store-requirements"
+     <link xlink:href="${backstageJPABaseURL}/jee-release-notes/chap-javaee-agents/native-application-platforms"
            xlink:show="new">
-      <citetitle>OpenAM Release Notes</citetitle></link>. </para>
+      <citetitle>OpenAM Java EE Policy Agent Release Notes</citetitle></link>. </para>
    </section>
   </section>
 
@@ -738,9 +736,7 @@
     Session failover requires that all servers in a site use the same Core Token
     Service, which is replicated across all servers.
     For more information, see
-    <link xlink:href="${docSetBaseURL}/install-guide/#chap-session-failover"
-          xlink:show="new">
-     <citetitle>OpenAM Session Failover</citetitle></link>.
+    <olink targetdoc="install-guide" targetptr="chap-session-failover" />.
    </para>
 
    <para>
@@ -890,9 +886,7 @@
 
    <para>
     For more information, see
-    <link xlink:href="${docSetBaseURL}/admin-guide/#chap-install-multiple"
-          xlink:show="new">
-     <citetitle>Installing Multiple Servers</citetitle></link>.
+    <olink targetdoc="install-guide" targetptr="chap-install-multiple" />.
    </para>
    </section>
   </section>
@@ -928,7 +922,7 @@
      storing your identity data, allowing you to configure your
      directory servers in a number of deployment typologies.
      For a list of supported data stores, see
-     <link xlink:href="${docSetBaseURL}/release-notes/#data-store-requirements"
+     <link xlink:href="${backstageAMBaseURL}/release-notes/chap-before-you-install/data-store-requirements"
            xlink:show="new">
       <citetitle>Data Store Requirements</citetitle></link>.
 
@@ -945,7 +939,7 @@
      add schema definitions, access control instructions (ACIs), privileges for
      reading and updating the schema, and resetting user passwords.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/install-guide/#prepare-identity-repository"
+     <link xlink:href="${backstageAMBaseURL}/install-guide/chap-prepare-install/prepare-identity-repository"
            xlink:show="new">
       <citetitle>Preparing an Identity Repository</citetitle></link>.
     </para>
@@ -956,9 +950,7 @@
      run method calls to fetch, read, create, delete, edit, or authenticate to your
      identity store data.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/dev-guide/#chap-identity-repo-spi"
-           xlink:show="new">
-      <citetitle>Customizing Identity Data Storage</citetitle></link>.
+     <olink targetdoc="dev-guide" targetptr="sec-identity-repo-spi" />.
     </para>
     <para>
      You can configure the Data Store authentication module to require the
@@ -972,9 +964,7 @@
      and authorization services as well as different identity repositories if you
      have enough identity data.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/admin-guide/#chap-realms"
-           xlink:show="new">
-      <citetitle>Configuring Realms</citetitle></link>.
+     <olink targetdoc="admin-guide" targetptr="chap-realms" />.
     </para>
    </listitem>
    <listitem>
@@ -986,7 +976,7 @@
      identity data store information, service information, policy information for
      evaluation, and partner server information that can send trusted SAML assertions.
      For a list of supported data stores, see
-     <link xlink:href="${docSetBaseURL}/release-notes/#data-store-requirements"
+     <link xlink:href="${backstageAMBaseURL}/release-notes/chap-before-you-install/data-store-requirements"
            xlink:show="new">
       <citetitle>Data Store Requirements</citetitle></link>.
      <indexterm>
@@ -1009,7 +999,8 @@
      keystore, you need to redistribute the certificates to all nodes so that
      they can continue to communicate with each other.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/install-guide/#prepare-configuration-store"
+     <!-- This link doesn't match the topic in the paragraph. -->
+     <link xlink:href="${backstageAMBaseURL}/install-guide/chap-prepare-install/prepare-configuration-store"
            xlink:show="new">
       <citetitle>Preparing a Configuration Data Store</citetitle></link>.
     </para>
@@ -1032,9 +1023,7 @@
      CTS as a dedicated external data store is advantageous for systems with many
      users and many sessions.
      For more information, see
-     <link xlink:href="${docSetBaseURL}/install-guide/#chap-cts"
-           xlink:show="new">
-      <citetitle>Configuring the CTS Service</citetitle></link>.
+     <olink targetdoc="install-guide" targetptr="chap-cts" />.
     </para>
    </listitem>
   </itemizedlist>

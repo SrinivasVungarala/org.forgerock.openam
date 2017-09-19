@@ -118,7 +118,7 @@ void vmod_init(const struct vrt_ctx *ctx, struct vmod_priv *priv, const char *co
         }
 
         am_log_register_instance(settings->instance_id, boot->debug_file, boot->debug_level, boot->debug,
-                boot->audit_file, boot->audit_level, boot->audit);
+                boot->audit_file, boot->audit_level, boot->audit, conf);
 
         am_config_free(&boot);
 
@@ -457,7 +457,7 @@ static am_status_t set_custom_response(am_request_t *ar, const char *text, const
             break;
         }
     }
-    AM_LOG_INFO(ar->instance_id, "set_custom_response(): status: %s (exit: %s)",
+    AM_LOG_DEBUG(ar->instance_id, "set_custom_response(): status: %s (exit: %s)",
             am_strerror(status), am_strerror(ar->status));
     return AM_SUCCESS;
 }
@@ -520,7 +520,6 @@ static am_status_t set_request_body(am_request_t *ar) {
             req->notes = encoded;
             AM_LOG_DEBUG(ar->instance_id, "%s preserved %d bytes", thisfunc,
                     ar->post_data_sz);
-            free(encoded);
         }
     }
     return AM_SUCCESS;
@@ -777,7 +776,7 @@ int init_function(struct vmod_priv *priv, const struct VCL_conf *conf) {
     if (settings) {
         settings->status = AM_ERROR;
         if (n_init++ == 0) {
-            settings->status = am_init(AM_DEFAULT_AGENT_ID);
+            settings->status = am_init(AM_DEFAULT_AGENT_ID, NULL);
             am_init_worker(AM_DEFAULT_AGENT_ID);
         }
     } else {

@@ -3,7 +3,7 @@
     Copyright 2014 ForgeRock AS. All Rights Reserved.
 -->
 <chapter xml:id='chap-upstream'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -84,9 +84,7 @@
 
   <para>The out-of-the-box authentication modules provides the following
    properties, which you can read about in more detail at
-   <link xlink:href="${docSetBaseURL}/admin-guide#configure-authn-modules"
-         xlink:show="new">
-    <citetitle>Configuring Authentication Modules</citetitle></link>.</para>
+   <olink targetdoc="admin-guide" targetptr="configure-authn-modules" />.</para>
   <itemizedlist>
    <listitem>
     <para><emphasis role="bold">Active Directory Authentication Module</emphasis>.
@@ -349,8 +347,7 @@
   <para>OpenAM provides various out-of-the box and custom plugins to connect and
    map identities to a data store, housed on an LDAP or Oracle server.
    OpenAM supports a number of data store types, which can be viewed in the
-   <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements" xlink:show="new">
-    <citetitle>OpenAM Release Notes</citetitle></link>.</para>
+   <olink targetdoc="release-notes" targetptr="data-store-requirements" />.</para>
 
    <figure xml:id="figure-openam-external-identity-store">
     <title>OpenAM External Identity Store</title>
@@ -466,9 +463,7 @@
    </itemizedlist>
 
    <para>For more information, see
-    <link xlink:href="${docSetBaseURL}/admin-guide#chap-realms"
-          xlink:show="new"><citetitle>Configuring Realms</citetitle>.
-    </link></para>
+    <olink targetdoc="admin-guide" targetptr="chap-realms" /></para>
 
   </section>
  </section>
@@ -503,9 +498,7 @@
 
    <para>OpenAM supports a number directory servers and a relational database
     for its configuration store, which can be viewed in the
-    <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements"
-          xlink:show="new">
-     <citetitle>OpenAM Release Notes</citetitle></link>.</para>
+    <olink targetdoc="release-notes" targetptr="data-store-requirements" />.</para>
 
   </section>
 

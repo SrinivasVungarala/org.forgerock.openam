@@ -139,7 +139,10 @@ enum {
     AM_CONF_AUDIT_REMOTE_INTERVAL,
     AM_CONF_AUDIT_FILE_DISPOSITION,
     AM_CONF_ANON_USER_ENABLE,
-    AM_CONF_ANON_USER_ID
+    AM_CONF_ANON_USER_ID,
+    AM_CONF_PATHINFO_IGNORE,
+    AM_CONF_PATHINFO_IGNORE_NOTENFORCED,
+    AM_CONF_KEEPALIVE_DISABLE
 };
 
 struct am_instance {
@@ -149,7 +152,7 @@ struct am_instance {
 struct am_instance_entry {
     time_t ts;
     unsigned long instance_id;
-    char token[AM_HASH_TABLE_KEY_SIZE];
+    char token[AM_MAX_TOKEN_LENGTH];
     char name[AM_HASH_TABLE_KEY_SIZE]; /* agent id */
     char config[AM_PATH_SIZE]; /* config file name */
     struct offset_list data; /* agent configuration data */
@@ -169,7 +172,7 @@ static am_shm_t *conf = NULL;
 int am_configuration_init(int id) {
     if (conf != NULL) return AM_SUCCESS;
 
-    conf = am_shm_create(get_global_name("am_shared_conf", id), sizeof (struct am_instance) * 2048 * AM_MAX_INSTANCES);
+    conf = am_shm_create(get_global_name(AM_CONFIG_SHM_NAME, id), sizeof (struct am_instance) * 2048 * AM_MAX_INSTANCES);
     if (conf == NULL) {
         return AM_ERROR;
     }
@@ -268,13 +271,12 @@ void remove_agent_instance_byname(const char *name) {
     h = (struct am_instance_entry *) AM_GET_POINTER(conf->pool, instance_data->list.prev);
 
     AM_OFFSET_LIST_FOR_EACH(conf->pool, h, e, t, struct am_instance_entry) {
-        if (strcmp(e->name, name) == 0) {
+        if (strcasecmp(e->name, name) == 0) {
             am_remove_cache_entry(e->instance_id, e->token); /* delete cached agent session data */
             am_agent_init_set_value(e->instance_id, AM_TRUE, AM_FALSE); /* set this instance to 'unconfigured' */
             if (delete_instance_entry(e) == AM_SUCCESS) { /* remove cached configuration data */
                 am_shm_free(conf, e);
             }
-            break;
         }
     }
     am_shm_unlock(conf);
@@ -496,6 +498,9 @@ static int am_create_instance_entry_data(int h, am_config_t *c, char all) {
         }
         if (c->lb_enable > 0) {
             SAVE_NUM_VALUE(conf, h, MAKE_TYPE(AM_CONF_LB_ENABLE, 0), c->lb_enable);
+        }
+        if (c->keepalive_disable > 0) {
+            SAVE_NUM_VALUE(conf, h, MAKE_TYPE(AM_CONF_KEEPALIVE_DISABLE, 0), c->keepalive_disable);
         }
         if (c->sso_only > 0) {
             SAVE_NUM_VALUE(conf, h, MAKE_TYPE(AM_CONF_SSO_ONLY, 0), c->sso_only);
@@ -746,6 +751,12 @@ static int am_create_instance_entry_data(int h, am_config_t *c, char all) {
         if (ISVALID(c->unauthenticated_user)) {
             SAVE_CHAR_VALUE(conf, h, MAKE_TYPE(AM_CONF_ANON_USER_ID, 0), c->unauthenticated_user);
         }
+        if (c->path_info_ignore > 0) {
+            SAVE_NUM_VALUE(conf, h, MAKE_TYPE(AM_CONF_PATHINFO_IGNORE, 0), c->path_info_ignore);
+        }
+        if (c->path_info_ignore_not_enforced > 0) {
+            SAVE_NUM_VALUE(conf, h, MAKE_TYPE(AM_CONF_PATHINFO_IGNORE_NOTENFORCED, 0), c->path_info_ignore_not_enforced);
+        }
     }
     return AM_SUCCESS;
 }
@@ -959,6 +970,9 @@ static am_config_t *am_get_stored_agent_config(struct am_instance_entry *c) {
                 break;
             case AM_CONF_LB_ENABLE:
                 r->lb_enable = i->num_value;
+                break;
+            case AM_CONF_KEEPALIVE_DISABLE:
+                r->keepalive_disable = i->num_value;
                 break;
             case AM_CONF_SSO_ONLY:
                 r->sso_only = i->num_value;
@@ -1233,6 +1247,12 @@ static am_config_t *am_get_stored_agent_config(struct am_instance_entry *c) {
             case AM_CONF_ANON_USER_ID:
                 r->unauthenticated_user = strndup(i->value, i->size[0]);
                 break;
+            case AM_CONF_PATHINFO_IGNORE:
+                r->path_info_ignore = i->num_value;
+                break;
+            case AM_CONF_PATHINFO_IGNORE_NOTENFORCED:
+                r->path_info_ignore_not_enforced = i->num_value;
+                break;
         }
     }
 
@@ -1316,6 +1336,13 @@ static int am_set_agent_config(unsigned long instance_id, const char *xml,
                         thisfunc);
                 ret = AM_XML_ERROR;
             } else {
+                /* remote mode overrides logging and audit level bootstrap configuration */
+                bc->debug_level = cf->debug_level;
+                bc->debug = cf->debug;
+                bc->audit_level = cf->audit_level;
+                bc->audit = cf->audit;
+                cf->keepalive_disable = bc->keepalive_disable;
+
                 ret = am_create_instance_entry_data(hdr_offset, bc, AM_CONF_BOOT); /* store bootstrap properties */
                 ret = am_create_instance_entry_data(hdr_offset, cf, AM_CONF_REMOTE);
                 am_config_free(&cf);
@@ -1354,7 +1381,7 @@ int am_get_agent_config(unsigned long instance_id, const char *config_file, am_c
             char *agent_token = NULL;
             struct am_namevalue *agent_session = NULL;
             am_config_t *ac = NULL;
-            struct am_ssl_options info;
+            am_net_options_t net_options;
 
             am_shm_unlock(conf);
             am_agent_instance_init_lock();
@@ -1383,14 +1410,16 @@ int am_get_agent_config(unsigned long instance_id, const char *config_file, am_c
                 return AM_FILE_ERROR; /* fatal */
             }
 
-            am_net_set_ssl_options(ac, &info);
+            am_net_options_create(ac, &net_options, NULL);
 
             memset(&r, 0, sizeof (am_request_t));
             r.conf = ac;
             r.instance_id = instance_id;
-            login_status = am_agent_login(instance_id, get_valid_openam_url(&r), NOTNULL(ac->notif_url),
-                    ac->user, ac->pass, ac->realm, ac->local, ac->lb_enable, &info,
-                    &agent_token, &profile_xml, &profile_xml_sz, &agent_session, NULL);
+
+            login_status = am_agent_login(instance_id, get_valid_openam_url(&r),
+                    ac->user, ac->pass, ac->realm, &net_options,
+                    &agent_token, &profile_xml, &profile_xml_sz, &agent_session);
+
             if (login_status == AM_SUCCESS && ISVALID(agent_token) && agent_session != NULL) {
 
                 AM_LOG_DEBUG(instance_id, "%s agent login%s succeeded", thisfunc,
@@ -1398,11 +1427,14 @@ int am_get_agent_config(unsigned long instance_id, const char *config_file, am_c
 
                 if ((store_status = am_set_agent_config(instance_id, profile_xml, profile_xml_sz,
                         agent_token, config_file, ac->user, ac, &c)) == AM_SUCCESS) {
+
                     am_add_session_policy_cache_entry(&r, agent_token,
                             NULL, agent_session);
                     AM_LOG_DEBUG(instance_id, "%s agent configuration stored in a cache",
                             thisfunc);
+
                 } else {
+
                     AM_LOG_WARNING(instance_id, "%s retry %d (%s)",
                             thisfunc, (retry - max_retry) + 1, am_strerror(store_status));
 
@@ -1419,6 +1451,7 @@ int am_get_agent_config(unsigned long instance_id, const char *config_file, am_c
                 should_retry = AM_TRUE;
             }
 
+            am_net_options_delete(&net_options);
             am_config_free(&ac);
             delete_am_namevalue_list(&agent_session);
             AM_FREE(agent_token, profile_xml);
@@ -1442,10 +1475,20 @@ int am_get_agent_config(unsigned long instance_id, const char *config_file, am_c
                 (*cnf)->ts = c->ts;
                 (*cnf)->token = strdup(c->token);
                 (*cnf)->config = strdup(c->config);
+                if (ISVALID((*cnf)->cert_key_pass)) {
+                    (*cnf)->cert_key_pass_sz = strlen((*cnf)->cert_key_pass);
+                }
                 rv = AM_SUCCESS;
                 AM_LOG_DEBUG(instance_id, "%s agent configuration read from a cache",
                         thisfunc);
                 am_shm_unlock(conf);
+
+                if (!(*cnf)->local) {
+                    /* update instance logger registration data */
+                    am_log_register_instance(instance_id, (*cnf)->debug_file, (*cnf)->debug_level, (*cnf)->debug,
+                            (*cnf)->audit_file, (*cnf)->audit_level, (*cnf)->audit, (*cnf)->config);
+                }
+
                 if (AM_BITMASK_CHECK((*cnf)->audit_level, AM_LOG_LEVEL_AUDIT_REMOTE)) {
                     /* register or update remote audit logging configuration */
                     rv = am_audit_register_instance(*cnf);

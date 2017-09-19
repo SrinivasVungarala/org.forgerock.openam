@@ -17,7 +17,7 @@
 package org.forgerock.openam.uma;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
 import static org.forgerock.json.test.assertj.AssertJJsonValueAssert.assertThat;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.BDDMockito.eq;
@@ -40,7 +40,7 @@ import com.sun.identity.entitlement.Entitlement;
 import com.sun.identity.entitlement.EntitlementException;
 import com.sun.identity.entitlement.Evaluator;
 import com.sun.identity.idm.AMIdentity;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.OAuth2ProviderSettings;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
@@ -53,12 +53,15 @@ import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.oauth2.resources.ResourceSetDescription;
 import org.forgerock.oauth2.resources.ResourceSetStore;
 import org.forgerock.openam.cts.api.fields.ResourceSetTokenField;
+import org.forgerock.openam.oauth2.extensions.ExtensionFilterManager;
 import org.forgerock.openam.sm.datalayer.impl.uma.UmaPendingRequest;
 import org.forgerock.openam.uma.audit.UmaAuditLogger;
 import org.forgerock.openam.uma.audit.UmaAuditType;
+import org.forgerock.openam.uma.extensions.RequestAuthorizationFilter;
 import org.forgerock.util.query.QueryFilter;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mockito.InOrder;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.restlet.Request;
@@ -95,6 +98,7 @@ public class AuthorizationRequestEndpointTest {
     private UmaAuditLogger umaAuditLogger;
     private PendingRequestsService pendingRequestsService;
     private IdTokenClaimGatherer idTokenClaimGatherer;
+    private RequestAuthorizationFilter requestAuthorizationFilter;
 
     private class AuthorizationRequestEndpoint2 extends AuthorizationRequestEndpoint {
 
@@ -102,9 +106,10 @@ public class AuthorizationRequestEndpointTest {
                 TokenStore oauth2TokenStore, OAuth2RequestFactory<Request> requestFactory,
                 OAuth2ProviderSettingsFactory oAuth2ProviderSettingsFactory,
                 UmaAuditLogger auditLogger, PendingRequestsService pendingRequestsService,
-                Map<String, ClaimGatherer> claimGatherers) {
+                Map<String, ClaimGatherer> claimGatherers, ExtensionFilterManager extensionFilterManager,
+                UmaExceptionHandler exceptionHandler) {
             super(umaProviderSettingsFactory, oauth2TokenStore, requestFactory, oAuth2ProviderSettingsFactory,
-                    auditLogger, pendingRequestsService, claimGatherers);
+                    auditLogger, pendingRequestsService, claimGatherers, extensionFilterManager, exceptionHandler);
         }
 
         @Override
@@ -143,7 +148,7 @@ public class AuthorizationRequestEndpointTest {
         permissionTicket = mock(PermissionTicket.class);
         given(permissionTicket.getExpiryTime()).willReturn(System.currentTimeMillis() + 10000);
         given(permissionTicket.getResourceSetId()).willReturn(RS_ID);
-        given(permissionTicket.getClientId()).willReturn(RS_CLIENT_ID);
+        given(permissionTicket.getResourceServerClientId()).willReturn(RS_CLIENT_ID);
         given(permissionTicket.getRealm()).willReturn("REALM");
         given(umaTokenStore.readPermissionTicket(anyString())).willReturn(permissionTicket);
         given(umaTokenStore.createRPT(Matchers.<PermissionTicket>anyObject())).willReturn(rpt);
@@ -176,8 +181,16 @@ public class AuthorizationRequestEndpointTest {
         idTokenClaimGatherer = mock(IdTokenClaimGatherer.class);
         claimGatherers.put(IdTokenClaimGatherer.FORMAT, idTokenClaimGatherer);
 
+        ExtensionFilterManager extensionFilterManager = mock(ExtensionFilterManager.class);
+        requestAuthorizationFilter = mock(RequestAuthorizationFilter.class);
+        given(extensionFilterManager.getFilters(RequestAuthorizationFilter.class))
+                .willReturn(Collections.singletonList(requestAuthorizationFilter));
+
+        UmaExceptionHandler exceptionHandler = mock(UmaExceptionHandler.class);
+
         endpoint = spy(new AuthorizationRequestEndpoint2(umaProviderSettingsFactory, oauth2TokenStore,
-                requestFactory, oauth2ProviderSettingsFactory, umaAuditLogger, pendingRequestsService, claimGatherers));
+                requestFactory, oauth2ProviderSettingsFactory, umaAuditLogger, pendingRequestsService, claimGatherers,
+                extensionFilterManager, exceptionHandler));
         request = mock(Request.class);
         given(endpoint.getRequest()).willReturn(request);
 
@@ -209,6 +222,12 @@ public class AuthorizationRequestEndpointTest {
         try {
             endpoint.requestAuthorization(entity);
         } catch (UmaException e) {
+            InOrder inOrder = inOrder(requestAuthorizationFilter, policyEvaluator, requestAuthorizationFilter);
+            inOrder.verify(requestAuthorizationFilter).beforeAuthorization(eq(permissionTicket), any(Subject.class),
+                    any(Subject.class));
+            inOrder.verify(policyEvaluator).evaluate(anyString(), any(Subject.class), anyString(), anyMap(), eq(false));
+            inOrder.verify(requestAuthorizationFilter).afterFailedAuthorization(eq(permissionTicket),
+                    any(Subject.class), any(Subject.class));
             assertThat(e.getStatusCode()).isEqualTo(403);
             assertThat(e.getError()).isEqualTo("request_submitted");
             throw e;
@@ -232,6 +251,12 @@ public class AuthorizationRequestEndpointTest {
         try {
             endpoint.requestAuthorization(entity);
         } catch (UmaException e) {
+            InOrder inOrder = inOrder(requestAuthorizationFilter, policyEvaluator, requestAuthorizationFilter);
+            inOrder.verify(requestAuthorizationFilter).beforeAuthorization(eq(permissionTicket), any(Subject.class),
+                    any(Subject.class));
+            inOrder.verify(policyEvaluator).evaluate(anyString(), any(Subject.class), anyString(), anyMap(), eq(false));
+            inOrder.verify(requestAuthorizationFilter).afterFailedAuthorization(eq(permissionTicket),
+                    any(Subject.class), any(Subject.class));
             assertThat(e.getStatusCode()).isEqualTo(403);
             assertThat(e.getError()).isEqualTo("request_submitted");
             throw e;
@@ -253,6 +278,12 @@ public class AuthorizationRequestEndpointTest {
 
         //Then
         assertThat(endpoint.requestAuthorization(entity)).isNotNull();
+        InOrder inOrder = inOrder(requestAuthorizationFilter, policyEvaluator, requestAuthorizationFilter);
+        inOrder.verify(requestAuthorizationFilter).beforeAuthorization(eq(permissionTicket), any(Subject.class),
+                any(Subject.class));
+        inOrder.verify(policyEvaluator).evaluate(anyString(), any(Subject.class), anyString(), anyMap(), eq(false));
+        inOrder.verify(requestAuthorizationFilter).afterSuccessfulAuthorization(eq(permissionTicket),
+                any(Subject.class), any(Subject.class));
     }
 
     @Test
@@ -271,6 +302,12 @@ public class AuthorizationRequestEndpointTest {
 
         //Then
         assertThat(endpoint.requestAuthorization(entity)).isNotNull();
+        InOrder inOrder = inOrder(requestAuthorizationFilter, policyEvaluator, requestAuthorizationFilter);
+        inOrder.verify(requestAuthorizationFilter).beforeAuthorization(eq(permissionTicket), any(Subject.class),
+                any(Subject.class));
+        inOrder.verify(policyEvaluator).evaluate(anyString(), any(Subject.class), anyString(), anyMap(), eq(false));
+        inOrder.verify(requestAuthorizationFilter).afterSuccessfulAuthorization(eq(permissionTicket),
+                any(Subject.class), any(Subject.class));
     }
 
     @Test(expectedExceptions = UmaException.class)

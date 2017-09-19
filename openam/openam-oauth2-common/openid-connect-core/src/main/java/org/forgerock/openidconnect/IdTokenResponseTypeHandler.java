@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openidconnect;
@@ -35,7 +35,6 @@ import org.forgerock.oauth2.core.exceptions.ServerException;
  *
  * @since 12.0.0
  */
-@Singleton
 public abstract class IdTokenResponseTypeHandler implements ResponseTypeHandler {
 
     private final OpenIdConnectTokenStore tokenStore;
@@ -55,7 +54,8 @@ public abstract class IdTokenResponseTypeHandler implements ResponseTypeHandler 
      */
     @Override
     public Map.Entry<String, Token> handle(String tokenType, Set<String> scope,
-             ResourceOwner resourceOwner, String clientId, String redirectUri, String nonce, OAuth2Request request)
+             ResourceOwner resourceOwner, String clientId, String redirectUri, String nonce, OAuth2Request request,
+                                           String codeChallenge, String codeChallengeMethod)
             throws ServerException, InvalidClientException, NotFoundException {
 
         final OpenIdConnectToken openIDToken = tokenStore.createOpenIDToken(resourceOwner,

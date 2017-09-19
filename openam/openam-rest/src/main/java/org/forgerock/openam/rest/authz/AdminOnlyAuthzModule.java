@@ -34,7 +34,7 @@ import org.forgerock.json.resource.PatchRequest;
 import org.forgerock.json.resource.QueryRequest;
 import org.forgerock.json.resource.ReadRequest;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.services.context.Context;
 import org.forgerock.json.resource.UpdateRequest;
 import org.forgerock.openam.rest.resource.SSOTokenContext;
 import org.forgerock.openam.utils.Config;
@@ -59,44 +59,49 @@ public class AdminOnlyAuthzModule implements CrestAuthorizationModule {
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeCreate(ServerContext context, CreateRequest request) {
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public Promise<AuthorizationResult, ResourceException> authorizeCreate(Context context, CreateRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeRead(ServerContext context, ReadRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeRead(Context context, ReadRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeUpdate(ServerContext context, UpdateRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeUpdate(Context context, UpdateRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeDelete(ServerContext context, DeleteRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeDelete(Context context, DeleteRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizePatch(ServerContext context, PatchRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizePatch(Context context, PatchRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeAction(ServerContext context, ActionRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeAction(Context context, ActionRequest request) {
         return authorize(context);
     }
 
     @Override
-    public Promise<AuthorizationResult, ResourceException> authorizeQuery(ServerContext context, QueryRequest request) {
+    public Promise<AuthorizationResult, ResourceException> authorizeQuery(Context context, QueryRequest request) {
         return authorize(context);
     }
 
     /**
      * Lets through any request which is coming from a verifiable administrator.
      */
-    protected Promise<AuthorizationResult, ResourceException> authorize(ServerContext context) {
+    protected Promise<AuthorizationResult, ResourceException> authorize(Context context) {
 
         try {
             String userId = getUserId(context);
@@ -112,11 +117,11 @@ public class AdminOnlyAuthzModule implements CrestAuthorizationModule {
                 return Promises.newResultPromise(AuthorizationResult.accessDenied("User is not an administrator."));
             }
         } catch (ResourceException e) {
-            return Promises.newExceptionPromise(e);
+            return e.asPromise();
         }
     }
 
-    protected String getUserId(ServerContext context) throws ResourceException {
+    protected String getUserId(Context context) throws ResourceException {
         SSOTokenContext tokenContext = context.asContext(SSOTokenContext.class);
 
         try {

@@ -15,7 +15,7 @@
  */
 package org.forgerock.openam.rest.fluent;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import com.sun.identity.shared.debug.Debug;
 import org.testng.annotations.BeforeMethod;
@@ -41,43 +41,43 @@ public class AuditFilterTest extends AbstractAuditFilterTest {
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditFilter.filterCreate(serverContext, createRequest, resultHandler, filterChain);
+                        auditFilter.filterCreate(context, createRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditFilter.filterRead(serverContext, readRequest, resultHandler, filterChain);
+                        auditFilter.filterRead(context, readRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditFilter.filterUpdate(serverContext, updateRequest, resultHandler, filterChain);
+                        auditFilter.filterUpdate(context, updateRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditFilter.filterDelete(serverContext, deleteRequest, resultHandler, filterChain);
+                        auditFilter.filterDelete(context, deleteRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditFilter.filterPatch(serverContext, patchRequest, resultHandler, filterChain);
+                        auditFilter.filterPatch(context, patchRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditFilter.filterAction(serverContext, actionRequest, resultHandler, filterChain);
+                        auditFilter.filterAction(context, actionRequest, filterChain);
                     }
                 }},
                 {new Runnable() {
                     @Override
                     public void run() {
-                        auditFilter.filterQuery(serverContext, queryRequest, queryResultHandler, filterChain);
+                        auditFilter.filterQuery(context, queryRequest, queryResourceHandler, filterChain);
                     }
                 }}
         };

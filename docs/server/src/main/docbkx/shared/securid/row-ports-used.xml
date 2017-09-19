@@ -32,11 +32,7 @@
  <entry>57943, 58943</entry>
  <entry>
   Used by the
-  <link
-   xlink:show="new"
-   xlink:href="admin-guide#securid-module-conf-hints"
-   xlink:role="http://docbook.org/xlink/role/olink"
-  ><citetitle>SecurID Authentication Module</citetitle></link>.
+  <olink targetdoc="admin-guide" targetptr="securid-module-conf-hints" />.
  </entry>
 
 </row>

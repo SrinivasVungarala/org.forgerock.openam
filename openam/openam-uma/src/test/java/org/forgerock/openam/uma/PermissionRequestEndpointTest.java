@@ -17,7 +17,7 @@
 package org.forgerock.openam.uma;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.eq;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.OAuth2ProviderSettings;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
@@ -37,15 +37,13 @@ import org.forgerock.oauth2.core.exceptions.NotFoundException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.oauth2.resources.ResourceSetDescription;
 import org.forgerock.oauth2.resources.ResourceSetStore;
-import org.forgerock.openam.cts.api.fields.ResourceSetTokenField;
-import org.forgerock.util.query.QueryFilter;
+import org.forgerock.openam.oauth2.extensions.ExtensionFilterManager;
+import org.forgerock.openam.uma.extensions.PermissionRequestFilter;
 import org.json.JSONObject;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.restlet.Request;
 import org.restlet.Response;
-import org.restlet.data.ChallengeResponse;
-import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.representation.Representation;
@@ -59,6 +57,7 @@ public class PermissionRequestEndpointTest {
     private ResourceSetStore resourceSetStore;
     private Response response;
     private UmaTokenStore umaTokenStore;
+    private PermissionRequestFilter permissionRequestFilter;
 
     @BeforeMethod
     @SuppressWarnings("unchecked")
@@ -78,8 +77,15 @@ public class PermissionRequestEndpointTest {
         given(umaProviderSettingsFactory.get(any(Request.class))).willReturn(umaProviderSettings);
         given(umaProviderSettings.getUmaTokenStore()).willReturn(umaTokenStore);
 
+        ExtensionFilterManager extensionFilterManager = mock(ExtensionFilterManager.class);
+        permissionRequestFilter = mock(PermissionRequestFilter.class);
+        given(extensionFilterManager.getFilters(PermissionRequestFilter.class))
+                .willReturn(Collections.singleton(permissionRequestFilter));
+
+        UmaExceptionHandler exceptionHandler = mock(UmaExceptionHandler.class);
+
         endpoint = spy(new PermissionRequestEndpoint(providerSettingFactory, requestFactory,
-                umaProviderSettingsFactory));
+                umaProviderSettingsFactory, extensionFilterManager, exceptionHandler));
 
         response = mock(Response.class);
         endpoint.setResponse(response);
@@ -313,6 +319,8 @@ public class PermissionRequestEndpointTest {
                 .readValue(responseBody.getText(), Map.class);
         assertThat(permissionTicket).containsEntry("ticket", "abc");
 
+        verify(permissionRequestFilter).onPermissionRequest(any(ResourceSetDescription.class), anySetOf(String.class),
+                anyString());
         ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
         verify(response).setStatus(statusCaptor.capture());
         assertThat(statusCaptor.getValue().getCode()).isEqualTo(201);

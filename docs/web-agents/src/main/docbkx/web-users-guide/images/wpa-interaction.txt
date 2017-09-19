@@ -1,0 +1,57 @@
+@startuml wpa-interaction.png
+
+/'
+    CCPL HEADER START
+   
+    This work is licensed under the Creative Commons
+    Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+    To view a copy of this license, visit
+    http://creativecommons.org/licenses/by-nc-nd/3.0/
+    or send a letter to Creative Commons, 444 Castro Street,
+    Suite 900, Mountain View, California, 94041, USA.
+   
+    You can also obtain a copy of the license at
+    src/main/resources/legal-notices/CC-BY-NC-ND.txt.
+    See the License for the specific language governing permissions
+    and limitations under the License.
+   
+    If applicable, add the following below this CCPL HEADER, with the fields
+    enclosed by brackets "[]" replaced with your own identifying information:
+         Portions Copyright [yyyy] [name of copyright owner]
+   
+    CCPL HEADER END
+   
+         Copyright 2012-2015 ForgeRock AS.
+
+    To generate a sequence diagram from this file, process
+    it with PlantUML, http://plantuml.sourceforge.net/sequence.html
+'/
+
+autonumber
+scale 700 width
+skinparam sequence {
+
+	ParticipantBorderColor black
+	BoxBorderColor grey
+	LifeLineBorderColor grey
+}
+skinparam backgroundcolor transparent
+skinparam sequenceMessageAlign center
+participant "Web Client" as Client #D1C2D1
+box "Web Server" #CFE2F0
+    participant "Web Site" as Website
+    participant "Web Policy Agent" as WPA #FF9B87
+end box
+participant "OpenAM" as OpenAM #FF9B87
+
+group Request forwarded to Web Policy Agent
+    Client -[#FF0000]> Website
+    activate Website #FFBBBB
+        Website -[#FF0000]> WPA
+    deactivate Website
+end
+WPA <-[#D17604]> OpenAM
+WPA -[#00AC10]> Website
+Website -[#00AC10]> Client
+
+@enduml

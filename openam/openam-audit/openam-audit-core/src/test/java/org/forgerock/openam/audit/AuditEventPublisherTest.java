@@ -15,25 +15,29 @@
  */
 package org.forgerock.openam.audit;
 
-import static org.assertj.core.api.Assertions.fail;
-import static org.forgerock.openam.audit.AuditConstants.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.forgerock.audit.events.AccessAuditEventBuilder.ResponseStatus.SUCCESS;
+import static org.forgerock.audit.events.AccessAuditEventBuilder.TimeUnit.MILLISECONDS;
+import static org.forgerock.json.JsonValue.*;
+import static org.forgerock.json.resource.Responses.newResourceResponse;
+import static org.forgerock.openam.audit.AuditConstants.EventName;
 import static org.forgerock.openam.utils.CollectionUtils.asSet;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.forgerock.util.promise.Promises.newResultPromise;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 
 import org.forgerock.audit.AuditException;
-import org.forgerock.audit.AuditService;
+import org.forgerock.audit.AuditServiceBuilder;
 import org.forgerock.audit.events.AuditEvent;
 import org.forgerock.audit.events.handlers.AuditEventHandler;
-import org.forgerock.json.resource.CreateRequest;
-import org.forgerock.json.resource.Resource;
-import org.forgerock.json.resource.ResultHandler;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.json.JsonValue;
+import org.forgerock.json.resource.ResourceException;
+import org.forgerock.json.resource.ResourceResponse;
+import org.forgerock.json.resource.ServiceUnavailableException;
 import org.forgerock.openam.audit.configuration.AMAuditServiceConfiguration;
-import org.forgerock.openam.audit.configuration.AuditServiceConfigurator;
+import org.forgerock.services.context.Context;
+import org.forgerock.util.promise.Promise;
 import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -47,66 +51,45 @@ import java.util.UUID;
 @SuppressWarnings("unchecked")
 public class AuditEventPublisherTest {
 
+    private static final String FAILURE_SUPPRESSED_REALM = "realm1";
+    private static final String FAILURE_NOT_SUPPRESSED_REALM = "realm2";
+
     private AuditEventHandler mockHandler;
     private AuditEventPublisher auditEventPublisher;
-    private AuditServiceConfigurator mockConfigurator;
-    private AMAuditServiceConfiguration configuration;
-    
+    private AuditServiceProvider auditServiceProvider;
+    private ArgumentCaptor<JsonValue> auditEventCaptor;
+    private Promise<ResourceResponse, ResourceException> dummyPromise;
+
     @BeforeMethod
-    protected void setUp() throws AuditException {
-        AuditService auditService = new AuditService();
+    protected void setUp() throws Exception {
         mockHandler = mock(AuditEventHandler.class);
-        mockConfigurator = mock(AuditServiceConfigurator.class);
-        configuration = new AMAuditServiceConfiguration();
-        when(mockConfigurator.getAuditServiceConfiguration()).thenReturn(configuration);
-        auditService.register(mockHandler, "handler", asSet("access"));
-        auditEventPublisher = new AuditEventPublisher(auditService, mockConfigurator);
+        auditServiceProvider = mock(AuditServiceProvider.class);
+        auditEventPublisher = new AuditEventPublisher(auditServiceProvider);
+        auditEventCaptor = ArgumentCaptor.forClass(JsonValue.class);
+        dummyPromise = newResultPromise(newResourceResponse("", "", json(object())));
     }
 
     @Test
     public void publishesProvidedAuditEventToAuditService() throws Exception {
         // Given
-        AuditEvent auditEvent = new AMAccessAuditEventBuilder()
-                .eventName(EventName.AM_ACCESS_ATTEMPT)
-                .transactionId(UUID.randomUUID().toString())
-                .authentication("id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org")
-                .client("172.16.101.7", 62375)
-                .server("216.58.208.36", 80)
-                .resourceOperation("/some/path", "CREST", "READ")
-                .http("GET", "/some/path", "p1=v1&p2=v2", Collections.<String, List<String>>emptyMap())
-                .response("200", 42)
-                .toEvent();
+        AuditEvent auditEvent = getAuditEvent(null);
+        givenDefaultAuditService();
 
-        ArgumentCaptor<CreateRequest> requestCaptor = ArgumentCaptor.forClass(CreateRequest.class);
-        doAnswer(handleResult()).when(mockHandler)
-                .createInstance(any(ServerContext.class), requestCaptor.capture(), any(ResultHandler.class));
+        when(mockHandler.publishEvent(
+                any(Context.class), eq("access"), auditEventCaptor.capture())).thenReturn(dummyPromise);
 
         // When
         auditEventPublisher.publish("access", auditEvent);
 
         // Then
-        assertThat(requestCaptor.getValue().getResourceName()).isEqualTo("access");
-        assertThat(requestCaptor.getValue().getContent()).isEqualTo(auditEvent.getValue());
+        assertThat(auditEventCaptor.getValue()).isEqualTo(auditEvent.getValue());
     }
 
     @Test
-    public void shouldSuppressExceptionsOnPublish() {
+    public void shouldSuppressExceptionsOnPublish() throws Exception {
         // Given
-        AuditEvent auditEvent = new AMAccessAuditEventBuilder()
-                .eventName(EventName.AM_ACCESS_ATTEMPT)
-                .transactionId(UUID.randomUUID().toString())
-                .authentication("id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org")
-                .client("172.16.101.7", 62375)
-                .server("216.58.208.36", 80)
-                .resourceOperation("/some/path", "CREST", "READ")
-                .http("GET", "/some/path", "p1=v1&p2=v2", Collections.<String, List<String>>emptyMap())
-                .response("200", 42)
-                .toEvent();
-
-        ArgumentCaptor<CreateRequest> requestCaptor = ArgumentCaptor.forClass(CreateRequest.class);
-        doAnswer(handleResult()).when(mockHandler)
-                .createInstance(any(ServerContext.class), requestCaptor.capture(), any(ResultHandler.class));
-        configuration.setAuditFailureSuppressed(true);
+        AuditEvent auditEvent = getAuditEvent(FAILURE_SUPPRESSED_REALM);
+        givenSuppressedFailureAuditService();
 
         // When
         try {
@@ -116,46 +99,116 @@ public class AuditEventPublisherTest {
         }
     }
 
-    @Test
-    public void shouldNotSuppressExceptionsOnPublish() {
+    @Test(expectedExceptions = AuditException.class)
+    public void shouldNotSuppressExceptionsOnPublish() throws Exception {
         // Given
-        AuditEvent auditEvent = new AMAccessAuditEventBuilder()
+        AuditEvent auditEvent = getAuditEvent(FAILURE_NOT_SUPPRESSED_REALM);
+        givenNonSuppressedFailureAuditService();
+
+        // When
+        auditEventPublisher.publish("unknownTopic", auditEvent);
+
+        // Then
+        // expect exception
+    }
+
+    @Test(expectedExceptions = AuditException.class)
+    public void shouldThrowExceptionWhenDefaultAuditServiceShutdown() throws Exception {
+        // Given
+        AuditEvent auditEvent = getAuditEvent(null);
+        givenDefaultAuditService();
+        auditServiceProvider.getDefaultAuditService().shutdown();
+
+        // When
+        auditEventPublisher.publish("access", auditEvent);
+
+        // Then
+        // expect exception
+    }
+
+    @Test(expectedExceptions = AuditException.class)
+    public void shouldThrowExceptionWhenRealmAndDefaultAuditServiceShutdown() throws Exception {
+        // Given
+        AuditEvent auditEvent = getAuditEvent(FAILURE_NOT_SUPPRESSED_REALM);
+        givenDefaultAuditService();
+        auditServiceProvider.getDefaultAuditService().shutdown();
+        givenNonSuppressedFailureAuditService();
+        auditServiceProvider.getAuditService(FAILURE_NOT_SUPPRESSED_REALM).shutdown();
+
+        // When
+        auditEventPublisher.publish("access", auditEvent);
+
+        // Then
+        // expect exception
+    }
+
+    @Test
+    public void shouldFallBackToDefaultAuditServiceWhenRealmHasShutDown() throws Exception {
+        // Given
+        AuditEvent auditEvent = getAuditEvent("deadRealm");
+        givenDefaultAuditService();
+        when(mockHandler.publishEvent(
+                any(Context.class), eq("access"), auditEventCaptor.capture())).thenReturn(dummyPromise);
+
+        AMAuditServiceConfiguration serviceConfig = new AMAuditServiceConfiguration(true, true, false);
+        AuditServiceBuilder builder = AuditServiceBuilder.newAuditService()
+                .withConfiguration(serviceConfig)
+                .withAuditEventHandler(mock(AuditEventHandler.class), "handler", asSet("access"));
+        AMAuditService auditService = new RealmAuditServiceProxy(builder.build(), mock(AMAuditService.class),
+                serviceConfig);
+        auditService.startup();
+        auditService.shutdown();
+        when(auditServiceProvider.getAuditService("deadRealm")).thenReturn(auditService);
+
+        // When
+        auditEventPublisher.publish("access", auditEvent);
+
+        // Then
+        assertThat(auditEventCaptor.getValue()).isEqualTo(auditEvent.getValue());
+    }
+
+    private AuditEvent getAuditEvent(String realm) {
+        return new AMAccessAuditEventBuilder()
                 .eventName(EventName.AM_ACCESS_ATTEMPT)
                 .transactionId(UUID.randomUUID().toString())
                 .authentication("id=amadmin,ou=user,dc=openam,dc=forgerock,dc=org")
                 .client("172.16.101.7", 62375)
-                .server("216.58.208.36", 80)
-                .resourceOperation("/some/path", "CREST", "READ")
+                .server("216.58.208.36", 80).resourceOperation("/some/path", "CREST", "READ")
                 .http("GET", "/some/path", "p1=v1&p2=v2", Collections.<String, List<String>>emptyMap())
-                .response("200", 42)
+                .response(SUCCESS, "200", 42, MILLISECONDS)
+                .realm(realm)
                 .toEvent();
-
-        ArgumentCaptor<CreateRequest> requestCaptor = ArgumentCaptor.forClass(CreateRequest.class);
-        doAnswer(handleResult()).when(mockHandler)
-                .createInstance(any(ServerContext.class), requestCaptor.capture(), any(ResultHandler.class));
-        configuration.setAuditFailureSuppressed(false);
-
-        // When
-        AuditException auditException = null;
-        try {
-            auditEventPublisher.publish("unknownTopic", auditEvent);
-        } catch (AuditException e) {
-            auditException = e;
-        }
-
-        // Then
-        assertThat(auditException).isNotNull();
     }
 
-    private Answer<Void> handleResult() {
-        return new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                ResultHandler resultHandler = (ResultHandler) invocationOnMock.getArguments()[2];
-                resultHandler.handleResult(new Resource(null, null, null));
-                return null;
-            }
-        };
+    private void givenSuppressedFailureAuditService() throws ServiceUnavailableException, AuditException {
+        AMAuditServiceConfiguration serviceConfig = new AMAuditServiceConfiguration(true, true, false);
+        AuditServiceBuilder builder = AuditServiceBuilder.newAuditService()
+                .withConfiguration(serviceConfig)
+                .withAuditEventHandler(mockHandler, "handler", asSet("access"));
+        AMAuditService auditService = new RealmAuditServiceProxy(builder.build(), mock(AMAuditService.class),
+                serviceConfig);
+        auditService.startup();
+        when(auditServiceProvider.getAuditService(FAILURE_SUPPRESSED_REALM)).thenReturn(auditService);
+    }
+
+    private void givenNonSuppressedFailureAuditService() throws ServiceUnavailableException, AuditException {
+        AMAuditServiceConfiguration serviceConfig = new AMAuditServiceConfiguration(true, false, false);
+        AuditServiceBuilder builder = AuditServiceBuilder.newAuditService()
+                .withConfiguration(serviceConfig)
+                .withAuditEventHandler(mockHandler, "handler", asSet("access"));
+        AMAuditService auditService = new RealmAuditServiceProxy(builder.build(), mock(AMAuditService.class),
+                serviceConfig);
+        auditService.startup();
+        when(auditServiceProvider.getAuditService(FAILURE_NOT_SUPPRESSED_REALM)).thenReturn(auditService);
+    }
+
+    private void givenDefaultAuditService() throws ServiceUnavailableException, AuditException {
+        AMAuditServiceConfiguration serviceConfig = new AMAuditServiceConfiguration(true, false, false);
+        AuditServiceBuilder builder = AuditServiceBuilder.newAuditService()
+                .withConfiguration(serviceConfig)
+                .withAuditEventHandler(mockHandler, "handler", asSet("access"));
+        AMAuditService auditService = new DefaultAuditServiceProxy(builder.build(), serviceConfig);
+        auditService.startup();
+        when(auditServiceProvider.getDefaultAuditService()).thenReturn(auditService);
     }
 }
-

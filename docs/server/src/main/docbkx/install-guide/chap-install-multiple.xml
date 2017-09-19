@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-install-multiple'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -208,11 +208,7 @@
     <para>
      For all additional servers in the OpenAM site,
      add them to the site at configuration time as described in
-     <link
-      xlink:show="new"
-      xlink:href="install-guide#add-servers-to-site"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>To Add a Server to a Site</citetitle></link>.
+     <xref linkend="add-servers-to-site" />.
     </para>
    </step>
   </procedure>
@@ -233,12 +229,7 @@
     </para>
     </footnote>
     For more information about OpenAM session types, see
-    <link
-      xlink:show="new"
-      xlink:href="admin-guide#chap-session-state"
-      xlink:role="http://docbook.org/xlink/role/olink"
-     ><citetitle>Configuring Session State</citetitle></link> in the
-     <citetitle>Administration Guide</citetitle>.
+    <olink targetdoc="admin-guide" targetptr="chap-session-state" />.
    </para>
 
    <section xml:id="configure-lb-stateful">
@@ -384,11 +375,7 @@
      </para>
      <para>
       See
-      <link
-       xlink:show="new"
-       xlink:href="install-guide#chap-session-failover"
-       xlink:role="http://docbook.org/xlink/role/olink"
-       ><citetitle>Setting Up OpenAM Session Failover</citetitle></link>
+      <xref linkend="chap-session-failover" />
       for information about configuring remote session location options.
      </para>
     </section>

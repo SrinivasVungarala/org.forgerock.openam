@@ -16,7 +16,7 @@
 
 package org.forgerock.openam.uma;
 
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
 import static org.forgerock.openam.sm.datalayer.impl.uma.UmaPendingRequest.*;
 import static org.forgerock.util.promise.Promises.newExceptionPromise;
 import static org.forgerock.util.promise.Promises.newResultPromise;
@@ -30,10 +30,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sun.identity.shared.debug.Debug;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.json.resource.InternalServerErrorException;
 import org.forgerock.json.resource.ResourceException;
-import org.forgerock.json.resource.ServerContext;
+import org.forgerock.services.context.Context;
 import org.forgerock.openam.services.baseurl.BaseURLProviderFactory;
 import org.forgerock.openam.sm.datalayer.api.ConnectionType;
 import org.forgerock.openam.sm.datalayer.api.DataLayer;
@@ -194,7 +194,7 @@ public class PendingRequestsService {
      * @param realm The current realm.  @return {@code Promise} which is completed successfully or
      *              failed with a {@code ResourceException}.
      */
-    public Promise<Void, ResourceException> approvePendingRequest(ServerContext context, String id,
+    public Promise<Void, ResourceException> approvePendingRequest(Context context, String id,
             JsonValue content, String realm) {
         try {
             final UmaPendingRequest request = store.read(id);
@@ -202,11 +202,11 @@ public class PendingRequestsService {
             return createUmaPolicy(context, request, scopes)
                     .thenAsync(approvePendingRequest(request, scopes, id, realm));
         } catch (NotFoundException e) {
-            return newExceptionPromise((ResourceException) new org.forgerock.json.resource.NotFoundException(
-                    "Pending request, " + id + ", not found", e));
+            return new org.forgerock.json.resource.NotFoundException("Pending request, " + id + ", not found", e)
+                    .asPromise();
         } catch (ServerException e) {
-            return newExceptionPromise((ResourceException) new InternalServerErrorException(
-                    "Failed to mark pending request, " + id + ", as approved", e));
+            return new InternalServerErrorException("Failed to mark pending request, " + id + ", as approved", e)
+                    .asPromise();
         }
     }
 
@@ -237,12 +237,11 @@ public class PendingRequestsService {
 
                     return newResultPromise(null);
                 } catch (NotFoundException e) {
-                    return newExceptionPromise(
-                            (ResourceException) new org.forgerock.json.resource.NotFoundException(
-                                    "Pending request, " + id + ", not found", e));
+                    return new org.forgerock.json.resource.NotFoundException(
+                                    "Pending request, " + id + ", not found", e).asPromise();
                 } catch (ServerException e) {
-                    return newExceptionPromise((ResourceException) new InternalServerErrorException(
-                            "Failed to mark pending request, " + id + ", as approved", e));
+                    return new InternalServerErrorException(
+                            "Failed to mark pending request, " + id + ", as approved", e).asPromise();
                 }
             }
         };
@@ -256,7 +255,7 @@ public class PendingRequestsService {
         }
     }
 
-    private Promise<UmaPolicy, ResourceException> createUmaPolicy(final ServerContext context,
+    private Promise<UmaPolicy, ResourceException> createUmaPolicy(final Context context,
             final UmaPendingRequest request, final Collection<String> scopes) {
         return policyService.readPolicy(context, request.getResourceSetId())
                 .thenAsync(new AsyncFunction<UmaPolicy, UmaPolicy, ResourceException>() {
@@ -276,7 +275,7 @@ public class PendingRequestsService {
                             return policyService.createPolicy(context, createPolicyJson(request.getResourceSetId(),
                                     request.getRequestingPartyId(), scopes));
                         }
-                        return Promises.newExceptionPromise(e);
+                        return e.asPromise();
                     }
                 });
     }

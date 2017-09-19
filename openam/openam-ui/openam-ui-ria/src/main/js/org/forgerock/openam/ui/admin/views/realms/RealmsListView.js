@@ -21,13 +21,14 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
     "org/forgerock/commons/ui/common/main/AbstractView",
     "backgrid",
     "org/forgerock/openam/ui/common/util/BackgridUtils",
-    "bootstrap-dialog",
+    "org/forgerock/commons/ui/common/components/BootstrapDialog",
     "org/forgerock/openam/ui/admin/views/realms/CreateUpdateRealmDialog",
     "org/forgerock/openam/ui/admin/models/Form",
     "org/forgerock/openam/ui/admin/utils/FormHelper",
     "org/forgerock/commons/ui/common/main/Router",
     "org/forgerock/openam/ui/admin/delegates/SMSGlobalDelegate"
-], function ($, _, AbstractView, Backgrid, BackgridUtils, BootstrapDialog, CreateUpdateRealmDialog, Form, FormHelper, Router, SMSGlobalDelegate) {
+], function ($, _, AbstractView, Backgrid, BackgridUtils, BootstrapDialog, CreateUpdateRealmDialog,
+            Form, FormHelper, Router, SMSGlobalDelegate) {
     var RealmsView = AbstractView.extend({
         template: "templates/admin/views/realms/RealmsListTemplate.html",
         editDetailsDialogTemplate: "templates/admin/views/realms/RealmPropertiesDialogTemplate.html",
@@ -39,7 +40,7 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
         },
         getRealmFromEvent: function (event) {
             var path = $(event.currentTarget).closest("div[data-realm-path]").data("realm-path"),
-                realm = _.findWhere(this.data.realms, { path: path });
+                realm = _.find(this.data.realms, { path: path });
 
             return realm;
         },
@@ -49,7 +50,7 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
 
             CreateUpdateRealmDialog.show({
                 allRealmPaths :  this.data.allRealmPaths,
-                callback : function(){
+                callback : function () {
                     self.render();
                 }
             });
@@ -62,7 +63,7 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
             CreateUpdateRealmDialog.show({
                 allRealmPaths :  this.data.allRealmPaths,
                 realmPath : realm.path,
-                callback : function(){
+                callback : function () {
                     self.render();
                 }
             });
@@ -73,9 +74,9 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
                 realm = this.getRealmFromEvent(event);
 
             realm.active = !realm.active;
-            SMSGlobalDelegate.realms.update(realm.path, realm).done(function () {
+            SMSGlobalDelegate.realms.update(realm).done(function () {
                 self.render();
-            }).fail(function(e) {
+            }).fail(function (e) {
                 console.error(e);
                 self.render();
             });
@@ -100,15 +101,15 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
                     }
                 }];
 
-            if(realm.active){
+            if (realm.active) {
                 buttons.splice(1, 0, {
                     label: $.t("console.realms.warningDialog.deactivate"),
                     action: function (dialog) {
                         realm.active = false;
-                        SMSGlobalDelegate.realms.update(realm.path, realm).done(function () {
+                        SMSGlobalDelegate.realms.update(realm).done(function () {
                             self.render();
                             dialog.close();
-                        }).fail(function(e) {
+                        }).fail(function (e) {
                             console.error(e);
                             self.render();
                             dialog.close();
@@ -120,7 +121,7 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
             BootstrapDialog.show({
                 title: $.t("console.realms.warningDialog.title", { realmName: realm.name }),
                 type: BootstrapDialog.TYPE_DANGER,
-                message: realm.active ? $.t("console.realms.warningDialog.activeMessage") :  $.t("console.realms.warningDialog.inactiveMessage"),
+                message: realm.active ? $.t("console.realms.warningDialog.activeMessage") : $.t("console.realms.warningDialog.inactiveMessage"),
                 buttons: buttons
             });
 
@@ -133,20 +134,20 @@ define("org/forgerock/openam/ui/admin/views/realms/RealmsListView", [
             });
         },
         getRealmFromList: function (path) {
-            return _.findWhere(this.data.realms, { path: path });
+            return _.find(this.data.realms, { path: path });
         },
         render: function (args, callback) {
             var self = this;
 
             SMSGlobalDelegate.realms.all().done(function (data) {
-                var result = _.findWhere(data.result, { name: "/" });
+                var result = _.find(data.result, { name: "/" });
                 if (result) {
                     result.name = $.t("console.common.topLevelRealm");
                 }
                 self.data.realms = data.result;
                 self.data.allRealmPaths = [];
 
-                _.each(self.data.realms, function(realm){
+                _.each(self.data.realms, function (realm) {
                     self.data.allRealmPaths.push(realm.path);
                 });
 

@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='sec-rest-sts'
          xmlns='http://docbook.org/ns/docbook'
-         version='5.0' xml:lang='en'
+         version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
          http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -56,10 +56,7 @@
 
      <note>
       <para>
-       Do not use the WSP and WSC agent UI tools described in <link xlink:show="new"
-       xlink:role="http://docbook.org/xlink/role/olink"
-       xlink:href="admin-guide#chap-agents"><citetitle>Configuring Policy Agent
-       Profiles</citetitle>.</link>
+       Do not use the WSP and WSC agent UI tools described in <xref linkend="chap-agents" />
       </para>
      </note>
 
@@ -110,10 +107,9 @@
 
     <para>
      To access the REST-STS configuration menu for your realm, navigate to
-     Access Control &gt; <replaceable>Realm Name</replaceable> &gt; STS. When
-     you see the <replaceable>Realm Name</replaceable> - REST STS Instances
-     menu, click Add. You should see an excerpt of the REST Security Token
-     Service menu in the following screen shot:
+     Realms &gt; <replaceable>Realm Name</replaceable> &gt; STS. In the REST STS
+     Instances table, click Add. You should see an excerpt of the REST Security
+     Token Service menu in the following screen shot:
     </para>
 
     <figure xml:id="rest-sts-access-menu">
@@ -524,10 +520,7 @@
         </para>
 
         <para>
-         For example, you may use the procedure <link xlink:show="new"
-         xlink:role="http://docbook.org/xlink/role/olink"
-         xlink:href="admin-guide#openam-with-https-on-tomcat"><citetitle>To Set
-         Up OpenAM With HTTPS on Tomcat</citetitle></link>, if you use Tomcat as
+         For example, you may use the procedure <xref linkend="openam-with-https-on-tomcat" />, if you use Tomcat as
          the container for OpenAM.
         </para>
         <para>
@@ -535,10 +528,7 @@
          For reference, the default OpenAM keystore file is
          <filename>keystore.jks</filename>, found in the OpenAM
          configuration directory, as described in the following installation
-         procedure: <link xlink:show="new"
-                          xlink:role="http://docbook.org/xlink/role/olink"
-                          xlink:href="install-guide#deploy-openam"><citetitle>
-         To Deploy OpenAM</citetitle></link>
+         procedure: <olink targetdoc="install-guide" targetptr="deploy-openam" />
         </para>
        </listitem>
       </varlistentry>

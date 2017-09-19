@@ -17,7 +17,7 @@
 package org.forgerock.openam.sts.config.user;
 
 
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.openam.sts.AMSTSConstants;
 import org.forgerock.openam.sts.MapMarshallUtils;
 import org.forgerock.openam.sts.TokenType;
@@ -29,16 +29,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import static org.forgerock.json.fluent.JsonValue.field;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
+import static org.forgerock.json.JsonValue.field;
+import static org.forgerock.json.JsonValue.json;
+import static org.forgerock.json.JsonValue.object;
 
 /**
  * Each deployed STS instance will be configured with a mapping which specifies the rest authN authIndexType and authIndexValue
  * against which a particular token type will be validated.
  * An instance of this class will be harvested from the UI elements configuring STS instances.
  *
- * See the org.forgerock.openam.forgerockrest.authn.core.AuthIndexType class for valid values for the authIndexType
+ * See the org.forgerock.openam.core.rest.authn.core.AuthIndexType class for valid values for the authIndexType
  * below. The authIndexValue is the actual name of the service, module, etc. (for an authIndexType of "service" the
  * authIndexValue could be "ldapService").
  *

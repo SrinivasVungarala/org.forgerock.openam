@@ -15,15 +15,22 @@
  */
 package org.forgerock.openam.audit;
 
-import static org.forgerock.json.fluent.JsonValue.array;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.openam.audit.AuditConstants.*;
+import static org.forgerock.openam.audit.AuditConstants.Context.SESSION;
+import static org.forgerock.json.JsonValue.array;
+import static org.forgerock.json.JsonValue.json;
+import static org.forgerock.openam.audit.AuditConstants.EVENT_REALM;
 
 import com.iplanet.sso.SSOException;
 import com.iplanet.sso.SSOToken;
 import com.sun.identity.shared.Constants;
 import com.sun.identity.shared.debug.Debug;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
+import org.forgerock.openam.audit.context.AuditRequestContext;
+import org.forgerock.openam.utils.StringUtils;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Collection of static helper methods for use by AM AuditEventBuilders.
@@ -36,6 +43,8 @@ public final class AMAuditEventBuilderUtils {
 
     private static final String COMPONENT = "component";
     private static final String EXTRA_INFO = "extraInfo";
+    private static final String CONTEXTS = "contexts";
+//    private static final String REALM = "realm";
 
     private AMAuditEventBuilderUtils() {
         throw new UnsupportedOperationException("Utils class; should not be instantiated.");
@@ -51,12 +60,12 @@ public final class AMAuditEventBuilderUtils {
     }
 
     /**
-     * Set "contextId" audit log field.
+     * Set "contexts" audit log field.
      *
-     * @param value String "contextId" value.
+     * @param value Map "contexts" value.
      */
-    static void putContextId(JsonValue jsonValue, String value) {
-        jsonValue.put(CONTEXT_ID, value == null ? "" : value);
+    static void putContexts(JsonValue jsonValue, Map<String, String> value) {
+        jsonValue.put(CONTEXTS, value == null ? new HashMap<String, String>() : value);
     }
 
     /**
@@ -75,14 +84,26 @@ public final class AMAuditEventBuilderUtils {
      * @param ssoToken The SSOToken from which the contextId value will be retrieved.
      */
     static void putContextIdFromSSOToken(JsonValue jsonValue, SSOToken ssoToken) {
-        putContextId(jsonValue, getContextIdFromSSOToken(ssoToken));
+        String ssoTokenContext = getContextFromSSOToken(ssoToken);
+        putContexts(jsonValue, Collections.singletonMap(SESSION.toString(), ssoTokenContext));
     }
 
     /**
+     * Set "realm" audit log field.
+     *
+     * @param value String "realm" value.
+     */
+    static void putRealm(JsonValue jsonValue, String value) {
+        jsonValue.put(EVENT_REALM, value == null ? "" : value);
+    }
+
+    /**
+     * Gets the contextId value from the {@code SSOToken}.
+     *
      * @param ssoToken The SSOToken from which the contextId value will be retrieved.
      * @return contextId for SSOToken or empty string if undefined.
      */
-    public static String getContextIdFromSSOToken(SSOToken ssoToken) {
+    public static String getContextFromSSOToken(SSOToken ssoToken) {
         return getSSOTokenProperty(ssoToken, Constants.AM_CTX_ID, "");
     }
 
@@ -107,6 +128,26 @@ public final class AMAuditEventBuilderUtils {
             }
         }
         return defaultValue;
+    }
+
+    /**
+     * Get all available {@link AuditConstants.Context} values from the possible list of
+     * {@link AuditConstants.Context} values, from the {@link AuditRequestContext}.
+     *
+     * @return All the available {@link AuditConstants.Context} values.
+     */
+    public static Map<String, String> getAllAvailableContexts() {
+        Map<String, String> map = new HashMap<>();
+
+        for (AuditConstants.Context context : AuditConstants.Context.values()) {
+            String contextKey = context.toString();
+            String contextValue = AuditRequestContext.getProperty(contextKey);
+            if (StringUtils.isNotEmpty(contextValue)) {
+                map.put(contextKey, contextValue);
+            }
+        }
+
+        return map;
     }
 
 }

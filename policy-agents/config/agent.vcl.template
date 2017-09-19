@@ -26,6 +26,7 @@ sub vcl_recv {
 sub vcl_synth {
     if(resp.status == 800) {
         am.done();
+        return (deliver);
     }
 }
 

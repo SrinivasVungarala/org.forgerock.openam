@@ -206,6 +206,33 @@ static am_return_t setup_request_data(am_request_t *r) {
         return AM_FAIL;
     }
 
+    if (ISVALID(r->path_info) && (r->conf->path_info_ignore_not_enforced || r->conf->path_info_ignore)) {
+        char *pos;
+
+        r->normalized_url_pathinfo = strdup(r->normalized_url);
+        if (r->normalized_url_pathinfo == NULL) {
+            AM_LOG_ERROR(r->instance_id, "%s memory allocation failure", thisfunc);
+            r->status = AM_ENOMEM;
+            return AM_FAIL;
+        }
+
+        pos = strstr(r->normalized_url_pathinfo, r->path_info);
+        if (pos == NULL) {
+            /* 2nd try - request url is url_decoded, check if url_decoded pathinfo can be found */
+            char *path_info_clear = url_decode(r->path_info);
+            if (path_info_clear != NULL) {
+                pos = strstr(r->normalized_url_pathinfo, path_info_clear);
+                free(path_info_clear);
+            }
+            if (pos == NULL) {
+                AM_LOG_ERROR(r->instance_id, "%s path_info %s is not part of the normalized request url %s",
+                        thisfunc, r->path_info, r->normalized_url);
+                return AM_FAIL;
+            }
+        }
+        *pos = '\0';
+    }
+
     /* re-format normalized request url depending on override parameter values */
     memcpy(&u, &r->url, sizeof (struct url));
     if (parse_url(r->conf->agenturi, &au) == 0) {
@@ -230,6 +257,33 @@ static am_return_t setup_request_data(am_request_t *r) {
         return AM_FAIL;
     }
 
+    if (ISVALID(r->path_info) && r->conf->path_info_ignore) {
+        char *pos;
+
+        r->overridden_url_pathinfo = strdup(r->overridden_url);
+        if (r->overridden_url_pathinfo == NULL) {
+            AM_LOG_ERROR(r->instance_id, "%s memory allocation failure", thisfunc);
+            r->status = AM_ENOMEM;
+            return AM_FAIL;
+        }
+
+        pos = strstr(r->overridden_url_pathinfo, r->path_info);
+        if (pos == NULL) {
+            /* 2nd try - request url is url_decoded, check if url_decoded pathinfo can be found */
+            char *path_info_clear = url_decode(r->path_info);
+            if (path_info_clear != NULL) {
+                pos = strstr(r->overridden_url_pathinfo, path_info_clear);
+                free(path_info_clear);
+            }
+            if (pos == NULL) {
+                AM_LOG_ERROR(r->instance_id, "%s path_info %s is not part of the overridden request url %s",
+                        thisfunc, r->path_info, r->overridden_url);
+                return AM_FAIL;
+            }
+        }
+        *pos = '\0';
+    }
+
     /* check if this request url (normalized) matches any of 
      * org.forgerock.agents.config.json.url[] configuration parameter values
      */
@@ -247,11 +301,14 @@ static am_return_t setup_request_data(am_request_t *r) {
         AM_LOG_DEBUG(r->instance_id, "%s no token in query parameters", thisfunc);
     }
 
-    AM_LOG_DEBUG(r->instance_id, "%s method: %s, original url: %s, normalized:\n"
-            "proto: %s\nhost: %s\nport: %d\npath: %s\nquery: %s\ncomplete: %s\noverridden: %s", thisfunc,
+    AM_LOG_DEBUG(r->instance_id, "%s \nmethod: %s \noriginal url: %s"
+            "\nproto: %s\nhost: %s\nport: %d\npath: %s\nquery: %s\ncomplete: %s\noverridden: %s"
+            "\npathinfo: %s"
+            "\nnormalized (pathinfo removed): %s\noverridden (pathinfo removed): %s", thisfunc,
             am_method_num_to_str(r->method), r->orig_url,
             r->url.proto, r->url.host, r->url.port, r->url.path, r->url.query, r->normalized_url,
-            r->overridden_url);
+            r->overridden_url, LOGEMPTY(r->path_info),
+            LOGEMPTY(r->normalized_url_pathinfo), LOGEMPTY(r->overridden_url_pathinfo));
 
     if (r->method == AM_REQUEST_POST && !ISVALID(r->content_type)) {
         AM_LOG_ERROR(r->instance_id, "%s HTTP POST requires a valid Content-Type header value", thisfunc);
@@ -288,7 +345,7 @@ static am_return_t handle_notification(am_request_t *r) {
     AM_LOG_DEBUG(r->instance_id, "%s", thisfunc);
 
     /* check if notifications are enabled */
-    if (r->method == AM_REQUEST_POST && r->conf->notif_enable && ISVALID(r->conf->notif_url)) {
+    if (r->method == AM_REQUEST_POST && ISVALID(r->conf->notif_url)) {
         struct notification_worker_data *wd;
         /* is override.notification.url set? */
         const char *url = r->conf->override_notif_url ? r->overridden_url : r->normalized_url;
@@ -555,10 +612,25 @@ static am_return_t handle_not_enforced(am_request_t *r) {
                 char *p = strstr(m->name, AM_COMMA_CHAR);
                 AM_LOG_DEBUG(r->instance_id, "%s trying not enforced pattern %s", thisfunc, m->value);
                 if (p == NULL) {
+
                     /* regular [0]=not-enforced-url option */
-                    compare_status += url_matches_pattern(r, m->value, url, r->conf->not_enforced_regex_enable);
+
+                    if (ISVALID(r->normalized_url_pathinfo) &&
+                            (r->conf->path_info_ignore_not_enforced || r->conf->path_info_ignore) &&
+                            !r->conf->not_enforced_regex_enable) {
+
+                        AM_LOG_DEBUG(r->instance_id, "%s validating %s ignoring path_info",
+                                thisfunc, r->normalized_url_pathinfo);
+
+                        compare_status += url_matches_pattern(r, m->value, r->normalized_url_pathinfo, AM_FALSE);
+                    } else {
+                        compare_status += url_matches_pattern(r, m->value, url, r->conf->not_enforced_regex_enable);
+                    }
+
                 } else {
+
                     /* method-extended [GET,0]=not-enforced-url option */
+
                     char *pv = strndup(m->name, p - m->name);
                     if (pv != NULL) {
                         char mtn = am_method_str_to_num(pv);
@@ -810,10 +882,12 @@ static am_return_t validate_policy(am_request_t *r) {
     time_t cache_ts = 0;
 
     char *pattrs = NULL;
-    const char *url = r->overridden_url;
+    const char *url = ISVALID(r->overridden_url_pathinfo) && r->conf->path_info_ignore ?
+            r->overridden_url_pathinfo : r->overridden_url;
     int scope = r->conf->policy_scope_subtree;
 
-    AM_LOG_DEBUG(r->instance_id, "%s (entry status: %s)", thisfunc, am_strerror(r->status));
+    AM_LOG_DEBUG(r->instance_id, "%s for %s (ignoring pathinfo: %s), entry status: %s", thisfunc,
+            url, (url == r->overridden_url_pathinfo ? "yes" : "no"), am_strerror(r->status));
 
     if (r->not_enforced && (r->conf->not_enforced_fetch_attr || r->is_dummypost_url)) {
         if (!ISVALID(r->token)) {
@@ -866,12 +940,13 @@ static am_return_t validate_policy(am_request_t *r) {
     if ((status == AM_SUCCESS && cache_ts > 0) || status != AM_SUCCESS) {
         struct am_policy_result *policy_cache_new = NULL;
         struct am_namevalue *session_cache_new = NULL;
-        struct am_ssl_options info;
+        am_net_options_t net_options;
         const char *service_url = get_valid_openam_url(r);
         int max_retry = 3;
         unsigned int retry = 3, retry_wait = 2;
 
-        am_net_set_ssl_options(r->conf, &info);
+        am_net_options_create(r->conf, &net_options, NULL);
+        net_options.server_id = r->conf->lb_enable && ISVALID(r->session_info.si) ? strdup(r->session_info.si) : NULL;
 
         /* entry is found, but was not valid, or nothing was found,
          * do a policy+session call in either way
@@ -881,13 +956,9 @@ static am_return_t validate_policy(am_request_t *r) {
         do {
             policy_cache_new = NULL;
             session_cache_new = NULL;
-            status = am_agent_policy_request(r->instance_id, service_url,
-                    r->conf->token, r->token,
-                    url,
-                    r->conf->notif_url, am_scope_to_str(scope), r->client_ip, pattrs,
-                    r->conf->lb_enable && ISVALID(r->session_info.si) ? r->session_info.si : NULL, &info,
-                    &session_cache_new,
-                    &policy_cache_new);
+            status = am_agent_policy_request(r->instance_id, service_url, r->conf->token, r->token,
+                    url, am_scope_to_str(scope), r->client_ip, pattrs,
+                    &net_options, r->conf->notif_enable, &session_cache_new, &policy_cache_new);
             if (status == AM_SUCCESS && session_cache_new != NULL && policy_cache_new != NULL) {
                 remote = AM_TRUE;
                 break;
@@ -908,6 +979,8 @@ static am_return_t validate_policy(am_request_t *r) {
 
             sleep(retry_wait);
         } while (--max_retry > 0);
+
+        am_net_options_delete(&net_options);
 
         if (max_retry == 0) {
             AM_LOG_ERROR(r->instance_id,
@@ -1001,6 +1074,15 @@ static am_return_t validate_policy(am_request_t *r) {
                 return AM_OK;
             }
         }
+        
+        /* pre-fetch user parameter value */
+        if (ISVALID(r->conf->userid_param) && ISVALID(r->conf->userid_param_type)) {
+            if (strcasecmp(r->conf->userid_param_type, "SESSION") == 0) {
+                r->user_temp = get_attr_value(r, r->conf->userid_param, AM_SESSION_ATTRIBUTE);
+            } else {
+                r->user_temp = get_attr_value(r, r->conf->userid_param, AM_POLICY_ATTRIBUTE);
+            }
+        }
 
         AM_LIST_FOR_EACH(r->pattr, e, t) {//TODO: work on loop in 2 threads (split loop in 2; search&match in each thread)
 
@@ -1073,13 +1155,9 @@ static am_return_t validate_policy(am_request_t *r) {
                         r->response_decisions = e->response_decisions;
                         r->status = AM_SUCCESS;
 
-                        /* fetch user parameter value */
+                        /* set user parameter value */
                         if (ISVALID(r->conf->userid_param) && ISVALID(r->conf->userid_param_type)) {
-                            if (strcasecmp(r->conf->userid_param_type, "SESSION") == 0) {
-                                r->user = get_attr_value(r, r->conf->userid_param, AM_SESSION_ATTRIBUTE);
-                            } else {
-                                r->user = get_attr_value(r, r->conf->userid_param, AM_POLICY_ATTRIBUTE);
-                            }
+                            r->user = r->user_temp;
                             r->user_password = get_attr_value(r, "sunIdentityUserPassword", AM_SESSION_ATTRIBUTE);
                         }
                         return AM_OK;
@@ -1110,13 +1188,9 @@ static am_return_t validate_policy(am_request_t *r) {
                                 r->response_decisions = e->response_decisions;
                                 r->status = AM_SUCCESS;
 
-                                /* fetch user parameter value */
+                                /* set user parameter value */
                                 if (ISVALID(r->conf->userid_param) && ISVALID(r->conf->userid_param_type)) {
-                                    if (strcasecmp(r->conf->userid_param_type, "SESSION") == 0) {
-                                        r->user = get_attr_value(r, r->conf->userid_param, AM_SESSION_ATTRIBUTE);
-                                    } else {
-                                        r->user = get_attr_value(r, r->conf->userid_param, AM_POLICY_ATTRIBUTE);
-                                    }
+                                    r->user = r->user_temp;
                                     r->user_password = get_attr_value(r, "sunIdentityUserPassword", AM_SESSION_ATTRIBUTE);
                                 }
 
@@ -1574,17 +1648,31 @@ static char *find_active_login_server(am_request_t *r, char add_goto_value) {
         am_config_map_t *m = (valid_idx >= map_sz) ? &map[0] : &map[valid_idx];
         if (add_goto_value) {
             char *goto_encoded = url_encode(r->overridden_url);
-            am_asprintf(&login_url, "%s%s%s=%s",
-                    m->value,
-                    strchr(m->value, '?') == NULL ? "?" : "&",
-                    ISVALID(r->conf->url_redirect_param) ? r->conf->url_redirect_param : "goto",
-                    NOTNULL(goto_encoded));
+
+            if (r->conf->cdsso_enable &&
+                    ISVALID(r->conf->url_redirect_param) &&
+                    strstr(m->value, "goto=") != NULL &&
+                    strcmp(r->conf->url_redirect_param, "goto") != 0) {
+                am_asprintf(&login_url, "%s%s%s=%s",
+                        m->value,
+                        "?",
+                        r->conf->url_redirect_param,
+                        NOTNULL(goto_encoded));
+            } else {
+                am_asprintf(&login_url, "%s%s%s=%s",
+                        m->value,
+                        strchr(m->value, '?') == NULL ? "?" : "&",
+                        ISVALID(r->conf->url_redirect_param) ? r->conf->url_redirect_param : "goto",
+                        NOTNULL(goto_encoded));
+            }
 
             if (ISVALID(cdsso_elements)) {
                 am_asprintf(&login_url, "%s&%s", login_url, cdsso_elements);
             }
             am_free(goto_encoded);
+
         } else {
+
             if (ISVALID(cdsso_elements)) {
                 am_asprintf(&login_url, "%s%s%s",
                         m->value,
@@ -1666,13 +1754,15 @@ static am_return_t handle_exit(am_request_t *r) {
                         if (oam != NULL) {
                             wd->token = strdup(r->token);
                             wd->openam = strdup(oam);
-                            wd->server_id = r->conf->lb_enable && ISVALID(r->session_info.si) ? strdup(r->session_info.si) : NULL;
-
-                            am_net_set_ssl_options(r->conf, &wd->info);
+                            wd->options = malloc(sizeof (am_net_options_t));
+                            am_net_options_create(r->conf, wd->options, NULL);
+                            if (wd->options != NULL) {
+                                wd->options->server_id = r->conf->lb_enable && ISVALID(r->session_info.si) ? strdup(r->session_info.si) : NULL;
+                            }
 
                             if (am_worker_dispatch(session_logout_worker, wd) != 0) {
-                                AM_FREE(wd->token, wd->openam, wd->server_id);
-                                free(wd);
+                                am_net_options_delete(wd->options);
+                                AM_FREE(wd->token, wd->openam, wd->options, wd);
                                 r->status = AM_ERROR;
                                 AM_LOG_WARNING(r->instance_id, "%s failed to dispatch logout worker", thisfunc);
                                 break;
@@ -1721,13 +1811,13 @@ static am_return_t handle_exit(am_request_t *r) {
                 free(url);
                 break;
             }
-            
+
             if (ISINVALID(r->user) && r->conf->anon_remote_user_enable
                     && ISVALID(r->conf->unauthenticated_user)) {
                 r->user = r->conf->unauthenticated_user;
                 AM_LOG_DEBUG(r->instance_id, "%s remote user set to unauthenticated user %s",
                         thisfunc, r->user);
-            } 
+            }
 
             /* set user */
             if (r->am_set_user_f != NULL && ISVALID(r->user)) {
@@ -1738,13 +1828,14 @@ static am_return_t handle_exit(am_request_t *r) {
             set_user_attributes(r);
 
             if (AM_BITMASK_CHECK(r->conf->audit_level, AM_LOG_LEVEL_AUDIT_ALLOW)) {
+            	const char *user_name_log = ISVALID(r->user) ? r->user : r->user_temp;
                 AM_LOG_AUDIT(r->instance_id, AUDIT_ALLOW_USER_MESSAGE,
-                        LOGEMPTY(r->user), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
+                        LOGEMPTY(user_name_log), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
                 if (AM_BITMASK_CHECK(r->conf->audit_level, AM_LOG_LEVEL_AUDIT_REMOTE)) {
                     int audit_status = am_add_remote_audit_entry(r->instance_id, r->conf->token,
                             r->session_info.si, r->conf->audit_file_remote,
                             r->token, AUDIT_ALLOW_USER_MESSAGE,
-                            LOGEMPTY(r->user), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
+                            LOGEMPTY(user_name_log), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
                     if (audit_status != AM_SUCCESS) {
                         AM_LOG_ERROR(r->instance_id, "%s failed to store remote audit log message (%s)",
                                 thisfunc, am_strerror(audit_status));
@@ -1905,13 +1996,16 @@ static am_return_t handle_exit(am_request_t *r) {
 
             if (status == AM_ACCESS_DENIED &&
                     AM_BITMASK_CHECK(r->conf->audit_level, AM_LOG_LEVEL_AUDIT_DENY)) {
+                const char *user_name_log = ISVALID(r->user) ? r->user : r->user_temp;
+
                 AM_LOG_AUDIT(r->instance_id, AUDIT_DENY_USER_MESSAGE,
-                        LOGEMPTY(r->user), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
+                        LOGEMPTY(user_name_log), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
+
                 if (AM_BITMASK_CHECK(r->conf->audit_level, AM_LOG_LEVEL_AUDIT_REMOTE)) {
                     int audit_status = am_add_remote_audit_entry(r->instance_id, r->conf->token,
                             r->session_info.si, r->conf->audit_file_remote,
                             r->token, AUDIT_DENY_USER_MESSAGE,
-                            LOGEMPTY(r->user), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
+                            LOGEMPTY(user_name_log), LOGEMPTY(r->client_ip), LOGEMPTY(r->normalized_url));
                     if (audit_status != AM_SUCCESS) {
                         AM_LOG_ERROR(r->instance_id, "%s failed to store remote audit log message (%s)",
                                 thisfunc, am_strerror(audit_status));
@@ -2008,11 +2102,23 @@ static am_return_t handle_exit(am_request_t *r) {
 
                         /* create a redirect url value */
                         url = find_active_login_server(r, AM_FALSE);
-                        am_asprintf(&url, "%s%s%s=%s",
-                                url,
-                                strchr(url, '?') != NULL ? "&" : "?",
-                                ISVALID(r->conf->url_redirect_param) ? r->conf->url_redirect_param : "goto",
-                                NOTNULL(goto_encoded));
+
+                        if (r->conf->cdsso_enable &&
+                                ISVALID(r->conf->url_redirect_param) &&
+                                strstr(url, "goto=") != NULL &&
+                                strcmp(r->conf->url_redirect_param, "goto") != 0) {
+                            am_asprintf(&url, "%s%s%s=%s",
+                                    url,
+                                    "?",
+                                    r->conf->url_redirect_param,
+                                    NOTNULL(goto_encoded));
+                        } else {
+                            am_asprintf(&url, "%s%s%s=%s",
+                                    url,
+                                    strchr(url, '?') != NULL ? "&" : "?",
+                                    ISVALID(r->conf->url_redirect_param) ? r->conf->url_redirect_param : "goto",
+                                    NOTNULL(goto_encoded));
+                        }
 
                         if (pdp_sess_mode_cookie) {
                             /* create pdp sticky-session load-balancer cookie */

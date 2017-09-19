@@ -16,10 +16,12 @@
 
 package org.forgerock.openam.uma;
 
-import static org.forgerock.json.fluent.JsonValue.*;
+import static org.forgerock.json.JsonValue.*;
+import static org.forgerock.util.query.QueryFilter.equalTo;
 
 import javax.security.auth.Subject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,10 +36,11 @@ import com.sun.identity.idm.AMIdentity;
 import com.sun.identity.idm.IdUtils;
 import com.sun.identity.shared.debug.Debug;
 import org.apache.commons.lang.StringUtils;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.AccessToken;
 import org.forgerock.oauth2.core.OAuth2ProviderSettings;
 import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
+import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.OAuth2RequestFactory;
 import org.forgerock.oauth2.core.TokenStore;
 import org.forgerock.oauth2.core.exceptions.BadRequestException;
@@ -47,10 +50,14 @@ import org.forgerock.oauth2.core.exceptions.ServerException;
 import org.forgerock.oauth2.resources.ResourceSetDescription;
 import org.forgerock.oauth2.resources.ResourceSetStore;
 import org.forgerock.openam.cts.api.fields.ResourceSetTokenField;
+import org.forgerock.openam.oauth2.extensions.ExtensionFilterManager;
 import org.forgerock.openam.sm.datalayer.impl.uma.UmaPendingRequest;
+import org.forgerock.openam.tokens.CoreTokenField;
 import org.forgerock.openam.uma.audit.UmaAuditLogger;
 import org.forgerock.openam.uma.audit.UmaAuditType;
+import org.forgerock.openam.uma.extensions.RequestAuthorizationFilter;
 import org.forgerock.openam.utils.JsonValueBuilder;
+import org.forgerock.util.query.QueryFilter;
 import org.json.JSONException;
 import org.restlet.Request;
 import org.restlet.data.ChallengeResponse;
@@ -78,6 +85,8 @@ public class AuthorizationRequestEndpoint extends ServerResource {
     private final UmaAuditLogger auditLogger;
     private final PendingRequestsService pendingRequestsService;
     private final Map<String, ClaimGatherer> claimGatherers;
+    private final ExtensionFilterManager extensionFilterManager;
+    private final UmaExceptionHandler exceptionHandler;
 
     /**
      * Constructs a new AuthorizationRequestEndpoint
@@ -86,7 +95,8 @@ public class AuthorizationRequestEndpoint extends ServerResource {
     public AuthorizationRequestEndpoint(UmaProviderSettingsFactory umaProviderSettingsFactory,
             TokenStore oauth2TokenStore, OAuth2RequestFactory<Request> requestFactory,
             OAuth2ProviderSettingsFactory oauth2ProviderSettingsFactory, UmaAuditLogger auditLogger,
-            PendingRequestsService pendingRequestsService, Map<String, ClaimGatherer> claimGatherers) {
+            PendingRequestsService pendingRequestsService, Map<String, ClaimGatherer> claimGatherers,
+            ExtensionFilterManager extensionFilterManager, UmaExceptionHandler exceptionHandler) {
         this.umaProviderSettingsFactory = umaProviderSettingsFactory;
         this.requestFactory = requestFactory;
         this.oauth2TokenStore = oauth2TokenStore;
@@ -94,38 +104,39 @@ public class AuthorizationRequestEndpoint extends ServerResource {
         this.auditLogger = auditLogger;
         this.pendingRequestsService = pendingRequestsService;
         this.claimGatherers = claimGatherers;
+        this.extensionFilterManager = extensionFilterManager;
+        this.exceptionHandler = exceptionHandler;
     }
 
     @Post
     public Representation requestAuthorization(JsonRepresentation entity) throws BadRequestException, UmaException,
             EntitlementException, ServerException, NotFoundException {
         UmaProviderSettings umaProviderSettings = umaProviderSettingsFactory.get(this.getRequest());
+        final OAuth2Request oauth2Request = requestFactory.create(getRequest());
+        OAuth2ProviderSettings oauth2ProviderSettings = oauth2ProviderSettingsFactory.get(oauth2Request);
+        final UmaTokenStore umaTokenStore = umaProviderSettings.getUmaTokenStore();
+
         JsonValue requestBody = json(toMap(entity));
-        PermissionTicket permissionTicket = getPermissionTicket(umaProviderSettings.getUmaTokenStore(), requestBody);
 
-        if (hasExpired(permissionTicket)) {
-            throw new UmaException(400, UmaConstants.EXPIRED_TICKET_ERROR_CODE, "The permission ticket has expired");
-        }
-
-        //Remove permission ticket so it cannot be re-used
-        umaProviderSettings.getUmaTokenStore().deletePermissionTicket(permissionTicket.getId());
+        PermissionTicket permissionTicket = getPermissionTicket(umaTokenStore, requestBody);
+        validatePermissionTicketHolder(umaTokenStore, permissionTicket);
 
         final String resourceSetId = permissionTicket.getResourceSetId();
         final Request request = getRequest();
-        final String resourceOwnerId = getResourceOwnerId(resourceSetId);
+        final String resourceOwnerId = getResourceOwnerId(oauth2ProviderSettings, resourceSetId);
 
         String requestingPartyId = null;
         try {
-            requestingPartyId = getRequestingPartyId(umaProviderSettings, requestBody);
+            requestingPartyId = getRequestingPartyId(umaProviderSettings, oauth2ProviderSettings, requestBody);
         } finally {
             auditLogger.log(resourceSetId, resourceOwnerId, UmaAuditType.REQUEST, request,
                     requestingPartyId == null ? getAuthorisationApiToken().getResourceOwnerId() : requestingPartyId);
         }
 
-        if (isEntitled(umaProviderSettings, permissionTicket, requestingPartyId)) {
+        if (isEntitled(umaProviderSettings, oauth2ProviderSettings, permissionTicket, requestingPartyId)) {
             getResponse().setStatus(new Status(200));
             auditLogger.log(resourceSetId, resourceOwnerId, UmaAuditType.GRANTED, request, requestingPartyId);
-            return createJsonRpt(umaProviderSettings.getUmaTokenStore(), permissionTicket);
+            return createJsonRpt(umaTokenStore, permissionTicket);
         } else {
             try {
                 if (verifyPendingRequestDoesNotAlreadyExist(resourceSetId, resourceOwnerId, permissionTicket.getRealm(),
@@ -137,7 +148,8 @@ public class AuthorizationRequestEndpoint extends ServerResource {
                     pendingRequestsService.createPendingRequest(ServletUtils.getRequest(getRequest()), resourceSetId,
                             auditLogger.getResourceName(resourceSetId, request), resourceOwnerId, requestingPartyId,
                             permissionTicket.getRealm(), permissionTicket.getScopes());
-                    auditLogger.log(resourceSetId, resourceOwnerId, UmaAuditType.REQUEST_SUBMITTED, request, requestingPartyId);
+                    auditLogger.log(resourceSetId, resourceOwnerId, UmaAuditType.REQUEST_SUBMITTED, request,
+                            requestingPartyId);
                 }
             } catch (org.forgerock.openam.sm.datalayer.store.ServerException e) {
                 logger.error("Failed to create pending request", e);
@@ -147,7 +159,49 @@ public class AuthorizationRequestEndpoint extends ServerResource {
         }
     }
 
-    private String getRequestingPartyId(UmaProviderSettings umaProviderSettings, JsonValue requestBody)
+    private void validatePermissionTicketHolder(UmaTokenStore umaTokenStore, PermissionTicket permissionTicket)
+            throws ServerException, UmaException, NotFoundException, BadRequestException {
+
+        String requestingClientId = getAuthorisationApiToken().getClientId();
+        String ticketClientClientId = permissionTicket.getClientClientId();
+
+        if (hasExpired(permissionTicket)) {
+            throw new UmaException(400, UmaConstants.EXPIRED_TICKET_ERROR_CODE, "The permission ticket has expired");
+        }
+
+        if (ticketClientClientId == null) {
+            permissionTicket.setClientClientId(requestingClientId);
+            umaTokenStore.updatePermissionTicket(permissionTicket);
+        } else if (!ticketClientClientId.equals(requestingClientId)) {
+            //Permission Ticket has already been used by different client!
+            //Best delete all RPTs gained via this Permission Ticket!
+            Collection<RequestingPartyToken> invalidRpts = umaTokenStore.queryRPT(
+                    equalTo(CoreTokenField.STRING_THREE, permissionTicket.getId()));
+            revokeInvalidRpts(umaTokenStore, invalidRpts, permissionTicket.getId());
+        }
+    }
+
+    private void revokeInvalidRpts(UmaTokenStore umaTokenStore, Collection<RequestingPartyToken> invalidRpts,
+            String permissionTicketId) throws NotFoundException, ServerException, UmaException {
+        Collection<String> revokedRptIds = new ArrayList<>();
+        for (RequestingPartyToken rpt : invalidRpts) {
+            umaTokenStore.deleteRPT(rpt.getId());
+            revokedRptIds.add(rpt.getId());
+        }
+        if (logger.isErrorEnabled()) {
+            logger.error("Replay attack detected with permission ticket: {}. The permission ticket has "
+                    + "been revoked along with the following RPTs: {}", permissionTicketId, revokedRptIds);
+        }
+        throw new UmaException(400, UmaConstants.INVALID_TICKET_ERROR_CODE, "The permission ticket is invalid");
+    }
+
+    @Override
+    protected void doCatch(Throwable throwable) {
+        exceptionHandler.handleException(getResponse(), throwable);
+    }
+
+    private String getRequestingPartyId(UmaProviderSettings umaProviderSettings,
+            OAuth2ProviderSettings oauth2ProviderSettings, JsonValue requestBody)
             throws ServerException, NotFoundException, UmaException {
         if (requestBody.isDefined("claim_tokens")) {
             for (JsonValue claimToken : requestBody.get("claim_tokens")) {
@@ -165,22 +219,21 @@ public class AuthorizationRequestEndpoint extends ServerResource {
         }
         // Cannot rely on AAT for requesting party if trust elevation is required
         if (umaProviderSettings.isTrustElevationRequired()) {
-            throw newNeedInfoException();
+            throw newNeedInfoException(oauth2ProviderSettings);
         }
         // Default to using AAT
         return getAuthorisationApiToken().getResourceOwnerId();
     }
 
-    private UmaException newNeedInfoException() throws NotFoundException, ServerException {
+    private UmaException newNeedInfoException(OAuth2ProviderSettings providerSettings)
+            throws NotFoundException, ServerException {
         List<Object> requiredClaims = new ArrayList<>();
         for (ClaimGatherer claimGatherer : claimGatherers.values()) {
-            requiredClaims.add(claimGatherer.getRequiredClaimsDetails(getIssuer()).getObject());
+            requiredClaims.add(claimGatherer.getRequiredClaimsDetails(providerSettings.getIssuer()).getObject());
         }
         JsonValue requestingPartyClaims = json(object(
                 field("requesting_party_claims", requiredClaims)));
-        return new UmaException(403, UmaConstants.NEED_INFO_ERROR_CODE,
-                "Additional information is required to determine whether the client is authorized to access "
-                        + "the requested resource.").setDetail(requestingPartyClaims);
+        return new NeedInfoException().setDetail(requestingPartyClaims);
     }
 
     private boolean verifyPendingRequestDoesNotAlreadyExist(String resourceSetId, String resourceOwnerId,
@@ -205,32 +258,27 @@ public class AuthorizationRequestEndpoint extends ServerResource {
                         + "been submitted to the resource owner requesting access to the resource");
     }
 
-    private String getResourceOwnerId(String resourceSetId) throws NotFoundException, UmaException {
-        OAuth2ProviderSettings providerSettings = oauth2ProviderSettingsFactory.get(requestFactory.create(getRequest()));
+    private String getResourceOwnerId(OAuth2ProviderSettings providerSettings, String resourceSetId)
+            throws NotFoundException, UmaException {
         ResourceSetDescription resourceSetDescription = getResourceSet(resourceSetId, providerSettings);
         return resourceSetDescription.getResourceOwnerId();
-    }
-
-    private String getIssuer() throws NotFoundException, ServerException {
-        OAuth2ProviderSettings providerSettings = oauth2ProviderSettingsFactory.get(requestFactory.create(getRequest()));
-        return providerSettings.getIssuer();
     }
 
     private boolean hasExpired(PermissionTicket permissionTicket) {
         return permissionTicket.getExpiryTime() < System.currentTimeMillis();
     }
 
-    private boolean isEntitled(UmaProviderSettings umaProviderSettings, PermissionTicket permissionTicket,
-            String requestingPartyId) throws EntitlementException, ServerException {
+    private boolean isEntitled(UmaProviderSettings umaProviderSettings, OAuth2ProviderSettings oauth2ProviderSettings,
+            PermissionTicket permissionTicket, String requestingPartyId)
+            throws EntitlementException, ServerException, UmaException {
         String realm = permissionTicket.getRealm();
         String resourceSetId = permissionTicket.getResourceSetId();
         String resourceName = UmaConstants.UMA_POLICY_SCHEME;
         Subject resourceOwnerSubject;
         try {
-            ResourceSetStore store = oauth2ProviderSettingsFactory.get(requestFactory.create(getRequest()))
-                    .getResourceSetStore();
+            ResourceSetStore store = oauth2ProviderSettings.getResourceSetStore();
             Set<ResourceSetDescription> results = store.query(
-                    org.forgerock.util.query.QueryFilter.equalTo(ResourceSetTokenField.RESOURCE_SET_ID, resourceSetId));
+                    QueryFilter.equalTo(ResourceSetTokenField.RESOURCE_SET_ID, resourceSetId));
             if (results.size() != 1) {
                 throw new NotFoundException("Could not find Resource Set, " + resourceSetId);
             }
@@ -242,17 +290,19 @@ public class AuthorizationRequestEndpoint extends ServerResource {
         }
         Subject requestingPartySubject = UmaUtils.createSubject(createIdentity(requestingPartyId, realm));
 
+        beforeAuthorization(permissionTicket, requestingPartySubject, resourceOwnerSubject);
+
         // Implicitly grant access to the resource owner
         if (isRequestingPartyResourceOwner(requestingPartySubject, resourceOwnerSubject)) {
+            afterAuthorization(true, permissionTicket, requestingPartySubject, resourceOwnerSubject);
             return true;
         }
-
         List<Entitlement> entitlements = umaProviderSettings.getPolicyEvaluator(requestingPartySubject,
-                permissionTicket.getClientId().toLowerCase())
+                permissionTicket.getResourceServerClientId().toLowerCase())
                 .evaluate(realm, requestingPartySubject, resourceName, null, false);
 
         Set<String> requestedScopes = permissionTicket.getScopes();
-        Set<String> requiredScopes = new HashSet<String>(requestedScopes);
+        Set<String> requiredScopes = new HashSet<>(requestedScopes);
         for (Entitlement entitlement : entitlements) {
             for (String requestedScope : requestedScopes) {
                 final Boolean actionValue = entitlement.getActionValue(requestedScope);
@@ -262,11 +312,31 @@ public class AuthorizationRequestEndpoint extends ServerResource {
             }
         }
 
-        return requiredScopes.isEmpty();
+        boolean isAuthorized = requiredScopes.isEmpty();
+        afterAuthorization(isAuthorized, permissionTicket, requestingPartySubject, resourceOwnerSubject);
+        return isAuthorized;
     }
 
     private boolean isRequestingPartyResourceOwner(Subject requestingParty, Subject resourceOwner) {
         return resourceOwner.equals(requestingParty);
+    }
+
+    private void beforeAuthorization(PermissionTicket permissionTicket, Subject requestingParty,
+            Subject resourceOwner) throws UmaException {
+        for (RequestAuthorizationFilter filter : extensionFilterManager.getFilters(RequestAuthorizationFilter.class)) {
+            filter.beforeAuthorization(permissionTicket, requestingParty, resourceOwner);
+        }
+    }
+
+    private void afterAuthorization(boolean isAuthorized, PermissionTicket permissionTicket, Subject requestingParty,
+            Subject resourceOwner) {
+        for (RequestAuthorizationFilter filter : extensionFilterManager.getFilters(RequestAuthorizationFilter.class)) {
+            if (isAuthorized) {
+                filter.afterSuccessfulAuthorization(permissionTicket, requestingParty, resourceOwner);
+            } else {
+                filter.afterFailedAuthorization(permissionTicket, requestingParty, resourceOwner);
+            }
+        }
     }
 
     protected AMIdentity createIdentity(String username, String realm) {
@@ -275,16 +345,35 @@ public class AuthorizationRequestEndpoint extends ServerResource {
 
     private Representation createJsonRpt(UmaTokenStore umaTokenStore, PermissionTicket permissionTicket) throws ServerException {
         RequestingPartyToken rpt = umaTokenStore.createRPT(permissionTicket);
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         response.put("rpt", rpt.getId());
-        return new JacksonRepresentation<Map<String, Object>>(response);
+        return new JacksonRepresentation<>(response);
     }
 
-    private PermissionTicket getPermissionTicket(UmaTokenStore umaTokenStore, JsonValue requestBody) throws BadRequestException, UmaException {
+    private PermissionTicket getPermissionTicket(UmaTokenStore umaTokenStore, JsonValue requestBody)
+            throws BadRequestException, UmaException, ServerException, NotFoundException {
+        String requestingClientId = getAuthorisationApiToken().getClientId();
+        String permissionTicketId = getTicketId(requestBody);
         try {
-            return umaTokenStore.readPermissionTicket(getTicketId(requestBody));
+            return umaTokenStore.readPermissionTicket(permissionTicketId);
         } catch (NotFoundException e) {
-            throw new UmaException(400, UmaConstants.INVALID_TICKET_ERROR_CODE, UNABLE_TO_RETRIEVE_TICKET_MESSAGE);
+            Collection<RequestingPartyToken> rpts = umaTokenStore.queryRPT(
+                    equalTo(CoreTokenField.STRING_THREE, permissionTicketId));
+
+            Collection<RequestingPartyToken> invalidRpts = new HashSet<>();
+            for (RequestingPartyToken rpt : rpts) {
+                if (!rpt.getClientClientId().equals(requestingClientId)) {
+                    invalidRpts.add(rpt);
+                }
+            }
+
+            if (!invalidRpts.isEmpty()) {
+                revokeInvalidRpts(umaTokenStore, invalidRpts, permissionTicketId);
+                //This can never happen as revokeInvalidRpts is guarenteed to throw an UmaException
+                return null;
+            } else {
+                throw new UmaException(400, UmaConstants.INVALID_TICKET_ERROR_CODE, UNABLE_TO_RETRIEVE_TICKET_MESSAGE);
+            }
         }
     }
 
@@ -342,7 +431,7 @@ public class AuthorizationRequestEndpoint extends ServerResource {
         try {
             ResourceSetStore store = providerSettings.getResourceSetStore();
             Set<ResourceSetDescription> results = store.query(
-                    org.forgerock.util.query.QueryFilter.equalTo(ResourceSetTokenField.RESOURCE_SET_ID, resourceSetId));
+                    QueryFilter.equalTo(ResourceSetTokenField.RESOURCE_SET_ID, resourceSetId));
             if (results.size() != 1) {
                 throw new UmaException(400, "invalid_resource_set_id", "Could not fing Resource Set, " + resourceSetId);
             }

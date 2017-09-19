@@ -11,12 +11,14 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.openam.rest.service;
 
-import org.forgerock.openam.rest.RestEndpoints;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import org.forgerock.guice.core.InjectorHolder;
 import org.restlet.data.MediaType;
 import org.restlet.routing.Router;
 
@@ -36,10 +38,9 @@ public class OAuth2ServiceEndpointApplication extends ServiceEndpointApplication
 
     /**
      * Returns the XACML router.
-     * @param restEndpoints Registry of routers.
      * @return
      */
-    protected Router getRouter(RestEndpoints restEndpoints) {
-        return restEndpoints.getOAuth2ServiceRouter();
+    protected Router getRouter() {
+        return InjectorHolder.getInstance(Key.get(Router.class, Names.named("OAuth2Router")));
     }
 }

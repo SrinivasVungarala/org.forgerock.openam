@@ -18,6 +18,7 @@
 #define UTILITY_H
 
 #include "pcre.h"
+#include "net_client.h"
 
 #define AM_POLICY_CHANGE_KEY    "AM_POLICY_CHANGE_KEY"
 #define AM_CACHE_TIMEFORMAT     "%Y-%m-%d %H:%M:%S"
@@ -130,16 +131,22 @@ struct logout_worker_data {
     unsigned long instance_id;
     char *token;
     char *openam;
-    char *server_id;
-    struct am_ssl_options info;
+    am_net_options_t *options;
 };
 
 struct audit_worker_data {
     unsigned long instance_id;
     char *logdata;
     char *openam;
-    char *server_id;
-    struct am_ssl_options info;
+    am_net_options_t *options;
+};
+
+struct url_validator_worker_data {
+    unsigned long instance_id;
+    time_t last;
+    int url_index;
+    int running;
+    char *config_path;
 };
 
 typedef struct {
@@ -152,6 +159,7 @@ typedef struct {
 void delete_am_cookie_list(struct am_cookie **list);
 void delete_am_policy_result_list(struct am_policy_result **list);
 
+void am_timer(uint64_t *t);
 void am_timer_start(am_timer_t *t);
 void am_timer_stop(am_timer_t *t);
 void am_timer_pause(am_timer_t *t);
@@ -174,12 +182,13 @@ size_t am_bin_path(char* buffer, size_t len);
 
 int string_replace(char **original, const char *pattern, const char *replace, size_t *sz);
 
+size_t am_shm_max_pool_size();
 void am_shm_unlock(am_shm_t *);
 int am_shm_lock(am_shm_t *);
 am_shm_t *am_shm_create(const char *, size_t);
 void am_shm_shutdown(am_shm_t *);
 void *am_shm_alloc(am_shm_t *am, size_t usize);
-void *am_shm_alloc_and_purge(am_shm_t *am, size_t usize, int (*purge_f)());
+void *am_shm_alloc_with_gc(am_shm_t *am, size_t usize, int (*gc)(unsigned long), unsigned long instance_id);
 void am_shm_free(am_shm_t *am, void *ptr);
 void *am_shm_realloc(am_shm_t *am, void *ptr, size_t size);
 void am_shm_set_user_offset(am_shm_t *r, size_t s);
@@ -210,7 +219,9 @@ void read_directory(const char *path, struct am_namevalue **list);
 
 #if defined(_WIN32) || defined(__sun)
 char *strndup(const char *s, size_t n);
+#if defined(__sun) || (_MSC_VER < 1900)
 size_t strnlen(const char *string, size_t maxlen);
+#endif
 #endif
 
 char *stristr(char *str1, char *str2);
@@ -244,7 +255,6 @@ int am_delete_file(const char *fn);
 int am_delete_directory(const char *path);
 
 int get_valid_url_index(unsigned long instance_id);
-void set_valid_url_index(unsigned long instance_id, int value);
 
 int get_ttl_value(struct am_namevalue *session, const char *name, int def, int value_in_minutes);
 
@@ -253,30 +263,9 @@ int create_am_policy_result_node(const char *resource, size_t resource_size, str
 int create_am_action_decision_node(am_bool_t a, char m, uint64_t ttl,
         struct am_action_decision **node);
 
-int am_agent_logout(unsigned long instance_id, const char *openam,
-        const char *token, const char *server_id, struct am_ssl_options *info, void(*log)(const char *, ...));
-int am_agent_naming_request(unsigned long instance_id, const char *openam, const char *token);
-int am_agent_session_request(unsigned long instance_id, const char *openam,
-        const char *token, const char *user_token, const char *notif_url);
-int am_agent_policy_request(unsigned long instance_id, const char *openam,
-        const char *token, const char *user_token, const char *req_url,
-        const char *notif_url, const char *scope, const char *cip, const char *pattr,
-        const char *server_id, struct am_ssl_options *info,
-        struct am_namevalue **session_list,
-        struct am_policy_result **policy_list);
-
-int am_url_validate(unsigned long instance_id, const char *url,
-        struct am_ssl_options *info, int *httpcode, void(*log)(const char *, ...));
-
 void *am_parse_session_xml(unsigned long instance_id, const char *xml, size_t xml_sz);
 void *am_parse_session_saml(unsigned long instance_id, const char *xml, size_t xml_sz);
 void *am_parse_policy_xml(unsigned long instance_id, const char *xml, size_t xml_sz, int scope);
-
-int am_agent_login(unsigned long instance_id, const char *openam, const char *notifyurl,
-        const char *user, const char *pass, const char *realm, int is_local,
-        int lb_enable, struct am_ssl_options *info,
-        char **agent_token, char **pxml, size_t *pxsz, struct am_namevalue **session_list,
-        void(*log)(const char *, ...));
 
 int am_audit_init(int id);
 int am_audit_shutdown();
@@ -286,8 +275,9 @@ int am_audit_register_instance(am_config_t *conf);
 int am_add_remote_audit_entry(unsigned long instance_id, const char *agent_token,
         const char *agent_token_server_id, const char *file_name,
         const char *user_token, const char *format, ...);
-int am_agent_audit_request(unsigned long instance_id, const char *openam,
-        const char *logdata, const char *server_id, struct am_ssl_options *info);
+
+int am_url_validator_init();
+void am_url_validator_shutdown();
 
 int am_scope_to_num(const char *scope);
 const char *am_scope_to_str(int scope);
@@ -329,6 +319,23 @@ void* mem3cpy(void* dest, const void* source1, size_t size1, const void* source2
 
 void update_agent_configuration_ttl(am_config_t *c);
 void update_agent_configuration_audit(am_config_t *c);
+void update_agent_configuration_normalise_map_urls(am_config_t *c);
+void update_agent_configuration_reorder_map_values(am_config_t *c);
+
 char *get_global_name(const char *name, int id);
+am_bool_t validate_directory_access(const char *path, int mask);
+
+typedef struct property_map property_map_t;
+property_map_t * property_map_create();
+void property_map_parse(property_map_t * map, char * source, am_bool_t override, void (* logf)(const char * format, ...), char * data, size_t data_sz);
+char * property_map_get_value(property_map_t * map, const char * key);
+void property_map_visit(property_map_t * map, am_bool_t(* callback)(char * key, char * value, void * data), void * data);
+void property_map_delete(property_map_t * map);
+am_bool_t property_map_remove_key(property_map_t * map, const char * key);
+char ** property_map_get_value_addr(property_map_t * map, const char * key);
+char * property_map_write_to_buffer(property_map_t * map, size_t * data_sz);
+
+uint32_t am_hash_buffer(const void *buf, size_t len);
+uint32_t am_hash(const void *buf);
 
 #endif

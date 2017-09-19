@@ -25,7 +25,7 @@
 -->
 <section xml:id='sec-policy-decisions'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -42,10 +42,9 @@
  demonstrates making a request to OpenAM for a policy decision about access to
  a web resource.</para>
 
- <para>Before you continue, make sure that the packages described in the
-   <link xlink:show="new" xlink:href="dev-guide#chap-jdk"
-   xlink:role="http://docbook.org/xlink/role/olink">Using the OpenAM Java SDK</link>
-   chapter are installed.</para>
+ <para>Before you continue, make sure that the packages described in
+   <xref linkend="install-sdk-samples" />
+   are installed.</para>
 
  <para>OpenAM centralizes policy administration, policy evaluation, and policy
  decision making so that your applications do not have to do so. In many
@@ -59,7 +58,7 @@
  method. For boolean decisions such as allow or deny, your application can also
  call the <literal>isAllowed()</literal> method.</para>
  
- <para>To make a policy decision, OpenAM needs an <literal>SSOToken</literal>,
+ <para>To make a policy decision, OpenAM needs an SSO token,
  the resource to access, the action the user wants to perform on the resource
  such as HTTP <literal>GET</literal> or <literal>POST</literal>, and a
  <literal>Map</literal> of environment settings you can use to specify
@@ -70,7 +69,7 @@
  <para>The <literal>PolicyEvaluationSample</literal> class takes as its
  configuration the user credentials, service name, resource, and action that
  you provide in a Java properties file. It then authenticates the user to get
- an <literal>SSOToken</literal> using the <filename>TokenUtils.java</filename>
+ an SSO token using the <filename>TokenUtils.java</filename>
  helper methods. At that point it has sufficient information to request a
  policy decision.</para>
 
@@ -195,8 +194,8 @@ resource.name=http://www.example.com:80/banner.html
 action.name=GET</programlisting>
 
  <para>Also, set up a policy in OpenAM that corresponds to the resource in
- question. You can set up the policy in OpenAM console under Access Control
- &gt; <replaceable>Realm Name</replaceable> &gt; Policies. Concerning the
+ question. You can set up the policy in OpenAM console under Realms
+ &gt; <replaceable>Realm Name</replaceable> &gt; Authorization. Concerning the
  <replaceable>Realm Name</replaceable>, notice that unless you change the code,
  the sample uses the top-level realm, <literal>/</literal> to authenticate the
  user.</para>

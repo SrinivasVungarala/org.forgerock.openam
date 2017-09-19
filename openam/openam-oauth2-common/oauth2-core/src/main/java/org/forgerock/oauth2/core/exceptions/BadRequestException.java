@@ -11,7 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2014 ForgeRock AS.
+ * Copyright 2014-2015 ForgeRock AS.
  */
 
 package org.forgerock.oauth2.core.exceptions;
@@ -30,5 +30,15 @@ public class BadRequestException extends OAuth2Exception {
      */
     public BadRequestException(final String message) {
         super(400, "bad_request", message);
+    }
+
+    /**
+     * Constructs a new BadRequestException with the specified message and code.
+     *
+     * @param error The error code.
+     * @param message The reason for the exception.
+     */
+    public BadRequestException(final String error, final String message) {
+        super(400, error, message);
     }
 }

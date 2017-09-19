@@ -48,6 +48,7 @@ import org.forgerock.oauth2.core.OAuth2ProviderSettingsFactory;
 import org.forgerock.oauth2.core.OAuth2Request;
 import org.forgerock.oauth2.core.ScopeValidator;
 import org.forgerock.oauth2.core.Token;
+import org.forgerock.oauth2.core.UserInfoClaims;
 import org.forgerock.oauth2.core.exceptions.InvalidClientException;
 import org.forgerock.oauth2.core.exceptions.InvalidScopeException;
 import org.forgerock.oauth2.core.exceptions.NotFoundException;
@@ -192,10 +193,10 @@ public class OpenAMScopeValidator implements ScopeValidator {
     /**
      * {@inheritDoc}
      */
-    public Map<String, Object> getUserInfo(AccessToken token, OAuth2Request request)
+    public UserInfoClaims getUserInfo(AccessToken token, OAuth2Request request)
             throws UnauthorizedClientException, NotFoundException {
 
-        Map<String, Object> response = new HashMap<String, Object>();
+        Map<String, Object> response = new HashMap<>();
         Bindings scriptVariables = new SimpleBindings();
         SSOToken ssoToken = getUsersSession(request);
         String realm;
@@ -221,10 +222,8 @@ public class OpenAMScopeValidator implements ScopeValidator {
                 id = identityManager.getResourceOwnerIdentity(token.getResourceOwnerId(), realm);
 
                 response.put(OAuth2Constants.JWTTokenParams.SUB, subId);
-
-                //todo: figure out why this was here
-                //response.put(OAuth2Constants.JWTTokenParams.UPDATED_AT, getUpdatedAt(token.getResourceOwnerId(),
-                //  token.getRealm(), request));
+                response.put(OAuth2Constants.JWTTokenParams.UPDATED_AT, getUpdatedAt(token.getResourceOwnerId(),
+                        token.getRealm(), request));
             } else {
                 //otherwise we're simply reading claims into the id_token, so grab it from the request/ssoToken
                 realm = DNMapper.orgNameToRealmName(ssoToken.getProperty(ISAuthConstants.ORGANIZATION));
@@ -233,7 +232,7 @@ public class OpenAMScopeValidator implements ScopeValidator {
                 scopes = splitScope(scopeStr);
             }
 
-            scriptVariables.put(OAuth2Constants.ScriptParams.SCOPES, scopes);
+            scriptVariables.put(OAuth2Constants.ScriptParams.SCOPES, getScriptFriendlyScopes(scopes));
             scriptVariables.put(OAuth2Constants.ScriptParams.IDENTITY, id);
             scriptVariables.put(OAuth2Constants.ScriptParams.LOGGER, logger);
             scriptVariables.put(OAuth2Constants.ScriptParams.CLAIMS, response);
@@ -254,6 +253,10 @@ public class OpenAMScopeValidator implements ScopeValidator {
         } catch (SSOException e) {
             throw new NotFoundException(e.getMessage());
         }
+    }
+
+    private Set<String> getScriptFriendlyScopes(Set<String> scopes) {
+        return scopes == null ? new HashSet<String>() : new HashSet<>(scopes);
     }
 
     private Map<String, Set<String>> gatherRequestedClaims(OAuth2ProviderSettings providerSettings,
@@ -467,6 +470,10 @@ public class OpenAMScopeValidator implements ScopeValidator {
             } catch (ServerException e) {
                 logger.error("Unable to read last modified attribute from datastore", e);
                 return DEFAULT_TIMESTAMP;
+            }
+
+            if (modifyTimestampAttributeName == null && createdTimestampAttributeName == null) {
+                return null;
             }
 
             final AMHashMap timestamps = getTimestamps(username, realm, modifyTimestampAttributeName,

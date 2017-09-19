@@ -1,0 +1,33 @@
+{{> headers/_TitleWithSubAndIcon title=entity.name type="console.authorization.common.policySet" icon="folder"
+    buttons="templates/admin/views/realms/partials/_HeaderDeleteButton" }}
+
+<p class="page-description">{{entity.description}}</p>
+
+<div class="tab-menu">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#policiesPanel" role="tab" data-toggle="tab" aria-expanded="true">
+                {{t "console.authorization.policySets.edit.policies"}}
+            </a>
+        </li>
+        <li>
+            <a href="#settingsPanel" role="tab" data-toggle="tab" aria-expanded="true">{{t "common.form.settings"}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="panel panel-default fr-panel-tab">
+    <div class="panel-body tab-content">
+        <div role="tabpanel" class="tab-pane active" id="policiesPanel"></div>
+
+        <div role="tabpanel" class="tab-pane" id="settingsPanel">
+            <div id="policySetSettings"></div>
+
+            <div class="tab-pane-footer clearfix">
+                <div class="pull-right">
+                    <button id="saveChanges" class="btn btn-primary" type="button">{{t "common.form.saveChanges"}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -16,37 +16,14 @@
 
 package org.forgerock.openam.sts.rest.operation;
 
+import static org.forgerock.json.JsonValue.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provides;
-import org.forgerock.guava.common.collect.Sets;
-import org.forgerock.json.fluent.JsonValue;
-import org.forgerock.openam.sts.AMSTSConstants;
-import org.forgerock.openam.sts.TokenMarshalException;
-import org.forgerock.openam.sts.TokenType;
-import org.forgerock.openam.sts.TokenTypeId;
-import org.forgerock.openam.sts.XMLUtilities;
-import org.forgerock.openam.sts.XMLUtilitiesImpl;
-import org.forgerock.openam.sts.config.user.CustomTokenOperation;
-import org.forgerock.openam.sts.rest.service.RestSTSServiceHttpServletContext;
-import org.forgerock.openam.sts.rest.token.provider.RestTokenProviderParameters;
-import org.forgerock.openam.sts.rest.token.provider.saml.Saml2TokenCreationState;
-import org.forgerock.openam.sts.rest.token.validator.RestTokenTransformValidatorParameters;
-import org.forgerock.openam.sts.token.CTSTokenIdGenerator;
-import org.forgerock.openam.sts.token.CTSTokenIdGeneratorImpl;
-import org.forgerock.openam.sts.user.invocation.ProofTokenState;
-import org.forgerock.openam.sts.user.invocation.SAML2TokenCreationState;
-import org.forgerock.openam.sts.user.invocation.X509TokenState;
-import org.forgerock.openam.sts.token.SAML2SubjectConfirmation;
-import org.forgerock.openam.sts.token.model.OpenAMSessionToken;
-import org.forgerock.openam.sts.token.model.RestUsernameToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.CertificateException;
@@ -55,14 +32,33 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
+import javax.inject.Named;
 
-import static org.forgerock.json.fluent.JsonValue.field;
-import static org.forgerock.json.fluent.JsonValue.json;
-import static org.forgerock.json.fluent.JsonValue.object;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.forgerock.guava.common.collect.Sets;
+import org.forgerock.services.context.ClientContext;
+import org.forgerock.json.JsonValue;
+import org.forgerock.openam.sts.AMSTSConstants;
+import org.forgerock.openam.sts.TokenMarshalException;
+import org.forgerock.openam.sts.TokenType;
+import org.forgerock.openam.sts.TokenTypeId;
+import org.forgerock.openam.sts.XMLUtilities;
+import org.forgerock.openam.sts.XMLUtilitiesImpl;
+import org.forgerock.openam.sts.config.user.CustomTokenOperation;
+import org.forgerock.openam.sts.rest.token.provider.RestTokenProviderParameters;
+import org.forgerock.openam.sts.rest.token.provider.saml.Saml2TokenCreationState;
+import org.forgerock.openam.sts.rest.token.validator.RestTokenTransformValidatorParameters;
+import org.forgerock.openam.sts.token.CTSTokenIdGenerator;
+import org.forgerock.openam.sts.token.CTSTokenIdGeneratorImpl;
+import org.forgerock.openam.sts.token.SAML2SubjectConfirmation;
+import org.forgerock.openam.sts.token.model.OpenAMSessionToken;
+import org.forgerock.openam.sts.token.model.RestUsernameToken;
+import org.forgerock.openam.sts.user.invocation.ProofTokenState;
+import org.forgerock.openam.sts.user.invocation.SAML2TokenCreationState;
+import org.forgerock.openam.sts.user.invocation.X509TokenState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class TokenRequestMarshallerImplTest {
     private static final String CUSTOM_TOKEN_NAME = "BOBO";
@@ -81,7 +77,7 @@ public class TokenRequestMarshallerImplTest {
             return LoggerFactory.getLogger(AMSTSConstants.REST_STS_DEBUG_ID);
         }
 
-        //Must be empty for the testX509CertificateTokenMarshalling() to reference cert from ServletRequest attribute
+        //Must be empty for the testX509CertificateTokenMarshalling() to reference cert from ClientContext
         @Provides
         @Named(AMSTSConstants.OFFLOADED_TWO_WAY_TLS_HEADER_KEY)
         String getOffloadedTwoWayTLSHeaderKey() {
@@ -116,7 +112,7 @@ public class TokenRequestMarshallerImplTest {
     public void marshallUsernameToken() throws TokenMarshalException, UnsupportedEncodingException {
         JsonValue jsonUnt = json(object(field("token_type", "USERNAME"),
                 field("username", "bobo"), field("password", "cornholio")));
-        RestTokenTransformValidatorParameters<?> params = tokenMarshaller.buildTokenTransformValidatorParameters(jsonUnt, null, null);
+        RestTokenTransformValidatorParameters<?> params = tokenMarshaller.buildTokenTransformValidatorParameters(jsonUnt, null);
         assertEquals("bobo".getBytes(AMSTSConstants.UTF_8_CHARSET_ID), ((RestUsernameToken)params.getInputToken()).getUsername());
     }
 
@@ -124,23 +120,29 @@ public class TokenRequestMarshallerImplTest {
     public void marshallOpenAMToken() throws TokenMarshalException {
         JsonValue jsonOpenAM = json(object(field("token_type", "OPENAM"),
                 field("session_id", "super_random")));
-        RestTokenTransformValidatorParameters<?> params = tokenMarshaller.buildTokenTransformValidatorParameters(jsonOpenAM, null, null);
+        RestTokenTransformValidatorParameters<?> params = tokenMarshaller.buildTokenTransformValidatorParameters(jsonOpenAM, null);
         assertTrue("super_random".equals(((OpenAMSessionToken) params.getInputToken()).getSessionId()));
     }
 
 
     @Test
     public void testX509CertificateTokenMarshalling() throws Exception {
-        HttpServletRequest mockServletRequest = mock(HttpServletRequest.class);
-        RestSTSServiceHttpServletContext mockServletContext = mock(RestSTSServiceHttpServletContext.class);
-        when(mockServletContext.getHttpServletRequest()).thenReturn(mockServletRequest);
         X509Certificate certificate = getCertificate();
-        X509Certificate[] certificates = new X509Certificate[] {certificate};
-        when(mockServletRequest.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+        ClientContext clientInfoContext = ClientContext.buildExternalClientContext(null).certificates(certificate).build();
+
         @SuppressWarnings("unchecked")
-        RestTokenTransformValidatorParameters<X509Certificate[]> params = (RestTokenTransformValidatorParameters<X509Certificate[]>)
-                tokenMarshaller.buildTokenTransformValidatorParameters(new X509TokenState().toJson(), null, mockServletContext);
+        RestTokenTransformValidatorParameters<X509Certificate[]> params =
+                (RestTokenTransformValidatorParameters<X509Certificate[]>)
+                tokenMarshaller.buildTokenTransformValidatorParameters(new X509TokenState().toJson(), clientInfoContext);
         assertEquals(certificate.getEncoded(), (params.getInputToken()[0].getEncoded()));
+    }
+
+    @Test (expectedExceptions = TokenMarshalException.class)
+    public void testMissingX509CertificateTokenMarshalling() throws Exception {
+        ClientContext clientInfoContext = ClientContext.buildExternalClientContext(null).build();
+        //no certificate present in the ClientContext, and the offload header set to "" by the module above, so
+        //exception should be thrown
+        tokenMarshaller.buildTokenTransformValidatorParameters(new X509TokenState().toJson(), clientInfoContext);
     }
 
     @Test
@@ -155,7 +157,7 @@ public class TokenRequestMarshallerImplTest {
     }
 
     @Test
-    public void testBuildProviderParametersOpenAMSaml2HoK() throws TokenMarshalException, IOException, CertificateException {
+    public void testBuildProviderParametersOpenAMSaml2HoK() throws IOException, CertificateException {
         JsonValue jsonOpenAM = json(object(field("token_type", "OPENAM"),
                 field("session_id", "super_random")));
         X509Certificate certificate = getCertificate();
@@ -173,7 +175,7 @@ public class TokenRequestMarshallerImplTest {
     }
 
     @Test
-    public void testBuildCustomProviderParameters() throws TokenMarshalException, IOException, CertificateException {
+    public void testBuildCustomProviderParameters() throws IOException, CertificateException {
         JsonValue jsonUnt = json(object(field("token_type", "USERNAME"),
                 field("username", "bobo"), field("password", "cornholio")));
         JsonValue jsonCustomOutput = json(object(field("token_type", CUSTOM_TOKEN_NAME),
@@ -191,7 +193,7 @@ public class TokenRequestMarshallerImplTest {
     }
 
     @Test(expectedExceptions = TokenMarshalException.class)
-    public void testBuildCustomProviderParametersWithUnregisteredCustomToken() throws TokenMarshalException, IOException, CertificateException {
+    public void testBuildCustomProviderParametersWithUnregisteredCustomToken() throws IOException, CertificateException {
         JsonValue jsonUnt = json(object(field("token_type", "USERNAME"),
                 field("username", "bobo"), field("password", "cornholio")));
         JsonValue jsonCustomOutput = json(object(field("token_type", "NOT_REGISTERED_AS_CUSTOM_TYPE"),

@@ -1333,7 +1333,7 @@ public class Session extends GeneralTaskRunnable {
      * @return a unique stable storage id.
      */
     public String getStableStorageID() {
-        return sessionID.getExtension(SessionID.STORAGE_KEY);
+        return sessionID.getExtension().getStorageKey();
     }
 
 }

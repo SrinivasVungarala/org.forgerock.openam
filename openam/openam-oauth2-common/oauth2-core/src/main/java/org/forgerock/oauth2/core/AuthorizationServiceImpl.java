@@ -19,12 +19,14 @@ package org.forgerock.oauth2.core;
 import static org.forgerock.oauth2.core.OAuth2Constants.Custom.*;
 import static org.forgerock.oauth2.core.OAuth2Constants.Params.*;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+
+import org.forgerock.guava.common.base.Predicates;
+import org.forgerock.guava.common.collect.Maps;
 import org.forgerock.oauth2.core.exceptions.AccessDeniedException;
 import org.forgerock.oauth2.core.exceptions.BadRequestException;
 import org.forgerock.oauth2.core.exceptions.InteractionRequiredException;
@@ -38,7 +40,9 @@ import org.forgerock.oauth2.core.exceptions.ResourceOwnerAuthenticationRequired;
 import org.forgerock.oauth2.core.exceptions.ResourceOwnerConsentRequired;
 import org.forgerock.oauth2.core.exceptions.ResourceOwnerConsentRequiredException;
 import org.forgerock.oauth2.core.exceptions.ServerException;
+import org.forgerock.oauth2.core.exceptions.UnauthorizedClientException;
 import org.forgerock.oauth2.core.exceptions.UnsupportedResponseTypeException;
+import org.forgerock.openam.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,8 +100,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             requestValidator.validateRequest(request);
         }
 
-        final ClientRegistration clientRegistration =
-                clientRegistrationStore.get(request.<String>getParameter(CLIENT_ID), request);
+        final String clientId = request.getParameter(CLIENT_ID);
+        final ClientRegistration clientRegistration = clientRegistrationStore.get(clientId, request);
 
         final Set<String> scope = Utils.splitScope(request.<String>getParameter(SCOPE));
         //plugin point
@@ -115,27 +119,55 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         if (!haveConsent) {
             String localeParameter = request.getParameter(LOCALE);
-            Locale locale = null;
-            if (localeParameter == null || localeParameter.isEmpty()) {
+            String uiLocaleParameter = request.getParameter(UI_LOCALES);
+            Locale locale = getLocale(uiLocaleParameter, localeParameter);
+            if (locale == null) {
                 locale = request.getLocale();
-            } else {
-                String[] localeComponents = localeParameter.split("-");
-                if (localeComponents.length == 1) {
-                    locale = new Locale(localeComponents[0]);
-                } else if (localeComponents.length == 2) {
-                    locale = new Locale(localeComponents[0], localeComponents[1]);
-                } else if (localeComponents.length > 2) {
-                    locale = new Locale(localeComponents[0], localeComponents[1], localeComponents[2]);
-                }
             }
+
+            UserInfoClaims userInfo = null;
+            try {
+                userInfo = providerSettings.getUserInfo(request.getToken(AccessToken.class), request);
+            } catch (UnauthorizedClientException e) {
+                logger.debug("Couldn't get user info - continuing to display consent page without claims.", e);
+            }
+
             final String clientName = clientRegistration.getDisplayName(locale);
-            final String clientDescription = clientRegistration.getDisplayDescription(locale);
-            final Set<String> scopeDescriptions = getScopeDescriptions(validatedScope,
+            if (clientName == null) {
+                throw new InvalidClientException("Display name has not been set.");
+            }
+            final String displayDescription = clientRegistration.getDisplayDescription(locale);
+            final String clientDescription = displayDescription == null ? "" : displayDescription;
+            final Map<String, String> scopeDescriptions = getScopeDescriptions(validatedScope,
                     clientRegistration.getScopeDescriptions(locale));
-            throw new ResourceOwnerConsentRequired(clientName, clientDescription, scopeDescriptions);
+            final Map<String, String> claimDescriptions = getClaimDescriptions(userInfo.getValues(),
+                    clientRegistration.getClaimDescriptions(locale));
+            throw new ResourceOwnerConsentRequired(clientName, clientDescription, scopeDescriptions, claimDescriptions,
+                    userInfo, resourceOwner.getName(providerSettings));
         }
 
         return tokenIssuer.issueTokens(request, clientRegistration, resourceOwner, scope, providerSettings);
+    }
+
+    private Locale getLocale(String uiLocalParameter, String localeParameter) {
+        if (!StringUtils.isEmpty(uiLocalParameter)) {
+            return Locale.forLanguageTag(uiLocalParameter);
+        } else if (!StringUtils.isEmpty(localeParameter)) {
+            return Locale.forLanguageTag(localeParameter);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the scope descriptions for the requested scopes.
+     *
+     * @param claims The claims being provided.
+     * @param claimDescriptions The descriptions for all possible allowed claims.
+     * @return A {@code Set} of requested scope descriptions.
+     */
+    private Map<String, String> getClaimDescriptions(Map<String, Object> claims, Map<String, String> claimDescriptions) {
+        return Maps.filterKeys(claimDescriptions, Predicates.in(claims.keySet()));
     }
 
     /**
@@ -145,16 +177,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      * @param scopeDescriptions The descriptions for all possible allowed scopes.
      * @return A {@code Set} of requested scope descriptions.
      */
-    private Set<String> getScopeDescriptions(Set<String> scopes, Map<String, String> scopeDescriptions) {
-        final Set<String> list = new LinkedHashSet<String>();
-        for (final String scope : scopes) {
-            for (final Map.Entry<String, String> scopeDescription : scopeDescriptions.entrySet()) {
-                if (scopeDescription.getKey().equalsIgnoreCase(scope)) {
-                    list.add(scopeDescription.getValue());
-                }
-            }
-        }
-        return list;
+    private Map<String, String> getScopeDescriptions(Set<String> scopes, Map<String, String> scopeDescriptions) {
+        return Maps.filterKeys(scopeDescriptions, Predicates.in(scopes));
     }
 
     /**

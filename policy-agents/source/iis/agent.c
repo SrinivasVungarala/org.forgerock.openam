@@ -41,12 +41,6 @@ static void *modctx = NULL;
 static am_status_t set_user(am_request_t *rq, const char *user);
 static am_status_t set_custom_response(am_request_t *rq, const char *text, const char *cont_type);
 
-struct process_wait {
-    HANDLE wait;
-    HANDLE proc;
-    int pid;
-};
-
 static DWORD hr_to_winerror(HRESULT hr) {
     if ((hr & 0xFFFF0000) == MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0)) {
         return HRESULT_CODE(hr);
@@ -462,25 +456,59 @@ static const char *get_server_variable(IHttpContext *ctx,
     return val;
 }
 
-static am_status_t get_request_url(am_request_t *rq) {
-    IHttpContext *r = (IHttpContext *) (rq != NULL ? rq->ctx : NULL);
+static am_status_t get_request_url(am_request_t *req) {
+    static const char *thisfunc = "get_request_url():";
+    IHttpContext *ctx;
     HTTP_COOKED_URL url;
     am_status_t status = AM_EINVAL;
-    if (r == NULL) return status;
-    url = r->GetRequest()->GetRawHttpRequest()->CookedUrl;
+    
+    if (req == NULL) {
+        return status;
+    }
+
+    ctx = (IHttpContext *) req->ctx;
+    if (ctx == NULL) {
+        return status;
+    }
+
+    url = ctx->GetRequest()->GetRawHttpRequest()->CookedUrl;
     if (url.FullUrlLength > 0 && url.pFullUrl != NULL) {
-        char *purl = NULL;
         size_t urlsz = 0;
-        purl = utf8_encode(r, url.pFullUrl, &urlsz);
-        if (purl != NULL) {
-            char *urlc = (char *) alloc_request(r, urlsz + 1);
-            if (urlc != NULL) {
-                memcpy(urlc, purl, urlsz);
-                rq->orig_url = urlc;
-                status = AM_SUCCESS;
+        char *url_encoded = utf8_encode(ctx, url.pFullUrl, &urlsz);
+        if (url_encoded == NULL) {
+            return AM_ENOMEM;
+        }
+
+        char *urlc = (char *) alloc_request(ctx, urlsz + 1);
+        if (urlc != NULL) {
+            memcpy(urlc, url_encoded, urlsz);
+            req->orig_url = urlc;
+            status = AM_SUCCESS;
+        }
+
+    }
+
+    if (status == AM_SUCCESS) {
+        char *path_info = (char *) get_server_variable(ctx, req->instance_id, "PATH_INFO");
+        char *script_name = (char *) get_server_variable(ctx, req->instance_id, "SCRIPT_NAME");
+
+        if (ISVALID(path_info) && ISVALID(script_name)) {
+            /* remove the script name from path_info to get the real path info */
+            const char *pos = strstr(path_info, script_name);
+            size_t path_info_sz = strlen(path_info);
+            if (pos == NULL) {
+                AM_LOG_WARNING(req->instance_id, "%s script name %s not found in path info (%s). "
+                        "Could not get the path info.", thisfunc, script_name, path_info);
+                return status;
             }
-        } else {
-            status = AM_ENOMEM;
+
+            char *path_info_tmp = (char *) alloc_request(ctx, path_info_sz + 1);
+            if (path_info_tmp != NULL) {
+                strncpy(path_info_tmp, pos + strlen(script_name), path_info_sz);
+                req->path_info = path_info_tmp;
+                AM_LOG_DEBUG(req->instance_id, "%s reconstructed path info: %s", thisfunc,
+                        path_info_tmp);
+            }
         }
     }
     return status;
@@ -778,7 +806,6 @@ static void send_custom_data(IHttpResponse *res, const char *payload, int payloa
     BOOL cmpl = FALSE;
 
     if (res == NULL) return;
-    res->Clear();
     res->SetStatus(AM_HTTP_STATUS_200, "OK", 0, S_OK);
     res->SetHeader("Content-Type", cont_type,
             (USHORT) strlen(cont_type), TRUE);
@@ -837,21 +864,21 @@ class OpenAMHttpModule : public CHttpModule{
          **/
         hr = OpenAMStoredConfig::GetConfig(ctx, &conf);
         if (FAILED(hr)) {
-            WriteEventLog("%s GetConfig failed", thisfunc);
+            WriteEventLog("%s GetConfig failed for site %d", thisfunc, site->GetSiteId());
             return RQ_NOTIFICATION_CONTINUE;
         }
         if (conf->IsEnabled() == FALSE) {
-            WriteEventLog("%s GetConfig config is not enabled for %d", thisfunc, site->GetSiteId());
+            /* WriteEventLog("%s GetConfig config is not enabled for site %d", thisfunc, site->GetSiteId()); */
             return RQ_NOTIFICATION_CONTINUE;
         }
-
+        
         boot = conf->GetBootConf();
         if (boot != NULL) {
             /* register and update instance logger configuration (for already registered
              * instances - update logging level only)
              */
             am_log_register_instance(site->GetSiteId(), boot->debug_file, boot->debug_level, boot->debug,
-                    boot->audit_file, boot->audit_level, boot->audit);
+                    boot->audit_file, boot->audit_level, boot->audit, conf->GetPath(ctx));
         } else {
             WriteEventLog("%s GetConfig boot == NULL (%d)", thisfunc, site->GetSiteId());
             res->SetStatus(AM_HTTP_STATUS_500, "Internal Server Error");
@@ -1229,7 +1256,6 @@ static am_status_t set_custom_response(am_request_t *rq, const char *text, const
             char tls[64];
             size_t tl = strlen(text);
             snprintf(tls, sizeof (tls), "%d", tl);
-            r->GetResponse()->Clear();
             if (ISVALID(cont_type)) {
                 hr = r->GetResponse()->SetHeader("Content-Type", cont_type,
                         (USHORT) strlen(cont_type), TRUE);
@@ -1248,7 +1274,7 @@ static am_status_t set_custom_response(am_request_t *rq, const char *text, const
             break;
         }
     }
-    AM_LOG_INFO(rq->instance_id, "set_custom_response(): status: %s (exit: %s)",
+    AM_LOG_DEBUG(rq->instance_id, "set_custom_response(): status: %s (exit: %s)",
             am_strerror(status), am_strerror(rq->status));
     return AM_SUCCESS;
 }
@@ -1297,54 +1323,10 @@ private:
     HANDLE eventLog;
 };
 
-static VOID CALLBACK WaitProcessExitCallback(PVOID lpParameter, BOOLEAN TimerOrWaitFired) {
-    struct process_wait *cb = (struct process_wait *) lpParameter;
-    am_re_init_worker();
-    CloseHandle(cb->proc);
-    UnregisterWait(cb->wait);
-    free(cb);
-}
-
-class OpenAMAppModule : public CGlobalModule{
-    public :
-
-    virtual GLOBAL_NOTIFICATION_STATUS OnGlobalApplicationPreload(
-    IGlobalApplicationPreloadProvider * pProvider) {
-        HRESULT status = S_OK;
-        IGlobalApplicationPreloadProvider2 * prov = NULL;
-        IHttpContext *ctx = NULL;
-        status = pProvider->CreateContext(&ctx);
-        if (SUCCEEDED(status)) {
-            IHttpSite *site = ctx->GetSite();
-            status = HttpGetExtendedInterface(server, pProvider, &prov);
-            if (SUCCEEDED(status)) {
-                if (prov->IsProcessRecycled()) {
-                    struct process_wait *pw = (struct process_wait *)
-                            malloc(sizeof (struct process_wait));
-                    pw->pid = am_log_get_current_owner();
-                    pw->proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pw->pid);
-                    RegisterWaitForSingleObject(&pw->wait, pw->proc,
-                            WaitProcessExitCallback, pw, INFINITE, WT_EXECUTEONLYONCE);
-                }
-            }
-        }
-        if (ctx != NULL) {
-            ctx->ReleaseClonedContext();
-            ctx = NULL;
-        }
-        return GL_NOTIFICATION_CONTINUE;
-    }
-
-    virtual void Terminate() {
-        delete this;
-    }
-};
-
 HRESULT __stdcall RegisterModule(DWORD dwServerVersion,
         IHttpModuleRegistrationInfo *pModuleInfo, IHttpServer *pHttpServer) {
     HRESULT status = S_OK;
     OpenAMHttpModuleFactory *modf = NULL;
-    OpenAMAppModule *app = NULL;
     UNREFERENCED_PARAMETER(dwServerVersion);
 
     do {
@@ -1374,29 +1356,12 @@ HRESULT __stdcall RegisterModule(DWORD dwServerVersion,
             break;
         }
 
-        app = new OpenAMAppModule();
-        if (app == NULL) {
-            status = HRESULT_FROM_WIN32(ERROR_NOT_ENOUGH_MEMORY);
-            break;
-        }
-
-        status = pModuleInfo->SetGlobalNotifications(app, GL_APPLICATION_PRELOAD);
-        if (FAILED(status)) {
-            break;
-        }
-
         modf = NULL;
-        app = NULL;
 
     } while (FALSE);
 
     if (modf != NULL) {
         delete modf;
-        modf = NULL;
-    }
-
-    if (app != NULL) {
-        delete app;
         modf = NULL;
     }
 

@@ -43,11 +43,7 @@
   The OpenAM console offers a wizard for configuring a Java Fedlet
   as a SAML v2.0 Service Provider with OpenAM as the Identity Provider (IDP).
   If that fits your purposes, then read the chapter
-  <link
-   xlink:href="dev-guide#sec-fedlet-java"
-   xlink:role="http://docbook.org/xlink/role/olink"
-   xlink:show="new"
-  ><citetitle>Using Fedlets in Java Web Applications</citetitle></link>
+  <xref linkend="sec-fedlet-java" />
   instead.
  </para>
 
@@ -65,11 +61,7 @@
   that describe the IDP, SP, and their trust relationship
   are quite similar though not identical for Java and .NET Fedlets.
   For instructions on configuring .NET Fedlets, read the chapter
-  <link
-   xlink:href="dev-guide#sec-fedlet-dotnet"
-   xlink:role="http://docbook.org/xlink/role/olink"
-   xlink:show="new"
-  ><citetitle>Using Fedlets in .NET Applications</citetitle></link>.
+  <xref linkend="sec-fedlet-dotnet" />.
  </para>
 
  <itemizedlist>
@@ -549,23 +541,11 @@ $ <userinput>java -Dcom.sun.identity.fedlet.home=/path/to/fedlet/conf ...</useri
     including how to work with the key stores that these settings reference,
     and how to specify public key certificates in standard SAML v2.0 metadata.
     When working with a Java Fedlet, see the section on
-    <link
-     xlink:href="dev-guide#fedlet-signing-encryption"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>Signing &amp; Encryption For a Fedlet</citetitle></link>.
+    <xref linkend="fedlet-signing-encryption" />.
     Although this section focuses on Java Fedlets,
     if you are working with a .NET Fedlet also see the procedures
-    <link
-     xlink:href="dev-guide#import-fedlet-key-pairs-windows"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>To Import Test Key Pairs on Windows</citetitle></link> and
-    <link
-     xlink:href="dev-guide#try-dotnet-fedlet-attribute-query"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>To Try the .NET Fedlet Attribute Query</citetitle></link>.
+    <xref linkend="import-fedlet-key-pairs-windows" /> and
+    <xref linkend="try-dotnet-fedlet-attribute-query" />.
    </para>
 
    <varlistentry>
@@ -578,13 +558,7 @@ $ <userinput>java -Dcom.sun.identity.fedlet.home=/path/to/fedlet/conf ...</useri
 
      <para>
       For hints on generating a key store file with a key pair,
-      read the first steps of
-      the <citetitle>Administration Guide</citetitle> procedure,
-      <link
-       xlink:href="admin-guide#change-signing-key"
-       xlink:role="http://docbook.org/xlink/role/olink"
-       xlink:show="new"
-      ><citetitle>To Change the Signing Key for Federation</citetitle></link>.
+      see <olink targetdoc="admin-guide" targetptr="change-signing-key" />.
      </para>
 
      <para>
@@ -1063,12 +1037,7 @@ $ <userinput>cp ~/Downloads/fedlet/conf/fedlet.cot-template ~/fedlet/fedlet2.cot
     </para>
 
     <para>
-     For details see the <citetitle>Administration Guide</citetitle> section,
-     <link
-      xlink:href="admin-guide#deploy-idp-discovery"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"
-     ><citetitle>Deploying the Identity Provider Discovery Service</citetitle></link>.
+     For details see <olink targetdoc="admin-guide" targetptr="deploy-idp-discovery" />.
     </para>
    </step>
 
@@ -1223,11 +1192,7 @@ $ <userinput>cp ~/Downloads/fedlet/conf/fedlet.cot-template ~/fedlet/fedlet2.cot
     You can obtain the extended metadata from OpenAM
     either as part of the pre-packaged Java Fedlet that you create
     by using the OpenAM console wizard as described in
-    <link
-     xlink:href="dev-guide#create-a-java-fedlet"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>To Create a Fedlet</citetitle></link>,
+    <xref linkend="create-a-java-fedlet" />,
     or by using the <command>ssoadm create-metadata-templ</command> subcommand.
    </para>
    <note>
@@ -1329,11 +1294,7 @@ $ <userinput>cp ~/Downloads/fedlet/conf/fedlet.cot-template ~/fedlet/fedlet2.cot
     and to work with multiple IDPs
     including Circles of Trust with an IDP discovery service.
     For a list of what Fedlets support, see the table
-    <link
-     xlink:href="admin-guide#fedlet-saml2-features"
-     xlink:role="http://docbook.org/xlink/role/olink"
-     xlink:show="new"
-    ><citetitle>Fedlet Support for SAML v2.0 Features</citetitle></link>.
+    <olink targetdoc="admin-guide" targetptr="fedlet-saml2-features" />.
    </para>
 
    <itemizedlist>
@@ -1438,11 +1399,7 @@ $ <userinput>cp ~/Downloads/fedlet/conf/fedlet.cot-template ~/fedlet/fedlet2.cot
        then you must also configure the <tag>SPSSODescriptor</tag> element
        to allow the Fedlet to sign requests.
        For details see the section on
-       <link
-        xlink:href="dev-guide#fedlet-signing-encryption"
-        xlink:role="http://docbook.org/xlink/role/olink"
-        xlink:show="new"
-       ><citetitle>Signing &amp; Encryption For a Fedlet</citetitle></link>.
+       <xref linkend="fedlet-signing-encryption" />.
       </para>
      </listitem>
 
@@ -1496,18 +1453,10 @@ $ <userinput>cp ~/Downloads/fedlet/conf/fedlet.cot-template ~/fedlet/fedlet2.cot
      Attribute queries require the IDP to act as Attribute Authority
      and call for signing and encryption to be configured for the Fedlet.
      For details see the example in the procedure
-     <link
-      xlink:href="dev-guide#try-fedlet-attribute-query"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"
-     ><citetitle>To Try the Fedlet Attribute Query</citetitle></link>,
+     <xref linkend="try-fedlet-attribute-query" />,
      and in the procedure for the .NET Fedlet,
      which more fully describes how to edit the configuration files,
-     <link
-      xlink:href="dev-guide#try-dotnet-fedlet-attribute-query"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"
-     ><citetitle>To Try the .NET Fedlet Attribute Query</citetitle></link>,
+     <xref linkend="try-dotnet-fedlet-attribute-query" />,
      For example, you can set the attribute mapping on the Fedlet
      by editing the extended metadata attribute <literal>attributeMap</literal>
      in the <tag>SPSSOConfig</tag> element
@@ -1526,11 +1475,7 @@ $ <userinput>cp ~/Downloads/fedlet/conf/fedlet.cot-template ~/fedlet/fedlet2.cot
     <para>
      Attribute queries require the IDP to act as XACML PDP.
      For details see the example in the procedure
-     <link
-      xlink:href="dev-guide#try-fedlet-xacml-query"
-      xlink:role="http://docbook.org/xlink/role/olink"
-      xlink:show="new"
-     ><citetitle>To Try the Fedlet XACML Query</citetitle></link>.
+     <xref linkend="try-fedlet-xacml-query" />.
     </para>
    </section>
   </section>

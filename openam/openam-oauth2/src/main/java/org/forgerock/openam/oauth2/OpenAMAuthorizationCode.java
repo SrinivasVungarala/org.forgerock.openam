@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import org.forgerock.json.fluent.JsonValue;
+import org.forgerock.json.JsonValue;
 import org.forgerock.oauth2.core.AuthorizationCode;
 import org.forgerock.oauth2.core.OAuth2Constants;
 import org.forgerock.oauth2.core.exceptions.InvalidGrantException;
@@ -63,8 +63,8 @@ public class OpenAMAuthorizationCode extends AuthorizationCode {
      */
     OpenAMAuthorizationCode(String code, String resourceOwnerId, String clientId, String redirectUri, Set<String> scope,
                             String claims, long expiryTime, String nonce, String realm, String authModules, String acr,
-                            String ssoTokenId) {
-        super(code, resourceOwnerId, clientId, redirectUri, scope, expiryTime, nonce, authModules, acr);
+                            String ssoTokenId, String codeChallenge, String codeChallengeMethod) {
+        super(code, resourceOwnerId, clientId, redirectUri, scope, expiryTime, nonce, authModules, acr, codeChallenge, codeChallengeMethod);
         setRealm(realm);
         setSsoTokenId(ssoTokenId);
         setClaims(claims);

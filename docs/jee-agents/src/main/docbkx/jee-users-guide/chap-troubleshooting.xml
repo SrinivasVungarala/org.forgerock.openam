@@ -20,7 +20,7 @@
   !
   ! CCPL HEADER END
   !
-  !      Copyright 2011-2014 ForgeRock AS
+  !      Copyright 2011-2015 ForgeRock AS.
   !    
 -->
 <chapter xml:id='chap-troubleshooting'
@@ -39,8 +39,10 @@
   <primary>troubleshooting</primary>
  </indexterm>
 
- <para>This chapter offers solutions to issues during installation of OpenAM
-  policy agents.</para>
+ <para>
+  This chapter offers solutions to issues that may occur during installation
+  of OpenAM policy agents.
+ </para>
  
  <qandaset xml:id="solutions-to-common-issues" defaultlabel="qanda">
   <title>Solutions to Common Issues</title>
@@ -49,14 +51,11 @@
    <primary>troubleshooting</primary>
    <secondary>solutions to common issues</secondary>
   </indexterm>
-
-   <para>This section offers solutions to common problems when installing 
-   OpenAM policy agents.</para>
   
   <qandaentry xml:id="cannot-install-over-https">
    <question>
     <para>I am trying to install a policy agent, connecting to OpenAM over
-    HTTPS, and seeing the following error.</para>
+    HTTPS, and seeing the following error:</para>
 
     <screen>OpenAM server URL: https://openam.example.com:8443/openam
 
@@ -75,7 +74,7 @@ verifying OpenAM server URL.</screen>
 
    <answer>
     <para>The Java platform includes certificates from many Certificate
-    Authorities (CAs). If however you run your own CA, or you use self-signed
+    Authorities (CAs). If, however, you run your own CA, or you use self-signed
     certificates for HTTPS on the container where you run OpenAM, then the
     <command>agentadmin</command> command cannot trust the certificate
     presented during connection to OpenAM, and so cannot complete installation
@@ -83,7 +82,7 @@ verifying OpenAM server URL.</screen>
 
     <para>After setting up the container where you run OpenAM to use HTTPS,
     get the certificate to trust in a certificate file. The certificate you
-    want is the that of the CA who signed the container certificate, or the
+    want is that of the CA who signed the container certificate, or the
     certificate itself if the container certificate is self-signed.</para>
 
     <para>Copy the certificate file to the system where you plan to install the
@@ -136,16 +135,16 @@ verifying OpenAM server URL.</screen>
    <answer>
     <para>Perform the following steps to work around the problem, by setting
     the WebSphere custom property
-    <literal>com.ibm.ws.webcontainer.invokeFiltersCompatibility=true</literal>.</para>
+    <literal>com.ibm.ws.webcontainer.invokeFiltersCompatibility=true</literal>:</para>
 
     <orderedlist>
      <listitem>
-      <para>In the administration console, browse to Servers &gt; Server Types,
-      and then click WebSphere application servers.</para>
+      <para>In the WebSphere administrative console, browse to Servers &gt;
+      Server Types, and then click WebSphere application servers.</para>
      </listitem>
 
      <listitem>
-      <para>Click the server for which to apply the custom property.</para>
+      <para>Click the server to apply the custom property to.</para>
      </listitem>
 
      <listitem>
@@ -167,7 +166,7 @@ verifying OpenAM server URL.</screen>
       <literal>com.ibm.ws.webcontainer.invokeFiltersCompatibility</literal> and
       Value <literal>true</literal> for the custom property.</para>
 
-      <para>Some properties are case sensitive.</para>
+      <para>Some properties are case-sensitive.</para>
      </listitem>
 
      <listitem>

@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-customizing'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd'
  xmlns:xlink='http://www.w3.org/1999/xlink'
@@ -33,14 +33,13 @@
  <title>Customizing OpenAM</title>
  <para>Service provider interfaces (SPI's) provide a framework to customize all
   OpenAM service modules such as adding custom authentication modules,
-  federation plug-ins, and policy conditions.</para>
+  federation plugins, and policy conditions.</para>
 
  <para>This part of the guide covers customizing OpenAM functionality.</para>
 
  <xinclude:include href="sec-custom-attr.xml"/>
  <xinclude:include href="sec-oauth2-scopes.xml"/>
  <xinclude:include href="sec-auth-spi.xml"/>
- <xinclude:include href="sec-scripted-auth-module.xml"/>
  <xinclude:include href="sec-custom-quota-exhaustion-action.xml"/>
  <xinclude:include href="sec-policy-spi.xml"/>
  <xinclude:include href="sec-identity-repo-spi.xml"/>

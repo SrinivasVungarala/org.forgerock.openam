@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-features'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -193,9 +193,7 @@
     <command>ssoadm</command> command-line tool.</para>
 
    <para>For more information on the Dashboard service, see
-    <link xlink:href="${docSetBaseURL}/admin-guide#chap-dashboard"
-          xlink:show="new">
-     <citetitle>Configuring the Dashboard Service</citetitle></link>.
+    <olink targetdoc="admin-guide" targetptr="chap-dashboard" />.
    </para>
 
   </section>
@@ -239,9 +237,7 @@
    </itemizedlist>
 
    <para>For more information on the full command-line tool offerings, see
-    <link xlink:href="${docSetBaseURL}/admin-guide#openam-cli-overview"
-         xlink:show="new">
-    <citetitle>OpenAM Command-Line Tools</citetitle></link>.
+    <olink targetdoc="admin-guide" targetptr="openam-cli-overview" />.
    </para>
 
   </section>
@@ -317,8 +313,7 @@
    OpenAM also provides service provider interfaces (SPIs)
    to extend the core services for particular deployment requirements.
    For more information about OpenAM's SDK, Client API, and SPI offerings, see the
-   <link xlink:href="${docSetBaseURL}/dev-guide" xlink:show="new">
-    <citetitle>OpenAM Developer's Guide</citetitle></link>.</para>
+   <olink targetdoc="dev-guide" targetptr="dev-guide"/>.</para>
 
  </section>
 
@@ -505,9 +500,7 @@
      OpenAM provides a variety of Java Platform Enterprise Edition (J2EE) Policy
      Agents for application servers. You can view the list of
      supported Java EE policy agents in the
-     <link xlink:href="${docSetBaseURL}/release-notes#data-store-requirements"
-           xlink:show="new">
-      <citetitle>OpenAM Release Notes</citetitle></link>. </para>
+     <olink targetdoc="release-notes" targetptr="data-store-requirements" />. </para>
 
    </section>
   </section>
@@ -526,9 +519,7 @@
    file and contains a <literal>openam.war</literal> file, which you deploy
    within the Web container.
    For more information on installing OpenAM and its services,
-   see <link xlink:href="${docSetBaseURL}/getting-started"
-                     xlink:show="new">
-    <citetitle>Getting Started With OpenAM</citetitle></link>.</para>
+   see <olink targetdoc="getting-started" targetptr="getting-started" />.</para>
 
 
   <para>The following sections summarize OpenAM's core services and features.</para>
@@ -549,9 +540,7 @@
     Kerberos ticket on a Windows Desktop SSO system, or using an X.509 certificate.</para>
 
    <para>For more information, see
-    <link xlink:href="${docSetBaseURL}/admin-guide#chap-auth-services"
-          xlink:show="new"><citetitle>Defining Authentication Services</citetitle>.
-    </link></para>
+    <olink targetdoc="admin-guide" targetptr="chap-auth-services" />.</para>
 
    <section xml:id="openam-authentication-modules">
     <title>Authentication Modules</title>
@@ -570,8 +559,8 @@
      the client to submit an attribute value that OpenAM uses to look up the DN
      (by default, <literal>uid</literal> or <literal>cn</literal> for Active Directory)
      for authentication against an LDAP data store. If the credentials match those
-     in the LDAP directory, the client is authenticated and a session token
-     called <literal>SSOToken</literal> is created.
+     in the LDAP directory, the client is authenticated and a session SSO
+     token is created.
      </para>
 
    <para>
@@ -678,9 +667,7 @@
    </itemizedlist>
 
    <para>For more information on authentication modules, see
-    <link xlink:href="${docSetBaseURL}/admin-guide#configure-authn-modules"
-          xlink:show="new">
-     <citetitle>Configuring Authentication Modules</citetitle></link>.</para>
+    <olink targetdoc="admin-guide" targetptr="configure-authn-modules" />.</para>
 
    </section>
 
@@ -714,8 +701,7 @@
      uses semantic flags (required, optional,
      requisite, and sufficient) to control the processing flow of the modules.
      For detailed information on chain criteria, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#what-is-authn"
-           xlink:show="new"><citetitle>About Authentication in OpenAM</citetitle></link>.</para>
+     <olink targetdoc="admin-guide" targetptr="what-is-authn" />.</para>
 
     <para>
      When a module succeeds authentication, OpenAM may access
@@ -754,9 +740,7 @@
      </itemizedlist>
 
     <para>For more information on configuring authentication chains, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#configure-authn-chains"
-           xlink:show="new">
-      <citetitle>Configuring Authentication Chains</citetitle></link>.</para>
+     <olink targetdoc="admin-guide" targetptr="configure-authn-chains" />.</para>
 
    </section>
 
@@ -802,8 +786,7 @@
     </itemizedlist>
 
     <para>For more information, see
-     <link xlink:href="${docSetBaseURL}/dev-guide#chap-post-auth"
-           xlink:show="new"><citetitle>Creating a Post Authentication Plugin</citetitle></link>.</para>
+     <olink targetdoc="dev-guide" targetptr="chap-post-auth" />.</para>
    </section>
 
    <section xml:id="openam-adaptive-risk">
@@ -859,8 +842,7 @@
     </figure>
 
     <para>For more information, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#what-is-authn"
-           xlink:show="new"><citetitle>About Authentication in OpenAM</citetitle></link>.</para>
+     <olink targetdoc="admin-guide" targetptr="what-is-authn" />.</para>
 
    </section>
 
@@ -894,8 +876,7 @@
     <listitem><para><emphasis role="bold">Persistent Login</emphasis>.
      Supports the use of a permanent cookie,
      allowing users to return to the Web site after restarting the browser.
-     <link xlink:href="${docSetBaseURL}/admin-guide#persistent-cookie"
-           xlink:show="new"><citetitle>Hints for the Persistent Cookie Module</citetitle></link>.</para>
+     <olink targetdoc="admin-guide" targetptr="persistent-cookie" />.</para>
     </listitem>
     <listitem><para><emphasis role="bold">Account Lockout</emphasis>.
      Supports account lockout, where the user is
@@ -904,8 +885,7 @@
      Account lockout can be configured to temporarily lock out after a specific
      time, or deactivated where the user must contact the administrator for
      assistance. For more information, see
-      <link xlink:href="${docSetBaseURL}/admin-guide#configure-account-lockout"
-            xlink:show="new"><citetitle>Configuring Account Lockout</citetitle></link>.</para>
+      <olink targetdoc="admin-guide" targetptr="configure-account-lockout" />.</para>
     </listitem>
     <listitem><para><emphasis role="bold">Security Controls</emphasis>.
      Allows you to disable modules and the URL redirection list.</para></listitem>
@@ -925,8 +905,7 @@
      service to meet the needs of your deployment.</para>
 
     <para>For more information, see
-     <link xlink:href="${docSetBaseURL}/dev-guide#chap-authentication"
-           xlink:show="new"><citetitle>Authenticating Using OpenAM Java SDK</citetitle></link>.</para>
+     <olink targetdoc="dev-guide" targetptr="chap-authentication" />.</para>
 
    </section>
  </section>
@@ -1195,8 +1174,7 @@
    </itemizedlist>
 
    <para>For more information, see
-    <link xlink:href="${docSetBaseURL}/admin-guide#chap-authz-policy"
-          xlink:show="new"><citetitle>Defining Authorization Policies</citetitle></link>.</para>
+    <olink targetdoc="admin-guide" targetptr="chap-authz-policy" />.</para>
   </section>
  </section>
 
@@ -1207,11 +1185,11 @@
    domains, and containers participating in the network.</para>
 
   <para>When a client's identity is validated, OpenAM creates a session in the form
-   of a token object called <literal>SSOToken</literal>. The token stores information about
+   of an SSO token. The token stores information about
    the user's identity, authentication information,
    maximum lifetime,  and idle timeout settings.
    OpenAM creates a unique token identifier, <literal>SSOTokenID</literal> to identify
-   the <literal>SSOToken</literal> object and is stored
+   the SSO token object and is stored
    in the Policy Agent as a cookie labelled <literal>iPlanetDirectoryPro</literal>
    by default. Cookies are configurable.
   </para>
@@ -1265,8 +1243,7 @@
      a quota has been reached, four possible actions take place: 1) the oldest session
      is destroyed, 2) the next expiring session is destroyed, 3) all previous
      sessions are destroyed, 4) deny login. For more information, see
-      <link xlink:href="${docSetBaseURL}/admin-guide#configure-session-quotas"
-            xlink:show="new"><citetitle>Configuring Session Quotas</citetitle></link>.</para>
+      <olink targetdoc="admin-guide" targetptr="configure-session-quotas" />.</para>
    </listitem>
    <listitem>
     <para><emphasis role="bold">Session Upgrades</emphasis>. Supports automated
@@ -1391,8 +1368,7 @@
    <para>Federation is configured on the OpenAM OpenAM Console or using
     the <command>ssoadm</command> command-line tool.
     For more information, see
-     <link xlink:href="${docSetBaseURL}/admin-guide#chap-federation"
-           xlink:show="new"><citetitle>Managing SAML 2.0 Federation</citetitle></link>.</para>
+     <olink targetdoc="admin-guide" targetptr="chap-federation" />.</para>
    </section>
 
    <section xml:id="openam-fedlet">
@@ -1434,8 +1410,7 @@
      The Fedlet .war file contains a sample Fedlet application,
      <filename>fedletSampleApp.jsp</filename>, which can be modified with your
      own application logic. For more information, see
-     <link xlink:href="${docSetBaseURL}/dev-guide#chap-fedlet-java"
-           xlink:show="new"><citetitle>Using Fedlets in Java Web Applications</citetitle></link>.
+     <olink targetdoc="dev-guide" targetptr="chap-fedlet-java" />.
     </para>
 
    <para>A Fedlet provides the following available features. The features
@@ -1499,13 +1474,11 @@
    </itemizedlist>
 
    <para>For more information on Java Fedlets, see
-    <link xlink:href="${docSetBaseURL}/dev-guide#chap-fedlet-java"
-          xlink:show="new"><citetitle>Using Fedlets in Java Web Applications</citetitle></link>.
+    <olink targetdoc="dev-guide" targetptr="chap-fedlet-java" />.
    </para>
 
    <para>For information on .NET Fedlets, see
-    <link xlink:href="${docSetBaseURL}/dev-guide#chap-fedlet-dotnet"
-          xlink:show="new"><citetitle>Using Fedlets in .NET Applications</citetitle></link>.</para>
+    <olink targetdoc="dev-guide" targetptr="chap-fedlet-dotnet" />.</para>
 
    </section>
   </section>
@@ -1549,7 +1522,7 @@
 
   <itemizedlist>
    <listitem>
-    <para>SSOToken</para>
+    <para>SSO tokens</para>
    </listitem>
    <listitem>
     <para>SAML tokens</para>
@@ -1654,8 +1627,7 @@
   </itemizedlist>
 
   <para>For more information, see
-   <link xlink:href="${docSetBaseURL}/admin-guide#log-mgmt"
-         xlink:show="new"><citetitle>Log Management</citetitle></link>.</para>
+   <olink targetdoc="admin-guide" targetptr="log-mgmt" />.</para>
  </section>
 
  <section xml:id="openam-identity-store">
@@ -1668,8 +1640,7 @@
    these special features.</para>
 
   <para>For more information, see
-   <link xlink:href="${docSetBaseURL}/dev-guide#chap-identity-repo-spi"
-         xlink:show="new"><citetitle>Customizing Identity Data Storage</citetitle></link>.</para>
+   <olink targetdoc="dev-guide" targetptr="chap-identity-repo-spi" />.</para>
  </section>
 
  <section xml:id="openam-features-sso">
@@ -1703,8 +1674,7 @@
     Connect 1.0 to get SSO functionality.</para>
 
    <para>For more information, see
-    <link xlink:href="${docSetBaseURL}/admin-guide#chap-cdsso"
-          xlink:show="new"><citetitle>Configuring Cross-Domain Single Sign On</citetitle>.</link></para>
+    <olink targetdoc="admin-guide" targetptr="chap-cdsso" /></para>
   </section>
 
   <section xml:id="openam-restricted-tokens">

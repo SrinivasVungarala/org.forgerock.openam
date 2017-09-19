@@ -24,7 +24,7 @@
   !
 -->
 <chapter xml:id='chap-intro'
-         xmlns='http://docbook.org/ns/docbook' version='5.0' xml:lang='en'
+         xmlns='http://docbook.org/ns/docbook' version='5.0'
          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
          xsi:schemaLocation='http://docbook.org/ns/docbook
                              http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -391,25 +391,42 @@
   </indexterm>
 
    <para>
-    OpenAM began with Sun Microsystem's Sun Java System Portal Server,
-    which was a component of the Sun Java System Enterprise Edition. The Portal
-    Server became a standalone product called
-    Sun Java System Access Manager, which also featured an Identity Management
-    product when Sun acquired Waveset. Access Manager became OpenSSO.
-   </para>
-
-   <para>
     OpenAM's timeline is summarized as follows:
    </para>
    <itemizedlist>
     <listitem>
-     <para>In 2005, Sun announces OpenSSO based on the Sun Java System Access
-      Manager.
+     <para>
+      In 2001, Sun Microsystems releases iPlanet Directory Server,
+      Access Management Edition.
      </para>
     </listitem>
     <listitem>
-     <para>In 2008, Sun releases OpenSSO build 6, a community open-source version
-      and OpenSSO Enterprise 8.0, a commercial enterprise version.
+     <para>
+      In 2003, Sun renames iPlanet Directory Server, Access Management Edition
+      to Sun ONE Identity Server.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Later in 2003, Sun acquires Waveset.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      In 2004, Sun releases Sun Java Enterprise System. Waveset Lighthouse
+      is renamed to Sun Java System Identity Manager and Sun ONE Identity Server
+      is renamed to Sun Java System Access Manager. Both products are included
+      as components of Sun Java Enterprise System.
+     </para>
+    </listitem>
+    <listitem>
+     <para>In 2005, Sun announces an open-source project, OpenSSO, based on
+      Sun Java System Access Manager.
+     </para>
+    </listitem>
+    <listitem>
+     <para>In 2008, Sun releases OpenSSO build 6, a community open-source
+      version, and OpenSSO Enterprise 8.0, a commercial enterprise version.
      </para>
     </listitem>
     <listitem>
@@ -417,14 +434,13 @@
     </listitem>
     <listitem>
      <para>In January 2010, Sun was acquired by Oracle and development for the
-      OpenSSO products were suspended indefinitely as Oracle no longer planned
-      to support the product.</para>
+      OpenSSO products were suspended as Oracle no longer planned to support the
+      product.</para>
     </listitem>
    </itemizedlist>
 
    <para>In February 2010, a small group of former Sun employees founded ForgeRock
-    to continue OpenSSO support, which was renamed as
-    OpenAM.
+    to continue OpenSSO support, which was renamed to OpenAM.
     ForgeRock continued OpenAM's development with the following releases:</para>
    <itemizedlist>
     <listitem>

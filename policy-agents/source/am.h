@@ -52,16 +52,20 @@ typedef enum {
 #define AM_HASH_TABLE_KEY_SIZE      128
 #endif
 
+#ifndef AM_MAX_TOKEN_LENGTH
+#define AM_MAX_TOKEN_LENGTH         4096 /* this is the maximum length of a cookie */
+#endif
+
 #ifndef AM_HASH_TABLE_SIZE
 #define AM_HASH_TABLE_SIZE          6151 /* must be a prime */
 #endif
 
-#ifndef AM_SHARED_MAX_RESIZE
-#define AM_SHARED_MAX_RESIZE        2
+#ifndef AM_SHARED_MAX_SIZE
+#define AM_SHARED_MAX_SIZE          0x7FFFF000 /* maximim shared memory pool allocation */
 #endif
 
-#ifndef AM_LOG_QUEUE_DEPTH
-#define AM_LOG_QUEUE_DEPTH          1024 /* must not be less than max number of simultaneus log requests */
+#ifndef AM_SHARED_MAX_SIZE_VAR      
+#define AM_SHARED_MAX_SIZE_VAR      "AM_MAX_SHARED_POOL_SIZE" /* env var used to limit pool size */
 #endif
 
 #ifndef AM_MAX_INSTANCES
@@ -74,10 +78,6 @@ typedef enum {
 
 #ifndef AM_MAX_THREADS_POOL
 #define AM_MAX_THREADS_POOL         AM_MAX_INSTANCES
-#endif
-
-#ifndef AM_USER_GROUP_NAME_LIMIT
-#define AM_USER_GROUP_NAME_LIMIT    20
 #endif
 
 #ifndef AM_LOG_QUEUE_SIZE
@@ -145,12 +145,20 @@ typedef enum {
         " }"\
         "}"
 
+/*
+ * shared memory and semaphore naming strings
+ */
+#define AM_CONFIG_INIT_NAME     "am_instance_config_init"
+#define AM_AUDIT_SHM_NAME       "am_shared_audit"
+#define AM_CACHE_SHM_NAME       "am_shared_cache"
+#define AM_CONFIG_SHM_NAME      "am_shared_conf"
+
+
 typedef enum {
     AM_OK = 0, AM_FAIL, AM_RETRY, AM_QUIT
 } am_return_t;
 
 #define RETURN_TYPE_TO_BOOL(x)   (((x) == AM_OK) ? AM_TRUE : AM_FALSE)
-
 
 enum {
     AM_REQUEST_UNKNOWN = 0,
@@ -233,9 +241,12 @@ typedef struct am_request {
     am_bool_t is_json_url;
 
     const char *orig_url;
-    struct url url; /* parsed/normalized request url (split in values)*/
-    char *normalized_url; /*normalized request url*/
-    char *overridden_url; /*normalized/overridden request url*/
+    const char *path_info;
+    struct url url; /* parsed/normalized request url (split in values) */
+    char *normalized_url; /* normalized request url */
+    char *overridden_url; /* normalized/overridden request url */
+    char *normalized_url_pathinfo;
+    char *overridden_url_pathinfo;
     const char *cookies;
     const char *content_type;
     char method;
@@ -247,6 +258,7 @@ typedef struct am_request {
     char *client_host;
 
     const char *user;
+    const char *user_temp;
     const char *user_password;
 
     struct am_namevalue *sattr; /*session attributes (cache or direct)*/
@@ -281,16 +293,6 @@ typedef struct am_request {
 
 } am_request_t;
 
-struct am_ssl_options {
-    char cert_key_file[AM_PATH_SIZE];
-    char cert_key_pass[AM_PATH_SIZE];
-    char cert_file[AM_PATH_SIZE];
-    char cert_ca_file[AM_PATH_SIZE];
-    char ciphers[AM_PATH_SIZE];
-    char tls_opts[AM_PATH_SIZE];
-    int verifypeer;
-};
-
 unsigned long am_instance_id(const char *);
 
 void am_process_request(am_request_t *r);
@@ -299,10 +301,11 @@ void am_request_free(am_request_t *r);
 const char *am_method_num_to_str(int method);
 int am_method_str_to_num(const char *method_str);
 
-int am_init(int id);
+int am_init(int id, int (*init_status_cb)(int));
 int am_init_worker(int id);
 int am_shutdown(int id);
 int am_shutdown_worker();
+am_status_t am_remove_shm_and_locks(int id, void (*log_cb)(void *arg, char *name, int error), void *cb_arg);
 
 int am_configuration_init(int id);
 int am_configuration_shutdown();
@@ -318,7 +321,7 @@ void am_log_init(int id, int s);
 void am_log_init_worker(int id, int s);
 void am_log_shutdown(int id);
 void am_log_register_instance(unsigned long instance_id, const char *debug_log, int log_level, int log_size,
-        const char *audit_log, int audit_level, int audit_size);
+        const char *audit_log, int audit_level, int audit_size, const char *config_file);
 
 void am_config_free(am_config_t **c);
 am_config_t *am_get_config_file(unsigned long instance_id, const char *filename);
@@ -330,5 +333,6 @@ void am_free(void *ptr);
 int am_asprintf(char **buffer, const char *fmt, ...);
 char *am_json_escape(const char *str, size_t *escaped_sz);
 
+char *am_normalize_pattern(const char *url);
 
 #endif

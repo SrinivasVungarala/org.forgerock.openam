@@ -65,32 +65,21 @@
         </dependency>
 
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.json</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.restlet.osgi</groupId>
-            <artifactId>org.restlet.ext.net</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.restlet.osgi</groupId>
-            <artifactId>org.restlet.ext.ssl</artifactId>
-        </dependency>
-
-
         <!-- Restlet -->
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.jackson</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.freemarker</artifactId>
             <exclusions>
                 <exclusion>
@@ -101,7 +90,7 @@
             <!--scope>provided</scope-->
         </dependency>
         <dependency>
-            <groupId>org.restlet.osgi</groupId>
+            <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.servlet</artifactId>
         </dependency>
         <dependency>
@@ -116,10 +105,6 @@
         <dependency>
             <groupId>org.forgerock.commons</groupId>
             <artifactId>json-web-token</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.forgerock.commons</groupId>
-            <artifactId>json-fluent</artifactId>
         </dependency>
         <dependency>
             <groupId>org.forgerock.openam</groupId>

@@ -23,6 +23,7 @@
 #include "zip.h"
 
 #ifdef _WIN32
+#include <shlobj.h>
 #define LIB_FILE_EXT "dll"
 #define APACHE_DEFAULT_CONF_FILE "c:\\Apache\\conf\\httpd.conf"
 #else
@@ -32,7 +33,7 @@
 #endif
 
 #ifdef AM_BINARY_LICENSE
-#define LICENSE_FILE ".."FILE_PATH_SEP"legal"FILE_PATH_SEP"license.txt"
+#define LICENSE_FILE ".."FILE_PATH_SEP"legal"FILE_PATH_SEP"Forgerock_License.txt"
 #else
 #define LICENSE_FILE ".."FILE_PATH_SEP"legal"FILE_PATH_SEP"CDDLv1.0.txt"
 #endif
@@ -48,6 +49,15 @@
 #define AM_INSTALL_AUDITPATH "AM_AUDIT_FILE_PATH"
 #define AM_INSTALL_AGENT_FQDN "AM_AGENT_FQDN"
 #define AM_INSTALL_CONF_PATH "AM_AGENT_CONF_PATH"
+#define AM_INSTALL_PDP_PATH "AM_PDP_TEMP_PATH"
+#define AM_INSTALL_SSL_KEY "AM_SSL_KEY"
+#define AM_INSTALL_SSL_CERT "AM_SSL_CERT"
+#define AM_INSTALL_SSL_CA "AM_SSL_CA"
+#define AM_INSTALL_SSL_CIPHERS "AM_SSL_CIPHERS"
+#define AM_INSTALL_SSL_OPTIONS "AM_SSL_OPTIONS"
+#define AM_INSTALL_SSL_KEY_PASSWORD "AM_SSL_PASSWORD"
+
+#define RESET_INPUT_STRING(s) do { am_free(s); s = NULL; } while (0)
 
 typedef void (*param_handler)(int, char **);
 
@@ -77,14 +87,14 @@ int disable_module(const char *, const char *);
 int test_module(const char *);
 int install_module(const char *, const char *);
 int remove_module();
-int add_directory_acl(char *site_id, char *directory);
+int add_directory_acl(char *site_id, char *directory, char *user);
 
 static const char *am_container_str(int v) {
     switch (v) {
         case AM_I_APACHE: return "Apache";
         case AM_I_IIS: return "IIS";
         case AM_I_VARNISH: return "Varnish";
-        default: return "unknown";
+        default: return "Unknown";
     }
 }
 
@@ -97,6 +107,37 @@ static char instance_path[AM_URI_SIZE];
 static char instance_config[AM_URI_SIZE];
 static char config_template[AM_URI_SIZE];
 static char instance_config_template[AM_URI_SIZE];
+static am_net_options_t net_options;
+
+static const char* agent_4x_obsolete_properties [] =
+{
+    "com.forgerock.agents.nss.shutdown",
+    
+    "com.sun.identity.agents.config.debug.file",
+    "com.sun.identity.agents.config.sslcert.dir",
+    "com.sun.identity.agents.config.certdb.prefix",
+    "com.sun.identity.agents.config.certdb.password",
+    "com.sun.identity.agents.config.certificate.alias",
+    
+    "com.sun.identity.agents.config.receive.timeout",
+    "com.sun.identity.agents.config.tcp.nodelay.enable",
+    
+    "com.sun.identity.agents.config.forward.proxy.host",
+    "com.sun.identity.agents.config.forward.proxy.port",
+    "com.sun.identity.agents.config.forward.proxy.user",
+    "com.sun.identity.agents.config.forward.proxy.password",
+    "com.sun.identity.agents.config.profilename",
+    0
+};
+
+static const char *ssl_variables[] = {
+    AM_INSTALL_SSL_KEY,
+    AM_INSTALL_SSL_CERT,
+    AM_INSTALL_SSL_CA,
+    AM_INSTALL_SSL_CIPHERS,
+    AM_INSTALL_SSL_OPTIONS,
+    AM_INSTALL_SSL_KEY_PASSWORD
+};
 
 static void install_log(const char *format, ...) {
     char ts[64];
@@ -158,6 +199,7 @@ static char *prompt_and_read(const char *p) {
 #define USER_INPUT_BUFFER_SIZE 256 
     if ((r = malloc(USER_INPUT_BUFFER_SIZE + 1)) == NULL) {
         fprintf(stderr, "error: out of memory\n");
+        am_net_options_delete(&net_options);
         exit(1);
     }
     if (fgets(r, USER_INPUT_BUFFER_SIZE, stdin) == NULL) {
@@ -201,6 +243,27 @@ static void generate_key(int argc, char **argv) {
     encoded = base64_encode(key, &sz);
     fprintf(stdout, "\nEncryption key value: %s\n\n", encoded);
     am_free(encoded);
+}
+
+static am_bool_t validate_os_version() {
+#ifdef _WIN32
+    OSVERSIONINFOEXA osvi = {
+        sizeof (osvi), 0, 0, 0, 0, { 0 }, 0, 0
+    };
+    DWORDLONG const mask = VerSetConditionMask(
+            VerSetConditionMask(
+            VerSetConditionMask(
+            0, VER_MAJORVERSION, VER_GREATER_EQUAL),
+            VER_MINORVERSION, VER_GREATER_EQUAL),
+            VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+    osvi.dwMajorVersion = HIBYTE(_WIN32_WINNT_WIN7);
+    osvi.dwMinorVersion = LOBYTE(_WIN32_WINNT_WIN7);
+    osvi.wServicePackMajor = 0;
+    
+    return VerifyVersionInfoA(&osvi, VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR, mask) != FALSE;
+#else
+    return AM_TRUE;
+#endif
 }
 
 static void show_version(int argc, char **argv) {
@@ -285,6 +348,14 @@ static int am_cleanup_instance(const char *pth, const char *name) {
     return ret;
 }
 
+static void remove_obsolete_properties(property_map_t* property_map) {
+    const char** p;
+    for (p = agent_4x_obsolete_properties; *p; p++) {
+        if (property_map_remove_key(property_map, *p)) {
+            install_log("removing obsolete property %s", *p);
+        }
+    }
+}
 
 /**
  * @param status For IIS
@@ -305,14 +376,19 @@ static int create_agent_instance(int status,
                                  const char* agent_user,
                                  const char* agent_password,
                                  uid_t* uid,
-                                 gid_t* gid) {
+                                 gid_t* gid,
+                                 property_map_t* property_map) {
 
     FILE* f = NULL;
     int rv = AM_ERROR;
     char* created_name_path = NULL;
     char* created_name_simple = NULL;
+    
     char* agent_conf_template = NULL;
     size_t agent_conf_template_sz = 0;
+    
+    char* agent_conf_content = NULL;
+    size_t agent_conf_sz = 0;
     
     if (am_create_agent_dir(FILE_PATH_SEP, instance_path,
                             &created_name_path, &created_name_simple,
@@ -341,6 +417,7 @@ static int create_agent_instance(int status,
             struct url u;
             char* encoded;
             char* password;
+            char* tmp;
             char key[37];
             size_t sz = 16;
 
@@ -418,7 +495,7 @@ static int create_agent_instance(int status,
                 }
             }
             am_free(password);
-            am_free(encoded);
+            password = NULL;
             if (rv != AM_SUCCESS) {
                 break;
             }
@@ -437,15 +514,138 @@ static int create_agent_instance(int status,
                         config_template, am_strerror(rv));
                 break;
             }
+            
+            install_log("updating %s with %s", AM_INSTALL_PDP_PATH, log_path_dir);
+            rv = string_replace(&agent_conf_template, AM_INSTALL_PDP_PATH, log_path_dir, &agent_conf_template_sz);
+            if (rv != AM_SUCCESS) {
+                install_log("failed to update %s, %s", AM_INSTALL_PDP_PATH, am_strerror(rv));
+                break;
+            }
 
+            if (ISVALID(net_options.cert_key_file)) {
+                tmp = net_options.cert_key_file;
+                install_log("updating %s with %s", AM_INSTALL_SSL_KEY, tmp);
+            } else {
+                tmp = AM_SPACE_CHAR;
+                install_log("cleaning up %s", AM_INSTALL_SSL_KEY);
+            }
+            rv = string_replace(&agent_conf_template, AM_INSTALL_SSL_KEY, tmp, &agent_conf_template_sz);
+            if (rv != AM_SUCCESS) {
+                install_log("failed to update %s, %s", AM_INSTALL_SSL_KEY, am_strerror(rv));
+                break;
+            }
+
+            if (ISVALID(net_options.cert_file)) {
+                tmp = net_options.cert_file;
+                install_log("updating %s with %s", AM_INSTALL_SSL_CERT, tmp);
+            } else {
+                tmp = AM_SPACE_CHAR;
+                install_log("cleaning up %s", AM_INSTALL_SSL_CERT);
+            }
+            rv = string_replace(&agent_conf_template, AM_INSTALL_SSL_CERT, tmp, &agent_conf_template_sz);
+            if (rv != AM_SUCCESS) {
+                install_log("failed to update %s, %s", AM_INSTALL_SSL_CERT, am_strerror(rv));
+                break;
+            }
+
+            if (ISVALID(net_options.cert_ca_file)) {
+                tmp = net_options.cert_ca_file;
+                install_log("updating %s with %s", AM_INSTALL_SSL_CA, tmp);
+            } else {
+                tmp = AM_SPACE_CHAR;
+                install_log("cleaning up %s", AM_INSTALL_SSL_CA);
+            }
+            rv = string_replace(&agent_conf_template, AM_INSTALL_SSL_CA, tmp, &agent_conf_template_sz);
+            if (rv != AM_SUCCESS) {
+                install_log("failed to update %s, %s", AM_INSTALL_SSL_CA, am_strerror(rv));
+                break;
+            }
+
+            if (ISVALID(net_options.ciphers)) {
+                tmp = net_options.ciphers;
+                install_log("updating %s with %s", AM_INSTALL_SSL_CIPHERS, tmp);
+            } else {
+                tmp = AM_SPACE_CHAR;
+                install_log("cleaning up %s", AM_INSTALL_SSL_CIPHERS);
+            }
+            rv = string_replace(&agent_conf_template, AM_INSTALL_SSL_CIPHERS, tmp, &agent_conf_template_sz);
+            if (rv != AM_SUCCESS) {
+                install_log("failed to update %s, %s", AM_INSTALL_SSL_CIPHERS, am_strerror(rv));
+                break;
+            }
+
+            if (ISVALID(net_options.tls_opts)) {
+                tmp = net_options.tls_opts;
+                install_log("updating %s with %s", AM_INSTALL_SSL_OPTIONS, tmp);
+            } else {
+                tmp = AM_SPACE_CHAR;
+                install_log("cleaning up %s", AM_INSTALL_SSL_OPTIONS);
+            }
+            rv = string_replace(&agent_conf_template, AM_INSTALL_SSL_OPTIONS, tmp, &agent_conf_template_sz);
+            if (rv != AM_SUCCESS) {
+                install_log("failed to update %s, %s", AM_INSTALL_SSL_OPTIONS, am_strerror(rv));
+                break;
+            }
+
+            if (ISVALID(net_options.cert_key_pass)) {
+                password = strdup(net_options.cert_key_pass);
+                if (password == NULL) {
+                    rv = AM_ENOMEM;
+                    break;
+                }
+
+                if (encrypt_password(encoded, &password) > 0) {
+                    install_log("updating %s with %s", AM_INSTALL_SSL_KEY_PASSWORD, password);
+                    rv = string_replace(&agent_conf_template, AM_INSTALL_SSL_KEY_PASSWORD, password, &agent_conf_template_sz);
+                    if (rv != AM_SUCCESS) {
+                        install_log("failed to update %s, %s", AM_INSTALL_SSL_KEY_PASSWORD, am_strerror(rv));
+                    }
+                }
+                am_free(password);
+                am_free(encoded);
+                encoded = NULL;
+                password = NULL;
+                if (rv != AM_SUCCESS) {
+                    break;
+                }
+            } else {
+                am_free(encoded);
+                install_log("cleaning up %s", AM_INSTALL_SSL_KEY_PASSWORD);
+                rv = string_replace(&agent_conf_template, AM_INSTALL_SSL_KEY_PASSWORD, AM_SPACE_CHAR, &agent_conf_template_sz);
+                if (rv != AM_SUCCESS) {
+                    install_log("failed to update %s, %s", AM_INSTALL_SSL_KEY_PASSWORD, am_strerror(rv));
+                    break;
+                }
+            }
+  
+            /* remove obsolete properties */
+            remove_obsolete_properties(property_map);
+            
+            /* add updated template to the property map */
+            property_map_parse(property_map, "agent 4.0 config", AM_FALSE, install_log, agent_conf_template, agent_conf_template_sz);
+
+            /* generate file content from resulting map */
+            agent_conf_content = property_map_write_to_buffer(property_map, &agent_conf_sz);
+            if (!ISVALID(agent_conf_content)) {
+                install_log("failed to build agent configuration file content %s (%s)");
+                rv = AM_ENOMEM;
+                break;
+            }
+            
             /* write an updated template to the agent configuration file */
             install_log("writing configuration to %s", conf_file_path);
-            if (write_file(conf_file_path, agent_conf_template, agent_conf_template_sz) > 0) {
+            if (write_file(conf_file_path, agent_conf_content, agent_conf_sz) > 0) {
 #ifndef _WIN32
                 if (instance_type == AM_I_APACHE && uid != NULL && gid != NULL) {
+                    /* update agent instance configuration file owner */
                     if (chown(conf_file_path, *uid, *gid) != 0) {
                         install_log("failed to change file %s owner to %d:%d (error: %d)",
                                 conf_file_path, *uid, *gid, errno);
+                    }
+                    /* update global log folder owner */
+                    if (chown(log_path_dir, *uid, *gid) != 0) {
+                        install_log("failed to change directory %s owner to %d:%d (error: %d)",
+                                log_path_dir, *uid, *gid, errno);
                     }
                 }
 #endif
@@ -454,10 +654,11 @@ static int create_agent_instance(int status,
                 install_log("failed to write agent configuration to %s", conf_file_path);
                 rv = AM_FILE_ERROR;
             }
+            am_free(agent_conf_content);
 
         } while (0);
 
-        AM_FREE(agent_conf_template, conf_file_path, log_path, audit_log_path);
+        AM_FREE(conf_file_path, log_path, audit_log_path, agent_conf_template);
     } else {
         install_log("failed to open agent configuration template file %s", config_template);
         rv = AM_ENOMEM;
@@ -518,13 +719,13 @@ static int create_agent_instance(int status,
             }
             
             if (rv == AM_SUCCESS) {
-                /* add read/write ACL to the agent instance directory */
-                rv = add_directory_acl((char *) web_conf_path, (char *) created_name_path);
-                install_log("agent instance directory %s ACL (site %s) update status: %s", created_name_path,
+                /* add read/write ACL to the agent instances directory */
+                rv = add_directory_acl((char *) web_conf_path, (char *) instance_path, NULL);
+                install_log("agent instance directory %s ACL (site %s) update status: %s", instance_path,
                         web_conf_path, am_strerror(rv));
 
                 /* add read/write ACL to the agent log directory */
-                rv = add_directory_acl((char *) web_conf_path, (char *) log_path_dir);
+                rv = add_directory_acl((char *) web_conf_path, (char *) log_path_dir, NULL);
                 install_log("agent log directory %s ACL (site %s) update status: %s", log_path_dir,
                         web_conf_path, am_strerror(rv));
             }
@@ -634,9 +835,52 @@ static void check_if_quit_wanted(char* input) {
     if (ISVALID(input) && strcasecmp(input, "q") == 0) {
         free(input);
         install_log("installation exit because user typed \"q\" for input");
+        am_net_options_delete(&net_options);
         exit(1);
     }
 }
+
+static am_bool_t get_yes_or_no(char * prompt, am_bool_t *response) {
+    am_bool_t valid_response = AM_TRUE;
+    char * input = prompt_and_read(prompt);
+    check_if_quit_wanted(input);
+    
+    if (! ISVALID(input)) {
+        *response = AM_TRUE;
+    } else if (strcasecmp(input, "yes") == 0) {
+        *response = AM_TRUE;
+    } else if (strcasecmp(input, "no") == 0) {
+        *response = AM_FALSE;
+    } else {
+        valid_response = AM_FALSE;
+    }
+    
+    am_free(input);
+    return valid_response;
+}
+
+/**
+ * Get confirmation of a property setting
+ */
+static am_bool_t get_confirmation(const char *fmt, ...) {
+    am_bool_t response = AM_TRUE, valid_response = AM_FALSE;
+    
+    do {
+        va_list va;
+        va_start(va, fmt);
+        vprintf(fmt, va);
+        va_end(va);
+        
+        valid_response = get_yes_or_no("Confirm this setting (Yes/No, q to quit) [Yes]:", &response);
+        if (!valid_response) {
+            printf("Please answer yes or no\n");
+        }
+        
+    } while (!valid_response);
+    
+    return response;
+}
+
 
 /**
  * Find the word after the specified text in the httpd conf file, read it into
@@ -649,7 +893,7 @@ static void check_if_quit_wanted(char* input) {
  */
 static void find_conf_setting(char* httpd_conf_file, char* target, char* buff, size_t size) {
     char* user = strstr(httpd_conf_file, target);
-    int i = 0;
+    size_t i = 0;
     if (user != NULL) {
         user += strlen(target); /* skip length of string */
 
@@ -679,37 +923,34 @@ static void find_conf_setting(char* httpd_conf_file, char* target, char* buff, s
  * @param uid change where pointer points to NULL if not found, or to dynamic memory if found
  * @param gid change where pointer points to NULL if not found, or dynamic memory if found
  */
-static void find_user(char* httpd_conf_file, uid_t** uid, gid_t** gid) {
-#ifdef _WIN32
+static void find_user(char *httpd_conf_file, uid_t **uid, gid_t **gid) {
 
     *uid = NULL;
     *gid = NULL;
 
-#else /* _WIN32 */
-    char* p;
-    char buff[AM_USER_GROUP_NAME_LIMIT];
-    struct passwd* password_entry;
-    
-    *uid = NULL;
-    *gid = NULL;
-    
-    find_conf_setting(httpd_conf_file, "\nUser", buff, sizeof(buff));
-    
+#ifndef _WIN32
+
+    char *p;
+    char buff[AM_PATH_SIZE];
+    struct passwd *password_entry;
+
+    find_conf_setting(httpd_conf_file, "\nUser", buff, sizeof (buff));
+
     if (*buff == '\0') {
         return;
     }
-    
+
     /* does the buffer contain a number */
-    am_bool_t isNumeric = AM_TRUE;
+    am_bool_t is_numeric = AM_TRUE;
     for (p = buff; *p != '\0'; p++) {
         if (!isdigit(*p)) {
-            isNumeric = AM_FALSE;
+            is_numeric = AM_FALSE;
             break;
         }
     }
-    
-    if (isNumeric) {
-        password_entry = getpwuid((uid_t)atol(buff));
+
+    if (is_numeric) {
+        password_entry = getpwuid((uid_t) atol(buff));
     } else {
         password_entry = getpwnam(buff);
     }
@@ -719,22 +960,20 @@ static void find_user(char* httpd_conf_file, uid_t** uid, gid_t** gid) {
         return;
     }
 
-    *uid = malloc(sizeof(uid_t));
+    *uid = malloc(sizeof (uid_t));
     if (*uid == NULL) {
         return;
     }
     **uid = password_entry->pw_uid;
-    *gid = malloc(sizeof(gid_t));
+    *gid = malloc(sizeof (gid_t));
     if (*gid == NULL) {
         return;
     }
     **gid = password_entry->pw_gid;
-    
+
     install_log("Found user %s, uid %d, gid %d", buff, **uid, **gid);
 #endif /* _WIN32 */
 }
-
-
 
 /**
  * Find the line saying:
@@ -746,34 +985,34 @@ static void find_user(char* httpd_conf_file, uid_t** uid, gid_t** gid) {
  * @param httpd_conf_file The entirety of the conf file, copied into a null terminated buffer
  * @param pointer to gid_t pointer which will change if the user is found and valid
  */
-static void find_group(char* httpd_conf_file, gid_t** gid) {
+static void find_group(char *httpd_conf_file, gid_t **gid) {
 #ifdef _WIN32
     if (gid != NULL) {
         *gid = NULL;
     }
 #else
-    char* p;
-    char buff[AM_USER_GROUP_NAME_LIMIT];
-    struct group* group_entry;
-    
-    find_conf_setting(httpd_conf_file, "\nGroup", buff, sizeof(buff));
-    
+    char *p;
+    char buff[AM_PATH_SIZE];
+    struct group *group_entry;
+
+    find_conf_setting(httpd_conf_file, "\nGroup", buff, sizeof (buff));
+
     if (*buff == '\0') {
         install_log("Unable to find the \"Group\" entry in the httpd.conf file");
         return;
     }
-    
+
     /* does the buffer contain a number */
-    am_bool_t isNumeric = AM_TRUE;
+    am_bool_t is_numeric = AM_TRUE;
     for (p = buff; *p != '\0'; p++) {
         if (!isdigit(*p)) {
-            isNumeric = AM_FALSE;
+            is_numeric = AM_FALSE;
             break;
         }
     }
-    
-    if (!isNumeric) {
-        group_entry = getgrgid((gid_t)atol(buff));
+
+    if (!is_numeric) {
+        group_entry = getgrgid((gid_t) atol(buff));
     } else {
         group_entry = getgrnam(buff);
     }
@@ -782,32 +1021,41 @@ static void find_group(char* httpd_conf_file, gid_t** gid) {
         return;
     }
     if (*gid == NULL) {
-        *gid = malloc(sizeof(gid_t));
+        *gid = malloc(sizeof (gid_t));
         if (*gid == NULL) {
             return;
         }
+        **gid = 0;
     }
-    **gid = group_entry->gr_gid;
-    
+    if (**gid == 0) {
+        **gid = group_entry->gr_gid;
+    }
+
     install_log("Found group %s, gid %d", buff, **gid);
 #endif /* _WIN32 */
 }
 
-
+/****************************************************************************************************************/
 
 static void install_interactive(int argc, char **argv) {
     int rv;
     int iis_status = 0;
-    char lic_accepted = AM_FALSE, validated = AM_FALSE;
+    am_bool_t lic_accepted = AM_FALSE, validated = AM_FALSE, am_validation_skipped = AM_FALSE;
     char* input = NULL;
     char* agent_token = NULL;
     char lic_file_path[AM_URI_SIZE];
     char server_conf[AM_URI_SIZE];
-    char openam_url[AM_URI_SIZE];
-    char agent_realm[AM_URI_SIZE];
-    char agent_url[AM_URI_SIZE];
-    char agent_user[AM_URI_SIZE];
-    char agent_password[AM_URI_SIZE];
+    
+    char* openam_url = NULL;
+    char* agent_realm = NULL;
+    char* agent_url = NULL;
+    char* agent_user = NULL;
+    char* agent_password = NULL;
+    
+    char* agent_password_source = NULL;
+
+    property_map_t * property_map;
+    
     uid_t* uid = NULL;
     gid_t* gid = NULL;
 
@@ -839,11 +1087,6 @@ static void install_interactive(int argc, char **argv) {
 #endif
 
     memset(&server_conf[0], 0, sizeof(server_conf));
-    memset(&openam_url[0], 0, sizeof(openam_url));
-    memset(&agent_url[0], 0, sizeof(agent_url));
-    memset(&agent_user[0], 0, sizeof(agent_user));
-    memset(&agent_realm[0], 0, sizeof(agent_realm));
-    memset(&agent_password[0], 0, sizeof(agent_password));
 
     snprintf(lic_file_path, sizeof(lic_file_path), "%s%s", app_path, LICENSE_FILE);
 
@@ -874,6 +1117,7 @@ static void install_interactive(int argc, char **argv) {
     if (!lic_accepted) {
         install_log("license was not accepted");
         fprintf(stdout, "\nYou need to accept the License terms and conditions to continue.\n");
+        am_net_options_delete(&net_options);
         exit(1);
     }
 
@@ -886,9 +1130,9 @@ static void install_interactive(int argc, char **argv) {
             case AM_I_APACHE: {
                 char *conf = NULL;
 
-                /* Apache HTTPD specific */
+                /* Apache HTTP Server specific */
 
-                input = prompt_and_read("\nEnter the complete path to the httpd.conf file which is used by Apache HTTPD\n"
+                input = prompt_and_read("\nEnter the complete path to the httpd.conf file which is used by Apache HTTP\n"
                         "Server to store its configuration.\n"
                         "[ q or 'ctrl+c' to exit ]\n"
                         "Configuration file ["APACHE_DEFAULT_CONF_FILE"]:");
@@ -898,6 +1142,7 @@ static void install_interactive(int argc, char **argv) {
                     input = strdup(APACHE_DEFAULT_CONF_FILE);
                     if (input == NULL) {
                         install_log("installation exit (memory allocation error)");
+                        am_net_options_delete(&net_options);
                         exit(1);
                     }
                 }
@@ -974,6 +1219,7 @@ static void install_interactive(int argc, char **argv) {
                 check_if_quit_wanted(input);
                 if (input == NULL) {
                     install_log("installation exit");
+                    am_net_options_delete(&net_options);
                     exit(1);
                 }
 
@@ -1003,6 +1249,7 @@ static void install_interactive(int argc, char **argv) {
                     input = strdup(VARNISH_DEFAULT_VMODS_DIR);
                     if (input == NULL) {
                         install_log("installation exit (memory allocation error)");
+                        am_net_options_delete(&net_options);
                         exit(1);
                     }
                 }
@@ -1022,211 +1269,428 @@ static void install_interactive(int argc, char **argv) {
             default: {
                 fprintf(stdout, "Error: unknown installation type. Exiting.\n");
                 install_log("unknown installation type");
+                am_net_options_delete(&net_options);
                 exit(1);
             }
         }
     } while (error == AM_TRUE);
 
     am_bool_t outer_loop = AM_TRUE;
-    
+
     am_net_init();
     
     do {
+        am_bool_t upgrade = AM_FALSE;
         
+        property_map = property_map_create();
+        if (property_map == NULL) {
+            install_log("unable to allocate property map");
+            break;
+        }
+        /*
+         * Get values parameters from existing configuration
+         */
+        do {
+            size_t data_sz = 0;
+            char *data;
+            
+            input = prompt_and_read("\nTo set properties from an existing configuration enter path to file\n"
+                                    "[ q or 'ctrl+c' to exit, return to ignore ]\n"
+                                    "Existing OpenSSOAgentBootstrap.properties file:");
+            if (!ISVALID(input)) {
+                am_free(input);
+                input = NULL;
+                break;
+            }
+            check_if_quit_wanted(input);
+            data = load_file(input, &data_sz);
+            if (data) {
+                install_log("loaded configuration from file ", input);
+            }
+            am_free(input);
+            
+            if (data) {
+                char* v;
+                upgrade = AM_TRUE;
+                
+                /*
+                 * get installer parameters from exiting configuration
+                 */
+                property_map_parse(property_map, "existing config", AM_TRUE, install_log, data, data_sz);
+                free(data);
+                
+                /* update naming service URLs */
+                if ( (v = property_map_get_value(property_map, "com.sun.identity.agents.config.naming.url")) ) {
+                    /* we are going to tokenise the property value v in situ, then replace it with dst */
+                    char** addr, * dst = malloc(strlen(v) + 1);
+                    size_t ofs = 0;
+                    
+                    const char* s, * e;
+                    char* brkt;
+                    
+                    int c = 0;
+                    
+                    if (!ISVALID(dst)) {
+                        install_log("unable to allocate memory for naming URL list");
+                        break;
+                    }
+                    /* reset any user input */
+                    RESET_INPUT_STRING(openam_url);
+                    
+                    for (s = strtok_r(v, " ", &brkt); s; s = strtok_r(0, " ", &brkt)) {
+                        if (c) {
+                            dst[ofs++] = ' ';                  /* add separator to dst */
+                        }
+                        e = strstr(s, "/namingservice");        /* strip the namingservice component if there is one */
+                        if (e == NULL) {
+                            e = s + strlen(s);
+                        }
+                        memcpy(dst + ofs, s, e - s);
+                        ofs += e - s;
+                        
+                        if (c++ == 0) {
+                            openam_url = strndup(s, e - s);     /* this first one is OpenAM URL */
+                        }
+                    }
+                    dst[ofs++] = '\0';
+                    
+                    install_log("setting the naming URL list to %s", dst);
+
+                    /* replace the tokenized value with the modified result */
+                    addr = property_map_get_value_addr(property_map, "com.sun.identity.agents.config.naming.url");
+                    if (*addr) {
+                        free(*addr);
+                        *addr = dst;
+                    }
+                }
+                
+                /* agent url */
+                if ( (v = property_map_get_value(property_map, "com.sun.identity.agents.config.agenturi.prefix")) ) {
+                    char* e;
+                    RESET_INPUT_STRING(agent_url);
+                    if ( (e = strstr(v, "/amagent")) ) {
+                        agent_url = strndup(v, e - v);
+                    } else {
+                        agent_url = strdup(v);
+                    }
+                }
+                
+                /* realm */
+                if ( (v = property_map_get_value(property_map, "com.sun.identity.agents.config.organization.name")) ) {
+                    am_free(agent_realm);
+                    agent_realm = strdup(v);
+                }
+                
+                /* user */
+                if ( (v = property_map_get_value(property_map, "com.sun.identity.agents.config.username")) ) {
+                    am_free(agent_user);
+                    agent_user = strdup(v);
+                }
+                
+                /* password cannot be preserved because the cypher is not compatible */
+                property_map_remove_key(property_map, "com.sun.identity.agents.config.password");
+
+                /* password key cannot be preserved because we will generate a new one during installation */
+                property_map_remove_key(property_map, "com.sun.identity.agents.config.key");
+
+                /* log file location will be preserved */
+                property_map_remove_key(property_map, "com.sun.identity.agents.config.local.logfile");
+                break;
+            }
+            fprintf(stdout, "Error: unable to open the configuration file\nPlease try again.\n");
+
+        } while (1);
+
         /**
          * Get the URL of OpenAM and try to verify it.
          */
-        am_bool_t inner_loop = AM_TRUE;
         do {
+            int httpcode = 0;
+            struct url parsed_url;
+            
+            if (!upgrade && ISVALID(openam_url)) {
+                if (!get_confirmation("\nOpenAM server URL: %s\n", openam_url)) {
+                    RESET_INPUT_STRING(openam_url);
+                } else {
+                    /* user answered "Yes" - will use openam_url value entered earlier, which might also mean
+                     * that user wants to continue despite the fact that OpenAM is not accessible */
+                    break;
+                }
+            }
+            
+            while (!ISVALID(openam_url)) {
+                input = prompt_and_read("\nEnter the URL where the OpenAM server is running. Please include the\n"
+                        "deployment URI also as shown below:\n"
+                        "(http://openam.example.com:58080/openam)\n"
+                        "[ q or 'ctrl+c' to exit ]\n"
+                        "OpenAM server URL:");
+                check_if_quit_wanted(input);
+            
+                if (ISVALID(input)) {
+                    openam_url = strdup(input);
+                    install_log("OpenAM URL %s", openam_url);
+                }
+                am_free(input);
+            }
+            
+            /* ensure that the OpenAM URL is syntactically valid */
+            /* should be able to connect to OpenAM server during installation */
+            if (parse_url(openam_url, &parsed_url) == AM_ERROR) {
+                fprintf(stdout, "That OpenAM URL (%s) doesn't appear to be valid\n", openam_url);
+                install_log("parse_url fails the OpenAM URL \"%s\"", openam_url);
+            } else if (am_url_validate(0, openam_url, &net_options, &httpcode) == AM_SUCCESS && httpcode != 0) {
+                am_validation_skipped = AM_FALSE;
+                break;
+            } else {
+                fprintf(stdout, "\nCannot connect to OpenAM at URI %s, please make sure OpenAM is started\n", openam_url);
+                install_log("OpenAM at %s cannot be contacted (invalid, or not running)", openam_url);
+                am_validation_skipped = AM_TRUE;
+            }
+            
+            if (upgrade) {
+                am_bool_t continue_upgrade = AM_FALSE;
+                while (!get_yes_or_no("\nPlease make sure OpenAM is started and the OpenAM URL is correct.\n"
+                                      "Continue upgrade (Yes/No, q to quit) [Yes]: ", &continue_upgrade)) {
+                    printf("Please answer yes or no\n");
+                }
+                if (!continue_upgrade) {
+                    install_log("installation exit because OpenAM is not running");
+                    fprintf(stdout, "Exiting installation\n.");
+                    am_net_options_delete(&net_options);
+                    exit(1);
+                }
+            }
+
+        } while (1);
+        
+        /**
+         * Get the URL of the Agent and try to verify it is not running (if it is an Apache agent).
+         */
+        do {
+            struct url parsed_url;
             int httpcode = 0;
             
-            input = prompt_and_read("\nEnter the URL where the OpenAM server is running. Please include the\n"
-                    "deployment URI also as shown below:\n"
-                    "(http://openam.sample.com:58080/openam)\n"
-                    "[ q or 'ctrl+c' to exit ]\n"
-                    "OpenAM server URL:");
-            check_if_quit_wanted(input);
-            if (ISVALID(input)) {
-                strncpy(openam_url, input, sizeof(openam_url) - 1);
-                install_log("OpenAM URL %s", openam_url);
-                if (am_url_validate(0, openam_url, NULL, &httpcode, install_log) == AM_SUCCESS) {
-                    inner_loop = AM_FALSE;
-                } else {
-                    fprintf(stdout, "Cannot connect to OpenAM at URI %s, please make sure OpenAM is started\n", openam_url);
-                    install_log("OpenAM at %s cannot be contacted (invalid, or not running)", openam_url);
+            if (!upgrade && ISVALID(agent_url)) {
+                if (!get_confirmation("\nAgent URL: %s\n", agent_url)) {
+                    RESET_INPUT_STRING(agent_url);
                 }
             }
-            am_free(input);
+            
+            while (!ISVALID(agent_url)) {
+                input = prompt_and_read("\nEnter the Agent URL as shown below:\n"
+                        "(http://agent.example.com:1234)\n"
+                        "[ q or 'ctrl+c' to exit ]\n"
+                        "Agent URL:");
+                check_if_quit_wanted(input);
+                if (ISVALID(input)) {
+                    agent_url = strdup(input);
+                    install_log("Agent URL %s", agent_url);
+                }
+                am_free(input);
+                input = NULL;
+            }
+            
+            /* ensure the URL is syntactically valid */
+            if (parse_url(agent_url, &parsed_url) == AM_ERROR) {
+                fprintf(stdout, "That Agent URL (%s) doesn't appear to be valid\n", agent_url);
+                install_log("parse_url fails the Agent URL \"%s\"", agent_url);
+                RESET_INPUT_STRING(agent_url);
+                continue;
+            }
+            
+            /* only Apache needs to be shut down before installation */
+            if (instance_type != AM_I_APACHE) {
+                break;
+            }
 
-        } while (inner_loop == AM_TRUE);
-
-        /**
-         * Get the URL of the Agent and try to verify it is not running.
-         */
-        inner_loop = AM_TRUE;
-        do {
-            int httpcode = 0;
-
-            input = prompt_and_read("\nEnter the Agent URL as shown below:\n"
-                    "(http://agent.sample.com:1234)\n"
-                    "[ q or 'ctrl+c' to exit ]\n"
-                    "Agent URL:");
-            check_if_quit_wanted(input);
-            if (ISVALID(input)) {
-                strncpy(agent_url, input, sizeof(agent_url) - 1);
-                install_log("Agent URL %s", agent_url);
-
-                if (instance_type == AM_I_APACHE) { /* only Apache server needs to be shut down prior agent installation */
-                    if (am_url_validate(0, agent_url, NULL, &httpcode, install_log) != AM_SUCCESS) {
-                        /* hopefully we cannot contact because the agent is not running,
-                         * rather than because the URI is complete rubbish
-                         */
-                        inner_loop = AM_FALSE;
-                    } else {
-                        fprintf(stdout, "The Agent at URI %s should be stopped before installation", agent_url);
-                        install_log("Agent URI %s rejected because agent is running", agent_url);
-                    }
-                } else {
-                    inner_loop = AM_FALSE;
+            if (am_url_validate(0, input, &net_options, &httpcode) != AM_SUCCESS) {
+                /* hopefully we cannot contact because the agent is not running,
+                 * rather than because the URI is complete rubbish
+                 */
+                break;
+            }
+            fprintf(stdout, "The Agent at URI %s should be stopped before installation", input);
+            install_log("Agent URI %s rejected because agent is running", input);
+            
+            if (upgrade) {
+                /* we must suspend the installation until the agent is shut down */
+                am_bool_t continue_upgrade = AM_FALSE;
+                while (!get_yes_or_no("\nPlease shut down the Apache HTTP Server to continue upgrade.\n"
+                                      "Continue upgrade (Yes/No, q to quit) [Yes]: ", &continue_upgrade)) {
+                    printf("Please answer yes or no\n");
+                }
+                if (!continue_upgrade) {
+                    install_log("installation exit because apache is running");
+                    fprintf(stdout, "Exiting installation.\n");
+                    am_net_options_delete(&net_options);
+                    exit(1);
                 }
             }
-            am_free(input);
+            
+        } while (1);
 
-        } while (inner_loop == AM_TRUE);
-        
         /**
          * The agent profile name.  There is no way to verify this, unless we can contact OpenAM,
          * and we haven't connected in a meaningful way yet.
          */
-        input = prompt_and_read("\nEnter the Agent profile name\n"
-                "[ q or 'ctrl+c' to exit ]\n"
-                "Agent Profile name:");
-        check_if_quit_wanted(input);
-        if (ISVALID(input)) {
-            strncpy(agent_user, input, sizeof(agent_user) - 1);
-            install_log("Agent Profile name %s", agent_user);
+        if (!upgrade && ISVALID(agent_user)) {
+            if (!get_confirmation("\nAgent profile name: %s\n", agent_user)) {
+                RESET_INPUT_STRING(agent_user);
+            }
         }
-        am_free(input);
-
+        
+        if (!ISVALID(agent_user)) {
+            input = prompt_and_read("\nEnter the Agent profile name\n"
+                    "[ q or 'ctrl+c' to exit ]\n"
+                    "Agent Profile name:");
+            check_if_quit_wanted(input);
+            if (ISVALID(input)) {
+                agent_user = strdup(input);
+                install_log("Agent Profile name %s", agent_user);
+            }
+            am_free(input);
+        }
+        
         /**
          * The realm.  Again no way to verify without connecting to OpenAM.
          */
-        input = prompt_and_read("\nEnter the Agent realm/organization\n"
-                "[ q or 'ctrl+c' to exit ]\n"
-                "Agent realm/organization name: [/]:");
-        check_if_quit_wanted(input);
-        if (ISVALID(input)) {
-            strncpy(agent_realm, input, sizeof(agent_realm) - 1);
-            install_log("Agent realm/organization name %s", agent_realm);
-        } else {
-            strncpy(agent_realm, "/", sizeof(agent_realm) - 1);
-            install_log("Agent realm/organization name %s", "/");
+        if (!upgrade && ISVALID(agent_realm)) {
+            if (!get_confirmation("\nAgent realm: %s\n", agent_realm)) {
+                RESET_INPUT_STRING(agent_realm);
+            }
         }
-        am_free(input);
-
+        
+        if (!ISVALID(agent_realm)) {
+            input = prompt_and_read("\nEnter the Agent realm/organization\n"
+                    "[ q or 'ctrl+c' to exit ]\n"
+                    "Agent realm/organization name: [/]:");
+            check_if_quit_wanted(input);
+            if (ISVALID(input)) {
+                agent_realm = strdup(input);
+                install_log("Agent realm/organization name %s", agent_realm);
+            } else {
+                agent_realm = strdup("/");
+                install_log("Agent realm/organization name %s", "/");
+            }
+            am_free(input);
+        }
+        
         /**
          * Prompt for the file containing the agent password.  This we can verify -
          * the file must exist, and be readable.
          */
-        inner_loop = AM_TRUE;
-        do {
+        if (ISVALID(agent_password_source)) {
+            if (!get_confirmation("\nAgent password is taken from %s\n", agent_password_source)) {
+                RESET_INPUT_STRING(agent_password_source);
+                RESET_INPUT_STRING(agent_password);
+            }
+        }
+        while (!ISVALID(agent_password_source)) {
             input = prompt_and_read("\nEnter the path to a file that contains the password to be used\n"
                     "for identifying the Agent\n"
                     "[ q or 'ctrl+c' to exit ]\n"
-                    "The path to the password file:");
+                    "The path and name of the password file:");
             check_if_quit_wanted(input);
             if (ISVALID(input)) {
-                char* password_data = load_file(input, NULL);
+                char *password_data = load_file(input, NULL);
                 install_log("Agent password file %s", input);
                 if (password_data != NULL) {
-                    trim(password_data, '\0');
+                    trim(password_data, ' ');
                     install_log("agent password file %s opened successfully", input);
-                    strncpy(agent_password, password_data, sizeof(agent_password) - 1);
+                    agent_password = strdup(password_data);
+                    agent_password_source = strdup(input);
                     free(password_data);
-                    inner_loop = AM_FALSE;
                 } else {
                     install_log("unable to open password file %s", input);
                 }
             }
-            // do not "free(input)" here, "input" is used in the fprintf below
-        } while (inner_loop == AM_TRUE);
-        
+            am_free(input);
+        }
         fprintf(stdout, "\nInstallation parameters:\n\n"
                 "   OpenAM URL: %s\n"
                 "   Agent URL: %s\n"
                 "   Agent Profile name: %s\n"
                 "   Agent realm/organization name: %s\n"
-                "   Agent Profile password file: %s\n\n",
-                openam_url, agent_url, agent_user, agent_realm, NOTNULL(input));
+                "   Agent Profile password source: %s\n\n",
+                openam_url, agent_url, agent_user, agent_realm, agent_password_source);
+        RESET_INPUT_STRING(agent_password_source);
 
-        am_free(input);
+        
         input = prompt_and_read("Confirm configuration (yes/no): [no]:");
-        if (ISVALID(input) && strcasecmp(input, "yes") == 0) {
+        if (ISVALID(input) && strncasecmp(input, "y", 1) == 0) {
             outer_loop = AM_FALSE;
         } else {
             fprintf(stdout, "\nRestarting the configuration...\n");
             install_log("installation restarted");
+
+            property_map_delete(property_map);
         }
         am_free(input);
         
     } while (outer_loop == AM_TRUE);
     
-    install_log("validating configuration parameters...");
-    fprintf(stdout, "\nValidating...\n");
-
-    rv = am_agent_login(0, openam_url, NULL,
-            agent_user, agent_password, agent_realm, AM_TRUE, 0, NULL,
-            &agent_token, NULL, NULL, NULL, install_log);
-
-    if (rv != AM_SUCCESS) {
-        fprintf(stdout, "\nError validating OpenAM - Agent configuration.\n"
-                "See installation log %s file for more details. Exiting.\n", log_path);
-        install_log("error validating OpenAM agent configuration");
-    } else {
-        fprintf(stdout, "\nValidating... Success.\n");
-        install_log("validating configuration parameters... success");
+    if (am_validation_skipped) {
+        install_log("configuration parameter validation skipped");
+        fprintf(stdout, "\nValidating... Skipped.\n");
         validated = AM_TRUE;
-    }
+    } else {
+        install_log("validating configuration parameters...");
+        fprintf(stdout, "\nValidating...\n");
 
-    if (agent_token != NULL) {
-        fprintf(stdout, "\nCleaning up validation data...\n");
-        am_agent_logout(0, openam_url, agent_token, NULL, NULL, install_log);
-        free(agent_token);
-        agent_token = NULL;
+        rv = am_agent_login(0, openam_url, agent_user, agent_password, agent_realm, &net_options,
+                &agent_token, NULL, NULL, NULL);
+
+        if (rv != AM_SUCCESS) {
+            fprintf(stderr, "\nError validating OpenAM - Agent configuration.\n"
+                    "See installation log %s file for more details. Exiting.\n", log_path);
+            install_log("error validating OpenAM agent configuration");
+        } else {
+            fprintf(stdout, "\nValidating... Success.\n");
+            install_log("validating configuration parameters... success");
+            validated = AM_TRUE;
+        }
+
+        if (agent_token != NULL) {
+            fprintf(stdout, "\nCleaning up validation data...\n");
+            am_agent_logout(0, openam_url, agent_token, &net_options);
+            free(agent_token);
+            agent_token = NULL;
+        }
     }
 
     if (validated) {
         fprintf(stdout, "\nCreating configuration...\n");
-        /* do configure the instance and modify the server configuration */
+        /* create agent instance and modify the server configuration */
 
-        switch (instance_type) {
-            case AM_I_APACHE:
-                if (create_agent_instance(0, server_conf, openam_url, agent_realm,
-                        agent_url, agent_user, agent_password, uid, gid) == AM_SUCCESS) {
-                    fprintf(stdout, "\nInstallation complete.\n");
-                    install_log("installation complete");
-                }
-                break;
-            case AM_I_IIS:
-                if (create_agent_instance(iis_status, server_conf/* site id */, openam_url, agent_realm,
-                        agent_url, agent_user, agent_password, uid, gid) == AM_SUCCESS) {
-                    fprintf(stdout, "\nInstallation complete.\n");
-                    install_log("installation complete");
-                }
-                break;
-            case AM_I_VARNISH:
-                if (create_agent_instance(0, server_conf, openam_url, agent_realm,
-                        agent_url, agent_user, agent_password, uid, gid) == AM_SUCCESS) {
-                    fprintf(stdout, "\nInstallation complete.\n");
-                    install_log("installation complete");
-                }
-                break;
-            default:
-                install_log("unknown installation instance type");
-                break;
+        if (instance_type == AM_I_APACHE || instance_type == AM_I_IIS || instance_type == AM_I_VARNISH) {
+            rv = create_agent_instance(instance_type == AM_I_IIS ? iis_status : 0,
+                    server_conf /* site id for IIS */, openam_url, agent_realm, agent_url,
+                    agent_user, agent_password, uid, gid, property_map);
+        } else {
+            rv = AM_NOT_IMPLEMENTED;
         }
+
+        if (rv == AM_SUCCESS) {
+            fprintf(stdout, "\nInstallation complete.\n");
+            install_log("installation complete");
+        } else {
+            fprintf(stderr, "\nInstallation failed.\n"
+                    "See installation log %s file for more details. Exiting.\n", log_path);
+            install_log("installation error: %s", am_strerror(rv));
+        }
+        
+    } else {
+        fprintf(stderr, "\nInstallation failed.\n"
+                "See installation log %s file for more details. Exiting.\n", log_path);
+        install_log("installation error");
     }
 
+    AM_FREE(openam_url, agent_url, agent_realm, agent_user, agent_password);
+    
+    if (property_map) {
+        property_map_delete(property_map);
+    }
+    
 #ifdef _WIN32
     SetConsoleMode(cons_handle, old_mode);
     SetConsoleCtrlHandler((PHANDLER_ROUTINE) exit_handler, FALSE);
@@ -1247,11 +1711,13 @@ static void install_interactive(int argc, char **argv) {
  * argv[5] = Realm
  * argv[6] = Agent name
  * argv[7] = File containing the agent password
- * argv[8] = OPTIONAL "y/n" argument saying whether to chown.
+ * argv[8] = OPTIONAL "--changeOwner" argument saying whether to change instance directory/file ownership data
+ * argv[9] = OPTIONAL "--acceptLicence" argument
+ * argv[10] = OPTIONAL "--forceInstall" argument.
  */
 static void install_silent(int argc, char** argv) {
     char lic_file_path[AM_URI_SIZE];
-    char lic_accepted = AM_FALSE;
+    am_bool_t lic_accepted = AM_FALSE, am_validation_skipped = AM_FALSE;
 
     install_log("%s for %s server silent installation", DESCRIPTION,
             am_container_str(instance_type));
@@ -1259,6 +1725,21 @@ static void install_silent(int argc, char** argv) {
             am_container_str(instance_type));
 
     snprintf(lic_file_path, sizeof(lic_file_path), "%s%s", app_path, LICENSE_FILE);
+    
+    if ((argc > 8 && strcasecmp(argv[8], "--acceptLicence") == 0) ||
+            (argc > 9 && strcasecmp(argv[9], "--acceptLicence") == 0) ||
+            (argc > 10 && strcasecmp(argv[10], "--acceptLicence") == 0)) {
+        install_log("license accepted with --acceptLicence option");
+        am_make_path(instance_path, NULL, NULL, install_log);
+        write_file(license_tracker_path, AM_SPACE_CHAR, 1);
+    }
+    
+    if ((argc > 8 && strcasecmp(argv[8], "--forceInstall") == 0) ||
+            (argc > 9 && strcasecmp(argv[9], "--forceInstall") == 0) ||
+            (argc > 10 && strcasecmp(argv[10], "--forceInstall") == 0)) {
+        install_log("installer run with --forceInstall option");
+        am_validation_skipped = AM_TRUE;
+    }
 
     if (!file_exists(license_tracker_path)) {
         /* display a license */
@@ -1284,12 +1765,13 @@ static void install_silent(int argc, char** argv) {
     if (!lic_accepted) {
         install_log("license was not accepted");
         fprintf(stdout, "\nYou need to accept the License terms and conditions to continue.\n");
+        am_net_options_delete(&net_options);
         exit(1);
     }
 
     if (argc >= 8) {
         int rv = AM_ERROR;
-        char validated = AM_FALSE;
+        am_bool_t validated = AM_FALSE;
         char *agent_token = NULL;
         char *agent_password;
         uid_t *uid = NULL;
@@ -1305,6 +1787,7 @@ static void install_silent(int argc, char** argv) {
             } else {
                 fprintf(stderr, "\nError reading config file %s. Exiting.\n", argv[2]);
                 install_log("exiting install because config file %s is not readable", argv[2]);
+                am_net_options_delete(&net_options);
                 exit(1);
             }
 #if !defined(_WIN32)
@@ -1312,15 +1795,15 @@ static void install_silent(int argc, char** argv) {
              * If not running as root, we cannot offer to chown directories.
              */
             if (getuid() != 0) {
-                am_free(uid);
-                am_free(gid);
+                AM_FREE(uid, gid);
                 uid = NULL;
                 gid = NULL;
             }
 #endif
-            if (argc > 8 && strcasecmp(argv[8], "n") == 0) {
-                am_free(uid);
-                am_free(gid);
+            if (!((argc > 8 && strcasecmp(argv[8], "--changeOwner") == 0) ||
+                    (argc > 9 && strcasecmp(argv[9], "--changeOwner") == 0) ||
+                    (argc > 10 && strcasecmp(argv[10], "--changeOwner") == 0))) {
+                AM_FREE(uid, gid);
                 uid = NULL;
                 gid = NULL;
             }
@@ -1330,6 +1813,8 @@ static void install_silent(int argc, char** argv) {
         if (agent_password == NULL) {
             fprintf(stdout, "\nError reading password file %s. Exiting.\n", argv[7]);
             install_log("installation exit");
+            am_net_options_delete(&net_options);
+            AM_FREE(uid, gid);
             exit(1);
         }
 
@@ -1338,59 +1823,67 @@ static void install_silent(int argc, char** argv) {
 
         am_net_init();
 
-        install_log("validating configuration parameters...");
-        fprintf(stdout, "\nValidating...\n");
-        
-        rv = am_agent_login(0, argv[3], NULL,
-                argv[6], agent_password, argv[5], AM_TRUE, 0, NULL,
-                &agent_token, NULL, NULL, NULL, install_log);
-        if (rv != AM_SUCCESS) {
-            fprintf(stdout, "\nError validating OpenAM - Agent configuration.\n"
-                    "See installation log %s file for more details. Exiting.\n", log_path);
-            install_log("error validating OpenAM agent configuration");
-            am_free(agent_token);
-            exit(1);
-        } else {
-            fprintf(stdout, "\nValidating... Success.\n");
-            install_log("validating configuration parameters... success");
+        if (am_validation_skipped) {
+            install_log("configuration parameter validation skipped");
+            fprintf(stdout, "\nValidating... Skipped.\n");
             validated = AM_TRUE;
-        }
+        } else {
+            install_log("validating configuration parameters...");
+            fprintf(stdout, "\nValidating...\n");
 
-        if (agent_token != NULL) {
-            fprintf(stdout, "\nCleaning up validation data...\n");
-            am_agent_logout(0, argv[3], agent_token, NULL, NULL, install_log);
-            free(agent_token);
-            agent_token = NULL;
+            rv = am_agent_login(0, argv[3], argv[6], agent_password, argv[5], &net_options,
+                    &agent_token, NULL, NULL, NULL);
+            if (rv != AM_SUCCESS) {
+                fprintf(stderr, "\nError validating OpenAM - Agent configuration.\n");
+                install_log("error validating OpenAM agent configuration");
+                am_free(agent_token);
+            } else {
+                fprintf(stdout, "\nValidating... Success.\n");
+                install_log("validating configuration parameters... success");
+                validated = AM_TRUE;
+            }
+
+            if (agent_token != NULL) {
+                fprintf(stdout, "\nCleaning up validation data...\n");
+                am_agent_logout(0, argv[3], agent_token, &net_options);
+                free(agent_token);
+                agent_token = NULL;
+            }
         }
 
         if (validated) {
             fprintf(stdout, "\nCreating configuration...\n");
+            property_map_t *property_map = property_map_create();
 
-            if (instance_type == AM_I_APACHE) {
+            if (instance_type == AM_I_APACHE || instance_type == AM_I_IIS || instance_type == AM_I_VARNISH) {
                 rv = create_agent_instance(0, argv[2], argv[3], argv[5],
-                        argv[4], argv[6], agent_password, uid, gid);
-            } else if (instance_type == AM_I_IIS) {
-                rv = create_agent_instance(0, argv[2], argv[3], argv[5],
-                        argv[4], argv[6], agent_password, uid, gid);
-            } else if (instance_type == AM_I_VARNISH) {
-                rv = create_agent_instance(0, argv[2], argv[3], argv[5],
-                        argv[4], argv[6], agent_password, uid, gid);
+                        argv[4], argv[6], agent_password, uid, gid, property_map);
+            } else {
+                rv = AM_NOT_IMPLEMENTED;
             }
 
             if (rv == AM_SUCCESS) {
                 fprintf(stdout, "\nInstallation complete.\n");
                 install_log("installation complete");
             } else {
-                fprintf(stdout, "\nInstallation error.\n");
+                fprintf(stderr, "\nInstallation failed.\n"
+                        "See installation log %s file for more details. Exiting.\n", log_path);
                 install_log("installation error: %s", am_strerror(rv));
             }
+
+            if (property_map != NULL) {
+                property_map_delete(property_map);
+            }
+        } else {
+            fprintf(stderr, "\nInstallation failed.\n"
+                    "See installation log %s file for more details. Exiting.\n", log_path);
+            install_log("installation error");
         }
 
-        am_free(agent_password);
-
+        AM_FREE(agent_password, uid, gid);
         am_net_shutdown();
     } else {
-        fprintf(stdout, "\nInvalid arguments. Installation exit.\n");
+        fprintf(stderr, "\nInvalid arguments. Installation exit.\n");
     }
     install_log("installation exit");
 }
@@ -1428,6 +1921,7 @@ static void list_instances(int argc, char **argv) {
 static void remove_instance(int argc, char **argv) {
     struct am_conf_entry *list = NULL, *e, *t;
     int rv;
+    char prompt[AM_PATH_SIZE];
     if (argc != 3) {
         fprintf(stdout, "\nNo agent configuration specified.\n");
         return;
@@ -1435,29 +1929,35 @@ static void remove_instance(int argc, char **argv) {
 
     rv = am_read_instances(instance_config, &list);
     if (rv <= 0) {
+        fprintf(stderr, "\nError reading agent configuration.\n");
         delete_conf_entry_list(&list);
         return;
     }
 
+    rv = AM_NOT_FOUND;
+
     AM_LIST_FOR_EACH(list, e, t) {
         if (strcmp(e->name, argv[2]) == 0) {
             switch (instance_type) {
-                case AM_I_APACHE: {
-                    char *input = prompt_and_read("\nWarning! This procedure will remove all "DESCRIPTION" references from \na Web server configuration."
+                case AM_I_APACHE:
+                {
+                    char *input = prompt_and_read("\nWarning! This procedure will remove all "DESCRIPTION" references from \nWeb server configuration."
                             " In case you are running "DESCRIPTION" in a\nmulti-virtualhost mode, an uninstallation must be carried out manually.\n\nContinue (yes/no): [no]:");
-                    if (!ISVALID(input) || strcasecmp(input, "yes") != 0) {
+                    rv = AM_SUCCESS;
+                    if (!ISVALID(input) || strncasecmp(input, "y", 1) != 0) {
                         am_free(input);
                         break;
                     }
                     am_free(input);
-
                     fprintf(stdout, "\nRemoving %s configuration...\n", e->name);
                     /* remove LoadModule line */
-                    rv = am_cleanup_instance(e->web, "LoadModule amagent_module");
+                    am_cleanup_instance(e->web, "LoadModule amagent_module");
                     /* remove AmAgent On/Off line */
-                    rv = am_cleanup_instance(e->web, "AmAgent ");
+                    am_cleanup_instance(e->web, "AmAgent ");
                     /* remove AmAgentConf line */
-                    rv = am_cleanup_instance(e->web, "AmAgentConf ");
+                    am_cleanup_instance(e->web, "AmAgentConf ");
+                    /* remove AmAgentId line */
+                    am_cleanup_instance(e->web, "AmAgentId ");
                     /* delete agent instance configuration directory */
                     am_delete_directory(e->path);
                     /* remove agent instance configuration */
@@ -1465,9 +1965,20 @@ static void remove_instance(int argc, char **argv) {
                     fprintf(stdout, "\nRemoving %s configuration... Done.\n", e->name);
                     break;
                 }
-                case AM_I_IIS: {
+                case AM_I_IIS:
+                {
+                    char *input = NULL;
                     char iis_instc_file[AM_URI_SIZE];
-                    snprintf(iis_instc_file, sizeof(iis_instc_file),
+                    snprintf(prompt, sizeof (prompt), "\nWarning! This procedure will remove %s configuration from IIS Site %s."
+                            "\n\nContinue (yes/no): [no]:", e->name, e->web);
+                    input = prompt_and_read(prompt);
+                    rv = AM_SUCCESS;
+                    if (!ISVALID(input) || strncasecmp(input, "y", 1) != 0) {
+                        am_free(input);
+                        break;
+                    }
+                    am_free(input);
+                    snprintf(iis_instc_file, sizeof (iis_instc_file),
                             "%s"FILE_PATH_SEP"config"FILE_PATH_SEP"agent.conf",
                             e->path);
 
@@ -1481,8 +1992,17 @@ static void remove_instance(int argc, char **argv) {
                     fprintf(stdout, "\nRemoving %s configuration... Done.\n", e->name);
                     break;
                 }
-                case AM_I_VARNISH: {
+                case AM_I_VARNISH:
+                {
                     char vmod_path[AM_URI_SIZE];
+                    char *input = prompt_and_read("\nWarning! This procedure will remove all "DESCRIPTION" references from \nWeb server configuration."
+                            "\n\nContinue (yes/no): [no]:");
+                    rv = AM_SUCCESS;
+                    if (!ISVALID(input) || strncasecmp(input, "y", 1) != 0) {
+                        am_free(input);
+                        break;
+                    }
+                    am_free(input);
                     snprintf(vmod_path, sizeof (vmod_path),
                             "%s"FILE_PATH_SEP"libvmod_am."LIB_FILE_EXT, e->web);
                     fprintf(stdout, "\nRemoving %s configuration...\n", e->name);
@@ -1497,7 +2017,12 @@ static void remove_instance(int argc, char **argv) {
             }
         }
     }
+
     delete_conf_entry_list(&list);
+
+    if (rv == AM_NOT_FOUND) {
+        fprintf(stderr, "\nUnknown \"%s\" instance configuration.\n", LOGEMPTY(argv[2]));
+    }
 }
 
 static void remove_global(int argc, char **argv) {
@@ -1696,6 +2221,15 @@ static void archive_files(int argc, char **argv) {
     delete_am_namevalue_list(&all);
 }
 
+static void modify_ownership(int argc, char **argv) {
+    int rv;
+    if (argc == 4) {
+        rv = add_directory_acl(NULL, argv[3], argv[2]);
+        fprintf(stdout, "\nAdding \"%s\" to \"%s\" ACLs with status: %s.\n",
+                argv[2], argv[3], am_strerror(rv));
+    }
+}
+
 int main(int argc, char **argv) {
     int i;
     char tm[64];
@@ -1712,6 +2246,7 @@ int main(int argc, char **argv) {
         { "--g", remove_global },
         { "--e", enable_iis_mod },
         { "--d", disable_iis_mod },
+        { "--o", modify_ownership },
 #endif
         { "--v", show_version },
         { "--k", generate_key },
@@ -1721,61 +2256,75 @@ int main(int argc, char **argv) {
         { NULL }
     };
     
+    if (!validate_os_version()) {
+#ifdef _WIN32
+        fprintf(stderr, "\nYou are running unsupported Microsoft Windows OS version.\n"
+                DESCRIPTION" supports Microsoft Windows 2008R2 or newer.\n\n");
+#endif
+        exit(1);
+    }
+
+#ifdef _WIN32
+    if (argc > 1 && strcmp(argv[1], "--v") != 0 && strcmp(argv[1], "--a") != 0
+            && strcmp(argv[1], "--k") != 0 && strcmp(argv[1], "--p") != 0
+            && strcmp(argv[1], "--d") != 0
+            && !IsUserAnAdmin()) {
+            fprintf(stderr, "\nYou need Administrator privileges to run "DESCRIPTION" agentadmin.\n\n");
+            exit(1);
+        }
+#endif
+    
     if (argc > 1) {
-        uid_t* uid = NULL;
-        gid_t* gid = NULL;
         time_t tv;
-        char* conf;
-        
         time(&tv);
         localtime_r(&tv, &now);
-        strftime(tm, sizeof(tm) - 1, "%Y%m%d%H%M%S", &now);
+        strftime(tm, sizeof (tm) - 1, "%Y%m%d%H%M%S", &now);
 
         /* get agentadmin path */
-        am_bin_path(app_path, sizeof(app_path) - 1);
+        am_bin_path(app_path, sizeof (app_path) - 1);
 
         /* create/update installer log path */
-        snprintf(log_path, sizeof(log_path),
-                "%s.."FILE_PATH_SEP"log",
-                app_path);
+        snprintf(log_path, sizeof (log_path), "%s.."FILE_PATH_SEP"log", app_path);
         strcpy(log_path_dir, log_path);
-        am_make_path(log_path, uid, gid, install_log);
+        if (strcmp(argv[1], "--a") != 0) {
+            am_make_path(log_path, NULL, NULL, install_log);
+        }
         strcat(log_path, FILE_PATH_SEP"install_");
         strcat(log_path, tm);
         strcat(log_path, ".log");
 
         /* instances directory */
-        snprintf(instance_path, sizeof(instance_path),
+        snprintf(instance_path, sizeof (instance_path),
                 "%s.."FILE_PATH_SEP"instances",
                 app_path);
 
         /* agent configuration template */
-        snprintf(config_template, sizeof(config_template),
+        snprintf(config_template, sizeof (config_template),
                 "%s.."FILE_PATH_SEP"config"FILE_PATH_SEP"agent.conf.template",
                 app_path);
 
         /* instances configuration file (internal) */
-        snprintf(instance_config, sizeof(instance_config),
+        snprintf(instance_config, sizeof (instance_config),
                 "%s.."FILE_PATH_SEP"instances"FILE_PATH_SEP".agents",
                 app_path);
 
         /* and add a license tracker path */
-        snprintf(license_tracker_path, sizeof(license_tracker_path),
+        snprintf(license_tracker_path, sizeof (license_tracker_path),
                 "%s.."FILE_PATH_SEP"instances"FILE_PATH_SEP".license",
                 app_path);
 
         /* determine installer type */
-        snprintf(instance_type_mod, sizeof(instance_type_mod),
+        snprintf(instance_type_mod, sizeof (instance_type_mod),
                 "%s.."FILE_PATH_SEP"lib"FILE_PATH_SEP"mod_openam."LIB_FILE_EXT, app_path);
         if (file_exists(instance_type_mod)) {
             instance_type = AM_I_APACHE;
         }
-        snprintf(instance_type_mod, sizeof(instance_type_mod),
+        snprintf(instance_type_mod, sizeof (instance_type_mod),
                 "%s.."FILE_PATH_SEP"lib"FILE_PATH_SEP"mod_iis_openam."LIB_FILE_EXT, app_path);
         if (file_exists(instance_type_mod)) {
             instance_type = AM_I_IIS;
         }
-        snprintf(instance_type_mod, sizeof(instance_type_mod),
+        snprintf(instance_type_mod, sizeof (instance_type_mod),
                 "%s.."FILE_PATH_SEP"lib"FILE_PATH_SEP"libvmod_am."LIB_FILE_EXT, app_path);
         if (file_exists(instance_type_mod)) {
             snprintf(instance_config_template, sizeof (instance_config_template),
@@ -1783,20 +2332,44 @@ int main(int argc, char **argv) {
                     app_path);
             instance_type = AM_I_VARNISH;
         }
-       
-        if (instance_type == AM_I_APACHE) {
-            conf = load_file(argv[2], NULL);
-            if (conf != NULL) {
-                find_user(conf, &uid, &gid);
-                find_group(conf, &gid);
-                free(conf);
+
+        /* read environment variables and create am_net_options */
+        memset(&net_options, 0, sizeof (am_net_options_t));
+        for (i = 0; i < ARRAY_SIZE(ssl_variables); i++) {
+            char *env = getenv(ssl_variables[i]);
+            if (ISVALID(env)) {
+                if (strcmp(ssl_variables[i], AM_INSTALL_SSL_KEY) == 0) {
+                    net_options.cert_key_file = strdup(env);
+                }
+                if (strcmp(ssl_variables[i], AM_INSTALL_SSL_CERT) == 0) {
+                    net_options.cert_file = strdup(env);
+                }
+                if (strcmp(ssl_variables[i], AM_INSTALL_SSL_CA) == 0) {
+                    net_options.cert_ca_file = strdup(env);
+                }
+                if (strcmp(ssl_variables[i], AM_INSTALL_SSL_CIPHERS) == 0) {
+                    net_options.ciphers = strdup(env);
+                }
+                if (strcmp(ssl_variables[i], AM_INSTALL_SSL_OPTIONS) == 0) {
+                    net_options.tls_opts = strdup(env);
+                }
+                if (strcmp(ssl_variables[i], AM_INSTALL_SSL_KEY_PASSWORD) == 0) {
+                    net_options.cert_key_pass = strdup(env);
+                    if (net_options.cert_key_pass != NULL) {
+                        net_options.cert_key_pass_sz = strlen(net_options.cert_key_pass);
+                    }
+                }
             }
         }
+        net_options.local = net_options.cert_trust = AM_TRUE;
+        net_options.keepalive = AM_FALSE;
+        net_options.log = install_log;
 
         /* run through the cli options */
         for (i = 0; params[i].option; ++i) {
             if (!strcasecmp(argv[1], params[i].option)) {
                 params[i].handler(argc, argv);
+                am_net_options_delete(&net_options);
                 return 0;
             }
         }
@@ -1805,32 +2378,37 @@ int main(int argc, char **argv) {
     fprintf(stdout, "\n%s\n"
             "Usage: agentadmin <option> [<arguments>]\n\n"
             "The available options are:\n\n"
-            "install agent instance:\n"
+            "Install agent instance (interactive):\n"
             " agentadmin --i\n\n"
-            "install agent instance (silent):\n"
+            "Install agent instance (silent):\n"
             " agentadmin --s \"web-server configuration file, directory or site parameter\" \\\n"
             "                \"OpenAM URL\" \"Agent URL\" \"realm\" \"agent user id\" \\\n"
-            "                \"path to the agent password file\"\n\n"
-            "list configured agent instances:\n"
+            "                \"path to the agent password file\" [--changeOwner] [--acceptLicence] [--forceInstall]\n\n"
+            "List configured agent instances:\n"
             " agentadmin --l\n\n"
 #ifdef _WIN32
-            "list IIS Server Sites:\n"
+            "List IIS Server Sites:\n"
             " agentadmin --n\n\n"
-            "remove agent module from IIS Server:\n"
+            "Remove agent module from IIS Server:\n"
             " agentadmin --g\n\n"
-            "enable agent module in IIS Server site:\n"
+            "Enable agent module in IIS Server site:\n"
             " agentadmin --e agent_1\n\n"
-            "disable agent module in IIS Server site:\n"
+            "Disable agent module in IIS Server site:\n"
             " agentadmin --d agent_1\n\n"
+            "Modify Access Control Lists (ACLs) for files and folders:\n"
+            " agentadmin --o \"IIS APPPOOL\\AgentSite\" \"C:\\web_agents\\iis_agent\\instances\"\n\n"
 #endif
-            "uninstall agent instance:\n"
+            "Uninstall agent instance:\n"
             " agentadmin --r agent_1\n\n"
-            "generate encryption key:\n"
+            "Generate encryption key:\n"
             " agentadmin --k\n\n"
-            "encrypt password:\n"
+            "Encrypt password:\n"
             " agentadmin --p \"key\" \"password\"\n\n"
-            "build and version information:\n"
+            "Archive directories/files:\n"
+            " agentadmin --a archive.zip directory_or_file [directory_or_file]\n\n"
+            "Build and version information:\n"
             " agentadmin --v\n\n", DESCRIPTION);
 
+    am_net_options_delete(&net_options);
     return 0;
 }

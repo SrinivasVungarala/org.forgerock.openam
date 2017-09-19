@@ -563,6 +563,24 @@ void test_url_encode_decode(void** state) {
     free(decoded);
 }
 
+void test_url_encode_decode_agent3(void** state) {
+    char agent3_input1[] = "~a!a@a#a$a%a^a&";
+    char agent3_output1[] = "%7Ea%21a%40a%23a%24a%25a%5Ea%26";
+    
+    char agent3_input2[] = "!@#$%^&*()_+{}:\".,/\\";
+    char agent3_output2[] = "%21%40%23%24%25%5E%26*%28%29_%2B%7B%7D%3A%22.%2C%2F%5C";
+
+    char* agent4_decoded = url_decode(agent3_output1);
+    assert_non_null(agent4_decoded);
+    assert_string_equal(agent4_decoded, agent3_input1);
+    free(agent4_decoded);
+
+    agent4_decoded = url_decode(agent3_output2);
+    assert_non_null(agent4_decoded);
+    assert_string_equal(agent4_decoded, agent3_input2);
+    free(agent4_decoded);
+}
+
 void test_string_replace(void ** state) {
     char * original;
     size_t size;
@@ -623,4 +641,240 @@ void test_string_replace(void ** state) {
     
 }
 
+static void test_logf(const char * format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    vprintf(format, ap);
+    va_end(ap);
+}
 
+/*
+ * this test is disabled by not using the required parameter
+ *
+ */
+void test_property_map_load() {
+    const char * wpa3boot = "OpenSSOAgentBootstrap.properties";
+    const char * wpa3config = "OpenSSOAgentConfiguration.properties";
+    const char * wpa4boot = "agent.conf";
+    
+    property_map_t *map = property_map_create();
+    
+    size_t data_sz;
+    char * data;
+    
+    data_sz = 0;
+    data = load_file(wpa3boot, &data_sz);
+    property_map_parse(map, "agent 3 bootstrap", AM_TRUE, test_logf, data, data_sz);
+    free(data);
+    
+    data_sz = 0;
+    data = load_file(wpa3config, &data_sz);
+    property_map_parse(map, "agent 3 config", AM_TRUE, test_logf, data, data_sz);
+    free(data);
+    
+    data_sz = 0;
+    data = load_file(wpa4boot, &data_sz);
+    property_map_parse(map, "agent 4 bootstrap", AM_FALSE, test_logf, data, data_sz);
+    free(data);
+    
+    data = property_map_write_to_buffer(map, &data_sz);
+    printf("written %zu\n", data_sz);
+    printf("%s\n", data);
+    free(data);
+    
+    property_map_delete(map);
+}
+
+void test_property_map_overrides(void ** state) {
+    property_map_t *map = property_map_create();
+    
+    size_t data_sz;
+    char * data;
+    
+    data = "a.b.0 = 0\r\na.b.1 = 1\r\na.b.empty =\r\n";
+    data_sz = strlen(data);
+    property_map_parse(map, "phase 1", AM_TRUE, test_logf, data, data_sz);
+    
+    assert_string_equal(property_map_get_value(map, "a.b.0"), "0");
+    assert_string_equal(property_map_get_value(map, "a.b.1"), "1");
+    assert_string_equal(property_map_get_value(map, "a.b.empty"), "");
+    
+    // new value ok, change doesn't override
+    data = "a.b.2 = 2\r\na.b.1 = override\r\n";
+    data_sz = strlen(data);
+    property_map_parse(map, "phase 2", AM_FALSE, test_logf, data, data_sz);
+    
+    assert_string_equal(property_map_get_value(map, "a.b.0"), "0");
+    assert_string_equal(property_map_get_value(map, "a.b.1"), "1");
+    assert_string_equal(property_map_get_value(map, "a.b.2"), "2");
+    
+    // override to a.b.1, different space round existing values
+    data = "a.b.0=\t\t\t0   \n\r\t  a.b.2       =       2\r\na.b.1 = override 1\r\n";
+    data_sz = strlen(data);
+    property_map_parse(map, "phase 3", AM_TRUE, test_logf, data, data_sz);
+    
+    assert_string_equal(property_map_get_value(map, "a.b.0"), "0");
+    assert_string_equal(property_map_get_value(map, "a.b.1"), "override 1");
+    assert_string_equal(property_map_get_value(map, "a.b.2"), "2");
+    
+    // no override to a.b.1, set after comment
+    data = "a.b.1 = override 2\r\n#comment\na.b.3=3";
+    data_sz = strlen(data);
+    property_map_parse(map, "phase 4", AM_FALSE, test_logf, data, data_sz);
+    
+    assert_string_equal(property_map_get_value(map, "a.b.0"), "0");
+    assert_string_equal(property_map_get_value(map, "a.b.1"), "override 1");
+    assert_string_equal(property_map_get_value(map, "a.b.2"), "2");
+    assert_string_equal(property_map_get_value(map, "a.b.3"), "3");
+    
+    property_map_delete(map);
+}
+
+static am_bool_t test_property_counter(char * key, char * value, void * data) {
+    int * counter = data;
+    (* counter)++;
+    return AM_TRUE;
+}
+
+void test_property_map_basics(void ** state) {
+    property_map_t *map = property_map_create();
+    
+    size_t data_sz;
+    char * data;
+    
+    // no final line ending
+    data = "a.b.0 = 0\r\na.b.1 = 1";
+    data_sz = strlen(data);
+    property_map_parse(map, "phase 1", AM_TRUE, test_logf, data, data_sz);
+    
+    assert_string_equal(property_map_get_value(map, "a.b.0"), "0");
+    assert_string_equal(property_map_get_value(map, "a.b.1"), "1");
+    
+    // no change with non-property formats, empty property name
+    data = "abc\r\ndef\n\t\t=ghi";
+    data_sz = strlen(data);
+    property_map_parse(map, "phase 2", AM_TRUE, test_logf, data, data_sz);
+    
+    int counter = 0;
+    property_map_visit(map, test_property_counter, &counter);
+    assert_int_equal(counter, 3);
+    
+    property_map_delete(map);
+}
+
+static int compare_keys(const void *a, const void *b) {
+    return strcmp((char *)a, (char *)b);
+}
+
+void test_property_map_key_remove(void **state) {
+#define KEY_REMOVE_TEST_ITERATIONS 10000
+#define KEY_REMOVE_BUFFER_SIZE 5
+    
+    property_map_t *map = property_map_create();
+    
+    void create_random_cache_key(char *buffer, size_t size);
+    
+    char keys[KEY_REMOVE_TEST_ITERATIONS][KEY_REMOVE_BUFFER_SIZE];
+    
+    int dups = 0, counter = 0, i;
+    
+    for (i = 0; i < KEY_REMOVE_TEST_ITERATIONS; i++) {
+        create_random_cache_key(keys [i], KEY_REMOVE_BUFFER_SIZE);
+        char **addr = property_map_get_value_addr(map, keys[i]);
+        if (*addr)
+            dups++;
+        else
+            *addr = malloc(0);
+    }
+    
+    // reorder
+    qsort(keys, KEY_REMOVE_TEST_ITERATIONS, KEY_REMOVE_BUFFER_SIZE, compare_keys);
+    
+    for (i = 0; i < KEY_REMOVE_TEST_ITERATIONS; i++) {
+        if (! property_map_remove_key(map, keys[i]))
+            dups--;
+    }
+    assert_int_equal(dups, 0);
+    
+    property_map_visit(map, test_property_counter, &counter);
+    assert_int_equal(counter, 0);
+    
+    property_map_delete(map);
+}
+
+void test_copy_file(void **state) {
+    void create_random_cache_key(char *buffer, size_t size);
+    
+    char content [1024];
+    char source_buffer [] = "test_copy_file_src-XXXXXXX";
+    char *source = mktemp(source_buffer);
+    
+    char dest_buffer [] = "test_copy_file_dst-XXXXXXX";
+    char *dest = mktemp(dest_buffer);
+    
+    char *loaded;
+    size_t loaded_sz;
+    
+    create_random_cache_key(content, sizeof(content));
+    
+    assert_int_equal(write_file(source, content, strlen(content)), strlen(content));
+    assert_int_equal(copy_file(source, dest), AM_SUCCESS);
+    unlink(source);
+    
+    loaded = load_file(dest, &loaded_sz);
+    unlink(dest);
+    
+    assert_int_equal(loaded_sz, strlen(content));
+    assert_string_equal(content, loaded);
+}
+
+void test_copy_empty_file(void **state) {
+    void create_random_cache_key(char *buffer, size_t size);
+    
+    char source_buffer [] = "test_copy_file_src-XXXXXXX";
+    char *source = mktemp(source_buffer);
+    
+    char dest_buffer [] = "test_copy_file_dst-XXXXXXX";
+    char *dest = mktemp(dest_buffer);
+    
+    char *loaded;
+    size_t loaded_sz;
+    
+    assert_int_equal(write_file(source, "", 0), 0);
+    assert_int_equal(copy_file(source, dest), AM_SUCCESS);
+    unlink(source);
+    
+    loaded = load_file(dest, &loaded_sz);
+    unlink(dest);
+    
+    assert_true(loaded != NULL && * loaded == '\0');
+    assert_int_equal(loaded_sz, 0);
+}
+
+void test_url_encoding(void **state) {
+    char agent3_input1[] = "~a!a@a#a$a%a^a&";
+    char agent3_output1[] = "%7Ea%21a%40a%23a%24a%25a%5Ea%26";
+    
+    char agent3_input2[] = "!@#$%^&*()_+{}:\".,/\\";
+    char agent3_output2[] = "%21%40%23%24%25%5E%26*%28%29_%2B%7B%7D%3A%22.%2C%2F%5C";
+    
+    char *agent4_decoded, *agent4_encoded;
+    
+    agent4_decoded = url_decode(agent3_output1);
+    assert_string_equal(agent4_decoded, agent3_input1);
+    free(agent4_decoded);
+    
+    agent4_decoded = url_decode(agent3_output2);
+    assert_string_equal(agent4_decoded, agent3_input2);
+    free(agent4_decoded);
+    
+    /* producing the same url encoding as prior versions of the agents */
+    
+    agent4_encoded = url_encode(agent3_input1);
+    assert_string_equal(agent3_output1, agent4_encoded);
+    free(agent4_encoded);
+    
+    agent4_encoded = url_encode(agent3_input2);
+    assert_string_equal(agent3_output2, agent4_encoded);
+    free(agent4_encoded);
+}

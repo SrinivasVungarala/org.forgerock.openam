@@ -40,7 +40,7 @@
                 i18nFileName="amAuth"
                 revisionNumber="60"
                 i18nKey="iplanet-am-auth-service-description"
-                resourceName="">
+                resourceName="EMPTY">
             <Global>
                 <AttributeSchema name="iplanet-am-auth-authenticators"
                                  type="list"
@@ -69,6 +69,7 @@
                         <Value>org.forgerock.openam.authentication.modules.adaptive.Adaptive</Value>
                         <Value>org.forgerock.openam.authentication.modules.oauth2.OAuth</Value>
                         <Value>org.forgerock.openam.authentication.modules.oath.OATH</Value>
+                        <Value>org.forgerock.openam.authentication.modules.fr.oath.AuthenticatorOATH</Value>
                         <Value>org.forgerock.openam.authentication.modules.oidc.OpenIdConnect</Value>
                     </DefaultValues>
                 </AttributeSchema>

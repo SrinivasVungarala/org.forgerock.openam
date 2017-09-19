@@ -25,7 +25,7 @@
 -->
 <chapter xml:id='chap-upgrade-servers'
  xmlns='http://docbook.org/ns/docbook'
- version='5.0' xml:lang='en'
+ version='5.0'
  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
  xsi:schemaLocation='http://docbook.org/ns/docbook
                      http://docbook.org/xml/5.0/xsd/docbook.xsd'
@@ -38,10 +38,7 @@
  </indexterm>
 
  <para>This chapter covers upgrade from OpenAM core server 9.5 or later to the
- current version. For other OpenAM components, see <link xlink:show="new"
- xlink:href="upgrade-guide#chap-upgrade-components"
- xlink:role="http://docbook.org/xlink/role/olink"><citetitle>Upgrading OpenAM
- Components</citetitle></link>.</para>
+ current version. For other OpenAM components, see <xref linkend="chap-upgrade-components" />.</para>
 
  <para>OpenAM server upgrade relies on the Upgrade Wizard to make the
  necessary changes to the configuration store. You must then restart OpenAM or
@@ -130,11 +127,7 @@
    <para>
     First you must install the tool.
     The procedure,
-    <link
-     xlink:show="new"
-     xlink:href="install-guide#install-openam-config-tools"
-     xlink:role="http://docbook.org/xlink/role/olink"
-    ><citetitle>To Set Up Configuration Tools</citetitle></link>,
+    <olink targetdoc="install-guide" targetptr="install-openam-config-tools" />,
     describes how to install the tool.
    </para>
 
@@ -205,9 +198,7 @@ Upgrade Complete.
    <para>
     For additional information about the command-line tool,
     see the reference documentation for
-    <link xlink:show="new"
-          xlink:href="reference#man-upgrade-jar"
-          xlink:role="http://docbook.org/xlink/role/olink">upgrade.jar</link>.
+    <olink targetdoc="reference" targetptr="man-upgrade-jar" />.
    </para>
   </step>
 
@@ -224,10 +215,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
  uid=openam,ou=admins,dc=example,dc=com");)</programlisting>
     </para>
     <para>
-     See <link xlink:show="new"
-               xlink:href="install-guide#prepare-configuration-store"
-               xlink:role="http://docbook.org/xlink/role/olink">
-     <citetitle>Preparing an External Configuration Data Store</citetitle></link>
+     See <olink targetdoc="install-guide" targetptr="prepare-configuration-store" />
      for more information about using an external directory server as the
      OpenAM configuration store.
     </para>
@@ -235,13 +223,8 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
   <step performance="optional">
    <para>If you want to configure the upgraded system for the Core Token Service (CTS),
-   read <link xlink:show="new"
-   xlink:href="install-guide#chap-cts" xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Configuring the Core Token Service</citetitle></link>. For a list of
-   supported directory services, see the <link xlink:show="new"
-   xlink:href="release-notes#data-store-requirements"
-   xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Data Store Requirements</citetitle> section of the Release Notes.</link></para>
+   read <olink targetdoc="install-guide" targetptr="chap-cts" />. For a list of
+   supported directory services, see the <olink targetdoc="release-notes" targetptr="data-store-requirements" /></para>
   </step>
 
   <step>
@@ -299,7 +282,7 @@ aci: (targetcontrol="1.2.840.113556.1.4.473")(version 3.0;acl "Allow
 
    <para>
     You can update the client password by using either OpenAM console
-    or the <command>ssoadm update-agent</command>
+    or the <command>ssoadm update-agent</command> command
     with the <option>--attributevalues</option> option
     to update the value of the <literal>userpassword</literal> attribute.
    </para>
@@ -374,14 +357,11 @@ MODIFY operation successful for DN cn=schema</computeroutput>
   </step>
 
   <step performance="optional">
-   <para>If you want to configure the upgraded system with a different
-   directory service for the Core Token Service (CTS), read <link xlink:show="new"
-   xlink:href="install-guide#chap-cts" xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Configuring the Core Token Service</citetitle></link>.For a list of
-   supported directory services, see the <link xlink:show="new"
-   xlink:href="release-notes#data-store-requirements"
-   xlink:role="http://docbook.org/xlink/role/olink">
-   <citetitle>Data Store Requirements</citetitle> section of the Release Notes.</link></para>
+   <para>If you want to configure the upgraded system with a different directory
+   service for the Core Token Service (CTS), see <olink
+   targetdoc="install-guide" targetptr="chap-cts" />. For a list of supported
+   directory services, see <olink targetdoc="release-notes"
+   targetptr="data-store-requirements" /></para>
   </step>
  </procedure>
 </chapter>
